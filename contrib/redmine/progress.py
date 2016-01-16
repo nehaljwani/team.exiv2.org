@@ -4,11 +4,13 @@ import json
 import os
 
 ##
-# read in the json
+# read the json into an array of json objects
+# see ./getdata.sh for an explanation of why the data is sliced into smaller files
 J=[]
 for i in range(0,9):
-	if len(open('data%d.json' % i,'r').read()) > 100:
-		J.append(json.loads( open('data%d.json' % i,'r').read()   ))
+	data=open('data%d.json' % i,'r').read();
+	if len(data) > 100:
+		J.append(json.loads( data ))
 
 Left=0
 Size=0
@@ -23,16 +25,18 @@ for j in J:
 			if   i['assigned_to']['name']=='Robin Mills':
 			 if  i['fixed_version']['name']=='0.26':
 			  if i['done_ratio'] < 100:
-				done= i['done_ratio'] * i['estimated_hours'] / 100.0
-				left= i['estimated_hours'] - done
+				size= i['estimated_hours']
+				done= i['done_ratio'] * size / 100.0
+				left= size - done
 				Left = Left+left
-				Size = Size+i['estimated_hours']
+				Size = Size+size
 				print('| #%-4d  | %3d | %3d | %s |' % (i['id'],left,i['estimated_hours'],i['subject']) )
 
 		except:
 			pass
 
 print('| Left   | %4d|%4d | %3d |' % (Left, Size, Left/40) )
+print('')
 print('| Unexpected 10%%     | %3d |'  % (Left/10))
 print('| Support 12 hr/week | %3d |'  % (12*Left/40))
 print('| Review+1.0         | %3d |'  % 20)
@@ -48,6 +52,7 @@ v1_0=0
 open=0
 resolved=0
 closed=0
+unassigned=0
 
 for j in J:
 	issues=j['issues']
@@ -65,12 +70,17 @@ for j in J:
 					resolved=resolved+1
 				else:
 					open=open+1
+				try:
+					if i['assigned_to']['name']=='':
+						assigned=1
+				except:
+					unassigned=unassigned+1
 		except:
 			pass
 
 progress= 100 - 100*open/v0_26
-print('| v1.0| Review |0.26 | closed |open | resolved |left |progress |')
-print('| %3d |    %3d | %3d |    %3d | %3d |      %3d | %3d |    %3d%% |' % (v1_0,vReview,v0_26,closed,open+resolved,resolved,open,progress) )
+print('| v1.0 | Review | 0.26 | closed | open | resolved | left | progress | unassigned |')
+print('|  %3d |    %3d |  %3d |    %3d |  %3d |      %3d |  %3d |     %3d%% | %3d = %3d%% |' % (v1_0,vReview,v0_26,closed,open+resolved,resolved,open,progress,unassigned,unassigned*100/v0_26) )
 
 # That's all Folks!
 ##
