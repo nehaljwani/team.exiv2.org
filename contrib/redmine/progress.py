@@ -2,7 +2,41 @@
 
 import json
 import os
+import sys
 
+
+##
+# setup formatting strings
+features0='| _Priority_ | _Issue_  | _Effort_ | _Status_ | _Done_ | _Description_ |'
+features1='|=. %3d | #%-4d  |>.  %4d |=. %3d%% |>. %-5.2f | %s |'
+features2='|\\2>. |>.  %4d |=. %3d%% |>. %-5.2f | %s |'
+features3='|\\2>. *Total:*  |>.   %3d |=. %3d%% |>. %-5.2f | |'
+progress0='| v1.0 | Review | 0.26 | closed | open | resolved | left | progress | unassigned |'
+progress1='|>.%3d |>.  %3d |>.%3d |>.  %3d |>.%3d |>.    %3d |>.%3d |>.   %3d%% |>. %3d / %3d%% |'
+todo0='| _Issue_       | _Done_ | _Size_ | _Left_ | _Description_ |'
+todo1='| #%-4d       |>. %3d%% |>. %3d |>. %3d | %s |'
+todo2='|\\2>. Left               |>.%4d |>.%4d ||'
+todo3='|\\3>. Unexpected 10%%           |>. %3d ||'
+todo4='|\\3>. Support 9 hr/week        |>. %3d ||'
+todo5='|\\3>. Review+1.0               |>. %3d ||'
+todo6='|\\3>. Total                    |>. %3d | %2d weeks |'
+
+console=len(sys.argv)>1
+
+if console:
+	features0='| Priority | Issue  | Effort | Status | Done | Description |'
+	features1='| %3d | #%-4d  |  %4d | %3d%% | %-5.2f | %s |'
+	features2='|     |        |  %4d | %3d%% | %-5.2f | %s |'
+	features3='| Total:       |  %4d | %3d%% | %-5.2f | |'
+	progress0='| v1.0 | Review | 0.26 | closed | open | resolved | left | progress | unassigned |'
+	progress1='|  %3d |    %3d |  %3d |    %3d |  %3d |      %3d |  %3d |    %3d%%  | %3d / %3d%% |'
+	todo0='| Issue       | Done | Size | Left | Description |'
+	todo1='| #%-4d       | %3d%% | %4d | %4d | %s |'
+	todo2='| Left               | %4d | %4d | |'
+	todo3='| Unexpected 10%%            | %4d | |'
+	todo4='| Support 9 hr/week         | %4d | |'
+	todo5='| Review+1.0                | %4d | |'
+	todo6='| Total                     | %4d | %2d weeks |'
 ##
 # read the json into an array of json objects
 # see ./getdata.sh for an explanation of why the data is sliced into smaller files
@@ -23,7 +57,7 @@ def printHeader(t):
 printHeader('Features')
 Left=0
 Size=0
-print( '| _Priority_ | _Issue_  | _Effort_ | _Status_ | _Done_ | _Description_ |')
+print(features0)
 
 Features = [ { 'id': 1041, 'effort':5 }
            , { 'id': 1111, 'effort':3 }
@@ -49,7 +83,7 @@ for F in Features:
 						Done   = Done+done
 						Effort = Effort+effort
 						priority=priority+1
-						print('|=. %3d | #%-4d  |>.  %4d |=. %3d%% |>. %-5.2f | %s |' % (priority,i['id'],effort,status,done/100,i['subject']) )
+						print(features1 % (priority,i['id'],effort,status,done/100,i['subject']) )
 			  	except:
 					pass
 
@@ -58,10 +92,11 @@ status=75
 done   = status*effort
 Done   = Done+done
 Effort = Effort+effort
-print('|\\2>. |>.  %4d |=. %3d%% |>. %-5.2f | %s |' % (effort,status,done/100,'User Support') )
+print(features2 % (effort,status,done/100,'User Support') )
 Status=(Done*100 / Effort)/100
-print('|\\2>. *Total:*  |>.   %3d |=. %3d%% |>. %-5.2f | |' % (Effort, Status,Done/100) )
+print(features3 % (Effort, Status,Done/100) )
 print('')
+
 
 ##
 # Progress
@@ -99,14 +134,16 @@ for j in J:
 			pass
 
 progress= 100 - 100*open/v0_26
-print('| v1.0 | Review | 0.26 | closed | open | resolved | left | progress | unassigned |')
-print('|>.%3d |>.  %3d |>.%3d |>.  %3d |>.%3d |>.    %3d |>.%3d |>.   %3d%% |>. %3d / %3d%% |' % (v1_0,vReview,v0_26,closed,open+resolved,resolved,open,progress,unassigned,unassigned*100/v0_26) )
+print(progress0)
+print(progress1 % (v1_0,vReview,v0_26,closed,open+resolved,resolved,open,progress,unassigned,unassigned*100/v0_26) )
 print('')
+
+
 
 ##
 # Robin's to do list
 printHeader("Robin's todo list");
-print( '| _Issue_       | _Done_ | _Size_ | _Left_ | _Description_ |')
+print( todo0 )
 for j in J:
 	issues=j['issues']
 	for i in issues:
@@ -119,7 +156,7 @@ for j in J:
 				left= size - done
 				Left = Left+left
 				Size = Size+size
-				print('| #%-4d       |>. %3d%% |>. %3d |>. %3d | %s |' % (i['id'],i['done_ratio'],size,left,i['subject']) )
+				print(todo1 % (i['id'],i['done_ratio'],size,left,i['subject']) )
 		except:
 			pass
 
@@ -127,12 +164,12 @@ Unexpected=Left/10
 Weeks=(Left+20+Unexpected)/31
 Support=9*Weeks
 Review=20
-print('|\\2>. Left               |>.%4d |>.%4d ||' % (Size,Left) )
-print('|\\3>. Unexpected 10%%           |>. %3d ||'  % (Unexpected))
-print('|\\3>. Support 9 hr/week        |>. %3d ||'  % (Support))
-print('|\\3>. Review+1.0               |>. %3d ||'  % 20)
+print(todo2 % (Size,Left) )
+print(todo3  % (Unexpected))
+print(todo4  % (Support))
+print(todo5  % 20)
 Total=Left+Support+Unexpected+Review
-print('|\\3>. Total                    |>. %3d | %2d weeks |' % (Total,(Total+30)/40))
+print(todo6 % (Total,(Total+30)/40))
 print('')
 
 
