@@ -67,9 +67,9 @@ def reportFeatures():
     features3='|\\2>. *Total:*  |>.   %3d |=. %3d%% |>. %-5.2f | |'
     if options['console']:
         features0='| Priority | Issue  | Effort | Status | Done | Description |'
-        features1='| %3d | #%-4d  |  %4d | %3d%% | %-5.2f | %s |'
-        features2='|     |        |  %4d | %3d%% | %-5.2f | %s |'
-        features3='| Total:       |  %4d | %3d%% | %-5.2f | |'
+        features1='|      %3d | #%-4d  |  %4d | %3d%% | %-5.2f | %s |'
+        features2='|          |        |  %4d | %3d%% | %-5.2f | %s |'
+        features3='| Total:            |  %4d | %3d%% | %-5.2f | |'
 
     Left=0
     Size=0
@@ -168,23 +168,23 @@ def reportTodo():
     printHeader("Robin's todo list");
     global J,args,options
 
-    todo0='| _Issue_       | _Done_ | _Size_ | _Left_ | _Description_ |'
-    todo9='|\\2>. Other Minor Issues       |>.%4d ||'
-    todo1='| #%-4d       |>. %3d%% |>. %3d |>. %3d | %s |'
-    todo2='|\\2>. Left             |>.%4d |>.%4d ||'
-    todo3='|\\3>. Unexpected 10%%           |>. %3d ||'
-    todo4='|\\3>. Support 9 hr/week        |>. %3d ||'
-    todo5='|\\3>. Review+1.0               |>. %3d ||'
-    todo6='|\\3>. Total                    |>. %3d | %2d weeks |'
+    todo0='| _Issue_     | _Done_ | _Size_ | _Left_ | _Description_ |'
+    todo1='|\\2>. Other Minor Issues       |>.%4d ||'
+    todo2='| #%-4d       |>. %3d%% |>. %3d |>. %3d | %s |'
+    todo3='|\\2>. Left             |>.%4d |>.%4d ||'
+    todo4='|\\3>. Unexpected 10%%           |>. %3d ||'
+    todo5='|\\3>. Support 9 hr/week        |>. %3d ||'
+    todo6='|\\3>. Review+1.0               |>. %3d ||'
+    todo7='|\\3>. Total                    |>. %3d | %2d weeks |'
     if options['console']:
         todo0='| Issue       | Done | Size | Left | Description |'
-        todo1='| #%-4d       | %3d%% | %4d | %4d | %s |'
-        todo9='| Minor Issues              | %4d | |'
-        todo2='| Left               | %4d | %4d | |'
-        todo3='| Unexpected 10%%            | %4d | |'
-        todo4='| Support 9 hr/week         | %4d | |'
-        todo5='| Review+1.0                | %4d | |'
-        todo6='| Total                     | %4d | %2d weeks |'
+        todo1='| Minor Issues              | %4d | |'
+        todo2='| #%-4d       | %3d%% | %4d | %4d | %s |'
+        todo3='| Left               | %4d | %4d | |'
+        todo4='| Unexpected 10%%            | %4d | |'
+        todo5='| Support 9 hr/week         | %4d | |'
+        todo6='| Review+1.0                | %4d | |'
+        todo7='| Total                     | %4d | %2d weeks |'
 
     print( todo0 )
     Left=0
@@ -200,10 +200,10 @@ def reportTodo():
                     size = i['estimated_hours']
                     done = i['done_ratio'] * size / 100.0
                     left = size - done
-                    if left >= 2.0:
+                    if left > 2.1:
                         Left = Left+left
                         Size = Size+size
-                        print(todo1 % (i['id'],i['done_ratio'],size,left,i['subject']) )
+                        print(todo2 % (i['id'],i['done_ratio'],size,left,i['subject']) )
                     else:
                         Minor = Minor + left
             except:
@@ -214,13 +214,13 @@ def reportTodo():
     Weeks=(Left+20+Unexpected)/31
     Support=9*Weeks
     Review=20
-    print(todo9 % (Minor) )
-    print(todo2 % (Size,Left) )
-    print(todo3  % (Unexpected))
-    print(todo4  % (Support))
-    print(todo5  % 20)
+    print(todo1 % (Minor) )
+    print(todo3 % (Size,Left) )
+    print(todo4 % (Unexpected))
+    print(todo5 % (Support))
+    print(todo6 % 20)
     Total=Left+Support+Unexpected+Review
-    print(todo6 % (Total,(Total+30)/40))
+    print(todo7 % (Total,(Total+30)/40))
     print('')
 
 ##
