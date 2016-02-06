@@ -17,6 +17,13 @@ def reportHelp():
 # see ./getdata.sh for an explanation of why the data is sliced into smaller files
 def readData():
     global J,args,options
+    for i in range(0,9):
+        if not os.path.exists('data%d.json' % i):
+            options['getdata'] = True
+
+    if options['getdata']:
+        os.system('./getdata.sh')
+
     J=[]
     for i in range(0,9):
         data=open('data%d.json' % i,'r').read();
@@ -231,6 +238,8 @@ options['bugs'    ]=False
 options['todo'    ]=False
 options['features']=False
 options['progress']=False
+options['getdata' ]=False
+
 args=sys.argv[1:]
 
 if len(args)==0:
@@ -238,9 +247,10 @@ if len(args)==0:
 
 if len(args)>0:
     cmd=args[0]
-    if cmd=='console':
-        options['console']=True
+    while cmd=='console' or cmd=='getdata':
+        options[cmd]=True
         args=args[1:]
+        cmd=args[0]
 
 if len(args)>0:
     cmd=args[0]
