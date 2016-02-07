@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from __future__ import division
+
 import json
 import os
 import sys
@@ -67,16 +69,18 @@ def printHeader(t):
 # Features:
 def reportFeatures():
     global J,args,options
+    sofar=0.75
+
     printHeader('Features')
     features0='| _Priority_ | _Issue_  | _Effort_ | _Status_ | _Done_ | _Description_ |'
     features1='|=. %3d | #%-4d  |>.  %4d |=. %3d%% |>. %-5.2f | %s |'
     features2='|\\2>. |>.  %4d |=. %3d%% |>. %-5.2f | %s |'
     features3='|\\2>. *Total:*  |>.   %3d |=. %3d%% |>. %-5.2f | |'
     if options['console']:
-        features0='| Priority | Issue  | Effort | Status | Done | Description |'
-        features1='|      %3d | #%-4d  |  %4d | %3d%% | %-5.2f | %s |'
-        features2='|          |        |  %4d | %3d%% | %-5.2f | %s |'
-        features3='| Total:            |  %4d | %3d%% | %-5.2f | |'
+        features0='| Priority | Issue  | Effort | Status |  Done | Description |'
+        features1='|      %3d | #%-4d  |   %4d |   %3d%% | %5.2f | %s |'
+        features2='|          |        |   %4d |   %3d%% | %5.2f | %s |'
+        features3='| Total:            |   %4d |   %3d%% | %5.2f | |'
 
     Left=0
     Size=0
@@ -112,7 +116,7 @@ def reportFeatures():
                         pass
 
     effort=4
-    status=75
+    status=sofar*100
     done   = status*effort
     Done   = Done+done
     Effort = Effort+effort
