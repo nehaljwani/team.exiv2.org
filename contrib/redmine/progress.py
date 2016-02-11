@@ -11,7 +11,10 @@ global J,args,options
 ##
 # Help:
 def reportHelp():
-    print('syntax: %s [options] verb [arg]...' % (sys.argv[0]) )
+    global J,args,options
+    print('syntax: %s [options]+' % (sys.argv[0]) )
+    print 'options: %s' % options.keys()
+
     quit()
 
 ##
@@ -243,6 +246,9 @@ options['todo'    ]=False
 options['features']=False
 options['progress']=False
 options['getdata' ]=False
+options['all'     ]=False
+
+actions= ['todo','features','progress','bugs']
 
 args=sys.argv[1:]
 
@@ -251,34 +257,26 @@ if len(args)==0:
 
 if len(args)>0:
     cmd=args[0]
-    while cmd=='console' or cmd=='getdata':
+    while cmd in options.keys():
         options[cmd]=True
         args=args[1:]
-        cmd=args[0]
+        cmd=args[0] if len(args)>0 else ''
 
-if len(args)>0:
-    cmd=args[0]
-    if cmd=='bugs':
-        options['bugs']=True
-        args=args[1:]
-    elif cmd=='all':
-        options['features']=True
-        options['progress']=True
-        options['todo'    ]=True
-        args=args[1:]
-    elif cmd=='features':
-        options['features']=True
-        args=args[1:]
-    elif cmd=='progress':
-        options['progress']=True
-        args=args[1:]
-    elif cmd=='todo':
-        options['todo']=True
-        args=args[1:]
-    else:
-        print('unknown argument')
-        print(args[1:])
-        exit(1)
+if len(args)>0 and not options['bugs']:
+	print('unknown argument %s' % args[0])
+	exit(1)
+
+if not options['all']:
+	bAll=True
+	for action in actions:
+		if options[action]:
+			bAll=False
+	options['all']=bAll
+
+if options['all']:
+	options['features']=True
+	options['progress']=True
+	options['todo'    ]=True
 
 readData()
 if options['bugs']:
