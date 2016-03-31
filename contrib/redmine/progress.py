@@ -72,7 +72,6 @@ def printHeader(t):
 # Features:
 def reportFeatures():
     global J,args,options
-    sofar=0.75
 
     printHeader('Features')
     features0='| _Priority_ | _Issue_  | _Effort_ | _Status_ | _Done_ | _Description_ |'
@@ -90,9 +89,11 @@ def reportFeatures():
     Minor=0
     print(features0)
 
-    Features = [ { 'id': 1041, 'effort':5 }
+    Features = [ { 'id': 1168, 'effort':5 }
+               , { 'id': 1041, 'effort':5 }
                , { 'id': 1111, 'effort':3 }
                , { 'id': 1109, 'effort':3 }
+               , { 'id': 1108, 'effort':2 }
                , { 'id': 1074 ,'effort':2 }
                , { 'id': 1034 ,'effort':3 }
                , { 'id': 1121 ,'effort':3 }
@@ -107,23 +108,17 @@ def reportFeatures():
             for i in issues:
                 if i['id'] == F['id']:
                     try:
-                        if i['done_ratio'] < 100:
-                            effort = F['effort']
-                            status = i['done_ratio']
-                            done   = status*effort
-                            Done   = Done+done
-                            Effort = Effort+effort
-                            priority=priority+1
-                            print(features1 % (priority,i['id'],effort,status,done/100,i['subject']) )
+                        effort = F['effort']
+                        status = i['done_ratio']
+                        done   = status*effort
+                        Done   = Done+done
+                        Effort = Effort+effort
+                        priority=priority+1
+                        print(features1 % (priority,i['id'],effort,status,done/100,i['subject']) )
                     except:
                         pass
 
     effort=4
-    status=sofar*100
-    done   = status*effort
-    Done   = Done+done
-    Effort = Effort+effort
-    print(features2 % (effort,status,done/100,'User Support') )
     Status=(Done*100 / Effort)/100
     print(features3 % (Effort, Status,Done/100) )
     print('')
@@ -183,22 +178,20 @@ def reportTodo():
     global J,args,options
 
     todo0='| _Issue_     | _Done_ | _Size_ | _Left_ | _Description_ |'
-    todo1='|\\2>. Other Minor Issues       |>.%4d ||'
+    todo1='|\\2>. Other Minor Issues       |>.%4d |||'
     todo2='| #%-4d       |>. %3d%% |>. %3d |>. %3d | %s |'
     todo3='|\\2>. Left             |>.%4d |>.%4d ||'
     todo4='|\\3>. Unexpected 10%%           |>. %3d ||'
-    todo5='|\\3>. Support 9 hr/week        |>. %3d ||'
-    todo6='|\\3>. Review+1.0               |>. %3d ||'
-    todo7='|\\3>. Total                    |>. %3d | %2d weeks |'
+    todo5='|\\3>. Review+1.0               |>. %3d ||'
+    todo6='|\\3>. Total                    |>. %3d | %2d weeks |'
     if options['console']:
         todo0='| Issue       | Done | Size | Left | Description |'
-        todo1='| Minor Issues              | %4d | |'
+        todo1='| Minor Issues              | %4d | ||'
         todo2='| #%-4d       | %3d%% | %4d | %4d | %s |'
         todo3='| Left               | %4d | %4d | |'
         todo4='| Unexpected 10%%            | %4d | |'
-        todo5='| Support 9 hr/week         | %4d | |'
-        todo6='| Review+1.0                | %4d | |'
-        todo7='| Total                     | %4d | %2d weeks |'
+        todo5='| Review+1.0                | %4d | |'
+        todo6='| Total                     | %4d | %2d weeks |'
 
     print( todo0 )
     Left=0
@@ -225,16 +218,11 @@ def reportTodo():
 
     Left=Left+Minor
     Unexpected=Left/10
-    Weeks=(Left+20+Unexpected)/31
-    Support=9*Weeks
-    Review=20
     print(todo1 % (Minor) )
     print(todo3 % (Size,Left) )
     print(todo4 % (Unexpected))
-    print(todo5 % (Support))
-    print(todo6 % 20)
-    Total=Left+Support+Unexpected+Review
-    print(todo7 % (Total,(Total+30)/40))
+    Total=Left+Unexpected
+    print(todo6 % (Total,(Total+30)/40))
     print('')
 
 ##
@@ -263,20 +251,20 @@ if len(args)>0:
         cmd=args[0] if len(args)>0 else ''
 
 if len(args)>0 and not options['bugs']:
-	print('unknown argument %s' % args[0])
-	exit(1)
+    print('unknown argument %s' % args[0])
+    exit(1)
 
 if not options['all']:
-	bAll=True
-	for action in actions:
-		if options[action]:
-			bAll=False
-	options['all']=bAll
+    bAll=True
+    for action in actions:
+        if options[action]:
+            bAll=False
+    options['all']=bAll
 
 if options['all']:
-	options['features']=True
-	options['progress']=True
-	options['todo'    ]=True
+    options['features']=True
+    options['progress']=True
+    options['todo'    ]=True
 
 readData()
 if options['bugs']:
