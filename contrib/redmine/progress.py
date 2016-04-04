@@ -98,6 +98,7 @@ def reportFeatures():
                , { 'id': 1034 ,'effort':3 }
                , { 'id': 1121 ,'effort':3 }
                , { 'id': 1061 ,'effort':2 }
+               , { 'id': 1177 ,'effort':1 }
                ]
     Done=0
     Effort=0
@@ -129,7 +130,7 @@ def reportProgress():
     printHeader('Progress')
     global J,args,options
     progress0='| v1.0 | Review | 0.26 | closed | open | resolved | left | progress | unassigned |'
-    progress1='|>.%3d |>.  %3d |>.%3d |>.  %3d |>.%3d |>.    %3d |>.%3d |>.   %3d%% |>. %3d / %3d%% |'
+    progress1='|>.%3d |>.  %3d |>.%3d |>.  %3d |>.%3d |>.    %3d |>.%3d |=.   %3d%% |>. %3d / %3d%% |'
     if options['console']:
         progress0='| v1.0 | Review | 0.26 | closed | open | resolved | left | progress | unassigned |'
         progress1='|  %3d |    %3d |  %3d |    %3d |  %3d |      %3d |  %3d |    %3d%%  | %3d / %3d%% |'
@@ -178,7 +179,7 @@ def reportTodo():
     global J,args,options
 
     todo0='| _Issue_     | _Done_ | _Size_ | _Left_ | _Description_ |'
-    todo1='|\\2>. Other Minor Issues       |>.%4d |||'
+    todo1='|\\2>. Other Minor Issues       | |>.%4d ||'
     todo2='| #%-4d       |>. %3d%% |>. %3d |>. %3d | %s |'
     todo3='|\\2>. Left             |>.%4d |>.%4d ||'
     todo4='|\\3>. Unexpected 10%%           |>. %3d ||'
