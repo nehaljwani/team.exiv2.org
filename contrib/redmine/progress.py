@@ -90,6 +90,7 @@ def reportFeatures():
     print(features0)
 
     Features = [ { 'id': 1168, 'effort':5 }
+               , { 'id': 1177 ,'effort':1 }
                , { 'id': 1041, 'effort':5 }
                , { 'id': 1111, 'effort':3 }
                , { 'id': 1109, 'effort':3 }
@@ -98,7 +99,6 @@ def reportFeatures():
                , { 'id': 1034 ,'effort':3 }
                , { 'id': 1121 ,'effort':3 }
                , { 'id': 1061 ,'effort':2 }
-               , { 'id': 1177 ,'effort':1 }
                ]
     Done=0
     Effort=0
@@ -208,7 +208,7 @@ def reportTodo():
                     size = i['estimated_hours']
                     done = i['done_ratio'] * size / 100.0
                     left = size - done
-                    if left > 2.1:
+                    if left > 0:
                         Left = Left+left
                         Size = Size+size
                         print(todo2 % (i['id'],i['done_ratio'],size,left,i['subject']) )
@@ -219,8 +219,10 @@ def reportTodo():
 
     Left=Left+Minor
     Unexpected=Left/10
-    print(todo1 % (Minor) )
-    print(todo3 % (Size,Left) )
+    if Minor > 0:
+    	print(todo1 % (Minor) )
+    if Left > 0:
+    	print(todo3 % (Size,Left) )
     print(todo4 % (Unexpected))
     Total=Left+Unexpected
     print(todo6 % (Total,(Total+30)/40))
@@ -229,13 +231,14 @@ def reportTodo():
 ##
 # parse command-line
 options={}
-options['console' ]=False
-options['bugs'    ]=False
-options['todo'    ]=False
-options['features']=False
-options['progress']=False
-options['getdata' ]=False
-options['all'     ]=False
+options['console'   ]=False
+options['bugs'      ]=False
+options['todo'      ]=False
+options['features'  ]=False
+options['progress'  ]=False
+options['getdata'   ]=False
+options['getdata.sh']=False
+options['all'       ]=False
 
 actions= ['todo','features','progress','bugs']
 
@@ -255,6 +258,7 @@ if len(args)>0 and not options['bugs']:
     print('unknown argument %s' % args[0])
     exit(1)
 
+options['getdata'] = options['getdata'] or options['getdata.sh']
 if not options['all']:
     bAll=True
     for action in actions:
