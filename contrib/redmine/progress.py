@@ -6,7 +6,7 @@ import json
 import os
 import sys
 
-global J,args,options
+global J,args,options,unexpected
 
 ##
 # Help:
@@ -97,8 +97,7 @@ def reportFeatures():
                , { 'id': 1108, 'effort':2 }
                , { 'id': 1074 ,'effort':2 }
                , { 'id': 1034 ,'effort':3 }
-               , { 'id': 1121 ,'effort':3 }
-               , { 'id': 1061 ,'effort':2 }
+               , { 'id': 1187 ,'effort':1 }
                ]
     Done=0
     Effort=0
@@ -176,13 +175,13 @@ def reportProgress():
 # Robin's to do list
 def reportTodo():
     printHeader("Robin's todo list");
-    global J,args,options
+    global J,args,options,unexpected
 
     todo0='| _Issue_     | _Done_ | _Size_ | _Left_ | _Description_ |'
     todo1='|\\2>. Other Minor Issues       | |>.%4d ||'
-    todo2='| #%-4d       |>. %3d%% |>. %3d |>. %3d | %s |'
+    todo2='|>. #%-4d       |>. %3d%% |>. %3d |>. %3d | %s |'
     todo3='|\\2>. Left             |>.%4d |>.%4d ||'
-    todo4='|\\3>. Unexpected 10%%           |>. %3d ||'
+    todo4='|\\3>. Unexpected %d%%           |>. %3d ||'
     todo5='|\\3>. Review+1.0               |>. %3d ||'
     todo6='|\\3>. Total                    |>. %3d | %2d weeks |'
     if options['console']:
@@ -190,7 +189,7 @@ def reportTodo():
         todo1='| Minor Issues              | %4d | ||'
         todo2='| #%-4d       | %3d%% | %4d | %4d | %s |'
         todo3='| Left               | %4d | %4d | |'
-        todo4='| Unexpected 10%%            | %4d | |'
+        todo4='| Unexpected %d%%            | %4d | |'
         todo5='| Review+1.0                | %4d | |'
         todo6='| Total                     | %4d | %2d weeks |'
 
@@ -218,12 +217,13 @@ def reportTodo():
                 pass
 
     Left=Left+Minor
-    Unexpected=Left/10
+    Unexpected=unexpected * Left / 100;
     if Minor > 0:
     	print(todo1 % (Minor) )
     if Left > 0:
     	print(todo3 % (Size,Left) )
-    print(todo4 % (Unexpected))
+    if Unexpected > 0.0:
+    	print(todo4 % (unexpected,Unexpected))
     Total=Left+Unexpected
     print(todo6 % (Total,(Total+30)/40))
     print('')
@@ -271,6 +271,7 @@ if options['all']:
     options['progress']=True
     options['todo'    ]=True
 
+unexpected=0
 readData()
 if options['bugs']:
     reportBugs()
