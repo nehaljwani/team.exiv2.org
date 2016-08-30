@@ -99,6 +99,11 @@ def reportFeatures():
                , { 'id': 1034 ,'effort':3 }
                , { 'id': 1187 ,'effort':1 }
                , { 'id': 1193 ,'effort':1 }
+               , { 'id': 1199 ,'effort':2 }
+               , { 'id': 1211 ,'effort':2 }
+               , { 'id': 1187 ,'effort':1 }
+               , { 'id': 1190 ,'effort':1 }
+               , { 'id': 1203 ,'effort':1 }
                ]
     Done=0
     Effort=0
@@ -129,13 +134,14 @@ def reportFeatures():
 def reportProgress():
     printHeader('Progress')
     global J,args,options
-    progress0='| v1.0 | Review | 0.26 | closed | open | resolved | left | progress | unassigned |'
-    progress1='|>.%3d |>.  %3d |>.%3d |>.  %3d |>.%3d |>.    %3d |>.%3d |=.   %3d%% |>. %3d / %3d%% |'
+    progress0='| v1.0 | Review/v0.27 | 0.26 | closed | open | resolved | left | progress | unassigned |'
+    progress1='|>.%3d |>.  %3d/%2d |>.%3d |>.  %3d |>.%3d |>.    %3d |>.%3d |=.   %3d%% |>. %3d / %3d%% |'
     if options['console']:
-        progress0='| v1.0 | Review | 0.26 | closed | open | resolved | left | progress | unassigned |'
-        progress1='|  %3d |    %3d |  %3d |    %3d |  %3d |      %3d |  %3d |    %3d%%  | %3d / %3d%% |'
+        progress0='| v1.0 | Review/0.27 | 0.26 | closed | open | resolved | left | progress | unassigned |'
+        progress1='|  %3d |     %3d/%3d |  %3d |    %3d |  %3d |      %3d |  %3d |    %3d%%  | %3d / %3d%% |'
 
     v0_26=0
+    v0_27=0
     vReview=0
     v1_0=0
     open=0
@@ -151,6 +157,8 @@ def reportProgress():
                     v1_0=v1_0+1
                 elif  i['fixed_version']['name']=='Review':
                     vReview=vReview+1
+                elif  i['fixed_version']['name']=='0.27':
+                    v0_27=v0_27+1
                 elif  i['fixed_version']['name']=='0.26':
                     v0_26=v0_26+1
                     if i['status']['name'] == 'Closed':
@@ -169,7 +177,7 @@ def reportProgress():
 
     progress= 100 - 100*open/v0_26
     print(progress0)
-    print(progress1 % (v1_0,vReview,v0_26,closed,open+resolved,resolved,open,progress,unassigned,unassigned*100/v0_26) )
+    print(progress1 % (v1_0,vReview,v0_27,v0_26,closed,open+resolved,resolved,open,progress,unassigned,unassigned*100/v0_26) )
     print('')
 
 ##
