@@ -90,20 +90,19 @@ def reportFeatures():
     print(features0)
 
     Features = [ { 'id': 1168, 'effort':5 }
-               , { 'id': 1177 ,'effort':1 }
                , { 'id': 1041, 'effort':5 }
                , { 'id': 1111, 'effort':3 }
                , { 'id': 1109, 'effort':3 }
-               , { 'id': 1108, 'effort':2 }
-               , { 'id': 1074 ,'effort':2 }
+               , { 'id': 1074 ,'effort':3 }
                , { 'id': 1034 ,'effort':3 }
+               , { 'id': 1108, 'effort':2 }
+               , { 'id': 1199 ,'effort':2 }
+               , { 'id': 1057 ,'effort':1 }
+               , { 'id': 1177 ,'effort':1 }
                , { 'id': 1187 ,'effort':1 }
                , { 'id': 1193 ,'effort':1 }
-               , { 'id': 1199 ,'effort':2 }
-               , { 'id': 1211 ,'effort':2 }
                , { 'id': 1187 ,'effort':1 }
                , { 'id': 1190 ,'effort':1 }
-               , { 'id': 1203 ,'effort':1 }
                ]
     Done=0
     Effort=0
