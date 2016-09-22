@@ -101,7 +101,6 @@ def reportFeatures():
                , { 'id': 1177 ,'effort':1 }
                , { 'id': 1187 ,'effort':1 }
                , { 'id': 1193 ,'effort':1 }
-               , { 'id': 1187 ,'effort':1 }
                , { 'id': 1190 ,'effort':1 }
                ]
     Done=0
