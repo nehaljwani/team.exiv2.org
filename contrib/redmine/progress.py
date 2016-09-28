@@ -241,13 +241,17 @@ def reportEngineers():
     printHeader("Engineers");
     global J,args,options,unexpected
 
-    total='Total'
+    engineers0='| _Engineer_                  |>. _Issues_|>. _Hours_|'
+    engineers1='| %-26s  |>. %6d  |>. %5d  |'
+    engineers2='| *%-26s*|>. *%6d*|>. *%5d*|'
+    if options['console']:
+        engineers0='| Engineer                   | Issues | Hours |'
+        engineers1='| %-26s | %6d | %5d |'
+        engineers2='| %-26s | %6d | %5d |'
 
+    total='Total'
     engineers={total : 0 }
     effort   ={total : 0 }
-
-    engineers0='| Engineer                   | Issues | Hours |'
-    engineers1='| %-26s | %6d | %5d |'
 
     for j in J:
         issues=j['issues']
@@ -278,7 +282,7 @@ def reportEngineers():
         if not engineer == total:
             if not engineers[engineer]==0 and not effort[engineer]==0:
                 print engineers1 % (engineer,effort[engineer],engineers[engineer])
-    print engineers1 % (total,engineers[total],effort[total])
+    print engineers2 % (total,effort[total],engineers[total])
 
 ##
 # parse command-line
