@@ -236,18 +236,65 @@ def reportTodo():
     print('')
 
 ##
+# Robin's to do list
+def reportEngineers():
+    printHeader("Engineers");
+    global J,args,options,unexpected
+
+    total='Total'
+
+    engineers={total : 0 }
+    effort   ={total : 0 }
+
+    engineers0='| Engineer                   | Issues | Hours |'
+    engineers1='| %-26s | %6d | %5d |'
+
+    for j in J:
+        issues=j['issues']
+        for i in issues:
+            try:
+                engineer=i['assigned_to']['name']
+                if not engineers.has_key(engineer):
+                    engineers[engineer]=0
+                    effort   [engineer]=0
+                if i['fixed_version']['name'] == '0.26':
+                    effort[engineer]=effort[engineer]+1
+                    done=0
+                    try:
+                    	size = i['estimated_hours']
+                    	done = i['done_ratio'] * size / 100.0
+                    except:
+                        pass
+                    engineers[engineer]=engineers[engineer]+done
+                    engineers[total]=engineers[total]+done
+                    effort   [total]=effort[total]+1
+            except:
+                pass
+
+    print engineers0
+    guys=engineers.keys()
+    guys.sort()
+    for engineer in guys:
+        if not engineer == total:
+            if not engineers[engineer]==0 and not effort[engineer]==0:
+                print engineers1 % (engineer,effort[engineer],engineers[engineer])
+    print engineers1 % (total,engineers[total],effort[total])
+
+##
 # parse command-line
 options={}
 options['console'   ]=False
 options['bugs'      ]=False
 options['todo'      ]=False
 options['features'  ]=False
+options['engineers' ]=False
 options['progress'  ]=False
+options['bugs'      ]=False
 options['getdata'   ]=False
 options['getdata.sh']=False
 options['all'       ]=False
 
-actions= ['todo','features','progress','bugs']
+actions= ['todo','features','progress','bugs','engineers']
 
 args=sys.argv[1:]
 
@@ -274,9 +321,10 @@ if not options['all']:
     options['all']=bAll
 
 if options['all']:
-    options['features']=True
-    options['progress']=True
-    options['todo'    ]=True
+    options['features' ]=True
+    options['progress' ]=True
+    options['todo'     ]=True
+    options['engineers']=True
 
 unexpected=0
 readData()
@@ -291,6 +339,9 @@ if options['progress']:
 
 if options['todo']:
     reportTodo()
+
+if options['engineers']:
+    reportEngineers()
 
 # That's all Folks!
 ##
