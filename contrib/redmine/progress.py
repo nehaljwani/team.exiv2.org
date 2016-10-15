@@ -103,6 +103,7 @@ def reportFeatures():
                , { 'id': 1187 ,'effort':1 }
                , { 'id': 1193 ,'effort':1 }
                , { 'id': 1190 ,'effort':1 }
+               , { 'id': 1243 ,'effort':1 }
                ]
     Done=0
     Effort=0
@@ -134,10 +135,10 @@ def reportProgress():
     printHeader('Progress')
     global J,args,options
     progress0='| v1.0 | Review/v0.27 | 0.26 | closed | open | resolved | left | progress | unassigned |'
-    progress1='|>.%3d |>.  %3d/%2d |>.%3d |>.  %3d |>.%3d |>.    %3d |>.%3d |=.   %3d%% |>. %3d / %3d%% |'
+    progress1='|>.%3d |>.  %3d/%2d |>.%3d |>.  %3d |>.%3d |>.    %3d |>.%3d |=.   %3.0f%% |>. %3d / %3d%% |'
     if options['console']:
         progress0='| v1.0 | Review/0.27 | 0.26 | closed | open | resolved | left | progress | unassigned |'
-        progress1='|  %3d |     %3d/%3d |  %3d |    %3d |  %3d |      %3d |  %3d |    %3d%%  | %3d / %3d%% |'
+        progress1='|  %3d |     %3d/%3d |  %3d |    %3d |  %3d |      %3d |  %3d |    %3.0f%%  | %3d / %3d%% |'
 
     v0_26=0
     v0_27=0
@@ -244,7 +245,7 @@ def reportEngineers():
 
     engineers0='| _Engineer_                  |>. _Issues_|>. _Hours_|'
     engineers1='| %-26s  |>. %6d  |>. %5d  |'
-    engineers2='| *%-26s*|>. *%6d*|>. *%5d*|'
+    engineers2='| *%s*                     |>.  *%d*  |>. *%d* |'
     if options['console']:
         engineers0='| Engineer                   | Issues | Hours |'
         engineers1='| %-26s | %6d | %5d |'
