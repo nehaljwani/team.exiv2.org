@@ -1,0 +1,13 @@
+#!/usr/bin/perl
+
+if ( scalar(@ARGV) != 0 || -t STDIN ) {
+	printf("reverse stdin\n");
+} else {
+	my @lines = <STDIN> ;
+	while ( my $line = pop @lines) {
+		print $line ;
+	}
+}
+
+# That's all Folks!
+##

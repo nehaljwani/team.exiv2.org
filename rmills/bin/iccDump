@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+read > /tmp/iccDump.icc
+iccDumpProfile /tmp/iccDump.icc
+
+# That's all Folks!
+##

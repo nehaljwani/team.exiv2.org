@@ -1,0 +1,22 @@
+#!/bin/bash
+
+if [ "$HOST" == "rmillsmbp" -o "$HOST" == 'rmillsmm' ]; then
+	from="$PWD"
+	if [ "$HOST" == 'rmillsmm' ]; then
+		to="/Volumes/mbpHD$from"
+	fi
+	if [ "$HOST" == 'rmillsmbp' ]; then
+		to="/Volumes/mmHD$from"
+	fi
+	if [ -d "$from" -a -d "$to" ]; then
+		echo rsync -varz "$from" "$to"
+		time rsync -varz "$from" "$to"
+	else
+		echo "$from or $to is not a directory"
+	fi
+else
+	echo "$0 is not supported on host $HOST"
+fi
+
+# That's all Folks!
+##

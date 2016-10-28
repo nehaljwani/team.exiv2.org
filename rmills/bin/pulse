@@ -1,0 +1,59 @@
+#!/bin/bash
+
+syntax() {
+	echo "usage: $0 [--every n | utility ]+"
+}
+
+syntaxError() {
+	syntax
+	exit 1
+}
+
+bomb() {
+	echo "*** $1 requires an argument ***" 1>&2	
+	exit 1
+}
+
+##
+# set up defaults
+e=60
+h=0
+v=0
+utils=()
+ 
+##
+# parse arguments
+# http://mywiki.wooledge.org/BashFAQ/035
+while [ $# != 0 ]; do
+    case "$1" in
+      -h|--help|-\?) h=1 ;;
+      -v|--verbose)  v=1 ;;
+      -e|--every)    if [ $# -gt 1 ]; then e=$2; shift ; else bomb $1 ; fi ;;
+      -*)            echo "invalid option: $1" 1>&2; syntaxError ;;
+      *)             utils+=($1);;
+    esac
+    shift
+done
+
+##
+# do the business
+if [ ${#utils} != 0 ]; then
+	while [ true ]; do
+		n=1
+		tmp=/tmp/pulse 
+		for u in ${utils[@]}; do
+			if [ $(( n++ )) == 1 ]; then echo -n $(date) '' ; fi
+			echo -n $u $(ps ax | cut -b 28-9999 | cut -d' ' -f 1 | grep $u | wc -l) ''
+		done
+		echo df: $(echo $(df -m . | grep -v -e blocks) | cut -d' ' -f4,5)
+		sleep $e
+	done
+else
+	h=1
+fi
+
+if [ $h == 1 ]; then syntaxError ; fi
+
+# That's all Folks!
+##
+

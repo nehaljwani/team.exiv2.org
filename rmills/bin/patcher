@@ -1,0 +1,116 @@
+#!/bin/bash
+
+syntax()
+{
+    echo syntax: $0 exp-directory loc ...
+    exit 1
+}
+
+run() {
+    echo $@
+    eval $@
+}
+
+##
+# parse command-line
+if [ $# -lt 2 ]; then
+	syntax
+fi
+
+##
+# inspect exp directory
+exp="$1"
+# ensure $exp ends with '/'
+[[ $exp != */ ]] && exp="$exp"/
+shift
+
+if [ ! -d "$exp" ]; then
+    echo directory $exp does not exist
+    exit 1
+fi
+
+##
+# find files in the exp directory
+files=$(find "$exp" -type f -maxdepth 1 2>/dev/null)
+if [ ${#files} == 0 ]; then
+    echo no files in $exp
+    syntax
+else
+	echo files = $files
+fi
+
+##
+# find targets in the loc... directories
+targets=""
+for d in $@; do 
+    echo $d
+    if [ ! -d $d ]; then
+        echo directory $d does not exist
+        exit 1
+    fi
+    for F in $files; do
+    	f=$(basename $F)
+    	T=$(find $d -name $f -type f 2>/dev/null | grep -v \.svn)
+    	if [ ${#T} != 0 ]; then
+    		if [ ${#targets} ]; then
+    			targets="$targets $T"
+    		else
+    			targets="$T"
+    		fi
+    	fi
+    done
+done
+if [ ${#targets} == 0 ]; then
+    echo no files in loc directories
+    syntax
+else
+	echo ${#targets}
+fi
+
+##
+# now do the business
+for F in $files; do
+    bDone=0
+    f=$(basename $F)
+    for T in $targets; do
+    	t=$(basename $T)
+    	if [ $bDone == 0 -a "$t" == "$f" ]; then
+            run cp -p "$F" "$T"
+            bDone=1
+            break
+        fi
+    done
+    if [ $bDone == 0 ]; then
+        echo ignored $F
+    fi
+done
+
+# That's all Folks!
+##
+
+#--- /srv/rmills # cat patcher.sh
+#--- #!/bin/sh
+#--- 
+#--- u=/home/rmills/temp/UUTRelease
+#--- find $u -type f -exec ls -alt {} ";" | grep -v cpp
+#--- echo ''
+#--- 
+#--- copy() {
+#---   f=$1
+#---   t=$2
+#---   if [ -e $u/$f ]; then
+#---     cp -p   $u/$f $t
+#---     ls -alt $t/$f
+#---   fi
+#--- }
+#--- 
+#--- copy timaru                      /tmp
+#--- copy rangimfgtest_thermal.html   /srv/www/timaru
+#--- copy RangiMfgTest.js             /srv/www/timaru/js
+#--- copy SteerPerformance.archive.js /srv/www/timaru/js
+#--- copy rangimfgtest.ini            /var/lib/timaru
+#--- copy rangi_mfgtest_stopFinal.sh  /var/mfgtest/scripts
+#--- copy run                         /etc/service/manufacturing
+
+# That's all folks!
+##

@@ -1,0 +1,292 @@
+#!/usr/bin/env bash
+set -e
+umask 0022
+
+CONFIG_FILE="$HOME/.qwikrc"
+
+if [ -f $CONFIG_FILE ]; then
+  source $CONFIG_FILE
+fi
+
+# Set default config variables
+if [ -z $DIR_QWIK ]; then
+  DIR_QWIK="$HOME/.qwik"
+fi
+
+if [ -z $HOSTS_FILE ]; then
+  HOSTS_FILE="/etc/hosts"
+fi
+
+DIR_HOSTS_AVAILABLE="$DIR_QWIK/hosts-available"
+DIR_HOSTS_ENABLED="$DIR_QWIK/hosts-enabled"
+
+ERR_ENV_INCOMPLETE=1
+ERR_BAD_USAGE=2
+
+EXECUTABLE=`basename $0`
+
+refresh_reminder() {
+  echo "Don't forget to 'sudo qwik refresh'!"
+}
+
+initialize() {
+  echo "Creating qwik directory tree and installing _default host file..."
+  if [ ! -d $DIR_QWIK ]; then
+    mkdir $DIR_QWIK
+  fi
+
+  if [ ! -d $DIR_HOSTS_AVAILABLE ]; then
+    mkdir $DIR_HOSTS_AVAILABLE
+  fi
+
+  if [ ! -d $DIR_HOSTS_ENABLED ]; then
+    mkdir $DIR_HOSTS_ENABLED
+  fi
+
+  if [ -f "$DIR_HOSTS_AVAILABLE/_default" ]; then
+    echo "Error: The _default hosts file already exists. If you really wish to overwrite it, please run 'qwik remove _default' first."
+    exit $ERR_BAD_USAGE
+  fi
+
+  cat > "$DIR_HOSTS_AVAILABLE/_default" << EOM
+# _default: Default Mac OS X hosts - do not disable!
+# localhost is used to configure the loopback interface
+# when the system is booting.  Do not change this entry.
+##
+127.0.0.1       localhost
+255.255.255.255 broadcasthost
+::1             localhost
+fe80::1%lo0     localhost
+EOM
+
+  enable_hosts "_default"
+}
+
+check_env() {
+  if [ -z $EDITOR ]; then
+    echo "Environment variable \$EDITOR not specified. Please set this variable!"
+    exit $ERR_ENV_INCOMPLETE
+  fi
+}
+
+create() {
+  file_name=$1
+  echo "# $file_name: (short description here)" > "$DIR_HOSTS_AVAILABLE/$file_name"
+}
+
+add_hosts() {
+  for file_name in "$@"; do
+    if [ -f "$DIR_HOSTS_AVAILABLE/$file_name" ]; then
+      echo "Error: $file_name already exists. Use 'qwik edit $file_name'."
+      exit $ERR_BAD_USAGE
+    fi
+    create $file_name
+  done
+}
+
+remove_hosts() {
+  for file_name in "$@"; do
+    read -r -p "Are you sure you want to delete the host file '$file_name'? (y/N): " response
+    case $response in
+      [yY][eE][sS]|[yY])
+        echo "Deleting $file_name"
+        rm  -f "$DIR_HOSTS_ENABLED/$file_name"
+        rm  "$DIR_HOSTS_AVAILABLE/$file_name"
+        ;;
+      *)
+        ;;
+    esac
+  done
+
+  refresh_reminder
+}
+
+edit_host() {
+  check_env
+
+  file_name=$1
+  if [ ! -f "$DIR_HOSTS_AVAILABLE/$file_name" ]; then
+    create $file_name
+  fi
+
+  $EDITOR "$DIR_HOSTS_AVAILABLE/$file_name"
+}
+
+show_hosts() {
+  for file_name in "$@"; do
+    cat "$DIR_HOSTS_AVAILABLE/$file_name"
+  done
+}
+
+enable_hosts() {
+  for file_name in "$@"; do
+    if [ -f "$DIR_HOSTS_AVAILABLE/$file_name" ]; then
+      ln -s "$DIR_HOSTS_AVAILABLE/$file_name" "$DIR_HOSTS_ENABLED/$file_name"
+    else
+      echo "Error: the modular host file '$file_name' does not exist. Cannot enable. Use '$EXECUTABLE add $file_name'."
+    fi
+  done
+
+  refresh_reminder
+}
+
+disable_hosts() {
+  for file_name in "$@"; do
+    rm -f "$DIR_HOSTS_ENABLED/$file_name"
+  done
+
+  refresh_reminder
+}
+
+write_hosts_file() {
+  rm -f $HOSTS_FILE
+  cat > $HOSTS_FILE << EOM
+##
+# Host Database
+# WARNING: This file was automatically generated using qwik-hosts. Any manual changes will be overwritten on the next 'qwik refresh'.
+#          To avoid changes being lost, manage this file using 'qwik' instead of hand-bombing.
+#
+EOM
+
+  for enabled_host in `ls $DIR_HOSTS_ENABLED`; do
+    cat "$DIR_HOSTS_ENABLED/$enabled_host" >> $HOSTS_FILE
+  done
+}
+
+list_hosts() {
+  for host in `ls $DIR_HOSTS_AVAILABLE`; do
+      enabled_str="disabled"
+      color_start=`echo -e '\033[0;31m'`
+    if [ -h "$DIR_HOSTS_ENABLED/$host" ]; then
+      enabled_str="enabled"
+      color_start=`echo -e '\033[0;32m'`
+    fi
+    color_end=`echo -e '\033[0m'`
+    short_desc=`cat "$DIR_HOSTS_AVAILABLE/$host" | head -n 1 | grep "# $host: " | sed "s/^# $host: //" | tr '/' '|' | tr -d '\n'`
+    printf "%-30s %11s" $host "($enabled_str)" | sed -E -e 's/ /./g' -e "s/\((en|dis)abled\)/$color_start&$color_end/" -e "s/$/: $short_desc/"
+  done
+}
+
+show_info() {
+  VERSION="0.2.3"
+  echo "qwik-hosts version $VERSION"
+  echo "https://github.com/RichardSchmitz/qwik-hosts"
+}
+
+show_help() {
+  echo "This utility is used to easily modify your machine's hosts file (/etc/hosts). It does so by combining multiple modular host files into a single one."
+  echo
+  echo "Usage: $EXECUTABLE [ --version ] [ --help ] <command>"
+  echo
+  echo "Use the following commands to manage your modular host files:"
+  echo
+  echo "$EXECUTABLE init"
+  echo "  Creates the basic infrastructure to support qwik. Run this once when you first install qwik. Running this later on will not nuke anything you have created. Most importantly, this command creates the _default modular host file, which should always be present and enabled. This is the default host file that ships with OS X."
+  echo
+  echo "$EXECUTABLE add <host-file>"
+  echo "  Creates a new modular host file named <host-file> in hosts-available."
+  echo
+  echo "$EXECUTABLE fast-add <host-file>, $EXECUTABLE fadd <host-file>"
+  echo "  An extra-fast way to add, edit and enable a new modular host file."
+  echo
+  echo "$EXECUTABLE remove <host-file> [<host-file>...], $EXECUTABLE rm <host-file> [<host-file>...]"
+  echo "  Deletes the specified host file from hosts-available. This is irreversible. Will prompt for confirmation."
+  echo
+  echo "$EXECUTABLE edit <host-file>"
+  echo "  Opens the specified host file for editing in your environment's default editor."
+  echo
+  echo "$EXECUTABLE show <host-file> [<host-file>...], $EXECUTABLE cat <host-file> [<host-file>...]"
+  echo "  Prints the contents of the specified host-files to the stdout in the order given."
+  echo
+  echo "$EXECUTABLE enable <host-file> [<host-file>...]"
+  echo "  Enables the DNS entries given in the <host-file>(s)."
+  echo
+  echo "$EXECUTABLE disable <host-file> [<host-file>...]"
+  echo "  Disables the DNS entries given in the <host-file>(s)."
+  echo
+  echo "sudo $EXECUTABLE refresh"
+  echo "  Rewrites your system's hosts file with the current configurations as shown by '$EXECUTABLE list'. This will probably require 'sudo' because /etc/hosts is read-only."
+  echo
+  echo "$EXECUTABLE list, $EXECUTABLE ls"
+  echo "  Lists all available modular host files along with their current status (enabled/disabled) and a short description if available."
+  echo
+  echo "$EXECUTABLE --version, $EXECUTABLE -v"
+  echo "  Prints the version and quits."
+  echo
+  echo "$EXECUTABLE --help, $EXECUTABLE -h"
+  echo "  Displays this help and quits."
+}
+
+CMD=$1
+case $CMD in
+  init)
+    initialize
+    ;;
+  add)
+    if [ $# -lt 2 ]; then
+      echo "Usage: $EXECUTABLE $CMD <host-file> [<host-file>...]"
+      exit $ERR_BAD_USAGE
+    fi
+    add_hosts "${@:2}"
+    ;;
+  fadd|fast-add)
+    if [ $# -ne 2 ]; then
+      echo "Usage: $EXECUTABLE $CMD <host-file>"
+      exit $ERR_BAD_USAGE
+    fi
+    add_hosts $2
+    edit_host $2
+    enable_hosts $2
+    ;;
+  rm|remove)
+    if [ $# -lt 2 ]; then
+      echo "Usage: $EXECUTABLE $CMD <host-file> [<host-file>...]"
+      exit $ERR_BAD_USAGE
+    fi
+    remove_hosts "${@:2}"
+    ;;
+  edit)
+    if [ $# -ne 2 ]; then
+      echo "Usage: $EXECUTABLE $CMD <host-file>"
+      exit $ERR_BAD_USAGE
+    fi
+    edit_host $2
+    ;;
+  cat|show)
+    if [ $# -lt 2 ]; then
+      echo "Usage: $EXECUTABLE $CMD <host-file> [<host-file>...]"
+      exit $ERR_BAD_USAGE
+    fi
+    show_hosts "${@:2}"
+    ;;
+  enable)
+    if [ $# -lt 2 ]; then
+      echo "Usage: $EXECUTABLE $CMD <host-file> [<host-file>...]"
+      exit $ERR_BAD_USAGE
+    fi
+    enable_hosts "${@:2}"
+    ;;
+  disable)
+    if [ $# -lt 2 ]; then
+      echo "Usage: $EXECUTABLE $CMD <host-file> [<host-file>...]"
+      exit $ERR_BAD_USAGE
+    fi
+    disable_hosts "${@:2}"
+    ;;
+  refresh)
+    write_hosts_file
+    ;;
+  ls|list)
+    list_hosts
+    ;;
+  -v|--version)
+    show_info
+    ;;
+  -h|--help)
+    show_help
+    ;;
+  *)
+    echo "$EXECUTABLE: unrecognized command '$CMD'"
+    echo "Try '$EXECUTABLE --help' for options."
+    ;;
+esac

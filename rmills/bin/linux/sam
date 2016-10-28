@@ -1,0 +1,96 @@
+#!/bin/bash
+
+server=rmillsmm-w7
+share=rmills
+user="$USER"
+type=cifs
+domain=MILLS
+verbose=0
+
+syntax="[help|client|gui|status|mount|unmount|open|--server $server|--share $share|--user $user|--type $type|--domain $domain]"
+
+run() {
+    if [ $verbose == 1 ]; then echo $@ ; fi
+    eval $@
+}
+
+arg="$1"
+cmd=mount
+error=0
+if [ $# == 0 ]; then cmd=help ; fi
+
+while [ $# != 0 ]; do
+  arg="$1"
+  shift
+  case $arg in
+    ''|help|h|'?'|-help|-h|'-?') cmd=help ;;
+      -v|--verbose) verbose=1        ;;
+            client) cmd=client       ;;
+            status) cmd=status       ;;
+             mount) cmd=mount        ;;
+              open) cmd=open         ;;
+    umount|unmount) cmd=unmount      ;;
+               gui) cmd=gui          ;;
+          --server) server=$1; shift ;;
+          --server) server=$1; shift ;;
+           --share) share=$1 ; shift ;;
+            --user) user=$1  ; shift ;;
+            --type) type=$1  ; shift ;;
+          --domain) domain=$1; shift ;;
+    *)  echo "unknown argument $arg"  ; error=1 ;;
+  esac
+done
+
+if [ $error != 0 ]; then exit $error ; fi
+
+mnt=/mnt/"$server"-"$share"
+unc="//$server/$share"
+
+case $cmd in
+
+      help) echo syntax: $0 "$syntax" ;;
+    client) run smbclient -L "$unc"   ;;
+      open) run open smb:$unc         ;;
+            
+    gui)
+            if [ -e /usr/local/bin/smb4k ]; then run /usr/local/bin/smb4k & 
+            else         run smb4k &
+            fi
+    ;;
+    
+
+    status)
+            echo -n mnt = $mnt ' '
+            wc=$(ls -1 "$mnt" | wc -l)
+            if [ -z "$wc" ]; then wc=0 ; fi
+            if [ "$wc" == 0 ]; then echo -n "NOT " ; fi
+            echo "mounted"
+    ;;
+    
+    mount)
+            if [ -e "$mnt/AppData" ]; then echo "already mounted!" ; exit 0 ; fi
+            if [ ! -e $mnt ]; then sudo mkdir      $mnt ; fi
+            if [   -e $mnt ]; then sudo chmod 0777 $mnt ; fi
+            if [   -e $mnt ]; then
+	        run sudo mount $unc $mnt -t "$type" --verbose -o "rw,username=$user,domain=$domain"
+            else 
+	        echo '*** ' mount point $mnt does not exist ' ***'
+            fi
+    ;;
+
+    unmount)
+            if [ -e "$mnt" ]; then
+                run sudo umount "$mnt"
+                wc=$(ls -1 "$mnt" | wc -l)
+                if [ -z "$wc" ]; then wc=0 ; fi
+                if [ "$wc" == 0 ]; then sudo rm -rf "$mnt" ; fi
+            else
+	        echo '*** ' mount point $mnt does not exist ' ***'
+            fi
+    ;;
+    
+esac
+
+
+# Thats all Folks
+##

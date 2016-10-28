@@ -1,0 +1,62 @@
+#!/usr/bin/perl
+
+use strict;
+use Encode;
+use File::Basename;
+use File::Find;
+use Foundation;
+
+##
+#  globals
+my $cleanup = scalar(@ARGV) > 2 ; 
+my $daemon  = $cleanup ? $ARGV[2] : '' ;
+
+##
+# subs
+sub println
+{
+	for ( my $i = 0 ; $i < scalar(@_) ; $i++ ) {
+		print($_[$i]);
+	}
+	print "\n";
+}
+
+sub cleanUp() {
+    println("Cleaning up");
+    if ( $cleanup ) {
+    	println("deleting $daemon");
+    	unlink $daemon || warn "could not unlink $daemon";
+    	println("deleting $0");
+    	unlink $0      || warn "could not unlink $0";
+    }
+}
+
+##
+# main program
+if ( scalar(@ARGV) >= 2 ) {
+	my $command  = $ARGV[0] ;
+	my $argument = $ARGV[1] ;
+	
+	println("script $0");
+	println("command = $command");
+	println("argument = $argument");
+	println("cleanup  = $cleanup");
+	println("daemon   = $daemon");
+
+	my $K = "/usr/sbin/systemsetup $command $argument";
+	println("K = $K");
+	
+	my $error   = system($K);
+	println("error = $error");
+
+	cleanUp() if (!$error) ;
+} else {
+	println("usage: setSystemSetup <command> <parameter> [daemon-to-delete]");
+}
+
+################################################################################
+# always
+exit 0;
+
+# That is all Folks!
+##

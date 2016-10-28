@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+cat /dev/clipboard
+
+# That's all Folks
+##

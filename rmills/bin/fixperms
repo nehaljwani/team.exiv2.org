@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+directory=$1
+if [ -z $directory ]; then
+	directory=.
+fi
+
+if [ -d $directory ]; then
+	chmod -R 0644 $directory
+	find $directory -name "*" -type d -print0 | xargs -0 chmod 0755
+else
+	echo "$directory" is not a directory
+fi
+
+# That's all Folks!
+##

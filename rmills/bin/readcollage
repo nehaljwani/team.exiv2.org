@@ -1,0 +1,45 @@
+#!/usr/bin/perl
+
+# use strict;
+# use warnings;
+
+use File::Basename;
+
+##
+# our module
+use lib "$ENV{PWD}/";
+use lib "$ENV{HOME}/bin/";
+use Collage;
+
+##
+# functions and globals
+sub syntax
+{
+	print ERROUT "usage: readcollage <collage.cxf> Width Height\n" ;
+	exit(1);
+}
+
+#############################################
+# main program
+#
+my $filename = shift or syntax() ;
+my $W		 = shift or syntax() ;
+my $H		 = shift or syntax() ;
+
+# perl at its most powerful and horrible
+#
+my($file, $dirs, $ext) = fileparse($filename,qr/\.[^.]*/);
+my @lines              = Collage::read($filename,$W,$H);
+
+open(FILE,">${file}.inc");
+foreach $line (@lines) {
+	print FILE $line . "\n" ; 
+}
+close(FILE);
+exit(0) ;
+#
+#############################################
+
+1;
+# That's all Folks!
+##

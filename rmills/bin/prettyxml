@@ -1,0 +1,6 @@
+#!/bin/bash
+
+xmllint --format $*
+
+# That's all Folks!
+##

@@ -1,0 +1,102 @@
+#!/bin/bash
+
+VERSION=0.1
+syntaxError()
+{
+	echo "usage: pings [--opt | server]+ (or set PINGS)"
+	echo "opt  : forever | whiledead | untilalive | help | verbose | version | remove"
+	exit 1
+}
+
+parseservers()
+{
+	for ping in $@ ; do
+		arg=$ping
+		# to lower case if more than 2 characters
+		if [ "${#arg}" -gt 2 ]; then
+			arg="$(echo $arg|perl -e 'print lc <>;')"
+		fi
+		# echo arg = "$arg"
+		case "$arg" in
+		  -f|--forever)       forever=1     ;;
+		  -v|--verbose)       verbose=1     ;;
+		  -w|--whiledead)     whiledead=1   ;;
+		  -u|--untilalive)    whiledead=1   ;;
+		  -l|--login)         login=1       ;;
+		  -W|--wait)          login=1;whiledead=1;;
+		  -V|--version)       version=1     ;;
+		  -r|--remove)        remove=1      ;;
+		  -h|-\?|--help)      syntaxError   ;;
+		  --*)                argS=1        ;;
+		  *) if [ -z "$argS" ]; then servers+=($ping); else args+=("$arg"); fi ;;
+		esac
+	done
+}
+
+##
+# defaults
+forever=0
+verbose=0
+whiledead=0
+servers=()
+
+##
+# parse command line (and PINGS if no servers)
+parseservers "$@"
+if [[ ${#servers[@]} -eq 0  && ! -z $PINGS ]]; then
+	if [ $verbose == 1 ]; then
+		echo using environment string "PINGS=$PINGS"
+	fi
+	servers+=($PINGS)
+fi
+
+if [ ! -z "$version" ]; then
+	echo $0: version $VERSION
+	exit 0
+fi
+
+if [[ ${#servers[@]} -eq 0 && -z "$args" ]]; then
+	syntaxError
+fi
+
+if [ $whiledead == 1 ]; then
+	forever=1
+fi
+
+if [ $verbose == 1 ]; then
+	echo servers= ${servers[@]} forever= $forever whiledead= $whiledead
+fi
+
+if [ ! -z "$remove" ]; then
+	for server in "${servers[@]}" ; do
+		sshrm "$server"
+	done
+fi
+
+if [ ! -z "$login" ]; then
+	args+=(ssh root@$servers)
+fi
+
+let count=0
+while [[ $((++count)) == 1 || $forever == 1 ]]; do
+	for server in ${servers[@]} ; do
+		sleep=1
+		result=DEAD
+		ping -c 2 $server 2>/dev/null >/dev/null
+		st=$?
+		if [ $st -eq 0 ]; then
+			result=alive	
+		fi
+		echo $server is $result
+		if [[ $whiledead == 1 && "$result" == "alive" ]]; then
+			forever=0
+			sleep=0
+		fi
+		sleep $sleep
+	done
+done
+
+${args[@]}
+
+# That's all Folks!
+##

@@ -1,0 +1,37 @@
+#!/bin/bash
+
+syntaxError()
+{
+	echo 'usage: sshnop user@server'
+	exit 1
+}
+
+##
+# make sure we have a public key
+pub=~/.ssh/id_rsa.pub
+if [ ! -e  "$pub" ]; then
+	echo "*** public key $pub does not exist ***"
+	echo "run: ssh-keygen -t rsa"
+	echo "see: http://www.linuxproblem.org/art_9.html"
+	exit 1
+fi
+
+##
+# parse user@machine as the first argument
+IFS=@
+X=$1
+shift
+x=( $(echo "$X") )
+user=${x[0]}
+server=${x[1]}
+
+if [[ -z $user || -z $server || ${#@} -ne 0 ]]; then
+	syntaxError
+fi
+
+##
+# get on with it
+cat "$pub" | ssh "$user"@"$server" "/bin/bash  -c 'if [ ! -d ~/.ssh ]; then mkdir ~/.ssh ; fi ; cat >> ~/.ssh/authorized_keys'"
+
+# That's all folks
+##

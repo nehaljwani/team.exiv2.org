@@ -1,0 +1,9 @@
+#!/bin/bash
+
+kate=$(which kate)
+if [ -z "$kate" ]; then kate=edit; fi
+
+sudo "$kate" /etc/hosts &
+
+# That's all Folks!
+##

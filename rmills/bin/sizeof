@@ -1,0 +1,6 @@
+#!/bin/bash
+
+treesize "$@" -r | tail -1
+
+# That's all Folks
+##

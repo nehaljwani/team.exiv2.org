@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# set -v
+
+if [ ${BASH_VERSINFO[0]} -lt 4 ]; then
+	echo "$0 requires bash 4 (or higher)"
+	exit 2
+fi
+
+year=$(date +"%Y")
+directory=$1
+if [ -z $directory ]; then
+	directory=~/Pictures/$year
+fi
+
+if [ ! -d "$directory" ]; then
+	echo "$directory is not a directory"
+	exit 1
+fi
+
+declare -A drives=( \
+   ["backup"]="/Volumes/Passport/Photos/" \
+   ["iMac"  ]="/Volumes/iMacHD/Users/rmills/Pictures/Photos/" \
+   ["laptop"]="/Volumes/Users/rmills/Documents/Dropbox/Photos/" \
+)
+
+reportDrives() {
+	for drive in "${!drives[@]}"; do
+		to=${drives["$drive"]}
+		if [ ! -d "$to" ]; then
+			echo "Drive: '$drive' not available because $to is not a directory"
+		fi
+	done
+}
+
+##
+# write the drives we can find
+for drive in "${!drives[@]}"; do
+	to=${drives["$drive"]}
+	if [ -d "$to" ]; then
+		echo rsync -varz "$directory" "$to"
+			 rsync -varz "$directory" "$to"
+	fi
+done
+
+echo -------------------------------
+reportDrives
+echo -------------------------------
+
+# That's all Folks!
+##

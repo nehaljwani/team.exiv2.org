@@ -1,0 +1,6 @@
+#!/bin/bash
+
+sudo umount /Volumes/*
+
+# That's all Folks
+##

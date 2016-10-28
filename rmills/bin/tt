@@ -1,0 +1,6 @@
+#!/bin/bash
+
+osascript -e 'tell application "System Events" to keystroke "n" using command down'
+
+# That's all Folks!
+##

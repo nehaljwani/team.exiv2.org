@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+tojpg()
+{
+	##
+	# get "raw" filenames (raw = IMG_1234.JPG - as it arrives from the camera)
+	##
+	# rename them in lower case, one at a time
+	for F in *.JPG ; do
+		f="$(echo "$F"|perl -e 'print lc <>;')"
+		if [ "$f" != "$F" ]; then
+			echo /bin/mv "$F" "$f"
+			     /bin/mv "$F" "$f"
+		fi
+	done
+}
+
+year=$(date +"%Y")
+month=$((   $(date +"%m" |sed 's/^0//') -1 ))
+echo -n month = $month ''
+months=(January February March April May June July August September October November December)
+month=${months[$month]}
+month=~/Pictures/$year/$month
+echo = $month
+if [ ! -e $month ]; then
+	mkdir -p $month
+fi
+if [ ! -e $month ]; then
+	echo "***" directory $month does not exist "***"
+	exit
+else
+	cd $month
+	month=$PWD
+fi
+
+Gg=~/Pictures/Gg
+if [ -e $Gg ]; then
+    cd $Gg
+    Gg=$PWD
+    echo ---- $Gg ----
+	new=$(ls -alt | wc -l)
+	old=0
+	while [ $old != $new ]; do
+		if [ "$old" != "0" ]; then
+			echo old = $old
+			new = $new
+		fi
+		old=$new
+		sleep 1
+        new=$(ls -alt | wc -l)
+	done
+	tojpg
+	/bin/mv  *.jpg $month
+	cd  ~
+	rm  -rf   $Gg
+fi
+
+# That's all Folks
+##

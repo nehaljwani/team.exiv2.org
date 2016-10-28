@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# read from the garmin to stdout
+gpsbabel -w -t -r -i garmin -f usb: -o gpx -F - "$@"
+
+# That's all Folks
+##

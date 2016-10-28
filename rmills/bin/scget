@@ -1,0 +1,95 @@
+#!/bin/bash
+
+### usage : ___ [--user <name> --dryrun --verbose --help]+ [--] server path [destination]
+
+base=$(basename "$0")
+dir=$(dirname   "$0")
+Base=$(perl -e "\$A=\""$base"\";\$A =~ s#/#\\\\\\/#g;print(\$A)")
+
+reportError()
+{
+	echo "$@" 1>&2
+}
+
+syntaxError() {
+	reportError $(grep "^\#\#\# " "$0" | sed "s/^\#\#\# //g" | sed "s/___/$Base/")
+	exit 1
+}
+
+bomb() {
+	reportError "*** $1 requires an argument ***"	
+	syntaxError
+}
+
+##
+# parse the command line
+# values
+unset user
+dryrun=0
+verbose=0
+while [ $# -gt 0 ]; do
+	arg="$1"
+	# to lower case if more than 2 characters
+	if [ "${#arg}" -gt 2 ]; then
+		arg="$(echo $arg|perl -e 'print lc <>;')"
+	fi
+    case "$arg" in
+      -h|--help|-\?)      syntaxError ;;
+      -u|--user)          if [ $# -gt 1 ]; then user="$2" ; shift 2 ; else bomb $1 ; fi ;;
+      -d|--dryrun)        dryrun=1;verbose=1              ; shift                       ;;
+      -v|--verbose)       verbose=1                       ; shift                       ;;
+      --)                 shift; break;;
+      *)                  break;;
+    esac
+done
+
+unset destination
+server="$1"
+path="$2"
+
+if [ -z "$user" ]; then
+# Array pretending to be a Pythonic dictionary
+	servers=( "rmills-imac:rmills"
+			  "clanmills.com:clanmil1"
+			  "rmills-ubuntu:rmills"
+	)
+	for s in ${servers[@]} ; do
+		key="${s%%:*}"
+		value="${s#*:}"
+		if [ "$server" == "$key" ]; then
+			user="$value"
+		fi
+	done
+	if [ -z "$user" ]; then
+		user="root"
+	fi
+fi
+
+if [ $# == 2 ]; then
+	destination="$path"
+elif [ $# == 3 ]; then
+	destination="$3"
+fi
+
+if [ $verbose == 1 ]; then
+	echo user = $user server = $server path = $path destination = $destination dryrun = $dryrun
+fi
+
+if [ -z "$destination" ]; then
+	syntaxError
+fi
+
+if [ -d "$destination" ]; then
+	destination="$destination"/`basename $path`
+fi
+
+if [ $verbose == 1 ]; then
+	echo scp "$user@$server:$path" "$destination"
+fi
+
+if [ $dryrun == 0 ]; then
+	scp "$user@$server:$path" "$destination"
+fi
+
+# That's all Folks!
+##

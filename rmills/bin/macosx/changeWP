@@ -1,0 +1,32 @@
+#!/usr/bin/env xcrun swift
+
+import Foundation
+import AppKit
+
+var error  : NSError?
+/*
+    var imgurl:NSURL = NSURL.fileURLWithPath("/Users/rmills/Dropbox/Wallpapers/Stonehenge,England.jpg")
+    let dir          = "~/Dropbox/Wallpapers"
+    let imagesDir    = dir.stringByExpandingTildeInPath
+*/
+do {
+	var workspace          = NSWorkspace.sharedWorkspace()
+	var screen             = NSScreen.mainScreen()
+	let imagesDir    = "/Users/rmills/Dropbox/Wallpapers/"
+
+	let fs           = NSFileManager.defaultManager()
+	let filenames    = try fs.contentsOfDirectoryAtPath(imagesDir) as [String]?
+	// print(filenames)
+
+	let imagenames   = filenames!.filter { $0.hasSuffix(".jpg") || $0.hasSuffix("png") }
+	let ir           = Int(arc4random_uniform(UInt32(imagenames.count)))
+	let imgurl       = NSURL.fileURLWithPath(imagesDir + imagenames[ir])
+	print(imgurl)
+
+	try workspace.setDesktopImageURL(imgurl, forScreen: screen!, options:[:])
+} catch {
+    print("Error is \(error)")
+}
+
+// That's all Folks
+////

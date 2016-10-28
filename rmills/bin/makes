@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo make $*
+make $*|wc
+
+echo sudo make install
+sudo make install|wc
+
+# That's all Folks!
+##

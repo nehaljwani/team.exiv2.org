@@ -1,0 +1,8 @@
+#!/bin/bash
+
+d=$1
+if [ -z "$d" ]; then d=. ; fi
+find "$d" -type f | wc -l
+
+# That's all Folks!
+##
