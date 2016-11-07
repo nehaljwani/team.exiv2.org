@@ -1,10 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from __future__ import division
 
 import json
 import os
 import sys
+import datetime
 
 global J,args,options,unexpected
 
@@ -13,7 +14,7 @@ global J,args,options,unexpected
 def reportHelp():
     global J,args,options
     print('syntax: %s [options]+' % (sys.argv[0]) )
-    print 'options: %s' % options.keys()
+    print('options: %s' % options.keys())
 
     quit()
 
@@ -228,17 +229,17 @@ def reportTodo():
     Left=Left+Minor
     Unexpected=unexpected * Left / 100;
     if Minor > 0:
-    	print(todo1 % (Minor) )
+        print(todo1 % (Minor) )
     if Left > 0:
-    	print(todo3 % (Size,Left) )
+        print(todo3 % (Size,Left) )
     if Unexpected > 0.0:
-    	print(todo4 % (unexpected,Unexpected))
+        print(todo4 % (unexpected,Unexpected))
     Total=Left+Unexpected
     print(todo6 % (Total,(Total+30)/40))
     print('')
 
 ##
-# Robin's to do list
+# report Issues by Engineer
 def reportEngineers():
     printHeader("Engineers");
     global J,args,options,unexpected
@@ -260,15 +261,15 @@ def reportEngineers():
         for i in issues:
             try:
                 engineer=i['assigned_to']['name']
-                if not engineers.has_key(engineer):
+                if not engineers.get(engineer):
                     engineers[engineer]=0
                     effort   [engineer]=0
                 if i['fixed_version']['name'] == '0.26':
                     effort[engineer]=effort[engineer]+1
                     done=0
                     try:
-                    	size = i['estimated_hours']
-                    	done = i['done_ratio'] * size / 100.0
+                        size = i['estimated_hours']
+                        done = i['done_ratio'] * size / 100.0
                     except:
                         pass
                     engineers[engineer]=engineers[engineer]+done
@@ -277,14 +278,79 @@ def reportEngineers():
             except:
                 pass
 
-    print engineers0
-    guys=engineers.keys()
-    guys.sort()
-    for engineer in guys:
+    print(engineers0)
+    for engineer in sorted(engineers.keys(), key=lambda x: x[0]):
         if not engineer == total:
             if not engineers[engineer]==0 and not effort[engineer]==0:
-                print engineers1 % (engineer,effort[engineer],engineers[engineer])
-    print engineers2 % (total,effort[total],engineers[total])
+                print(engineers1 % (engineer,effort[engineer],engineers[engineer]))
+    print(engineers2 % (total,effort[total],engineers[total]))
+    print('')
+
+##
+# report Response Performance
+def reportResponse():
+    printHeader("Response");
+    global J,args,options,unexpected
+
+    response0='| _Issue_                  |>. _Created_ |>. _Updated_ |>. _Response (days)_ |'
+    response1='| %-26s  |>. %10s  |>. %10s  |>. %6d | '
+    response2='| _Days_   |>. _Count_ |>. _Total_ |'
+    response3='|>. %s%d |>. %d |>. %d |'
+    if options['console']:
+        response0='| Issue                   | Created | Updated | Response (days) |'
+        response1='| %-26s | %s | %5s | %d'
+        response2='|  Days | Count | Total |'
+        response3='| %s%4d | %5d | %5d |'
+
+    responses={}
+    responseMax=366
+    # print(response0)
+    for j in J:
+        issues=j['issues']
+        for i in issues:
+            try:
+                if i['fixed_version']['name'] == '0.26':
+                    issue=i['subject']
+                    created=i['created_on']
+                    updated=i['updated_on']
+                    response=(datetime.datetime.strptime(updated, "%Y-%m-%dT%H:%M:%SZ").timestamp()
+                            -datetime.datetime.strptime(created, "%Y-%m-%dT%H:%M:%SZ").timestamp()
+                             )/ (3600.0*24.0)
+                    response=int(response)
+                    if response>responseMax:
+                        response=responseMax
+                    if response>0 and response<7:
+                        response=7
+                    if response>7 and response<14:
+                        response=14
+                    if response>14 and response<30:
+                        response=30
+                    if response>30 and response<100:
+                        response=90
+                    if response>100 and response<180:
+                        response=180
+                    if response>150 and response<365:
+                        response=365
+                    response=response
+                    #if not response:
+                    #    print(response1 % (issue,created,updated,response))
+                    if not responses.get(response):
+                        responses[response]=0
+                    responses[response]=responses[response]+1
+
+            except:
+                pass
+    response=0
+    total=0
+    print(response2)
+    while response<=responseMax:
+        if responses.get(response):
+            total=total+responses[response]
+            ch=' '      if response<responseMax else '>'
+            R =response if response<responseMax else (responseMax-1)
+            print(response3 % (ch,R,responses[response],total) )
+        response=response+1
+    print('')
 
 ##
 # parse command-line
@@ -295,12 +361,13 @@ options['todo'      ]=False
 options['features'  ]=False
 options['engineers' ]=False
 options['progress'  ]=False
+options['response'  ]=False
 options['bugs'      ]=False
 options['getdata'   ]=False
 options['getdata.sh']=False
 options['all'       ]=False
 
-actions= ['todo','features','progress','bugs','engineers']
+actions= ['todo','features','progress','bugs','engineers','response']
 
 args=sys.argv[1:]
 
@@ -331,6 +398,7 @@ if options['all']:
     options['progress' ]=True
     options['todo'     ]=True
     options['engineers']=True
+    options['response' ]=True
 
 unexpected=0
 readData()
@@ -348,6 +416,9 @@ if options['todo']:
 
 if options['engineers']:
     reportEngineers()
+
+if options['response']:
+    reportResponse()
 
 # That's all Folks!
 ##
