@@ -319,17 +319,17 @@ def reportResponse():
                     response=int(response)
                     if response>responseMax:
                         response=responseMax
-                    if response>0 and response<7:
+                    if response>0 and response<=7:
                         response=7
-                    if response>7 and response<14:
+                    if response>7 and response<=14:
                         response=14
-                    if response>14 and response<30:
+                    if response>14 and response<=30:
                         response=30
-                    if response>30 and response<100:
+                    if response>30 and response<=100:
                         response=90
-                    if response>100 and response<180:
+                    if response>100 and response<=180:
                         response=180
-                    if response>180 and response<365:
+                    if response>180 and response<=365:
                         response=365
                     response=response
                     #if not response:
