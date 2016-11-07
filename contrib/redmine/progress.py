@@ -329,7 +329,7 @@ def reportResponse():
                         response=90
                     if response>100 and response<180:
                         response=180
-                    if response>150 and response<365:
+                    if response>180 and response<365:
                         response=365
                     response=response
                     #if not response:
