@@ -7,7 +7,8 @@ import os
 import sys
 import datetime
 
-global J,args,options,unexpected
+global J,args,options,unexpected,version
+version='0.26'
 
 ##
 # Help:
@@ -353,6 +354,50 @@ def reportResponse():
     print('')
 
 ##
+# report Release Credit Report
+##
+# report Release Credit Report
+def reportRelease():
+    printHeader("Release Credits");
+    global J,args,options,unexpected,version
+
+    engineers0='| _Engineer_                  |>. _Issues_|>. _Hours_|'
+    engineers1='| %-26s  |>. %6d  |>. %5d  |'
+    engineers2='| *%s*                     |>.  *%d*  |>. *%d* |'
+    if options['console']:
+        engineers0='| Engineer                   | Issues | Hours |'
+        engineers1='| %-26s | %6d | %5d |'
+        engineers2='| %-26s | %6d | %5d |'
+
+    categories = {} # key = CategoryName, Value: [ issue ...]
+
+    for j in J:
+        issues=j['issues']
+        for i in issues:
+            try:
+                # engineer=i['assigned_to']['name']
+                if i['fixed_version']['name'] == version:
+                    category=i['category']['name']
+                    if not category in categories:
+                        categories[category]=[]
+                    categories[category].append(i)
+            except:
+                pass
+
+    print('-------------------------')
+    # print(categories)
+    for category in categories:
+        issues=categories[category]
+        print(category + ':' ,'('+str(len(issues))+')')
+        for i in issues:
+            try:
+                print('      ',i['id'],'|',i['assigned_to']['name'],'|',i['subject'])
+            except:
+                pass
+
+    print('')
+
+##
 # parse command-line
 options={}
 options['console'   ]=False
@@ -362,12 +407,13 @@ options['features'  ]=False
 options['engineers' ]=False
 options['progress'  ]=False
 options['response'  ]=False
+options['release'   ]=False
 options['bugs'      ]=False
 options['getdata'   ]=False
 options['getdata.sh']=False
 options['all'       ]=False
 
-actions= ['todo','features','progress','bugs','engineers','response']
+actions= ['todo','features','progress','bugs','engineers','response','release']
 
 args=sys.argv[1:]
 
@@ -419,6 +465,9 @@ if options['engineers']:
 
 if options['response']:
     reportResponse()
+
+if options['release']:
+    reportRelease()
 
 # That's all Folks!
 ##
