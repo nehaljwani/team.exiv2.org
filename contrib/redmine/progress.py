@@ -384,16 +384,23 @@ def reportRelease():
             except:
                 pass
 
-    print('-------------------------')
-    # print(categories)
-    for category in categories:
+#* Exiv2 library
+#	- <a title="bug 0000442" href="http://dev.exiv2.org/issues/0000442">0000442</a>:	exivsimple has array index errors when stripping quotes form trivial input strings
+#				(Thomas Beutlich)
+    for category in sorted(categories.keys(), key=lambda x: x[0]):
         issues=categories[category]
-        print(category + ':' ,'('+str(len(issues))+')')
+        Category = category[0].upper() + category[1:]
+        print('*', Category + ':' ,'('+str(len(issues))+')')
         for i in issues:
             try:
-                print('      ',i['id'],'|',i['assigned_to']['name'],'|',i['subject'])
+                id = "%07d" % (i['id'])
+                engineer=i['assigned_to']['name']
+                print('\t- <a href="http://dev.exiv2.org/issues/' +id + '">' + id + '</a>:\t' + i['subject'])
+                if not engineer == 'Robin Mills':
+                    print( '\t\t\t\t(' + i['assigned_to']['name'] + ')' )
             except:
                 pass
+        print()
 
     print('')
 
