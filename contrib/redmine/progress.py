@@ -397,7 +397,7 @@ def reportRelease():
                 engineer=i['assigned_to']['name']
                 print('\t- <a href="http://dev.exiv2.org/issues/' +id + '">' + id + '</a>:\t' + i['subject'])
                 if not engineer == 'Robin Mills':
-                    print( '\t\t\t\t(' + i['assigned_to']['name'] + ')' )
+                    print( '\t\t\t\t(' + engineer + ')' )
             except:
                 pass
         print()
