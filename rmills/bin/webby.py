@@ -64,6 +64,7 @@ thumbQuality = Image.ANTIALIAS  # NEAREST, BILINEAR, BICUBIC, or ANTIALIAS
 imageQuality = Image.ANTIALIAS
 imagesDir    = "Images/"
 thumbsDir    = "Thumbs/"
+platesDir    = "Plates/"
 next         = "next.html"
 default      = 'default'
 ext          = '.shtml'
@@ -72,7 +73,7 @@ upgif        = 'up.gif'
 nextgif      = 'next.gif'
 photogif     = 'robinali.gif'
 email        = 'webmaster@clanmills.com'
-copyright    = '1996-2016 Robin Mills'
+copyright    = '1996-2017 Robin Mills'
 prev         = default + ext
 lightbox     = 'lightbox'
 download     = '2.35mb'
@@ -413,14 +414,10 @@ def searcher(startdir,myData):
     myData = startdir
     os.path.walk(startdir, visitor, myData)
 ##
-
-##
 #
-def writeImages(webDir,filename,pathname,width,aspect,rotate,cols,bGeotagIcon):
-    """writeImages - create images and thumbnails"""
-    # write the image
+def writeImage(webDir,theDir,filename,pathname,width,aspect,rotate,cols,bGeotagIcon):
     global useSips,mustUpdate
-    imagename = os.path.join(webDir,imagesDir)
+    imagename = os.path.join(webDir,theDir)
     if not os.path.isdir(imagename):
         os.mkdir(imagename)
     imagename = os.path.join(imagename, filename)
@@ -460,52 +457,15 @@ def writeImages(webDir,filename,pathname,width,aspect,rotate,cols,bGeotagIcon):
         if bGeotagIcon:
             geotagIcon(imagename,"brm")
 
-    # write thumbnail
-    imagename = os.path.join(webDir,thumbsDir)
-    if not os.path.isdir(imagename):
-        os.mkdir(imagename)
 
-    imagename = os.path.join(imagename, filename)
-    if mustUpdate or not os.path.exists(imagename):
-        if useSips:
-#            cmd = 'sips --setProperty formatOptions normal --resampleHeightWidthMax ' + str(width/cols) \
-#            + ' "' + pathname + '" --out "' + imagename + '"'
+##
+#
+def writeImages(webDir,filename,pathname,width,aspect,rotate,cols,bGeotagIcon):
+    """writeImages - create images, thumbnails and plates"""
+    writeImage(webDir,imagesDir,filename,pathname,width     ,aspect,rotate,cols,bGeotagIcon)
+    writeImage(webDir,thumbsDir,filename,pathname,width/cols,aspect,rotate,cols,bGeotagIcon)
+    writeImage(webDir,platesDir,filename,pathname,1200      ,aspect,rotate,cols,bGeotagIcon)
 
-            W = float(width)
-            W = int ( W / cols )
-            if aspect > 1.0:
-                W = W / aspect
-
-            cmd  = 'sips '
-            if rotate:
-                cmd += ' --rotate ' + str(rotate)
-            cmd += ' --setProperty formatOptions normal --resampleHeightWidthMax ' + str(W) \
-                + ' "' + pathname + '" --out "' + imagename + '"'
-            print cmd
-
-#            cmd = 'sips --setProperty formatOptions normal --resampleWidth ' + str(W) \
-#            + ' "' + pathname + '" --out "' + imagename + '"'
-
-            os.system(cmd)
-        else:
-            image    = Image.open(pathname)
-            imageBox = image.getbbox()
-            w = float(imageBox[2])
-            h = float(imageBox[3])
-            W = float(width)/float(cols)
-
-            scale = (W/w) if w > h else (W/h) ;
-            if rotate==90 or rotate==270:
-                a = float(h)/float(w)
-                scale = scale/a
-
-            size  = ( int(w*scale),int(h*scale))
-            print 'filename=', filename      ,'size =', size,     'rotate =', rotate
-            image.thumbnail(size,thumbQuality)
-            image.rotate(-rotate).save(imagename, "JPEG")
-
-        if bGeotagIcon:
-            geotagIcon(imagename,"brm")
 
 ##
 #
@@ -1074,6 +1034,8 @@ def main(argv):
         print "copy to   : ",webDir
         if os.path.exists(resourceDir) and os.path.isdir(resourceDir):
             cpall(resourceDir,webDir)
+
+        os.popen ('bash -c "cd %s;gallery.sh"' % (webDir))
         ##
 
 #   except:

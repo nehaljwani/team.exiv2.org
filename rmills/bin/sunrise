@@ -98,6 +98,15 @@ if [ "$c" != "" ]; then
 		fi
 	fi
 
+	if [ $count -eq 0 ]; then
+	    count=$($GREP "^\[" "$cities" | $GREP "$c" | wc -l)
+	    if [ "$count" -eq "1" ]; then
+		    x+=( $($GREP "^\[" "$cities" | $GREP "$c" ) )
+		    a=${x[1]}
+		    l="${x[2]}"
+		fi
+	fi
+
 	if [ "$count" -eq "0" ]; then
 		echo "*** city $c not found ***"
 		exit 1

@@ -7,10 +7,7 @@ if [ ${BASH_VERSINFO[0]} -lt 4 ]; then
 fi
 
 year=$(date +"%Y")
-directory=$1
-if [ -z $directory ]; then
-	directory=~/Pictures/$year
-fi
+directory=~/Pictures/$year
 
 if [ ! -d "$directory" ]; then
 	echo "$directory is not a directory"
@@ -18,9 +15,8 @@ if [ ! -d "$directory" ]; then
 fi
 
 declare -A drives=( \
-   ["backup"]="/Volumes/Passport/Photos/" \
-   ["iMac"  ]="/Volumes/iMacHD/Users/rmills/Pictures/Photos/" \
-   ["laptop"]="/Volumes/Users/rmills/Documents/Dropbox/Photos/" \
+   ["Photos"]="/Volumes/Photos/" \
+   ["Backup"]="/Volumes/Backup/Photos/" \
 )
 
 reportDrives() {
@@ -37,14 +33,15 @@ reportDrives() {
 for drive in "${!drives[@]}"; do
 	to=${drives["$drive"]}
 	if [ -d "$to" ]; then
-		echo rsync -varz "$directory" "$to"
-			 rsync -varz "$directory" "$to"
+		echo '---' rsync -varz "$directory" "$to" '---'
+			       rsync -varz "$directory" "$to"
+		echo
+	else
+		echo '***'"$to does not exist"'***'
 	fi
 done
 
-echo -------------------------------
 reportDrives
-echo -------------------------------
 
 # That's all Folks!
 ##
