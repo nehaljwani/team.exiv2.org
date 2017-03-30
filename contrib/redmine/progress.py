@@ -395,9 +395,18 @@ def reportRelease():
             try:
                 id = "%07d" % (i['id'])
                 engineer=i['assigned_to']['name']
+                author=i['author']['name']
                 print('\t- <a href="http://dev.exiv2.org/issues/' +id + '">' + id + '</a>:\t' + i['subject'])
+                attrib=''
+                if not author == 'Robin Mills':
+                    attrib=author
                 if not engineer == 'Robin Mills':
-                    print( '\t\t\t\t(' + engineer + ')' )
+                    if not engineer == author:
+                        if len(attrib):
+                            attrib = attrib + ' / '
+                        attrib = attrib + engineer
+                if len(attrib):
+                    print( '\t\t\t\t(' + attrib + ')' )
             except:
                 pass
         print()
