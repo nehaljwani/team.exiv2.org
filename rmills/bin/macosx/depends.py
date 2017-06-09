@@ -20,17 +20,19 @@ from sets import Set
 # returns path to libname or '' (empty string)
 def depend(execdir,loaddir,libname,dependdict):
 	""" recursive descent of the libraries """
-	# print "depend: execdir=%s, loadpath=%s, libname=%s" % (execdir,loadpath,libname)
 
 	##
 	# discover libpath for libname
 	epath='@executable_path/'
 	lpath='@loader_path/'
+	rpath='@rpath/'
 	libpath=libname
 	if libname[:len(epath)] == epath:
 		libpath=os.path.join(execdir,libname[len(epath):])
 	if libname[:len(lpath)] == lpath:
-		libpath=os.path.join(loadpath,libname[len(lpath):])
+		libpath=os.path.join(loaddir,libname[len(lpath):])
+	if libname[:len(rpath)] == rpath:
+		libpath=os.path.join(loaddir,libname[len(rpath):])
 	libpath=os.path.abspath(libpath)
 
 	if os.path.isfile(libpath):
@@ -44,9 +46,10 @@ def depend(execdir,loaddir,libname,dependdict):
 					dependancy=line.split()[0]
 					# print libpath,' => ',dependancy
 					# recurse to find dependancies of dependancy
-					dpath=depend(execdir,libpath,dependancy,dependdict)
+					dpath=depend(execdir,loaddir,dependancy,dependdict)
 					dependdict[libpath].add(dpath)      # update dependdict from recursion
 	else:
+		print("depend: execdir=%s, loaddir=%s, libname=%s" % (execdir,loaddir,libname))
 		print "*** error NOT a FILE libname=%s libpath=%s ***" % (libname,libpath)
 		libpath=''
 
@@ -61,7 +64,9 @@ def tsort(dependdict): # returns (ordered) array of libraries
 		depends=dependdict[key]
 		for d in depends:
 			if len(d) > 0:
-				file.write( '%s %s\n' % (key,d) )
+				D=d.replace(' ','+');
+				K=key.replace(' ','+')
+				file.write( '%s %s\n' % (K,D) )
 	file.close()
 	cmd='tsort "%s" 2>/dev/null' % (filename)
 	lines=os.popen(cmd).readlines()
@@ -69,7 +74,8 @@ def tsort(dependdict): # returns (ordered) array of libraries
 
 	result=[]
 	for line in lines:
-		result.append(line[:-1])
+		line=line[:-1].replace('+',' ')
+		result.append(line)
 	return result;
 #
 ##
@@ -81,11 +87,20 @@ def main(argv):
 	# dependdict key is a library path.  Value is a set of dependant library paths
 	dependdict = {}  # dependdict['/usr/lib/foo.dylib'] = Set([ '/usr/lib/a.dylib', ... ])
 	libname    = argv[0]
+	if os.path.isdir(libname):
+		execname = os.path.basename(libname).strip('.app');
+		execname = os.path.join(libname,'Contents/MacOS/',execname)
+		print('execname: ' + execname)
+		if os.path.isfile(execname):
+			libname=execname
 	execdir    = os.path.abspath(os.path.join(libname,'..'))
+	loaddir    = os.path.abspath(os.path.join(execdir,'../Frameworks/'))
+
+	print("execdir = %s, loaddir = %s" % (execdir,loaddir) );
 
 	##
 	# recursively build the dependency dictionary
-	depend(execdir,execdir,libname,dependdict)
+	depend(execdir,loaddir,libname,dependdict)
 
 	##
 	# sort and report
