@@ -65,6 +65,49 @@ def depend(execdir,loaddir,libname,dependdict):
 
 	return libpath
 
+def deploy(execdir,loaddir,libname):
+	""" modify the install_names in a library """
+
+	global options
+
+	##
+	# discover libpath for libname
+	libpath=os.path.abspath(libname)
+
+	if os.path.isfile(libpath):
+		cmd = 'otool -L "%s"' % libpath         	# otool -L prints library dependancies:
+													# libpath:
+													# <tab>dependancy (metadata) ...
+		for line in os.popen(cmd).readlines():      # run cmd
+			if line[:1]=='\t':                      # parse <tab>dependancy (metadata)
+				dependancy=line.split()[0]
+				skip=False
+				for i in ['@executable_path/', '@loader_path/', '/Library/', '/System/', '/usr/lib/']:
+					skip = skip or dependancy[:len(i)]==i;
+				if not skip:
+					stub=''
+					rpath='@rpath/'
+					if dependancy[:len(rpath)] == rpath:
+						stub=dependancy[len(rpath):] # '@rpath/QtConcurrent.framework/Versions/5/QtConcurrent'
+					cmd="install_name_tool -change '%s' '%s' '%s'" % (dependancy,'@loader_path/../Frameworks/'+stub,libname)
+					print(cmd)
+					# os.popen(cmd)
+					# copy Qt Framework if necessary
+					if stub.find('.framework') >=0:
+						framework=stub[:stub.find('.framework')]
+						Framework = '%s/%s.framework' % (loaddir,framework)
+						framework = '%s/%s.framework' % (options.qt,framework)
+						if not os.path.isdir(Framework):
+							if os.path.isdir(framework):
+								print("ditto '%s' '%s' '%s'" % (framework,Framework) )
+							else:
+								sprint('*** error %s not available' % framework)
+								exit(1)
+
+	else:
+		print("deploy: execdir=%s, loaddir=%s, libname=%s" % (execdir,loaddir,libname))
+		print("*** error NOT a FILE libname=%s libpath=%s ***" % (libname,libpath))
+
 ##
 #
 def tsort(dependdict): # returns (ordered) array of libraries
@@ -74,17 +117,17 @@ def tsort(dependdict): # returns (ordered) array of libraries
 		depends=dependdict[key]
 		for d in depends:
 			if len(d) > 0:
-				D=d.replace(' ','*');
+				D=d.replace(' ','*')          # replace ' ' with '*'
 				K=key.replace(' ','*')
 				file.write( '%s %s\n' % (K,D) )
 	file.close()
-	cmd='tsort "%s" 2>/dev/null' % (filename)
+	cmd='tsort "%s" 2>/dev/null' % (filename) # tsort breaks on ' '
 	lines=os.popen(cmd).readlines()
 	lines.reverse()
 
 	result=[]
 	for line in lines:
-		line=line[:-1].replace('*',' ')
+		line=line[:-1].replace('*',' ')       # unreplace '*' with ' '
 		result.append(line)
 	return result;
 #
@@ -103,6 +146,7 @@ def main():
 	parser.add_option('-v', '--verbose'		, action='store_true' , dest='verbose' ,help='verbose output'	  )
 	parser.add_option('-d', '--deploy'		, action='store_true' , dest='deploy'  ,help='update the bundle'  )
 	parser.add_option('-D', '--depends'	    , action='store_true' , dest='depends' ,help='report dependancies')
+	parser.add_option('-q', '--qt'	        , action='store'      , dest='qt'      ,help='qt directory'       ,default = os.environ['HOME']+'/Qt/5.9/clang_64/lib')
 
 	##
 	# parse and test for errors
@@ -122,7 +166,6 @@ def main():
 
 	##
 	# dependdict key is a library path.  Value is a set of dependant library paths
-	dependdict   = {}  # dependdict['/usr/lib/foo.dylib'] = Set([ '/usr/lib/a.dylib', ... ])
 	libname      = args[0]
 	execname     = ''
 	if os.path.isdir(libname):
@@ -132,23 +175,22 @@ def main():
 			libname=execname
 	execdir      = os.path.abspath(os.path.join(libname,'..'))
 	loaddir      = execdir if execname == '' else os.path.abspath(os.path.join(execdir,'../Frameworks/'))
+	options.qt   = os.path.abspath(options.qt)
 
 	if options.verbose:
-		print('execdir = %s, loaddir = %s' % (execdir,loaddir) )
+		print('libpath = %s execdir = %s, loaddir = %s' % (libpath,execdir,loaddir) )
 
 	##
-	# recursively build the dependency dictionary
-	depend(execdir,loaddir,libname,dependdict)
-
-	##
-	# --deploy: sort and report
+	# --deploy:
 	if options.deploy:
-		eprint("option deploy not implemented yet")
-		exit(1)
+		deploy(execdir,loaddir,libname)
+		print(options.qt)
 
 	##
-	# --depends: sort and report
+	# --depends: recursively build dependdict, tsort and report
 	if options.depends:
+		dependdict   = {}  # dependdict['/usr/lib/foo.dylib'] = Set([ '/usr/lib/a.dylib', ... ])
+		depend(execdir,loaddir,libname,dependdict)
 		results=tsort(dependdict)
 		for result in results:
 			print(result)
