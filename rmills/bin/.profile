@@ -573,6 +573,15 @@ if [ -e $themes ]; then
 fi
 
 cd ~/
+
+export BOOST_ROOT=/Users/rmills/gnu/boost/boost_1_64_0
+export BOOST_LIBRARYDIR=$BOOST_ROOT/libs
+if [ -z "$DYLD_LIBRARY_PATH" ]; then
+	export DYLD_LIBRARY_PATH=$BOOST_ROOT
+else
+	export "DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$BOOST_ROOT"
+fi
+
 # That's all Folks!
 ##
 
@@ -593,3 +602,4 @@ export PATH=$PATH:/opt/local/bin:/opt/local/sbin:/opt/pkgconfig/bin
 # export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
 # Finished adapting your PATH environment variable for use with MacPorts.
 
+export PATH="/usr/local/opt/gettext/bin:$PATH"
