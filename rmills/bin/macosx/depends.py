@@ -1,9 +1,10 @@
 #!/usr/bin/python
+from __future__ import print_function
 
 r"""depends.py - find the ordered dependancies of a library/executable (deepest first)
 
 To use this:
-	depends.py <pathtolibrary/pathtoexecutable>
+	depends.py [options]+ <pathtolibrary/pathtoexecutable/pathotoapp>
 
 """
 __author__	= "Robin Mills <robin@clanmills.com>"
@@ -14,8 +15,11 @@ import sys
 import optparse
 from sets import Set
 
-global version, verbose, deploy, depends
+global version, options
 version="2017-06-10"
+
+def eprint(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
 
 ##
 # recursively update dependdict for libname (which can be @executable_path etc)
@@ -25,8 +29,7 @@ version="2017-06-10"
 def depend(execdir,loaddir,libname,dependdict):
 	""" recursive descent of the libraries """
 
-	global version
-	global verbose
+	global options
 
 	##
 	# discover libpath for libname
@@ -57,7 +60,7 @@ def depend(execdir,loaddir,libname,dependdict):
 					dependdict[libpath].add(dpath)      # update dependdict from recursion
 	else:
 		print("depend: execdir=%s, loaddir=%s, libname=%s" % (execdir,loaddir,libname))
-		print "*** error NOT a FILE libname=%s libpath=%s ***" % (libname,libpath)
+		print("*** error NOT a FILE libname=%s libpath=%s ***" % (libname,libpath))
 		libpath=''
 
 	return libpath
@@ -90,58 +93,65 @@ def tsort(dependdict): # returns (ordered) array of libraries
 ##
 #
 def main():
-	global version, verbose, deploy, depends
+	global options
 	##
 	# set up argument parser
 	usage = "usage: %prog [options]+ target"
 	parser = optparse.OptionParser(usage)
 
-	parser.add_option('-V', '--version'		, action='store_true' , dest='version' ,help='report version'        ,default=False)
-	parser.add_option('-v', '--verbose'		, action='store_true' , dest='verbose' ,help='verbose output'	     ,default=False)
-	parser.add_option('-d', '--deploy'		, action='store_true' , dest='deploy'  ,help='update the bundle'	 ,default=False)
-	parser.add_option('-D', '--depends'	    , action='store_true' , dest='depends' ,help='report dependancies'	 ,default=False)
-
-	##
-	# no arguments, report and quit
-	if len(sys.argv) == 1:
-		parser.print_help()
-		return
+	parser.add_option('-V', '--version'		, action='store_true' , dest='version' ,help='report version'     )
+	parser.add_option('-v', '--verbose'		, action='store_true' , dest='verbose' ,help='verbose output'	  )
+	parser.add_option('-d', '--deploy'		, action='store_true' , dest='deploy'  ,help='update the bundle'  )
+	parser.add_option('-D', '--depends'	    , action='store_true' , dest='depends' ,help='report dependancies')
 
 	##
 	# parse and test for errors
 	(options, args) = parser.parse_args()
 
 	if options.version:
-		print('version: '+version)
+		global version
+		print('version: %s' % (version))
 		exit(0)
 
-	deploy=options.deploy
-	depends=options.depends
 	if len(args) != 1:
 		parser.print_help()
 		return
 
+	if not options.depends and not options.deploy:
+		options.depends=True
+
 	##
 	# dependdict key is a library path.  Value is a set of dependant library paths
-	dependdict = {}  # dependdict['/usr/lib/foo.dylib'] = Set([ '/usr/lib/a.dylib', ... ])
-	libname    = args[0]
+	dependdict   = {}  # dependdict['/usr/lib/foo.dylib'] = Set([ '/usr/lib/a.dylib', ... ])
+	libname      = args[0]
+	execname     = ''
 	if os.path.isdir(libname):
 		execname = os.path.basename(os.path.abspath(libname)).strip('.app');
 		execname = os.path.join(libname,'Contents/MacOS/',execname)
 		if os.path.isfile(execname):
 			libname=execname
-	execdir    = os.path.abspath(os.path.join(libname,'..'))
-	loaddir    = os.path.abspath(os.path.join(execdir,'../Frameworks/'))
+	execdir      = os.path.abspath(os.path.join(libname,'..'))
+	loaddir      = execdir if execname == '' else os.path.abspath(os.path.join(execdir,'../Frameworks/'))
+
+	if options.verbose:
+		print('execdir = %s, loaddir = %s' % (execdir,loaddir) )
 
 	##
 	# recursively build the dependency dictionary
 	depend(execdir,loaddir,libname,dependdict)
 
 	##
-	# sort and report
-	results=tsort(dependdict)
-	for result in results:
-		print result
+	# --deploy: sort and report
+	if options.deploy:
+		eprint("option deploy not implemented yet")
+		exit(1)
+
+	##
+	# --depends: sort and report
+	if options.depends:
+		results=tsort(dependdict)
+		for result in results:
+			print(result)
 #
 ##
 
