@@ -11,7 +11,11 @@ __author__	= "Robin Mills <robin@clanmills.com>"
 import string
 import os
 import sys
+import optparse
 from sets import Set
+
+global version, verbose, deploy, depends
+version="2017-06-10"
 
 ##
 # recursively update dependdict for libname (which can be @executable_path etc)
@@ -20,6 +24,9 @@ from sets import Set
 # returns path to libname or '' (empty string)
 def depend(execdir,loaddir,libname,dependdict):
 	""" recursive descent of the libraries """
+
+	global version
+	global verbose
 
 	##
 	# discover libpath for libname
@@ -64,8 +71,8 @@ def tsort(dependdict): # returns (ordered) array of libraries
 		depends=dependdict[key]
 		for d in depends:
 			if len(d) > 0:
-				D=d.replace(' ','+');
-				K=key.replace(' ','+')
+				D=d.replace(' ','*');
+				K=key.replace(' ','*')
 				file.write( '%s %s\n' % (K,D) )
 	file.close()
 	cmd='tsort "%s" 2>/dev/null' % (filename)
@@ -74,7 +81,7 @@ def tsort(dependdict): # returns (ordered) array of libraries
 
 	result=[]
 	for line in lines:
-		line=line[:-1].replace('+',' ')
+		line=line[:-1].replace('*',' ')
 		result.append(line)
 	return result;
 #
@@ -82,21 +89,49 @@ def tsort(dependdict): # returns (ordered) array of libraries
 
 ##
 #
-def main(argv):
+def main():
+	global version, verbose, deploy, depends
+	##
+	# set up argument parser
+	usage = "usage: %prog [options]+ target"
+	parser = optparse.OptionParser(usage)
+
+	parser.add_option('-V', '--version'		, action='store_true' , dest='version' ,help='report version'        ,default=False)
+	parser.add_option('-v', '--verbose'		, action='store_true' , dest='verbose' ,help='verbose output'	     ,default=False)
+	parser.add_option('-d', '--deploy'		, action='store_true' , dest='deploy'  ,help='update the bundle'	 ,default=False)
+	parser.add_option('-D', '--depends'	    , action='store_true' , dest='depends' ,help='report dependancies'	 ,default=False)
+
+	##
+	# no arguments, report and quit
+	if len(sys.argv) == 1:
+		parser.print_help()
+		return
+
+	##
+	# parse and test for errors
+	(options, args) = parser.parse_args()
+
+	if options.version:
+		print('version: '+version)
+		exit(0)
+
+	deploy=options.deploy
+	depends=options.depends
+	if len(args) != 1:
+		parser.print_help()
+		return
+
 	##
 	# dependdict key is a library path.  Value is a set of dependant library paths
 	dependdict = {}  # dependdict['/usr/lib/foo.dylib'] = Set([ '/usr/lib/a.dylib', ... ])
-	libname    = argv[0]
+	libname    = args[0]
 	if os.path.isdir(libname):
-		execname = os.path.basename(libname).strip('.app');
+		execname = os.path.basename(os.path.abspath(libname)).strip('.app');
 		execname = os.path.join(libname,'Contents/MacOS/',execname)
-		print('execname: ' + execname)
 		if os.path.isfile(execname):
 			libname=execname
 	execdir    = os.path.abspath(os.path.join(libname,'..'))
 	loaddir    = os.path.abspath(os.path.join(execdir,'../Frameworks/'))
-
-	print("execdir = %s, loaddir = %s" % (execdir,loaddir) );
 
 	##
 	# recursively build the dependency dictionary
@@ -111,7 +146,7 @@ def main(argv):
 ##
 
 if __name__ == '__main__':
-	main(sys.argv[1:])
+	main()
 
 # That's all Folks!
 ##
