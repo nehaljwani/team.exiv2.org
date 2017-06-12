@@ -13,6 +13,7 @@ import string
 import os
 import sys
 import optparse
+import subprocess
 from sets import Set
 
 global version, options
@@ -50,13 +51,15 @@ def depend(execdir,loaddir,libname,dependdict):
 			dependdict[libpath]=Set([])                 # push now to prevent infinite loop in recursion
 			cmd = 'otool -L "%s"' % libpath         	# otool -L prints library dependancies:
 														# libpath:
-														# <tab>dependancy (metadata) ...
+														# <tab>dependency (metadata) ...
+			if options.verbose:
+				print(cmd)
 			for line in os.popen(cmd).readlines():      # run cmd
-				if line[:1]=='\t':                      # parse <tab>dependancy (metadata)
-					dependancy=line.split()[0]
-					# print libpath,' => ',dependancy
-					# recurse to find dependancies of dependancy
-					dpath=depend(execdir,loaddir,dependancy,dependdict)
+				if line[:1]=='\t':                      # parse <tab>dependency (metadata)
+					dependency=line.split()[0]
+					# print libpath,' => ',dependency
+					# recurse to find dependancies of dependency
+					dpath=depend(execdir,loaddir,dependency,dependdict)
 					dependdict[libpath].add(dpath)      # update dependdict from recursion
 	else:
 		print("depend: execdir=%s, loaddir=%s, libname=%s" % (execdir,loaddir,libname))
@@ -64,6 +67,15 @@ def depend(execdir,loaddir,libname,dependdict):
 		libpath=''
 
 	return libpath
+
+def execute(cmd):
+	global options
+	if options.verbose:
+		print('$ ' + cmd)
+	if not options.dryrun:
+		n=subprocess.call(cmd, shell=True)
+		if n!=0:
+			exit(n)
 
 def deploy(execdir,loaddir,libname):
 	""" modify the install_names in a library """
@@ -77,21 +89,20 @@ def deploy(execdir,loaddir,libname):
 	if os.path.isfile(libpath):
 		cmd = 'otool -L "%s"' % libpath         	# otool -L prints library dependancies:
 													# libpath:
-													# <tab>dependancy (metadata) ...
+													# <tab>dependency (metadata) ...
 		for line in os.popen(cmd).readlines():      # run cmd
-			if line[:1]=='\t':                      # parse <tab>dependancy (metadata)
-				dependancy=line.split()[0]
+			if line[:1]=='\t':                      # parse <tab>dependency (metadata)
+				dependency=line.split()[0]
 				skip=False
 				for i in ['@executable_path/', '@loader_path/', '/Library/', '/System/', '/usr/lib/']:
-					skip = skip or dependancy[:len(i)]==i;
+					skip = skip or dependency[:len(i)]==i;
 				if not skip:
-					stub=''
+					stub=os.path.basename(dependency)
 					rpath='@rpath/'
-					if dependancy[:len(rpath)] == rpath:
-						stub=dependancy[len(rpath):] # '@rpath/QtConcurrent.framework/Versions/5/QtConcurrent'
-					cmd="install_name_tool -change '%s' '%s' '%s'" % (dependancy,'@loader_path/../Frameworks/'+stub,libname)
-					print(cmd)
-					# os.popen(cmd)
+					if dependency[:len(rpath)] == rpath:
+						stub=dependency[len(rpath):] # '@rpath/QtConcurrent.framework/Versions/5/QtConcurrent'
+					cmd="install_name_tool -change '%s' '%s' '%s'" % (dependency,'@loader_path/../Frameworks/'+stub,libname)
+					execute(cmd)
 					# copy Qt Framework if necessary
 					if stub.find('.framework') >=0:
 						framework=stub[:stub.find('.framework')]
@@ -99,10 +110,12 @@ def deploy(execdir,loaddir,libname):
 						framework = '%s/%s.framework' % (options.qt,framework)
 						if not os.path.isdir(Framework):
 							if os.path.isdir(framework):
-								print("ditto '%s' '%s' '%s'" % (framework,Framework) )
+								execute("ditto '%s' '%s'" % (framework,Framework) )
 							else:
 								sprint('*** error %s not available' % framework)
 								exit(1)
+					else:
+						execute("ditto '%s' '%s'" % (dependency,loaddir+'/'+stub))
 
 	else:
 		print("deploy: execdir=%s, loaddir=%s, libname=%s" % (execdir,loaddir,libname))
@@ -146,6 +159,7 @@ def main():
 	parser.add_option('-v', '--verbose'		, action='store_true' , dest='verbose' ,help='verbose output'	  )
 	parser.add_option('-d', '--deploy'		, action='store_true' , dest='deploy'  ,help='update the bundle'  )
 	parser.add_option('-D', '--depends'	    , action='store_true' , dest='depends' ,help='report dependancies')
+	parser.add_option('-X', '--dryrun'	    , action='store_true' , dest='dryrun'  ,help='do not execute commands')
 	parser.add_option('-q', '--qt'	        , action='store'      , dest='qt'      ,help='qt directory'       ,default = os.environ['HOME']+'/Qt/5.9/clang_64/lib')
 
 	##
@@ -163,6 +177,7 @@ def main():
 
 	if not options.depends and not options.deploy:
 		options.depends=True
+	options.verbose = options.verbose or options.dryrun
 
 	##
 	# dependdict key is a library path.  Value is a set of dependant library paths
@@ -175,10 +190,13 @@ def main():
 			libname=execname
 	execdir      = os.path.abspath(os.path.join(libname,'..'))
 	loaddir      = execdir if execname == '' else os.path.abspath(os.path.join(execdir,'../Frameworks/'))
+	if not os.path.isdir(loaddir):
+		os.mkdir(loaddir)
+
 	options.qt   = os.path.abspath(options.qt)
 
 	if options.verbose:
-		print('libpath = %s execdir = %s, loaddir = %s' % (libpath,execdir,loaddir) )
+		print('libname = %s execdir = %s, loaddir = %s' % (libname,execdir,loaddir) )
 
 	##
 	# --deploy:
