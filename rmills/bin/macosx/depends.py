@@ -14,10 +14,12 @@ import os
 import sys
 import optparse
 import subprocess
-from sets import Set
+from   sets import Set
+import ctypes
+import ctypes.util
 
 global version, options
-version="2017-06-10"
+version="2017-06-22"
 
 def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
@@ -52,7 +54,7 @@ def depend(execdir,loaddir,libname,dependdict):
 			cmd = 'otool -L "%s"' % libpath         	# otool -L prints library dependancies:
 														# libpath:
 														# <tab>dependency (metadata) ...
-			if options.verbose:
+			if options.verbose or options.dryrun:
 				print(cmd)
 			for line in os.popen(cmd).readlines():      # run cmd
 				if line[:1]=='\t':                      # parse <tab>dependency (metadata)
@@ -70,7 +72,9 @@ def depend(execdir,loaddir,libname,dependdict):
 
 def execute(cmd):
 	global options
-	if options.verbose:
+	if options.dryrun:
+		print(cmd)
+	elif options.verbose:
 		print('$ ' + cmd)
 	if not options.dryrun:
 		n=subprocess.call(cmd, shell=True)
@@ -89,7 +93,7 @@ def deploy(execdir,loaddir,libname):
 	if os.path.isfile(libpath):
 		cmd = 'otool -L "%s"' % libpath         	# otool -L prints library dependancies:
 													# libpath:
-													# <tab>dependency (metadata) ...
+											 		# <tab>dependency (metadata) ...
 		for line in os.popen(cmd).readlines():      # run cmd
 			if line[:1]=='\t':                      # parse <tab>dependency (metadata)
 				dependency=line.split()[0]
@@ -97,25 +101,43 @@ def deploy(execdir,loaddir,libname):
 				for i in ['@executable_path/', '@loader_path/', '/Library/', '/System/', '/usr/lib/']:
 					skip = skip or dependency[:len(i)]==i;
 				if not skip:
+					if options.verbose:
+						print('# dependency = %s' % dependency)
 					stub=os.path.basename(dependency)
 					rpath='@rpath/'
+					dep=False
 					if dependency[:len(rpath)] == rpath:
 						stub=dependency[len(rpath):] # '@rpath/QtConcurrent.framework/Versions/5/QtConcurrent'
-					cmd="install_name_tool -change '%s' '%s' '%s'" % (dependency,'@loader_path/../Frameworks/'+stub,libname)
-					execute(cmd)
-					# copy Qt Framework if necessary
-					if stub.find('.framework') >=0:
-						framework=stub[:stub.find('.framework')]
-						Framework = '%s/%s.framework' % (loaddir,framework)
-						framework = '%s/%s.framework' % (options.qt,framework)
-						if not os.path.isdir(Framework):
-							if os.path.isdir(framework):
-								execute("ditto '%s' '%s'" % (framework,Framework) )
-							else:
-								sprint('*** error %s not available' % framework)
-								exit(1)
+						# copy Qt Framework if necessary
+						if stub.find('.framework') >=0:
+							framework=stub[:stub.find('.framework')]
+							Framework = '%s/%s.framework' % (loaddir,framework)
+							framework = '%s/%s.framework' % (options.qt,framework)
+							if not os.path.isdir(Framework):
+								if os.path.isdir(framework):
+									execute("ditto '%s' '%s'" % (framework,Framework) )
+									execute("find '%s' -depth -name \"*_debug\" -exec rm -rf {} \;" % Framework )
+								else:
+									eprint('*** error %s not available' % framework)
+									exit(1)
+						else: # not a framework
+							dep=dependency
+					elif not os.path.exists(dependency):
+						dep=ctypes.util.find_library(dependency)
+						if not dep:
+							eprint('*** error %s not available' % dependency)
+							exit(1)
 					else:
-						execute("ditto '%s' '%s'" % (dependency,loaddir+'/'+stub))
+						dep=dependency
+
+					if dep:
+						stub=os.path.basename(dep)
+						execute("install_name_tool -change '%s' '@rpath/%s' '%s'" % (dependency,stub,libname))
+						libdir=os.path.split(libpath)[0]
+						execute("ditto '%s' '%s/../Frameworks/%s'" % (dep,libdir,stub))
+					elif dependency[:len(rpath)] != rpath:
+						eprint('*** error %s not available' % dependency)
+						exit(1)
 
 	else:
 		print("deploy: execdir=%s, loaddir=%s, libname=%s" % (execdir,loaddir,libname))
@@ -195,8 +217,26 @@ def main():
 
 	options.qt   = os.path.abspath(options.qt)
 
+	# read LC_RPATH from the output of otool -l
+	rpath=''
+	#
+	# rmills@rmillsmbp:~/clanmills $ otool -l '/Applications/Luminance HDR 2.5.1.app/Contents/MacOS/Luminance HDR 2.5.1'  | nl -b a | grep -i LC_RPATH | sed -Ee 's$^ +$$g'
+	# 582	          cmd LC_RPATH  ### cut -d' ' -f 1 to get 582
+	# 586 rmills@rmillsmbp:~/clanmills $
+	# rmills@rmillsmbp:~/clanmills $ otool -l '/Applications/Luminance HDR 2.5.1.app/Contents/MacOS/Luminance HDR 2.5.1' | head -$((582+2)) | tail -1 | sed -Ee 's$ +$ $g' | cut -d' ' -f 3
+	# @loader_path/../Frameworks/
+	# rmills@rmillsmbp:~/clanmills $
+	cmd = "otool -l '%s'  | nl -b a | grep -i LC_RPATH | sed -Ee 's$^ +$$g' | cut -d' ' -f 1"     % libname
+	n = int(os.popen(cmd).readlines()[0])
+	if n>0:
+		cmd = "otool -l '%s'  | head -$((%d+2)) | tail -1  | sed -Ee 's$ +$ $g' | cut -d' ' -f 3" % (libname,n)
+		rpath=os.popen(cmd).readlines()[0].strip('\n')
+
 	if options.verbose:
-		print('libname = %s execdir = %s, loaddir = %s' % (libname,execdir,loaddir) )
+		print('# libname = %s' % libname)
+		print('# execdir = %s' % execdir)
+		print('# loaddir = %s' % loaddir)
+		print('# rpath   = %s' % rpath  )
 
 	##
 	# --deploy:
