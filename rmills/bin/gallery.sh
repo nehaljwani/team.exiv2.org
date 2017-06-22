@@ -116,14 +116,16 @@ EOF
 	echo '<body translate="no" style="background-image: url('/tartan.gif');margin-left:150px;">'
 	echo '<div align="right"><a href="."><img src="/js/PhotoSwipe/dist/default-skin/close.png"></a></div>'
 	echo '<div class="my-gallery" itemscope itemtype="http://schema.org/ImageGallery">'
-	# exiv2 -pa --grep DateTimeOriginal *.jpg *.JPG | sort -k 5
+	# exiv2 -pa --grep DateTimeOriginal *.jpg *.JPG  | sort -k 5
 
 	pi=Plates
 	if [ ! -e $pi ]; then pi=Images ; fi
 
-	for I in $(find $pi -iname "*.jpg" -maxdepth 1); do
+	for I in $(find $pi -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -maxdepth 1); do
 		i=$(basename "$I")
 		S=$(pathname "$I")
+		c=$(exiv2 -Pv --grep caption/i "$I") # caption
+		if [ -z "$c" ]; then c=$i; fi
 		s=$(echo $S | sed -e 's/.*clanmills//g' | sed -e "s/$pi/Thumbs/")
 		S=$(echo $S | sed -e 's/.*clanmills//g')
 		w=$(sips -g pixelWidth  "$I" | tail -1 | cut -d: -f 2- | sed -e 's/ //g')
@@ -133,7 +135,7 @@ EOF
 		echo '    <figcaption><h3>'$i'</h3><p>'$i'</p></figcaption>'
 		echo '    <image src="'$s'"/>'
 		echo '  </a>'
-		echo '  <figcaption itemprop="caption description">'$i'</figcaption>'
+		echo "  <figcaption itemprop=\"caption description\">$c</figcaption>"
 		echo '</figure>'
 	done
 	echo '</div>'

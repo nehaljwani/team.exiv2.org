@@ -415,13 +415,13 @@ def searcher(startdir,myData):
     os.path.walk(startdir, visitor, myData)
 ##
 #
-def writeImage(webDir,theDir,filename,pathname,width,aspect,rotate,cols,bGeotagIcon):
+def writeImage(webDir,theDir,filename,pathname,width,aspect,rotate,cols,bGeotagIcon,caption):
     global useSips,mustUpdate
     imagename = os.path.join(webDir,theDir)
     if not os.path.isdir(imagename):
         os.mkdir(imagename)
     imagename = os.path.join(imagename, filename)
-#   print "writeImages = " + imagename + " width = " + str(width)
+#   print "writeImage = " + imagename + " width = " + str(width)
 
     if mustUpdate or not os.path.exists(imagename):
         if useSips:
@@ -456,15 +456,18 @@ def writeImage(webDir,theDir,filename,pathname,width,aspect,rotate,cols,bGeotagI
 
         if bGeotagIcon:
             geotagIcon(imagename,"brm")
+        if caption:
+            print('caption,pathname = %s,%s' % (caption,imagename))
+            os.popen("exiv2 -M'set Iptc.Application2.Caption " + caption + "'"  + " '" + imagename + "'")
 
 
 ##
 #
-def writeImages(webDir,filename,pathname,width,aspect,rotate,cols,bGeotagIcon):
+def writeImages(webDir,filename,pathname,width,aspect,rotate,cols,bGeotagIcon,caption):
     """writeImages - create images, thumbnails and plates"""
-    writeImage(webDir,imagesDir,filename,pathname,width     ,aspect,rotate,cols,bGeotagIcon)
-    writeImage(webDir,thumbsDir,filename,pathname,width/cols,aspect,rotate,cols,bGeotagIcon)
-    writeImage(webDir,platesDir,filename,pathname,1200      ,aspect,rotate,cols,bGeotagIcon)
+    writeImage(webDir,imagesDir,filename,pathname,width     ,aspect,rotate,cols,bGeotagIcon,0)
+    writeImage(webDir,thumbsDir,filename,pathname,width/cols,aspect,rotate,cols,bGeotagIcon,0)
+    writeImage(webDir,platesDir,filename,pathname,1200      ,aspect,rotate,cols,bGeotagIcon,caption)
 
 
 ##
@@ -490,7 +493,7 @@ def writeWebPage(webDir,filename,pathname,webPageString,subs,width,aspect,rotate
     file.write(string.Template(webPageString).safe_substitute(subs))
 
     file.close()
-    writeImages(webDir,filename,pathname,width,aspect,rotate,cols,bGeotagIcon)
+    writeImages(webDir,filename,pathname,width,aspect,rotate,cols,bGeotagIcon,subs['caption'])
 
 ##
 #
@@ -937,6 +940,7 @@ def main(argv):
             if caption:
                 print "caption = ", caption
                 subs['pname']=caption
+                subs['caption']=caption
 
             title=subs['pname']
             if title in alts:
