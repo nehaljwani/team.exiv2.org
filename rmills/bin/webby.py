@@ -463,7 +463,10 @@ def writeImage(webDir,theDir,filename,pathname,width,aspect,rotate,cols,bGeotagI
 
 ##
 #
-def writeImages(webDir,filename,pathname,width,aspect,rotate,cols,bGeotagIcon,caption):
+def writeImages(webDir,filename,pathname,width,aspect,rotate,cols,bGeotagIcon,caption,filedict):
+    if filedict[pathname][7]: # bIgnore
+        return ;
+
     """writeImages - create images, thumbnails and plates"""
     writeImage(webDir,imagesDir,filename,pathname,width     ,aspect,rotate,cols,bGeotagIcon,0)
     writeImage(webDir,thumbsDir,filename,pathname,width/cols,aspect,rotate,cols,bGeotagIcon,0)
@@ -472,7 +475,7 @@ def writeImages(webDir,filename,pathname,width,aspect,rotate,cols,bGeotagIcon,ca
 
 ##
 #
-def writeWebPage(webDir,filename,pathname,webPageString,subs,width,aspect,rotate,cols,bGeotagIcon):
+def writeWebPage(webDir,filename,pathname,webPageString,subs,width,aspect,rotate,cols,bGeotagIcon,filedict):
     """writeWebPage - write out a photo page"""
     global bReplace
     if os.path.exists(webDir) and bReplace:
@@ -493,7 +496,7 @@ def writeWebPage(webDir,filename,pathname,webPageString,subs,width,aspect,rotate
     file.write(string.Template(webPageString).safe_substitute(subs))
 
     file.close()
-    writeImages(webDir,filename,pathname,width,aspect,rotate,cols,bGeotagIcon,subs['caption'])
+    writeImages(webDir,filename,pathname,width,aspect,rotate,cols,bGeotagIcon,subs['caption'],filedict)
 
 ##
 #
@@ -970,7 +973,7 @@ def main(argv):
                     """&z=17&iwloc=addr&output=kml">click here</a>""" + \
                     """ """
             if webPageString:
-                writeWebPage(webDir,filename,pathname,configModule.webPageString,subs,width,aspect,rotate,cols,bGeotag)
+                writeWebPage(webDir,filename,pathname,configModule.webPageString,subs,width,aspect,rotate,cols,bGeotag,filedict)
 
             bStartOfRow  = page % cols == 0
             page        += 1
