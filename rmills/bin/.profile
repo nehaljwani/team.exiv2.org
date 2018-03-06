@@ -399,6 +399,10 @@ if [ $PLATFORM == linux ]; then
     export JAVA_HOME=$J
     export PATH=$PATH:$HOME/bin:$JAVA_HOME/bin
 
+    if [ -z "$LD_LIBRARY_PATH"]; then export LD_LIBRARY_PATH=/usr/local/lib
+    else                              export LD_LIBRARY_PATH=""$LD_LIBRARY_PATH:/usr/local/lib"
+    fi
+
     # JRE_HOME=/usr/local/java/jre1.7.0_21
     # PATH=$PATH:$HOME/bin:$JRE_HOME/bin
 fi
@@ -532,7 +536,7 @@ if [ "$PLATFORM" == "macosx" ]; then
   			sudo rm -rf .MobileBackups.trash
   		fi
   		# tmutil = Time Machine Util ; pmset = Power Management Settings ;
-  		sudo tmutil disablelocal
+  		# sudo tmutil disablelocal
   	popd >/dev/null
 
   	alias locate_update="sudo /usr/libexec/locate.updatedb &"
@@ -574,7 +578,7 @@ fi
 
 cd ~/
 
-export BOOST_ROOT=/Users/rmills/gnu/boost/boost_1_64_0
+export BOOST_ROOT=/Users/rmills/gnu/boost/boost_1_66_0
 export BOOST_LIBRARYDIR=$BOOST_ROOT/libs
 if [ -z "$DYLD_LIBRARY_PATH" ]; then
 	export DYLD_LIBRARY_PATH=$BOOST_ROOT

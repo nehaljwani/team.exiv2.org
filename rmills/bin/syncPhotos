@@ -15,7 +15,7 @@ if [ ! -d "$directory" ]; then
 fi
 
 declare -A drives=( \
-   ["Photos"]="/Volumes/Photos/" \
+   # ["Photos"]="/Volumes/Photos/" \
    ["Backup"]="/Volumes/Backup/Photos/" \
 )
 
