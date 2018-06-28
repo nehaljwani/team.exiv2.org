@@ -414,6 +414,14 @@ if [ $PLATFORM == macosx ]; then
 	}
 fi
 
+if [ $PLATFORM == mingw ]; then
+	if [ ! -z "$MINGW_PREFIX" ]; then
+		if [ -e "$MINGW_PREFIX" ]; then
+			PATH="$MINGW_PREFIX/bin:$PATH"
+		fi
+	fi
+fi
+
 # hieroglyphics
 alias ..='cd ..'
 alias ...=sudo
