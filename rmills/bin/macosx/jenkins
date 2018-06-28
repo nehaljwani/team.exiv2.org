@@ -1,7 +1,7 @@
 #!/bin/bash
 
 Syntax() {
-	echo "$0 [ status | start | stop | restart | cmd ... ]"
+	echo "$0 [ status | start | stop | restart | runner | cmd ... ]"
 	exit 1
 }
 
@@ -37,6 +37,7 @@ case "$1" in
 	-h|--help|-\?) Syntax ;;
 	status)        Status ;;
 	stop)          Launch unload ;;
+	runner)        sudo /Library/Application\ Support/Jenkins/jenkins-runner.sh ;;
 	start)         if [ $running == "0" ]; then Launch   load ;else Running; fi ;;
 	restart)       if [ $running == "1" ]; then Launch unload ;fi ; Launch load  ;;
 	do|\
