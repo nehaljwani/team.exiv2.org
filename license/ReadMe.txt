@@ -1,0 +1,4 @@
+-rw-r--r--@ 1 rmills  staff   424B  3 Aug 05:52 ReadMe.txt                        This document
+-rw-r--r--@ 1 rmills  staff    19K  3 Aug 05:46 060821a Exiv2 License.pdf         Exiv2 Commercial License
+-rw-r--r--@ 1 rmills  staff   142K  3 Aug 05:38 GPL licence contact details.pdf   Legal Opinion   (August 2018)
+-rw-r--r--@ 1 rmills  staff    92K  2 Aug 15:58 Exiv2CommercialLicense.pdf        Team Discussion (May 2018)
