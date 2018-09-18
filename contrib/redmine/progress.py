@@ -8,7 +8,7 @@ import sys
 import datetime
 
 global J,args,options,unexpected,version
-version='0.26'
+version='0.27'
 
 ##
 # Help:
@@ -214,7 +214,7 @@ def reportTodo():
         for i in issues:
             try:
                 if   i['assigned_to']['name']=='Robin Mills':
-                 if  i['fixed_version']['name']=='0.26':
+                 if  i['fixed_version']['name']==version:
                     size = i['estimated_hours']
                     done = i['done_ratio'] * size / 100.0
                     left = size - done
@@ -310,7 +310,7 @@ def reportResponse():
         issues=j['issues']
         for i in issues:
             try:
-                if i['fixed_version']['name'] == '0.26':
+                if i['fixed_version']['name'] == verion:
                     issue=i['subject']
                     created=i['created_on']
                     updated=i['updated_on']
@@ -358,13 +358,16 @@ def reportResponse():
 ##
 # report Release Credit Report
 def reportRelease():
-    printHeader("Release Credits");
     global J,args,options,unexpected,version
+    console = options['console']
+
+    if not console:
+        printHeader("Release Credits");
 
     engineers0='| _Engineer_                  |>. _Issues_|>. _Hours_|'
     engineers1='| %-26s  |>. %6d  |>. %5d  |'
     engineers2='| *%s*                     |>.  *%d*  |>. *%d* |'
-    if options['console']:
+    if console:
         engineers0='| Engineer                   | Issues | Hours |'
         engineers1='| %-26s | %6d | %5d |'
         engineers2='| %-26s | %6d | %5d |'
@@ -385,32 +388,40 @@ def reportRelease():
                 pass
 
 #* Exiv2 library
-#	- <a title="bug 0000442" href="http://dev.exiv2.org/issues/0000442">0000442</a>:	exivsimple has array index errors when stripping quotes form trivial input strings
-#				(Thomas Beutlich)
+#   - <a title="bug 0000442" href="http://dev.exiv2.org/issues/0000442">0000442</a>:    exivsimple has array index errors when stripping quotes form trivial input strings
+#               (Thomas Beutlich)
     for category in sorted(categories.keys(), key=lambda x: x[0]):
         issues=categories[category]
         Category = category[0].upper() + category[1:]
-        print('*', Category + ':' ,'('+str(len(issues))+')')
+        if not console:
+            print('*', Category + ':' ,'('+str(len(issues))+')')
+        else:
+            print(Category + ':' ,'('+str(len(issues))+')')
+
+
         for i in issues:
             try:
                 id = "%07d" % (i['id'])
                 engineer=i['assigned_to']['name']
                 author=i['author']['name']
-                print('\t- <a href="http://dev.exiv2.org/issues/' +id + '">' + id + '</a>:\t' + i['subject'])
-                attrib=''
-                if not author == 'Robin Mills':
-                    attrib=author
-                if not engineer == 'Robin Mills':
-                    if not engineer == author:
-                        if len(attrib):
-                            attrib = attrib + ' / '
-                        attrib = attrib + engineer
-                if len(attrib):
-                    print( '\t\t\t\t(' + attrib + ')' )
+                if not console:
+                    print('\t- <a href="http://dev.exiv2.org/issues/' +id + '">' + id + '</a>:\t' + i['subject'])
+                else:
+                    print('\t' + id + '\t' + i['subject'])
+                if not console:
+                    attrib=''
+                    if not author == 'Robin Mills':
+                        attrib=author
+                    if not engineer == 'Robin Mills':
+                        if not engineer == author:
+                            if len(attrib):
+                                attrib = attrib + ' / '
+                            attrib = attrib + engineer
+                    if len(attrib):
+                        print( '\t\t\t\t(' + attrib + ')' )
             except:
                 pass
         print()
-
     print('')
 
 ##
