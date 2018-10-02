@@ -374,6 +374,8 @@ def reportRelease():
 
     categories = {} # key = CategoryName, Value: [ issue ...]
 
+    open=0
+    closed=0
     for j in J:
         issues=j['issues']
         for i in issues:
@@ -384,8 +386,28 @@ def reportRelease():
                     if not category in categories:
                         categories[category]=[]
                     categories[category].append(i)
+                    if i['status']['name'] == 'Closed':
+                        closed +=1
+                    else:
+                        open +=1
             except:
                 pass
+    print('%d issues have been closed' % (closed) )
+    print('http://dev.exiv2.org/projects/exiv2/issues')
+    print()
+    print('Open: (%d)' % (open) )
+    for j in J:
+        issues=j['issues']
+        for i in issues:
+            try:
+                if i['fixed_version']['name'] == version:
+                    if i['status']['name'] != 'Closed':
+                        id = "%07d" % (i['id'])
+                        print('\t' + id + '\t' + i['subject'])
+            except:
+                pass
+    print('')
+
 
 #* Exiv2 library
 #   - <a title="bug 0000442" href="http://dev.exiv2.org/issues/0000442">0000442</a>:    exivsimple has array index errors when stripping quotes form trivial input strings
