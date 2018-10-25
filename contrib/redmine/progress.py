@@ -355,8 +355,6 @@ def reportResponse():
 
 ##
 # report Release Credit Report
-##
-# report Release Credit Report
 def reportRelease():
     global J,args,options,unexpected,version
     console = options['console']
@@ -395,7 +393,7 @@ def reportRelease():
     print('%d issues have been closed' % (closed) )
     print('http://dev.exiv2.org/projects/exiv2/issues')
     print()
-    print('Open: (%d)' % (open) )
+    print('* Open: (%d)' % (open) )
     for j in J:
         issues=j['issues']
         for i in issues:
@@ -403,7 +401,8 @@ def reportRelease():
                 if i['fixed_version']['name'] == version:
                     if i['status']['name'] != 'Closed':
                         id = "%07d" % (i['id'])
-                        print('\t' + id + '\t' + i['subject'])
+                        print('\t- <a href="http://dev.exiv2.org/issues/' +id + '">' \
+                        + id + '</a>:\t' + i['subject'])
             except:
                 pass
     print('')
