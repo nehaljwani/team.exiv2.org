@@ -98,13 +98,20 @@ SCHEMA = dc \
          expressionmedia \
          MicrosoftPhoto
 
-all: html doc
+all: check-environment html doc
 
 .PHONY: html doc news clean update \
-        update-intro update-sample update-conversion update-changelog update-tags update-makernotes \
-        publish really-publish
+        update-intro update-sample update-conversion update-changelog update-tags update-makernotes update-manpage \
 
-html: news
+check-environment:
+ifndef EXIV2HOME
+  $(error EXIV2HOME is undefined.  It should be something like /home/rmills/github/exiv2/exiv2)
+endif
+ifndef EXIV2WEB
+  $(error EXIV2WEB is undefined.  It should be something like /home/rmills/exiv2/team/website)
+endif
+
+html: news check-environment
 	@bin/download.sh
 	@bin/gen.py master/*.in
 	@echo "Moving files to html/ ..."
@@ -150,9 +157,7 @@ update: update-manpage update-intro update-sample update-conversion update-chang
 
 update-manpage:
 	@man -t exiv2 | ps2pdf - html/exiv2-manpage.pdf
-	@cat ../src/exiv2.1 | sed '/^JPEG/ i\
-' | man2html -Hlinux.die.net -M/man -p | sed -e's,\(HREF=.*\)+,\1/,' -e'1,15d' -e'/NAME="index"/,$$d' \
-	| sed -e's/ &lt;<A HREF="mailto.*&gt;//' -e'$$d' | sed -e's/<TABLE>/<TABLE class="table table-striped">/' -e's,<TR VALIGN=top><TD><HR></TD><TD><HR></TD><TD><HR></TD><TD><HR></TD><TD><HR></TD></TR>,,' -e's/<TR VALIGN=top>/<TR>/' -e's,<TR><TD>\([A-Z0-9]*\)</TD>,<TR><TH>\1</TH>,' -e's/<H2>/<H2 class="text-capitalize">/' > var/__manpage__
+	@man    exiv2 | man2html - > var/__manpage__
 
 update-intro:
 # commented for now, until the doc/ intro is updated accordingly
@@ -199,8 +204,3 @@ clean:
 	@rm -vf doxygen/exiv2-header.html
 	@rm -vf doxygen/exiv2-footer.html
 
-publish:
-	rsync -vlDtrz --delete --exclude='.svn' --include="exiv2-`cat var/__version__`*" --exclude='exiv2-*tar.gz' --exclude='exiv2-*.zip' -e ssh html/ `whoami`@localhost:rs
-
-really-publish:
-	rsync -vlDtrz --delete --exclude='misc/' --exclude='.svn' --include="exiv2-`cat var/__version__`*" --exclude='exiv2-*tar.gz' --exclude='exiv2-*.zip' -e "ssh -2 -i $$HOME/.ssh/root@exiv2.org" html/ root@exiv2.org:/var/www/exiv2/

@@ -1,0 +1,13 @@
+<div class="list-group">
+<a href="whatsnew.html#item1" class="list-group-item active"><h4 class="list-group-item-heading">Exiv2 v0.27 RC1 <small>27-Oct-2018</small>
+</h4>
+<p class="list-group-item-text">Release Candidate 1</p></a><a href="whatsnew.html#item2" class="list-group-item"><h4 class="list-group-item-heading">Exiv2 v0.26 slipsteam <small>17-May-2017</small>
+</h4>
+<p class="list-group-item-text">Release</p></a><a href="whatsnew.html#item3" class="list-group-item"><h4 class="list-group-item-heading">Exiv2 v0.26 <small>28-April-2017</small>
+</h4>
+<p class="list-group-item-text">Release
+  </p></a><a href="whatsnew.html#item4" class="list-group-item"><h4 class="list-group-item-heading">Window dressing <small>10-Oct-2015</small>
+</h4>
+<p class="list-group-item-text">New and more functional web pages.
+  </p></a>
+</div>

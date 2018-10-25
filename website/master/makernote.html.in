@@ -6,17 +6,17 @@ __navbar__
 
 <div class="container">
   <div class="page-header">
-    <h1>The Exif Makernote</h1>
-  </div>
-  <p class="lead">
+    <h1>Makernotes</h1>
+  <p>
     The Makernote is tag 0x927c in the Exif IFD, <code>Exif.Photo.MakerNote</code>. According to
     the <a title="The Exif 2.2 standard (PDF)" href="Exif2-2.PDF">Exif 2.2 standard</a>, the makernote
     is <i>"a tag for manufacturers of Exif writers to record any desired information. The contents are
     up to the manufacturer, but this tag should not be used for any other than its intended purpose."</i>
   </p>
+</div><!-- /.container -->
 
-<p>Most vendors do not publish their makernote specifications. Most of the 
-<a href="#R0">specifications available on the Internet</a> 
+<p>Most vendors do not publish their makernote specifications. Most of the
+<a href="#R0">specifications available on the Internet</a>
 were reverse-engineered. Judging from the size of many makernote
 fields, manufacturers store a lot of information there and from the
 available specifications, some of this is certainly quite
@@ -51,26 +51,26 @@ information.</p>
 
 __makernotes__
 
-<p><a href="http://www.exif.org/">Exif.org</a> has another table with similar 
-  info and sample pictures: <a href="http://www.exif.org/samples.html">Digital 
-  Camera Sample Images</a>. According to this source, (at least some) Ricoh and 
+<p><a href="http://www.exif.org/">Exif.org</a> has another table with similar
+  info and sample pictures: <a href="http://www.exif.org/samples.html">Digital
+  Camera Sample Images</a>. According to this source, (at least some) Ricoh and
   Kodak cameras do not write the makernote in IFD format.</p>
 <h2><a name="R0">References</a></h2>
-<p><a name="R1">[1]</a> <a href="http://park2.wakwak.com/%7Etsuruzoh/Computer/Digicams/exif-e.html">Exif 
+<p><a name="R1">[1]</a> <a href="http://park2.wakwak.com/%7Etsuruzoh/Computer/Digicams/exif-e.html">Exif
   file format</a> by TsuruZoh Tachibanaya<br>
-  <a name="R2">[2]</a> <a href="http://www.burren.cx/david/canon.html">EXIF Makernote 
+  <a name="R2">[2]</a> <a href="http://www.burren.cx/david/canon.html">EXIF Makernote
   of Canon</a> by David Burren<br>
-  <a name="R3">[3]</a> <a href="http://www.tawbaware.com/990exif.htm">Makernote 
+  <a name="R3">[3]</a> <a href="http://www.tawbaware.com/990exif.htm">Makernote
   EXIF Tag of the Nikon 990</a> by Max Lyons<br>
-  <a name="R4">[4]</a> <a href="http://www.dicasoft.de/casiomn.htm">&quot;Makernote&quot; 
+  <a name="R4">[4]</a> <a href="http://www.dicasoft.de/casiomn.htm">&quot;Makernote&quot;
   Exif tag of Casio</a> by Eckhard Henkel<br>
-  <a name="R5">[5]</a> <a href="http://www.dalibor.cz/minolta/makernote.htm">Minolta 
+  <a name="R5">[5]</a> <a href="http://www.dalibor.cz/minolta/makernote.htm">Minolta
   MakerNote</a> by Dalibor Jelinek<br>
-  <a name="R6">[6]</a> <a href="http://www.exif.org/makernotes/SanyoMakerNote.html">Sanyo 
+  <a name="R6">[6]</a> <a href="http://www.exif.org/makernotes/SanyoMakerNote.html">Sanyo
   MakerNote</a> by John Hawkins<br>
   <a name="R7">[7]</a> <a href="http://www.x3f.info/technotes/FileDocs/MakerNoteDoc.html">
   SIGMA and FOVEON EXIF MakerNote Documentation</a> by Foveon<br>
-  <a name="R8">[8]</a> <a href="http://www.compton.nu/panasonic.html">Panasonic 
+  <a name="R8">[8]</a> <a href="http://www.compton.nu/panasonic.html">Panasonic
   MakerNote Information</a> by Tom Hughes<br>
   <a name="R9">[9]</a> <a href="http://www.ozhiker.com/electronics/pjmt/jpeg_info/makernotes.html">
   Various Makernote specifications</a> from the <a href="http://www.ozhiker.com/electronics/pjmt/index.html">

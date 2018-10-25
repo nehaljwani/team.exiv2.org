@@ -1,3 +1,185 @@
+<a name="v0.27">&nbsp;</a>
+Changes from version 0.26 to 0.27
+---------------------------------
+
+59 issues have been closed on Redmine
+About 40 issues have been closed on GitHub
+
+* Open: (9)
+	- <a href="http://dev.exiv2.org/issues/0001347">0001347</a>:	Segfault in Digikam when saving/loading certain TIFF images
+	- <a href="http://dev.exiv2.org/issues/0001346">0001346</a>:	Assertion failure in Exiv2::Internal::CiffComponent::doRead() in libexiv2
+	- <a href="http://dev.exiv2.org/issues/0001345">0001345</a>:	Assertion Failure (SIGABRT) in Exiv2:RafImage::readMetadata() in Libexiv2
+	- <a href="http://dev.exiv2.org/issues/0001341">0001341</a>:	Date/Time Original not modified for NEFs
+	- <a href="http://dev.exiv2.org/issues/0001340">0001340</a>:	Infinite loop bugs in Libexiv2 Exiv2::Image::printIFDStructure()
+	- <a href="http://dev.exiv2.org/issues/0001324">0001324</a>:	Pentax Makernote written twice
+	- <a href="http://dev.exiv2.org/issues/0001306">0001306</a>:	the lens TAMRON SP 15-30mm F/2.8 Di VC USD A012 is not properly recognised
+	- <a href="http://dev.exiv2.org/issues/0001304">0001304</a>:	Lens missing Tamron SP 90mm f/2.8 Di Macro 1:1 VC USD F017
+	- <a href="http://dev.exiv2.org/issues/0001270">0001270</a>:	Using libexiv2.a/.lib  in multhreaded app segfaults.
+
+* Build: (7)
+	- <a href="http://dev.exiv2.org/issues/0001362">0001362</a>:	Fix Clang build
+				(David Carlos Manuelda)
+	- <a href="http://dev.exiv2.org/issues/0001358">0001358</a>:	Unsuccessful build (Win7, MSVC2015, amd64_x86)
+				(Andreas Martin)
+	- <a href="http://dev.exiv2.org/issues/0001356">0001356</a>:	Small patch to configure.py
+				(Sridhar Boovaraghavan)
+	- <a href="http://dev.exiv2.org/issues/0001329">0001329</a>:	Error during cmake with gcc version parsing
+				(Maxime Daisy)
+	- <a href="http://dev.exiv2.org/issues/0001299">0001299</a>:	exiv2-0.26-trunk.tar.gz changed on download server
+				(Jonathan Riddell)
+	- <a href="http://dev.exiv2.org/issues/0001270">0001270</a>:	Using libexiv2.a/.lib  in multhreaded app segfaults.
+				(Ben Touchette)
+	- <a href="http://dev.exiv2.org/issues/0001237">0001237</a>:	Report CMake/MinGW issues to Kitware
+
+* Camera: (1)
+	- <a href="http://dev.exiv2.org/issues/0001352">0001352</a>:	Support camera Canon M100
+				(Daniel Zucchetto)
+
+* Duplicate: (1)
+	- <a href="http://dev.exiv2.org/issues/0001307">0001307</a>:	exiv2: tiffvisitor.cpp:1299: virtual void Exiv2::Internal::TiffReader::visitDirectory(Exiv2::Internal::TiffDirectory*): Assertion `tc.get()' failed.
+				(Henri Salo)
+
+* Exif: (6)
+	- <a href="http://dev.exiv2.org/issues/0001320">0001320</a>:	It is a heap-buffer-overflow in Exiv2::Jp2Image::readMetadata (jp2image.cpp:277)
+				(Zhu Liu)
+	- <a href="http://dev.exiv2.org/issues/0001319">0001319</a>:	It is a heap-buffer-overflow in Exiv2::us2Data (types.cpp:346)
+				(Zhu Liu)
+	- <a href="http://dev.exiv2.org/issues/0001318">0001318</a>:	Invalid memory address dereference in Exiv2::StringValueBase::read ( in value.cpp:302)
+				(Zhu Liu)
+	- <a href="http://dev.exiv2.org/issues/0001317">0001317</a>:	It is a heap-buffer-overflow in Exiv2::s2Data (types.cpp:383)
+				(Zhu Liu)
+	- <a href="http://dev.exiv2.org/issues/0001316">0001316</a>:	It is a heap-buffer-overflow in Exiv2::l2Data (types.cpp:398)
+				(Zhu Liu)
+	- <a href="http://dev.exiv2.org/issues/0001315">0001315</a>:	Invalid memory address dereference in Exiv2::DataValue::read (value.cpp:193)
+				(Zhu Liu)
+
+* Image format: (5)
+	- <a href="http://dev.exiv2.org/issues/0001353">0001353</a>:	Segmentation fault in the software exiv2 when the function Exiv2::tEXtToDataBuf() is finished
+				(chung-yi lin)
+	- <a href="http://dev.exiv2.org/issues/0001346">0001346</a>:	Assertion failure in Exiv2::Internal::CiffComponent::doRead() in libexiv2
+				(Sanjay Rawat)
+	- <a href="http://dev.exiv2.org/issues/0001345">0001345</a>:	Assertion Failure (SIGABRT) in Exiv2:RafImage::readMetadata() in Libexiv2
+				(Sanjay Rawat)
+	- <a href="http://dev.exiv2.org/issues/0001338">0001338</a>:	Exiv2 aborted (crashed) with "Error in `exiv2': free(): invalid next size (fast)"
+				(Sanjay Rawat)
+	- <a href="http://dev.exiv2.org/issues/0001334">0001334</a>:	Version 0.26 is returns unwanted data when the key value is received from RW2 files (Panasonic DMC-GF6 camera)
+				(Alex Stepanov)
+
+* Insufficient information: (1)
+	- <a href="http://dev.exiv2.org/issues/0001347">0001347</a>:	Segfault in Digikam when saving/loading certain TIFF images
+				(V Engmark)
+
+* Lens: (19)
+	- <a href="http://dev.exiv2.org/issues/0001372">0001372</a>:	The lens "Tamron AF 18-200mm F3.5-6.3 XR Di II"  is wrongly identified.
+				(Julian Hofer)
+	- <a href="http://dev.exiv2.org/issues/0001370">0001370</a>:	Add entry for new(ish) lens - Tamron 10-24mm F/3.5-4.5 Di II VC HLD (B023)
+				(Robert Sleator)
+	- <a href="http://dev.exiv2.org/issues/0001366">0001366</a>:	Feature Request Sigma 85mm f/1.4 DG Art Series
+				(Christian Fandel)
+	- <a href="http://dev.exiv2.org/issues/0001365">0001365</a>:	Feature Request fr Sigma 135mm f/1.8 DG Art Series
+				(Christian Fandel)
+	- <a href="http://dev.exiv2.org/issues/0001361">0001361</a>:	Wrongly identified Canon 2x extender as 1.4x extender with Tamron lens
+				(Simon Harhues)
+	- <a href="http://dev.exiv2.org/issues/0001355">0001355</a>:	New lens Tamron 100-400mm F/4.5-6.3 Di VC USD
+				(Christian Touzé)
+	- <a href="http://dev.exiv2.org/issues/0001351">0001351</a>:	Add lens: Sigma 120-300mm f/2.8 G VR
+				(Nikolai Försterling)
+	- <a href="http://dev.exiv2.org/issues/0001348">0001348</a>:	patch: add Tamron SP AF 150-600mm F/5-6.3 VC USD G2 (A022) for Nikon
+				(Mike Romanov)
+	- <a href="http://dev.exiv2.org/issues/0001339">0001339</a>:	Panasonic DMC-TZ70 lens not detected
+				(Tim Stahel)
+	- <a href="http://dev.exiv2.org/issues/0001336">0001336</a>:	Support for AF-P DX NIKKOR 10-20mm f/4.5-5.6G VR
+				(Šarūnas Burdulis)
+	- <a href="http://dev.exiv2.org/issues/0001335">0001335</a>:	Missing Nikon lense
+				(Niels Hansen)
+	- <a href="http://dev.exiv2.org/issues/0001333">0001333</a>:	New Lens: Tamron SP 24-70mm F/2.8 Di VC USD G2 (A032)
+				(LP Tech)
+	- <a href="http://dev.exiv2.org/issues/0001332">0001332</a>:	Recognise Tamron 18-200mm F/3.5-6.3 DiII VC B018 on Canon bodies
+				(Šarūnas Burdulis)
+	- <a href="http://dev.exiv2.org/issues/0001328">0001328</a>:	Sigma 18-300mm is wrongly reported as a Canon 75-300mm
+				(Jean-Luc Jean-Luc Coulon)
+	- <a href="http://dev.exiv2.org/issues/0001327">0001327</a>:	Two Sigma 24-70mm f/2.8 IF EX DG HSM lens definitions ??
+				(Philippe Dussart-Desart)
+	- <a href="http://dev.exiv2.org/issues/0001326">0001326</a>:	Tamron 100-300mm f/5-6.3 MACRO 1:4
+				(Albert Jasinski)
+	- <a href="http://dev.exiv2.org/issues/0001323">0001323</a>:	Add lens "Sigma 18-300mm f/3.5-6.3 DC Macro OS HS" for Canon ID 197
+				(Ronny Heidenreich)
+	- <a href="http://dev.exiv2.org/issues/0001306">0001306</a>:	the lens TAMRON SP 15-30mm F/2.8 Di VC USD A012 is not properly recognised
+				(rene ernenwein)
+	- <a href="http://dev.exiv2.org/issues/0001304">0001304</a>:	Lens missing Tamron SP 90mm f/2.8 Di Macro 1:1 VC USD F017
+				(Matze G)
+
+* Metadata: (7)
+	- <a href="http://dev.exiv2.org/issues/0001341">0001341</a>:	Date/Time Original not modified for NEFs
+				(Jean-Luc CECCOLI)
+	- <a href="http://dev.exiv2.org/issues/0001340">0001340</a>:	Infinite loop bugs in Libexiv2 Exiv2::Image::printIFDStructure()
+				(Sanjay Rawat)
+	- <a href="http://dev.exiv2.org/issues/0001325">0001325</a>:	Crash in exiv2  - Nikon1MakerNote::printBarValue (nikonnm.cpp)
+				(Thibaud Mouton)
+	- <a href="http://dev.exiv2.org/issues/0001322">0001322</a>:	Exception in PentaxMakerNote::printShutterCount, source: pentaxmn.cpp
+				(Norbert Wagner)
+	- <a href="http://dev.exiv2.org/issues/0001321">0001321</a>:	Invalid memory address dereference in Exiv2::getULong(types.cpp:246)
+				(Zhu Liu)
+	- <a href="http://dev.exiv2.org/issues/0001301">0001301</a>:	New lens: Sigma 18-35mm f/1.8 DC HSM Art for Canon
+				(Alexander Steffen)
+	- <a href="http://dev.exiv2.org/issues/0001300">0001300</a>:	New lens: Canon EF-S 35mm f/2.8 Macro IS STM
+				(Alexander Steffen)
+
+* Makernote: (2)
+	- <a href="http://dev.exiv2.org/issues/0001343">0001343</a>:	Irix 15mm f/2.4 on Nikon
+				(Ben Perston)
+	- <a href="http://dev.exiv2.org/issues/0001324">0001324</a>:	Pentax Makernote written twice
+				(Dominique Nerriec)
+
+* Miscellaneous: (2)
+	- <a href="http://dev.exiv2.org/issues/0001314">0001314</a>:	it is a stack-overflow vulnerability in Exiv2::Internal::stringFormat[abi:cxx11] ( in image.cpp:975 )
+				(Zhu Liu)
+	- <a href="http://dev.exiv2.org/issues/0001305">0001305</a>:	Segmentation fault on certain image
+				(Oleg Antonyan)
+
+* Not-a-bug: (8)
+	- <a href="http://dev.exiv2.org/issues/0001369">0001369</a>:	New lens Yongnuo 50mm f/1.8 II for Canon
+				(Michal Fapso)
+	- <a href="http://dev.exiv2.org/issues/0001368">0001368</a>:	Canon EF-M 15-45 broken LensType
+				(Peter Wemmert)
+	- <a href="http://dev.exiv2.org/issues/0001367">0001367</a>:	New Lens Sigma 100-400 mm, F5-6.3 DG for Nikon
+				(Thomas G)
+	- <a href="http://dev.exiv2.org/issues/0001364">0001364</a>:	New lens Tamron SP 24-70mm F/2.8 Di VC USD G2
+				(Mikko Pantsar)
+	- <a href="http://dev.exiv2.org/issues/0001350">0001350</a>:	Add lens: AF-S DX Nikkor 18-140mm
+				(Nikolai Försterling)
+	- <a href="http://dev.exiv2.org/issues/0001349">0001349</a>:	Add lens: Sigma 50-100mm F1.8 DC HSM | A
+				(Nikolai Försterling)
+	- <a href="http://dev.exiv2.org/issues/0001344">0001344</a>:	Unknown metadata
+				(luv zeng)
+	- <a href="http://dev.exiv2.org/issues/0001331">0001331</a>:	exiv2 fails to delete bulk of metadata in jpeg
+				(Denis-Carl Robidoux)
+
+* Tiff parser: (3)
+	- <a href="http://dev.exiv2.org/issues/0001360">0001360</a>:	exiv2 can't read metadata from tiff file (tiff directory length is too large)
+				(T Modes)
+	- <a href="http://dev.exiv2.org/issues/0001359">0001359</a>:	This does not look like a TIFF image
+				(jaeho jung)
+	- <a href="http://dev.exiv2.org/issues/0001330">0001330</a>:	Crash in Exiv2::TiffImage::readMetadata
+				(Tobias E.)
+
+* Tools: (1)
+	- <a href="http://dev.exiv2.org/issues/0001303">0001303</a>:	#1 Use 'releases' feature on GitHub
+
+* Website: (2)
+	- <a href="http://dev.exiv2.org/issues/0001308">0001308</a>:	Move directory <exiv2dir>/website to svn://dev.exiv2.org/svn/team/website
+	- <a href="http://dev.exiv2.org/issues/0001302">0001302</a>:	Use sha256 Checksums on Downloads and Archive pages of the web site.
+
+* Xmp: (3)
+	- <a href="http://dev.exiv2.org/issues/0001354">0001354</a>:	Inconsistency with long XMP namespaces (e.g. 'Iptc4xmpExt')
+				(Jens Georg)
+	- <a href="http://dev.exiv2.org/issues/0001278">0001278</a>:	XMP SDK Split
+				(Ben Touchette)
+	- <a href="http://dev.exiv2.org/issues/0000941">0000941</a>:	Upgrade xmpsdk source to Adobe's current version
+
+
+
+<hr>
 <a name="v0.26">&nbsp;</a>
 Changes from version 0.25 to 0.26
 ---------------------------------
@@ -473,6 +655,7 @@ Changes from version 0.25 to 0.26
 	- <a href="http://dev.exiv2.org/issues/0000599">0000599</a>:	XMP packets split across multiple APP1 segments
 				(Andreas Huggel)
 
+<hr>
 <a name="v0.25">&nbsp;</a>
 Changes from version 0.24 to 0.25
 ---------------------------------
