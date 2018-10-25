@@ -505,6 +505,9 @@ differ () {
 	     $cmd ${args[*]} &
 }
 
+EXIV2HOME=~/gnu/github/exiv2/exiv2
+EXIV2WEB=~/gnu/exiv2/team/website
+
 ##
 # platform adjustments
 if [ "$PLATFORM" == "cygwin" ]; then
