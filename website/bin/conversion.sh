@@ -6,8 +6,8 @@
 # Thanks to Robin Mills for initial code
 ##
 
-declare -a from=($(grep "mdExif,\|mdIptc," ../src/convert.cpp | cut '-d"' -f 2))
-declare -a to=($(grep "mdExif,\|mdIptc,"   ../src/convert.cpp | cut '-d"' -f 4))
+declare -a from=($(grep "mdExif,\|mdIptc," $EXIV2HOME/src/convert.cpp | cut '-d"' -f 2))
+declare -a to=($(grep "mdExif,\|mdIptc,"   $EXIV2HOME/src/convert.cpp | cut '-d"' -f 4))
 count=${#from[@]}
 
 index=0

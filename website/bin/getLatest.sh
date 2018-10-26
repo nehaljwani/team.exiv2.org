@@ -1,7 +1,7 @@
 #!/bin/bash
 
 builds=~/Jenkins/builds/Latest
-out=html/builds
+out=builds
 
 for b in "$builds"/* ; do
 	# b=$(echo $b)

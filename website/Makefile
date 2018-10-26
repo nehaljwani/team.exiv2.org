@@ -152,6 +152,7 @@ html/rss.xml: master/news.xml
 	@xsltproc master/whatsnew-rss.xsl $< \
 	| awk '/pubDate/ { gsub("<[/]?pubDate>", ""); printf "      <pubDate>"; system("bin/rssdate " $$0); printf "</pubDate>\n"; next } /__lastBuildDate__/ { printf "    <lastBuildDate>"; system("date -R"); printf "    </lastBuildDate>\n"; next; } {print}' > $@
 
+
 # Run bin/release_info.sh to update release related variables (incl __version__)
 update: update-manpage update-intro update-sample update-conversion update-changelog update-tags update-makernotes
 
@@ -174,23 +175,21 @@ update-conversion:
 	@./bin/conversion.sh
 
 update-changelog:
-	echo changelog should be updated using team/contrib/redmine/progress.py
-	# @cp -f ../doc/ChangeLog var/__ChangeLog__
-	# @bin/buglinks.sh var/__ChangeLog__
+	@echo changelog should be updated using team/contrib/redmine/progress.py
 
 update-makernotes:
 	@cp -f ${EXIV2HOME}/doc/templates/__makernotes__ var/__makernotes__
 
 $(TABLES):
-	@cp -f ../doc/templates/$@.xml var/
+	@cp -f ${EXIV2HOME}/doc/templates/$@.xml var/
 	@xsltproc var/exif.xsl var/$@.xml > var/__$@__
 
 Iptc:
-	@cp -f ../doc/templates/$@.xml var/
+	@cp -f ${EXIV2HOME}/doc/templates/$@.xml var/
 	@xsltproc var/iptc.xsl var/$@.xml > var/__$@__
 
 $(SCHEMA):
-	@cp -f ../doc/templates/xmp_$@.xml var/
+	@cp -f ${EXIV2HOME}/doc/templates/xmp_$@.xml var/
 	@xsltproc var/xmp.xsl var/xmp_$@.xml > var/__xmp_$@__
 
 update-tags: $(TABLES) Iptc $(SCHEMA)

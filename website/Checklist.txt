@@ -8,10 +8,12 @@ Caution: Updating the website can be two or three days work to be certain everyt
          Many scripts are provided, however this is not a "push button" operation.
 
          For a 'dot' release, it only requires:
-         1 Update the version on the website
+         1 Update the version on the website (echo -e '0.27.0.1' > var/__version__)
          2 make get-latest
-         3 make
-         4 make publish
+         3 pushd bin ; make rssdate ; popd
+         4 make update
+         5 make
+         6 make publish
 
 1 month before the release: Update po/ directory, notify translators
 2 weeks before the release: Update po/ directory, remind translators
@@ -21,15 +23,9 @@ Update version in $EXIV2HOME/CMakeLists.txt
 Get Jenkins to build 'master' (for v0.27.0.1, I build on branch 'RC1')
 Check the build logs on Jenkins
 
-Prepare the tags and docs
--------------------------
-$ cd $EXIV2HOME
-$ bin/tagtables.sh
-$ bin/samples.sh          # uses $EXIV2HOME/build
-$ make doc
-
-Redmine updates for v0.27
--------------------------
+Update the Version on the website
+$ cd $EXIV2WEB
+$ echo -e '0.27.0.1' > var/__version__
 
 Run the script to get revision history:
 $ cd $EXIV2WEB/../contrib/redmine
@@ -40,9 +36,6 @@ Modify/paste output to doc/ChangeLog
 
 GitHub update for v0.27 and later (might be automagic, don't know yet)
 
-Update the Version on the website
-$ cd $EXIV2WEB
-$ echo -e '0.27.0.1' > var/__version__
 Update var/__ChangeLog__ and doc/ChangeLog
 
 Review and update webpages
@@ -62,9 +55,9 @@ Copy the builds from the webserver to the website:
 
 	Get the Website ready:
 	$ cd $EXIV2WEB
+	$ make update
 	$ make
 	$ open html/index.html
-	You might want to "tweak" man page.   diff html/manpage html/manpage-v27.html
 
 	Validate uploaded webpages with W3C HTML checker
 
