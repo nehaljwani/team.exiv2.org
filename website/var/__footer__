@@ -3,6 +3,7 @@
   <footer>
     <div class="container">
       <div class="row">
+      <hr "style="color:#347bb7;height:20px;">
         <div class="col-sm-5">
           Exiv2 v__version__
         </div><!-- /.col-sm-5 -->

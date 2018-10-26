@@ -18,27 +18,18 @@ Caution: Updating the website can be two or three days work to be certain everyt
 Update po/ directory
 
 Update version in $EXIV2HOME/CMakeLists.txt
-Get Jenkins to build 'master' (for v0.27.0.1, I use 'RC1')
-Check the logs of the build
+Get Jenkins to build 'master' (for v0.27.0.1, I build on branch 'RC1')
+Check the build logs on Jenkins
 
-Prepare the tags and docs (I haven't got this to work)
-------------------------------------------------------
+Prepare the tags and docs
+-------------------------
 $ cd $EXIV2HOME
-Make tags:
-$ cd   doc
-$ make tags
-
-Build the tag tables (I haven't got this to work)
-$ cd $EXIV2WEB
 $ bin/tagtables.sh
-(Caution: cp: cannot stat ‘..//doc/templates/__Sony__’: No such file or directory)
+$ bin/samples.sh          # uses $EXIV2HOME/build
+$ make doc
 
-Build the samples
------------------
-bin/samples.sh          # uses $EXIV2HOME/build
-
-Redmine updates for v0.26 and v0.27
------------------------------------
+Redmine updates for v0.27
+-------------------------
 
 Run the script to get revision history:
 $ cd $EXIV2WEB/../contrib/redmine
@@ -54,7 +45,6 @@ $ cd $EXIV2WEB
 $ echo -e '0.27.0.1' > var/__version__
 Update var/__ChangeLog__ and doc/ChangeLog
 
-
 Review and update webpages
 	News page             master/news.xml
 	Download page         master/download.html.in
@@ -64,7 +54,7 @@ Review and update webpages
 Review and update documentation
 	API doc intro
 	Taglists
-	READMEs  html/README.html and html/README-CONAN.html
+	Update READMEs (I use MacDown) html/README.html and html/README-CONAN.html
 
 Copy the builds from the webserver to the website:
 	$ cd $EXIV2WEB

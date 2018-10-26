@@ -158,6 +158,7 @@ update: update-manpage update-intro update-sample update-conversion update-chang
 update-manpage:
 	@man -t exiv2 | ps2pdf   - html/exiv2-manpage.pdf
 	@man    exiv2 | man2html - > var/__manpage__
+	@patch --forward             var/__manpage__ var/manpage.patch
 
 update-intro:
 # commented for now, until the doc/ intro is updated accordingly
