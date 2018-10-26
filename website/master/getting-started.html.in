@@ -8,8 +8,7 @@ __navbar__
   <div class="page-header">
     <h1>Getting started</h1>
     <p class="lead">
-	  An overview of the basic Exiv2 C++ library and command line utility features and the Exiv2 project,
-	  examples and more.
+	  An overview of Exiv2 C++ library, the exiv2 command line utility, the Exiv2 project, and sample code.
     </p>
   </div>
 </div><!-- /.container -->

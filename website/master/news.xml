@@ -7,10 +7,10 @@
   <title>Exiv2 v0.27 RC1</title>
   <abstract>Release Candidate 1</abstract>
   <desc>First Release Candidate for Exiv2 0.27.
-  <ul><li>Security Fixes</li>
+  <ul><li>Security Fixes.</li>
       <li>New build and test infrastructure.</li>
       <li>Many bug fixes.</li>
-      <li>Support for MinGW/msys2</li>
+      <li>Support for MinGW/msys2.</li>
       <li>Buildserver rewritten.</li>
       <li>Support for Adobe XMPsdk.</li>
   </ul>
@@ -22,7 +22,7 @@
   <date>17-May-2017</date>
   <title>Exiv2 v0.26 slipsteam</title>
   <abstract>Release</abstract>
-  <desc>Commercial License was discontinued and all mention removed from the documentation.
+  <desc>Commercial License was discontinued and all mention removed from documentation.
   No code changes from v0.26.
   </desc>
  </newsitem>

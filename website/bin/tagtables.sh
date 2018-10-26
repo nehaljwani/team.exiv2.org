@@ -23,6 +23,4 @@ tabs="__Canon__ \
       __Sigma__ \
       __Sony__"
 
-exv_base=../
-
-for i in $tabs; do cp -f $exv_base/doc/templates/$i var/; done
+for i in $tabs; do cp -f $EXIV2HOME/doc/templates/$i var/; done

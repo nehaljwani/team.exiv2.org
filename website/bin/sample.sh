@@ -2,7 +2,7 @@
 # Generate variables used for the sample.html page
 # The appropriate exiv2 must be built
 
-exiv2=$EXIV2HOME/bin/exiv2
+exiv2=$EXIV2HOME/build/bin/exiv2
 vp=../../var
 
 cd html/include/ >/dev/null 2>&1

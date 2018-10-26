@@ -156,7 +156,7 @@ html/rss.xml: master/news.xml
 update: update-manpage update-intro update-sample update-conversion update-changelog update-tags update-makernotes
 
 update-manpage:
-	@man -t exiv2 | ps2pdf - html/exiv2-manpage.pdf
+	@man -t exiv2 | ps2pdf   - html/exiv2-manpage.pdf
 	@man    exiv2 | man2html - > var/__manpage__
 
 update-intro:
@@ -178,7 +178,7 @@ update-changelog:
 	# @bin/buglinks.sh var/__ChangeLog__
 
 update-makernotes:
-	@cp -f ../doc/templates/__makernotes__ var/__makernotes__
+	@cp -f ${EXIV2HOME}/doc/templates/__makernotes__ var/__makernotes__
 
 $(TABLES):
 	@cp -f ../doc/templates/$@.xml var/
@@ -204,3 +204,8 @@ clean:
 	@rm -vf doxygen/exiv2-header.html
 	@rm -vf doxygen/exiv2-footer.html
 
+get-latest:
+	@./bin/getLatest.sh
+
+publish:
+	ditto html ~/Jenkins/website/html

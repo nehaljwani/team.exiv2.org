@@ -1,24 +1,25 @@
 Release checklist
 -----------------
-Caution: Updating the website can be 1 week's work!
-         You might get lucky and do it quicker
-         You should assume it'll take time to find and fix everything
+$ export EXIV2HOME=~/gnu/github/exiv2/exiv2
+$ export EXIV2WEB=~/gnu/exiv2/team/website
+
+Caution: Updating the website can be two or three days work to be certain everything is good.
          You should publish the website (on another server) and ask the team to review
          Many scripts are provided, however this is not a "push button" operation.
+
+         For a 'dot' release, it only requires:
+         1 Update the version on the website
+         2 make get-latest
+         3 make
+         4 make publish
 
 1 month before the release: Update po/ directory, notify translators
 2 weeks before the release: Update po/ directory, remind translators
 Update po/ directory
 
-$ export EXIV2HOME=~/gnu/github/exiv2/exiv2
-$ export EXIV2WEB=~/gnu/exiv2/team/website
 Update version in $EXIV2HOME/CMakeLists.txt
-
-Building and Testing
---------------------
-
-The build server will do this for you.
-However, you should download and manually test bundles before you release them.
+Get Jenkins to build 'master' (for v0.27.0.1, I use 'RC1')
+Check the logs of the build
 
 Prepare the tags and docs (I haven't got this to work)
 ------------------------------------------------------
@@ -32,6 +33,10 @@ $ cd $EXIV2WEB
 $ bin/tagtables.sh
 (Caution: cp: cannot stat ‘..//doc/templates/__Sony__’: No such file or directory)
 
+Build the samples
+-----------------
+bin/samples.sh          # uses $EXIV2HOME/build
+
 Redmine updates for v0.26 and v0.27
 -----------------------------------
 
@@ -44,9 +49,11 @@ Modify/paste output to doc/ChangeLog
 
 GitHub update for v0.27 and later (might be automagic, don't know yet)
 
+Update the Version on the website
 $ cd $EXIV2WEB
 $ echo -e '0.27.0.1' > var/__version__
 Update var/__ChangeLog__ and doc/ChangeLog
+
 
 Review and update webpages
 	News page             master/news.xml
@@ -61,24 +68,18 @@ Review and update documentation
 
 Copy the builds from the webserver to the website:
 	$ cd $EXIV2WEB
- 	Copy builds from buildserver to builds/
-	606 rmills@rmillsmm:~/gnu/exiv2/team/website $ dir html/builds
-	-rwxr-xr-x+ 1 rmills staff 3.5M Oct 24 13:05 builds/exiv2-0.27.0.1-MinGW-32.tar.gz*
-	-rwxr-xr-x+ 1 rmills staff 5.8M Oct 24 13:04 builds/exiv2-0.27.0.1-MinGW-64.tar.gz*
-	-rwxr-xr-x+ 1 rmills staff  46M Oct 24 12:52 builds/exiv2-0.27.0.1-Source.tar.gz*
-	-rwxr-xr-x+ 1 rmills staff 2.6M Oct 24 12:52 builds/exiv2-0.27.0.1-MSVC.zip*
-	-rwxr-xr-x+ 1 rmills staff 2.2M Oct 24 12:52 builds/exiv2-0.27.0.1-Linux.tar.gz*
-	-rwxr-xr-x+ 1 rmills staff 2.9M Oct 24 12:52 builds/exiv2-0.27.0.1-Darwin.tar.gz*
-	-rwxr-xr-x+ 1 rmills staff 3.9M Oct 24 12:52 builds/exiv2-0.27.0.1-CYGWIN.tar.gz*
-	607 rmills@rmillsmm:~/gnu/exiv2/team/website $
+    $ make get-latest
 
 	Get the Website ready:
 	$ cd $EXIV2WEB
 	$ make
 	$ open html/index.html
+	You might want to "tweak" man page.   diff html/manpage html/manpage-v27.html
+
 	Validate uploaded webpages with W3C HTML checker
 
 	Copy the html/ directory to the webserver.
+	$ make publish
 
 When you're sure it's good, tell the world
 	Exiv2 forum announcement
