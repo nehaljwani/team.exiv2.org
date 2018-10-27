@@ -1,0 +1,21 @@
+<?xml version = '1.0'?>
+<?xml-stylesheet type="text/xsl" href="xmp.xsl"?>
+<TAGLIST>
+<HEADER>
+<title>XMP tags defined in Exiv2</title>
+<text>
+<p>Some description</p>
+<p>Click on a column header to sort the table.</p>
+</text>
+</HEADER>
+<ROWSET>
+   <ROW num="1">
+      <tagname>JobRef</tagname>
+      <title>Job Reference</title>
+      <xmpvaltype>bag Job</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>References an external job management file for a job process in which the document is being used. Use of job names is under user control. Typical use would be to identify all documents that are part of a particular job or contract. There are multiple values because there can be more than one job using a particular document at any time, and it can also be useful to keep historical information about what jobs a document was part of previously.</tagdesc>
+   </ROW>
+</ROWSET>
+</TAGLIST>

@@ -1,0 +1,239 @@
+<?xml version = '1.0'?>
+<?xml-stylesheet type="text/xsl" href="tags.xsl"?>
+<TAGLIST>
+<HEADER>
+<title>XYZ MakerNote Tags defined in Exiv2</title>
+<text>
+<p>Tags found in the MakerNote of images taken with XYZ cameras. These tags 
+are defined by Exiv2 in accordance with <a href="makernote.html#RX">[X]</a>.</p>
+<p>Click on a column header to sort the table.</p>
+</text>
+</HEADER>
+<ROWSET>
+   <ROW num="1">
+      <tagname>EquipmentVersion</tagname>
+      <tagdec>0</tagdec>
+      <taghex>0x0000</taghex>
+      <ifd>OlympusEq</ifd>
+      <key>Exif.OlympusEq.EquipmentVersion</key>
+      <type>Undefined</type>
+      <tagdesc>Equipment version</tagdesc>
+   </ROW>
+   <ROW num="2">
+      <tagname>CameraType</tagname>
+      <tagdec>256</tagdec>
+      <taghex>0x0100</taghex>
+      <ifd>OlympusEq</ifd>
+      <key>Exif.OlympusEq.CameraType</key>
+      <type>Ascii</type>
+      <tagdesc>Camera type</tagdesc>
+   </ROW>
+   <ROW num="3">
+      <tagname>SerialNumber</tagname>
+      <tagdec>257</tagdec>
+      <taghex>0x0101</taghex>
+      <ifd>OlympusEq</ifd>
+      <key>Exif.OlympusEq.SerialNumber</key>
+      <type>Ascii</type>
+      <tagdesc>Serial number</tagdesc>
+   </ROW>
+   <ROW num="4">
+      <tagname>InternalSerialNumber</tagname>
+      <tagdec>258</tagdec>
+      <taghex>0x0102</taghex>
+      <ifd>OlympusEq</ifd>
+      <key>Exif.OlympusEq.InternalSerialNumber</key>
+      <type>Ascii</type>
+      <tagdesc>Internal serial number</tagdesc>
+   </ROW>
+   <ROW num="5">
+      <tagname>FocalPlaneDiagonal</tagname>
+      <tagdec>259</tagdec>
+      <taghex>0x0103</taghex>
+      <ifd>OlympusEq</ifd>
+      <key>Exif.OlympusEq.FocalPlaneDiagonal</key>
+      <type>Rational</type>
+      <tagdesc>Focal plane diagonal</tagdesc>
+   </ROW>
+   <ROW num="6">
+      <tagname>BodyFirmwareVersion</tagname>
+      <tagdec>260</tagdec>
+      <taghex>0x0104</taghex>
+      <ifd>OlympusEq</ifd>
+      <key>Exif.OlympusEq.BodyFirmwareVersion</key>
+      <type>Long</type>
+      <tagdesc>Body firmware version</tagdesc>
+   </ROW>
+   <ROW num="7">
+      <tagname>LensType</tagname>
+      <tagdec>513</tagdec>
+      <taghex>0x0201</taghex>
+      <ifd>OlympusEq</ifd>
+      <key>Exif.OlympusEq.LensType</key>
+      <type>Byte</type>
+      <tagdesc>Lens type</tagdesc>
+   </ROW>
+   <ROW num="8">
+      <tagname>LensSerialNumber</tagname>
+      <tagdec>514</tagdec>
+      <taghex>0x0202</taghex>
+      <ifd>OlympusEq</ifd>
+      <key>Exif.OlympusEq.LensSerialNumber</key>
+      <type>Ascii</type>
+      <tagdesc>Lens serial number</tagdesc>
+   </ROW>
+   <ROW num="9">
+      <tagname>LensModel</tagname>
+      <tagdec>515</tagdec>
+      <taghex>0x0203</taghex>
+      <ifd>OlympusEq</ifd>
+      <key>Exif.OlympusEq.LensModel</key>
+      <type>Ascii</type>
+      <tagdesc>Lens model</tagdesc>
+   </ROW>
+   <ROW num="10">
+      <tagname>LensFirmwareVersion</tagname>
+      <tagdec>516</tagdec>
+      <taghex>0x0204</taghex>
+      <ifd>OlympusEq</ifd>
+      <key>Exif.OlympusEq.LensFirmwareVersion</key>
+      <type>Long</type>
+      <tagdesc>Lens firmware version</tagdesc>
+   </ROW>
+   <ROW num="11">
+      <tagname>MaxApertureAtMinFocal</tagname>
+      <tagdec>517</tagdec>
+      <taghex>0x0205</taghex>
+      <ifd>OlympusEq</ifd>
+      <key>Exif.OlympusEq.MaxApertureAtMinFocal</key>
+      <type>Short</type>
+      <tagdesc>Max aperture at min focal</tagdesc>
+   </ROW>
+   <ROW num="12">
+      <tagname>MaxApertureAtMaxFocal</tagname>
+      <tagdec>518</tagdec>
+      <taghex>0x0206</taghex>
+      <ifd>OlympusEq</ifd>
+      <key>Exif.OlympusEq.MaxApertureAtMaxFocal</key>
+      <type>Short</type>
+      <tagdesc>Max aperture at max focal</tagdesc>
+   </ROW>
+   <ROW num="13">
+      <tagname>MinFocalLength</tagname>
+      <tagdec>519</tagdec>
+      <taghex>0x0207</taghex>
+      <ifd>OlympusEq</ifd>
+      <key>Exif.OlympusEq.MinFocalLength</key>
+      <type>Short</type>
+      <tagdesc>Min focal length</tagdesc>
+   </ROW>
+   <ROW num="14">
+      <tagname>MaxFocalLength</tagname>
+      <tagdec>520</tagdec>
+      <taghex>0x0208</taghex>
+      <ifd>OlympusEq</ifd>
+      <key>Exif.OlympusEq.MaxFocalLength</key>
+      <type>Short</type>
+      <tagdesc>Max focal length</tagdesc>
+   </ROW>
+   <ROW num="15">
+      <tagname>MaxApertureAtCurrentFocal</tagname>
+      <tagdec>522</tagdec>
+      <taghex>0x020a</taghex>
+      <ifd>OlympusEq</ifd>
+      <key>Exif.OlympusEq.MaxApertureAtCurrentFocal</key>
+      <type>Short</type>
+      <tagdesc>Max aperture at current focal</tagdesc>
+   </ROW>
+   <ROW num="16">
+      <tagname>LensProperties</tagname>
+      <tagdec>523</tagdec>
+      <taghex>0x020b</taghex>
+      <ifd>OlympusEq</ifd>
+      <key>Exif.OlympusEq.LensProperties</key>
+      <type>Short</type>
+      <tagdesc>Lens properties</tagdesc>
+   </ROW>
+   <ROW num="17">
+      <tagname>Extender</tagname>
+      <tagdec>769</tagdec>
+      <taghex>0x0301</taghex>
+      <ifd>OlympusEq</ifd>
+      <key>Exif.OlympusEq.Extender</key>
+      <type>Byte</type>
+      <tagdesc>Extender</tagdesc>
+   </ROW>
+   <ROW num="18">
+      <tagname>ExtenderSerialNumber</tagname>
+      <tagdec>770</tagdec>
+      <taghex>0x0302</taghex>
+      <ifd>OlympusEq</ifd>
+      <key>Exif.OlympusEq.ExtenderSerialNumber</key>
+      <type>Ascii</type>
+      <tagdesc>Extender serial number</tagdesc>
+   </ROW>
+   <ROW num="19">
+      <tagname>ExtenderModel</tagname>
+      <tagdec>771</tagdec>
+      <taghex>0x0303</taghex>
+      <ifd>OlympusEq</ifd>
+      <key>Exif.OlympusEq.ExtenderModel</key>
+      <type>Ascii</type>
+      <tagdesc>Extender model</tagdesc>
+   </ROW>
+   <ROW num="20">
+      <tagname>ExtenderFirmwareVersion</tagname>
+      <tagdec>772</tagdec>
+      <taghex>0x0304</taghex>
+      <ifd>OlympusEq</ifd>
+      <key>Exif.OlympusEq.ExtenderFirmwareVersion</key>
+      <type>Long</type>
+      <tagdesc>Extender firmwareversion</tagdesc>
+   </ROW>
+   <ROW num="21">
+      <tagname>ConversionLens</tagname>
+      <tagdec>1027</tagdec>
+      <taghex>0x0403</taghex>
+      <ifd>OlympusEq</ifd>
+      <key>Exif.OlympusEq.ConversionLens</key>
+      <type>Ascii</type>
+      <tagdesc>Conversion lens</tagdesc>
+   </ROW>
+   <ROW num="22">
+      <tagname>FlashType</tagname>
+      <tagdec>4096</tagdec>
+      <taghex>0x1000</taghex>
+      <ifd>OlympusEq</ifd>
+      <key>Exif.OlympusEq.FlashType</key>
+      <type>Short</type>
+      <tagdesc>Flash type</tagdesc>
+   </ROW>
+   <ROW num="23">
+      <tagname>FlashModel</tagname>
+      <tagdec>4097</tagdec>
+      <taghex>0x1001</taghex>
+      <ifd>OlympusEq</ifd>
+      <key>Exif.OlympusEq.FlashModel</key>
+      <type>Short</type>
+      <tagdesc>Flash model</tagdesc>
+   </ROW>
+   <ROW num="24">
+      <tagname>FlashFirmwareVersion</tagname>
+      <tagdec>4098</tagdec>
+      <taghex>0x1002</taghex>
+      <ifd>OlympusEq</ifd>
+      <key>Exif.OlympusEq.FlashFirmwareVersion</key>
+      <type>Long</type>
+      <tagdesc>Flash firmware version</tagdesc>
+   </ROW>
+   <ROW num="25">
+      <tagname>FlashSerialNumber</tagname>
+      <tagdec>4099</tagdec>
+      <taghex>0x1003</taghex>
+      <ifd>OlympusEq</ifd>
+      <key>Exif.OlympusEq.FlashSerialNumber</key>
+      <type>Ascii</type>
+      <tagdesc>FlashSerialNumber</tagdesc>
+   </ROW>
+</ROWSET>
+</TAGLIST>

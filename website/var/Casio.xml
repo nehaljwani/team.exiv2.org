@@ -1,0 +1,185 @@
+<?xml version = '1.0'?>
+<?xml-stylesheet type="text/xsl" href="tags.xsl"?>
+<TAGLIST>
+<HEADER>
+<title>XYZ MakerNote Tags defined in Exiv2</title>
+<text>
+<p>Tags found in the MakerNote of images taken with XYZ cameras. These tags 
+are defined by Exiv2 in accordance with <a href="makernote.html#RX">[X]</a>.</p>
+<p>Click on a column header to sort the table.</p>
+</text>
+</HEADER>
+<ROWSET>
+   <ROW num="1">
+      <tagname>RecodingMode</tagname>
+      <tagdec>1</tagdec>
+      <taghex>0x0001</taghex>
+      <ifd>Casio</ifd>
+      <key>Exif.Casio.RecodingMode</key>
+      <type>Short</type>
+      <tagdesc>Recording Mode</tagdesc>
+   </ROW>
+   <ROW num="2">
+      <tagname>Quality</tagname>
+      <tagdec>2</tagdec>
+      <taghex>0x0002</taghex>
+      <ifd>Casio</ifd>
+      <key>Exif.Casio.Quality</key>
+      <type>Short</type>
+      <tagdesc>Quality</tagdesc>
+   </ROW>
+   <ROW num="3">
+      <tagname>FocusMode</tagname>
+      <tagdec>3</tagdec>
+      <taghex>0x0003</taghex>
+      <ifd>Casio</ifd>
+      <key>Exif.Casio.FocusMode</key>
+      <type>Short</type>
+      <tagdesc>Focus Mode</tagdesc>
+   </ROW>
+   <ROW num="4">
+      <tagname>FlashMode</tagname>
+      <tagdec>4</tagdec>
+      <taghex>0x0004</taghex>
+      <ifd>Casio</ifd>
+      <key>Exif.Casio.FlashMode</key>
+      <type>Short</type>
+      <tagdesc>Flash Mode</tagdesc>
+   </ROW>
+   <ROW num="5">
+      <tagname>FlashIntensity</tagname>
+      <tagdec>5</tagdec>
+      <taghex>0x0005</taghex>
+      <ifd>Casio</ifd>
+      <key>Exif.Casio.FlashIntensity</key>
+      <type>Short</type>
+      <tagdesc>Flash Intensity</tagdesc>
+   </ROW>
+   <ROW num="6">
+      <tagname>ObjectDistance</tagname>
+      <tagdec>6</tagdec>
+      <taghex>0x0006</taghex>
+      <ifd>Casio</ifd>
+      <key>Exif.Casio.ObjectDistance</key>
+      <type>Long</type>
+      <tagdesc>Distance to object</tagdesc>
+   </ROW>
+   <ROW num="7">
+      <tagname>WhiteBalance</tagname>
+      <tagdec>7</tagdec>
+      <taghex>0x0007</taghex>
+      <ifd>Casio</ifd>
+      <key>Exif.Casio.WhiteBalance</key>
+      <type>Short</type>
+      <tagdesc>White balance settings</tagdesc>
+   </ROW>
+   <ROW num="8">
+      <tagname>DigitalZoom</tagname>
+      <tagdec>10</tagdec>
+      <taghex>0x000a</taghex>
+      <ifd>Casio</ifd>
+      <key>Exif.Casio.DigitalZoom</key>
+      <type>Long</type>
+      <tagdesc>Digital zoom</tagdesc>
+   </ROW>
+   <ROW num="9">
+      <tagname>Sharpness</tagname>
+      <tagdec>11</tagdec>
+      <taghex>0x000b</taghex>
+      <ifd>Casio</ifd>
+      <key>Exif.Casio.Sharpness</key>
+      <type>Short</type>
+      <tagdesc>Sharpness</tagdesc>
+   </ROW>
+   <ROW num="10">
+      <tagname>Contrast</tagname>
+      <tagdec>12</tagdec>
+      <taghex>0x000c</taghex>
+      <ifd>Casio</ifd>
+      <key>Exif.Casio.Contrast</key>
+      <type>Short</type>
+      <tagdesc>Contrast</tagdesc>
+   </ROW>
+   <ROW num="11">
+      <tagname>Saturation</tagname>
+      <tagdec>13</tagdec>
+      <taghex>0x000d</taghex>
+      <ifd>Casio</ifd>
+      <key>Exif.Casio.Saturation</key>
+      <type>Short</type>
+      <tagdesc>Saturation</tagdesc>
+   </ROW>
+   <ROW num="12">
+      <tagname>ISO</tagname>
+      <tagdec>20</tagdec>
+      <taghex>0x0014</taghex>
+      <ifd>Casio</ifd>
+      <key>Exif.Casio.ISO</key>
+      <type>Short</type>
+      <tagdesc>ISO</tagdesc>
+   </ROW>
+   <ROW num="13">
+      <tagname>FirmwareDate</tagname>
+      <tagdec>21</tagdec>
+      <taghex>0x0015</taghex>
+      <ifd>Casio</ifd>
+      <key>Exif.Casio.FirmwareDate</key>
+      <type>Ascii</type>
+      <tagdesc>Firmware date</tagdesc>
+   </ROW>
+   <ROW num="14">
+      <tagname>Enhancement</tagname>
+      <tagdec>22</tagdec>
+      <taghex>0x0016</taghex>
+      <ifd>Casio</ifd>
+      <key>Exif.Casio.Enhancement</key>
+      <type>Short</type>
+      <tagdesc>Enhancement</tagdesc>
+   </ROW>
+   <ROW num="15">
+      <tagname>ColorFilter</tagname>
+      <tagdec>23</tagdec>
+      <taghex>0x0017</taghex>
+      <ifd>Casio</ifd>
+      <key>Exif.Casio.ColorFilter</key>
+      <type>Short</type>
+      <tagdesc>Color Filter</tagdesc>
+   </ROW>
+   <ROW num="16">
+      <tagname>AFPoint</tagname>
+      <tagdec>24</tagdec>
+      <taghex>0x0018</taghex>
+      <ifd>Casio</ifd>
+      <key>Exif.Casio.AFPoint</key>
+      <type>Short</type>
+      <tagdesc>AF Point</tagdesc>
+   </ROW>
+   <ROW num="17">
+      <tagname>FlashIntensity2</tagname>
+      <tagdec>25</tagdec>
+      <taghex>0x0019</taghex>
+      <ifd>Casio</ifd>
+      <key>Exif.Casio.FlashIntensity2</key>
+      <type>Short</type>
+      <tagdesc>Flash Intensity</tagdesc>
+   </ROW>
+   <ROW num="18">
+      <tagname>CCDSensitivity</tagname>
+      <tagdec>32</tagdec>
+      <taghex>0x0020</taghex>
+      <ifd>Casio</ifd>
+      <key>Exif.Casio.CCDSensitivity</key>
+      <type>Short</type>
+      <tagdesc>CCDSensitivity</tagdesc>
+   </ROW>
+   <ROW num="19">
+      <tagname>PrintIM</tagname>
+      <tagdec>3584</tagdec>
+      <taghex>0x0e00</taghex>
+      <ifd>Casio</ifd>
+      <key>Exif.Casio.PrintIM</key>
+      <type>Undefined</type>
+      <tagdesc>PrintIM information</tagdesc>
+   </ROW>
+</ROWSET>
+</TAGLIST>

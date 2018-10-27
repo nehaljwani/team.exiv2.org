@@ -1,0 +1,21 @@
+<?xml version = '1.0'?>
+<?xml-stylesheet type="text/xsl" href="xmp.xsl"?>
+<TAGLIST>
+<HEADER>
+<title>XMP tags defined in Exiv2</title>
+<text>
+<p>Some description</p>
+<p>Click on a column header to sort the table.</p>
+</text>
+</HEADER>
+<ROWSET>
+   <ROW num="1">
+      <tagname>RegionInfo</tagname>
+      <title>RegionInfo</title>
+      <xmpvaltype>RegionInfo</xmpvaltype>
+      <type>XmpText</type>
+      <category>Internal</category>
+      <tagdesc>Microsoft Photo people-tagging metadata root</tagdesc>
+   </ROW>
+</ROWSET>
+</TAGLIST>

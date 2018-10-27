@@ -1,0 +1,45 @@
+<?xml version = '1.0'?>
+<?xml-stylesheet type="text/xsl" href="xmp.xsl"?>
+<TAGLIST>
+<HEADER>
+<title>XMP tags defined in Exiv2</title>
+<text>
+<p>Some description</p>
+<p>Click on a column header to sort the table.</p>
+</text>
+</HEADER>
+<ROWSET>
+   <ROW num="1">
+      <tagname>PersonDisplayName</tagname>
+      <title>Person Display Name</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Name of the person (in the given rectangle)</tagdesc>
+   </ROW>
+   <ROW num="2">
+      <tagname>Rectangle</tagname>
+      <title>Rectangle</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Rectangle that identifies the person within the photo</tagdesc>
+   </ROW>
+   <ROW num="3">
+      <tagname>PersonEmailDigest</tagname>
+      <title>Person Email Digest</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>SHA-1 encrypted message hash of the person's Windows Live e-mail address</tagdesc>
+   </ROW>
+   <ROW num="4">
+      <tagname>PersonLiveIdCID</tagname>
+      <title>Person LiveId CID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Signed decimal representation of the person's Windows Live CID</tagdesc>
+   </ROW>
+</ROWSET>
+</TAGLIST>

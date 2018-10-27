@@ -1,0 +1,685 @@
+<?xml version = '1.0'?>
+<?xml-stylesheet type="text/xsl" href="xmp.xsl"?>
+<TAGLIST>
+<HEADER>
+<title>XMP tags defined in Exiv2</title>
+<text>
+<p>Some description</p>
+<p>Click on a column header to sort the table.</p>
+</text>
+</HEADER>
+<ROWSET>
+   <ROW num="1">
+      <tagname>Version</tagname>
+      <title>PLUS Version</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The version number of the PLUS standards in place at the time of the transaction.</tagdesc>
+   </ROW>
+   <ROW num="2">
+      <tagname>Licensee</tagname>
+      <title>Licensee</title>
+      <xmpvaltype>seq LicenseeDetail</xmpvaltype>
+      <type>XmpSeq</type>
+      <category>External</category>
+      <tagdesc>Party or parties to whom the license is granted by the Licensor/s under the license transaction.</tagdesc>
+   </ROW>
+   <ROW num="3">
+      <tagname>LicenseeID</tagname>
+      <title>Licensee ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Optional PLUS-ID identifying each Licensee.</tagdesc>
+   </ROW>
+   <ROW num="4">
+      <tagname>LicenseeName</tagname>
+      <title>Licensee Name</title>
+      <xmpvaltype>ProperName</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Name of each Licensee.</tagdesc>
+   </ROW>
+   <ROW num="5">
+      <tagname>EndUser</tagname>
+      <title>End User</title>
+      <xmpvaltype>seq EndUserDetail</xmpvaltype>
+      <type>XmpSeq</type>
+      <category>External</category>
+      <tagdesc>Party or parties ultimately making use of the image under the license.</tagdesc>
+   </ROW>
+   <ROW num="6">
+      <tagname>EndUserID</tagname>
+      <title>End User ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Optional PLUS-ID identifying each End User.</tagdesc>
+   </ROW>
+   <ROW num="7">
+      <tagname>EndUserName</tagname>
+      <title>End User Name</title>
+      <xmpvaltype>ProperName</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Name of each End User.</tagdesc>
+   </ROW>
+   <ROW num="8">
+      <tagname>Licensor</tagname>
+      <title>Licensor</title>
+      <xmpvaltype>seq LicensorDetail</xmpvaltype>
+      <type>XmpSeq</type>
+      <category>External</category>
+      <tagdesc>Party or parties granting the license to the Licensee.</tagdesc>
+   </ROW>
+   <ROW num="9">
+      <tagname>LicensorID</tagname>
+      <title>Licensor ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Optional PLUS-ID identifying each Licensor.</tagdesc>
+   </ROW>
+   <ROW num="10">
+      <tagname>LicensorName</tagname>
+      <title>Licensor Name</title>
+      <xmpvaltype>ProperName</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Name of each Licensor.</tagdesc>
+   </ROW>
+   <ROW num="11">
+      <tagname>LicensorStreetAddress</tagname>
+      <title>Licensor Address</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Licensor street address.</tagdesc>
+   </ROW>
+   <ROW num="12">
+      <tagname>LicensorExtendedAddress</tagname>
+      <title>Licensor Address Detail</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Additional Licensor mailing address details.</tagdesc>
+   </ROW>
+   <ROW num="13">
+      <tagname>LicensorCity</tagname>
+      <title>Licensor City</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Licensor City name.</tagdesc>
+   </ROW>
+   <ROW num="14">
+      <tagname>LicensorRegion</tagname>
+      <title>Licensor State or Province</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Licensor State or Province name.</tagdesc>
+   </ROW>
+   <ROW num="15">
+      <tagname>LicensorPostalCode</tagname>
+      <title>Licensor Postal Code</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Licensor Postal Code or Zip Code.</tagdesc>
+   </ROW>
+   <ROW num="16">
+      <tagname>LicensorCountry</tagname>
+      <title>Licensor Country</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Licensor Country name.</tagdesc>
+   </ROW>
+   <ROW num="17">
+      <tagname>LicensorTelephoneType1</tagname>
+      <title>Licensor Telephone Type 1</title>
+      <xmpvaltype>URL</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Licensor Telephone Type 1.</tagdesc>
+   </ROW>
+   <ROW num="18">
+      <tagname>LicensorTelephone1</tagname>
+      <title>Licensor Telephone 1</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Licensor Telephone number 1.</tagdesc>
+   </ROW>
+   <ROW num="19">
+      <tagname>LicensorTelephoneType2</tagname>
+      <title>Licensor Telephone Type 2</title>
+      <xmpvaltype>URL</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Licensor Telephone Type 2.</tagdesc>
+   </ROW>
+   <ROW num="20">
+      <tagname>LicensorTelephone2</tagname>
+      <title>Licensor Telephone 2</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Licensor Telephone number 2.</tagdesc>
+   </ROW>
+   <ROW num="21">
+      <tagname>LicensorEmail</tagname>
+      <title>Licensor Email</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Licensor Email address.</tagdesc>
+   </ROW>
+   <ROW num="22">
+      <tagname>LicensorURL</tagname>
+      <title>Licensor URL</title>
+      <xmpvaltype>URL</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Licensor world wide web address.</tagdesc>
+   </ROW>
+   <ROW num="23">
+      <tagname>LicensorNotes</tagname>
+      <title>Licensor Notes</title>
+      <xmpvaltype>Lang Alt</xmpvaltype>
+      <type>LangAlt</type>
+      <category>External</category>
+      <tagdesc>Supplemental information for use in identifying and contacting the Licensor/s.</tagdesc>
+   </ROW>
+   <ROW num="24">
+      <tagname>MediaSummaryCode</tagname>
+      <title>PLUS Media Summary Code</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>A PLUS-standardized alphanumeric code string summarizing the media usages included in the license.</tagdesc>
+   </ROW>
+   <ROW num="25">
+      <tagname>LicenseStartDate</tagname>
+      <title>License Start Date</title>
+      <xmpvaltype>Date</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The date on which the license takes effect.</tagdesc>
+   </ROW>
+   <ROW num="26">
+      <tagname>LicenseEndDate</tagname>
+      <title>License End Date</title>
+      <xmpvaltype>Date</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The date on which the license expires.</tagdesc>
+   </ROW>
+   <ROW num="27">
+      <tagname>MediaConstraints</tagname>
+      <title>Media Constraints</title>
+      <xmpvaltype>Lang Alt</xmpvaltype>
+      <type>LangAlt</type>
+      <category>External</category>
+      <tagdesc>Constraints limiting the scope of PLUS Media Usage/s included in the license to particular named media or to media not yet specifically defined in the PLUS Media Matrix.</tagdesc>
+   </ROW>
+   <ROW num="28">
+      <tagname>RegionConstraints</tagname>
+      <title>Region Constraints</title>
+      <xmpvaltype>Lang Alt</xmpvaltype>
+      <type>LangAlt</type>
+      <category>External</category>
+      <tagdesc>Constraints limiting the scope of geographic distribution to specific cities, states, provinces or other areas to be included in or excluded from the PLUS Regions specified in the Media Usages specified in the license.</tagdesc>
+   </ROW>
+   <ROW num="29">
+      <tagname>ProductOrServiceConstraints</tagname>
+      <title>Product or Service Constraints</title>
+      <xmpvaltype>Lang Alt</xmpvaltype>
+      <type>LangAlt</type>
+      <category>External</category>
+      <tagdesc>Constraints limiting usage of the image to promotion of/association with a named product or service.</tagdesc>
+   </ROW>
+   <ROW num="30">
+      <tagname>ImageFileConstraints</tagname>
+      <title>Image File Constraints</title>
+      <xmpvaltype>bag URL</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>Constraints on the changing of the image file name, metadata or file type.</tagdesc>
+   </ROW>
+   <ROW num="31">
+      <tagname>ImageAlterationConstraints</tagname>
+      <title>Image Alteration Constraints</title>
+      <xmpvaltype>bag URL</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>Constraints on alteration of the image by cropping, flipping, retouching, colorization, de-colorization or merging.</tagdesc>
+   </ROW>
+   <ROW num="32">
+      <tagname>ImageDuplicationConstraints</tagname>
+      <title>Image Duplication Constraints</title>
+      <xmpvaltype>URL</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Constraints on the creation of duplicates of the image.</tagdesc>
+   </ROW>
+   <ROW num="33">
+      <tagname>ModelReleaseStatus</tagname>
+      <title>Model Release Status</title>
+      <xmpvaltype>URL</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Summarizes the availability and scope of model releases authorizing usage of the likenesses of persons appearing in the photograph.</tagdesc>
+   </ROW>
+   <ROW num="34">
+      <tagname>ModelReleaseID</tagname>
+      <title>Model Release ID</title>
+      <xmpvaltype>bag Text</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>Optional identifier associated with each Model Release.</tagdesc>
+   </ROW>
+   <ROW num="35">
+      <tagname>MinorModelAgeDisclosure</tagname>
+      <title>Minor Model Age Disclosure</title>
+      <xmpvaltype>URL</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Age of the youngest model pictured in the image, at the time that the image was made.</tagdesc>
+   </ROW>
+   <ROW num="36">
+      <tagname>PropertyReleaseStatus</tagname>
+      <title>Property Release Status</title>
+      <xmpvaltype>URL</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Summarizes the availability and scope of property releases authorizing usage of the properties appearing in the photograph.</tagdesc>
+   </ROW>
+   <ROW num="37">
+      <tagname>PropertyReleaseID</tagname>
+      <title>Property Release ID</title>
+      <xmpvaltype>bag Text</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>Optional identifier associated with each Property Release.</tagdesc>
+   </ROW>
+   <ROW num="38">
+      <tagname>OtherConstraints</tagname>
+      <title>Other Constraints</title>
+      <xmpvaltype>Lang Alt</xmpvaltype>
+      <type>LangAlt</type>
+      <category>External</category>
+      <tagdesc>Additional constraints on the license.</tagdesc>
+   </ROW>
+   <ROW num="39">
+      <tagname>CreditLineRequired</tagname>
+      <title>Credit Line Required</title>
+      <xmpvaltype>URL</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Attribution requirements, if any.</tagdesc>
+   </ROW>
+   <ROW num="40">
+      <tagname>AdultContentWarning</tagname>
+      <title>Adult Content Warning</title>
+      <xmpvaltype>URL</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Warning indicating the presence of content not suitable for minors.</tagdesc>
+   </ROW>
+   <ROW num="41">
+      <tagname>OtherLicenseRequirements</tagname>
+      <title>Other License Requirements</title>
+      <xmpvaltype>Lang Alt</xmpvaltype>
+      <type>LangAlt</type>
+      <category>External</category>
+      <tagdesc>Additional license requirements.</tagdesc>
+   </ROW>
+   <ROW num="42">
+      <tagname>TermsAndConditionsText</tagname>
+      <title>Terms and Conditions Text</title>
+      <xmpvaltype>Lang Alt</xmpvaltype>
+      <type>LangAlt</type>
+      <category>External</category>
+      <tagdesc>Terms and Conditions applying to the license.</tagdesc>
+   </ROW>
+   <ROW num="43">
+      <tagname>TermsAndConditionsURL</tagname>
+      <title>Terms and Conditions URL</title>
+      <xmpvaltype>URL</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>URL for Terms and Conditions applying to the license.</tagdesc>
+   </ROW>
+   <ROW num="44">
+      <tagname>OtherConditions</tagname>
+      <title>Other License Conditions</title>
+      <xmpvaltype>Lang Alt</xmpvaltype>
+      <type>LangAlt</type>
+      <category>External</category>
+      <tagdesc>Additional license conditions.</tagdesc>
+   </ROW>
+   <ROW num="45">
+      <tagname>ImageType</tagname>
+      <title>Image Type</title>
+      <xmpvaltype>URL</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Identifies the type of image delivered.</tagdesc>
+   </ROW>
+   <ROW num="46">
+      <tagname>LicensorImageID</tagname>
+      <title>Licensor Image ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Optional identifier assigned by the Licensor to the image.</tagdesc>
+   </ROW>
+   <ROW num="47">
+      <tagname>FileNameAsDelivered</tagname>
+      <title>Image File Name As Delivered</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Name of the image file delivered to the Licensee for use under the license.</tagdesc>
+   </ROW>
+   <ROW num="48">
+      <tagname>ImageFileFormatAsDelivered</tagname>
+      <title>Image File Format As Delivered</title>
+      <xmpvaltype>URL</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>File format of the image file delivered to the Licensee for use under the license.</tagdesc>
+   </ROW>
+   <ROW num="49">
+      <tagname>ImageFileSizeAsDelivered</tagname>
+      <title>Image File Size As Delivered</title>
+      <xmpvaltype>URL</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Size of the image file delivered to the Licensee.</tagdesc>
+   </ROW>
+   <ROW num="50">
+      <tagname>CopyrightStatus</tagname>
+      <title>Copyright Status</title>
+      <xmpvaltype>URL</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Copyright status of the image.</tagdesc>
+   </ROW>
+   <ROW num="51">
+      <tagname>CopyrightRegistrationNumber</tagname>
+      <title>Copyright Registration Number</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Copyright Registration Number, if any, applying to the licensed image.</tagdesc>
+   </ROW>
+   <ROW num="52">
+      <tagname>FirstPublicationDate</tagname>
+      <title>First Publication Date</title>
+      <xmpvaltype>Date</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The date on which the image was first published.</tagdesc>
+   </ROW>
+   <ROW num="53">
+      <tagname>CopyrightOwner</tagname>
+      <title>Copyright Owner</title>
+      <xmpvaltype>seq CopyrightOwnerDetail</xmpvaltype>
+      <type>XmpSeq</type>
+      <category>External</category>
+      <tagdesc>Owner or owners of the copyright in the licensed image.</tagdesc>
+   </ROW>
+   <ROW num="54">
+      <tagname>CopyrightOwnerID</tagname>
+      <title>Copyright Owner ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Optional PLUS-ID identifying each Copyright Owner.</tagdesc>
+   </ROW>
+   <ROW num="55">
+      <tagname>CopyrightOwnerName</tagname>
+      <title>Copyright Owner Name</title>
+      <xmpvaltype>ProperName</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Name of Copyright Owner.</tagdesc>
+   </ROW>
+   <ROW num="56">
+      <tagname>CopyrightOwnerImageID</tagname>
+      <title>Copyright Owner Image ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Optional identifier assigned by the Copyright Owner to the image.</tagdesc>
+   </ROW>
+   <ROW num="57">
+      <tagname>ImageCreator</tagname>
+      <title>Image Creator</title>
+      <xmpvaltype>seq ImageCreatorDetail</xmpvaltype>
+      <type>XmpSeq</type>
+      <category>External</category>
+      <tagdesc>Creator/s of the image.</tagdesc>
+   </ROW>
+   <ROW num="58">
+      <tagname>ImageCreatorID</tagname>
+      <title>Image Creator ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Optional PLUS-ID identifying each Image Creator.</tagdesc>
+   </ROW>
+   <ROW num="59">
+      <tagname>ImageCreatorName</tagname>
+      <title>Image Creator Name</title>
+      <xmpvaltype>ProperName</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Name of Image Creator.</tagdesc>
+   </ROW>
+   <ROW num="60">
+      <tagname>ImageCreatorImageID</tagname>
+      <title>Image Creator Image ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Optional identifier assigned by the Image Creator to the image.</tagdesc>
+   </ROW>
+   <ROW num="61">
+      <tagname>ImageSupplierID</tagname>
+      <title>Image Supplier ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Optional PLUS-ID identifying the Image Supplier.</tagdesc>
+   </ROW>
+   <ROW num="62">
+      <tagname>ImageSupplierName</tagname>
+      <title>Image Supplier Name</title>
+      <xmpvaltype>ProperName</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Name of Image Supplier.</tagdesc>
+   </ROW>
+   <ROW num="63">
+      <tagname>ImageSupplierImageID</tagname>
+      <title>Image Supplier Image ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Optional identifier assigned by the Image Supplier to the image.</tagdesc>
+   </ROW>
+   <ROW num="64">
+      <tagname>LicenseeImageID</tagname>
+      <title>Licensee Image ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Optional identifier assigned by the Licensee to the image.</tagdesc>
+   </ROW>
+   <ROW num="65">
+      <tagname>LicenseeImageNotes</tagname>
+      <title>Licensee Image Notes</title>
+      <xmpvaltype>Lang Alt</xmpvaltype>
+      <type>LangAlt</type>
+      <category>External</category>
+      <tagdesc>Notes added by Licensee.</tagdesc>
+   </ROW>
+   <ROW num="66">
+      <tagname>OtherImageInfo</tagname>
+      <title>Other Image Info</title>
+      <xmpvaltype>Lang Alt</xmpvaltype>
+      <type>LangAlt</type>
+      <category>External</category>
+      <tagdesc>Additional image information.</tagdesc>
+   </ROW>
+   <ROW num="67">
+      <tagname>LicenseID</tagname>
+      <title>License ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Optional PLUS-ID assigned by the Licensor to the License.</tagdesc>
+   </ROW>
+   <ROW num="68">
+      <tagname>LicensorTransactionID</tagname>
+      <title>Licensor Transaction ID</title>
+      <xmpvaltype>bag Text</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>Identifier assigned by Licensor for Licensor's reference and internal use.</tagdesc>
+   </ROW>
+   <ROW num="69">
+      <tagname>LicenseeTransactionID</tagname>
+      <title>Licensee Transaction ID</title>
+      <xmpvaltype>bag Text</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>Identifier assigned by Licensee for Licensee's reference and internal use.</tagdesc>
+   </ROW>
+   <ROW num="70">
+      <tagname>LicenseeProjectReference</tagname>
+      <title>Licensee Project Reference</title>
+      <xmpvaltype>bag Text</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>Project reference name or description assigned by Licensee.</tagdesc>
+   </ROW>
+   <ROW num="71">
+      <tagname>LicenseTransactionDate</tagname>
+      <title>License Transaction Date</title>
+      <xmpvaltype>Date</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The date of the License Transaction.</tagdesc>
+   </ROW>
+   <ROW num="72">
+      <tagname>Reuse</tagname>
+      <title>Reuse</title>
+      <xmpvaltype>URL</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Indicates whether a license is a repeat or an initial license.  Reuse may require that licenses stored in files previously delivered to the customer be updated.</tagdesc>
+   </ROW>
+   <ROW num="73">
+      <tagname>OtherLicenseDocuments</tagname>
+      <title>Other License Documents</title>
+      <xmpvaltype>bag Text</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>Reference information for additional documents associated with the license.</tagdesc>
+   </ROW>
+   <ROW num="74">
+      <tagname>OtherLicenseInfo</tagname>
+      <title>Other License Info</title>
+      <xmpvaltype>Lang Alt</xmpvaltype>
+      <type>LangAlt</type>
+      <category>External</category>
+      <tagdesc>Additional license information.</tagdesc>
+   </ROW>
+   <ROW num="75">
+      <tagname>Custom1</tagname>
+      <title>Custom 1</title>
+      <xmpvaltype>bag Lang Alt</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>Optional field for use at Licensor's discretion.</tagdesc>
+   </ROW>
+   <ROW num="76">
+      <tagname>Custom2</tagname>
+      <title>Custom 2</title>
+      <xmpvaltype>bag Lang Alt</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>Optional field for use at Licensor's discretion.</tagdesc>
+   </ROW>
+   <ROW num="77">
+      <tagname>Custom3</tagname>
+      <title>Custom 3</title>
+      <xmpvaltype>bag Lang Alt</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>Optional field for use at Licensor's discretion.</tagdesc>
+   </ROW>
+   <ROW num="78">
+      <tagname>Custom4</tagname>
+      <title>Custom 4</title>
+      <xmpvaltype>bag Lang Alt</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>Optional field for use at Licensor's discretion.</tagdesc>
+   </ROW>
+   <ROW num="79">
+      <tagname>Custom5</tagname>
+      <title>Custom 5</title>
+      <xmpvaltype>bag Lang Alt</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>Optional field for use at Licensor's discretion.</tagdesc>
+   </ROW>
+   <ROW num="80">
+      <tagname>Custom6</tagname>
+      <title>Custom 6</title>
+      <xmpvaltype>bag Lang Alt</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>Optional field for use at Licensee's discretion.</tagdesc>
+   </ROW>
+   <ROW num="81">
+      <tagname>Custom7</tagname>
+      <title>Custom 7</title>
+      <xmpvaltype>bag Lang Alt</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>Optional field for use at Licensee's discretion.</tagdesc>
+   </ROW>
+   <ROW num="82">
+      <tagname>Custom8</tagname>
+      <title>Custom 8</title>
+      <xmpvaltype>bag Lang Alt</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>Optional field for use at Licensee's discretion.</tagdesc>
+   </ROW>
+   <ROW num="83">
+      <tagname>Custom9</tagname>
+      <title>Custom 9</title>
+      <xmpvaltype>bag Lang Alt</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>Optional field for use at Licensee's discretion.</tagdesc>
+   </ROW>
+   <ROW num="84">
+      <tagname>Custom10</tagname>
+      <title>Custom 10</title>
+      <xmpvaltype>bag Lang Alt</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>Optional field for use at Licensee's discretion.</tagdesc>
+   </ROW>
+</ROWSET>
+</TAGLIST>

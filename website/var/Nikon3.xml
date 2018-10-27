@@ -1,0 +1,833 @@
+<?xml version = '1.0'?>
+<?xml-stylesheet type="text/xsl" href="tags.xsl"?>
+<TAGLIST>
+<HEADER>
+<title>XYZ MakerNote Tags defined in Exiv2</title>
+<text>
+<p>Tags found in the MakerNote of images taken with XYZ cameras. These tags 
+are defined by Exiv2 in accordance with <a href="makernote.html#RX">[X]</a>.</p>
+<p>Click on a column header to sort the table.</p>
+</text>
+</HEADER>
+<ROWSET>
+   <ROW num="1">
+      <tagname>Version</tagname>
+      <tagdec>1</tagdec>
+      <taghex>0x0001</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.Version</key>
+      <type>Undefined</type>
+      <tagdesc>Nikon Makernote version</tagdesc>
+   </ROW>
+   <ROW num="2">
+      <tagname>ISOSpeed</tagname>
+      <tagdec>2</tagdec>
+      <taghex>0x0002</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.ISOSpeed</key>
+      <type>Short</type>
+      <tagdesc>ISO speed setting</tagdesc>
+   </ROW>
+   <ROW num="3">
+      <tagname>ColorMode</tagname>
+      <tagdec>3</tagdec>
+      <taghex>0x0003</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.ColorMode</key>
+      <type>Ascii</type>
+      <tagdesc>Color mode</tagdesc>
+   </ROW>
+   <ROW num="4">
+      <tagname>Quality</tagname>
+      <tagdec>4</tagdec>
+      <taghex>0x0004</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.Quality</key>
+      <type>Ascii</type>
+      <tagdesc>Image quality setting</tagdesc>
+   </ROW>
+   <ROW num="5">
+      <tagname>WhiteBalance</tagname>
+      <tagdec>5</tagdec>
+      <taghex>0x0005</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.WhiteBalance</key>
+      <type>Ascii</type>
+      <tagdesc>White balance</tagdesc>
+   </ROW>
+   <ROW num="6">
+      <tagname>Sharpening</tagname>
+      <tagdec>6</tagdec>
+      <taghex>0x0006</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.Sharpening</key>
+      <type>Ascii</type>
+      <tagdesc>Image sharpening setting</tagdesc>
+   </ROW>
+   <ROW num="7">
+      <tagname>Focus</tagname>
+      <tagdec>7</tagdec>
+      <taghex>0x0007</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.Focus</key>
+      <type>Ascii</type>
+      <tagdesc>Focus mode</tagdesc>
+   </ROW>
+   <ROW num="8">
+      <tagname>FlashSetting</tagname>
+      <tagdec>8</tagdec>
+      <taghex>0x0008</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.FlashSetting</key>
+      <type>Ascii</type>
+      <tagdesc>Flash setting</tagdesc>
+   </ROW>
+   <ROW num="9">
+      <tagname>FlashDevice</tagname>
+      <tagdec>9</tagdec>
+      <taghex>0x0009</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.FlashDevice</key>
+      <type>Ascii</type>
+      <tagdesc>Flash device</tagdesc>
+   </ROW>
+   <ROW num="10">
+      <tagname>0x000a</tagname>
+      <tagdec>10</tagdec>
+      <taghex>0x000a</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.0x000a</key>
+      <type>Rational</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="11">
+      <tagname>WhiteBalanceBias</tagname>
+      <tagdec>11</tagdec>
+      <taghex>0x000b</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.WhiteBalanceBias</key>
+      <type>SShort</type>
+      <tagdesc>White balance bias</tagdesc>
+   </ROW>
+   <ROW num="12">
+      <tagname>WB_RBLevels</tagname>
+      <tagdec>12</tagdec>
+      <taghex>0x000c</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.WB_RBLevels</key>
+      <type>Rational</type>
+      <tagdesc>WB RB levels</tagdesc>
+   </ROW>
+   <ROW num="13">
+      <tagname>ProgramShift</tagname>
+      <tagdec>13</tagdec>
+      <taghex>0x000d</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.ProgramShift</key>
+      <type>Undefined</type>
+      <tagdesc>Program shift</tagdesc>
+   </ROW>
+   <ROW num="14">
+      <tagname>ExposureDiff</tagname>
+      <tagdec>14</tagdec>
+      <taghex>0x000e</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.ExposureDiff</key>
+      <type>Undefined</type>
+      <tagdesc>Exposure difference</tagdesc>
+   </ROW>
+   <ROW num="15">
+      <tagname>ISOSelection</tagname>
+      <tagdec>15</tagdec>
+      <taghex>0x000f</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.ISOSelection</key>
+      <type>Ascii</type>
+      <tagdesc>ISO selection</tagdesc>
+   </ROW>
+   <ROW num="16">
+      <tagname>DataDump</tagname>
+      <tagdec>16</tagdec>
+      <taghex>0x0010</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.DataDump</key>
+      <type>Undefined</type>
+      <tagdesc>Data dump</tagdesc>
+   </ROW>
+   <ROW num="17">
+      <tagname>Preview</tagname>
+      <tagdec>17</tagdec>
+      <taghex>0x0011</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.Preview</key>
+      <type>Undefined</type>
+      <tagdesc>Offset to an IFD containing a preview image</tagdesc>
+   </ROW>
+   <ROW num="18">
+      <tagname>FlashComp</tagname>
+      <tagdec>18</tagdec>
+      <taghex>0x0012</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.FlashComp</key>
+      <type>Undefined</type>
+      <tagdesc>Flash compensation setting</tagdesc>
+   </ROW>
+   <ROW num="19">
+      <tagname>ISOSettings</tagname>
+      <tagdec>19</tagdec>
+      <taghex>0x0013</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.ISOSettings</key>
+      <type>Short</type>
+      <tagdesc>ISO setting</tagdesc>
+   </ROW>
+   <ROW num="20">
+      <tagname>ImageBoundary</tagname>
+      <tagdec>22</tagdec>
+      <taghex>0x0016</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.ImageBoundary</key>
+      <type>Short</type>
+      <tagdesc>Image boundary</tagdesc>
+   </ROW>
+   <ROW num="21">
+      <tagname>FlashExposureComp</tagname>
+      <tagdec>23</tagdec>
+      <taghex>0x0017</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.FlashExposureComp</key>
+      <type>Undefined</type>
+      <tagdesc>Flash exposure comp</tagdesc>
+   </ROW>
+   <ROW num="22">
+      <tagname>FlashBracketComp</tagname>
+      <tagdec>24</tagdec>
+      <taghex>0x0018</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.FlashBracketComp</key>
+      <type>Undefined</type>
+      <tagdesc>Flash bracket compensation applied</tagdesc>
+   </ROW>
+   <ROW num="23">
+      <tagname>ExposureBracketComp</tagname>
+      <tagdec>25</tagdec>
+      <taghex>0x0019</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.ExposureBracketComp</key>
+      <type>SRational</type>
+      <tagdesc>AE bracket compensation applied</tagdesc>
+   </ROW>
+   <ROW num="24">
+      <tagname>ImageProcessing</tagname>
+      <tagdec>26</tagdec>
+      <taghex>0x001a</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.ImageProcessing</key>
+      <type>Ascii</type>
+      <tagdesc>Image processing</tagdesc>
+   </ROW>
+   <ROW num="25">
+      <tagname>CropHiSpeed</tagname>
+      <tagdec>27</tagdec>
+      <taghex>0x001b</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.CropHiSpeed</key>
+      <type>Short</type>
+      <tagdesc>Crop high speed</tagdesc>
+   </ROW>
+   <ROW num="26">
+      <tagname>ExposureTuning</tagname>
+      <tagdec>28</tagdec>
+      <taghex>0x001c</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.ExposureTuning</key>
+      <type>Short</type>
+      <tagdesc>Exposure tuning</tagdesc>
+   </ROW>
+   <ROW num="27">
+      <tagname>SerialNumber</tagname>
+      <tagdec>29</tagdec>
+      <taghex>0x001d</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.SerialNumber</key>
+      <type>Ascii</type>
+      <tagdesc>Serial Number</tagdesc>
+   </ROW>
+   <ROW num="28">
+      <tagname>ColorSpace</tagname>
+      <tagdec>30</tagdec>
+      <taghex>0x001e</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.ColorSpace</key>
+      <type>Short</type>
+      <tagdesc>Color space</tagdesc>
+   </ROW>
+   <ROW num="29">
+      <tagname>VRInfo</tagname>
+      <tagdec>31</tagdec>
+      <taghex>0x001f</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.VRInfo</key>
+      <type>Undefined</type>
+      <tagdesc>VR info</tagdesc>
+   </ROW>
+   <ROW num="30">
+      <tagname>ImageAuthentication</tagname>
+      <tagdec>32</tagdec>
+      <taghex>0x0020</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.ImageAuthentication</key>
+      <type>Byte</type>
+      <tagdesc>Image authentication</tagdesc>
+   </ROW>
+   <ROW num="31">
+      <tagname>ActiveDLighting</tagname>
+      <tagdec>34</tagdec>
+      <taghex>0x0022</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.ActiveDLighting</key>
+      <type>Short</type>
+      <tagdesc>ActiveD-lighting</tagdesc>
+   </ROW>
+   <ROW num="32">
+      <tagname>PictureControl</tagname>
+      <tagdec>35</tagdec>
+      <taghex>0x0023</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.PictureControl</key>
+      <type>Undefined</type>
+      <tagdesc> Picture control</tagdesc>
+   </ROW>
+   <ROW num="33">
+      <tagname>WorldTime</tagname>
+      <tagdec>36</tagdec>
+      <taghex>0x0024</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.WorldTime</key>
+      <type>Undefined</type>
+      <tagdesc>World time</tagdesc>
+   </ROW>
+   <ROW num="34">
+      <tagname>ISOInfo</tagname>
+      <tagdec>37</tagdec>
+      <taghex>0x0025</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.ISOInfo</key>
+      <type>Undefined</type>
+      <tagdesc>ISO info</tagdesc>
+   </ROW>
+   <ROW num="35">
+      <tagname>VignetteControl</tagname>
+      <tagdec>42</tagdec>
+      <taghex>0x002a</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.VignetteControl</key>
+      <type>Short</type>
+      <tagdesc>Vignette control</tagdesc>
+   </ROW>
+   <ROW num="36">
+      <tagname>ImageAdjustment</tagname>
+      <tagdec>128</tagdec>
+      <taghex>0x0080</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.ImageAdjustment</key>
+      <type>Ascii</type>
+      <tagdesc>Image adjustment setting</tagdesc>
+   </ROW>
+   <ROW num="37">
+      <tagname>ToneComp</tagname>
+      <tagdec>129</tagdec>
+      <taghex>0x0081</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.ToneComp</key>
+      <type>Ascii</type>
+      <tagdesc>Tone compensation</tagdesc>
+   </ROW>
+   <ROW num="38">
+      <tagname>AuxiliaryLens</tagname>
+      <tagdec>130</tagdec>
+      <taghex>0x0082</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.AuxiliaryLens</key>
+      <type>Ascii</type>
+      <tagdesc>Auxiliary lens (adapter)</tagdesc>
+   </ROW>
+   <ROW num="39">
+      <tagname>LensType</tagname>
+      <tagdec>131</tagdec>
+      <taghex>0x0083</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.LensType</key>
+      <type>Byte</type>
+      <tagdesc>Lens type</tagdesc>
+   </ROW>
+   <ROW num="40">
+      <tagname>Lens</tagname>
+      <tagdec>132</tagdec>
+      <taghex>0x0084</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.Lens</key>
+      <type>Rational</type>
+      <tagdesc>Lens</tagdesc>
+   </ROW>
+   <ROW num="41">
+      <tagname>FocusDistance</tagname>
+      <tagdec>133</tagdec>
+      <taghex>0x0085</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.FocusDistance</key>
+      <type>Rational</type>
+      <tagdesc>Manual focus distance</tagdesc>
+   </ROW>
+   <ROW num="42">
+      <tagname>DigitalZoom</tagname>
+      <tagdec>134</tagdec>
+      <taghex>0x0086</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.DigitalZoom</key>
+      <type>Rational</type>
+      <tagdesc>Digital zoom setting</tagdesc>
+   </ROW>
+   <ROW num="43">
+      <tagname>FlashMode</tagname>
+      <tagdec>135</tagdec>
+      <taghex>0x0087</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.FlashMode</key>
+      <type>Byte</type>
+      <tagdesc>Mode of flash used</tagdesc>
+   </ROW>
+   <ROW num="44">
+      <tagname>AFInfo</tagname>
+      <tagdec>136</tagdec>
+      <taghex>0x0088</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.AFInfo</key>
+      <type>Undefined</type>
+      <tagdesc>AF info</tagdesc>
+   </ROW>
+   <ROW num="45">
+      <tagname>ShootingMode</tagname>
+      <tagdec>137</tagdec>
+      <taghex>0x0089</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.ShootingMode</key>
+      <type>Short</type>
+      <tagdesc>Shooting mode</tagdesc>
+   </ROW>
+   <ROW num="46">
+      <tagname>AutoBracketRelease</tagname>
+      <tagdec>138</tagdec>
+      <taghex>0x008a</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.AutoBracketRelease</key>
+      <type>Short</type>
+      <tagdesc>Auto bracket release</tagdesc>
+   </ROW>
+   <ROW num="47">
+      <tagname>LensFStops</tagname>
+      <tagdec>139</tagdec>
+      <taghex>0x008b</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.LensFStops</key>
+      <type>Undefined</type>
+      <tagdesc>Lens FStops</tagdesc>
+   </ROW>
+   <ROW num="48">
+      <tagname>ContrastCurve</tagname>
+      <tagdec>140</tagdec>
+      <taghex>0x008c</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.ContrastCurve</key>
+      <type>Undefined</type>
+      <tagdesc>Contrast curve</tagdesc>
+   </ROW>
+   <ROW num="49">
+      <tagname>ColorHue</tagname>
+      <tagdec>141</tagdec>
+      <taghex>0x008d</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.ColorHue</key>
+      <type>Ascii</type>
+      <tagdesc>Color hue</tagdesc>
+   </ROW>
+   <ROW num="50">
+      <tagname>SceneMode</tagname>
+      <tagdec>143</tagdec>
+      <taghex>0x008f</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.SceneMode</key>
+      <type>Ascii</type>
+      <tagdesc>Scene mode</tagdesc>
+   </ROW>
+   <ROW num="51">
+      <tagname>LightSource</tagname>
+      <tagdec>144</tagdec>
+      <taghex>0x0090</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.LightSource</key>
+      <type>Ascii</type>
+      <tagdesc>Light source</tagdesc>
+   </ROW>
+   <ROW num="52">
+      <tagname>ShotInfo</tagname>
+      <tagdec>145</tagdec>
+      <taghex>0x0091</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.ShotInfo</key>
+      <type>Undefined</type>
+      <tagdesc>Shot info</tagdesc>
+   </ROW>
+   <ROW num="53">
+      <tagname>HueAdjustment</tagname>
+      <tagdec>146</tagdec>
+      <taghex>0x0092</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.HueAdjustment</key>
+      <type>SShort</type>
+      <tagdesc>Hue adjustment</tagdesc>
+   </ROW>
+   <ROW num="54">
+      <tagname>NEFCompression</tagname>
+      <tagdec>147</tagdec>
+      <taghex>0x0093</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.NEFCompression</key>
+      <type>Short</type>
+      <tagdesc>NEF compression</tagdesc>
+   </ROW>
+   <ROW num="55">
+      <tagname>Saturation</tagname>
+      <tagdec>148</tagdec>
+      <taghex>0x0094</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.Saturation</key>
+      <type>SShort</type>
+      <tagdesc>Saturation</tagdesc>
+   </ROW>
+   <ROW num="56">
+      <tagname>NoiseReduction</tagname>
+      <tagdec>149</tagdec>
+      <taghex>0x0095</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.NoiseReduction</key>
+      <type>Ascii</type>
+      <tagdesc>Noise reduction</tagdesc>
+   </ROW>
+   <ROW num="57">
+      <tagname>LinearizationTable</tagname>
+      <tagdec>150</tagdec>
+      <taghex>0x0096</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.LinearizationTable</key>
+      <type>Undefined</type>
+      <tagdesc>Linearization table</tagdesc>
+   </ROW>
+   <ROW num="58">
+      <tagname>ColorBalance</tagname>
+      <tagdec>151</tagdec>
+      <taghex>0x0097</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.ColorBalance</key>
+      <type>Undefined</type>
+      <tagdesc>Color balance</tagdesc>
+   </ROW>
+   <ROW num="59">
+      <tagname>LensData</tagname>
+      <tagdec>152</tagdec>
+      <taghex>0x0098</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.LensData</key>
+      <type>Undefined</type>
+      <tagdesc>Lens data settings</tagdesc>
+   </ROW>
+   <ROW num="60">
+      <tagname>RawImageCenter</tagname>
+      <tagdec>153</tagdec>
+      <taghex>0x0099</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.RawImageCenter</key>
+      <type>Short</type>
+      <tagdesc>Raw image center</tagdesc>
+   </ROW>
+   <ROW num="61">
+      <tagname>SensorPixelSize</tagname>
+      <tagdec>154</tagdec>
+      <taghex>0x009a</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.SensorPixelSize</key>
+      <type>Rational</type>
+      <tagdesc>Sensor pixel size</tagdesc>
+   </ROW>
+   <ROW num="62">
+      <tagname>0x009b</tagname>
+      <tagdec>155</tagdec>
+      <taghex>0x009b</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.0x009b</key>
+      <type>Short</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="63">
+      <tagname>SceneAssist</tagname>
+      <tagdec>156</tagdec>
+      <taghex>0x009c</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.SceneAssist</key>
+      <type>Ascii</type>
+      <tagdesc>Scene assist</tagdesc>
+   </ROW>
+   <ROW num="64">
+      <tagname>RetouchHistory</tagname>
+      <tagdec>158</tagdec>
+      <taghex>0x009e</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.RetouchHistory</key>
+      <type>Short</type>
+      <tagdesc>Retouch history</tagdesc>
+   </ROW>
+   <ROW num="65">
+      <tagname>0x009f</tagname>
+      <tagdec>159</tagdec>
+      <taghex>0x009f</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.0x009f</key>
+      <type>SShort</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="66">
+      <tagname>SerialNO</tagname>
+      <tagdec>160</tagdec>
+      <taghex>0x00a0</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.SerialNO</key>
+      <type>Ascii</type>
+      <tagdesc>Camera serial number, usually starts with "NO= "</tagdesc>
+   </ROW>
+   <ROW num="67">
+      <tagname>ImageDataSize</tagname>
+      <tagdec>162</tagdec>
+      <taghex>0x00a2</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.ImageDataSize</key>
+      <type>Long</type>
+      <tagdesc>Image data size</tagdesc>
+   </ROW>
+   <ROW num="68">
+      <tagname>0x00a3</tagname>
+      <tagdec>163</tagdec>
+      <taghex>0x00a3</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.0x00a3</key>
+      <type>Byte</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="69">
+      <tagname>ImageCount</tagname>
+      <tagdec>165</tagdec>
+      <taghex>0x00a5</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.ImageCount</key>
+      <type>Long</type>
+      <tagdesc>Image count</tagdesc>
+   </ROW>
+   <ROW num="70">
+      <tagname>DeletedImageCount</tagname>
+      <tagdec>166</tagdec>
+      <taghex>0x00a6</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.DeletedImageCount</key>
+      <type>Long</type>
+      <tagdesc>Deleted image count</tagdesc>
+   </ROW>
+   <ROW num="71">
+      <tagname>ShutterCount</tagname>
+      <tagdec>167</tagdec>
+      <taghex>0x00a7</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.ShutterCount</key>
+      <type>Long</type>
+      <tagdesc>Number of shots taken by camera</tagdesc>
+   </ROW>
+   <ROW num="72">
+      <tagname>FlashInfo</tagname>
+      <tagdec>168</tagdec>
+      <taghex>0x00a8</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.FlashInfo</key>
+      <type>Undefined</type>
+      <tagdesc>Flash info</tagdesc>
+   </ROW>
+   <ROW num="73">
+      <tagname>ImageOptimization</tagname>
+      <tagdec>169</tagdec>
+      <taghex>0x00a9</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.ImageOptimization</key>
+      <type>Ascii</type>
+      <tagdesc>Image optimization</tagdesc>
+   </ROW>
+   <ROW num="74">
+      <tagname>Saturation</tagname>
+      <tagdec>170</tagdec>
+      <taghex>0x00aa</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.Saturation</key>
+      <type>Ascii</type>
+      <tagdesc>Saturation</tagdesc>
+   </ROW>
+   <ROW num="75">
+      <tagname>VariProgram</tagname>
+      <tagdec>171</tagdec>
+      <taghex>0x00ab</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.VariProgram</key>
+      <type>Ascii</type>
+      <tagdesc>Program variation</tagdesc>
+   </ROW>
+   <ROW num="76">
+      <tagname>ImageStabilization</tagname>
+      <tagdec>172</tagdec>
+      <taghex>0x00ac</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.ImageStabilization</key>
+      <type>Ascii</type>
+      <tagdesc>Image stabilization</tagdesc>
+   </ROW>
+   <ROW num="77">
+      <tagname>AFResponse</tagname>
+      <tagdec>173</tagdec>
+      <taghex>0x00ad</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.AFResponse</key>
+      <type>Ascii</type>
+      <tagdesc>AF response</tagdesc>
+   </ROW>
+   <ROW num="78">
+      <tagname>MultiExposure</tagname>
+      <tagdec>176</tagdec>
+      <taghex>0x00b0</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.MultiExposure</key>
+      <type>Undefined</type>
+      <tagdesc>Multi exposure</tagdesc>
+   </ROW>
+   <ROW num="79">
+      <tagname>HighISONoiseReduction</tagname>
+      <tagdec>177</tagdec>
+      <taghex>0x00b1</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.HighISONoiseReduction</key>
+      <type>Short</type>
+      <tagdesc>High ISO Noise Reduction</tagdesc>
+   </ROW>
+   <ROW num="80">
+      <tagname>ToningEffect</tagname>
+      <tagdec>179</tagdec>
+      <taghex>0x00b3</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.ToningEffect</key>
+      <type>Ascii</type>
+      <tagdesc>Toning effect</tagdesc>
+   </ROW>
+   <ROW num="81">
+      <tagname>AFInfo2</tagname>
+      <tagdec>183</tagdec>
+      <taghex>0x00b7</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.AFInfo2</key>
+      <type>Undefined</type>
+      <tagdesc>AF info 2</tagdesc>
+   </ROW>
+   <ROW num="82">
+      <tagname>FileInfo</tagname>
+      <tagdec>184</tagdec>
+      <taghex>0x00b8</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.FileInfo</key>
+      <type>Undefined</type>
+      <tagdesc>File info</tagdesc>
+   </ROW>
+   <ROW num="83">
+      <tagname>AFTune</tagname>
+      <tagdec>185</tagdec>
+      <taghex>0x00b9</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.AFTune</key>
+      <type>Undefined</type>
+      <tagdesc>AF tune</tagdesc>
+   </ROW>
+   <ROW num="84">
+      <tagname>BarometerInfo</tagname>
+      <tagdec>195</tagdec>
+      <taghex>0x00c3</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.BarometerInfo</key>
+      <type>SLong</type>
+      <tagdesc>Barometer Info</tagdesc>
+   </ROW>
+   <ROW num="85">
+      <tagname>PrintIM</tagname>
+      <tagdec>3584</tagdec>
+      <taghex>0x0e00</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.PrintIM</key>
+      <type>Undefined</type>
+      <tagdesc>PrintIM information</tagdesc>
+   </ROW>
+   <ROW num="86">
+      <tagname>CaptureData</tagname>
+      <tagdec>3585</tagdec>
+      <taghex>0x0e01</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.CaptureData</key>
+      <type>Undefined</type>
+      <tagdesc>Capture data</tagdesc>
+   </ROW>
+   <ROW num="87">
+      <tagname>CaptureVersion</tagname>
+      <tagdec>3593</tagdec>
+      <taghex>0x0e09</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.CaptureVersion</key>
+      <type>Ascii</type>
+      <tagdesc>Capture version</tagdesc>
+   </ROW>
+   <ROW num="88">
+      <tagname>CaptureOffsets</tagname>
+      <tagdec>3598</tagdec>
+      <taghex>0x0e0e</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.CaptureOffsets</key>
+      <type>Undefined</type>
+      <tagdesc>Capture offsets</tagdesc>
+   </ROW>
+   <ROW num="89">
+      <tagname>ScanIFD</tagname>
+      <tagdec>3600</tagdec>
+      <taghex>0x0e10</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.ScanIFD</key>
+      <type>Undefined</type>
+      <tagdesc>Scan IFD</tagdesc>
+   </ROW>
+   <ROW num="90">
+      <tagname>ICCProfile</tagname>
+      <tagdec>3613</tagdec>
+      <taghex>0x0e1d</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.ICCProfile</key>
+      <type>Undefined</type>
+      <tagdesc>ICC profile</tagdesc>
+   </ROW>
+   <ROW num="91">
+      <tagname>CaptureOutput</tagname>
+      <tagdec>3614</tagdec>
+      <taghex>0x0e1e</taghex>
+      <ifd>Nikon3</ifd>
+      <key>Exif.Nikon3.CaptureOutput</key>
+      <type>Undefined</type>
+      <tagdesc>Capture output</tagdesc>
+   </ROW>
+</ROWSET>
+</TAGLIST>

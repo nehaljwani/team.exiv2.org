@@ -1,0 +1,85 @@
+<?xml version = '1.0'?>
+<?xml-stylesheet type="text/xsl" href="xmp.xsl"?>
+<TAGLIST>
+<HEADER>
+<title>XMP tags defined in Exiv2</title>
+<text>
+<p>Some description</p>
+<p>Click on a column header to sort the table.</p>
+</text>
+</HEADER>
+<ROWSET>
+   <ROW num="1">
+      <tagname>type</tagname>
+      <title>Type</title>
+      <xmpvaltype>bag open Choice</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>The nature or genre of the resource.</tagdesc>
+   </ROW>
+   <ROW num="2">
+      <tagname>modified</tagname>
+      <title>Date Modified</title>
+      <xmpvaltype>seq Date</xmpvaltype>
+      <type>XmpSeq</type>
+      <category>External</category>
+      <tagdesc>Date on which the resource was changed.</tagdesc>
+   </ROW>
+   <ROW num="3">
+      <tagname>language</tagname>
+      <title>Language</title>
+      <xmpvaltype>bag Locale</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>A language of the resource.</tagdesc>
+   </ROW>
+   <ROW num="4">
+      <tagname>license</tagname>
+      <title>License</title>
+      <xmpvaltype>Lang Alt</xmpvaltype>
+      <type>LangAlt</type>
+      <category>External</category>
+      <tagdesc>A legal document giving official permission to do something with the resource.</tagdesc>
+   </ROW>
+   <ROW num="5">
+      <tagname>rightsHolder</tagname>
+      <title>Rights Holder</title>
+      <xmpvaltype>seq ProperName</xmpvaltype>
+      <type>XmpSeq</type>
+      <category>External</category>
+      <tagdesc>A person or organization owning or managing rights over the resource.</tagdesc>
+   </ROW>
+   <ROW num="6">
+      <tagname>accessRights</tagname>
+      <title>Access Rights</title>
+      <xmpvaltype>Lang Alt</xmpvaltype>
+      <type>LangAlt</type>
+      <category>External</category>
+      <tagdesc>Information about who can access the resource or an indication of its security status.</tagdesc>
+   </ROW>
+   <ROW num="7">
+      <tagname>bibliographicCitation</tagname>
+      <title>Bibliographic Citation</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>A bibliographic reference for the resource.</tagdesc>
+   </ROW>
+   <ROW num="8">
+      <tagname>references</tagname>
+      <title>References</title>
+      <xmpvaltype>bag Text</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>A related resource that is referenced, cited, or otherwise pointed to by the described resource.</tagdesc>
+   </ROW>
+   <ROW num="9">
+      <tagname>Location</tagname>
+      <title>Location</title>
+      <xmpvaltype>Location</xmpvaltype>
+      <type>XmpText</type>
+      <category>Internal</category>
+      <tagdesc>*Main structure* containing Darwin Core location based information.</tagdesc>
+   </ROW>
+</ROWSET>
+</TAGLIST>

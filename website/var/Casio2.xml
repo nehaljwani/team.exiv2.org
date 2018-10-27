@@ -1,0 +1,455 @@
+<?xml version = '1.0'?>
+<?xml-stylesheet type="text/xsl" href="tags.xsl"?>
+<TAGLIST>
+<HEADER>
+<title>XYZ MakerNote Tags defined in Exiv2</title>
+<text>
+<p>Tags found in the MakerNote of images taken with XYZ cameras. These tags 
+are defined by Exiv2 in accordance with <a href="makernote.html#RX">[X]</a>.</p>
+<p>Click on a column header to sort the table.</p>
+</text>
+</HEADER>
+<ROWSET>
+   <ROW num="1">
+      <tagname>PreviewImageSize</tagname>
+      <tagdec>2</tagdec>
+      <taghex>0x0002</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.PreviewImageSize</key>
+      <type>Short</type>
+      <tagdesc>Preview Image Size</tagdesc>
+   </ROW>
+   <ROW num="2">
+      <tagname>PreviewImageLength</tagname>
+      <tagdec>3</tagdec>
+      <taghex>0x0003</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.PreviewImageLength</key>
+      <type>Long</type>
+      <tagdesc>Preview Image Length</tagdesc>
+   </ROW>
+   <ROW num="3">
+      <tagname>PreviewImageStart</tagname>
+      <tagdec>4</tagdec>
+      <taghex>0x0004</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.PreviewImageStart</key>
+      <type>Long</type>
+      <tagdesc>Preview Image Start</tagdesc>
+   </ROW>
+   <ROW num="4">
+      <tagname>QualityMode</tagname>
+      <tagdec>8</tagdec>
+      <taghex>0x0008</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.QualityMode</key>
+      <type>Short</type>
+      <tagdesc>Quality Mode</tagdesc>
+   </ROW>
+   <ROW num="5">
+      <tagname>ImageSize</tagname>
+      <tagdec>9</tagdec>
+      <taghex>0x0009</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.ImageSize</key>
+      <type>Short</type>
+      <tagdesc>Image Size</tagdesc>
+   </ROW>
+   <ROW num="6">
+      <tagname>FocusMode</tagname>
+      <tagdec>13</tagdec>
+      <taghex>0x000d</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.FocusMode</key>
+      <type>Short</type>
+      <tagdesc>Focus Mode</tagdesc>
+   </ROW>
+   <ROW num="7">
+      <tagname>ISOSpeed</tagname>
+      <tagdec>20</tagdec>
+      <taghex>0x0014</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.ISOSpeed</key>
+      <type>Short</type>
+      <tagdesc>ISO Speed</tagdesc>
+   </ROW>
+   <ROW num="8">
+      <tagname>WhiteBalance</tagname>
+      <tagdec>25</tagdec>
+      <taghex>0x0019</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.WhiteBalance</key>
+      <type>Short</type>
+      <tagdesc>White Balance Setting</tagdesc>
+   </ROW>
+   <ROW num="9">
+      <tagname>FocalLength</tagname>
+      <tagdec>29</tagdec>
+      <taghex>0x001d</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.FocalLength</key>
+      <type>Rational</type>
+      <tagdesc>Focal Length</tagdesc>
+   </ROW>
+   <ROW num="10">
+      <tagname>Saturation</tagname>
+      <tagdec>31</tagdec>
+      <taghex>0x001f</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.Saturation</key>
+      <type>Short</type>
+      <tagdesc>Saturation</tagdesc>
+   </ROW>
+   <ROW num="11">
+      <tagname>Contrast</tagname>
+      <tagdec>32</tagdec>
+      <taghex>0x0020</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.Contrast</key>
+      <type>Short</type>
+      <tagdesc>Contrast</tagdesc>
+   </ROW>
+   <ROW num="12">
+      <tagname>Sharpness</tagname>
+      <tagdec>33</tagdec>
+      <taghex>0x0021</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.Sharpness</key>
+      <type>Short</type>
+      <tagdesc>Sharpness</tagdesc>
+   </ROW>
+   <ROW num="13">
+      <tagname>PrintIM</tagname>
+      <tagdec>3584</tagdec>
+      <taghex>0x0e00</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.PrintIM</key>
+      <type>Undefined</type>
+      <tagdesc>PrintIM information</tagdesc>
+   </ROW>
+   <ROW num="14">
+      <tagname>PreviewImage</tagname>
+      <tagdec>8192</tagdec>
+      <taghex>0x2000</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.PreviewImage</key>
+      <type>Undefined</type>
+      <tagdesc>Preview Image</tagdesc>
+   </ROW>
+   <ROW num="15">
+      <tagname>FirmwareDate</tagname>
+      <tagdec>8193</tagdec>
+      <taghex>0x2001</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.FirmwareDate</key>
+      <type>Ascii</type>
+      <tagdesc>Firmware Date</tagdesc>
+   </ROW>
+   <ROW num="16">
+      <tagname>WhiteBalanceBias</tagname>
+      <tagdec>8209</tagdec>
+      <taghex>0x2011</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.WhiteBalanceBias</key>
+      <type>Short</type>
+      <tagdesc>White Balance Bias</tagdesc>
+   </ROW>
+   <ROW num="17">
+      <tagname>WhiteBalance2</tagname>
+      <tagdec>8210</tagdec>
+      <taghex>0x2012</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.WhiteBalance2</key>
+      <type>Short</type>
+      <tagdesc>White Balance Setting</tagdesc>
+   </ROW>
+   <ROW num="18">
+      <tagname>AFPointPosition</tagname>
+      <tagdec>8225</tagdec>
+      <taghex>0x2021</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.AFPointPosition</key>
+      <type>Short</type>
+      <tagdesc>AF Point Position</tagdesc>
+   </ROW>
+   <ROW num="19">
+      <tagname>ObjectDistance</tagname>
+      <tagdec>8226</tagdec>
+      <taghex>0x2022</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.ObjectDistance</key>
+      <type>Long</type>
+      <tagdesc>Object Distance</tagdesc>
+   </ROW>
+   <ROW num="20">
+      <tagname>FlashDistance</tagname>
+      <tagdec>8244</tagdec>
+      <taghex>0x2034</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.FlashDistance</key>
+      <type>Short</type>
+      <tagdesc>Flash Distance</tagdesc>
+   </ROW>
+   <ROW num="21">
+      <tagname>SpecialEffectMode</tagname>
+      <tagdec>8310</tagdec>
+      <taghex>0x2076</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.SpecialEffectMode</key>
+      <type>Byte</type>
+      <tagdesc>Special Effect Mode</tagdesc>
+   </ROW>
+   <ROW num="22">
+      <tagname>FaceInfo</tagname>
+      <tagdec>8329</tagdec>
+      <taghex>0x2089</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.FaceInfo</key>
+      <type>Undefined</type>
+      <tagdesc>Face Info</tagdesc>
+   </ROW>
+   <ROW num="23">
+      <tagname>FacesDetected</tagname>
+      <tagdec>8476</tagdec>
+      <taghex>0x211c</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.FacesDetected</key>
+      <type>Byte</type>
+      <tagdesc>Faces detected</tagdesc>
+   </ROW>
+   <ROW num="24">
+      <tagname>RecordMode</tagname>
+      <tagdec>12288</tagdec>
+      <taghex>0x3000</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.RecordMode</key>
+      <type>Short</type>
+      <tagdesc>Record Mode</tagdesc>
+   </ROW>
+   <ROW num="25">
+      <tagname>ReleaseMode</tagname>
+      <tagdec>12289</tagdec>
+      <taghex>0x3001</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.ReleaseMode</key>
+      <type>Short</type>
+      <tagdesc>Release Mode</tagdesc>
+   </ROW>
+   <ROW num="26">
+      <tagname>Quality</tagname>
+      <tagdec>12290</tagdec>
+      <taghex>0x3002</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.Quality</key>
+      <type>Short</type>
+      <tagdesc>Quality</tagdesc>
+   </ROW>
+   <ROW num="27">
+      <tagname>FocusMode2</tagname>
+      <tagdec>12291</tagdec>
+      <taghex>0x3003</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.FocusMode2</key>
+      <type>Short</type>
+      <tagdesc>Focus Mode2</tagdesc>
+   </ROW>
+   <ROW num="28">
+      <tagname>HometownCity</tagname>
+      <tagdec>12294</tagdec>
+      <taghex>0x3006</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.HometownCity</key>
+      <type>Ascii</type>
+      <tagdesc>Home town city</tagdesc>
+   </ROW>
+   <ROW num="29">
+      <tagname>BestShotMode</tagname>
+      <tagdec>12295</tagdec>
+      <taghex>0x3007</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.BestShotMode</key>
+      <type>Short</type>
+      <tagdesc>Best Shot Mode</tagdesc>
+   </ROW>
+   <ROW num="30">
+      <tagname>AutoISO</tagname>
+      <tagdec>12296</tagdec>
+      <taghex>0x3008</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.AutoISO</key>
+      <type>Short</type>
+      <tagdesc>Auto ISO</tagdesc>
+   </ROW>
+   <ROW num="31">
+      <tagname>AFMode</tagname>
+      <tagdec>12297</tagdec>
+      <taghex>0x3009</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.AFMode</key>
+      <type>Short</type>
+      <tagdesc>AF Mode</tagdesc>
+   </ROW>
+   <ROW num="32">
+      <tagname>Sharpness2</tagname>
+      <tagdec>12305</tagdec>
+      <taghex>0x3011</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.Sharpness2</key>
+      <type>Undefined</type>
+      <tagdesc>Sharpness</tagdesc>
+   </ROW>
+   <ROW num="33">
+      <tagname>Contrast2</tagname>
+      <tagdec>12306</tagdec>
+      <taghex>0x3012</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.Contrast2</key>
+      <type>Undefined</type>
+      <tagdesc>Contrast</tagdesc>
+   </ROW>
+   <ROW num="34">
+      <tagname>Saturation2</tagname>
+      <tagdec>12307</tagdec>
+      <taghex>0x3013</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.Saturation2</key>
+      <type>Undefined</type>
+      <tagdesc>Saturation</tagdesc>
+   </ROW>
+   <ROW num="35">
+      <tagname>ISO</tagname>
+      <tagdec>12308</tagdec>
+      <taghex>0x3014</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.ISO</key>
+      <type>Short</type>
+      <tagdesc>ISO</tagdesc>
+   </ROW>
+   <ROW num="36">
+      <tagname>ColorMode</tagname>
+      <tagdec>12309</tagdec>
+      <taghex>0x3015</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.ColorMode</key>
+      <type>Short</type>
+      <tagdesc>Color Mode</tagdesc>
+   </ROW>
+   <ROW num="37">
+      <tagname>Enhancement</tagname>
+      <tagdec>12310</tagdec>
+      <taghex>0x3016</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.Enhancement</key>
+      <type>Short</type>
+      <tagdesc>Enhancement</tagdesc>
+   </ROW>
+   <ROW num="38">
+      <tagname>ColorFilter</tagname>
+      <tagdec>12311</tagdec>
+      <taghex>0x3017</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.ColorFilter</key>
+      <type>Short</type>
+      <tagdesc>Color Filter</tagdesc>
+   </ROW>
+   <ROW num="39">
+      <tagname>ArtMode</tagname>
+      <tagdec>12315</tagdec>
+      <taghex>0x301b</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.ArtMode</key>
+      <type>Short</type>
+      <tagdesc>Art Mode</tagdesc>
+   </ROW>
+   <ROW num="40">
+      <tagname>SequenceNumber</tagname>
+      <tagdec>12316</tagdec>
+      <taghex>0x301c</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.SequenceNumber</key>
+      <type>Short</type>
+      <tagdesc>Sequence Number</tagdesc>
+   </ROW>
+   <ROW num="41">
+      <tagname>ImageStabilization</tagname>
+      <tagdec>12320</tagdec>
+      <taghex>0x3020</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.ImageStabilization</key>
+      <type>Short</type>
+      <tagdesc>Image Stabilization</tagdesc>
+   </ROW>
+   <ROW num="42">
+      <tagname>LightingMode</tagname>
+      <tagdec>12330</tagdec>
+      <taghex>0x302a</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.LightingMode</key>
+      <type>Short</type>
+      <tagdesc>Lighting Mode</tagdesc>
+   </ROW>
+   <ROW num="43">
+      <tagname>PortraitRefiner</tagname>
+      <tagdec>12331</tagdec>
+      <taghex>0x302b</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.PortraitRefiner</key>
+      <type>Short</type>
+      <tagdesc>Portrait Refiner settings</tagdesc>
+   </ROW>
+   <ROW num="44">
+      <tagname>SpecialEffectLevel</tagname>
+      <tagdec>12336</tagdec>
+      <taghex>0x3030</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.SpecialEffectLevel</key>
+      <type>Short</type>
+      <tagdesc>Special Effect Level</tagdesc>
+   </ROW>
+   <ROW num="45">
+      <tagname>SpecialEffectSetting</tagname>
+      <tagdec>12337</tagdec>
+      <taghex>0x3031</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.SpecialEffectSetting</key>
+      <type>Short</type>
+      <tagdesc>Special Effect Setting</tagdesc>
+   </ROW>
+   <ROW num="46">
+      <tagname>DriveMode</tagname>
+      <tagdec>12547</tagdec>
+      <taghex>0x3103</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.DriveMode</key>
+      <type>Short</type>
+      <tagdesc>Drive Mode</tagdesc>
+   </ROW>
+   <ROW num="47">
+      <tagname>ArtModeParameters</tagname>
+      <tagdec>12555</tagdec>
+      <taghex>0x310b</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.ArtModeParameters</key>
+      <type>Undefined</type>
+      <tagdesc>Art Mode Parameters</tagdesc>
+   </ROW>
+   <ROW num="48">
+      <tagname>CaptureFrameRate</tagname>
+      <tagdec>16385</tagdec>
+      <taghex>0x4001</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.CaptureFrameRate</key>
+      <type>Short</type>
+      <tagdesc>Capture Frame Rate</tagdesc>
+   </ROW>
+   <ROW num="49">
+      <tagname>VideoQuality</tagname>
+      <tagdec>16387</tagdec>
+      <taghex>0x4003</taghex>
+      <ifd>Casio2</ifd>
+      <key>Exif.Casio2.VideoQuality</key>
+      <type>Short</type>
+      <tagdesc>Video Quality</tagdesc>
+   </ROW>
+</ROWSET>
+</TAGLIST>

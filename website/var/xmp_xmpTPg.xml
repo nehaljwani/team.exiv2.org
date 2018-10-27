@@ -1,0 +1,53 @@
+<?xml version = '1.0'?>
+<?xml-stylesheet type="text/xsl" href="xmp.xsl"?>
+<TAGLIST>
+<HEADER>
+<title>XMP tags defined in Exiv2</title>
+<text>
+<p>Some description</p>
+<p>Click on a column header to sort the table.</p>
+</text>
+</HEADER>
+<ROWSET>
+   <ROW num="1">
+      <tagname>MaxPageSize</tagname>
+      <title>Maximum Page Size</title>
+      <xmpvaltype>Dimensions</xmpvaltype>
+      <type>XmpText</type>
+      <category>Internal</category>
+      <tagdesc>The size of the largest page in the document (including any in contained documents).</tagdesc>
+   </ROW>
+   <ROW num="2">
+      <tagname>NPages</tagname>
+      <title>Number of Pages</title>
+      <xmpvaltype>Integer</xmpvaltype>
+      <type>XmpText</type>
+      <category>Internal</category>
+      <tagdesc>The number of pages in the document (including any in contained documents).</tagdesc>
+   </ROW>
+   <ROW num="3">
+      <tagname>Fonts</tagname>
+      <title>Fonts</title>
+      <xmpvaltype>bag Font</xmpvaltype>
+      <type>XmpText</type>
+      <category>Internal</category>
+      <tagdesc>An unordered array of fonts that are used in the document (including any in contained documents).</tagdesc>
+   </ROW>
+   <ROW num="4">
+      <tagname>Colorants</tagname>
+      <title>Colorants</title>
+      <xmpvaltype>seq Colorant</xmpvaltype>
+      <type>XmpText</type>
+      <category>Internal</category>
+      <tagdesc>An ordered array of colorants (swatches) that are used in the document (including any in contained documents).</tagdesc>
+   </ROW>
+   <ROW num="5">
+      <tagname>PlateNames</tagname>
+      <title>Plate Names</title>
+      <xmpvaltype>seq Text</xmpvaltype>
+      <type>XmpSeq</type>
+      <category>Internal</category>
+      <tagdesc>An ordered array of plate names that are needed to print the document (including any in contained documents).</tagdesc>
+   </ROW>
+</ROWSET>
+</TAGLIST>

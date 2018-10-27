@@ -1,0 +1,473 @@
+<?xml version = '1.0'?>
+<?xml-stylesheet type="text/xsl" href="tags.xsl"?>
+<TAGLIST>
+<HEADER>
+<title>XYZ MakerNote Tags defined in Exiv2</title>
+<text>
+<p>Tags found in the MakerNote of images taken with XYZ cameras. These tags 
+are defined by Exiv2 in accordance with <a href="makernote.html#RX">[X]</a>.</p>
+<p>Click on a column header to sort the table.</p>
+</text>
+</HEADER>
+<ROWSET>
+   <ROW num="1">
+      <tagname>ImageProcessingVersion</tagname>
+      <tagdec>0</tagdec>
+      <taghex>0x0000</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.ImageProcessingVersion</key>
+      <type>Undefined</type>
+      <tagdesc>Image processing version</tagdesc>
+   </ROW>
+   <ROW num="2">
+      <tagname>WB_RBLevels</tagname>
+      <tagdec>256</tagdec>
+      <taghex>0x0100</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.WB_RBLevels</key>
+      <type>Short</type>
+      <tagdesc>WB RB levels</tagdesc>
+   </ROW>
+   <ROW num="3">
+      <tagname>WB_RBLevels3000K</tagname>
+      <tagdec>258</tagdec>
+      <taghex>0x0102</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.WB_RBLevels3000K</key>
+      <type>Short</type>
+      <tagdesc>WB RB levels 3000K</tagdesc>
+   </ROW>
+   <ROW num="4">
+      <tagname>WB_RBLevels3300K</tagname>
+      <tagdec>259</tagdec>
+      <taghex>0x0103</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.WB_RBLevels3300K</key>
+      <type>Short</type>
+      <tagdesc>WB RB levels 3300K</tagdesc>
+   </ROW>
+   <ROW num="5">
+      <tagname>WB_RBLevels3600K</tagname>
+      <tagdec>260</tagdec>
+      <taghex>0x0104</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.WB_RBLevels3600K</key>
+      <type>Short</type>
+      <tagdesc>WB RB levels 3600K</tagdesc>
+   </ROW>
+   <ROW num="6">
+      <tagname>WB_RBLevels3900K</tagname>
+      <tagdec>261</tagdec>
+      <taghex>0x0105</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.WB_RBLevels3900K</key>
+      <type>Short</type>
+      <tagdesc>WB RB levels 3900K</tagdesc>
+   </ROW>
+   <ROW num="7">
+      <tagname>WB_RBLevels4000K</tagname>
+      <tagdec>262</tagdec>
+      <taghex>0x0106</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.WB_RBLevels4000K</key>
+      <type>Short</type>
+      <tagdesc>WB RB levels 4000K</tagdesc>
+   </ROW>
+   <ROW num="8">
+      <tagname>WB_RBLevels4300K</tagname>
+      <tagdec>263</tagdec>
+      <taghex>0x0107</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.WB_RBLevels4300K</key>
+      <type>Short</type>
+      <tagdesc>WB RB levels 4300K</tagdesc>
+   </ROW>
+   <ROW num="9">
+      <tagname>WB_RBLevels4500K</tagname>
+      <tagdec>264</tagdec>
+      <taghex>0x0108</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.WB_RBLevels4500K</key>
+      <type>Short</type>
+      <tagdesc>WB RB levels 4500K</tagdesc>
+   </ROW>
+   <ROW num="10">
+      <tagname>WB_RBLevels4800K</tagname>
+      <tagdec>265</tagdec>
+      <taghex>0x0109</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.WB_RBLevels4800K</key>
+      <type>Short</type>
+      <tagdesc>WB RB levels 4800K</tagdesc>
+   </ROW>
+   <ROW num="11">
+      <tagname>WB_RBLevels5300K</tagname>
+      <tagdec>266</tagdec>
+      <taghex>0x010a</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.WB_RBLevels5300K</key>
+      <type>Short</type>
+      <tagdesc>WB RB levels 5300K</tagdesc>
+   </ROW>
+   <ROW num="12">
+      <tagname>WB_RBLevels6000K</tagname>
+      <tagdec>267</tagdec>
+      <taghex>0x010b</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.WB_RBLevels6000K</key>
+      <type>Short</type>
+      <tagdesc>WB RB levels 6000K</tagdesc>
+   </ROW>
+   <ROW num="13">
+      <tagname>WB_RBLevels6600K</tagname>
+      <tagdec>268</tagdec>
+      <taghex>0x010c</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.WB_RBLevels6600K</key>
+      <type>Short</type>
+      <tagdesc>WB RB levels 6600K</tagdesc>
+   </ROW>
+   <ROW num="14">
+      <tagname>WB_RBLevels7500K</tagname>
+      <tagdec>269</tagdec>
+      <taghex>0x010d</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.WB_RBLevels7500K</key>
+      <type>Short</type>
+      <tagdesc>WB RB levels 7500K</tagdesc>
+   </ROW>
+   <ROW num="15">
+      <tagname>WB_RBLevelsCWB1</tagname>
+      <tagdec>270</tagdec>
+      <taghex>0x010e</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.WB_RBLevelsCWB1</key>
+      <type>Short</type>
+      <tagdesc>WB RB levels CWB1</tagdesc>
+   </ROW>
+   <ROW num="16">
+      <tagname>WB_RBLevelsCWB2</tagname>
+      <tagdec>271</tagdec>
+      <taghex>0x010f</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.WB_RBLevelsCWB2</key>
+      <type>Short</type>
+      <tagdesc>WB RB levels CWB2</tagdesc>
+   </ROW>
+   <ROW num="17">
+      <tagname>WB_RBLevelsCWB3</tagname>
+      <tagdec>272</tagdec>
+      <taghex>0x0110</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.WB_RBLevelsCWB3</key>
+      <type>Short</type>
+      <tagdesc>WB RB levels CWB3</tagdesc>
+   </ROW>
+   <ROW num="18">
+      <tagname>WB_RBLevelsCWB4</tagname>
+      <tagdec>273</tagdec>
+      <taghex>0x0111</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.WB_RBLevelsCWB4</key>
+      <type>Short</type>
+      <tagdesc>WB RB levels CWB4</tagdesc>
+   </ROW>
+   <ROW num="19">
+      <tagname>WB_GLevel3000K</tagname>
+      <tagdec>275</tagdec>
+      <taghex>0x0113</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.WB_GLevel3000K</key>
+      <type>Short</type>
+      <tagdesc>WB G level 3000K</tagdesc>
+   </ROW>
+   <ROW num="20">
+      <tagname>WB_GLevel3300K</tagname>
+      <tagdec>276</tagdec>
+      <taghex>0x0114</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.WB_GLevel3300K</key>
+      <type>Short</type>
+      <tagdesc>WB G level 3300K</tagdesc>
+   </ROW>
+   <ROW num="21">
+      <tagname>WB_GLevel3600K</tagname>
+      <tagdec>277</tagdec>
+      <taghex>0x0115</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.WB_GLevel3600K</key>
+      <type>Short</type>
+      <tagdesc>WB G level 3600K</tagdesc>
+   </ROW>
+   <ROW num="22">
+      <tagname>WB_GLevel3900K</tagname>
+      <tagdec>278</tagdec>
+      <taghex>0x0116</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.WB_GLevel3900K</key>
+      <type>Short</type>
+      <tagdesc>WB G level 3900K</tagdesc>
+   </ROW>
+   <ROW num="23">
+      <tagname>WB_GLevel4000K</tagname>
+      <tagdec>279</tagdec>
+      <taghex>0x0117</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.WB_GLevel4000K</key>
+      <type>Short</type>
+      <tagdesc>WB G level 4000K</tagdesc>
+   </ROW>
+   <ROW num="24">
+      <tagname>WB_GLevel4300K</tagname>
+      <tagdec>280</tagdec>
+      <taghex>0x0118</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.WB_GLevel4300K</key>
+      <type>Short</type>
+      <tagdesc>WB G level 4300K</tagdesc>
+   </ROW>
+   <ROW num="25">
+      <tagname>WB_GLevel4500K</tagname>
+      <tagdec>281</tagdec>
+      <taghex>0x0119</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.WB_GLevel4500K</key>
+      <type>Short</type>
+      <tagdesc>WB G level 4500K</tagdesc>
+   </ROW>
+   <ROW num="26">
+      <tagname>WB_GLevel4800K</tagname>
+      <tagdec>282</tagdec>
+      <taghex>0x011a</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.WB_GLevel4800K</key>
+      <type>Short</type>
+      <tagdesc>WB G level 4800K</tagdesc>
+   </ROW>
+   <ROW num="27">
+      <tagname>WB_GLevel5300K</tagname>
+      <tagdec>283</tagdec>
+      <taghex>0x011b</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.WB_GLevel5300K</key>
+      <type>Short</type>
+      <tagdesc>WB G level 5300K</tagdesc>
+   </ROW>
+   <ROW num="28">
+      <tagname>WB_GLevel6000K</tagname>
+      <tagdec>284</tagdec>
+      <taghex>0x011c</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.WB_GLevel6000K</key>
+      <type>Short</type>
+      <tagdesc>WB G level 6000K</tagdesc>
+   </ROW>
+   <ROW num="29">
+      <tagname>WB_GLevel6600K</tagname>
+      <tagdec>285</tagdec>
+      <taghex>0x011d</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.WB_GLevel6600K</key>
+      <type>Short</type>
+      <tagdesc>WB G level 6600K</tagdesc>
+   </ROW>
+   <ROW num="30">
+      <tagname>WB_GLevel7500K</tagname>
+      <tagdec>286</tagdec>
+      <taghex>0x011e</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.WB_GLevel7500K</key>
+      <type>Short</type>
+      <tagdesc>WB G level 7500K</tagdesc>
+   </ROW>
+   <ROW num="31">
+      <tagname>WB_GLevel</tagname>
+      <tagdec>287</tagdec>
+      <taghex>0x011f</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.WB_GLevel</key>
+      <type>Short</type>
+      <tagdesc>WB G level</tagdesc>
+   </ROW>
+   <ROW num="32">
+      <tagname>ColorMatrix</tagname>
+      <tagdec>512</tagdec>
+      <taghex>0x0200</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.ColorMatrix</key>
+      <type>Short</type>
+      <tagdesc>Color matrix</tagdesc>
+   </ROW>
+   <ROW num="33">
+      <tagname>Enhancer</tagname>
+      <tagdec>768</tagdec>
+      <taghex>0x0300</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.Enhancer</key>
+      <type>Short</type>
+      <tagdesc>Enhancer</tagdesc>
+   </ROW>
+   <ROW num="34">
+      <tagname>EnhancerValues</tagname>
+      <tagdec>769</tagdec>
+      <taghex>0x0301</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.EnhancerValues</key>
+      <type>Short</type>
+      <tagdesc>Enhancer values</tagdesc>
+   </ROW>
+   <ROW num="35">
+      <tagname>CoringFilter</tagname>
+      <tagdec>784</tagdec>
+      <taghex>0x0310</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.CoringFilter</key>
+      <type>Short</type>
+      <tagdesc>Coring filter</tagdesc>
+   </ROW>
+   <ROW num="36">
+      <tagname>CoringValues</tagname>
+      <tagdec>785</tagdec>
+      <taghex>0x0311</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.CoringValues</key>
+      <type>Short</type>
+      <tagdesc>Coring values</tagdesc>
+   </ROW>
+   <ROW num="37">
+      <tagname>BlackLevel</tagname>
+      <tagdec>1536</tagdec>
+      <taghex>0x0600</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.BlackLevel</key>
+      <type>Short</type>
+      <tagdesc>Black level</tagdesc>
+   </ROW>
+   <ROW num="38">
+      <tagname>GainBase</tagname>
+      <tagdec>1552</tagdec>
+      <taghex>0x0610</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.GainBase</key>
+      <type>Short</type>
+      <tagdesc>Gain base</tagdesc>
+   </ROW>
+   <ROW num="39">
+      <tagname>ValidBits</tagname>
+      <tagdec>1553</tagdec>
+      <taghex>0x0611</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.ValidBits</key>
+      <type>Short</type>
+      <tagdesc>Valid bits</tagdesc>
+   </ROW>
+   <ROW num="40">
+      <tagname>CropLeft</tagname>
+      <tagdec>1554</tagdec>
+      <taghex>0x0612</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.CropLeft</key>
+      <type>Short</type>
+      <tagdesc>Crop left</tagdesc>
+   </ROW>
+   <ROW num="41">
+      <tagname>CropTop</tagname>
+      <tagdec>1555</tagdec>
+      <taghex>0x0613</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.CropTop</key>
+      <type>Short</type>
+      <tagdesc>Crop top</tagdesc>
+   </ROW>
+   <ROW num="42">
+      <tagname>CropWidth</tagname>
+      <tagdec>1556</tagdec>
+      <taghex>0x0614</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.CropWidth</key>
+      <type>Long</type>
+      <tagdesc>Crop width</tagdesc>
+   </ROW>
+   <ROW num="43">
+      <tagname>CropHeight</tagname>
+      <tagdec>1557</tagdec>
+      <taghex>0x0615</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.CropHeight</key>
+      <type>Long</type>
+      <tagdesc>Crop height</tagdesc>
+   </ROW>
+   <ROW num="44">
+      <tagname>NoiseReduction</tagname>
+      <tagdec>4112</tagdec>
+      <taghex>0x1010</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.NoiseReduction</key>
+      <type>Short</type>
+      <tagdesc>Noise reduction</tagdesc>
+   </ROW>
+   <ROW num="45">
+      <tagname>DistortionCorrection</tagname>
+      <tagdec>4113</tagdec>
+      <taghex>0x1011</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.DistortionCorrection</key>
+      <type>Short</type>
+      <tagdesc>Distortion correction</tagdesc>
+   </ROW>
+   <ROW num="46">
+      <tagname>ShadingCompensation</tagname>
+      <tagdec>4114</tagdec>
+      <taghex>0x1012</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.ShadingCompensation</key>
+      <type>Short</type>
+      <tagdesc>Shading compensation</tagdesc>
+   </ROW>
+   <ROW num="47">
+      <tagname>MultipleExposureMode</tagname>
+      <tagdec>4124</tagdec>
+      <taghex>0x101c</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.MultipleExposureMode</key>
+      <type>Short</type>
+      <tagdesc>Multiple exposure mode</tagdesc>
+   </ROW>
+   <ROW num="48">
+      <tagname>AspectRatio</tagname>
+      <tagdec>4370</tagdec>
+      <taghex>0x1112</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.AspectRatio</key>
+      <type>Byte</type>
+      <tagdesc>Aspect ratio</tagdesc>
+   </ROW>
+   <ROW num="49">
+      <tagname>AspectFrame</tagname>
+      <tagdec>4371</tagdec>
+      <taghex>0x1113</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.AspectFrame</key>
+      <type>Short</type>
+      <tagdesc>Aspect frame</tagdesc>
+   </ROW>
+   <ROW num="50">
+      <tagname>FaceDetect</tagname>
+      <tagdec>4608</tagdec>
+      <taghex>0x1200</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.FaceDetect</key>
+      <type>Long</type>
+      <tagdesc>Face detect</tagdesc>
+   </ROW>
+   <ROW num="51">
+      <tagname>FaceDetectArea</tagname>
+      <tagdec>4609</tagdec>
+      <taghex>0x1201</taghex>
+      <ifd>OlympusIp</ifd>
+      <key>Exif.OlympusIp.FaceDetectArea</key>
+      <type>SShort</type>
+      <tagdesc>Face detect area</tagdesc>
+   </ROW>
+</ROWSET>
+</TAGLIST>

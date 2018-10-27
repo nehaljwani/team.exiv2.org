@@ -1,0 +1,50 @@
+<?xml version = '1.0'?>
+<?xml-stylesheet type="text/xsl" href="tags.xsl"?>
+<TAGLIST>
+<HEADER>
+<title>XYZ MakerNote Tags defined in Exiv2</title>
+<text>
+<p>Tags found in the MakerNote of images taken with XYZ cameras. These tags 
+are defined by Exiv2 in accordance with <a href="makernote.html#RX">[X]</a>.</p>
+<p>Click on a column header to sort the table.</p>
+</text>
+</HEADER>
+<ROWSET>
+   <ROW num="1">
+      <tagname>Version</tagname>
+      <tagdec>0</tagdec>
+      <taghex>0x0000</taghex>
+      <ifd>NikonSiD300b</ifd>
+      <key>Exif.NikonSiD300b.Version</key>
+      <type>Byte</type>
+      <tagdesc>Version</tagdesc>
+   </ROW>
+   <ROW num="2">
+      <tagname>ISO</tagname>
+      <tagdec>613</tagdec>
+      <taghex>0x0265</taghex>
+      <ifd>NikonSiD300b</ifd>
+      <key>Exif.NikonSiD300b.ISO</key>
+      <type>Byte</type>
+      <tagdesc>ISO</tagdesc>
+   </ROW>
+   <ROW num="3">
+      <tagname>ShutterCount</tagname>
+      <tagdec>644</tagdec>
+      <taghex>0x0284</taghex>
+      <ifd>NikonSiD300b</ifd>
+      <key>Exif.NikonSiD300b.ShutterCount</key>
+      <type>Long</type>
+      <tagdesc>Shutter count</tagdesc>
+   </ROW>
+   <ROW num="4">
+      <tagname>AFFineTuneAdj</tagname>
+      <tagdec>732</tagdec>
+      <taghex>0x02dc</taghex>
+      <ifd>NikonSiD300b</ifd>
+      <key>Exif.NikonSiD300b.AFFineTuneAdj</key>
+      <type>Short</type>
+      <tagdesc>AF fine tune adj</tagdesc>
+   </ROW>
+</ROWSET>
+</TAGLIST>

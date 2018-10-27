@@ -1,0 +1,401 @@
+<?xml version = '1.0'?>
+<?xml-stylesheet type="text/xsl" href="tags.xsl"?>
+<TAGLIST>
+<HEADER>
+<title>XYZ MakerNote Tags defined in Exiv2</title>
+<text>
+<p>Tags found in the MakerNote of images taken with XYZ cameras. These tags 
+are defined by Exiv2 in accordance with <a href="makernote.html#RX">[X]</a>.</p>
+<p>Click on a column header to sort the table.</p>
+</text>
+</HEADER>
+<ROWSET>
+   <ROW num="1">
+      <tagname>Macro</tagname>
+      <tagdec>1</tagdec>
+      <taghex>0x0001</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.Macro</key>
+      <type>SShort</type>
+      <tagdesc>Macro mode</tagdesc>
+   </ROW>
+   <ROW num="2">
+      <tagname>Selftimer</tagname>
+      <tagdec>2</tagdec>
+      <taghex>0x0002</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.Selftimer</key>
+      <type>SShort</type>
+      <tagdesc>Self timer</tagdesc>
+   </ROW>
+   <ROW num="3">
+      <tagname>Quality</tagname>
+      <tagdec>3</tagdec>
+      <taghex>0x0003</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.Quality</key>
+      <type>SShort</type>
+      <tagdesc>Quality</tagdesc>
+   </ROW>
+   <ROW num="4">
+      <tagname>FlashMode</tagname>
+      <tagdec>4</tagdec>
+      <taghex>0x0004</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.FlashMode</key>
+      <type>SShort</type>
+      <tagdesc>Flash mode setting</tagdesc>
+   </ROW>
+   <ROW num="5">
+      <tagname>DriveMode</tagname>
+      <tagdec>5</tagdec>
+      <taghex>0x0005</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.DriveMode</key>
+      <type>SShort</type>
+      <tagdesc>Drive mode setting</tagdesc>
+   </ROW>
+   <ROW num="6">
+      <tagname>0x0006</tagname>
+      <tagdec>6</tagdec>
+      <taghex>0x0006</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.0x0006</key>
+      <type>Short</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="7">
+      <tagname>FocusMode</tagname>
+      <tagdec>7</tagdec>
+      <taghex>0x0007</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.FocusMode</key>
+      <type>SShort</type>
+      <tagdesc>Focus mode setting</tagdesc>
+   </ROW>
+   <ROW num="8">
+      <tagname>0x0008</tagname>
+      <tagdec>8</tagdec>
+      <taghex>0x0008</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.0x0008</key>
+      <type>SShort</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="9">
+      <tagname>0x0009</tagname>
+      <tagdec>9</tagdec>
+      <taghex>0x0009</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.0x0009</key>
+      <type>SShort</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="10">
+      <tagname>ImageSize</tagname>
+      <tagdec>10</tagdec>
+      <taghex>0x000a</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.ImageSize</key>
+      <type>SShort</type>
+      <tagdesc>Image size</tagdesc>
+   </ROW>
+   <ROW num="11">
+      <tagname>EasyMode</tagname>
+      <tagdec>11</tagdec>
+      <taghex>0x000b</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.EasyMode</key>
+      <type>SShort</type>
+      <tagdesc>Easy shooting mode</tagdesc>
+   </ROW>
+   <ROW num="12">
+      <tagname>DigitalZoom</tagname>
+      <tagdec>12</tagdec>
+      <taghex>0x000c</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.DigitalZoom</key>
+      <type>SShort</type>
+      <tagdesc>Digital zoom</tagdesc>
+   </ROW>
+   <ROW num="13">
+      <tagname>Contrast</tagname>
+      <tagdec>13</tagdec>
+      <taghex>0x000d</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.Contrast</key>
+      <type>SShort</type>
+      <tagdesc>Contrast setting</tagdesc>
+   </ROW>
+   <ROW num="14">
+      <tagname>Saturation</tagname>
+      <tagdec>14</tagdec>
+      <taghex>0x000e</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.Saturation</key>
+      <type>SShort</type>
+      <tagdesc>Saturation setting</tagdesc>
+   </ROW>
+   <ROW num="15">
+      <tagname>Sharpness</tagname>
+      <tagdec>15</tagdec>
+      <taghex>0x000f</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.Sharpness</key>
+      <type>SShort</type>
+      <tagdesc>Sharpness setting</tagdesc>
+   </ROW>
+   <ROW num="16">
+      <tagname>ISOSpeed</tagname>
+      <tagdec>16</tagdec>
+      <taghex>0x0010</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.ISOSpeed</key>
+      <type>SShort</type>
+      <tagdesc>ISO speed setting</tagdesc>
+   </ROW>
+   <ROW num="17">
+      <tagname>MeteringMode</tagname>
+      <tagdec>17</tagdec>
+      <taghex>0x0011</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.MeteringMode</key>
+      <type>SShort</type>
+      <tagdesc>Metering mode setting</tagdesc>
+   </ROW>
+   <ROW num="18">
+      <tagname>FocusType</tagname>
+      <tagdec>18</tagdec>
+      <taghex>0x0012</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.FocusType</key>
+      <type>SShort</type>
+      <tagdesc>Focus type setting</tagdesc>
+   </ROW>
+   <ROW num="19">
+      <tagname>AFPoint</tagname>
+      <tagdec>19</tagdec>
+      <taghex>0x0013</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.AFPoint</key>
+      <type>SShort</type>
+      <tagdesc>AF point selected</tagdesc>
+   </ROW>
+   <ROW num="20">
+      <tagname>ExposureProgram</tagname>
+      <tagdec>20</tagdec>
+      <taghex>0x0014</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.ExposureProgram</key>
+      <type>SShort</type>
+      <tagdesc>Exposure mode setting</tagdesc>
+   </ROW>
+   <ROW num="21">
+      <tagname>0x0015</tagname>
+      <tagdec>21</tagdec>
+      <taghex>0x0015</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.0x0015</key>
+      <type>SShort</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="22">
+      <tagname>LensType</tagname>
+      <tagdec>22</tagdec>
+      <taghex>0x0016</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.LensType</key>
+      <type>SShort</type>
+      <tagdesc>Lens type</tagdesc>
+   </ROW>
+   <ROW num="23">
+      <tagname>Lens</tagname>
+      <tagdec>23</tagdec>
+      <taghex>0x0017</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.Lens</key>
+      <type>Short</type>
+      <tagdesc>'long' and 'short' focal length of lens (in 'focal units') and 'focal units' per mm</tagdesc>
+   </ROW>
+   <ROW num="24">
+      <tagname>ShortFocal</tagname>
+      <tagdec>24</tagdec>
+      <taghex>0x0018</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.ShortFocal</key>
+      <type>Short</type>
+      <tagdesc>Short focal</tagdesc>
+   </ROW>
+   <ROW num="25">
+      <tagname>FocalUnits</tagname>
+      <tagdec>25</tagdec>
+      <taghex>0x0019</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.FocalUnits</key>
+      <type>SShort</type>
+      <tagdesc>Focal units</tagdesc>
+   </ROW>
+   <ROW num="26">
+      <tagname>MaxAperture</tagname>
+      <tagdec>26</tagdec>
+      <taghex>0x001a</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.MaxAperture</key>
+      <type>SShort</type>
+      <tagdesc>Max aperture</tagdesc>
+   </ROW>
+   <ROW num="27">
+      <tagname>MinAperture</tagname>
+      <tagdec>27</tagdec>
+      <taghex>0x001b</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.MinAperture</key>
+      <type>SShort</type>
+      <tagdesc>Min aperture</tagdesc>
+   </ROW>
+   <ROW num="28">
+      <tagname>FlashActivity</tagname>
+      <tagdec>28</tagdec>
+      <taghex>0x001c</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.FlashActivity</key>
+      <type>SShort</type>
+      <tagdesc>Flash activity</tagdesc>
+   </ROW>
+   <ROW num="29">
+      <tagname>FlashDetails</tagname>
+      <tagdec>29</tagdec>
+      <taghex>0x001d</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.FlashDetails</key>
+      <type>SShort</type>
+      <tagdesc>Flash details</tagdesc>
+   </ROW>
+   <ROW num="30">
+      <tagname>0x001e</tagname>
+      <tagdec>30</tagdec>
+      <taghex>0x001e</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.0x001e</key>
+      <type>SShort</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="31">
+      <tagname>0x001f</tagname>
+      <tagdec>31</tagdec>
+      <taghex>0x001f</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.0x001f</key>
+      <type>SShort</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="32">
+      <tagname>FocusContinuous</tagname>
+      <tagdec>32</tagdec>
+      <taghex>0x0020</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.FocusContinuous</key>
+      <type>SShort</type>
+      <tagdesc>Focus continuous setting</tagdesc>
+   </ROW>
+   <ROW num="33">
+      <tagname>AESetting</tagname>
+      <tagdec>33</tagdec>
+      <taghex>0x0021</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.AESetting</key>
+      <type>SShort</type>
+      <tagdesc>AE setting</tagdesc>
+   </ROW>
+   <ROW num="34">
+      <tagname>ImageStabilization</tagname>
+      <tagdec>34</tagdec>
+      <taghex>0x0022</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.ImageStabilization</key>
+      <type>SShort</type>
+      <tagdesc>Image stabilization</tagdesc>
+   </ROW>
+   <ROW num="35">
+      <tagname>DisplayAperture</tagname>
+      <tagdec>35</tagdec>
+      <taghex>0x0023</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.DisplayAperture</key>
+      <type>SShort</type>
+      <tagdesc>Display aperture</tagdesc>
+   </ROW>
+   <ROW num="36">
+      <tagname>ZoomSourceWidth</tagname>
+      <tagdec>36</tagdec>
+      <taghex>0x0024</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.ZoomSourceWidth</key>
+      <type>SShort</type>
+      <tagdesc>Zoom source width</tagdesc>
+   </ROW>
+   <ROW num="37">
+      <tagname>ZoomTargetWidth</tagname>
+      <tagdec>37</tagdec>
+      <taghex>0x0025</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.ZoomTargetWidth</key>
+      <type>SShort</type>
+      <tagdesc>Zoom target width</tagdesc>
+   </ROW>
+   <ROW num="38">
+      <tagname>0x0026</tagname>
+      <tagdec>38</tagdec>
+      <taghex>0x0026</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.0x0026</key>
+      <type>SShort</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="39">
+      <tagname>SpotMeteringMode</tagname>
+      <tagdec>39</tagdec>
+      <taghex>0x0027</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.SpotMeteringMode</key>
+      <type>SShort</type>
+      <tagdesc>Spot metering mode</tagdesc>
+   </ROW>
+   <ROW num="40">
+      <tagname>PhotoEffect</tagname>
+      <tagdec>40</tagdec>
+      <taghex>0x0028</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.PhotoEffect</key>
+      <type>SShort</type>
+      <tagdesc>Photo effect</tagdesc>
+   </ROW>
+   <ROW num="41">
+      <tagname>ManualFlashOutput</tagname>
+      <tagdec>41</tagdec>
+      <taghex>0x0029</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.ManualFlashOutput</key>
+      <type>SShort</type>
+      <tagdesc>Manual flash output</tagdesc>
+   </ROW>
+   <ROW num="42">
+      <tagname>ColorTone</tagname>
+      <tagdec>42</tagdec>
+      <taghex>0x002a</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.ColorTone</key>
+      <type>SShort</type>
+      <tagdesc>Color tone</tagdesc>
+   </ROW>
+   <ROW num="43">
+      <tagname>SRAWQuality</tagname>
+      <tagdec>46</tagdec>
+      <taghex>0x002e</taghex>
+      <ifd>CanonCs</ifd>
+      <key>Exif.CanonCs.SRAWQuality</key>
+      <type>SShort</type>
+      <tagdesc>SRAW quality</tagdesc>
+   </ROW>
+</ROWSET>
+</TAGLIST>

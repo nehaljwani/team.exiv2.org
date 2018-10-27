@@ -1,0 +1,932 @@
+<?xml version = '1.0'?>
+<?xml-stylesheet type="text/xsl" href="tags.xsl"?>
+<TAGLIST>
+<HEADER>
+<title>XYZ MakerNote Tags defined in Exiv2</title>
+<text>
+<p>Tags found in the MakerNote of images taken with XYZ cameras. These tags 
+are defined by Exiv2 in accordance with <a href="makernote.html#RX">[X]</a>.</p>
+<p>Click on a column header to sort the table.</p>
+</text>
+</HEADER>
+<ROWSET>
+   <ROW num="1">
+      <tagname>Quality</tagname>
+      <tagdec>1</tagdec>
+      <taghex>0x0001</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.Quality</key>
+      <type>Short</type>
+      <tagdesc>Image Quality</tagdesc>
+   </ROW>
+   <ROW num="2">
+      <tagname>FirmwareVersion</tagname>
+      <tagdec>2</tagdec>
+      <taghex>0x0002</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.FirmwareVersion</key>
+      <type>Undefined</type>
+      <tagdesc>Firmware version</tagdesc>
+   </ROW>
+   <ROW num="3">
+      <tagname>WhiteBalance</tagname>
+      <tagdec>3</tagdec>
+      <taghex>0x0003</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.WhiteBalance</key>
+      <type>Short</type>
+      <tagdesc>White balance setting</tagdesc>
+   </ROW>
+   <ROW num="4">
+      <tagname>0x0004</tagname>
+      <tagdec>4</tagdec>
+      <taghex>0x0004</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.0x0004</key>
+      <type>Short</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="5">
+      <tagname>FocusMode</tagname>
+      <tagdec>7</tagdec>
+      <taghex>0x0007</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.FocusMode</key>
+      <type>Short</type>
+      <tagdesc>Focus mode</tagdesc>
+   </ROW>
+   <ROW num="6">
+      <tagname>AFMode</tagname>
+      <tagdec>15</tagdec>
+      <taghex>0x000f</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.AFMode</key>
+      <type>Byte</type>
+      <tagdesc>AF mode</tagdesc>
+   </ROW>
+   <ROW num="7">
+      <tagname>ImageStabilization</tagname>
+      <tagdec>26</tagdec>
+      <taghex>0x001a</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.ImageStabilization</key>
+      <type>Short</type>
+      <tagdesc>Image stabilization</tagdesc>
+   </ROW>
+   <ROW num="8">
+      <tagname>Macro</tagname>
+      <tagdec>28</tagdec>
+      <taghex>0x001c</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.Macro</key>
+      <type>Short</type>
+      <tagdesc>Macro mode</tagdesc>
+   </ROW>
+   <ROW num="9">
+      <tagname>ShootingMode</tagname>
+      <tagdec>31</tagdec>
+      <taghex>0x001f</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.ShootingMode</key>
+      <type>Short</type>
+      <tagdesc>Shooting mode</tagdesc>
+   </ROW>
+   <ROW num="10">
+      <tagname>Audio</tagname>
+      <tagdec>32</tagdec>
+      <taghex>0x0020</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.Audio</key>
+      <type>Short</type>
+      <tagdesc>Audio</tagdesc>
+   </ROW>
+   <ROW num="11">
+      <tagname>DataDump</tagname>
+      <tagdec>33</tagdec>
+      <taghex>0x0021</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.DataDump</key>
+      <type>Undefined</type>
+      <tagdesc>Data dump</tagdesc>
+   </ROW>
+   <ROW num="12">
+      <tagname>0x0022</tagname>
+      <tagdec>34</tagdec>
+      <taghex>0x0022</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.0x0022</key>
+      <type>Short</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="13">
+      <tagname>WhiteBalanceBias</tagname>
+      <tagdec>35</tagdec>
+      <taghex>0x0023</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.WhiteBalanceBias</key>
+      <type>SShort</type>
+      <tagdesc>White balance adjustment</tagdesc>
+   </ROW>
+   <ROW num="14">
+      <tagname>FlashBias</tagname>
+      <tagdec>36</tagdec>
+      <taghex>0x0024</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.FlashBias</key>
+      <type>SShort</type>
+      <tagdesc>Flash bias</tagdesc>
+   </ROW>
+   <ROW num="15">
+      <tagname>InternalSerialNumber</tagname>
+      <tagdec>37</tagdec>
+      <taghex>0x0025</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.InternalSerialNumber</key>
+      <type>Undefined</type>
+      <tagdesc>This number is unique, and contains the date of manufacture, but is not the same as the number printed on the camera body.</tagdesc>
+   </ROW>
+   <ROW num="16">
+      <tagname>ExifVersion</tagname>
+      <tagdec>38</tagdec>
+      <taghex>0x0026</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.ExifVersion</key>
+      <type>Undefined</type>
+      <tagdesc>Exif version</tagdesc>
+   </ROW>
+   <ROW num="17">
+      <tagname>0x0027</tagname>
+      <tagdec>39</tagdec>
+      <taghex>0x0027</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.0x0027</key>
+      <type>Short</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="18">
+      <tagname>ColorEffect</tagname>
+      <tagdec>40</tagdec>
+      <taghex>0x0028</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.ColorEffect</key>
+      <type>Short</type>
+      <tagdesc>Color effect</tagdesc>
+   </ROW>
+   <ROW num="19">
+      <tagname>TimeSincePowerOn</tagname>
+      <tagdec>41</tagdec>
+      <taghex>0x0029</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.TimeSincePowerOn</key>
+      <type>Long</type>
+      <tagdesc>Time in 1/100 s from when the camera was powered on to when the image is written to memory card</tagdesc>
+   </ROW>
+   <ROW num="20">
+      <tagname>BurstMode</tagname>
+      <tagdec>42</tagdec>
+      <taghex>0x002a</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.BurstMode</key>
+      <type>Short</type>
+      <tagdesc>Burst mode</tagdesc>
+   </ROW>
+   <ROW num="21">
+      <tagname>SequenceNumber</tagname>
+      <tagdec>43</tagdec>
+      <taghex>0x002b</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.SequenceNumber</key>
+      <type>Long</type>
+      <tagdesc>Sequence number</tagdesc>
+   </ROW>
+   <ROW num="22">
+      <tagname>Contrast</tagname>
+      <tagdec>44</tagdec>
+      <taghex>0x002c</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.Contrast</key>
+      <type>Short</type>
+      <tagdesc>Contrast setting</tagdesc>
+   </ROW>
+   <ROW num="23">
+      <tagname>NoiseReduction</tagname>
+      <tagdec>45</tagdec>
+      <taghex>0x002d</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.NoiseReduction</key>
+      <type>Short</type>
+      <tagdesc>Noise reduction</tagdesc>
+   </ROW>
+   <ROW num="24">
+      <tagname>SelfTimer</tagname>
+      <tagdec>46</tagdec>
+      <taghex>0x002e</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.SelfTimer</key>
+      <type>Short</type>
+      <tagdesc>Self timer</tagdesc>
+   </ROW>
+   <ROW num="25">
+      <tagname>0x002f</tagname>
+      <tagdec>47</tagdec>
+      <taghex>0x002f</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.0x002f</key>
+      <type>Short</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="26">
+      <tagname>Rotation</tagname>
+      <tagdec>48</tagdec>
+      <taghex>0x0030</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.Rotation</key>
+      <type>Short</type>
+      <tagdesc>Rotation</tagdesc>
+   </ROW>
+   <ROW num="27">
+      <tagname>AFAssistLamp</tagname>
+      <tagdec>49</tagdec>
+      <taghex>0x0031</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.AFAssistLamp</key>
+      <type>Short</type>
+      <tagdesc>AF Assist Lamp</tagdesc>
+   </ROW>
+   <ROW num="28">
+      <tagname>ColorMode</tagname>
+      <tagdec>50</tagdec>
+      <taghex>0x0032</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.ColorMode</key>
+      <type>Short</type>
+      <tagdesc>Color mode</tagdesc>
+   </ROW>
+   <ROW num="29">
+      <tagname>BabyAge1</tagname>
+      <tagdec>51</tagdec>
+      <taghex>0x0033</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.BabyAge1</key>
+      <type>Ascii</type>
+      <tagdesc>Baby (or pet) age 1</tagdesc>
+   </ROW>
+   <ROW num="30">
+      <tagname>OpticalZoomMode</tagname>
+      <tagdec>52</tagdec>
+      <taghex>0x0034</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.OpticalZoomMode</key>
+      <type>Short</type>
+      <tagdesc>Optical zoom mode</tagdesc>
+   </ROW>
+   <ROW num="31">
+      <tagname>ConversionLens</tagname>
+      <tagdec>53</tagdec>
+      <taghex>0x0035</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.ConversionLens</key>
+      <type>Short</type>
+      <tagdesc>Conversion lens</tagdesc>
+   </ROW>
+   <ROW num="32">
+      <tagname>TravelDay</tagname>
+      <tagdec>54</tagdec>
+      <taghex>0x0036</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.TravelDay</key>
+      <type>Short</type>
+      <tagdesc>Travel day</tagdesc>
+   </ROW>
+   <ROW num="33">
+      <tagname>Contrast</tagname>
+      <tagdec>57</tagdec>
+      <taghex>0x0039</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.Contrast</key>
+      <type>Short</type>
+      <tagdesc>Contrast</tagdesc>
+   </ROW>
+   <ROW num="34">
+      <tagname>WorldTimeLocation</tagname>
+      <tagdec>58</tagdec>
+      <taghex>0x003a</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.WorldTimeLocation</key>
+      <type>Short</type>
+      <tagdesc>World time location</tagdesc>
+   </ROW>
+   <ROW num="35">
+      <tagname>TextStamp1</tagname>
+      <tagdec>59</tagdec>
+      <taghex>0x003b</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.TextStamp1</key>
+      <type>Short</type>
+      <tagdesc>Text Stamp 1</tagdesc>
+   </ROW>
+   <ROW num="36">
+      <tagname>ProgramISO</tagname>
+      <tagdec>60</tagdec>
+      <taghex>0x003c</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.ProgramISO</key>
+      <type>Short</type>
+      <tagdesc>Program ISO</tagdesc>
+   </ROW>
+   <ROW num="37">
+      <tagname>AdvancedSceneType</tagname>
+      <tagdec>61</tagdec>
+      <taghex>0x003d</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.AdvancedSceneType</key>
+      <type>Short</type>
+      <tagdesc>Advanced Scene Type</tagdesc>
+   </ROW>
+   <ROW num="38">
+      <tagname>TextStamp2</tagname>
+      <tagdec>62</tagdec>
+      <taghex>0x003e</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.TextStamp2</key>
+      <type>Short</type>
+      <tagdesc>Text Stamp 2</tagdesc>
+   </ROW>
+   <ROW num="39">
+      <tagname>FacesDetected</tagname>
+      <tagdec>63</tagdec>
+      <taghex>0x003f</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.FacesDetected</key>
+      <type>Short</type>
+      <tagdesc>Faces detected</tagdesc>
+   </ROW>
+   <ROW num="40">
+      <tagname>Saturation</tagname>
+      <tagdec>64</tagdec>
+      <taghex>0x0040</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.Saturation</key>
+      <type>Short</type>
+      <tagdesc>Saturation</tagdesc>
+   </ROW>
+   <ROW num="41">
+      <tagname>Sharpness</tagname>
+      <tagdec>65</tagdec>
+      <taghex>0x0041</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.Sharpness</key>
+      <type>Short</type>
+      <tagdesc>Sharpness</tagdesc>
+   </ROW>
+   <ROW num="42">
+      <tagname>FilmMode</tagname>
+      <tagdec>66</tagdec>
+      <taghex>0x0042</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.FilmMode</key>
+      <type>Short</type>
+      <tagdesc>Film mode</tagdesc>
+   </ROW>
+   <ROW num="43">
+      <tagname>ColorTempKelvin</tagname>
+      <tagdec>68</tagdec>
+      <taghex>0x0044</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.ColorTempKelvin</key>
+      <type>Short</type>
+      <tagdesc>Color Temperatur in Kelvin</tagdesc>
+   </ROW>
+   <ROW num="44">
+      <tagname>BracketSettings</tagname>
+      <tagdec>69</tagdec>
+      <taghex>0x0045</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.BracketSettings</key>
+      <type>Short</type>
+      <tagdesc>Bracket Settings</tagdesc>
+   </ROW>
+   <ROW num="45">
+      <tagname>WBAdjustAB</tagname>
+      <tagdec>70</tagdec>
+      <taghex>0x0046</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.WBAdjustAB</key>
+      <type>Short</type>
+      <tagdesc>WB adjust AB. Positive is a shift toward blue.</tagdesc>
+   </ROW>
+   <ROW num="46">
+      <tagname>WBAdjustGM</tagname>
+      <tagdec>71</tagdec>
+      <taghex>0x0047</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.WBAdjustGM</key>
+      <type>Short</type>
+      <tagdesc>WBAdjustGM. Positive is a shift toward green.</tagdesc>
+   </ROW>
+   <ROW num="47">
+      <tagname>FlashCurtain</tagname>
+      <tagdec>72</tagdec>
+      <taghex>0x0048</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.FlashCurtain</key>
+      <type>Short</type>
+      <tagdesc>Flash Curtain</tagdesc>
+   </ROW>
+   <ROW num="48">
+      <tagname>LongShutterNoiseReduction</tagname>
+      <tagdec>73</tagdec>
+      <taghex>0x0049</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.LongShutterNoiseReduction</key>
+      <type>Short</type>
+      <tagdesc>Long Shutter Noise Reduction</tagdesc>
+   </ROW>
+   <ROW num="49">
+      <tagname>ImageWidth</tagname>
+      <tagdec>75</tagdec>
+      <taghex>0x004b</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.ImageWidth</key>
+      <type>Long</type>
+      <tagdesc>Image width</tagdesc>
+   </ROW>
+   <ROW num="50">
+      <tagname>ImageHeight</tagname>
+      <tagdec>76</tagdec>
+      <taghex>0x004c</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.ImageHeight</key>
+      <type>Long</type>
+      <tagdesc>Image height</tagdesc>
+   </ROW>
+   <ROW num="51">
+      <tagname>AFPointPosition</tagname>
+      <tagdec>77</tagdec>
+      <taghex>0x004d</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.AFPointPosition</key>
+      <type>Rational</type>
+      <tagdesc>AF Point Position</tagdesc>
+   </ROW>
+   <ROW num="52">
+      <tagname>FaceDetInfo</tagname>
+      <tagdec>78</tagdec>
+      <taghex>0x004e</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.FaceDetInfo</key>
+      <type>Undefined</type>
+      <tagdesc>Face detection info</tagdesc>
+   </ROW>
+   <ROW num="53">
+      <tagname>LensType</tagname>
+      <tagdec>81</tagdec>
+      <taghex>0x0051</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.LensType</key>
+      <type>Ascii</type>
+      <tagdesc>Lens type</tagdesc>
+   </ROW>
+   <ROW num="54">
+      <tagname>LensSerialNumber</tagname>
+      <tagdec>82</tagdec>
+      <taghex>0x0052</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.LensSerialNumber</key>
+      <type>Ascii</type>
+      <tagdesc>Lens serial number</tagdesc>
+   </ROW>
+   <ROW num="55">
+      <tagname>AccessoryType</tagname>
+      <tagdec>83</tagdec>
+      <taghex>0x0053</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.AccessoryType</key>
+      <type>Ascii</type>
+      <tagdesc>Accessory type</tagdesc>
+   </ROW>
+   <ROW num="56">
+      <tagname>AccessorySerialNumber</tagname>
+      <tagdec>84</tagdec>
+      <taghex>0x0054</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.AccessorySerialNumber</key>
+      <type>Ascii</type>
+      <tagdesc>Accessory Serial Number</tagdesc>
+   </ROW>
+   <ROW num="57">
+      <tagname>Transform1</tagname>
+      <tagdec>89</tagdec>
+      <taghex>0x0059</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.Transform1</key>
+      <type>Undefined</type>
+      <tagdesc>Transform 1</tagdesc>
+   </ROW>
+   <ROW num="58">
+      <tagname>IntelligentExposure</tagname>
+      <tagdec>93</tagdec>
+      <taghex>0x005d</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.IntelligentExposure</key>
+      <type>Short</type>
+      <tagdesc>Intelligent Exposure</tagdesc>
+   </ROW>
+   <ROW num="59">
+      <tagname>LensFirmwareVersion</tagname>
+      <tagdec>96</tagdec>
+      <taghex>0x0060</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.LensFirmwareVersion</key>
+      <type>Undefined</type>
+      <tagdesc>Firmware Version of the Lens</tagdesc>
+   </ROW>
+   <ROW num="60">
+      <tagname>FaceRecInfo</tagname>
+      <tagdec>97</tagdec>
+      <taghex>0x0061</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.FaceRecInfo</key>
+      <type>Undefined</type>
+      <tagdesc>Face recognition info</tagdesc>
+   </ROW>
+   <ROW num="61">
+      <tagname>FlashWarning</tagname>
+      <tagdec>98</tagdec>
+      <taghex>0x0062</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.FlashWarning</key>
+      <type>Short</type>
+      <tagdesc>Flash warning</tagdesc>
+   </ROW>
+   <ROW num="62">
+      <tagname>Title</tagname>
+      <tagdec>101</tagdec>
+      <taghex>0x0065</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.Title</key>
+      <type>Undefined</type>
+      <tagdesc>Title</tagdesc>
+   </ROW>
+   <ROW num="63">
+      <tagname>BabyName</tagname>
+      <tagdec>102</tagdec>
+      <taghex>0x0066</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.BabyName</key>
+      <type>Undefined</type>
+      <tagdesc>Baby name (or pet name)</tagdesc>
+   </ROW>
+   <ROW num="64">
+      <tagname>Location</tagname>
+      <tagdec>103</tagdec>
+      <taghex>0x0067</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.Location</key>
+      <type>Undefined</type>
+      <tagdesc>Location</tagdesc>
+   </ROW>
+   <ROW num="65">
+      <tagname>Country</tagname>
+      <tagdec>105</tagdec>
+      <taghex>0x0069</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.Country</key>
+      <type>Undefined</type>
+      <tagdesc>Country</tagdesc>
+   </ROW>
+   <ROW num="66">
+      <tagname>State</tagname>
+      <tagdec>107</tagdec>
+      <taghex>0x006b</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.State</key>
+      <type>Undefined</type>
+      <tagdesc>State</tagdesc>
+   </ROW>
+   <ROW num="67">
+      <tagname>City</tagname>
+      <tagdec>109</tagdec>
+      <taghex>0x006d</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.City</key>
+      <type>Undefined</type>
+      <tagdesc>City</tagdesc>
+   </ROW>
+   <ROW num="68">
+      <tagname>Landmark</tagname>
+      <tagdec>111</tagdec>
+      <taghex>0x006f</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.Landmark</key>
+      <type>Undefined</type>
+      <tagdesc>Landmark</tagdesc>
+   </ROW>
+   <ROW num="69">
+      <tagname>IntelligentResolution</tagname>
+      <tagdec>112</tagdec>
+      <taghex>0x0070</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.IntelligentResolution</key>
+      <type>Byte</type>
+      <tagdesc>Intelligent resolution</tagdesc>
+   </ROW>
+   <ROW num="70">
+      <tagname>BurstSheed</tagname>
+      <tagdec>119</tagdec>
+      <taghex>0x0077</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.BurstSheed</key>
+      <type>Short</type>
+      <tagdesc>Burst Speed in pictures per second</tagdesc>
+   </ROW>
+   <ROW num="71">
+      <tagname>IntelligentDRange</tagname>
+      <tagdec>121</tagdec>
+      <taghex>0x0079</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.IntelligentDRange</key>
+      <type>Short</type>
+      <tagdesc>Intelligent Dynamic Range</tagdesc>
+   </ROW>
+   <ROW num="72">
+      <tagname>ClearRetouch</tagname>
+      <tagdec>124</tagdec>
+      <taghex>0x007c</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.ClearRetouch</key>
+      <type>Short</type>
+      <tagdesc>Clear Retouch</tagdesc>
+   </ROW>
+   <ROW num="73">
+      <tagname>City2</tagname>
+      <tagdec>128</tagdec>
+      <taghex>0x0080</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.City2</key>
+      <type>Undefined</type>
+      <tagdesc>City2</tagdesc>
+   </ROW>
+   <ROW num="74">
+      <tagname>ManometerPressure</tagname>
+      <tagdec>134</tagdec>
+      <taghex>0x0086</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.ManometerPressure</key>
+      <type>Short</type>
+      <tagdesc>Manometer pressure</tagdesc>
+   </ROW>
+   <ROW num="75">
+      <tagname>PhotoStyle</tagname>
+      <tagdec>137</tagdec>
+      <taghex>0x0089</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.PhotoStyle</key>
+      <type>Short</type>
+      <tagdesc>Photo style</tagdesc>
+   </ROW>
+   <ROW num="76">
+      <tagname>ShadingCompensation</tagname>
+      <tagdec>138</tagdec>
+      <taghex>0x008a</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.ShadingCompensation</key>
+      <type>Short</type>
+      <tagdesc>Shading Compensation</tagdesc>
+   </ROW>
+   <ROW num="77">
+      <tagname>AccelerometerZ</tagname>
+      <tagdec>140</tagdec>
+      <taghex>0x008c</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.AccelerometerZ</key>
+      <type>Short</type>
+      <tagdesc>positive is acceleration upwards</tagdesc>
+   </ROW>
+   <ROW num="78">
+      <tagname>AccelerometerX</tagname>
+      <tagdec>141</tagdec>
+      <taghex>0x008d</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.AccelerometerX</key>
+      <type>Short</type>
+      <tagdesc>positive is acceleration to the left</tagdesc>
+   </ROW>
+   <ROW num="79">
+      <tagname>AccelerometerY</tagname>
+      <tagdec>142</tagdec>
+      <taghex>0x008e</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.AccelerometerY</key>
+      <type>Short</type>
+      <tagdesc>positive is acceleration backwards</tagdesc>
+   </ROW>
+   <ROW num="80">
+      <tagname>CameraOrientation</tagname>
+      <tagdec>143</tagdec>
+      <taghex>0x008f</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.CameraOrientation</key>
+      <type>Byte</type>
+      <tagdesc>Camera Orientation</tagdesc>
+   </ROW>
+   <ROW num="81">
+      <tagname>RollAngle</tagname>
+      <tagdec>144</tagdec>
+      <taghex>0x0090</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.RollAngle</key>
+      <type>Short</type>
+      <tagdesc>degress of clockwise camera rotation</tagdesc>
+   </ROW>
+   <ROW num="82">
+      <tagname>PitchAngle</tagname>
+      <tagdec>145</tagdec>
+      <taghex>0x0091</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.PitchAngle</key>
+      <type>Short</type>
+      <tagdesc>degress of upwards camera tilt</tagdesc>
+   </ROW>
+   <ROW num="83">
+      <tagname>SweepPanoramaDirection</tagname>
+      <tagdec>147</tagdec>
+      <taghex>0x0093</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.SweepPanoramaDirection</key>
+      <type>Byte</type>
+      <tagdesc>Sweep Panorama Direction</tagdesc>
+   </ROW>
+   <ROW num="84">
+      <tagname>PanoramaFieldOfView</tagname>
+      <tagdec>148</tagdec>
+      <taghex>0x0094</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.PanoramaFieldOfView</key>
+      <type>Short</type>
+      <tagdesc>Field of View of Panorama</tagdesc>
+   </ROW>
+   <ROW num="85">
+      <tagname>TimerRecording</tagname>
+      <tagdec>150</tagdec>
+      <taghex>0x0096</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.TimerRecording</key>
+      <type>Byte</type>
+      <tagdesc>Timer Recording</tagdesc>
+   </ROW>
+   <ROW num="86">
+      <tagname>InternalNDFilter</tagname>
+      <tagdec>157</tagdec>
+      <taghex>0x009d</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.InternalNDFilter</key>
+      <type>Rational</type>
+      <tagdesc>Internal ND Filter</tagdesc>
+   </ROW>
+   <ROW num="87">
+      <tagname>HDR</tagname>
+      <tagdec>158</tagdec>
+      <taghex>0x009e</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.HDR</key>
+      <type>Short</type>
+      <tagdesc>HDR</tagdesc>
+   </ROW>
+   <ROW num="88">
+      <tagname>ShutterType</tagname>
+      <tagdec>159</tagdec>
+      <taghex>0x009f</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.ShutterType</key>
+      <type>Short</type>
+      <tagdesc>Shutter Type</tagdesc>
+   </ROW>
+   <ROW num="89">
+      <tagname>ClearRetouchValue</tagname>
+      <tagdec>163</tagdec>
+      <taghex>0x00a3</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.ClearRetouchValue</key>
+      <type>Rational</type>
+      <tagdesc>Clear Retouch Value</tagdesc>
+   </ROW>
+   <ROW num="90">
+      <tagname>TouchAE</tagname>
+      <tagdec>171</tagdec>
+      <taghex>0x00ab</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.TouchAE</key>
+      <type>Short</type>
+      <tagdesc>TouchAE</tagdesc>
+   </ROW>
+   <ROW num="91">
+      <tagname>PrintIM</tagname>
+      <tagdec>3584</tagdec>
+      <taghex>0x0e00</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.PrintIM</key>
+      <type>Undefined</type>
+      <tagdesc>PrintIM information</tagdesc>
+   </ROW>
+   <ROW num="92">
+      <tagname>0x4449</tagname>
+      <tagdec>17481</tagdec>
+      <taghex>0x4449</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.0x4449</key>
+      <type>Undefined</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="93">
+      <tagname>MakerNoteVersion</tagname>
+      <tagdec>32768</tagdec>
+      <taghex>0x8000</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.MakerNoteVersion</key>
+      <type>Undefined</type>
+      <tagdesc>MakerNote version</tagdesc>
+   </ROW>
+   <ROW num="94">
+      <tagname>SceneMode</tagname>
+      <tagdec>32769</tagdec>
+      <taghex>0x8001</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.SceneMode</key>
+      <type>Short</type>
+      <tagdesc>Scene mode</tagdesc>
+   </ROW>
+   <ROW num="95">
+      <tagname>WBRedLevel</tagname>
+      <tagdec>32772</tagdec>
+      <taghex>0x8004</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.WBRedLevel</key>
+      <type>Short</type>
+      <tagdesc>WB red level</tagdesc>
+   </ROW>
+   <ROW num="96">
+      <tagname>WBGreenLevel</tagname>
+      <tagdec>32773</tagdec>
+      <taghex>0x8005</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.WBGreenLevel</key>
+      <type>Short</type>
+      <tagdesc>WB green level</tagdesc>
+   </ROW>
+   <ROW num="97">
+      <tagname>WBBlueLevel</tagname>
+      <tagdec>32774</tagdec>
+      <taghex>0x8006</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.WBBlueLevel</key>
+      <type>Short</type>
+      <tagdesc>WB blue level</tagdesc>
+   </ROW>
+   <ROW num="98">
+      <tagname>FlashFired</tagname>
+      <tagdec>32775</tagdec>
+      <taghex>0x8007</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.FlashFired</key>
+      <type>Short</type>
+      <tagdesc>Flash Fired</tagdesc>
+   </ROW>
+   <ROW num="99">
+      <tagname>TextStamp3</tagname>
+      <tagdec>32776</tagdec>
+      <taghex>0x8008</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.TextStamp3</key>
+      <type>Short</type>
+      <tagdesc>Text Stamp 3</tagdesc>
+   </ROW>
+   <ROW num="100">
+      <tagname>TextStamp4</tagname>
+      <tagdec>32777</tagdec>
+      <taghex>0x8009</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.TextStamp4</key>
+      <type>Short</type>
+      <tagdesc>Text Stamp 4</tagdesc>
+   </ROW>
+   <ROW num="101">
+      <tagname>BabyAge2</tagname>
+      <tagdec>32784</tagdec>
+      <taghex>0x8010</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.BabyAge2</key>
+      <type>Ascii</type>
+      <tagdesc>Baby (or pet) age 2</tagdesc>
+   </ROW>
+   <ROW num="102">
+      <tagname>Transform2</tagname>
+      <tagdec>32786</tagdec>
+      <taghex>0x8012</taghex>
+      <ifd>Panasonic</ifd>
+      <key>Exif.Panasonic.Transform2</key>
+      <type>Undefined</type>
+      <tagdesc>Transform 2</tagdesc>
+   </ROW>
+</ROWSET>
+</TAGLIST>

@@ -1,0 +1,149 @@
+<?xml version = '1.0'?>
+<?xml-stylesheet type="text/xsl" href="tags.xsl"?>
+<TAGLIST>
+<HEADER>
+<title>XYZ MakerNote Tags defined in Exiv2</title>
+<text>
+<p>Tags found in the MakerNote of images taken with XYZ cameras. These tags 
+are defined by Exiv2 in accordance with <a href="makernote.html#RX">[X]</a>.</p>
+<p>Click on a column header to sort the table.</p>
+</text>
+</HEADER>
+<ROWSET>
+   <ROW num="1">
+      <tagname>NoiseReduction</tagname>
+      <tagdec>1</tagdec>
+      <taghex>0x0001</taghex>
+      <ifd>CanonCf</ifd>
+      <key>Exif.CanonCf.NoiseReduction</key>
+      <type>Short</type>
+      <tagdesc>Long exposure noise reduction</tagdesc>
+   </ROW>
+   <ROW num="2">
+      <tagname>ShutterAeLock</tagname>
+      <tagdec>2</tagdec>
+      <taghex>0x0002</taghex>
+      <ifd>CanonCf</ifd>
+      <key>Exif.CanonCf.ShutterAeLock</key>
+      <type>Short</type>
+      <tagdesc>Shutter/AE lock buttons</tagdesc>
+   </ROW>
+   <ROW num="3">
+      <tagname>MirrorLockup</tagname>
+      <tagdec>3</tagdec>
+      <taghex>0x0003</taghex>
+      <ifd>CanonCf</ifd>
+      <key>Exif.CanonCf.MirrorLockup</key>
+      <type>Short</type>
+      <tagdesc>Mirror lockup</tagdesc>
+   </ROW>
+   <ROW num="4">
+      <tagname>ExposureLevelIncrements</tagname>
+      <tagdec>4</tagdec>
+      <taghex>0x0004</taghex>
+      <ifd>CanonCf</ifd>
+      <key>Exif.CanonCf.ExposureLevelIncrements</key>
+      <type>Short</type>
+      <tagdesc>Tv/Av and exposure level</tagdesc>
+   </ROW>
+   <ROW num="5">
+      <tagname>AFAssist</tagname>
+      <tagdec>5</tagdec>
+      <taghex>0x0005</taghex>
+      <ifd>CanonCf</ifd>
+      <key>Exif.CanonCf.AFAssist</key>
+      <type>Short</type>
+      <tagdesc>AF assist light</tagdesc>
+   </ROW>
+   <ROW num="6">
+      <tagname>FlashSyncSpeedAv</tagname>
+      <tagdec>6</tagdec>
+      <taghex>0x0006</taghex>
+      <ifd>CanonCf</ifd>
+      <key>Exif.CanonCf.FlashSyncSpeedAv</key>
+      <type>Short</type>
+      <tagdesc>Shutter speed in Av mode</tagdesc>
+   </ROW>
+   <ROW num="7">
+      <tagname>AEBSequence</tagname>
+      <tagdec>7</tagdec>
+      <taghex>0x0007</taghex>
+      <ifd>CanonCf</ifd>
+      <key>Exif.CanonCf.AEBSequence</key>
+      <type>Short</type>
+      <tagdesc>AEB sequence/auto cancellation</tagdesc>
+   </ROW>
+   <ROW num="8">
+      <tagname>ShutterCurtainSync</tagname>
+      <tagdec>8</tagdec>
+      <taghex>0x0008</taghex>
+      <ifd>CanonCf</ifd>
+      <key>Exif.CanonCf.ShutterCurtainSync</key>
+      <type>Short</type>
+      <tagdesc>Shutter curtain sync</tagdesc>
+   </ROW>
+   <ROW num="9">
+      <tagname>LensAFStopButton</tagname>
+      <tagdec>9</tagdec>
+      <taghex>0x0009</taghex>
+      <ifd>CanonCf</ifd>
+      <key>Exif.CanonCf.LensAFStopButton</key>
+      <type>Short</type>
+      <tagdesc>Lens AF stop button Fn. Switch</tagdesc>
+   </ROW>
+   <ROW num="10">
+      <tagname>FillFlashAutoReduction</tagname>
+      <tagdec>10</tagdec>
+      <taghex>0x000a</taghex>
+      <ifd>CanonCf</ifd>
+      <key>Exif.CanonCf.FillFlashAutoReduction</key>
+      <type>Short</type>
+      <tagdesc>Auto reduction of fill flash</tagdesc>
+   </ROW>
+   <ROW num="11">
+      <tagname>MenuButtonReturn</tagname>
+      <tagdec>11</tagdec>
+      <taghex>0x000b</taghex>
+      <ifd>CanonCf</ifd>
+      <key>Exif.CanonCf.MenuButtonReturn</key>
+      <type>Short</type>
+      <tagdesc>Menu button return position</tagdesc>
+   </ROW>
+   <ROW num="12">
+      <tagname>SetButtonFunction</tagname>
+      <tagdec>12</tagdec>
+      <taghex>0x000c</taghex>
+      <ifd>CanonCf</ifd>
+      <key>Exif.CanonCf.SetButtonFunction</key>
+      <type>Short</type>
+      <tagdesc>SET button func. when shooting</tagdesc>
+   </ROW>
+   <ROW num="13">
+      <tagname>SensorCleaning</tagname>
+      <tagdec>13</tagdec>
+      <taghex>0x000d</taghex>
+      <ifd>CanonCf</ifd>
+      <key>Exif.CanonCf.SensorCleaning</key>
+      <type>Short</type>
+      <tagdesc>Sensor cleaning</tagdesc>
+   </ROW>
+   <ROW num="14">
+      <tagname>SuperimposedDisplay</tagname>
+      <tagdec>14</tagdec>
+      <taghex>0x000e</taghex>
+      <ifd>CanonCf</ifd>
+      <key>Exif.CanonCf.SuperimposedDisplay</key>
+      <type>Short</type>
+      <tagdesc>Superimposed display</tagdesc>
+   </ROW>
+   <ROW num="15">
+      <tagname>ShutterReleaseNoCFCard</tagname>
+      <tagdec>15</tagdec>
+      <taghex>0x000f</taghex>
+      <ifd>CanonCf</ifd>
+      <key>Exif.CanonCf.ShutterReleaseNoCFCard</key>
+      <type>Short</type>
+      <tagdesc>Shutter Release W/O CF Card</tagdesc>
+   </ROW>
+</ROWSET>
+</TAGLIST>

@@ -1,0 +1,189 @@
+<?xml version = '1.0'?>
+<?xml-stylesheet type="text/xsl" href="xmp.xsl"?>
+<TAGLIST>
+<HEADER>
+<title>XMP tags defined in Exiv2</title>
+<text>
+<p>Some description</p>
+<p>Click on a column header to sort the table.</p>
+</text>
+</HEADER>
+<ROWSET>
+   <ROW num="1">
+      <tagname>UsePanoramaViewer</tagname>
+      <title>Use Panorama Viewer</title>
+      <xmpvaltype>Boolean</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Whether to show this image in a panorama viewer rather than as a normal flat image. This may be specified based on user preferences or by the stitching software. The application displaying or ingesting the image may choose to ignore this.</tagdesc>
+   </ROW>
+   <ROW num="2">
+      <tagname>CaptureSoftware</tagname>
+      <title>Capture Software</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>If capture was done using an application on a mobile device, such as an Android phone, the name of the application that was used (such as "Photo Sphere"). This should be left blank if source images were captured manually, such as by using a DSLR on a tripod.</tagdesc>
+   </ROW>
+   <ROW num="3">
+      <tagname>StitchingSoftware</tagname>
+      <title>Stitching Software</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The software that was used to create the final panorama. This may sometimes be the same value as that of  GPano:CaptureSoftware.</tagdesc>
+   </ROW>
+   <ROW num="4">
+      <tagname>ProjectionType</tagname>
+      <title>Projection Type</title>
+      <xmpvaltype>Open Choice of Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Projection type used in the image file. Google products currently support the value equirectangular.</tagdesc>
+   </ROW>
+   <ROW num="5">
+      <tagname>PoseHeadingDegrees</tagname>
+      <title>Pose Heading Degrees</title>
+      <xmpvaltype>Real</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Compass heading, measured in degrees, for the center the image. Value must be &gt;= 0 and &lt; 360.</tagdesc>
+   </ROW>
+   <ROW num="6">
+      <tagname>PosePitchDegrees</tagname>
+      <title>Pose Pitch Degrees</title>
+      <xmpvaltype>Real</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Pitch, measured in degrees, for the center in the image. Value must be &gt;= -90 and &lt;= 90.</tagdesc>
+   </ROW>
+   <ROW num="7">
+      <tagname>PoseRollDegrees</tagname>
+      <title>Pose Roll Degrees</title>
+      <xmpvaltype>Real</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Roll, measured in degrees, of the image where level with the horizon is 0. Value must be &gt; -180 and &lt;= 180.</tagdesc>
+   </ROW>
+   <ROW num="8">
+      <tagname>InitialViewHeadingDegrees</tagname>
+      <title>Initial View Heading Degrees</title>
+      <xmpvaltype>Integer</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The heading angle of the initial view in degrees.</tagdesc>
+   </ROW>
+   <ROW num="9">
+      <tagname>InitialViewPitchDegrees</tagname>
+      <title>Initial View Pitch Degrees</title>
+      <xmpvaltype>Integer</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The pitch angle of the initial view in degrees.</tagdesc>
+   </ROW>
+   <ROW num="10">
+      <tagname>InitialViewRollDegrees</tagname>
+      <title>Initial View Roll Degrees</title>
+      <xmpvaltype>Integer</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The roll angle of the initial view in degrees.</tagdesc>
+   </ROW>
+   <ROW num="11">
+      <tagname>InitialHorizontalFOVDegrees</tagname>
+      <title>Initial Horizontal FOV Degrees</title>
+      <xmpvaltype>Real</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The initial horizontal field of view that the viewer should display (in degrees). This is similar to a zoom level.</tagdesc>
+   </ROW>
+   <ROW num="12">
+      <tagname>FirstPhotoDate</tagname>
+      <title>First Photo Date</title>
+      <xmpvaltype>Date</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Date and time for the first image created in the panorama.</tagdesc>
+   </ROW>
+   <ROW num="13">
+      <tagname>LastPhotoDate</tagname>
+      <title>Last Photo Date</title>
+      <xmpvaltype>Date</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Date and time for the last image created in the panorama.</tagdesc>
+   </ROW>
+   <ROW num="14">
+      <tagname>SourcePhotosCount</tagname>
+      <title>Source Photos Count</title>
+      <xmpvaltype>Integer</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Number of source images used to create the panorama</tagdesc>
+   </ROW>
+   <ROW num="15">
+      <tagname>ExposureLockUsed</tagname>
+      <title>Exposure Lock Used</title>
+      <xmpvaltype>Boolean</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>When individual source photographs were captured, whether or not the camera's exposure setting was locked.</tagdesc>
+   </ROW>
+   <ROW num="16">
+      <tagname>CroppedAreaImageWidthPixels</tagname>
+      <title>Cropped Area Image Width Pixels</title>
+      <xmpvaltype>Integer</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Original width in pixels of the image (equal to the actual image's width for unedited images).</tagdesc>
+   </ROW>
+   <ROW num="17">
+      <tagname>CroppedAreaImageHeightPixels</tagname>
+      <title>Cropped Area Image Height Pixels</title>
+      <xmpvaltype>Integer</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Original height in pixels of the image (equal to the actual image's height for unedited images).</tagdesc>
+   </ROW>
+   <ROW num="18">
+      <tagname>FullPanoWidthPixels</tagname>
+      <title>Full Pano Width Pixels</title>
+      <xmpvaltype>Integer</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Original full panorama width from which the image was cropped. Or, if only a partial panorama was captured, this specifies the width of what the full panorama would have been.</tagdesc>
+   </ROW>
+   <ROW num="19">
+      <tagname>FullPanoHeightPixels</tagname>
+      <title>Full Pano Height Pixels</title>
+      <xmpvaltype>Integer</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Original full panorama height from which the image was cropped. Or, if only a partial panorama was captured, this specifies the height of what the full panorama would have been.</tagdesc>
+   </ROW>
+   <ROW num="20">
+      <tagname>CroppedAreaLeftPixels</tagname>
+      <title>Cropped Area Left Pixels</title>
+      <xmpvaltype>Integer</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Column where the left edge of the image was cropped from the full sized panorama.</tagdesc>
+   </ROW>
+   <ROW num="21">
+      <tagname>CroppedAreaTopPixels</tagname>
+      <title>Cropped Area Top Pixels</title>
+      <xmpvaltype>Integer</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Row where the top edge of the image was cropped from the full sized panorama.</tagdesc>
+   </ROW>
+   <ROW num="22">
+      <tagname>InitialCameraDolly</tagname>
+      <title>Initial Camera Dolly</title>
+      <xmpvaltype>Real</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>This optional parameter moves the virtual camera position along the line of sight, away from the center of the photo sphere. A rear surface position is represented by the value -1.0, while a front surface position is represented by 1.0. For normal viewing, this parameter should be set to 0.</tagdesc>
+   </ROW>
+</ROWSET>
+</TAGLIST>

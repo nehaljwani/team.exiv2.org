@@ -1,0 +1,45 @@
+<?xml version = '1.0'?>
+<?xml-stylesheet type="text/xsl" href="xmp.xsl"?>
+<TAGLIST>
+<HEADER>
+<title>XMP tags defined in Exiv2</title>
+<text>
+<p>Some description</p>
+<p>Click on a column header to sort the table.</p>
+</text>
+</HEADER>
+<ROWSET>
+   <ROW num="1">
+      <tagname>Keywords</tagname>
+      <title>Keywords</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Keywords.</tagdesc>
+   </ROW>
+   <ROW num="2">
+      <tagname>PDFVersion</tagname>
+      <title>PDF Version</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>Internal</category>
+      <tagdesc>The PDF file version (for example: 1.0, 1.3, and so on).</tagdesc>
+   </ROW>
+   <ROW num="3">
+      <tagname>Producer</tagname>
+      <title>Producer</title>
+      <xmpvaltype>AgentName</xmpvaltype>
+      <type>XmpText</type>
+      <category>Internal</category>
+      <tagdesc>The name of the tool that created the PDF document.</tagdesc>
+   </ROW>
+   <ROW num="4">
+      <tagname>Trapped</tagname>
+      <title>Trapped</title>
+      <xmpvaltype>Boolean</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>True when the document has been trapped.</tagdesc>
+   </ROW>
+</ROWSET>
+</TAGLIST>

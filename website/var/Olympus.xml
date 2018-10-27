@@ -1,0 +1,860 @@
+<?xml version = '1.0'?>
+<?xml-stylesheet type="text/xsl" href="tags.xsl"?>
+<TAGLIST>
+<HEADER>
+<title>XYZ MakerNote Tags defined in Exiv2</title>
+<text>
+<p>Tags found in the MakerNote of images taken with XYZ cameras. These tags 
+are defined by Exiv2 in accordance with <a href="makernote.html#RX">[X]</a>.</p>
+<p>Click on a column header to sort the table.</p>
+</text>
+</HEADER>
+<ROWSET>
+   <ROW num="1">
+      <tagname>0x0000</tagname>
+      <tagdec>0</tagdec>
+      <taghex>0x0000</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.0x0000</key>
+      <type>Short</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="2">
+      <tagname>ThumbnailImage</tagname>
+      <tagdec>256</tagdec>
+      <taghex>0x0100</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.ThumbnailImage</key>
+      <type>Undefined</type>
+      <tagdesc>Thumbnail image</tagdesc>
+   </ROW>
+   <ROW num="3">
+      <tagname>BodyFirmwareVersion</tagname>
+      <tagdec>260</tagdec>
+      <taghex>0x0104</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.BodyFirmwareVersion</key>
+      <type>Ascii</type>
+      <tagdesc>Body firmware version</tagdesc>
+   </ROW>
+   <ROW num="4">
+      <tagname>SpecialMode</tagname>
+      <tagdec>512</tagdec>
+      <taghex>0x0200</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.SpecialMode</key>
+      <type>Long</type>
+      <tagdesc>Picture taking mode</tagdesc>
+   </ROW>
+   <ROW num="5">
+      <tagname>Quality</tagname>
+      <tagdec>513</tagdec>
+      <taghex>0x0201</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.Quality</key>
+      <type>Short</type>
+      <tagdesc>Image quality setting</tagdesc>
+   </ROW>
+   <ROW num="6">
+      <tagname>Macro</tagname>
+      <tagdec>514</tagdec>
+      <taghex>0x0202</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.Macro</key>
+      <type>Short</type>
+      <tagdesc>Macro mode</tagdesc>
+   </ROW>
+   <ROW num="7">
+      <tagname>BWMode</tagname>
+      <tagdec>515</tagdec>
+      <taghex>0x0203</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.BWMode</key>
+      <type>Short</type>
+      <tagdesc>Black and white mode</tagdesc>
+   </ROW>
+   <ROW num="8">
+      <tagname>DigitalZoom</tagname>
+      <tagdec>516</tagdec>
+      <taghex>0x0204</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.DigitalZoom</key>
+      <type>Rational</type>
+      <tagdesc>Digital zoom ratio</tagdesc>
+   </ROW>
+   <ROW num="9">
+      <tagname>FocalPlaneDiagonal</tagname>
+      <tagdec>517</tagdec>
+      <taghex>0x0205</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.FocalPlaneDiagonal</key>
+      <type>Rational</type>
+      <tagdesc>Focal plane diagonal</tagdesc>
+   </ROW>
+   <ROW num="10">
+      <tagname>LensDistortionParams</tagname>
+      <tagdec>518</tagdec>
+      <taghex>0x0206</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.LensDistortionParams</key>
+      <type>SShort</type>
+      <tagdesc>Lens distortion parameters</tagdesc>
+   </ROW>
+   <ROW num="11">
+      <tagname>CameraType</tagname>
+      <tagdec>519</tagdec>
+      <taghex>0x0207</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.CameraType</key>
+      <type>Ascii</type>
+      <tagdesc>Camera type</tagdesc>
+   </ROW>
+   <ROW num="12">
+      <tagname>PictureInfo</tagname>
+      <tagdec>520</tagdec>
+      <taghex>0x0208</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.PictureInfo</key>
+      <type>Ascii</type>
+      <tagdesc>ASCII format data such as [PictureInfo]</tagdesc>
+   </ROW>
+   <ROW num="13">
+      <tagname>CameraID</tagname>
+      <tagdec>521</tagdec>
+      <taghex>0x0209</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.CameraID</key>
+      <type>Ascii</type>
+      <tagdesc>Camera ID data</tagdesc>
+   </ROW>
+   <ROW num="14">
+      <tagname>ImageWidth</tagname>
+      <tagdec>523</tagdec>
+      <taghex>0x020b</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.ImageWidth</key>
+      <type>Short</type>
+      <tagdesc>Image width</tagdesc>
+   </ROW>
+   <ROW num="15">
+      <tagname>ImageHeight</tagname>
+      <tagdec>524</tagdec>
+      <taghex>0x020c</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.ImageHeight</key>
+      <type>Short</type>
+      <tagdesc>Image height</tagdesc>
+   </ROW>
+   <ROW num="16">
+      <tagname>Software</tagname>
+      <tagdec>525</tagdec>
+      <taghex>0x020d</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.Software</key>
+      <type>Ascii</type>
+      <tagdesc>Software</tagdesc>
+   </ROW>
+   <ROW num="17">
+      <tagname>PreviewImage</tagname>
+      <tagdec>640</tagdec>
+      <taghex>0x0280</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.PreviewImage</key>
+      <type>Byte</type>
+      <tagdesc>Preview image</tagdesc>
+   </ROW>
+   <ROW num="18">
+      <tagname>PreCaptureFrames</tagname>
+      <tagdec>768</tagdec>
+      <taghex>0x0300</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.PreCaptureFrames</key>
+      <type>Short</type>
+      <tagdesc>Pre-capture frames</tagdesc>
+   </ROW>
+   <ROW num="19">
+      <tagname>WhiteBoard</tagname>
+      <tagdec>769</tagdec>
+      <taghex>0x0301</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.WhiteBoard</key>
+      <type>Short</type>
+      <tagdesc>White board</tagdesc>
+   </ROW>
+   <ROW num="20">
+      <tagname>OneTouchWB</tagname>
+      <tagdec>770</tagdec>
+      <taghex>0x0302</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.OneTouchWB</key>
+      <type>Short</type>
+      <tagdesc>One touch white balance</tagdesc>
+   </ROW>
+   <ROW num="21">
+      <tagname>WhiteBalanceBracket</tagname>
+      <tagdec>771</tagdec>
+      <taghex>0x0303</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.WhiteBalanceBracket</key>
+      <type>Short</type>
+      <tagdesc>White balance bracket</tagdesc>
+   </ROW>
+   <ROW num="22">
+      <tagname>WhiteBalanceBias</tagname>
+      <tagdec>772</tagdec>
+      <taghex>0x0304</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.WhiteBalanceBias</key>
+      <type>Short</type>
+      <tagdesc>White balance bias</tagdesc>
+   </ROW>
+   <ROW num="23">
+      <tagname>SceneMode</tagname>
+      <tagdec>1027</tagdec>
+      <taghex>0x0403</taghex>
+      <ifd>OlympusCs</ifd>
+      <key>Exif.OlympusCs.SceneMode</key>
+      <type>Short</type>
+      <tagdesc>Scene mode</tagdesc>
+   </ROW>
+   <ROW num="24">
+      <tagname>Firmware</tagname>
+      <tagdec>1028</tagdec>
+      <taghex>0x0404</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.Firmware</key>
+      <type>Ascii</type>
+      <tagdesc>Firmware</tagdesc>
+   </ROW>
+   <ROW num="25">
+      <tagname>PrintIM</tagname>
+      <tagdec>3584</tagdec>
+      <taghex>0x0e00</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.PrintIM</key>
+      <type>Undefined</type>
+      <tagdesc>PrintIM information</tagdesc>
+   </ROW>
+   <ROW num="26">
+      <tagname>DataDump1</tagname>
+      <tagdec>3840</tagdec>
+      <taghex>0x0f00</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.DataDump1</key>
+      <type>Undefined</type>
+      <tagdesc>Various camera settings 1</tagdesc>
+   </ROW>
+   <ROW num="27">
+      <tagname>DataDump2</tagname>
+      <tagdec>3841</tagdec>
+      <taghex>0x0f01</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.DataDump2</key>
+      <type>Undefined</type>
+      <tagdesc>Various camera settings 2</tagdesc>
+   </ROW>
+   <ROW num="28">
+      <tagname>ShutterSpeed</tagname>
+      <tagdec>4096</tagdec>
+      <taghex>0x1000</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.ShutterSpeed</key>
+      <type>SRational</type>
+      <tagdesc>Shutter speed value</tagdesc>
+   </ROW>
+   <ROW num="29">
+      <tagname>ISOSpeed</tagname>
+      <tagdec>4097</tagdec>
+      <taghex>0x1001</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.ISOSpeed</key>
+      <type>SRational</type>
+      <tagdesc>ISO speed value</tagdesc>
+   </ROW>
+   <ROW num="30">
+      <tagname>ApertureValue</tagname>
+      <tagdec>4098</tagdec>
+      <taghex>0x1002</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.ApertureValue</key>
+      <type>SRational</type>
+      <tagdesc>Aperture value</tagdesc>
+   </ROW>
+   <ROW num="31">
+      <tagname>Brightness</tagname>
+      <tagdec>4099</tagdec>
+      <taghex>0x1003</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.Brightness</key>
+      <type>SRational</type>
+      <tagdesc>Brightness value</tagdesc>
+   </ROW>
+   <ROW num="32">
+      <tagname>FlashMode</tagname>
+      <tagdec>4100</tagdec>
+      <taghex>0x1004</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.FlashMode</key>
+      <type>Short</type>
+      <tagdesc>Flash mode</tagdesc>
+   </ROW>
+   <ROW num="33">
+      <tagname>FlashDevice</tagname>
+      <tagdec>4101</tagdec>
+      <taghex>0x1005</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.FlashDevice</key>
+      <type>Short</type>
+      <tagdesc>Flash device</tagdesc>
+   </ROW>
+   <ROW num="34">
+      <tagname>Bracket</tagname>
+      <tagdec>4102</tagdec>
+      <taghex>0x1006</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.Bracket</key>
+      <type>SRational</type>
+      <tagdesc>Exposure compensation value</tagdesc>
+   </ROW>
+   <ROW num="35">
+      <tagname>SensorTemperature</tagname>
+      <tagdec>4103</tagdec>
+      <taghex>0x1007</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.SensorTemperature</key>
+      <type>SShort</type>
+      <tagdesc>Sensor temperature</tagdesc>
+   </ROW>
+   <ROW num="36">
+      <tagname>LensTemperature</tagname>
+      <tagdec>4104</tagdec>
+      <taghex>0x1008</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.LensTemperature</key>
+      <type>SShort</type>
+      <tagdesc>Lens temperature</tagdesc>
+   </ROW>
+   <ROW num="37">
+      <tagname>LightCondition</tagname>
+      <tagdec>4105</tagdec>
+      <taghex>0x1009</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.LightCondition</key>
+      <type>Short</type>
+      <tagdesc>Light condition</tagdesc>
+   </ROW>
+   <ROW num="38">
+      <tagname>FocusRange</tagname>
+      <tagdec>4106</tagdec>
+      <taghex>0x100a</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.FocusRange</key>
+      <type>Short</type>
+      <tagdesc>Focus range</tagdesc>
+   </ROW>
+   <ROW num="39">
+      <tagname>FocusMode</tagname>
+      <tagdec>4107</tagdec>
+      <taghex>0x100b</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.FocusMode</key>
+      <type>Short</type>
+      <tagdesc>Focus mode</tagdesc>
+   </ROW>
+   <ROW num="40">
+      <tagname>FocusDistance</tagname>
+      <tagdec>4108</tagdec>
+      <taghex>0x100c</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.FocusDistance</key>
+      <type>Rational</type>
+      <tagdesc>Manual focus distance</tagdesc>
+   </ROW>
+   <ROW num="41">
+      <tagname>Zoom</tagname>
+      <tagdec>4109</tagdec>
+      <taghex>0x100d</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.Zoom</key>
+      <type>Short</type>
+      <tagdesc>Zoom step count</tagdesc>
+   </ROW>
+   <ROW num="42">
+      <tagname>MacroFocus</tagname>
+      <tagdec>4110</tagdec>
+      <taghex>0x100e</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.MacroFocus</key>
+      <type>Short</type>
+      <tagdesc>Macro focus step count</tagdesc>
+   </ROW>
+   <ROW num="43">
+      <tagname>SharpnessFactor</tagname>
+      <tagdec>4111</tagdec>
+      <taghex>0x100f</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.SharpnessFactor</key>
+      <type>Short</type>
+      <tagdesc>Sharpness factor</tagdesc>
+   </ROW>
+   <ROW num="44">
+      <tagname>FlashChargeLevel</tagname>
+      <tagdec>4112</tagdec>
+      <taghex>0x1010</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.FlashChargeLevel</key>
+      <type>Short</type>
+      <tagdesc>Flash charge level</tagdesc>
+   </ROW>
+   <ROW num="45">
+      <tagname>ColorMatrix</tagname>
+      <tagdec>4113</tagdec>
+      <taghex>0x1011</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.ColorMatrix</key>
+      <type>Short</type>
+      <tagdesc>Color matrix</tagdesc>
+   </ROW>
+   <ROW num="46">
+      <tagname>BlackLevel</tagname>
+      <tagdec>4114</tagdec>
+      <taghex>0x1012</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.BlackLevel</key>
+      <type>Short</type>
+      <tagdesc>Black level</tagdesc>
+   </ROW>
+   <ROW num="47">
+      <tagname>0x1013</tagname>
+      <tagdec>4115</tagdec>
+      <taghex>0x1013</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.0x1013</key>
+      <type>Short</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="48">
+      <tagname>0x1014</tagname>
+      <tagdec>4116</tagdec>
+      <taghex>0x1014</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.0x1014</key>
+      <type>Short</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="49">
+      <tagname>WhiteBalance</tagname>
+      <tagdec>4117</tagdec>
+      <taghex>0x1015</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.WhiteBalance</key>
+      <type>Short</type>
+      <tagdesc>White balance mode</tagdesc>
+   </ROW>
+   <ROW num="50">
+      <tagname>0x1016</tagname>
+      <tagdec>4118</tagdec>
+      <taghex>0x1016</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.0x1016</key>
+      <type>Short</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="51">
+      <tagname>RedBalance</tagname>
+      <tagdec>4119</tagdec>
+      <taghex>0x1017</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.RedBalance</key>
+      <type>Short</type>
+      <tagdesc>Red balance</tagdesc>
+   </ROW>
+   <ROW num="52">
+      <tagname>BlueBalance</tagname>
+      <tagdec>4120</tagdec>
+      <taghex>0x1018</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.BlueBalance</key>
+      <type>Short</type>
+      <tagdesc>Blue balance</tagdesc>
+   </ROW>
+   <ROW num="53">
+      <tagname>ColorMatrixNumber</tagname>
+      <tagdec>4121</tagdec>
+      <taghex>0x1019</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.ColorMatrixNumber</key>
+      <type>Short</type>
+      <tagdesc>Color matrix number</tagdesc>
+   </ROW>
+   <ROW num="54">
+      <tagname>SerialNumber2</tagname>
+      <tagdec>4122</tagdec>
+      <taghex>0x101a</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.SerialNumber2</key>
+      <type>Ascii</type>
+      <tagdesc>Serial number 2</tagdesc>
+   </ROW>
+   <ROW num="55">
+      <tagname>0x101b</tagname>
+      <tagdec>4123</tagdec>
+      <taghex>0x101b</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.0x101b</key>
+      <type>Long</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="56">
+      <tagname>0x101c</tagname>
+      <tagdec>4124</tagdec>
+      <taghex>0x101c</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.0x101c</key>
+      <type>Long</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="57">
+      <tagname>0x101d</tagname>
+      <tagdec>4125</tagdec>
+      <taghex>0x101d</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.0x101d</key>
+      <type>Long</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="58">
+      <tagname>0x101e</tagname>
+      <tagdec>4126</tagdec>
+      <taghex>0x101e</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.0x101e</key>
+      <type>Long</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="59">
+      <tagname>0x101f</tagname>
+      <tagdec>4127</tagdec>
+      <taghex>0x101f</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.0x101f</key>
+      <type>Long</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="60">
+      <tagname>0x1020</tagname>
+      <tagdec>4128</tagdec>
+      <taghex>0x1020</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.0x1020</key>
+      <type>Long</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="61">
+      <tagname>0x1021</tagname>
+      <tagdec>4129</tagdec>
+      <taghex>0x1021</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.0x1021</key>
+      <type>Long</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="62">
+      <tagname>0x1022</tagname>
+      <tagdec>4130</tagdec>
+      <taghex>0x1022</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.0x1022</key>
+      <type>Long</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="63">
+      <tagname>FlashBias</tagname>
+      <tagdec>4131</tagdec>
+      <taghex>0x1023</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.FlashBias</key>
+      <type>SRational</type>
+      <tagdesc>Flash exposure compensation</tagdesc>
+   </ROW>
+   <ROW num="64">
+      <tagname>0x1024</tagname>
+      <tagdec>4132</tagdec>
+      <taghex>0x1024</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.0x1024</key>
+      <type>Short</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="65">
+      <tagname>0x1025</tagname>
+      <tagdec>4133</tagdec>
+      <taghex>0x1025</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.0x1025</key>
+      <type>SRational</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="66">
+      <tagname>ExternalFlashBounce</tagname>
+      <tagdec>4134</tagdec>
+      <taghex>0x1026</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.ExternalFlashBounce</key>
+      <type>Short</type>
+      <tagdesc>External flash bounce</tagdesc>
+   </ROW>
+   <ROW num="67">
+      <tagname>ExternalFlashZoom</tagname>
+      <tagdec>4135</tagdec>
+      <taghex>0x1027</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.ExternalFlashZoom</key>
+      <type>Short</type>
+      <tagdesc>External flash zoom</tagdesc>
+   </ROW>
+   <ROW num="68">
+      <tagname>ExternalFlashMode</tagname>
+      <tagdec>4136</tagdec>
+      <taghex>0x1028</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.ExternalFlashMode</key>
+      <type>Short</type>
+      <tagdesc>External flash mode</tagdesc>
+   </ROW>
+   <ROW num="69">
+      <tagname>Contrast</tagname>
+      <tagdec>4137</tagdec>
+      <taghex>0x1029</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.Contrast</key>
+      <type>Short</type>
+      <tagdesc>Contrast setting</tagdesc>
+   </ROW>
+   <ROW num="70">
+      <tagname>SharpnessFactor</tagname>
+      <tagdec>4138</tagdec>
+      <taghex>0x102a</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.SharpnessFactor</key>
+      <type>Short</type>
+      <tagdesc>Sharpness factor</tagdesc>
+   </ROW>
+   <ROW num="71">
+      <tagname>ColorControl</tagname>
+      <tagdec>4139</tagdec>
+      <taghex>0x102b</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.ColorControl</key>
+      <type>Short</type>
+      <tagdesc>Color control</tagdesc>
+   </ROW>
+   <ROW num="72">
+      <tagname>ValidBits</tagname>
+      <tagdec>4140</tagdec>
+      <taghex>0x102c</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.ValidBits</key>
+      <type>Short</type>
+      <tagdesc>Valid bits</tagdesc>
+   </ROW>
+   <ROW num="73">
+      <tagname>CoringFilter</tagname>
+      <tagdec>4141</tagdec>
+      <taghex>0x102d</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.CoringFilter</key>
+      <type>Short</type>
+      <tagdesc>Coring filter</tagdesc>
+   </ROW>
+   <ROW num="74">
+      <tagname>ImageWidth</tagname>
+      <tagdec>4142</tagdec>
+      <taghex>0x102e</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.ImageWidth</key>
+      <type>Long</type>
+      <tagdesc>Image width</tagdesc>
+   </ROW>
+   <ROW num="75">
+      <tagname>ImageHeight</tagname>
+      <tagdec>4143</tagdec>
+      <taghex>0x102f</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.ImageHeight</key>
+      <type>Long</type>
+      <tagdesc>Image height</tagdesc>
+   </ROW>
+   <ROW num="76">
+      <tagname>0x1030</tagname>
+      <tagdec>4144</tagdec>
+      <taghex>0x1030</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.0x1030</key>
+      <type>Short</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="77">
+      <tagname>0x1031</tagname>
+      <tagdec>4145</tagdec>
+      <taghex>0x1031</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.0x1031</key>
+      <type>Long</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="78">
+      <tagname>0x1032</tagname>
+      <tagdec>4146</tagdec>
+      <taghex>0x1032</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.0x1032</key>
+      <type>Short</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="79">
+      <tagname>0x1033</tagname>
+      <tagdec>4147</tagdec>
+      <taghex>0x1033</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.0x1033</key>
+      <type>Long</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="80">
+      <tagname>CompressionRatio</tagname>
+      <tagdec>4148</tagdec>
+      <taghex>0x1034</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.CompressionRatio</key>
+      <type>Rational</type>
+      <tagdesc>Compression ratio</tagdesc>
+   </ROW>
+   <ROW num="81">
+      <tagname>Thumbnail</tagname>
+      <tagdec>4149</tagdec>
+      <taghex>0x1035</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.Thumbnail</key>
+      <type>Long</type>
+      <tagdesc>Preview image embedded</tagdesc>
+   </ROW>
+   <ROW num="82">
+      <tagname>ThumbnailOffset</tagname>
+      <tagdec>4150</tagdec>
+      <taghex>0x1036</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.ThumbnailOffset</key>
+      <type>Long</type>
+      <tagdesc>Offset of the preview image</tagdesc>
+   </ROW>
+   <ROW num="83">
+      <tagname>ThumbnailLength</tagname>
+      <tagdec>4151</tagdec>
+      <taghex>0x1037</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.ThumbnailLength</key>
+      <type>Long</type>
+      <tagdesc>Size of the preview image</tagdesc>
+   </ROW>
+   <ROW num="84">
+      <tagname>CCDScanMode</tagname>
+      <tagdec>4153</tagdec>
+      <taghex>0x1039</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.CCDScanMode</key>
+      <type>Short</type>
+      <tagdesc>CCD scan mode</tagdesc>
+   </ROW>
+   <ROW num="85">
+      <tagname>NoiseReduction</tagname>
+      <tagdec>4154</tagdec>
+      <taghex>0x103a</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.NoiseReduction</key>
+      <type>Short</type>
+      <tagdesc>Noise reduction</tagdesc>
+   </ROW>
+   <ROW num="86">
+      <tagname>InfinityLensStep</tagname>
+      <tagdec>4155</tagdec>
+      <taghex>0x103b</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.InfinityLensStep</key>
+      <type>Short</type>
+      <tagdesc>Infinity lens step</tagdesc>
+   </ROW>
+   <ROW num="87">
+      <tagname>NearLensStep</tagname>
+      <tagdec>4156</tagdec>
+      <taghex>0x103c</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.NearLensStep</key>
+      <type>Short</type>
+      <tagdesc>Near lens step</tagdesc>
+   </ROW>
+   <ROW num="88">
+      <tagname>Equipment</tagname>
+      <tagdec>8208</tagdec>
+      <taghex>0x2010</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.Equipment</key>
+      <type>Long</type>
+      <tagdesc>Camera equipment sub-IFD</tagdesc>
+   </ROW>
+   <ROW num="89">
+      <tagname>CameraSettings</tagname>
+      <tagdec>8224</tagdec>
+      <taghex>0x2020</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.CameraSettings</key>
+      <type>Long</type>
+      <tagdesc>Camera Settings sub-IFD</tagdesc>
+   </ROW>
+   <ROW num="90">
+      <tagname>RawDevelopment</tagname>
+      <tagdec>8240</tagdec>
+      <taghex>0x2030</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.RawDevelopment</key>
+      <type>Long</type>
+      <tagdesc>Raw development sub-IFD</tagdesc>
+   </ROW>
+   <ROW num="91">
+      <tagname>RawDevelopment2</tagname>
+      <tagdec>8241</tagdec>
+      <taghex>0x2031</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.RawDevelopment2</key>
+      <type>Long</type>
+      <tagdesc>Raw development 2 sub-IFD</tagdesc>
+   </ROW>
+   <ROW num="92">
+      <tagname>ImageProcessing</tagname>
+      <tagdec>8256</tagdec>
+      <taghex>0x2040</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.ImageProcessing</key>
+      <type>Long</type>
+      <tagdesc>Image processing sub-IFD</tagdesc>
+   </ROW>
+   <ROW num="93">
+      <tagname>FocusInfo</tagname>
+      <tagdec>8272</tagdec>
+      <taghex>0x2050</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.FocusInfo</key>
+      <type>Long</type>
+      <tagdesc>Focus sub-IFD</tagdesc>
+   </ROW>
+   <ROW num="94">
+      <tagname>RawInfo</tagname>
+      <tagdec>12288</tagdec>
+      <taghex>0x3000</taghex>
+      <ifd>Olympus</ifd>
+      <key>Exif.Olympus.RawInfo</key>
+      <type>Long</type>
+      <tagdesc>Raw sub-IFD</tagdesc>
+   </ROW>
+</ROWSET>
+</TAGLIST>

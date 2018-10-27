@@ -1,0 +1,464 @@
+<?xml version = '1.0'?>
+<?xml-stylesheet type="text/xsl" href="tags.xsl"?>
+<TAGLIST>
+<HEADER>
+<title>XYZ MakerNote Tags defined in Exiv2</title>
+<text>
+<p>Tags found in the MakerNote of images taken with XYZ cameras. These tags 
+are defined by Exiv2 in accordance with <a href="makernote.html#RX">[X]</a>.</p>
+<p>Click on a column header to sort the table.</p>
+</text>
+</HEADER>
+<ROWSET>
+   <ROW num="1">
+      <tagname>ExposureMode</tagname>
+      <tagdec>1</tagdec>
+      <taghex>0x0001</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.ExposureMode</key>
+      <type>Long</type>
+      <tagdesc>Exposure mode</tagdesc>
+   </ROW>
+   <ROW num="2">
+      <tagname>FlashMode</tagname>
+      <tagdec>2</tagdec>
+      <taghex>0x0002</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.FlashMode</key>
+      <type>Long</type>
+      <tagdesc>Flash mode</tagdesc>
+   </ROW>
+   <ROW num="3">
+      <tagname>WhiteBalance</tagname>
+      <tagdec>3</tagdec>
+      <taghex>0x0003</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.WhiteBalance</key>
+      <type>Long</type>
+      <tagdesc>White balance</tagdesc>
+   </ROW>
+   <ROW num="4">
+      <tagname>ImageSize</tagname>
+      <tagdec>4</tagdec>
+      <taghex>0x0004</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.ImageSize</key>
+      <type>Long</type>
+      <tagdesc>Image size</tagdesc>
+   </ROW>
+   <ROW num="5">
+      <tagname>Quality</tagname>
+      <tagdec>5</tagdec>
+      <taghex>0x0005</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.Quality</key>
+      <type>Long</type>
+      <tagdesc>Image quality</tagdesc>
+   </ROW>
+   <ROW num="6">
+      <tagname>DriveMode</tagname>
+      <tagdec>6</tagdec>
+      <taghex>0x0006</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.DriveMode</key>
+      <type>Long</type>
+      <tagdesc>Drive mode</tagdesc>
+   </ROW>
+   <ROW num="7">
+      <tagname>MeteringMode</tagname>
+      <tagdec>7</tagdec>
+      <taghex>0x0007</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.MeteringMode</key>
+      <type>Long</type>
+      <tagdesc>Metering mode</tagdesc>
+   </ROW>
+   <ROW num="8">
+      <tagname>ISO</tagname>
+      <tagdec>8</tagdec>
+      <taghex>0x0008</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.ISO</key>
+      <type>Long</type>
+      <tagdesc>ISO Value</tagdesc>
+   </ROW>
+   <ROW num="9">
+      <tagname>ExposureTime</tagname>
+      <tagdec>9</tagdec>
+      <taghex>0x0009</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.ExposureTime</key>
+      <type>Long</type>
+      <tagdesc>Exposure time</tagdesc>
+   </ROW>
+   <ROW num="10">
+      <tagname>FNumber</tagname>
+      <tagdec>10</tagdec>
+      <taghex>0x000a</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.FNumber</key>
+      <type>Long</type>
+      <tagdesc>The F-Number</tagdesc>
+   </ROW>
+   <ROW num="11">
+      <tagname>MacroMode</tagname>
+      <tagdec>11</tagdec>
+      <taghex>0x000b</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.MacroMode</key>
+      <type>Long</type>
+      <tagdesc>Macro mode</tagdesc>
+   </ROW>
+   <ROW num="12">
+      <tagname>DigitalZoom</tagname>
+      <tagdec>12</tagdec>
+      <taghex>0x000c</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.DigitalZoom</key>
+      <type>Long</type>
+      <tagdesc>Digital zoom</tagdesc>
+   </ROW>
+   <ROW num="13">
+      <tagname>ExposureCompensation</tagname>
+      <tagdec>13</tagdec>
+      <taghex>0x000d</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.ExposureCompensation</key>
+      <type>Long</type>
+      <tagdesc>Exposure compensation</tagdesc>
+   </ROW>
+   <ROW num="14">
+      <tagname>BracketStep</tagname>
+      <tagdec>14</tagdec>
+      <taghex>0x000e</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.BracketStep</key>
+      <type>Long</type>
+      <tagdesc>Bracket step</tagdesc>
+   </ROW>
+   <ROW num="15">
+      <tagname>IntervalLength</tagname>
+      <tagdec>16</tagdec>
+      <taghex>0x0010</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.IntervalLength</key>
+      <type>Long</type>
+      <tagdesc>Interval length</tagdesc>
+   </ROW>
+   <ROW num="16">
+      <tagname>IntervalNumber</tagname>
+      <tagdec>17</tagdec>
+      <taghex>0x0011</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.IntervalNumber</key>
+      <type>Long</type>
+      <tagdesc>Interval number</tagdesc>
+   </ROW>
+   <ROW num="17">
+      <tagname>FocalLength</tagname>
+      <tagdec>18</tagdec>
+      <taghex>0x0012</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.FocalLength</key>
+      <type>Long</type>
+      <tagdesc>Focal length</tagdesc>
+   </ROW>
+   <ROW num="18">
+      <tagname>FocusDistance</tagname>
+      <tagdec>19</tagdec>
+      <taghex>0x0013</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.FocusDistance</key>
+      <type>Long</type>
+      <tagdesc>Focus distance</tagdesc>
+   </ROW>
+   <ROW num="19">
+      <tagname>FlashFired</tagname>
+      <tagdec>20</tagdec>
+      <taghex>0x0014</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.FlashFired</key>
+      <type>Long</type>
+      <tagdesc>Flash fired</tagdesc>
+   </ROW>
+   <ROW num="20">
+      <tagname>MinoltaDate</tagname>
+      <tagdec>21</tagdec>
+      <taghex>0x0015</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.MinoltaDate</key>
+      <type>Long</type>
+      <tagdesc>Minolta date</tagdesc>
+   </ROW>
+   <ROW num="21">
+      <tagname>MinoltaTime</tagname>
+      <tagdec>22</tagdec>
+      <taghex>0x0016</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.MinoltaTime</key>
+      <type>Long</type>
+      <tagdesc>Minolta time</tagdesc>
+   </ROW>
+   <ROW num="22">
+      <tagname>MaxAperture</tagname>
+      <tagdec>23</tagdec>
+      <taghex>0x0017</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.MaxAperture</key>
+      <type>Long</type>
+      <tagdesc>Max aperture</tagdesc>
+   </ROW>
+   <ROW num="23">
+      <tagname>FileNumberMemory</tagname>
+      <tagdec>26</tagdec>
+      <taghex>0x001a</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.FileNumberMemory</key>
+      <type>Long</type>
+      <tagdesc>File number memory</tagdesc>
+   </ROW>
+   <ROW num="24">
+      <tagname>LastFileNumber</tagname>
+      <tagdec>27</tagdec>
+      <taghex>0x001b</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.LastFileNumber</key>
+      <type>Long</type>
+      <tagdesc>Last image number</tagdesc>
+   </ROW>
+   <ROW num="25">
+      <tagname>ColorBalanceRed</tagname>
+      <tagdec>28</tagdec>
+      <taghex>0x001c</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.ColorBalanceRed</key>
+      <type>Long</type>
+      <tagdesc>Color balance red</tagdesc>
+   </ROW>
+   <ROW num="26">
+      <tagname>ColorBalanceGreen</tagname>
+      <tagdec>29</tagdec>
+      <taghex>0x001d</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.ColorBalanceGreen</key>
+      <type>Long</type>
+      <tagdesc>Color balance green</tagdesc>
+   </ROW>
+   <ROW num="27">
+      <tagname>ColorBalanceBlue</tagname>
+      <tagdec>30</tagdec>
+      <taghex>0x001e</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.ColorBalanceBlue</key>
+      <type>Long</type>
+      <tagdesc>Color balance blue</tagdesc>
+   </ROW>
+   <ROW num="28">
+      <tagname>Saturation</tagname>
+      <tagdec>31</tagdec>
+      <taghex>0x001f</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.Saturation</key>
+      <type>Long</type>
+      <tagdesc>Saturation</tagdesc>
+   </ROW>
+   <ROW num="29">
+      <tagname>Contrast</tagname>
+      <tagdec>32</tagdec>
+      <taghex>0x0020</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.Contrast</key>
+      <type>Long</type>
+      <tagdesc>Contrast</tagdesc>
+   </ROW>
+   <ROW num="30">
+      <tagname>Sharpness</tagname>
+      <tagdec>33</tagdec>
+      <taghex>0x0021</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.Sharpness</key>
+      <type>Long</type>
+      <tagdesc>Sharpness</tagdesc>
+   </ROW>
+   <ROW num="31">
+      <tagname>SubjectProgram</tagname>
+      <tagdec>34</tagdec>
+      <taghex>0x0022</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.SubjectProgram</key>
+      <type>Long</type>
+      <tagdesc>Subject program</tagdesc>
+   </ROW>
+   <ROW num="32">
+      <tagname>FlashExposureComp</tagname>
+      <tagdec>35</tagdec>
+      <taghex>0x0023</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.FlashExposureComp</key>
+      <type>Long</type>
+      <tagdesc>Flash exposure compensation in EV</tagdesc>
+   </ROW>
+   <ROW num="33">
+      <tagname>ISOSetting</tagname>
+      <tagdec>36</tagdec>
+      <taghex>0x0024</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.ISOSetting</key>
+      <type>Long</type>
+      <tagdesc>ISO setting</tagdesc>
+   </ROW>
+   <ROW num="34">
+      <tagname>MinoltaModel</tagname>
+      <tagdec>37</tagdec>
+      <taghex>0x0025</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.MinoltaModel</key>
+      <type>Long</type>
+      <tagdesc>Minolta model</tagdesc>
+   </ROW>
+   <ROW num="35">
+      <tagname>IntervalMode</tagname>
+      <tagdec>38</tagdec>
+      <taghex>0x0026</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.IntervalMode</key>
+      <type>Long</type>
+      <tagdesc>Interval mode</tagdesc>
+   </ROW>
+   <ROW num="36">
+      <tagname>FolderName</tagname>
+      <tagdec>39</tagdec>
+      <taghex>0x0027</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.FolderName</key>
+      <type>Long</type>
+      <tagdesc>Folder name</tagdesc>
+   </ROW>
+   <ROW num="37">
+      <tagname>ColorMode</tagname>
+      <tagdec>40</tagdec>
+      <taghex>0x0028</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.ColorMode</key>
+      <type>Long</type>
+      <tagdesc>ColorMode</tagdesc>
+   </ROW>
+   <ROW num="38">
+      <tagname>ColorFilter</tagname>
+      <tagdec>41</tagdec>
+      <taghex>0x0029</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.ColorFilter</key>
+      <type>Long</type>
+      <tagdesc>Color filter</tagdesc>
+   </ROW>
+   <ROW num="39">
+      <tagname>BWFilter</tagname>
+      <tagdec>42</tagdec>
+      <taghex>0x002a</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.BWFilter</key>
+      <type>Long</type>
+      <tagdesc>Black and white filter</tagdesc>
+   </ROW>
+   <ROW num="40">
+      <tagname>Internal Flash</tagname>
+      <tagdec>43</tagdec>
+      <taghex>0x002b</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.Internal Flash</key>
+      <type>Long</type>
+      <tagdesc>Internal Flash</tagdesc>
+   </ROW>
+   <ROW num="41">
+      <tagname>Brightness</tagname>
+      <tagdec>44</tagdec>
+      <taghex>0x002c</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.Brightness</key>
+      <type>Long</type>
+      <tagdesc>Brightness</tagdesc>
+   </ROW>
+   <ROW num="42">
+      <tagname>SpotFocusPointX</tagname>
+      <tagdec>45</tagdec>
+      <taghex>0x002d</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.SpotFocusPointX</key>
+      <type>Long</type>
+      <tagdesc>Spot focus point X</tagdesc>
+   </ROW>
+   <ROW num="43">
+      <tagname>SpotFocusPointY</tagname>
+      <tagdec>46</tagdec>
+      <taghex>0x002e</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.SpotFocusPointY</key>
+      <type>Long</type>
+      <tagdesc>Spot focus point Y</tagdesc>
+   </ROW>
+   <ROW num="44">
+      <tagname>WideFocusZone</tagname>
+      <tagdec>47</tagdec>
+      <taghex>0x002f</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.WideFocusZone</key>
+      <type>Long</type>
+      <tagdesc>Wide focus zone</tagdesc>
+   </ROW>
+   <ROW num="45">
+      <tagname>FocusMode</tagname>
+      <tagdec>48</tagdec>
+      <taghex>0x0030</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.FocusMode</key>
+      <type>Long</type>
+      <tagdesc>Focus mode</tagdesc>
+   </ROW>
+   <ROW num="46">
+      <tagname>FocusArea</tagname>
+      <tagdec>49</tagdec>
+      <taghex>0x0031</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.FocusArea</key>
+      <type>Long</type>
+      <tagdesc>Focus area</tagdesc>
+   </ROW>
+   <ROW num="47">
+      <tagname>DECPosition</tagname>
+      <tagdec>50</tagdec>
+      <taghex>0x0032</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.DECPosition</key>
+      <type>Long</type>
+      <tagdesc>DEC switch position</tagdesc>
+   </ROW>
+   <ROW num="48">
+      <tagname>ColorProfile</tagname>
+      <tagdec>51</tagdec>
+      <taghex>0x0033</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.ColorProfile</key>
+      <type>Long</type>
+      <tagdesc>Color profile</tagdesc>
+   </ROW>
+   <ROW num="49">
+      <tagname>DataImprint</tagname>
+      <tagdec>52</tagdec>
+      <taghex>0x0034</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.DataImprint</key>
+      <type>Long</type>
+      <tagdesc>Data Imprint</tagdesc>
+   </ROW>
+   <ROW num="50">
+      <tagname>FlashMetering</tagname>
+      <tagdec>63</tagdec>
+      <taghex>0x003f</taghex>
+      <ifd>MinoltaCsNew</ifd>
+      <key>Exif.MinoltaCsNew.FlashMetering</key>
+      <type>Long</type>
+      <tagdesc>Flash metering</tagdesc>
+   </ROW>
+</ROWSET>
+</TAGLIST>

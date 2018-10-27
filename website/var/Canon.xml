@@ -1,0 +1,329 @@
+<?xml version = '1.0'?>
+<?xml-stylesheet type="text/xsl" href="tags.xsl"?>
+<TAGLIST>
+<HEADER>
+<title>XYZ MakerNote Tags defined in Exiv2</title>
+<text>
+<p>Tags found in the MakerNote of images taken with XYZ cameras. These tags 
+are defined by Exiv2 in accordance with <a href="makernote.html#RX">[X]</a>.</p>
+<p>Click on a column header to sort the table.</p>
+</text>
+</HEADER>
+<ROWSET>
+   <ROW num="1">
+      <tagname>0x0000</tagname>
+      <tagdec>0</tagdec>
+      <taghex>0x0000</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.0x0000</key>
+      <type>Short</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="2">
+      <tagname>CameraSettings</tagname>
+      <tagdec>1</tagdec>
+      <taghex>0x0001</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.CameraSettings</key>
+      <type>Short</type>
+      <tagdesc>Various camera settings</tagdesc>
+   </ROW>
+   <ROW num="3">
+      <tagname>FocalLength</tagname>
+      <tagdec>2</tagdec>
+      <taghex>0x0002</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.FocalLength</key>
+      <type>Short</type>
+      <tagdesc>Focal length</tagdesc>
+   </ROW>
+   <ROW num="4">
+      <tagname>0x0003</tagname>
+      <tagdec>3</tagdec>
+      <taghex>0x0003</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.0x0003</key>
+      <type>Short</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="5">
+      <tagname>ShotInfo</tagname>
+      <tagdec>4</tagdec>
+      <taghex>0x0004</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.ShotInfo</key>
+      <type>Short</type>
+      <tagdesc>Shot information</tagdesc>
+   </ROW>
+   <ROW num="6">
+      <tagname>Panorama</tagname>
+      <tagdec>5</tagdec>
+      <taghex>0x0005</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.Panorama</key>
+      <type>Short</type>
+      <tagdesc>Panorama</tagdesc>
+   </ROW>
+   <ROW num="7">
+      <tagname>ImageType</tagname>
+      <tagdec>6</tagdec>
+      <taghex>0x0006</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.ImageType</key>
+      <type>Ascii</type>
+      <tagdesc>Image type</tagdesc>
+   </ROW>
+   <ROW num="8">
+      <tagname>FirmwareVersion</tagname>
+      <tagdec>7</tagdec>
+      <taghex>0x0007</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.FirmwareVersion</key>
+      <type>Ascii</type>
+      <tagdesc>Firmware version</tagdesc>
+   </ROW>
+   <ROW num="9">
+      <tagname>FileNumber</tagname>
+      <tagdec>8</tagdec>
+      <taghex>0x0008</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.FileNumber</key>
+      <type>Long</type>
+      <tagdesc>File number</tagdesc>
+   </ROW>
+   <ROW num="10">
+      <tagname>OwnerName</tagname>
+      <tagdec>9</tagdec>
+      <taghex>0x0009</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.OwnerName</key>
+      <type>Ascii</type>
+      <tagdesc>Owner Name</tagdesc>
+   </ROW>
+   <ROW num="11">
+      <tagname>SerialNumber</tagname>
+      <tagdec>12</tagdec>
+      <taghex>0x000c</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.SerialNumber</key>
+      <type>Long</type>
+      <tagdesc>Camera serial number</tagdesc>
+   </ROW>
+   <ROW num="12">
+      <tagname>CameraInfo</tagname>
+      <tagdec>13</tagdec>
+      <taghex>0x000d</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.CameraInfo</key>
+      <type>Short</type>
+      <tagdesc>Camera info</tagdesc>
+   </ROW>
+   <ROW num="13">
+      <tagname>CustomFunctions</tagname>
+      <tagdec>15</tagdec>
+      <taghex>0x000f</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.CustomFunctions</key>
+      <type>Short</type>
+      <tagdesc>Custom Functions</tagdesc>
+   </ROW>
+   <ROW num="14">
+      <tagname>ModelID</tagname>
+      <tagdec>16</tagdec>
+      <taghex>0x0010</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.ModelID</key>
+      <type>Long</type>
+      <tagdesc>Model ID</tagdesc>
+   </ROW>
+   <ROW num="15">
+      <tagname>PictureInfo</tagname>
+      <tagdec>18</tagdec>
+      <taghex>0x0012</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.PictureInfo</key>
+      <type>Short</type>
+      <tagdesc>Picture info</tagdesc>
+   </ROW>
+   <ROW num="16">
+      <tagname>ThumbnailImageValidArea</tagname>
+      <tagdec>19</tagdec>
+      <taghex>0x0013</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.ThumbnailImageValidArea</key>
+      <type>SShort</type>
+      <tagdesc>Thumbnail image valid area</tagdesc>
+   </ROW>
+   <ROW num="17">
+      <tagname>SerialNumberFormat</tagname>
+      <tagdec>21</tagdec>
+      <taghex>0x0015</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.SerialNumberFormat</key>
+      <type>Long</type>
+      <tagdesc>Serial number format</tagdesc>
+   </ROW>
+   <ROW num="18">
+      <tagname>SuperMacro</tagname>
+      <tagdec>26</tagdec>
+      <taghex>0x001a</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.SuperMacro</key>
+      <type>SShort</type>
+      <tagdesc>Super macro</tagdesc>
+   </ROW>
+   <ROW num="19">
+      <tagname>AFInfo</tagname>
+      <tagdec>38</tagdec>
+      <taghex>0x0026</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.AFInfo</key>
+      <type>Short</type>
+      <tagdesc>AF info</tagdesc>
+   </ROW>
+   <ROW num="20">
+      <tagname>TimeInfo</tagname>
+      <tagdec>53</tagdec>
+      <taghex>0x0035</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.TimeInfo</key>
+      <type>SLong</type>
+      <tagdesc>Time zone information</tagdesc>
+   </ROW>
+   <ROW num="21">
+      <tagname>OriginalDecisionDataOffset</tagname>
+      <tagdec>131</tagdec>
+      <taghex>0x0083</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.OriginalDecisionDataOffset</key>
+      <type>SLong</type>
+      <tagdesc>Original decision data offset</tagdesc>
+   </ROW>
+   <ROW num="22">
+      <tagname>WhiteBalanceTable</tagname>
+      <tagdec>164</tagdec>
+      <taghex>0x00a4</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.WhiteBalanceTable</key>
+      <type>Short</type>
+      <tagdesc>White balance table</tagdesc>
+   </ROW>
+   <ROW num="23">
+      <tagname>LensModel</tagname>
+      <tagdec>149</tagdec>
+      <taghex>0x0095</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.LensModel</key>
+      <type>Ascii</type>
+      <tagdesc>Lens model</tagdesc>
+   </ROW>
+   <ROW num="24">
+      <tagname>InternalSerialNumber</tagname>
+      <tagdec>150</tagdec>
+      <taghex>0x0096</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.InternalSerialNumber</key>
+      <type>Ascii</type>
+      <tagdesc>Internal serial number</tagdesc>
+   </ROW>
+   <ROW num="25">
+      <tagname>DustRemovalData</tagname>
+      <tagdec>151</tagdec>
+      <taghex>0x0097</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.DustRemovalData</key>
+      <type>Ascii</type>
+      <tagdesc>Dust removal data</tagdesc>
+   </ROW>
+   <ROW num="26">
+      <tagname>CustomFunctions</tagname>
+      <tagdec>153</tagdec>
+      <taghex>0x0099</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.CustomFunctions</key>
+      <type>Short</type>
+      <tagdesc>Custom functions</tagdesc>
+   </ROW>
+   <ROW num="27">
+      <tagname>ProcessingInfo</tagname>
+      <tagdec>160</tagdec>
+      <taghex>0x00a0</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.ProcessingInfo</key>
+      <type>Short</type>
+      <tagdesc>Processing info</tagdesc>
+   </ROW>
+   <ROW num="28">
+      <tagname>MeasuredColor</tagname>
+      <tagdec>170</tagdec>
+      <taghex>0x00aa</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.MeasuredColor</key>
+      <type>Short</type>
+      <tagdesc>Measured color</tagdesc>
+   </ROW>
+   <ROW num="29">
+      <tagname>ColorSpace</tagname>
+      <tagdec>180</tagdec>
+      <taghex>0x00b4</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.ColorSpace</key>
+      <type>SShort</type>
+      <tagdesc>ColorSpace</tagdesc>
+   </ROW>
+   <ROW num="30">
+      <tagname>0x00b5</tagname>
+      <tagdec>181</tagdec>
+      <taghex>0x00b5</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.0x00b5</key>
+      <type>Short</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="31">
+      <tagname>0x00c0</tagname>
+      <tagdec>192</tagdec>
+      <taghex>0x00c0</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.0x00c0</key>
+      <type>Short</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="32">
+      <tagname>0x00c1</tagname>
+      <tagdec>193</tagdec>
+      <taghex>0x00c1</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.0x00c1</key>
+      <type>Short</type>
+      <tagdesc>Unknown</tagdesc>
+   </ROW>
+   <ROW num="33">
+      <tagname>VRDOffset</tagname>
+      <tagdec>208</tagdec>
+      <taghex>0x00d0</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.VRDOffset</key>
+      <type>Long</type>
+      <tagdesc>VRD offset</tagdesc>
+   </ROW>
+   <ROW num="34">
+      <tagname>SensorInfo</tagname>
+      <tagdec>224</tagdec>
+      <taghex>0x00e0</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.SensorInfo</key>
+      <type>Short</type>
+      <tagdesc>Sensor info</tagdesc>
+   </ROW>
+   <ROW num="35">
+      <tagname>ColorData</tagname>
+      <tagdec>16385</tagdec>
+      <taghex>0x4001</taghex>
+      <ifd>Canon</ifd>
+      <key>Exif.Canon.ColorData</key>
+      <type>Short</type>
+      <tagdesc>Color data</tagdesc>
+   </ROW>
+</ROWSET>
+</TAGLIST>

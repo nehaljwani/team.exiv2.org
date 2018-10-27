@@ -1,0 +1,125 @@
+<?xml version = '1.0'?>
+<?xml-stylesheet type="text/xsl" href="xmp.xsl"?>
+<TAGLIST>
+<HEADER>
+<title>XMP tags defined in Exiv2</title>
+<text>
+<p>Some description</p>
+<p>Click on a column header to sort the table.</p>
+</text>
+</HEADER>
+<ROWSET>
+   <ROW num="1">
+      <tagname>CreatorContactInfo</tagname>
+      <title>Creator's Contact Info</title>
+      <xmpvaltype>ContactInfo</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The creator's contact information provides all necessary information to get in contact with the creator of this news object and comprises a set of sub-properties for proper addressing.</tagdesc>
+   </ROW>
+   <ROW num="2">
+      <tagname>CiAdrExtadr</tagname>
+      <title>Contact Info-Address</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>sub-key Creator Contact Info: address. Comprises an optional company name and all required information to locate the building or postbox to which mail should be sent.</tagdesc>
+   </ROW>
+   <ROW num="3">
+      <tagname>CiAdrCity</tagname>
+      <title>Contact Info-City</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>sub-key Creator Contact Info: city.</tagdesc>
+   </ROW>
+   <ROW num="4">
+      <tagname>CiAdrRegion</tagname>
+      <title>Contact Info-State/Province</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>sub-key Creator Contact Info: state or province.</tagdesc>
+   </ROW>
+   <ROW num="5">
+      <tagname>CiAdrPcode</tagname>
+      <title>Contact Info-Postal Code</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>sub-key Creator Contact Info: local postal code.</tagdesc>
+   </ROW>
+   <ROW num="6">
+      <tagname>CiAdrCtry</tagname>
+      <title>Contact Info-Country</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>sub-key Creator Contact Info: country.</tagdesc>
+   </ROW>
+   <ROW num="7">
+      <tagname>CiEmailWork</tagname>
+      <title>Contact Info-Email</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>sub-key Creator Contact Info: email address.</tagdesc>
+   </ROW>
+   <ROW num="8">
+      <tagname>CiTelWork</tagname>
+      <title>Contact Info-Phone</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>sub-key Creator Contact Info: phone number.</tagdesc>
+   </ROW>
+   <ROW num="9">
+      <tagname>CiUrlWork</tagname>
+      <title>Contact Info-Web URL</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>sub-key Creator Contact Info: web address.</tagdesc>
+   </ROW>
+   <ROW num="10">
+      <tagname>IntellectualGenre</tagname>
+      <title>Intellectual Genre</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Describes the nature, intellectual or journalistic characteristic of a news object, not specifically its content.</tagdesc>
+   </ROW>
+   <ROW num="11">
+      <tagname>Scene</tagname>
+      <title>IPTC Scene</title>
+      <xmpvaltype>bag closed Choice of Text</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>Describes the scene of a photo content. Specifies one or more terms from the IPTC "Scene-NewsCodes". Each Scene is represented as a string of 6 digits in an unordered list.</tagdesc>
+   </ROW>
+   <ROW num="12">
+      <tagname>SubjectCode</tagname>
+      <title>IPTC Subject Code</title>
+      <xmpvaltype>bag closed Choice of Text</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>Specifies one or more Subjects from the IPTC "Subject-NewsCodes" taxonomy to categorize the content. Each Subject is represented as a string of 8 digits in an unordered list.</tagdesc>
+   </ROW>
+   <ROW num="13">
+      <tagname>Location</tagname>
+      <title>Location</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>(legacy) Name of a location the content is focussing on -- either the location shown in visual media or referenced by text or audio media. This location name could either be the name of a sublocation to a city or the name of a well known location or (natural) monument outside a city. In the sense of a sublocation to a city this element is at the fourth level of a top-down geographical hierarchy.</tagdesc>
+   </ROW>
+   <ROW num="14">
+      <tagname>CountryCode</tagname>
+      <title>Country Code</title>
+      <xmpvaltype>closed Choice of Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>(legacy) Code of the country the content is focussing on -- either the country shown in visual media or referenced in text or audio media. This element is at the top/first level of a top-down geographical hierarchy. The code should be taken from ISO 3166 two or three letter code. The full name of a country should go to the "Country" element.</tagdesc>
+   </ROW>
+</ROWSET>
+</TAGLIST>

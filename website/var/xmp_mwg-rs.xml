@@ -1,0 +1,93 @@
+<?xml version = '1.0'?>
+<?xml-stylesheet type="text/xsl" href="xmp.xsl"?>
+<TAGLIST>
+<HEADER>
+<title>XMP tags defined in Exiv2</title>
+<text>
+<p>Some description</p>
+<p>Click on a column header to sort the table.</p>
+</text>
+</HEADER>
+<ROWSET>
+   <ROW num="1">
+      <tagname>Regions</tagname>
+      <title>Regions</title>
+      <xmpvaltype>RegionInfo</xmpvaltype>
+      <type>XmpText</type>
+      <category>Internal</category>
+      <tagdesc>Main structure containing region based information</tagdesc>
+   </ROW>
+   <ROW num="2">
+      <tagname>AppliedToDimensions</tagname>
+      <title>Applied To Dimensions</title>
+      <xmpvaltype>Dimensions</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Width and height of image when storing region data</tagdesc>
+   </ROW>
+   <ROW num="3">
+      <tagname>RegionList</tagname>
+      <title>Region List</title>
+      <xmpvaltype>bag RegionStruct</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>List of Region structures</tagdesc>
+   </ROW>
+   <ROW num="4">
+      <tagname>Area</tagname>
+      <title>Area</title>
+      <xmpvaltype>Area</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Descriptive markers of catalog items by content</tagdesc>
+   </ROW>
+   <ROW num="5">
+      <tagname>Type</tagname>
+      <title>Type</title>
+      <xmpvaltype>closed Choice of Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Type purpose of region (Face|Pet|Focus|BarCode)</tagdesc>
+   </ROW>
+   <ROW num="6">
+      <tagname>Name</tagname>
+      <title>Name</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Name/ short description of content in image region</tagdesc>
+   </ROW>
+   <ROW num="7">
+      <tagname>Description</tagname>
+      <title>Description</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Usage scenario for a given focus area (EvaluatedUsed|EvaluatedNotUsed|NotEvaluatedNotUsed)</tagdesc>
+   </ROW>
+   <ROW num="8">
+      <tagname>FocusUsage</tagname>
+      <title>Focus Usage</title>
+      <xmpvaltype>closed Choice of Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Descriptive markers of catalog items by content</tagdesc>
+   </ROW>
+   <ROW num="9">
+      <tagname>BarCodeValue</tagname>
+      <title>Bar Code Value</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Decoded BarCode value string</tagdesc>
+   </ROW>
+   <ROW num="10">
+      <tagname>Extensions</tagname>
+      <title>Extensions</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>Internal</category>
+      <tagdesc>Any top level XMP property to describe the region content</tagdesc>
+   </ROW>
+</ROWSET>
+</TAGLIST>

@@ -1,0 +1,937 @@
+<?xml version = '1.0'?>
+<?xml-stylesheet type="text/xsl" href="iptc.xsl"?>
+<TAGLIST>
+<HEADER>
+<title>Iptc datasets defined in Exiv2</title>
+<text>
+<p>Datasets are defined according to the specification of the Iptc 
+<a href="http://www.iptc.org/IIM/">Information Interchange Model (IIM)</a>.</p>
+<p>Click on a column header to sort the table.</p>
+</text>
+</HEADER>
+<ROWSET>
+   <ROW num="1">
+      <tagname>ModelVersion</tagname>
+      <tagdec>0</tagdec>
+      <taghex>0x0000</taghex>
+      <recname>Envelope</recname>
+      <mandatory>true</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>2</minbytes>
+      <maxbytes>2</maxbytes>
+      <key>Iptc.Envelope.ModelVersion</key>
+      <type>Short</type>
+      <tagdesc>A binary number identifying the version of the Information Interchange Model</tagdesc>
+   </ROW>
+   <ROW num="2">
+      <tagname>Destination</tagname>
+      <tagdec>5</tagdec>
+      <taghex>0x0005</taghex>
+      <recname>Envelope</recname>
+      <mandatory>false</mandatory>
+      <repeatable>true</repeatable>
+      <minbytes>0</minbytes>
+      <maxbytes>1024</maxbytes>
+      <key>Iptc.Envelope.Destination</key>
+      <type>String</type>
+      <tagdesc>This DataSet is to accommodate some providers who require routing information above the appropriate OSI layers.</tagdesc>
+   </ROW>
+   <ROW num="3">
+      <tagname>FileFormat</tagname>
+      <tagdec>20</tagdec>
+      <taghex>0x0014</taghex>
+      <recname>Envelope</recname>
+      <mandatory>true</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>2</minbytes>
+      <maxbytes>2</maxbytes>
+      <key>Iptc.Envelope.FileFormat</key>
+      <type>Short</type>
+      <tagdesc>A binary number representing the file format. The file format must be registered with IPTC or NAA with a unique number assigned to it. The information is used to route the data to the appropriate system and to allow the receiving system to perform the appropriate actions there to.</tagdesc>
+   </ROW>
+   <ROW num="4">
+      <tagname>FileVersion</tagname>
+      <tagdec>22</tagdec>
+      <taghex>0x0016</taghex>
+      <recname>Envelope</recname>
+      <mandatory>true</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>2</minbytes>
+      <maxbytes>2</maxbytes>
+      <key>Iptc.Envelope.FileVersion</key>
+      <type>Short</type>
+      <tagdesc>A binary number representing the particular version of the File Format specified by &lt;FileFormat&gt; tag.</tagdesc>
+   </ROW>
+   <ROW num="5">
+      <tagname>ServiceId</tagname>
+      <tagdec>30</tagdec>
+      <taghex>0x001e</taghex>
+      <recname>Envelope</recname>
+      <mandatory>true</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>0</minbytes>
+      <maxbytes>10</maxbytes>
+      <key>Iptc.Envelope.ServiceId</key>
+      <type>String</type>
+      <tagdesc>Identifies the provider and product</tagdesc>
+   </ROW>
+   <ROW num="6">
+      <tagname>EnvelopeNumber</tagname>
+      <tagdec>40</tagdec>
+      <taghex>0x0028</taghex>
+      <recname>Envelope</recname>
+      <mandatory>true</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>8</minbytes>
+      <maxbytes>8</maxbytes>
+      <key>Iptc.Envelope.EnvelopeNumber</key>
+      <type>String</type>
+      <tagdesc>The characters form a number that will be unique for the date specified in &lt;DateSent&gt; tag and for the Service Identifier specified by &lt;ServiceIdentifier&gt; tag. If identical envelope numbers appear with the same date and with the same Service Identifier</tagdesc>
+   </ROW>
+   <ROW num="7">
+      <tagname>ProductId</tagname>
+      <tagdec>50</tagdec>
+      <taghex>0x0032</taghex>
+      <recname>Envelope</recname>
+      <mandatory>false</mandatory>
+      <repeatable>true</repeatable>
+      <minbytes>0</minbytes>
+      <maxbytes>32</maxbytes>
+      <key>Iptc.Envelope.ProductId</key>
+      <type>String</type>
+      <tagdesc>Allows a provider to identify subsets of its overall service. Used to provide receiving organisation data on which to select</tagdesc>
+   </ROW>
+   <ROW num="8">
+      <tagname>EnvelopePriority</tagname>
+      <tagdec>60</tagdec>
+      <taghex>0x003c</taghex>
+      <recname>Envelope</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>1</minbytes>
+      <maxbytes>1</maxbytes>
+      <key>Iptc.Envelope.EnvelopePriority</key>
+      <type>String</type>
+      <tagdesc>Specifies the envelope handling priority and not the editorial urgency (see &lt;Urgency&gt; tag). "1" indicates the most urgent</tagdesc>
+   </ROW>
+   <ROW num="9">
+      <tagname>DateSent</tagname>
+      <tagdec>70</tagdec>
+      <taghex>0x0046</taghex>
+      <recname>Envelope</recname>
+      <mandatory>true</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>8</minbytes>
+      <maxbytes>8</maxbytes>
+      <key>Iptc.Envelope.DateSent</key>
+      <type>Date</type>
+      <tagdesc>Uses the format CCYYMMDD (century</tagdesc>
+   </ROW>
+   <ROW num="10">
+      <tagname>TimeSent</tagname>
+      <tagdec>80</tagdec>
+      <taghex>0x0050</taghex>
+      <recname>Envelope</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>11</minbytes>
+      <maxbytes>11</maxbytes>
+      <key>Iptc.Envelope.TimeSent</key>
+      <type>Time</type>
+      <tagdesc>Uses the format HHMMSS:HHMM where HHMMSS refers to local hour</tagdesc>
+   </ROW>
+   <ROW num="11">
+      <tagname>CharacterSet</tagname>
+      <tagdec>90</tagdec>
+      <taghex>0x005a</taghex>
+      <recname>Envelope</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>0</minbytes>
+      <maxbytes>32</maxbytes>
+      <key>Iptc.Envelope.CharacterSet</key>
+      <type>String</type>
+      <tagdesc>This tag consisting of one or more control functions used for the announcement</tagdesc>
+   </ROW>
+   <ROW num="12">
+      <tagname>UNO</tagname>
+      <tagdec>100</tagdec>
+      <taghex>0x0064</taghex>
+      <recname>Envelope</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>14</minbytes>
+      <maxbytes>80</maxbytes>
+      <key>Iptc.Envelope.UNO</key>
+      <type>String</type>
+      <tagdesc>This tag provide a globally unique identification for objects as specified in the IIM</tagdesc>
+   </ROW>
+   <ROW num="13">
+      <tagname>ARMId</tagname>
+      <tagdec>120</tagdec>
+      <taghex>0x0078</taghex>
+      <recname>Envelope</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>2</minbytes>
+      <maxbytes>2</maxbytes>
+      <key>Iptc.Envelope.ARMId</key>
+      <type>Short</type>
+      <tagdesc>The DataSet identifies the Abstract Relationship Method identifier (ARM) which is described in a document registered by the originator of the ARM with the IPTC and NAA organizations.</tagdesc>
+   </ROW>
+   <ROW num="14">
+      <tagname>ARMVersion</tagname>
+      <tagdec>122</tagdec>
+      <taghex>0x007a</taghex>
+      <recname>Envelope</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>2</minbytes>
+      <maxbytes>2</maxbytes>
+      <key>Iptc.Envelope.ARMVersion</key>
+      <type>Short</type>
+      <tagdesc>This tag consisting of a binary number representing the particular version of the ARM specified by tag &lt;ARMId&gt;.</tagdesc>
+   </ROW>
+   <ROW num="15">
+      <tagname>RecordVersion</tagname>
+      <tagdec>0</tagdec>
+      <taghex>0x0000</taghex>
+      <recname>Application2</recname>
+      <mandatory>true</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>2</minbytes>
+      <maxbytes>2</maxbytes>
+      <key>Iptc.Application2.RecordVersion</key>
+      <type>Short</type>
+      <tagdesc>A binary number identifying the version of the Information Interchange Model</tagdesc>
+   </ROW>
+   <ROW num="16">
+      <tagname>ObjectType</tagname>
+      <tagdec>3</tagdec>
+      <taghex>0x0003</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>3</minbytes>
+      <maxbytes>67</maxbytes>
+      <key>Iptc.Application2.ObjectType</key>
+      <type>String</type>
+      <tagdesc>The Object Type is used to distinguish between different types of objects within the IIM. The first part is a number representing a language independent international reference to an Object Type followed by a colon separator. The second part</tagdesc>
+   </ROW>
+   <ROW num="17">
+      <tagname>ObjectAttribute</tagname>
+      <tagdec>4</tagdec>
+      <taghex>0x0004</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>true</repeatable>
+      <minbytes>4</minbytes>
+      <maxbytes>68</maxbytes>
+      <key>Iptc.Application2.ObjectAttribute</key>
+      <type>String</type>
+      <tagdesc>The Object Attribute defines the nature of the object independent of the Subject. The first part is a number representing a language independent international reference to an Object Attribute followed by a colon separator. The second part</tagdesc>
+   </ROW>
+   <ROW num="18">
+      <tagname>ObjectName</tagname>
+      <tagdec>5</tagdec>
+      <taghex>0x0005</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>0</minbytes>
+      <maxbytes>64</maxbytes>
+      <key>Iptc.Application2.ObjectName</key>
+      <type>String</type>
+      <tagdesc>Used as a shorthand reference for the object. Changes to exist-ing data</tagdesc>
+   </ROW>
+   <ROW num="19">
+      <tagname>EditStatus</tagname>
+      <tagdec>7</tagdec>
+      <taghex>0x0007</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>0</minbytes>
+      <maxbytes>64</maxbytes>
+      <key>Iptc.Application2.EditStatus</key>
+      <type>String</type>
+      <tagdesc>Status of the object data</tagdesc>
+   </ROW>
+   <ROW num="20">
+      <tagname>EditorialUpdate</tagname>
+      <tagdec>8</tagdec>
+      <taghex>0x0008</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>2</minbytes>
+      <maxbytes>2</maxbytes>
+      <key>Iptc.Application2.EditorialUpdate</key>
+      <type>String</type>
+      <tagdesc>Indicates the type of update that this object provides to a previous object. The link to the previous object is made using the tags &lt;ARMIdentifier&gt; and &lt;ARMVersion&gt;</tagdesc>
+   </ROW>
+   <ROW num="21">
+      <tagname>Urgency</tagname>
+      <tagdec>10</tagdec>
+      <taghex>0x000a</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>1</minbytes>
+      <maxbytes>1</maxbytes>
+      <key>Iptc.Application2.Urgency</key>
+      <type>String</type>
+      <tagdesc>Specifies the editorial urgency of content and not necessarily the envelope handling priority (see tag &lt;EnvelopePriority&gt;). The "1" is most urgent</tagdesc>
+   </ROW>
+   <ROW num="22">
+      <tagname>Subject</tagname>
+      <tagdec>12</tagdec>
+      <taghex>0x000c</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>true</repeatable>
+      <minbytes>13</minbytes>
+      <maxbytes>236</maxbytes>
+      <key>Iptc.Application2.Subject</key>
+      <type>String</type>
+      <tagdesc>The Subject Reference is a structured definition of the subject matter.</tagdesc>
+   </ROW>
+   <ROW num="23">
+      <tagname>Category</tagname>
+      <tagdec>15</tagdec>
+      <taghex>0x000f</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>0</minbytes>
+      <maxbytes>3</maxbytes>
+      <key>Iptc.Application2.Category</key>
+      <type>String</type>
+      <tagdesc>Identifies the subject of the object data in the opinion of the provider. A list of categories will be maintained by a regional registry</tagdesc>
+   </ROW>
+   <ROW num="24">
+      <tagname>SuppCategory</tagname>
+      <tagdec>20</tagdec>
+      <taghex>0x0014</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>true</repeatable>
+      <minbytes>0</minbytes>
+      <maxbytes>32</maxbytes>
+      <key>Iptc.Application2.SuppCategory</key>
+      <type>String</type>
+      <tagdesc>Supplemental categories further refine the subject of an object data. A supplemental category may include any of the recognised categories as used in tag &lt;Category&gt;. Otherwise</tagdesc>
+   </ROW>
+   <ROW num="25">
+      <tagname>FixtureId</tagname>
+      <tagdec>22</tagdec>
+      <taghex>0x0016</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>0</minbytes>
+      <maxbytes>32</maxbytes>
+      <key>Iptc.Application2.FixtureId</key>
+      <type>String</type>
+      <tagdesc>Identifies object data that recurs often and predictably. Enables users to immediately find or recall such an object.</tagdesc>
+   </ROW>
+   <ROW num="26">
+      <tagname>Keywords</tagname>
+      <tagdec>25</tagdec>
+      <taghex>0x0019</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>true</repeatable>
+      <minbytes>0</minbytes>
+      <maxbytes>64</maxbytes>
+      <key>Iptc.Application2.Keywords</key>
+      <type>String</type>
+      <tagdesc>Used to indicate specific information retrieval words. It is expected that a provider of various types of data that are related in subject matter uses the same keyword</tagdesc>
+   </ROW>
+   <ROW num="27">
+      <tagname>LocationCode</tagname>
+      <tagdec>26</tagdec>
+      <taghex>0x001a</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>true</repeatable>
+      <minbytes>3</minbytes>
+      <maxbytes>3</maxbytes>
+      <key>Iptc.Application2.LocationCode</key>
+      <type>String</type>
+      <tagdesc>Indicates the code of a country/geographical location referenced by the content of the object. Where ISO has established an appropriate country code under ISO 3166</tagdesc>
+   </ROW>
+   <ROW num="28">
+      <tagname>LocationName</tagname>
+      <tagdec>27</tagdec>
+      <taghex>0x001b</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>true</repeatable>
+      <minbytes>0</minbytes>
+      <maxbytes>64</maxbytes>
+      <key>Iptc.Application2.LocationName</key>
+      <type>String</type>
+      <tagdesc>Provides a full</tagdesc>
+   </ROW>
+   <ROW num="29">
+      <tagname>ReleaseDate</tagname>
+      <tagdec>30</tagdec>
+      <taghex>0x001e</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>8</minbytes>
+      <maxbytes>8</maxbytes>
+      <key>Iptc.Application2.ReleaseDate</key>
+      <type>Date</type>
+      <tagdesc>Designates in the form CCYYMMDD the earliest date the provider intends the object to be used. Follows ISO 8601 standard.</tagdesc>
+   </ROW>
+   <ROW num="30">
+      <tagname>ReleaseTime</tagname>
+      <tagdec>35</tagdec>
+      <taghex>0x0023</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>11</minbytes>
+      <maxbytes>11</maxbytes>
+      <key>Iptc.Application2.ReleaseTime</key>
+      <type>Time</type>
+      <tagdesc>Designates in the form HHMMSS:HHMM the earliest time the provider intends the object to be used. Follows ISO 8601 standard.</tagdesc>
+   </ROW>
+   <ROW num="31">
+      <tagname>ExpirationDate</tagname>
+      <tagdec>37</tagdec>
+      <taghex>0x0025</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>8</minbytes>
+      <maxbytes>8</maxbytes>
+      <key>Iptc.Application2.ExpirationDate</key>
+      <type>Date</type>
+      <tagdesc>Designates in the form CCYYMMDD the latest date the provider or owner intends the object data to be used. Follows ISO 8601 standard.</tagdesc>
+   </ROW>
+   <ROW num="32">
+      <tagname>ExpirationTime</tagname>
+      <tagdec>38</tagdec>
+      <taghex>0x0026</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>11</minbytes>
+      <maxbytes>11</maxbytes>
+      <key>Iptc.Application2.ExpirationTime</key>
+      <type>Time</type>
+      <tagdesc>Designates in the form HHMMSS:HHMM the latest time the provider or owner intends the object data to be used. Follows ISO 8601 standard.</tagdesc>
+   </ROW>
+   <ROW num="33">
+      <tagname>SpecialInstructions</tagname>
+      <tagdec>40</tagdec>
+      <taghex>0x0028</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>0</minbytes>
+      <maxbytes>256</maxbytes>
+      <key>Iptc.Application2.SpecialInstructions</key>
+      <type>String</type>
+      <tagdesc>Other editorial instructions concerning the use of the object data</tagdesc>
+   </ROW>
+   <ROW num="34">
+      <tagname>ActionAdvised</tagname>
+      <tagdec>42</tagdec>
+      <taghex>0x002a</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>2</minbytes>
+      <maxbytes>2</maxbytes>
+      <key>Iptc.Application2.ActionAdvised</key>
+      <type>String</type>
+      <tagdesc>Indicates the type of action that this object provides to a previous object. The link to the previous object is made using tags &lt;ARMIdentifier&gt; and &lt;ARMVersion&gt;</tagdesc>
+   </ROW>
+   <ROW num="35">
+      <tagname>ReferenceService</tagname>
+      <tagdec>45</tagdec>
+      <taghex>0x002d</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>true</repeatable>
+      <minbytes>0</minbytes>
+      <maxbytes>10</maxbytes>
+      <key>Iptc.Application2.ReferenceService</key>
+      <type>String</type>
+      <tagdesc>Identifies the Service Identifier of a prior envelope to which the current object refers.</tagdesc>
+   </ROW>
+   <ROW num="36">
+      <tagname>ReferenceDate</tagname>
+      <tagdec>47</tagdec>
+      <taghex>0x002f</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>true</repeatable>
+      <minbytes>8</minbytes>
+      <maxbytes>8</maxbytes>
+      <key>Iptc.Application2.ReferenceDate</key>
+      <type>Date</type>
+      <tagdesc>Identifies the date of a prior envelope to which the current object refers.</tagdesc>
+   </ROW>
+   <ROW num="37">
+      <tagname>ReferenceNumber</tagname>
+      <tagdec>50</tagdec>
+      <taghex>0x0032</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>true</repeatable>
+      <minbytes>8</minbytes>
+      <maxbytes>8</maxbytes>
+      <key>Iptc.Application2.ReferenceNumber</key>
+      <type>String</type>
+      <tagdesc>Identifies the Envelope Number of a prior envelope to which the current object refers.</tagdesc>
+   </ROW>
+   <ROW num="38">
+      <tagname>DateCreated</tagname>
+      <tagdec>55</tagdec>
+      <taghex>0x0037</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>8</minbytes>
+      <maxbytes>8</maxbytes>
+      <key>Iptc.Application2.DateCreated</key>
+      <type>Date</type>
+      <tagdesc>Represented in the form CCYYMMDD to designate the date the intellectual content of the object data was created rather than the date of the creation of the physical representation. Follows ISO 8601 standard.</tagdesc>
+   </ROW>
+   <ROW num="39">
+      <tagname>TimeCreated</tagname>
+      <tagdec>60</tagdec>
+      <taghex>0x003c</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>11</minbytes>
+      <maxbytes>11</maxbytes>
+      <key>Iptc.Application2.TimeCreated</key>
+      <type>Time</type>
+      <tagdesc>Represented in the form HHMMSS:HHMM to designate the time the intellectual content of the object data current source material was created rather than the creation of the physical representation. Follows ISO 8601 standard.</tagdesc>
+   </ROW>
+   <ROW num="40">
+      <tagname>DigitizationDate</tagname>
+      <tagdec>62</tagdec>
+      <taghex>0x003e</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>8</minbytes>
+      <maxbytes>8</maxbytes>
+      <key>Iptc.Application2.DigitizationDate</key>
+      <type>Date</type>
+      <tagdesc>Represented in the form CCYYMMDD to designate the date the digital representation of the object data was created. Follows ISO 8601 standard.</tagdesc>
+   </ROW>
+   <ROW num="41">
+      <tagname>DigitizationTime</tagname>
+      <tagdec>63</tagdec>
+      <taghex>0x003f</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>11</minbytes>
+      <maxbytes>11</maxbytes>
+      <key>Iptc.Application2.DigitizationTime</key>
+      <type>Time</type>
+      <tagdesc>Represented in the form HHMMSS:HHMM to designate the time the digital representation of the object data was created. Follows ISO 8601 standard.</tagdesc>
+   </ROW>
+   <ROW num="42">
+      <tagname>Program</tagname>
+      <tagdec>65</tagdec>
+      <taghex>0x0041</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>0</minbytes>
+      <maxbytes>32</maxbytes>
+      <key>Iptc.Application2.Program</key>
+      <type>String</type>
+      <tagdesc>Identifies the type of program used to originate the object data.</tagdesc>
+   </ROW>
+   <ROW num="43">
+      <tagname>ProgramVersion</tagname>
+      <tagdec>70</tagdec>
+      <taghex>0x0046</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>0</minbytes>
+      <maxbytes>10</maxbytes>
+      <key>Iptc.Application2.ProgramVersion</key>
+      <type>String</type>
+      <tagdesc>Used to identify the version of the program mentioned in tag &lt;Program&gt;.</tagdesc>
+   </ROW>
+   <ROW num="44">
+      <tagname>ObjectCycle</tagname>
+      <tagdec>75</tagdec>
+      <taghex>0x004b</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>1</minbytes>
+      <maxbytes>1</maxbytes>
+      <key>Iptc.Application2.ObjectCycle</key>
+      <type>String</type>
+      <tagdesc>Used to identify the editorial cycle of object data.</tagdesc>
+   </ROW>
+   <ROW num="45">
+      <tagname>Byline</tagname>
+      <tagdec>80</tagdec>
+      <taghex>0x0050</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>true</repeatable>
+      <minbytes>0</minbytes>
+      <maxbytes>32</maxbytes>
+      <key>Iptc.Application2.Byline</key>
+      <type>String</type>
+      <tagdesc>Contains name of the creator of the object data</tagdesc>
+   </ROW>
+   <ROW num="46">
+      <tagname>BylineTitle</tagname>
+      <tagdec>85</tagdec>
+      <taghex>0x0055</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>true</repeatable>
+      <minbytes>0</minbytes>
+      <maxbytes>32</maxbytes>
+      <key>Iptc.Application2.BylineTitle</key>
+      <type>String</type>
+      <tagdesc>A by-line title is the title of the creator or creators of an object data. Where used</tagdesc>
+   </ROW>
+   <ROW num="47">
+      <tagname>City</tagname>
+      <tagdec>90</tagdec>
+      <taghex>0x005a</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>0</minbytes>
+      <maxbytes>32</maxbytes>
+      <key>Iptc.Application2.City</key>
+      <type>String</type>
+      <tagdesc>Identifies city of object data origin according to guidelines established by the provider.</tagdesc>
+   </ROW>
+   <ROW num="48">
+      <tagname>SubLocation</tagname>
+      <tagdec>92</tagdec>
+      <taghex>0x005c</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>0</minbytes>
+      <maxbytes>32</maxbytes>
+      <key>Iptc.Application2.SubLocation</key>
+      <type>String</type>
+      <tagdesc>Identifies the location within a city from which the object data originates</tagdesc>
+   </ROW>
+   <ROW num="49">
+      <tagname>ProvinceState</tagname>
+      <tagdec>95</tagdec>
+      <taghex>0x005f</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>0</minbytes>
+      <maxbytes>32</maxbytes>
+      <key>Iptc.Application2.ProvinceState</key>
+      <type>String</type>
+      <tagdesc>Identifies Province/State of origin according to guidelines established by the provider.</tagdesc>
+   </ROW>
+   <ROW num="50">
+      <tagname>CountryCode</tagname>
+      <tagdec>100</tagdec>
+      <taghex>0x0064</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>3</minbytes>
+      <maxbytes>3</maxbytes>
+      <key>Iptc.Application2.CountryCode</key>
+      <type>String</type>
+      <tagdesc>Indicates the code of the country/primary location where the intellectual property of the object data was created</tagdesc>
+   </ROW>
+   <ROW num="51">
+      <tagname>CountryName</tagname>
+      <tagdec>101</tagdec>
+      <taghex>0x0065</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>0</minbytes>
+      <maxbytes>64</maxbytes>
+      <key>Iptc.Application2.CountryName</key>
+      <type>String</type>
+      <tagdesc>Provides full</tagdesc>
+   </ROW>
+   <ROW num="52">
+      <tagname>TransmissionReference</tagname>
+      <tagdec>103</tagdec>
+      <taghex>0x0067</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>0</minbytes>
+      <maxbytes>32</maxbytes>
+      <key>Iptc.Application2.TransmissionReference</key>
+      <type>String</type>
+      <tagdesc>A code representing the location of original transmission according to practices of the provider.</tagdesc>
+   </ROW>
+   <ROW num="53">
+      <tagname>Headline</tagname>
+      <tagdec>105</tagdec>
+      <taghex>0x0069</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>0</minbytes>
+      <maxbytes>256</maxbytes>
+      <key>Iptc.Application2.Headline</key>
+      <type>String</type>
+      <tagdesc>A publishable entry providing a synopsis of the contents of the object data.</tagdesc>
+   </ROW>
+   <ROW num="54">
+      <tagname>Credit</tagname>
+      <tagdec>110</tagdec>
+      <taghex>0x006e</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>0</minbytes>
+      <maxbytes>32</maxbytes>
+      <key>Iptc.Application2.Credit</key>
+      <type>String</type>
+      <tagdesc>Identifies the provider of the object data</tagdesc>
+   </ROW>
+   <ROW num="55">
+      <tagname>Source</tagname>
+      <tagdec>115</tagdec>
+      <taghex>0x0073</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>0</minbytes>
+      <maxbytes>32</maxbytes>
+      <key>Iptc.Application2.Source</key>
+      <type>String</type>
+      <tagdesc>Identifies the original owner of the intellectual content of the object data. This could be an agency</tagdesc>
+   </ROW>
+   <ROW num="56">
+      <tagname>Copyright</tagname>
+      <tagdec>116</tagdec>
+      <taghex>0x0074</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>0</minbytes>
+      <maxbytes>128</maxbytes>
+      <key>Iptc.Application2.Copyright</key>
+      <type>String</type>
+      <tagdesc>Contains any necessary copyright notice.</tagdesc>
+   </ROW>
+   <ROW num="57">
+      <tagname>Contact</tagname>
+      <tagdec>118</tagdec>
+      <taghex>0x0076</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>true</repeatable>
+      <minbytes>0</minbytes>
+      <maxbytes>128</maxbytes>
+      <key>Iptc.Application2.Contact</key>
+      <type>String</type>
+      <tagdesc>Identifies the person or organisation which can provide further background information on the object data.</tagdesc>
+   </ROW>
+   <ROW num="58">
+      <tagname>Caption</tagname>
+      <tagdec>120</tagdec>
+      <taghex>0x0078</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>0</minbytes>
+      <maxbytes>2000</maxbytes>
+      <key>Iptc.Application2.Caption</key>
+      <type>String</type>
+      <tagdesc>A textual description of the object data.</tagdesc>
+   </ROW>
+   <ROW num="59">
+      <tagname>Writer</tagname>
+      <tagdec>122</tagdec>
+      <taghex>0x007a</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>true</repeatable>
+      <minbytes>0</minbytes>
+      <maxbytes>32</maxbytes>
+      <key>Iptc.Application2.Writer</key>
+      <type>String</type>
+      <tagdesc>Identification of the name of the person involved in the writing</tagdesc>
+   </ROW>
+   <ROW num="60">
+      <tagname>RasterizedCaption</tagname>
+      <tagdec>125</tagdec>
+      <taghex>0x007d</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>7360</minbytes>
+      <maxbytes>7360</maxbytes>
+      <key>Iptc.Application2.RasterizedCaption</key>
+      <type>Undefined</type>
+      <tagdesc>Contains the rasterized object data description and is used where characters that have not been coded are required for the caption.</tagdesc>
+   </ROW>
+   <ROW num="61">
+      <tagname>ImageType</tagname>
+      <tagdec>130</tagdec>
+      <taghex>0x0082</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>2</minbytes>
+      <maxbytes>2</maxbytes>
+      <key>Iptc.Application2.ImageType</key>
+      <type>String</type>
+      <tagdesc>Indicates the color components of an image.</tagdesc>
+   </ROW>
+   <ROW num="62">
+      <tagname>ImageOrientation</tagname>
+      <tagdec>131</tagdec>
+      <taghex>0x0083</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>1</minbytes>
+      <maxbytes>1</maxbytes>
+      <key>Iptc.Application2.ImageOrientation</key>
+      <type>String</type>
+      <tagdesc>Indicates the layout of an image.</tagdesc>
+   </ROW>
+   <ROW num="63">
+      <tagname>Language</tagname>
+      <tagdec>135</tagdec>
+      <taghex>0x0087</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>2</minbytes>
+      <maxbytes>3</maxbytes>
+      <key>Iptc.Application2.Language</key>
+      <type>String</type>
+      <tagdesc>Describes the major national language of the object</tagdesc>
+   </ROW>
+   <ROW num="64">
+      <tagname>AudioType</tagname>
+      <tagdec>150</tagdec>
+      <taghex>0x0096</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>2</minbytes>
+      <maxbytes>2</maxbytes>
+      <key>Iptc.Application2.AudioType</key>
+      <type>String</type>
+      <tagdesc>Indicates the type of an audio content.</tagdesc>
+   </ROW>
+   <ROW num="65">
+      <tagname>AudioRate</tagname>
+      <tagdec>151</tagdec>
+      <taghex>0x0097</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>6</minbytes>
+      <maxbytes>6</maxbytes>
+      <key>Iptc.Application2.AudioRate</key>
+      <type>String</type>
+      <tagdesc>Indicates the sampling rate in Hertz of an audio content.</tagdesc>
+   </ROW>
+   <ROW num="66">
+      <tagname>AudioResolution</tagname>
+      <tagdec>152</tagdec>
+      <taghex>0x0098</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>2</minbytes>
+      <maxbytes>2</maxbytes>
+      <key>Iptc.Application2.AudioResolution</key>
+      <type>String</type>
+      <tagdesc>Indicates the sampling resolution of an audio content.</tagdesc>
+   </ROW>
+   <ROW num="67">
+      <tagname>AudioDuration</tagname>
+      <tagdec>153</tagdec>
+      <taghex>0x0099</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>6</minbytes>
+      <maxbytes>6</maxbytes>
+      <key>Iptc.Application2.AudioDuration</key>
+      <type>String</type>
+      <tagdesc>Indicates the duration of an audio content.</tagdesc>
+   </ROW>
+   <ROW num="68">
+      <tagname>AudioOutcue</tagname>
+      <tagdec>154</tagdec>
+      <taghex>0x009a</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>0</minbytes>
+      <maxbytes>64</maxbytes>
+      <key>Iptc.Application2.AudioOutcue</key>
+      <type>String</type>
+      <tagdesc>Identifies the content of the end of an audio object data</tagdesc>
+   </ROW>
+   <ROW num="69">
+      <tagname>PreviewFormat</tagname>
+      <tagdec>200</tagdec>
+      <taghex>0x00c8</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>2</minbytes>
+      <maxbytes>2</maxbytes>
+      <key>Iptc.Application2.PreviewFormat</key>
+      <type>Short</type>
+      <tagdesc>A binary number representing the file format of the object data preview. The file format must be registered with IPTC or NAA organizations with a unique number assigned to it.</tagdesc>
+   </ROW>
+   <ROW num="70">
+      <tagname>PreviewVersion</tagname>
+      <tagdec>201</tagdec>
+      <taghex>0x00c9</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>2</minbytes>
+      <maxbytes>2</maxbytes>
+      <key>Iptc.Application2.PreviewVersion</key>
+      <type>Short</type>
+      <tagdesc>A binary number representing the particular version of the object data preview file format specified in tag &lt;PreviewFormat&gt;.</tagdesc>
+   </ROW>
+   <ROW num="71">
+      <tagname>Preview</tagname>
+      <tagdec>202</tagdec>
+      <taghex>0x00ca</taghex>
+      <recname>Application2</recname>
+      <mandatory>false</mandatory>
+      <repeatable>false</repeatable>
+      <minbytes>0</minbytes>
+      <maxbytes>256000</maxbytes>
+      <key>Iptc.Application2.Preview</key>
+      <type>Undefined</type>
+      <tagdesc>Binary image preview data.</tagdesc>
+   </ROW>
+</ROWSET>
+</TAGLIST>

@@ -1,0 +1,1605 @@
+<?xml version = '1.0'?>
+<?xml-stylesheet type="text/xsl" href="xmp.xsl"?>
+<TAGLIST>
+<HEADER>
+<title>XMP tags defined in Exiv2</title>
+<text>
+<p>Some description</p>
+<p>Click on a column header to sort the table.</p>
+</text>
+</HEADER>
+<ROWSET>
+   <ROW num="1">
+      <tagname>Record</tagname>
+      <title>Record</title>
+      <xmpvaltype>Record</xmpvaltype>
+      <type>XmpText</type>
+      <category>Internal</category>
+      <tagdesc>*Main structure* containing record based information.</tagdesc>
+   </ROW>
+   <ROW num="2">
+      <tagname>institutionID</tagname>
+      <title>Institution ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>An identifier for the institution having custody of the object(s) or information referred to in the record.</tagdesc>
+   </ROW>
+   <ROW num="3">
+      <tagname>collectionID</tagname>
+      <title>Collection ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>An identifier for the collection or dataset from which the record was derived. For physical specimens, the recommended best practice is to use the identifier in a collections registry such as the Biodiversity Collections Index (http://www.biodiversitycollectionsindex.org/).</tagdesc>
+   </ROW>
+   <ROW num="4">
+      <tagname>institutionCode</tagname>
+      <title>Institution Code</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The name (or acronym) in use by the institution having custody of the object(s) or information referred to in the record.</tagdesc>
+   </ROW>
+   <ROW num="5">
+      <tagname>datasetID</tagname>
+      <title>Dataset ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>An identifier for the set of data. May be a global unique identifier or an identifier specific to a collection or institution.</tagdesc>
+   </ROW>
+   <ROW num="6">
+      <tagname>collectionCode</tagname>
+      <title>Collection Code</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The name, acronym, coden, or initialism identifying the collection or data set from which the record was derived.</tagdesc>
+   </ROW>
+   <ROW num="7">
+      <tagname>datasetName</tagname>
+      <title>Dataset Name</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The name identifying the data set from which the record was derived.</tagdesc>
+   </ROW>
+   <ROW num="8">
+      <tagname>ownerInstitutionCode</tagname>
+      <title>Owner Institution Code</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The name (or acronym) in use by the institution having ownership of the object(s) or information referred to in the record.</tagdesc>
+   </ROW>
+   <ROW num="9">
+      <tagname>basisOfRecord</tagname>
+      <title>Basis Of Record</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The specific nature of the data record - a subtype of the type. Recommended best practice is to use a controlled vocabulary such as the Darwin Core Type Vocabulary (http://rs.tdwg.org/dwc/terms/type-vocabulary/index.htm).</tagdesc>
+   </ROW>
+   <ROW num="10">
+      <tagname>informationWithheld</tagname>
+      <title>Information Withheld</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Additional information that exists, but that has not been shared in the given record.</tagdesc>
+   </ROW>
+   <ROW num="11">
+      <tagname>dataGeneralizations</tagname>
+      <title>Data Generalizations</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Actions taken to make the shared data less specific or complete than in its original form. Suggests that alternative data of higher quality may be available on request.</tagdesc>
+   </ROW>
+   <ROW num="12">
+      <tagname>dynamicProperties</tagname>
+      <title>Dynamic Properties</title>
+      <xmpvaltype>bag Text</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>A list (concatenated and separated) of additional measurements, facts, characteristics, or assertions about the record. Meant to provide a mechanism for structured content such as key-value pairs.</tagdesc>
+   </ROW>
+   <ROW num="13">
+      <tagname>Occurrence</tagname>
+      <title>Occurrence</title>
+      <xmpvaltype>Occurrence</xmpvaltype>
+      <type>XmpText</type>
+      <category>Internal</category>
+      <tagdesc>*Main structure* containing occurrence based information.</tagdesc>
+   </ROW>
+   <ROW num="14">
+      <tagname>occurrenceID</tagname>
+      <title>Occurrence ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>An identifier for the Occurrence (as opposed to a particular digital record of the occurrence). In the absence of a persistent global unique identifier, construct one from a combination of identifiers in the record that will most closely make the occurrenceID globally unique.</tagdesc>
+   </ROW>
+   <ROW num="15">
+      <tagname>catalogNumber</tagname>
+      <title>Catalog Number</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>An identifier (preferably unique) for the record within the data set or collection.</tagdesc>
+   </ROW>
+   <ROW num="16">
+      <tagname>occurrenceDetails</tagname>
+      <title>Occurrence Details</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Deprecated. Details about the Occurrence.</tagdesc>
+   </ROW>
+   <ROW num="17">
+      <tagname>occurrenceRemarks</tagname>
+      <title>Occurrence Remarks</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Comments or notes about the Occurrence.</tagdesc>
+   </ROW>
+   <ROW num="18">
+      <tagname>recordNumber</tagname>
+      <title>Record Number</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>An identifier given to the Occurrence at the time it was recorded. Often serves as a link between field notes and an Occurrence record, such as a specimen collector's number.</tagdesc>
+   </ROW>
+   <ROW num="19">
+      <tagname>recordedBy</tagname>
+      <title>Recorded By</title>
+      <xmpvaltype>bag Text</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>A list (concatenated and separated) of names of people, groups, or organizations responsible for recording the original Occurrence. The primary collector or observer, especially one who applies a personal identifier (recordNumber), should be listed first.</tagdesc>
+   </ROW>
+   <ROW num="20">
+      <tagname>individualID</tagname>
+      <title>Individual ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Deprecated. An identifier for an individual or named group of individual organisms represented in the Occurrence. Meant to accommodate resampling of the same individual or group for monitoring purposes. May be a global unique identifier or an identifier specific to a data set.</tagdesc>
+   </ROW>
+   <ROW num="21">
+      <tagname>individualCount</tagname>
+      <title>Individual Count</title>
+      <xmpvaltype>Integer</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The number of individuals represented present at the time of the Occurrence.</tagdesc>
+   </ROW>
+   <ROW num="22">
+      <tagname>organismQuantity</tagname>
+      <title>Organism Quantity</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>A number or enumeration value for the quantity of organisms.</tagdesc>
+   </ROW>
+   <ROW num="23">
+      <tagname>organismQuantityType</tagname>
+      <title>Organism Quantity Type</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The type of quantification system used for the quantity of organisms.</tagdesc>
+   </ROW>
+   <ROW num="24">
+      <tagname>sex</tagname>
+      <title>Sex</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The sex of the biological individual(s) represented in the Occurrence. Recommended best practice is to use a controlled vocabulary.</tagdesc>
+   </ROW>
+   <ROW num="25">
+      <tagname>lifeStage</tagname>
+      <title>Life Stage</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The age class or life stage of the biological individual(s) at the time the Occurrence was recorded. Recommended best practice is to use a controlled vocabulary.</tagdesc>
+   </ROW>
+   <ROW num="26">
+      <tagname>reproductiveCondition</tagname>
+      <title>Reproductive Condition</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The reproductive condition of the biological individual(s) represented in the Occurrence. Recommended best practice is to use a controlled vocabulary.</tagdesc>
+   </ROW>
+   <ROW num="27">
+      <tagname>behavior</tagname>
+      <title>Behavior</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>A description of the behavior shown by the subject at the time the Occurrence was recorded. Recommended best practice is to use a controlled vocabulary.</tagdesc>
+   </ROW>
+   <ROW num="28">
+      <tagname>establishmentMeans</tagname>
+      <title>Establishment Means</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The process by which the biological individual(s) represented in the Occurrence became established at the location. Recommended best practice is to use a controlled vocabulary.</tagdesc>
+   </ROW>
+   <ROW num="29">
+      <tagname>occurrenceStatus</tagname>
+      <title>Occurrence Status</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>A statement about the presence or absence of a Taxon at a Location. Recommended best practice is to use a controlled vocabulary.</tagdesc>
+   </ROW>
+   <ROW num="30">
+      <tagname>preparations</tagname>
+      <title>Preparations</title>
+      <xmpvaltype>bag Text</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>A list (concatenated and separated) of preparations and preservation methods for a specimen.</tagdesc>
+   </ROW>
+   <ROW num="31">
+      <tagname>disposition</tagname>
+      <title>Disposition</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The current state of a specimen with respect to the collection identified in collectionCode or collectionID. Recommended best practice is to use a controlled vocabulary.</tagdesc>
+   </ROW>
+   <ROW num="32">
+      <tagname>otherCatalogNumbers</tagname>
+      <title>Other Catalog Numbers</title>
+      <xmpvaltype>bag Text</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>A list (concatenated and separated) of previous or alternate fully qualified catalog numbers or other human-used identifiers for the same Occurrence, whether in the current or any other data set or collection.</tagdesc>
+   </ROW>
+   <ROW num="33">
+      <tagname>previousIdentifications</tagname>
+      <title>Previous Identifications</title>
+      <xmpvaltype>bag Text</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>Deprecated. A list (concatenated and separated) of previous assignments of names to the Occurrence.</tagdesc>
+   </ROW>
+   <ROW num="34">
+      <tagname>associatedMedia</tagname>
+      <title>Associated Media</title>
+      <xmpvaltype>bag Text</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>A list (concatenated and separated) of identifiers (publication, global unique identifier, URI) of media associated with the Occurrence.</tagdesc>
+   </ROW>
+   <ROW num="35">
+      <tagname>associatedReferences</tagname>
+      <title>Associated References</title>
+      <xmpvaltype>bag Text</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>A list (concatenated and separated) of identifiers (publication, bibliographic reference, global unique identifier, URI) of literature associated with the Occurrence.</tagdesc>
+   </ROW>
+   <ROW num="36">
+      <tagname>associatedOccurrences</tagname>
+      <title>Associated Occurrences</title>
+      <xmpvaltype>bag Text</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>Deprecated. A list (concatenated and separated) of identifiers of other Occurrence records and their associations to this Occurrence.</tagdesc>
+   </ROW>
+   <ROW num="37">
+      <tagname>associatedSequences</tagname>
+      <title>Associated Sequences</title>
+      <xmpvaltype>bag Text</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>A list (concatenated and separated) of identifiers (publication, global unique identifier, URI) of genetic sequence information associated with the Occurrence.</tagdesc>
+   </ROW>
+   <ROW num="38">
+      <tagname>associatedTaxa</tagname>
+      <title>Associated Taxa</title>
+      <xmpvaltype>bag Text</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>A list (concatenated and separated) of identifiers or names of taxa and their associations with the Occurrence.</tagdesc>
+   </ROW>
+   <ROW num="39">
+      <tagname>Organism</tagname>
+      <title>Organism</title>
+      <xmpvaltype>Organism</xmpvaltype>
+      <type>XmpText</type>
+      <category>Internal</category>
+      <tagdesc>*Main structure* containing organism based information.</tagdesc>
+   </ROW>
+   <ROW num="40">
+      <tagname>organismID</tagname>
+      <title>Organism ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>An identifier for the Organism instance (as opposed to a particular digital record of the Organism). May be a globally unique identifier or an identifier specific to the data set.</tagdesc>
+   </ROW>
+   <ROW num="41">
+      <tagname>organismName</tagname>
+      <title>Organism Name</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>A textual name or label assigned to an Organism instance.</tagdesc>
+   </ROW>
+   <ROW num="42">
+      <tagname>organismScope</tagname>
+      <title>Organism Scope</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>A description of the kind of Organism instance. Can be used to indicate whether the Organism instance represents a discrete organism or if it represents a particular type of aggregation. Recommended best practice is to use a controlled vocabulary.</tagdesc>
+   </ROW>
+   <ROW num="43">
+      <tagname>associatedOccurrences</tagname>
+      <title>Organism Associated Occurrences</title>
+      <xmpvaltype>bag Text</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>A list (concatenated and separated with a vertical bar ' | ') of identifiers of other Occurrence records and their associations to this Occurrence.</tagdesc>
+   </ROW>
+   <ROW num="44">
+      <tagname>associatedOrganisms</tagname>
+      <title>Associated Organisms</title>
+      <xmpvaltype>bag Text</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>A list (concatenated and separated with a vertical bar ' | ' ) of identifiers of other Organisms and their associations to this Organism.</tagdesc>
+   </ROW>
+   <ROW num="45">
+      <tagname>previousIdentifications</tagname>
+      <title>Previous Identifications</title>
+      <xmpvaltype>bag Text</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>A list (concatenated and separated with a vertical bar ' | ' ) of previous assignments of names to the Organism.</tagdesc>
+   </ROW>
+   <ROW num="46">
+      <tagname>organismRemarks</tagname>
+      <title>Organism Remarks</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Comments or notes about the Organism instance.</tagdesc>
+   </ROW>
+   <ROW num="47">
+      <tagname>MaterialSample</tagname>
+      <title>Material Sample</title>
+      <xmpvaltype>MaterialSample</xmpvaltype>
+      <type>XmpText</type>
+      <category>Internal</category>
+      <tagdesc>*Main structure* containing material sample based information.</tagdesc>
+   </ROW>
+   <ROW num="48">
+      <tagname>LivingSpecimen</tagname>
+      <title>Living Specimen</title>
+      <xmpvaltype>LivingSpecimen</xmpvaltype>
+      <type>XmpText</type>
+      <category>Internal</category>
+      <tagdesc>*Main structure* containing living specimen based information. A specimen that is alive.</tagdesc>
+   </ROW>
+   <ROW num="49">
+      <tagname>PreservedSpecimen</tagname>
+      <title>Preserved Specimen</title>
+      <xmpvaltype>PreservedSpecimen</xmpvaltype>
+      <type>XmpText</type>
+      <category>Internal</category>
+      <tagdesc>*Main structure* containing preserved specimen based information. A specimen that has been preserved.</tagdesc>
+   </ROW>
+   <ROW num="50">
+      <tagname>FossilSpecimen</tagname>
+      <title>Fossil Specimen</title>
+      <xmpvaltype>FossilSpecimen</xmpvaltype>
+      <type>XmpText</type>
+      <category>Internal</category>
+      <tagdesc>*Main structure* containing fossil specimen based information. A preserved specimen that is a fossil.</tagdesc>
+   </ROW>
+   <ROW num="51">
+      <tagname>materialSampleID</tagname>
+      <title>Material Sample ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>An identifier for the MaterialSample (as opposed to a particular digital record of the material sample). In the absence of a persistent global unique identifier, construct one from a combination of identifiers in the record that will most closely make the materialSampleID globally unique.</tagdesc>
+   </ROW>
+   <ROW num="52">
+      <tagname>Event</tagname>
+      <title>Event</title>
+      <xmpvaltype>Event</xmpvaltype>
+      <type>XmpText</type>
+      <category>Internal</category>
+      <tagdesc>*Main structure* containing event based information.</tagdesc>
+   </ROW>
+   <ROW num="53">
+      <tagname>HumanObservation</tagname>
+      <title>Human Observation</title>
+      <xmpvaltype>HumanObservation</xmpvaltype>
+      <type>XmpText</type>
+      <category>Internal</category>
+      <tagdesc>*Main structure* containing human observation based information.</tagdesc>
+   </ROW>
+   <ROW num="54">
+      <tagname>MachineObservation</tagname>
+      <title>Machine Observation</title>
+      <xmpvaltype>MachineObservation</xmpvaltype>
+      <type>XmpText</type>
+      <category>Internal</category>
+      <tagdesc>*Main structure* containing machine observation based information.</tagdesc>
+   </ROW>
+   <ROW num="55">
+      <tagname>eventID</tagname>
+      <title>Event ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>An identifier for the set of information associated with an Event (something that occurs at a place and time). May be a global unique identifier or an identifier specific to the data set.</tagdesc>
+   </ROW>
+   <ROW num="56">
+      <tagname>parentEventID</tagname>
+      <title>Parent Event ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>An identifier for the broader Event that groups this and potentially other Events.</tagdesc>
+   </ROW>
+   <ROW num="57">
+      <tagname>eventDate</tagname>
+      <title>Event Date</title>
+      <xmpvaltype>Date</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The date-time or interval during which an Event occurred. For occurrences, this is the date-time when the event was recorded. Not suitable for a time in a geological context. Recommended best practice is to use an encoding scheme, such as ISO 8601:2004(E).</tagdesc>
+   </ROW>
+   <ROW num="58">
+      <tagname>earliestDate</tagname>
+      <title>Event Earliest Date</title>
+      <xmpvaltype>Date</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Deprecated. (Child of Xmp.dwc.Event) The date-time or interval during which an Event started. For occurrences, this is the date-time when the event was recorded. Not suitable for a time in a geological context. Recommended best practice is to use an encoding scheme, such as ISO 8601:2004(E).</tagdesc>
+   </ROW>
+   <ROW num="59">
+      <tagname>latestDate</tagname>
+      <title>Event Latest Date</title>
+      <xmpvaltype>Date</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Deprecated. (Child of Xmp.dwc.Event) The date-time or interval during which an Event ended. For occurrences, this is the date-time when the event was recorded. Not suitable for a time in a geological context. Recommended best practice is to use an encoding scheme, such as ISO 8601:2004(E).</tagdesc>
+   </ROW>
+   <ROW num="60">
+      <tagname>eventTime</tagname>
+      <title>Event Time</title>
+      <xmpvaltype>Date</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The time or interval during which an Event occurred. Recommended best practice is to use an encoding scheme, such as ISO 8601:2004(E).</tagdesc>
+   </ROW>
+   <ROW num="61">
+      <tagname>startDayOfYear</tagname>
+      <title>Start Day Of Year</title>
+      <xmpvaltype>Integer</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The earliest ordinal day of the year on which the Event occurred (1 for January 1, 365 for December 31, except in a leap year, in which case it is 366).</tagdesc>
+   </ROW>
+   <ROW num="62">
+      <tagname>endDayOfYear</tagname>
+      <title>End Day Of Year</title>
+      <xmpvaltype>Integer</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The latest ordinal day of the year on which the Event occurred (1 for January 1, 365 for December 31, except in a leap year, in which case it is 366).</tagdesc>
+   </ROW>
+   <ROW num="63">
+      <tagname>year</tagname>
+      <title>Year</title>
+      <xmpvaltype>Integer</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The four-digit year in which the Event occurred, according to the Common Era Calendar.</tagdesc>
+   </ROW>
+   <ROW num="64">
+      <tagname>month</tagname>
+      <title>Month</title>
+      <xmpvaltype>Integer</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The ordinal month in which the Event occurred.</tagdesc>
+   </ROW>
+   <ROW num="65">
+      <tagname>day</tagname>
+      <title>Day</title>
+      <xmpvaltype>Integer</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The integer day of the month on which the Event occurred.</tagdesc>
+   </ROW>
+   <ROW num="66">
+      <tagname>verbatimEventDate</tagname>
+      <title>Verbatim Event Date</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The verbatim original representation of the date and time information for an Event.</tagdesc>
+   </ROW>
+   <ROW num="67">
+      <tagname>habitat</tagname>
+      <title>Habitat</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>A category or description of the habitat in which the Event occurred.</tagdesc>
+   </ROW>
+   <ROW num="68">
+      <tagname>samplingProtocol</tagname>
+      <title>Sampling Protocol</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The name of, reference to, or description of the method or protocol used during an Event.</tagdesc>
+   </ROW>
+   <ROW num="69">
+      <tagname>samplingEffort</tagname>
+      <title>Sampling Effort</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The amount of effort expended during an Event.</tagdesc>
+   </ROW>
+   <ROW num="70">
+      <tagname>sampleSizeValue</tagname>
+      <title>Sampling Size Value</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>A numeric value for a measurement of the size (time duration, length, area, or volume) of a sample in a sampling event.</tagdesc>
+   </ROW>
+   <ROW num="71">
+      <tagname>sampleSizeUnit</tagname>
+      <title>Sampling Size Unit</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The unit of measurement of the size (time duration, length, area, or volume) of a sample in a sampling event.</tagdesc>
+   </ROW>
+   <ROW num="72">
+      <tagname>fieldNumber</tagname>
+      <title>Field Number</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>An identifier given to the event in the field. Often serves as a link between field notes and the Event.</tagdesc>
+   </ROW>
+   <ROW num="73">
+      <tagname>fieldNotes</tagname>
+      <title>Field Notes</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>One of (a) an indicator of the existence of, (b) a reference to (publication, URI), or (c) the text of notes taken in the field about the Event.</tagdesc>
+   </ROW>
+   <ROW num="74">
+      <tagname>eventRemarks</tagname>
+      <title>Event Remarks</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Comments or notes about the Event.</tagdesc>
+   </ROW>
+   <ROW num="75">
+      <tagname>dctermsLocation</tagname>
+      <title>Location Class</title>
+      <xmpvaltype>Location</xmpvaltype>
+      <type>XmpText</type>
+      <category>Internal</category>
+      <tagdesc>Deprecated. Use Xmp.dcterms.Location instead. *Main structure* containing location based information.</tagdesc>
+   </ROW>
+   <ROW num="76">
+      <tagname>locationID</tagname>
+      <title>Location ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>An identifier for the set of location information (data associated with Location). May be a global unique identifier or an identifier specific to the data set.</tagdesc>
+   </ROW>
+   <ROW num="77">
+      <tagname>higherGeographyID</tagname>
+      <title>Higher Geography ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>An identifier for the geographic region within which the Location occurred. Recommended best practice is to use an persistent identifier from a controlled vocabulary such as the Getty Thesaurus of Geographic Names.</tagdesc>
+   </ROW>
+   <ROW num="78">
+      <tagname>higherGeography</tagname>
+      <title>Higher Geography</title>
+      <xmpvaltype>bag Text</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>A list (concatenated and separated) of geographic names less specific than the information captured in the locality term.</tagdesc>
+   </ROW>
+   <ROW num="79">
+      <tagname>continent</tagname>
+      <title>Continent</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The name of the continent in which the Location occurs. Recommended best practice is to use a controlled vocabulary such as the Getty Thesaurus of Geographic Names or the ISO 3166 Continent code.</tagdesc>
+   </ROW>
+   <ROW num="80">
+      <tagname>waterBody</tagname>
+      <title>Water Body</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The name of the water body in which the Location occurs. Recommended best practice is to use a controlled vocabulary such as the Getty Thesaurus of Geographic Names.</tagdesc>
+   </ROW>
+   <ROW num="81">
+      <tagname>islandGroup</tagname>
+      <title>Island Group</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The name of the island group in which the Location occurs. Recommended best practice is to use a controlled vocabulary such as the Getty Thesaurus of Geographic Names.</tagdesc>
+   </ROW>
+   <ROW num="82">
+      <tagname>island</tagname>
+      <title>Island</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The name of the island on or near which the Location occurs. Recommended best practice is to use a controlled vocabulary such as the Getty Thesaurus of Geographic Names.</tagdesc>
+   </ROW>
+   <ROW num="83">
+      <tagname>country</tagname>
+      <title>Country</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The name of the country or major administrative unit in which the Location occurs. Recommended best practice is to use a controlled vocabulary such as the Getty Thesaurus of Geographic Names.</tagdesc>
+   </ROW>
+   <ROW num="84">
+      <tagname>countryCode</tagname>
+      <title>Country Code</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The standard code for the country in which the Location occurs. Recommended best practice is to use ISO 3166-1-alpha-2 country codes.</tagdesc>
+   </ROW>
+   <ROW num="85">
+      <tagname>stateProvince</tagname>
+      <title>State Province</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The name of the next smaller administrative region than country (state, province, canton, department, region, etc.) in which the Location occurs.</tagdesc>
+   </ROW>
+   <ROW num="86">
+      <tagname>county</tagname>
+      <title>County</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The full, unabbreviated name of the next smaller administrative region than stateProvince (county, shire, department, etc.) in which the Location occurs.</tagdesc>
+   </ROW>
+   <ROW num="87">
+      <tagname>municipality</tagname>
+      <title>Municipality</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The full, unabbreviated name of the next smaller administrative region than county (city, municipality, etc.) in which the Location occurs. Do not use this term for a nearby named place that does not contain the actual location.</tagdesc>
+   </ROW>
+   <ROW num="88">
+      <tagname>locality</tagname>
+      <title>Locality</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The specific description of the place. Less specific geographic information can be provided in other geographic terms (higherGeography, continent, country, stateProvince, county, municipality, waterBody, island, islandGroup). This term may contain information modified from the original to correct perceived errors or standardize the description.</tagdesc>
+   </ROW>
+   <ROW num="89">
+      <tagname>verbatimLocality</tagname>
+      <title>Verbatim Locality</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The original textual description of the place.</tagdesc>
+   </ROW>
+   <ROW num="90">
+      <tagname>verbatimElevation</tagname>
+      <title>Verbatim Elevation</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The original description of the elevation (altitude, usually above sea level) of the Location.</tagdesc>
+   </ROW>
+   <ROW num="91">
+      <tagname>minimumElevationInMeters</tagname>
+      <title>Minimum Elevation In Meters</title>
+      <xmpvaltype>Real</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The lower limit of the range of elevation (altitude, usually above sea level), in meters.</tagdesc>
+   </ROW>
+   <ROW num="92">
+      <tagname>maximumElevationInMeters</tagname>
+      <title>Maximum Elevation In Meters</title>
+      <xmpvaltype>Real</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The upper limit of the range of elevation (altitude, usually above sea level), in meters.</tagdesc>
+   </ROW>
+   <ROW num="93">
+      <tagname>verbatimDepth</tagname>
+      <title>Verbatim Depth</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The original description of the depth below the local surface.</tagdesc>
+   </ROW>
+   <ROW num="94">
+      <tagname>minimumDepthInMeters</tagname>
+      <title>Minimum Depth In Meters</title>
+      <xmpvaltype>Real</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The lesser depth of a range of depth below the local surface, in meters.</tagdesc>
+   </ROW>
+   <ROW num="95">
+      <tagname>maximumDepthInMeters</tagname>
+      <title>Maximum Depth In Meters</title>
+      <xmpvaltype>Real</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The greater depth of a range of depth below the local surface, in meters.</tagdesc>
+   </ROW>
+   <ROW num="96">
+      <tagname>minimumDistanceAboveSurfaceInMeters</tagname>
+      <title>Minimum Distance Above Surface In Meters</title>
+      <xmpvaltype>Real</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The lesser distance in a range of distance from a reference surface in the vertical direction, in meters. Use positive values for locations above the surface, negative values for locations below. If depth measures are given, the reference surface is the location given by the depth, otherwise the reference surface is the location given by the elevation.</tagdesc>
+   </ROW>
+   <ROW num="97">
+      <tagname>maximumDistanceAboveSurfaceInMeters</tagname>
+      <title>Maximum Distance Above Surface In Meters</title>
+      <xmpvaltype>Real</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The greater distance in a range of distance from a reference surface in the vertical direction, in meters. Use positive values for locations above the surface, negative values for locations below. If depth measures are given, the reference surface is the location given by the depth, otherwise the reference surface is the location given by the elevation.</tagdesc>
+   </ROW>
+   <ROW num="98">
+      <tagname>locationAccordingTo</tagname>
+      <title>Location According To</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Information about the source of this Location information. Could be a publication (gazetteer), institution, or team of individuals.</tagdesc>
+   </ROW>
+   <ROW num="99">
+      <tagname>locationRemarks</tagname>
+      <title>Location Remarks</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Comments or notes about the Location.</tagdesc>
+   </ROW>
+   <ROW num="100">
+      <tagname>verbatimCoordinates</tagname>
+      <title>Verbatim Coordinates</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The verbatim original spatial coordinates of the Location. The coordinate ellipsoid, geodeticDatum, or full Spatial Reference System (SRS) for these coordinates should be stored in verbatimSRS and the coordinate system should be stored in verbatimCoordinateSystem.</tagdesc>
+   </ROW>
+   <ROW num="101">
+      <tagname>verbatimLatitude</tagname>
+      <title>Verbatim Latitude</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The verbatim original latitude of the Location. The coordinate ellipsoid, geodeticDatum, or full Spatial Reference System (SRS) for these coordinates should be stored in verbatimSRS and the coordinate system should be stored in verbatimCoordinateSystem.</tagdesc>
+   </ROW>
+   <ROW num="102">
+      <tagname>verbatimLongitude</tagname>
+      <title>Verbatim Longitude</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The verbatim original longitude of the Location. The coordinate ellipsoid, geodeticDatum, or full Spatial Reference System (SRS) for these coordinates should be stored in verbatimSRS and the coordinate system should be stored in verbatimCoordinateSystem.</tagdesc>
+   </ROW>
+   <ROW num="103">
+      <tagname>verbatimCoordinateSystem</tagname>
+      <title>Verbatim Coordinate System</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The spatial coordinate system for the verbatimLatitude and verbatimLongitude or the verbatimCoordinates of the Location. Recommended best practice is to use a controlled vocabulary.</tagdesc>
+   </ROW>
+   <ROW num="104">
+      <tagname>verbatimSRS</tagname>
+      <title>Verbatim SRS</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The ellipsoid, geodetic datum, or spatial reference system (SRS) upon which coordinates given in verbatimLatitude and verbatimLongitude, or verbatimCoordinates are based. Recommended best practice is use the EPSG code as a controlled vocabulary to provide an SRS, if known. Otherwise use a controlled vocabulary for the name or code of the geodetic datum, if known. Otherwise use a controlled vocabulary for the name or code of the ellipsoid, if known. If none of these is known, use the value "unknown".</tagdesc>
+   </ROW>
+   <ROW num="105">
+      <tagname>decimalLatitude</tagname>
+      <title>Decimal Latitude</title>
+      <xmpvaltype>Real</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The geographic latitude (in decimal degrees, using the spatial reference system given in geodeticDatum) of the geographic center of a Location. Positive values are north of the Equator, negative values are south of it. Legal values lie between -90 and 90, inclusive.</tagdesc>
+   </ROW>
+   <ROW num="106">
+      <tagname>decimalLongitude</tagname>
+      <title>Decimal Longitude</title>
+      <xmpvaltype>Real</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The geographic longitude (in decimal degrees, using the spatial reference system given in geodeticDatum) of the geographic center of a Location. Positive values are east of the Greenwich Meridian, negative values are west of it. Legal values lie between -180 and 180, inclusive.</tagdesc>
+   </ROW>
+   <ROW num="107">
+      <tagname>geodeticDatum</tagname>
+      <title>Geodetic Datum</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The ellipsoid, geodetic datum, or spatial reference system (SRS) upon which the geographic coordinates given in decimalLatitude and decimalLongitude as based. Recommended best practice is use the EPSG code as a controlled vocabulary to provide an SRS, if known. Otherwise use a controlled vocabulary for the name or code of the geodetic datum, if known. Otherwise use a controlled vocabulary for the name or code of the ellipsoid, if known. If none of these is known, use the value "unknown".</tagdesc>
+   </ROW>
+   <ROW num="108">
+      <tagname>coordinateUncertaintyInMeters</tagname>
+      <title>Coordinate Uncertainty In Meters</title>
+      <xmpvaltype>Real</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The horizontal distance (in meters) from the given decimalLatitude and decimalLongitude describing the smallest circle containing the whole of the Location. Leave the value empty if the uncertainty is unknown, cannot be estimated, or is not applicable (because there are no coordinates). Zero is not a valid value for this term.</tagdesc>
+   </ROW>
+   <ROW num="109">
+      <tagname>coordinatePrecision</tagname>
+      <title>Coordinate Precision</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>A decimal representation of the precision of the coordinates given in the decimalLatitude and decimalLongitude.</tagdesc>
+   </ROW>
+   <ROW num="110">
+      <tagname>pointRadiusSpatialFit</tagname>
+      <title>Point Radius Spatial Fit</title>
+      <xmpvaltype>Real</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The ratio of the area of the point-radius (decimalLatitude, decimalLongitude, coordinateUncertaintyInMeters) to the area of the true (original, or most specific) spatial representation of the Location. Legal values are 0, greater than or equal to 1, or undefined. A value of 1 is an exact match or 100% overlap. A value of 0 should be used if the given point-radius does not completely contain the original representation. The pointRadiusSpatialFit is undefined (and should be left blank) if the original representation is a point without uncertainty and the given georeference is not that same point (without uncertainty). If both the original and the given georeference are the same point, the pointRadiusSpatialFit is 1.</tagdesc>
+   </ROW>
+   <ROW num="111">
+      <tagname>footprintWKT</tagname>
+      <title>Footprint WKT</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>A Well-Known Text (WKT) representation of the shape (footprint, geometry) that defines the Location. A Location may have both a point-radius representation (see decimalLatitude) and a footprint representation, and they may differ from each other.</tagdesc>
+   </ROW>
+   <ROW num="112">
+      <tagname>footprintSRS</tagname>
+      <title>Footprint SRS</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>A Well-Known Text (WKT) representation of the Spatial Reference System (SRS) for the footprintWKT of the Location. Do not use this term to describe the SRS of the decimalLatitude and decimalLongitude, even if it is the same as for the footprintWKT - use the geodeticDatum instead.</tagdesc>
+   </ROW>
+   <ROW num="113">
+      <tagname>footprintSpatialFit</tagname>
+      <title>Footprint Spatial Fit</title>
+      <xmpvaltype>Real</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The ratio of the area of the footprint (footprintWKT) to the area of the true (original, or most specific) spatial representation of the Location. Legal values are 0, greater than or equal to 1, or undefined. A value of 1 is an exact match or 100% overlap. A value of 0 should be used if the given footprint does not completely contain the original representation. The footprintSpatialFit is undefined (and should be left blank) if the original representation is a point and the given georeference is not that same point. If both the original and the given georeference are the same point, the footprintSpatialFit is 1.</tagdesc>
+   </ROW>
+   <ROW num="114">
+      <tagname>georeferencedBy</tagname>
+      <title>Georeferenced By</title>
+      <xmpvaltype>bag Text</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>A list (concatenated and separated) of names of people, groups, or organizations who determined the georeference (spatial representation) for the Location.</tagdesc>
+   </ROW>
+   <ROW num="115">
+      <tagname>georeferencedDate</tagname>
+      <title>Georeferenced Date</title>
+      <xmpvaltype>Date</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The date on which the Location was georeferenced. Recommended best practice is to use an encoding scheme, such as ISO 8601:2004(E).</tagdesc>
+   </ROW>
+   <ROW num="116">
+      <tagname>georeferenceProtocol</tagname>
+      <title>Georeference Protocol</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>A description or reference to the methods used to determine the spatial footprint, coordinates, and uncertainties.</tagdesc>
+   </ROW>
+   <ROW num="117">
+      <tagname>georeferenceSources</tagname>
+      <title>Georeference Sources</title>
+      <xmpvaltype>bag Text</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>A list (concatenated and separated) of maps, gazetteers, or other resources used to georeference the Location, described specifically enough to allow anyone in the future to use the same resources.</tagdesc>
+   </ROW>
+   <ROW num="118">
+      <tagname>georeferenceVerificationStatus</tagname>
+      <title>Georeference Verification Status</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>A categorical description of the extent to which the georeference has been verified to represent the best possible spatial description. Recommended best practice is to use a controlled vocabulary.</tagdesc>
+   </ROW>
+   <ROW num="119">
+      <tagname>georeferenceRemarks</tagname>
+      <title>Georeference Remarks</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Notes or comments about the spatial description determination, explaining assumptions made in addition or opposition to the those formalized in the method referred to in georeferenceProtocol.</tagdesc>
+   </ROW>
+   <ROW num="120">
+      <tagname>GeologicalContext</tagname>
+      <title>Geological Context</title>
+      <xmpvaltype>GeologicalContext</xmpvaltype>
+      <type>XmpText</type>
+      <category>Internal</category>
+      <tagdesc>*Main structure* containing geological context based information.</tagdesc>
+   </ROW>
+   <ROW num="121">
+      <tagname>geologicalContextID</tagname>
+      <title>Geological Context ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>An identifier for the set of information associated with a GeologicalContext (the location within a geological context, such as stratigraphy). May be a global unique identifier or an identifier specific to the data set.</tagdesc>
+   </ROW>
+   <ROW num="122">
+      <tagname>earliestEonOrLowestEonothem</tagname>
+      <title>Earliest Eon Or Lowest Eonothem</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The full name of the earliest possible geochronologic eon or lowest chrono-stratigraphic eonothem or the informal name ("Precambrian") attributable to the stratigraphic horizon from which the cataloged item was collected.</tagdesc>
+   </ROW>
+   <ROW num="123">
+      <tagname>latestEonOrHighestEonothem</tagname>
+      <title>Latest Eon Or Highest Eonothem</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The full name of the latest possible geochronologic eon or highest chrono-stratigraphic eonothem or the informal name ("Precambrian") attributable to the stratigraphic horizon from which the cataloged item was collected.</tagdesc>
+   </ROW>
+   <ROW num="124">
+      <tagname>earliestEraOrLowestErathem</tagname>
+      <title>Earliest Era Or Lowest Erathem</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The full name of the earliest possible geochronologic era or lowest chronostratigraphic erathem attributable to the stratigraphic horizon from which the cataloged item was collected.</tagdesc>
+   </ROW>
+   <ROW num="125">
+      <tagname>latestEraOrHighestErathem</tagname>
+      <title>Latest Era Or Highest Erathem</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The full name of the latest possible geochronologic era or highest chronostratigraphic erathem attributable to the stratigraphic horizon from which the cataloged item was collected.</tagdesc>
+   </ROW>
+   <ROW num="126">
+      <tagname>earliestPeriodOrLowestSystem</tagname>
+      <title>Earliest Period Or Lowest System</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The full name of the earliest possible geochronologic period or lowest chronostratigraphic system attributable to the stratigraphic horizon from which the cataloged item was collected.</tagdesc>
+   </ROW>
+   <ROW num="127">
+      <tagname>latestPeriodOrHighestSystem</tagname>
+      <title>Latest Period Or Highest System</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The full name of the latest possible geochronologic period or highest chronostratigraphic system attributable to the stratigraphic horizon from which the cataloged item was collected.</tagdesc>
+   </ROW>
+   <ROW num="128">
+      <tagname>earliestEpochOrLowestSeries</tagname>
+      <title>Earliest Epoch Or Lowest Series</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The full name of the earliest possible geochronologic epoch or lowest chronostratigraphic series attributable to the stratigraphic horizon from which the cataloged item was collected.</tagdesc>
+   </ROW>
+   <ROW num="129">
+      <tagname>latestEpochOrHighestSeries</tagname>
+      <title>Latest Epoch Or Highest Series</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The full name of the latest possible geochronologic epoch or highest chronostratigraphic series attributable to the stratigraphic horizon from which the cataloged item was collected.</tagdesc>
+   </ROW>
+   <ROW num="130">
+      <tagname>earliestAgeOrLowestStage</tagname>
+      <title>Earliest Age Or Lowest Stage</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The full name of the earliest possible geochronologic age or lowest chronostratigraphic stage attributable to the stratigraphic horizon from which the cataloged item was collected.</tagdesc>
+   </ROW>
+   <ROW num="131">
+      <tagname>latestAgeOrHighestStage</tagname>
+      <title>Latest Age Or Highest Stage</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The full name of the latest possible geochronologic age or highest chronostratigraphic stage attributable to the stratigraphic horizon from which the cataloged item was collected.</tagdesc>
+   </ROW>
+   <ROW num="132">
+      <tagname>lowestBiostratigraphicZone</tagname>
+      <title>Lowest Biostratigraphic Zone</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The full name of the lowest possible geological biostratigraphic zone of the stratigraphic horizon from which the cataloged item was collected.</tagdesc>
+   </ROW>
+   <ROW num="133">
+      <tagname>highestBiostratigraphicZone</tagname>
+      <title>Highest Biostratigraphic Zone</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The full name of the highest possible geological biostratigraphic zone of the stratigraphic horizon from which the cataloged item was collected.</tagdesc>
+   </ROW>
+   <ROW num="134">
+      <tagname>lithostratigraphicTerms</tagname>
+      <title>Lithostratigraphic Terms</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The combination of all litho-stratigraphic names for the rock from which the cataloged item was collected.</tagdesc>
+   </ROW>
+   <ROW num="135">
+      <tagname>group</tagname>
+      <title>Group</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The full name of the lithostratigraphic group from which the cataloged item was collected.</tagdesc>
+   </ROW>
+   <ROW num="136">
+      <tagname>formation</tagname>
+      <title>Formation</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The full name of the lithostratigraphic formation from which the cataloged item was collected.</tagdesc>
+   </ROW>
+   <ROW num="137">
+      <tagname>member</tagname>
+      <title>Member</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The full name of the lithostratigraphic member from which the cataloged item was collected.</tagdesc>
+   </ROW>
+   <ROW num="138">
+      <tagname>bed</tagname>
+      <title>Bed</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The full name of the lithostratigraphic bed from which the cataloged item was collected.</tagdesc>
+   </ROW>
+   <ROW num="139">
+      <tagname>Identification</tagname>
+      <title>Identification</title>
+      <xmpvaltype>Identification</xmpvaltype>
+      <type>XmpText</type>
+      <category>Internal</category>
+      <tagdesc>*Main structure* containing identification based information.</tagdesc>
+   </ROW>
+   <ROW num="140">
+      <tagname>identificationID</tagname>
+      <title>Identification ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>An identifier for the Identification (the body of information associated with the assignment of a scientific name). May be a global unique identifier or an identifier specific to the data set.</tagdesc>
+   </ROW>
+   <ROW num="141">
+      <tagname>identifiedBy</tagname>
+      <title>Identified By</title>
+      <xmpvaltype>bag Text</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>A list (concatenated and separated) of names of people, groups, or organizations who assigned the Taxon to the subject.</tagdesc>
+   </ROW>
+   <ROW num="142">
+      <tagname>dateIdentified</tagname>
+      <title>Date Identified</title>
+      <xmpvaltype>Date</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The date on which the subject was identified as representing the Taxon. Recommended best practice is to use an encoding scheme, such as ISO 8601:2004(E).</tagdesc>
+   </ROW>
+   <ROW num="143">
+      <tagname>identificationReferences</tagname>
+      <title>Identification References</title>
+      <xmpvaltype>bag Text</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>A list (concatenated and separated) of references (publication, global unique identifier, URI) used in the Identification.</tagdesc>
+   </ROW>
+   <ROW num="144">
+      <tagname>identificationVerificationStatus</tagname>
+      <title>Identification Verification Status</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>A categorical indicator of the extent to which the taxonomic identification has been verified to be correct. Recommended best practice is to use a controlled vocabulary such as that used in HISPID/ABCD.</tagdesc>
+   </ROW>
+   <ROW num="145">
+      <tagname>identificationRemarks</tagname>
+      <title>Identification Remarks</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Comments or notes about the Identification.</tagdesc>
+   </ROW>
+   <ROW num="146">
+      <tagname>identificationQualifier</tagname>
+      <title>Identification Qualifier</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>A brief phrase or a standard term ("cf." "aff.") to express the determiner's doubts about the Identification.</tagdesc>
+   </ROW>
+   <ROW num="147">
+      <tagname>typeStatus</tagname>
+      <title>Type Status</title>
+      <xmpvaltype>bag Text</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>A list (concatenated and separated) of nomenclatural types (type status, typified scientific name, publication) applied to the subject.</tagdesc>
+   </ROW>
+   <ROW num="148">
+      <tagname>Taxon</tagname>
+      <title>Taxon</title>
+      <xmpvaltype>Taxon</xmpvaltype>
+      <type>XmpText</type>
+      <category>Internal</category>
+      <tagdesc>*Main structure* containing taxonomic based information.</tagdesc>
+   </ROW>
+   <ROW num="149">
+      <tagname>taxonID</tagname>
+      <title>Taxon ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>An identifier for the set of taxon information (data associated with the Taxon class). May be a global unique identifier or an identifier specific to the data set.</tagdesc>
+   </ROW>
+   <ROW num="150">
+      <tagname>scientificNameID</tagname>
+      <title>Scientific Name ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>An identifier for the nomenclatural (not taxonomic) details of a scientific name.</tagdesc>
+   </ROW>
+   <ROW num="151">
+      <tagname>acceptedNameUsageID</tagname>
+      <title>Accepted Name Usage ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>An identifier for the name usage (documented meaning of the name according to a source) of the currently valid (zoological) or accepted (botanical) taxon.</tagdesc>
+   </ROW>
+   <ROW num="152">
+      <tagname>parentNameUsageID</tagname>
+      <title>Parent Name Usage ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>An identifier for the name usage (documented meaning of the name according to a source) of the direct, most proximate higher-rank parent taxon (in a classification) of the most specific element of the scientificName.</tagdesc>
+   </ROW>
+   <ROW num="153">
+      <tagname>originalNameUsageID</tagname>
+      <title>Original Name Usage ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>An identifier for the name usage (documented meaning of the name according to a source) in which the terminal element of the scientificName was originally established under the rules of the associated nomenclaturalCode.</tagdesc>
+   </ROW>
+   <ROW num="154">
+      <tagname>nameAccordingToID</tagname>
+      <title>Name According To ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>An identifier for the source in which the specific taxon concept circumscription is defined or implied. See nameAccordingTo.</tagdesc>
+   </ROW>
+   <ROW num="155">
+      <tagname>namePublishedInID</tagname>
+      <title>Name Published In ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>An identifier for the publication in which the scientificName was originally established under the rules of the associated nomenclaturalCode.</tagdesc>
+   </ROW>
+   <ROW num="156">
+      <tagname>taxonConceptID</tagname>
+      <title>Taxon Concept ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>An identifier for the taxonomic concept to which the record refers - not for the nomenclatural details of a taxon.</tagdesc>
+   </ROW>
+   <ROW num="157">
+      <tagname>scientificName</tagname>
+      <title>Scientific Name</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The full scientific name, with authorship and date information if known. When forming part of an Identification, this should be the name in lowest level taxonomic rank that can be determined. This term should not contain identification qualifications, which should instead be supplied in the IdentificationQualifier term.</tagdesc>
+   </ROW>
+   <ROW num="158">
+      <tagname>acceptedNameUsage</tagname>
+      <title>Accepted Name Usage</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The full name, with authorship and date information if known, of the currently valid (zoological) or accepted (botanical) taxon.</tagdesc>
+   </ROW>
+   <ROW num="159">
+      <tagname>parentNameUsage</tagname>
+      <title>Parent Name Usage</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The full name, with authorship and date information if known, of the direct, most proximate higher-rank parent taxon (in a classification) of the most specific element of the scientificName.</tagdesc>
+   </ROW>
+   <ROW num="160">
+      <tagname>originalNameUsage</tagname>
+      <title>Original Name Usage</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The taxon name, with authorship and date information if known, as it originally appeared when first established under the rules of the associated nomenclaturalCode. The basionym (botany) or basonym (bacteriology) of the scientificName or the senior/earlier homonym for replaced names.</tagdesc>
+   </ROW>
+   <ROW num="161">
+      <tagname>nameAccordingTo</tagname>
+      <title>Name According To</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The reference to the source in which the specific taxon concept circumscription is defined or implied - traditionally signified by the Latin "sensu" or "sec." (from secundum, meaning "according to"). For taxa that result from identifications, a reference to the keys, monographs, experts and other sources should be given.</tagdesc>
+   </ROW>
+   <ROW num="162">
+      <tagname>namePublishedIn</tagname>
+      <title>Name Published In</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>A reference for the publication in which the scientificName was originally established under the rules of the associated nomenclaturalCode.</tagdesc>
+   </ROW>
+   <ROW num="163">
+      <tagname>namePublishedInYear</tagname>
+      <title>Name Published In Year</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The four-digit year in which the scientificName was published.</tagdesc>
+   </ROW>
+   <ROW num="164">
+      <tagname>higherClassification</tagname>
+      <title>Higher Classification</title>
+      <xmpvaltype>bag Text</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>A list (concatenated and separated) of taxa names terminating at the rank immediately superior to the taxon referenced in the taxon record. Recommended best practice is to order the list starting with the highest rank and separating the names for each rank with a semi-colon ;</tagdesc>
+   </ROW>
+   <ROW num="165">
+      <tagname>kingdom</tagname>
+      <title>Kingdom</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The full scientific name of the kingdom in which the taxon is classified.</tagdesc>
+   </ROW>
+   <ROW num="166">
+      <tagname>phylum</tagname>
+      <title>Phylum</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The full scientific name of the phylum or division in which the taxon is classified.</tagdesc>
+   </ROW>
+   <ROW num="167">
+      <tagname>class</tagname>
+      <title>Class</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The full scientific name of the class in which the taxon is classified.</tagdesc>
+   </ROW>
+   <ROW num="168">
+      <tagname>order</tagname>
+      <title>Order</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The full scientific name of the order in which the taxon is classified.</tagdesc>
+   </ROW>
+   <ROW num="169">
+      <tagname>family</tagname>
+      <title>Family</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The full scientific name of the family in which the taxon is classified.</tagdesc>
+   </ROW>
+   <ROW num="170">
+      <tagname>genus</tagname>
+      <title>Genus</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The full scientific name of the genus in which the taxon is classified.</tagdesc>
+   </ROW>
+   <ROW num="171">
+      <tagname>subgenus</tagname>
+      <title>Subgenus</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The full scientific name of the subgenus in which the taxon is classified. Values should include the genus to avoid homonym confusion.</tagdesc>
+   </ROW>
+   <ROW num="172">
+      <tagname>specificEpithet</tagname>
+      <title>Specific Epithet</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The name of the first or species epithet of the scientificName.</tagdesc>
+   </ROW>
+   <ROW num="173">
+      <tagname>infraspecificEpithet</tagname>
+      <title>Infraspecific Epithet</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The name of the lowest or terminal infraspecific epithet of the scientificName, excluding any rank designation.</tagdesc>
+   </ROW>
+   <ROW num="174">
+      <tagname>taxonRank</tagname>
+      <title>Taxon Rank</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The taxonomic rank of the most specific name in the scientificName. Recommended best practice is to use a controlled vocabulary.</tagdesc>
+   </ROW>
+   <ROW num="175">
+      <tagname>verbatimTaxonRank</tagname>
+      <title>Verbatim Taxon Rank</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The taxonomic rank of the most specific name in the scientificName as it appears in the original record.</tagdesc>
+   </ROW>
+   <ROW num="176">
+      <tagname>scientificNameAuthorship</tagname>
+      <title>Scientific Name Authorship</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The authorship information for the scientificName formatted according to the conventions of the applicable nomenclaturalCode.</tagdesc>
+   </ROW>
+   <ROW num="177">
+      <tagname>vernacularName</tagname>
+      <title>Vernacular Name</title>
+      <xmpvaltype>Lang Alt</xmpvaltype>
+      <type>LangAlt</type>
+      <category>External</category>
+      <tagdesc>A common or vernacular name.</tagdesc>
+   </ROW>
+   <ROW num="178">
+      <tagname>nomenclaturalCode</tagname>
+      <title>Nomenclatural Code</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The nomenclatural code (or codes in the case of an ambiregnal name) under which the scientificName is constructed. Recommended best practice is to use a controlled vocabulary.</tagdesc>
+   </ROW>
+   <ROW num="179">
+      <tagname>taxonomicStatus</tagname>
+      <title>Taxonomic Status</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The status of the use of the scientificName as a label for a taxon. Requires taxonomic opinion to define the scope of a taxon. Rules of priority then are used to define the taxonomic status of the nomenclature contained in that scope, combined with the experts opinion. It must be linked to a specific taxonomic reference that defines the concept. Recommended best practice is to use a controlled vocabulary.</tagdesc>
+   </ROW>
+   <ROW num="180">
+      <tagname>nomenclaturalStatus</tagname>
+      <title>Nomenclatural Status</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The status related to the original publication of the name and its conformance to the relevant rules of nomenclature. It is based essentially on an algorithm according to the business rules of the code. It requires no taxonomic opinion.</tagdesc>
+   </ROW>
+   <ROW num="181">
+      <tagname>taxonRemarks</tagname>
+      <title>Taxon Remarks</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Comments or notes about the taxon or name.</tagdesc>
+   </ROW>
+   <ROW num="182">
+      <tagname>ResourceRelationship</tagname>
+      <title>Resource Relationship</title>
+      <xmpvaltype>ResourceRelationship</xmpvaltype>
+      <type>XmpText</type>
+      <category>Internal</category>
+      <tagdesc>*Main structure* containing relationships between resources based information.</tagdesc>
+   </ROW>
+   <ROW num="183">
+      <tagname>resourceRelationshipID</tagname>
+      <title>Resource Relationship ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>An identifier for an instance of relationship between one resource (the subject) and another (relatedResource, the object).</tagdesc>
+   </ROW>
+   <ROW num="184">
+      <tagname>resourceID</tagname>
+      <title>Resource ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>An identifier for the resource that is the subject of the relationship.</tagdesc>
+   </ROW>
+   <ROW num="185">
+      <tagname>relatedResourceID</tagname>
+      <title>Related Resource ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>An identifier for a related resource (the object, rather than the subject of the relationship).</tagdesc>
+   </ROW>
+   <ROW num="186">
+      <tagname>relationshipOfResource</tagname>
+      <title>Relationship Of Resource</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The relationship of the resource identified by relatedResourceID to the subject (optionally identified by the resourceID). Recommended best practice is to use a controlled vocabulary.</tagdesc>
+   </ROW>
+   <ROW num="187">
+      <tagname>relationshipAccordingTo</tagname>
+      <title>Relationship According To</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The source (person, organization, publication, reference) establishing the relationship between the two resources.</tagdesc>
+   </ROW>
+   <ROW num="188">
+      <tagname>relationshipEstablishedDate</tagname>
+      <title>Relationship Established Date</title>
+      <xmpvaltype>Date</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The date-time on which the relationship between the two resources was established. Recommended best practice is to use an encoding scheme, such as ISO 8601:2004(E).</tagdesc>
+   </ROW>
+   <ROW num="189">
+      <tagname>relationshipRemarks</tagname>
+      <title>Relationship Remarks</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Comments or notes about the relationship between the two resources.</tagdesc>
+   </ROW>
+   <ROW num="190">
+      <tagname>MeasurementOrFact</tagname>
+      <title>Measurement Or Fact</title>
+      <xmpvaltype>MeasurementOrFact</xmpvaltype>
+      <type>XmpText</type>
+      <category>Internal</category>
+      <tagdesc>*Main structure* containing measurement based information.</tagdesc>
+   </ROW>
+   <ROW num="191">
+      <tagname>measurementID</tagname>
+      <title>Measurement ID</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>An identifier for the MeasurementOrFact (information pertaining to measurements, facts, characteristics, or assertions). May be a global unique identifier or an identifier specific to the data set.</tagdesc>
+   </ROW>
+   <ROW num="192">
+      <tagname>measurementType</tagname>
+      <title>Measurement Type</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The nature of the measurement, fact, characteristic, or assertion. Recommended best practice is to use a controlled vocabulary.</tagdesc>
+   </ROW>
+   <ROW num="193">
+      <tagname>measurementValue</tagname>
+      <title>Measurement Value</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The value of the measurement, fact, characteristic, or assertion.</tagdesc>
+   </ROW>
+   <ROW num="194">
+      <tagname>measurementAccuracy</tagname>
+      <title>Measurement Accuracy</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The description of the potential error associated with the measurementValue.</tagdesc>
+   </ROW>
+   <ROW num="195">
+      <tagname>measurementUnit</tagname>
+      <title>Measurement Unit</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The units associated with the measurementValue. Recommended best practice is to use the International System of Units (SI).</tagdesc>
+   </ROW>
+   <ROW num="196">
+      <tagname>measurementDeterminedDate</tagname>
+      <title>Measurement Determined Date</title>
+      <xmpvaltype>Date</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The date on which the MeasurementOrFact was made. Recommended best practice is to use an encoding scheme, such as ISO 8601:2004(E).</tagdesc>
+   </ROW>
+   <ROW num="197">
+      <tagname>measurementDeterminedBy</tagname>
+      <title>Measurement Determined By</title>
+      <xmpvaltype>bag Text</xmpvaltype>
+      <type>XmpBag</type>
+      <category>External</category>
+      <tagdesc>A list (concatenated and separated) of names of people, groups, or organizations who determined the value of the MeasurementOrFact.</tagdesc>
+   </ROW>
+   <ROW num="198">
+      <tagname>measurementMethod</tagname>
+      <title>Measurement Method</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>A description of or reference to (publication, URI) the method or protocol used to determine the measurement, fact, characteristic, or assertion.</tagdesc>
+   </ROW>
+   <ROW num="199">
+      <tagname>measurementRemarks</tagname>
+      <title>Measurement Remarks</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>Comments or notes accompanying the MeasurementOrFact.</tagdesc>
+   </ROW>
+</ROWSET>
+</TAGLIST>

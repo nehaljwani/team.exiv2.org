@@ -1,0 +1,32 @@
+<?xml version = '1.0'?>
+<?xml-stylesheet type="text/xsl" href="tags.xsl"?>
+<TAGLIST>
+<HEADER>
+<title>XYZ MakerNote Tags defined in Exiv2</title>
+<text>
+<p>Tags found in the MakerNote of images taken with XYZ cameras. These tags 
+are defined by Exiv2 in accordance with <a href="makernote.html#RX">[X]</a>.</p>
+<p>Click on a column header to sort the table.</p>
+</text>
+</HEADER>
+<ROWSET>
+   <ROW num="1">
+      <tagname>PanoramaFrame</tagname>
+      <tagdec>2</tagdec>
+      <taghex>0x0002</taghex>
+      <ifd>CanonPa</ifd>
+      <key>Exif.CanonPa.PanoramaFrame</key>
+      <type>Short</type>
+      <tagdesc>Panorama frame number</tagdesc>
+   </ROW>
+   <ROW num="2">
+      <tagname>PanoramaDirection</tagname>
+      <tagdec>5</tagdec>
+      <taghex>0x0005</taghex>
+      <ifd>CanonPa</ifd>
+      <key>Exif.CanonPa.PanoramaDirection</key>
+      <type>Short</type>
+      <tagdesc>Panorama direction</tagdesc>
+   </ROW>
+</ROWSET>
+</TAGLIST>

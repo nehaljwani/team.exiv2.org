@@ -1,0 +1,69 @@
+<?xml version = '1.0'?>
+<?xml-stylesheet type="text/xsl" href="xmp.xsl"?>
+<TAGLIST>
+<HEADER>
+<title>XMP tags defined in Exiv2</title>
+<text>
+<p>Some description</p>
+<p>Click on a column header to sort the table.</p>
+</text>
+</HEADER>
+<ROWSET>
+   <ROW num="1">
+      <tagname>TagsList</tagname>
+      <title>Tags List</title>
+      <xmpvaltype>seq Text</xmpvaltype>
+      <type>XmpSeq</type>
+      <category>External</category>
+      <tagdesc>The list of complete tags path as string. The path hierarchy is separated by '/' character (ex.: "City/Paris/Monument/Eiffel Tower".</tagdesc>
+   </ROW>
+   <ROW num="2">
+      <tagname>CaptionsAuthorNames</tagname>
+      <title>Captions Author Names</title>
+      <xmpvaltype>Lang Alt</xmpvaltype>
+      <type>LangAlt</type>
+      <category>External</category>
+      <tagdesc>The list of all captions author names for each language alternative captions set in standard XMP tags.</tagdesc>
+   </ROW>
+   <ROW num="3">
+      <tagname>CaptionsDateTimeStamps</tagname>
+      <title>Captions Date Time Stamps</title>
+      <xmpvaltype>Lang Alt</xmpvaltype>
+      <type>LangAlt</type>
+      <category>External</category>
+      <tagdesc>The list of all captions date time stamps for each language alternative captions set in standard XMP tags.</tagdesc>
+   </ROW>
+   <ROW num="4">
+      <tagname>ImageHistory</tagname>
+      <title>Image History</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>An XML based content to list all action processed on this image with image editor (as crop, rotate, color corrections, adjustments, etc.).</tagdesc>
+   </ROW>
+   <ROW num="5">
+      <tagname>LensCorrectionSettings</tagname>
+      <title>Lens Correction Settings</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The list of Lens Correction tools settings used to fix lens distortion. This include Batch Queue Manager and Image editor tools based on LensFun library.</tagdesc>
+   </ROW>
+   <ROW num="6">
+      <tagname>ColorLabel</tagname>
+      <title>Color Label</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The color label assigned to this item. Possible values are "0": no label; "1": Red; "2": Orange; "3": Yellow; "4": Green; "5": Blue; "6": Magenta; "7": Gray; "8": Black; "9": White.</tagdesc>
+   </ROW>
+   <ROW num="7">
+      <tagname>PickLabel</tagname>
+      <title>Pick Label</title>
+      <xmpvaltype>Text</xmpvaltype>
+      <type>XmpText</type>
+      <category>External</category>
+      <tagdesc>The pick label assigned to this item. Possible values are "0": no label; "1": item rejected; "2": item in pending validation; "3": item accepted.</tagdesc>
+   </ROW>
+</ROWSET>
+</TAGLIST>
