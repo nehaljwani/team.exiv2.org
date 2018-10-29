@@ -16,7 +16,9 @@ fi
 
 declare -A drives=( \
    # ["Photos"]="/Volumes/Photos/" \
-   ["Backup"]="/Volumes/Backup/Photos/" \
+   # ["BackupXX"]="/Volumes/Backup/Photos/" \
+   # ["Backup"]="rmills@exiv2.dyndns.org:/Volumes/Backup/Photos/"
+   ["Backup"]="rmills@rmillsmm:/Volumes/Backup/Photos/"
 )
 
 reportDrives() {
@@ -32,16 +34,16 @@ reportDrives() {
 # write the drives we can find
 for drive in "${!drives[@]}"; do
 	to=${drives["$drive"]}
-	if [ -d "$to" ]; then
+	#if [ -d "$to" ]; then
 		echo '---' rsync -varz "$directory" "$to" '---'
 			       rsync -varz "$directory" "$to"
 		echo
-	else
-		echo '***'"$to does not exist"'***'
-	fi
+	#else
+	#	echo '***'"$to does not exist"'***'
+	#fi
 done
 
-reportDrives
+# reportDrives
 
 # That's all Folks!
 ##
