@@ -9,12 +9,15 @@ Caution: Updating the website can be two or three days work to be certain everyt
 
          For a 'dot' release, it only requires:
          1 Update the version on the website (echo -e '0.27.0.1' > var/__version__)
-         2 make get-latest
-         3 pushd bin ; make rssdate ; popd
-         4 make update
-         5 make
-         6 make publish
+         2 make get-latest                                 # get "Latest" builds from Jenkins
+         3 pushd bin ; make rssdate ; popd                 # make sure rssdate is built
+         4 pushd ${EXIV2HOME}/doc/templates ; make ; popd  # create Exif.xml, Iptc.xml etc
+         5 make update                                     # makes Exiv2.pdf and runs Doxygwen
+         6 make                                            #
+         7 make publish                                    # copies the web to ~/Jenkins/website/html/
 
+Process
+-------
 1 month before the release: Update po/ directory, notify translators
 2 weeks before the release: Update po/ directory, remind translators
 Update po/ directory

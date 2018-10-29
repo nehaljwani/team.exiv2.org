@@ -700,17 +700,19 @@ RECURSIVE              = NO
 # Note that relative paths are relative to the directory from which doxygen is
 # run.
 
-EXCLUDE                = ../src/getopt_win32.c \
-                         ../src/getopt_win32.h \
-                         ../src/localtime.c \
-                         ../src/private.h \
-                         ../src/timegm.h \
-                         ../src/tzfile.h \
-                         ../src/doxygen.hpp \
-                         ../src/exiv2.hpp \
-                         ../src/actions.hpp \
-                         ../src/metacopy.hpp \
-                         ../src/utils.hpp
+EXCLUDE                = $(EXIV2HOME)/samples/Jzon.h \
+                         $(EXIV2HOME)/samples/Jzon.cpp \
+                         $(EXIV2HOME)/src/actions.hpp \
+                         $(EXIV2HOME)/src/actions.cpp \
+                         $(EXIV2HOME)/src/getopt.cpp \
+                         $(EXIV2HOME)/src/getopt.hpp \
+                         $(EXIV2HOME)/src/localtime.c \
+                         $(EXIV2HOME)/src/fff.h \
+                         $(EXIV2HOME)/src/private.h \
+                         $(EXIV2HOME)/src/timegm.h \
+                         $(EXIV2HOME)/src/tzfile.h \
+                         $(EXIV2HOME)/src/unused.h \
+
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded
@@ -895,7 +897,7 @@ GENERATE_HTML          = YES
 # If a relative path is entered the value of OUTPUT_DIRECTORY will be
 # put in front of it. If left blank `html' will be used as the default path.
 
-HTML_OUTPUT            = html/doc
+HTML_OUTPUT            = $(EXIV2WEB)/html/doc
 
 # The HTML_FILE_EXTENSION tag can be used to specify the file extension for
 # each generated HTML page (for example: .htm,.php,.asp). If it is left blank
@@ -1635,7 +1637,7 @@ TAGFILES               =
 # When a file name is specified after GENERATE_TAGFILE, doxygen will create
 # a tag file that is based on the input files it reads.
 
-GENERATE_TAGFILE       =
+GENERATE_TAGFILE       = NO
 
 # If the ALLEXTERNALS tag is set to YES all external classes will be listed
 # in the class index. If set to NO only the inherited external classes
