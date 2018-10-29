@@ -505,8 +505,8 @@ differ () {
 	     $cmd ${args[*]} &
 }
 
-EXIV2HOME=~/gnu/github/exiv2/exiv2
-EXIV2WEB=~/gnu/exiv2/team/website
+export EXIV2HOME=~/gnu/github/exiv2/exiv2
+export EXIV2WEB=~/gnu/exiv2/team/website
 alias web='cd ${EXIV2WEB}'
 alias home='cd ${EXIV2HOME}'
 
