@@ -47,7 +47,8 @@ Rebuilding the website
     cd $EXIV2WEB
     $ pushd bin ; make rssdate ; popd                 # make sure rssdate is built
     $ echo -e '0.27.0.2' > var/__version__            # build stamp for web pages
-    $ make get-latest                                 # get "Latest" builds from Jenkins
+    $ make get-latest                                 # get "Latest" builds from Jenkins !!
+                                                      # OR Manually download them (see below)
     $ make update                                     # makes Exiv2.pdf and other stuff
     $ make                                            # runs Doxygen to make the web site
     $ open html/index.html (http://rmillsmm-exiv2)    # website should look fine from file://$EXIV2WEB/html/index.html
@@ -62,6 +63,31 @@ Rebuilding the website
     Facebook fan page update
     Freshmeat.net announcement
     https://discuss.pixls.us
+
+Downloading Builds
+------------------
+
+$ cd $EXIV2WEB
+$ make get-latest                 # works on buildserver for "Latest"
+
+If you want another build, or not working on the buildserver
+Look up the builds: http://exiv2.dyndns.org:8080/userContent/builds/
+Pull down one or more builds
+Copy them into $EXIV2WEB/builds
+519 rmills@rmillsmm:~/gnu/exiv2/team/website $ ls -l builds
+total 47124
+-r--r--r--+ 1 rmills staff  4030018 Oct 30 15:27 exiv2-0.27.0.2-CYGWIN-2018:10:30_15:16:17.tar.gz
+-r--r--r--+ 1 rmills staff  2934325 Oct 30 15:19 exiv2-0.27.0.2-Darwin-2018:10:30_15:16:17.tar.gz
+-r--r--r--+ 1 rmills staff  2229477 Oct 30 15:18 exiv2-0.27.0.2-Linux-2018:10:30_15:16:17.tar.gz
+-r--r--r--+ 1 rmills staff  2623545 Oct 30 15:27 exiv2-0.27.0.2-MSVC-2018:10:30_15:16:17.zip
+-r--r--r--+ 1 rmills staff  3584163 Oct 30 15:28 exiv2-0.27.0.2-MinGW32-2018:10:30_15:16:17.tar.gz
+-r--r--r--+ 1 rmills staff  6055096 Oct 30 15:28 exiv2-0.27.0.2-MinGW64-2018:10:30_15:16:17.tar.gz
+-r--r--r--+ 1 rmills staff 26780158 Oct 30 15:33 exiv2-0.27.0.2-Source-2018:10:30_15:16:17.tar.gz
+520 rmills@rmillsmm:~/gnu/exiv2/team/website $
+
+$ cd $EXIV2WEB
+$ make update                 # respects the builds in $EXIV2WEB/builds
+$ make
 
 Website Details
 ----------------
