@@ -1,56 +1,21 @@
 Release checklist
 -----------------
+
+Caution: Making a release can take two or three days work to be certain everything is good.
+         Many scripts are provided, however this is not a "push button" operation.
+
 $ export EXIV2HOME=~/gnu/github/exiv2/exiv2
 $ export EXIV2WEB=~/gnu/exiv2/team/website
 
-Caution: Updating the website can be two or three days work to be certain everything is good.
-         Many scripts are provided, however this is not a "push button" operation.
+Update version
+--------------
 
-         For a 'dot' release, it only requires:
-         1 Get Jenkins to build the code
-         2 build the code locally
-           cd ${EXIV2HOME}
-           mkdir build etc ....                              # the website scripts use Exiv2 sample programs
-           cd doc/templates ; make                           # create Exif.xml, Iptc.xml etc
-         3 update the website
-           cd $EXIV2WEB
-           $ echo -e '0.27.0.1' > var/__version__)
-           $ make get-latest                                 # get "Latest" builds from Jenkins
-           $ pushd bin ; make rssdate ; popd                 # make sure rssdate is built
-           $ make update                                     # makes Exiv2.pdf and other stuff
-           $ make                                            # runs Doxygen to make the web site
-           $ open html/index.html                            # website should look fine from file://$EXIV2WEB/html/index.html
-           $ make publish                                    # copies the web to ~/Jenkins/website/html/
-
-Localization
-------------
-1 month before the release: Update po/ directory, notify translators
-2 weeks before the release: Update po/ directory, remind translators
-Update po/ directory
-
-Building the release
---------------------
 Update version in $EXIV2HOME/CMakeLists.txt
-Get Jenkins to build 'master' (for v0.27.0.1, I build on branch 'RC1')
-Check the build logs on Jenkins
 
-Build on your machine
----------------------
-The sample programs are used to generate web pages.
+Updating ChangeLog
+------------------
 
-$ cd $EXIV2HOME
-$ rm -rf build ; mkdir build; cd make
-$ cmake .. -G "Unix Makefiles"
-$ make
-$ cd doc/templates
-$ make
-
-Updating the website
---------------------
-
-Update the Version on the website
-$ cd $EXIV2WEB
-$ echo -e '0.27.0.1' > var/__version__
+I don't know how to do this for GitHub!
 
 Run the script to get revision history:
 $ cd $EXIV2WEB/../contrib/redmine
@@ -58,13 +23,50 @@ $ ./progress.py getdata.sh release
 Modify/paste output to html/var/__ChangeLog__
 
 $ ./progress.py getdata.sh release console
+$ cd $EXIV2HOME
 Modify/paste output to doc/ChangeLog
 
-GitHub update for v0.27 and later
----------------------------------
-Might be automagic, don't know yet.
+Localization
+------------
+1 month before the release: Update po/ directory, notify translators
+2 weeks before the release: Update po/ directory, remind translators
+Update po/ directory
 
-Update var/__ChangeLog__ and doc/ChangeLog
+Rebuilding the website
+----------------------
+
+1   Get Jenkins to build the "shipping branch"
+    Download the bundles and inspect them
+
+2   Build the code locally
+    cd ${EXIV2HOME}
+    mkdir build etc ....                              # the website scripts use Exiv2 sample programs
+    cd doc/templates ; make                           # create Exif.xml, Iptc.xml etc
+
+3   Update the website
+    cd $EXIV2WEB
+    $ pushd bin ; make rssdate ; popd                 # make sure rssdate is built
+    $ echo -e '0.27.0.2' > var/__version__            # build stamp for web pages
+    $ make get-latest                                 # get "Latest" builds from Jenkins
+    $ make update                                     # makes Exiv2.pdf and other stuff
+    $ make                                            # runs Doxygen to make the web site
+    $ open html/index.html (http://rmillsmm-exiv2)    # website should look fine from file://$EXIV2WEB/html/index.html
+    Validate uploaded webpages with W3C HTML checker  # Don't know yet how to do this
+    $ make publish                                    # copies the web to ~/Jenkins/website/html/
+
+4   Cleanup local build
+    I use Smart Git to "delete" ${EXIV2HOME}/doc/templates/*.xml
+
+5   When you're sure it's good, tell the world:
+    Exiv2 forum announcement
+    Facebook fan page update
+    Freshmeat.net announcement
+    https://discuss.pixls.us
+
+Website Details
+----------------
+
+svn://dev.exiv2.org/svn/team/website
 
 Review and update webpages
     News page             master/news.xml
@@ -75,29 +77,9 @@ Review and update webpages
 Review and update documentation
     API doc intro
     Taglists             # $ pushd $EXIV2HOME/doc/templates ; make ; popd
-    Update READMEs (I use MacDown) html/README.html and html/README-CONAN.html
-
-Copy the builds from the webserver to the website:
-    $ cd $EXIV2WEB
-    $ make get-latest
-
-    Get the Website ready:
-    $ cd $EXIV2WEB
-    $ make update
-    $ make
-    $ open html/index.html
-
-    Validate uploaded webpages with W3C HTML checker
-
-    Copy the html/ directory to the webserver.
-    $ make publish
-
-When you're sure it's good, tell the world
-------------------------------------------
-    Exiv2 forum announcement
-    Facebook fan page update
-    Freshmeat.net announcement
-    https://discuss.pixls.us
+    Update README.md and README-CONAN.md
+    $EXIV2HOME/releasenotes/releasenotes.txt    - General Notes for every platform
+    $EXIV2HOME/releasenotes/platform/ReadMe.txt - Notes for individual platform.
 
 # That's all Folks!
 ##

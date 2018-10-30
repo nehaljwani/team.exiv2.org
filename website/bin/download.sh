@@ -14,15 +14,15 @@ rm -rf $basedir/var/$buttons
 # clean up from last time and copy builds html/builds
 if [ -e   $basedir/html/builds ]; then rm -rf $basedir/html/builds ; fi
 mkdir -p  $basedir/html/builds
-cp        $basedir/builds/*                   $basedir/html/builds
 
-for P in Darwin Linux CYGWIN MinGW-64 MinGW-32 MSVC Source ; do
+for P in Darwin Linux CYGWIN MinGW64 MinGW32 MSVC Source ; do
     ext=tar.gz
 	if [ $P == MSVC ]; then ext=zip ; fi
 	p=exiv2-$version-$P.$ext
+    cp    -p  $basedir/builds/*${P}*  $basedir/html/builds/$p
 
 	size=$(ls -la        html/builds/$p | cut -d' ' -f 5)
-	date=$(stat -c "%y"  html/builds/$p | cut -d' ' -f 1)
+	date=$(stat -c "%y"  html/builds/$p | cut -d' ' -f 1-2 | cut -d: -f 1-2)
 	checkSum=$(sha256sum html/builds/$p | cut -d' ' -f 1)
 
 	echo "<tr>  \
@@ -36,7 +36,7 @@ for P in Darwin Linux CYGWIN MinGW-64 MinGW-32 MSVC Source ; do
 	platform=$P
 	config="64 bit shared libraries"
 	if [ "$platform" == Darwin   ]; then platform="MacOSX"                 ; fi
-	if [ "$platform" == MinGW-32 ]; then config="32 bit shared libraries"  ; fi
+	if [ "$platform" == MinGW32  ]; then config="32 bit shared libraries"  ; fi
 	if [ "$platform" == MSVC     ]; then platform="Visual Studio"; config="64 bit DLLs for<br>Visual Studio 2017"; fi
 	if [ "$platform" != Source   ]; then
   	  echo "<tr><td>$platform<h3></td><td>$config</td> \
@@ -49,6 +49,7 @@ for P in Darwin Linux CYGWIN MinGW-64 MinGW-32 MSVC Source ; do
             </td></tr>" >> $basedir/var/$buttons
     fi
 done
+ls -l $basedir/html/builds/*
 
 # That's all Folks!
 ##
