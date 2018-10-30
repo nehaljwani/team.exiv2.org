@@ -61,15 +61,15 @@ def visitfile(file,path,myData):
     home = myData['home' ]
 
     if os.path.isfile(path) and file.find('-') != -1:
-        # parse exiv2-0.27.0.1-CYGWIN-2018:10:19_01:13:00.tar.gz
-        print('file = ' + file)
-        splits = file.split('-')
-        platform = splits[2]
-        date     = splits[3].split('.')[0]
-        version  = splits[1]
-        monthly= year_month(date)
-        weekly = year_week(date)
-        print( "%s -> platform = %s version = %s date = %s " % (file , platform,version,date) )
+        # parse exiv2-0.27.0.1-MSVC-2018:10:20_06:33:13.zip
+        # print('file = ' + file)
+        splits = file.split('-') # ( 'exiv2', '0.27.0.1', 'MSVC', '2018:10:20_06:33:13.zip')
+        version  = splits[1]               # 0.27.0.1
+        platform = splits[2]               # MSVC
+        date     = splits[3].split('.')[0] # 2018:10:20_06:33:13
+        monthly= year_month(date)          # 2018:10
+        weekly = year_week(date)           # 2018:43
+        # print( "%s -> platform = %s version = %s date = %s " % (file , platform,version,date) )
 
         myData ['platform'].add(platform)
         myData ['date'    ].add(date    )

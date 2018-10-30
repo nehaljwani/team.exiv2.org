@@ -4,27 +4,49 @@ $ export EXIV2HOME=~/gnu/github/exiv2/exiv2
 $ export EXIV2WEB=~/gnu/exiv2/team/website
 
 Caution: Updating the website can be two or three days work to be certain everything is good.
-         You should publish the website (on another server) and ask the team to review
          Many scripts are provided, however this is not a "push button" operation.
 
          For a 'dot' release, it only requires:
-         1 Update the version on the website (echo -e '0.27.0.1' > var/__version__)
-         2 make get-latest                                 # get "Latest" builds from Jenkins
-         3 pushd bin ; make rssdate ; popd                 # make sure rssdate is built
-         4 pushd ${EXIV2HOME}/doc/templates ; make ; popd  # create Exif.xml, Iptc.xml etc
-         5 make update                                     # makes Exiv2.pdf and runs Doxygwen
-         6 make                                            #
-         7 make publish                                    # copies the web to ~/Jenkins/website/html/
+         1 Get Jenkins to build the code
+         2 build the code locally
+           cd ${EXIV2HOME}
+           mkdir build etc ....                              # the website scripts use Exiv2 sample programs
+           cd doc/templates ; make                           # create Exif.xml, Iptc.xml etc
+         3 update the website
+           cd $EXIV2WEB
+           $ echo -e '0.27.0.1' > var/__version__)
+           $ make get-latest                                 # get "Latest" builds from Jenkins
+           $ pushd bin ; make rssdate ; popd                 # make sure rssdate is built
+           $ make update                                     # makes Exiv2.pdf and other stuff
+           $ make                                            # runs Doxygen to make the web site
+           $ open html/index.html                            # website should look fine from file://$EXIV2WEB/html/index.html
+           $ make publish                                    # copies the web to ~/Jenkins/website/html/
 
-Process
--------
+Localization
+------------
 1 month before the release: Update po/ directory, notify translators
 2 weeks before the release: Update po/ directory, remind translators
 Update po/ directory
 
+Building the release
+--------------------
 Update version in $EXIV2HOME/CMakeLists.txt
 Get Jenkins to build 'master' (for v0.27.0.1, I build on branch 'RC1')
 Check the build logs on Jenkins
+
+Build on your machine
+---------------------
+The sample programs are used to generate web pages.
+
+$ cd $EXIV2HOME
+$ rm -rf build ; mkdir build; cd make
+$ cmake .. -G "Unix Makefiles"
+$ make
+$ cd doc/templates
+$ make
+
+Updating the website
+--------------------
 
 Update the Version on the website
 $ cd $EXIV2WEB
@@ -34,44 +56,48 @@ Run the script to get revision history:
 $ cd $EXIV2WEB/../contrib/redmine
 $ ./progress.py getdata.sh release
 Modify/paste output to html/var/__ChangeLog__
+
 $ ./progress.py getdata.sh release console
 Modify/paste output to doc/ChangeLog
 
-GitHub update for v0.27 and later (might be automagic, don't know yet)
+GitHub update for v0.27 and later
+---------------------------------
+Might be automagic, don't know yet.
 
 Update var/__ChangeLog__ and doc/ChangeLog
 
 Review and update webpages
-	News page             master/news.xml
-	Download page         master/download.html.in
-	Archive page          master/archive.html.in
-	Index page            master/index.html.in
-	Other pages as needed
+    News page             master/news.xml
+    Download page         master/download.html.in
+    Archive page          master/archive.html.in
+    Index page            master/index.html.in
+    Other pages as needed
 Review and update documentation
-	API doc intro
-	Taglists
-	Update READMEs (I use MacDown) html/README.html and html/README-CONAN.html
+    API doc intro
+    Taglists             # $ pushd $EXIV2HOME/doc/templates ; make ; popd
+    Update READMEs (I use MacDown) html/README.html and html/README-CONAN.html
 
 Copy the builds from the webserver to the website:
-	$ cd $EXIV2WEB
+    $ cd $EXIV2WEB
     $ make get-latest
 
-	Get the Website ready:
-	$ cd $EXIV2WEB
-	$ make update
-	$ make
-	$ open html/index.html
+    Get the Website ready:
+    $ cd $EXIV2WEB
+    $ make update
+    $ make
+    $ open html/index.html
 
-	Validate uploaded webpages with W3C HTML checker
+    Validate uploaded webpages with W3C HTML checker
 
-	Copy the html/ directory to the webserver.
-	$ make publish
+    Copy the html/ directory to the webserver.
+    $ make publish
 
 When you're sure it's good, tell the world
-	Exiv2 forum announcement
-	Facebook fan page update
-	Freshmeat.net announcement
-	https://discuss.pixls.us
+------------------------------------------
+    Exiv2 forum announcement
+    Facebook fan page update
+    Freshmeat.net announcement
+    https://discuss.pixls.us
 
 # That's all Folks!
 ##
