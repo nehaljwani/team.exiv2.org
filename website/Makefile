@@ -111,6 +111,12 @@ ifndef EXIV2WEB
   $(error EXIV2WEB is undefined.  It should be something like /home/rmills/exiv2/team/website)
 endif
 
+test: check-environment
+	@test -f $(EXIV2HOME)/doc/templates/Exif.xml || echo '***' $(EXIV2HOME)/doc/templates/Exif.xml does not exist '***'
+	@test -f $(EXIV2HOME)/build/bin/exiv2        || echo '***' $(EXIV2HOME)/build/bin/exiv2 does not exist '***'
+	@echo "Environment looks good"
+
+
 html: news check-environment
 	@bin/download.sh
 	@bin/gen.py master/*.in
@@ -154,7 +160,7 @@ html/rss.xml: master/news.xml
 
 
 # Run bin/release_info.sh to update release related variables (incl __version__)
-update: update-manpage update-intro update-sample update-conversion update-changelog update-tags update-makernotes
+update: check-environment update-manpage update-intro update-sample update-conversion update-changelog update-tags update-makernotes
 
 update-manpage:
 	@man -t exiv2 | ps2pdf   - html/exiv2-manpage.pdf
@@ -175,7 +181,12 @@ update-conversion:
 	@./bin/conversion.sh
 
 update-changelog:
-	@echo changelog should be updated using team/contrib/redmine/progress.py
+	@echo -------------------------------------------------------------
+	@echo '***' manually update Changelogs, releasenotes and whatsnew '***'
+	@ls -l $(EXIV2WEB)/var/__ChangeLog__ $(EXIV2WEB)/var/__whatsnew-table__
+	@ls -l $(EXIV2HOME)/doc/ChangeLog $(EXIV2HOME)/releasenotes/releasenotes.txt
+	@echo '***' changelogs can be updated using team/contrib/redmine/progress.py '***'
+	@echo ------------------------------------------------------------------------
 
 update-makernotes:
 	@cp -f ${EXIV2HOME}/doc/templates/__makernotes__ var/__makernotes__

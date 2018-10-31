@@ -1,30 +1,41 @@
 Release checklist
 -----------------
 
-Caution: Making a release can take two or three days work to be certain everything is good.
-         Many scripts are provided, however this is not a "push button" operation.
+Caution: This is not a "push button" operation.
+         The build is totally scripted, however you have to manually update documentation
+         Making a major new release can take several days to be certain everything is good.
+         Making a dot release takes about 2-3 hours to  update docs, build, test, publish
 
 $ export EXIV2HOME=~/gnu/github/exiv2/exiv2
 $ export EXIV2WEB=~/gnu/exiv2/team/website
+
+$ cd $EXIV2WEB
+$ make test                                # check that the environment is correctly set up.
 
 Update version
 --------------
 
 Update version in $EXIV2HOME/CMakeLists.txt
 
-Updating ChangeLog
-------------------
+Updating ChangeLogs and ReleaseNotes
+------------------------------------
 
-I don't know how to do this for GitHub!
+I don't know how to do get a list of changes from GitHub
 
 Run the script to get revision history:
 $ cd $EXIV2WEB/../contrib/redmine
 $ ./progress.py getdata.sh release
 Modify/paste output to html/var/__ChangeLog__
 
+$ cd $EXIV2WEB
+Modify var/__whatsnew-table__
+
 $ ./progress.py getdata.sh release console
 $ cd $EXIV2HOME
 Modify/paste output to doc/ChangeLog
+
+$ cd $EXIV2HOME
+Edit releasenotes/releasenotes.txt
 
 Localization
 ------------
@@ -52,16 +63,16 @@ Rebuilding the website
     $ make update                                     # makes Exiv2.pdf and other stuff
     $ make                                            # runs Doxygen to make the web site
     $ open html/index.html (http://rmillsmm-exiv2)    # website should look fine from file://$EXIV2WEB/html/index.html
-    Validate uploaded webpages with W3C HTML checker  # Don't know yet how to do this
     $ make publish                                    # copies the web to ~/Jenkins/website/html/
+
+    Validate uploaded webpages with W3C HTML checker  # https://validator.w3.org
 
 4   Cleanup local build
     I use Smart Git to "delete" ${EXIV2HOME}/doc/templates/*.xml
 
 5   When you're sure it's good, tell the world:
-    Exiv2 forum announcement
+    Exiv2    forum announcement
     Facebook fan page update
-    Freshmeat.net announcement
     https://discuss.pixls.us
 
 Downloading Builds
@@ -70,7 +81,7 @@ Downloading Builds
 $ cd $EXIV2WEB
 $ make get-latest                 # works on buildserver for "Latest"
 
-If you want another build, or not working on the buildserver
+If you want another build, or you are not actually sitting on the buildserver
 Look up the builds: http://exiv2.dyndns.org:8080/userContent/builds/
 Pull down one or more builds
 Copy them into $EXIV2WEB/builds
