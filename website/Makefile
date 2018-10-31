@@ -100,7 +100,7 @@ SCHEMA = dc \
 
 all: check-environment html doc
 
-.PHONY: html doc news clean update \
+.PHONY: html doc news clean update check-environment \
         update-intro update-sample update-conversion update-changelog update-tags update-makernotes update-manpage \
 
 check-environment:
@@ -110,14 +110,17 @@ endif
 ifndef EXIV2WEB
   $(error EXIV2WEB is undefined.  It should be something like /home/rmills/exiv2/team/website)
 endif
+ifeq ("$(wildcard $(EXIV2HOME)/doc/templates/Exif.xml)","")
+  $(error $(EXIV2HOME)/doc/templates/Exif.xml does not exist)
+endif
+ifeq ("$(wildcard $(EXIV2HOME)/build/bin/exiv2)","")
+  $(error $(EXIV2HOME)/build/bin/exiv2 does not exist)
+endif
+ifeq ("$(wildcard $(EXIV2WEB)/bin/rssdate)","")
+  $(error $(EXIV2WEB)/bin/rssdate does not exist)
+endif
 
-test: check-environment
-	@test -f $(EXIV2HOME)/doc/templates/Exif.xml || echo '***' $(EXIV2HOME)/doc/templates/Exif.xml does not exist '***'
-	@test -f $(EXIV2HOME)/build/bin/exiv2        || echo '***' $(EXIV2HOME)/build/bin/exiv2 does not exist '***'
-	@echo "Environment looks good"
-
-
-html: news check-environment
+html: news
 	@bin/download.sh
 	@bin/gen.py master/*.in
 	@echo "Moving files to html/ ..."
@@ -160,7 +163,7 @@ html/rss.xml: master/news.xml
 
 
 # Run bin/release_info.sh to update release related variables (incl __version__)
-update: check-environment update-manpage update-intro update-sample update-conversion update-changelog update-tags update-makernotes
+update: update-manpage update-intro update-sample update-conversion update-changelog update-tags update-makernotes
 
 update-manpage:
 	@man -t exiv2 | ps2pdf   - html/exiv2-manpage.pdf

@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------
 # Settings
 vardir = "./var"
-date_format = "%d-%b-%Y"
+date_format = '%Y-%m-%d %H:%M %Z' # "%d-%b-%Y" # '%H:%M %Z'
 
 # ----------------------------------------------------------------------
 # functions
@@ -45,7 +45,7 @@ if len(sys.argv) == 1:
 # The input files from the command line
 input = sys.argv[1:]
 
-# Get a list of all variables (files in the form __*__) from vardir 
+# Get a list of all variables (files in the form __*__) from vardir
 vars = os.listdir(vardir)
 for i in range(len(vars)-1, -1, -1):
    if re.match("^__.*__$", vars[i]): continue

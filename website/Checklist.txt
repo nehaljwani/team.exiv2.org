@@ -9,9 +9,6 @@ Caution: This is not a "push button" operation.
 $ export EXIV2HOME=~/gnu/github/exiv2/exiv2
 $ export EXIV2WEB=~/gnu/exiv2/team/website
 
-$ cd $EXIV2WEB
-$ make test                                # check that the environment is correctly set up.
-
 Update version
 --------------
 
