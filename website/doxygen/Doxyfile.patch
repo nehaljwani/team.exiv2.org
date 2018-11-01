@@ -1,0 +1,122 @@
+--- /Users/rmills/gnu/github/exiv2/exiv2/cmake/Doxyfile.in	2018-11-01 08:04:39.000000000 +0000
++++ doxygen/Doxyfile	2018-10-30 16:29:11.000000000 +0000
+@@ -52,7 +52,7 @@
+ # If a relative path is entered, it will be relative to the location
+ # where doxygen was started. If left blank the current directory will be used.
+ 
+-OUTPUT_DIRECTORY       = doc
++OUTPUT_DIRECTORY       =
+ 
+ # If the CREATE_SUBDIRS tag is set to YES, then doxygen will create
+ # 4096 sub-directories (in 2 levels) under the output directory of each output
+@@ -668,8 +668,7 @@
+ # directories like "/usr/src/myproject". Separate the files or directories
+ # with spaces.
+ 
+-INPUT                  = @INCDIR@ \
+-                         @SRCDIR@
++INPUT                  = $(EXIV2HOME)/include/exiv2 doxygen/mainpage.hpp
+ 
+ # This tag can be used to specify the character encoding of the source files
+ # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is
+@@ -687,7 +686,7 @@
+ # *.hxx *.hpp *.h++ *.idl *.odl *.cs *.php *.php3 *.inc *.m *.mm *.dox *.py
+ # *.f90 *.f *.for *.vhd *.vhdl
+ 
+-FILE_PATTERNS          =
++FILE_PATTERNS          = *.hpp
+ 
+ # The RECURSIVE tag can be used to turn specify whether or not subdirectories
+ # should be searched for input files as well. Possible values are YES and NO.
+@@ -701,18 +700,18 @@
+ # Note that relative paths are relative to the directory from which doxygen is
+ # run.
+ 
+-EXCLUDE                = @ROOTDIR@/samples/Jzon.h \
+-                         @ROOTDIR@/samples/Jzon.cpp \
+-                         @ROOTDIR@/src/actions.hpp \
+-                         @ROOTDIR@/src/actions.cpp \
+-                         @ROOTDIR@/src/getopt.cpp \
+-                         @ROOTDIR@/src/getopt.hpp \
+-                         @ROOTDIR@/src/localtime.c \
+-                         @ROOTDIR@/src/fff.h \
+-                         @ROOTDIR@/src/private.h \
+-                         @ROOTDIR@/src/timegm.h \
+-                         @ROOTDIR@/src/tzfile.h \
+-                         @ROOTDIR@/src/unused.h \
++EXCLUDE                = $(EXIV2HOME)/samples/Jzon.h \
++                         $(EXIV2HOME)/samples/Jzon.cpp \
++                         $(EXIV2HOME)/src/actions.hpp \
++                         $(EXIV2HOME)/src/actions.cpp \
++                         $(EXIV2HOME)/src/getopt.cpp \
++                         $(EXIV2HOME)/src/getopt.hpp \
++                         $(EXIV2HOME)/src/localtime.c \
++                         $(EXIV2HOME)/src/fff.h \
++                         $(EXIV2HOME)/src/private.h \
++                         $(EXIV2HOME)/src/timegm.h \
++                         $(EXIV2HOME)/src/tzfile.h \
++                         $(EXIV2HOME)/src/unused.h \
+ 
+ 
+ # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
+@@ -741,7 +740,7 @@
+ # directories that contain example code fragments that are included (see
+ # the \include command).
+ 
+-EXAMPLE_PATH           = @ROOTDIR@/samples/
++EXAMPLE_PATH           = $(EXIV2HOME)/samples doxygen
+ 
+ # If the value of the EXAMPLE_PATH tag contains directories, you can use the
+ # EXAMPLE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp
+@@ -898,7 +897,7 @@
+ # If a relative path is entered the value of OUTPUT_DIRECTORY will be
+ # put in front of it. If left blank `html' will be used as the default path.
+ 
+-HTML_OUTPUT            =
++HTML_OUTPUT            = $(EXIV2WEB)/html/doc
+ 
+ # The HTML_FILE_EXTENSION tag can be used to specify the file extension for
+ # each generated HTML page (for example: .htm,.php,.asp). If it is left blank
+@@ -917,13 +916,13 @@
+ # have to redo this when upgrading to a newer version of doxygen or when
+ # changing the value of configuration settings such as GENERATE_TREEVIEW!
+ 
+-HTML_HEADER            =
++HTML_HEADER            = doxygen/exiv2-header.html
+ 
+ # The HTML_FOOTER tag can be used to specify a personal HTML footer for
+ # each generated HTML page. If it is left blank doxygen will generate a
+ # standard footer.
+ 
+-HTML_FOOTER            =
++HTML_FOOTER            = doxygen/exiv2-footer.html
+ 
+ # The HTML_STYLESHEET tag can be used to specify a user-defined cascading
+ # style sheet that is used by each HTML page. It can be used to
+@@ -942,7 +941,7 @@
+ # robust against future updates. Doxygen will copy the style sheet file to
+ # the output directory.
+ 
+-HTML_EXTRA_STYLESHEET  =
++HTML_EXTRA_STYLESHEET  = doxygen/customdoxygen.css
+ 
+ # The HTML_EXTRA_FILES tag can be used to specify one or more extra images or
+ # other source files which should be copied to the HTML output directory. Note
+@@ -1099,7 +1098,7 @@
+ # Qt Help Project output. For more information please see
+ # http://doc.trolltech.com/qthelpproject.html#namespace
+ 
+-QHP_NAMESPACE          =
++QHP_NAMESPACE          = org.doxygen.Project
+ 
+ # The QHP_VIRTUAL_FOLDER tag specifies the namespace to use when generating
+ # Qt Help Project output. For more information please see
+@@ -1638,7 +1637,7 @@
+ # When a file name is specified after GENERATE_TAGFILE, doxygen will create
+ # a tag file that is based on the input files it reads.
+ 
+-GENERATE_TAGFILE       = doc/html/exiv2.xml
++# GENERATE_TAGFILE       = NO
+ 
+ # If the ALLEXTERNALS tag is set to YES all external classes will be listed
+ # in the class index. If set to NO only the inherited external classes
