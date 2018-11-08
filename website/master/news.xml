@@ -1,6 +1,16 @@
 <?xml version = '1.0'?>
 <news>
 
+ <newsitem>
+  <date>15-Nov-2018</date>
+  <title>Exiv2 v0.27 RC2</title>
+  <abstract>Release Candidate 2</abstract>
+  <desc>Second Release Candidate for Exiv2 0.27.
+  <p>Lots of productive feedback from RC1.
+  Issues raised have been fixed and listed in releasenotes.txt</p>
+  <p>See <a title="ChangeLog" href="changelog.html#v0.27">ChangeLog</a> for details.</p>
+  </desc>
+ </newsitem>
 
  <newsitem>
   <date>27-Oct-2018</date>
@@ -14,7 +24,6 @@
       <li>Buildserver rewritten.</li>
       <li>Support for Adobe XMPsdk.</li>
   </ul>
-  <p>See <a title="ChangeLog" href="changelog.html#v0.27">ChangeLog</a> for details.</p>
   </desc>
  </newsitem>
 

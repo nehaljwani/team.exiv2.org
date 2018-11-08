@@ -17,22 +17,22 @@ Update version in $EXIV2HOME/CMakeLists.txt
 Updating ChangeLogs and ReleaseNotes
 ------------------------------------
 
-I don't know how to do get a list of changes from GitHub
+https://github.com/Exiv2/exiv2/milestone/1
 
-Run the script to get revision history:
-$ cd $EXIV2WEB/../contrib/redmine
-$ ./progress.py getdata.sh release
-Modify/paste output to html/var/__ChangeLog__
+if Redmine v0.27 Support
+    Run the script to get revision history:
+    $ cd $EXIV2WEB/../contrib/redmine
+    $ ./progress.py getdata release
+    Modify/paste output to var/__ChangeLog__
 
-$ cd $EXIV2WEB
-Modify var/__whatsnew-table__
+    $ ./progress.py release console
+    $ cd $EXIV2HOME
+    Modify/paste output to doc/ChangeLog
+End Redmine 0.27 Support
 
-$ ./progress.py getdata.sh release console
-$ cd $EXIV2HOME
-Modify/paste output to doc/ChangeLog
 
-$ cd $EXIV2HOME
-Edit releasenotes/releasenotes.txt
+Edit $EXIV2HOME/releasenotes/releasenotes.txt
+Inspect/modify $EXIV2HOME/doc/ChangeLog
 
 Localization
 ------------
@@ -114,6 +114,11 @@ Review and update documentation
     Update README.md and README-CONAN.md
     $EXIV2HOME/releasenotes/releasenotes.txt    - General Notes for every platform
     $EXIV2HOME/releasenotes/platform/ReadMe.txt - Notes for individual platform.
+
+Archive
+-------
+
+To be written.
 
 # That's all Folks!
 ##

@@ -2,19 +2,9 @@
 Changes from version 0.26 to 0.27
 ---------------------------------
 
-59 issues have been closed on Redmine
-About 40 issues have been closed on GitHub
+<a href="https://github.com/Exiv2/exiv2/milestone/1">https://github.com/Exiv2/exiv2/milestone/1</a>
 
-* Open: (9)
-	- <a href="http://dev.exiv2.org/issues/0001347">0001347</a>:	Segfault in Digikam when saving/loading certain TIFF images
-	- <a href="http://dev.exiv2.org/issues/0001346">0001346</a>:	Assertion failure in Exiv2::Internal::CiffComponent::doRead() in libexiv2
-	- <a href="http://dev.exiv2.org/issues/0001345">0001345</a>:	Assertion Failure (SIGABRT) in Exiv2:RafImage::readMetadata() in Libexiv2
-	- <a href="http://dev.exiv2.org/issues/0001341">0001341</a>:	Date/Time Original not modified for NEFs
-	- <a href="http://dev.exiv2.org/issues/0001340">0001340</a>:	Infinite loop bugs in Libexiv2 Exiv2::Image::printIFDStructure()
-	- <a href="http://dev.exiv2.org/issues/0001324">0001324</a>:	Pentax Makernote written twice
-	- <a href="http://dev.exiv2.org/issues/0001306">0001306</a>:	the lens TAMRON SP 15-30mm F/2.8 Di VC USD A012 is not properly recognised
-	- <a href="http://dev.exiv2.org/issues/0001304">0001304</a>:	Lens missing Tamron SP 90mm f/2.8 Di Macro 1:1 VC USD F017
-	- <a href="http://dev.exiv2.org/issues/0001270">0001270</a>:	Using libexiv2.a/.lib  in multhreaded app segfaults.
+70 issues have been closed on Redmine
 
 * Build: (7)
 	- <a href="http://dev.exiv2.org/issues/0001362">0001362</a>:	Fix Clang build
@@ -30,6 +20,10 @@ About 40 issues have been closed on GitHub
 	- <a href="http://dev.exiv2.org/issues/0001270">0001270</a>:	Using libexiv2.a/.lib  in multhreaded app segfaults.
 				(Ben Touchette)
 	- <a href="http://dev.exiv2.org/issues/0001237">0001237</a>:	Report CMake/MinGW issues to Kitware
+
+* Basicio: (1)
+	- <a href="http://dev.exiv2.org/issues/0001374">0001374</a>:	excessively often calls stat()
+				(Johannes Berg)
 
 * Camera: (1)
 	- <a href="http://dev.exiv2.org/issues/0001352">0001352</a>:	Support camera Canon M100
@@ -53,6 +47,10 @@ About 40 issues have been closed on GitHub
 	- <a href="http://dev.exiv2.org/issues/0001315">0001315</a>:	Invalid memory address dereference in Exiv2::DataValue::read (value.cpp:193)
 				(Zhu Liu)
 
+* Insufficient information: (1)
+	- <a href="http://dev.exiv2.org/issues/0001347">0001347</a>:	Segfault in Digikam when saving/loading certain TIFF images
+				(V Engmark)
+
 * Image format: (5)
 	- <a href="http://dev.exiv2.org/issues/0001353">0001353</a>:	Segmentation fault in the software exiv2 when the function Exiv2::tEXtToDataBuf() is finished
 				(chung-yi lin)
@@ -65,11 +63,9 @@ About 40 issues have been closed on GitHub
 	- <a href="http://dev.exiv2.org/issues/0001334">0001334</a>:	Version 0.26 is returns unwanted data when the key value is received from RW2 files (Panasonic DMC-GF6 camera)
 				(Alex Stepanov)
 
-* Insufficient information: (1)
-	- <a href="http://dev.exiv2.org/issues/0001347">0001347</a>:	Segfault in Digikam when saving/loading certain TIFF images
-				(V Engmark)
-
-* Lens: (19)
+* Lens: (20)
+	- <a href="http://dev.exiv2.org/issues/0001373">0001373</a>:	Tamron SP 24-70mm F/2.8 Di VC USD not recognized properly
+				(Achim Kilchert)
 	- <a href="http://dev.exiv2.org/issues/0001372">0001372</a>:	The lens "Tamron AF 18-200mm F3.5-6.3 XR Di II"  is wrongly identified.
 				(Julian Hofer)
 	- <a href="http://dev.exiv2.org/issues/0001370">0001370</a>:	Add entry for new(ish) lens - Tamron 10-24mm F/3.5-4.5 Di II VC HLD (B023)
@@ -109,6 +105,18 @@ About 40 issues have been closed on GitHub
 	- <a href="http://dev.exiv2.org/issues/0001304">0001304</a>:	Lens missing Tamron SP 90mm f/2.8 Di Macro 1:1 VC USD F017
 				(Matze G)
 
+* Makernote: (2)
+	- <a href="http://dev.exiv2.org/issues/0001343">0001343</a>:	Irix 15mm f/2.4 on Nikon
+				(Ben Perston)
+	- <a href="http://dev.exiv2.org/issues/0001324">0001324</a>:	Pentax Makernote written twice
+				(Dominique Nerriec)
+
+* Miscellaneous: (2)
+	- <a href="http://dev.exiv2.org/issues/0001314">0001314</a>:	it is a stack-overflow vulnerability in Exiv2::Internal::stringFormat[abi:cxx11] ( in image.cpp:975 )
+				(Zhu Liu)
+	- <a href="http://dev.exiv2.org/issues/0001305">0001305</a>:	Segmentation fault on certain image
+				(Oleg Antonyan)
+
 * Metadata: (7)
 	- <a href="http://dev.exiv2.org/issues/0001341">0001341</a>:	Date/Time Original not modified for NEFs
 				(Jean-Luc CECCOLI)
@@ -124,18 +132,6 @@ About 40 issues have been closed on GitHub
 				(Alexander Steffen)
 	- <a href="http://dev.exiv2.org/issues/0001300">0001300</a>:	New lens: Canon EF-S 35mm f/2.8 Macro IS STM
 				(Alexander Steffen)
-
-* Makernote: (2)
-	- <a href="http://dev.exiv2.org/issues/0001343">0001343</a>:	Irix 15mm f/2.4 on Nikon
-				(Ben Perston)
-	- <a href="http://dev.exiv2.org/issues/0001324">0001324</a>:	Pentax Makernote written twice
-				(Dominique Nerriec)
-
-* Miscellaneous: (2)
-	- <a href="http://dev.exiv2.org/issues/0001314">0001314</a>:	it is a stack-overflow vulnerability in Exiv2::Internal::stringFormat[abi:cxx11] ( in image.cpp:975 )
-				(Zhu Liu)
-	- <a href="http://dev.exiv2.org/issues/0001305">0001305</a>:	Segmentation fault on certain image
-				(Oleg Antonyan)
 
 * Not-a-bug: (8)
 	- <a href="http://dev.exiv2.org/issues/0001369">0001369</a>:	New lens Yongnuo 50mm f/1.8 II for Canon
@@ -155,6 +151,9 @@ About 40 issues have been closed on GitHub
 	- <a href="http://dev.exiv2.org/issues/0001331">0001331</a>:	exiv2 fails to delete bulk of metadata in jpeg
 				(Denis-Carl Robidoux)
 
+* Tools: (1)
+	- <a href="http://dev.exiv2.org/issues/0001303">0001303</a>:	#1 Use 'releases' feature on GitHub
+
 * Tiff parser: (3)
 	- <a href="http://dev.exiv2.org/issues/0001360">0001360</a>:	exiv2 can't read metadata from tiff file (tiff directory length is too large)
 				(T Modes)
@@ -162,9 +161,6 @@ About 40 issues have been closed on GitHub
 				(jaeho jung)
 	- <a href="http://dev.exiv2.org/issues/0001330">0001330</a>:	Crash in Exiv2::TiffImage::readMetadata
 				(Tobias E.)
-
-* Tools: (1)
-	- <a href="http://dev.exiv2.org/issues/0001303">0001303</a>:	#1 Use 'releases' feature on GitHub
 
 * Website: (2)
 	- <a href="http://dev.exiv2.org/issues/0001308">0001308</a>:	Move directory <exiv2dir>/website to svn://dev.exiv2.org/svn/team/website
@@ -176,7 +172,6 @@ About 40 issues have been closed on GitHub
 	- <a href="http://dev.exiv2.org/issues/0001278">0001278</a>:	XMP SDK Split
 				(Ben Touchette)
 	- <a href="http://dev.exiv2.org/issues/0000941">0000941</a>:	Upgrade xmpsdk source to Adobe's current version
-
 
 
 <hr>
