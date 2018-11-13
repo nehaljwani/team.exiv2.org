@@ -71,7 +71,7 @@ git pull  --rebase
 git       status
 mkdir -p  build
 cd        build
-cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On
+cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DEXIV2_BUILD_PO=On
 make
 make package
 make tests
@@ -109,11 +109,11 @@ git status
 if NOT EXIST build mkdir build
 cd           build
 conan install .. --profile ${profile} --build missing
-cmake         .. -G ${generator} -DCMAKE_BUILD_TYPE=${config} -DEXIV2_TEAM_PACKAGING=On -DCMAKE_INSTALL_PREFIX=..\\dist\\${profile}
+cmake         .. -G ${generator} -DCMAKE_BUILD_TYPE=${config} -DEXIV2_TEAM_PACKAGING=On -DEXIV2_ENABLE_NLS=Off -DCMAKE_INSTALL_PREFIX=..\\dist\\${profile}
 cmake --build .  --config ${config}   --target install
 cmake --build .  --config ${config}   --target package
 ls -alt *.zip
-rmdir/s/q ..\\dist
+if EXIST ..\\dist rmdir/s/q ..\\dist
 EOF
         writeTag $1 msys64 ${cd}buildserver\\\\build\\\\tag
     fi
@@ -183,19 +183,21 @@ fi
 publishBundle()
 {
     # $1 = server    (eg rmillsmm-w7)
-    # $2 = path      (eg /c/msys32/home/rmills/gnu/github/exiv2/buildserver/build)
-    # $3 = extension (eg tar.gz or zip)
+    # $2 = command   (eg msys32)
+    # $3 = path      (eg /c/msys32/home/rmills/gnu/github/exiv2/buildserver/build)
+    # $4 = extension (eg tar.gz or zip)
     # find the build tag left during the build
     tag_saved=$tag
     if [ -e tag ]; then rm -rf tag ; fi
-    scp -q "$user@$1:$2/tag" . 2>/dev/null          # silently collect build tag file
-    if [ -e tag ]; then source tag; fi              # and read it!
+    scp -q "$user@$1:$3/tag" . 2>/dev/null                      # silently collect build tag file
+    if [ -e tag ]; then source tag; fi                          # and read it!
 
-    files=$(ssh $user@$1 "ls -1 $2/*$3" 2>/dev/null)    # find the names of the bundles
+    files=$(echo ls -1 $3/*$4 | ssh $user@$1 $2 2>/dev/null)    # find the names of the bundles
+    # echo +++ files = $files # after ssh $user@$1 $2 ls -1 $3/\*$4
     for file in $files; do
-        if [ ! -z $file ]; then                         # copy to builds/all and merge the tag into the filename
-            scp -pq "$user@$1:$file" $builds/all/$(basename $file $3)-$tag$3
-            echo $(basename $file $3)-$tag$3
+        if [ ! -z $file ]; then                                 # copy to builds/all and merge the tag into the filename
+            echo scp -pq "$user@$1:$file" $builds/all/$(basename $file $4)-$tag$4
+                 scp -pq "$user@$1:$file" $builds/all/$(basename $file $4)-$tag$4
         fi
     done
     tag=$tag_saved
@@ -203,11 +205,11 @@ publishBundle()
 
 if [ $publish == 1 ]; then
     ## create the source package
-    publishBundle $server-ubuntu /home/$user/gnu/github/exiv2/buildserver/build            '.tar.gz'
-    publishBundle $server-w7     /c/msys32/home/$user/gnu/github/exiv2/buildserver/build   '.tar.gz'
-    publishBundle $server-w7     /c/msys64/home/$user/gnu/github/exiv2/buildserver/build   '.tar.gz'
-    publishBundle $server-w7     /c/cygwin64/home/$user/gnu/github/exiv2/buildserver/build '.tar.gz'
-    publishBundle $server-w7     /c/users/$user/gnu/github/exiv2/buildserver/build         '.zip'
+    publishBundle $server-ubuntu bash     /home/$user/gnu/github/exiv2/buildserver/build            '.tar.gz'
+    publishBundle $server-w7     msys32   /c/msys32/home/$user/gnu/github/exiv2/buildserver/build   '.tar.gz'
+    publishBundle $server-w7     msys64   /c/msys64/home/$user/gnu/github/exiv2/buildserver/build   '.tar.gz'
+    publishBundle $server-w7     cygwin64 /c/cygwin64/home/$user/gnu/github/exiv2/buildserver/build '.tar.gz'
+    publishBundle $server-w7     msys64   /c/users/$user/gnu/github/exiv2/buildserver/build         '.zip'
     echo "+++++++++++++++++++++++++++++++++++++++++"
     echo "+++ build Source in exiv2/buildserver +++"
     pushd ~/gnu/github/exiv2/buildserver/build >/dev/null
@@ -215,7 +217,7 @@ if [ $publish == 1 ]; then
     ls    -alt *Source.tar.gz|sed -E -e 's/\+ / /g'
     popd >/dev/null
     echo "+++++++++++++++++++++++++++++++++++++++++"
-    publishBundle $server        /Users/$user/gnu/github/exiv2/buildserver/build           '.tar.gz'
+    publishBundle $server        bash     /Users/$user/gnu/github/exiv2/buildserver/build           '.tar.gz'
     cygwin=0; linux=0; macosx=0; mingw=0; mingw32=0;msvc=0; # don't build anything
     $(dirname $0)/categorize.py  $builds
 fi
@@ -224,7 +226,7 @@ fi
 # perform builds
 if [ $cygwin == 1 ]; then
     cd=/home/rmills/gnu/github/exiv2/
-    command='c:\\cygwin64\\bin\\bash.exe'
+    command='cygwin64'
     unixBuild ${server}-w7 Cygwin
 fi
 
@@ -253,7 +255,7 @@ if [ $mingw32 == 1 ]; then
 fi
 
 if [ $msvc == 1 ]; then
-    command='cmd'
+    command='cmd64'
     msvcBuild ${server}-w7
 fi
 

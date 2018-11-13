@@ -31,24 +31,35 @@ Option: --server server --user user
 server              shell                    directory
 ------              -----                    ---------
 $server             bash                     /Users/$user/gnu/github/exiv2/buildserver
-$server-w7          msys32                    /home/$user/gnu/github/exiv2/buildserver
-                    msys64                    /home/$user/gnu/github/exiv2/buildserver
-                    c:\Cygwin64\bin\bash      /home/$user/gnu/github/exiv2/buildserver
-$server-ubuntu      bash                      /home/$user/gnu/github/exiv2/buildserver
+$server-w7          msys32                   /home/$user/gnu/github/exiv2/buildserver
+                    msys64                   /home/$user/gnu/github/exiv2/buildserver
+                    cygwin64                 /home/$user/gnu/github/exiv2/buildserver
+                    cmd64                    /c/Users/$user/gnu/github/exiv2/buildserver
+$server-ubuntu      bash                     /home/$user/gnu/github/exiv2/buildserver
 
-The script msys32.bat and msys64.bat are documented in README.md
+The script msys32.bat, msys64.bat and cygwin64 are documented in README.md
+The script cmd64.bat in has a limited PATH c:\Users\rmills\com\cmd64.bat
+@echo off
+setlocal
+set  "PATH=C:\Python34\;C:\Python27\;C:\Python27\Scripts;C:\Perl64\site\bin;C:\Perl64\bin;C:\WINDOWS\system32;C:\Program Files\Git\cmd;c:\Program Files\cmake\bin;"
+cd   %HOMEPATH%
+cmd
+
++--------------------------------------------+
+| IMPORTANT                                  |
+| c:\msys32> autorebase.bat to "fixup" DLLs  |
++--------------------------------------------+
+
 
 1.2 Building packages
 ---------------------
 The build is performed and the package is built in sub-directory: build.  For example:
 
-./buildserver/build/exiv2-0.27.0.1-Darwin.tar.gz
+~/gnu/github/exiv2/buildserver/build/exiv2-0.27.0.2-Darwin.tar.gz
 
 The build of the "Source" is only performed on the Mac Mini in the directory:
-/User/rmills/gnu/github/exiv2/exiv2/build
-/User/rmills/gnu/github/exiv2/exiv2/build/exiv2-0.27.0.1-Source.tar.gz
-
-If you build package_source in exiv2/buildserver/build, foo-Source.tar.gz is 29 bytes
+/User/rmills/gnu/github/exiv2/buildserver/build
+/User/rmills/gnu/github/exiv2/buildserver/build/exiv2-0.27.0.1-Source.tar.gz
 
 2 Install and configure Jenkins on the MacMini
 ----------------------------------------------
@@ -59,7 +70,7 @@ The builds are performed on the VMs and copied to directory /Users/rmills/Jenkin
 
 The --publish option uses the script categorize.py to manufacture links in ~/Jenkins/builds for Platforms, Dates and other useful indices.
 
-At present there is no script to removed old/stale builds for builds/all
+At present there is no script to remove old/stale builds for builds/all
 
 2.1) Build Projects
 -------------------
@@ -70,7 +81,7 @@ This expects 6 builders (labels): macosx, linux, mingw, mingw32, cygwin, msvc
 All builds are performed from MacOS-X using the build.sh script.
 
 The build command is:
-/User/rmills/gnu/github/exiv2/exiv2/contrib/buildserver/build.sh $label --clone
+/User/rmills/gnu/github/exiv2/exiv2/contrib/buildserver/build.sh $label --clone --branch 0.27-RC2
 
 2) daily-github-exiv2-exiv2-publish
 The project is executed by Jenkins when the build on every label finishes.
