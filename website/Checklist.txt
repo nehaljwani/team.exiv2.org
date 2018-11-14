@@ -2,12 +2,14 @@ Release checklist
 -----------------
 
 Caution: This is not a "push button" operation.
-         The build is totally scripted, however you have to manually update documentation
+         The build is totally scripted, however you have to manually update documentation.
          Making a major new release can take several days to be certain everything is good.
-         Making a dot release takes about 2-3 hours to  update docs, build, test, publish
+         Making a dot release takes about 2-3 hours to  update docs, build, test, publish.
 
 $ export EXIV2HOME=~/gnu/github/exiv2/exiv2
 $ export EXIV2WEB=~/gnu/exiv2/team/website
+$ alias  home='cd $EXIV2HOME'
+$ alias  web='cd $EXIV2WEB'
 
 Update version
 --------------
@@ -18,18 +20,6 @@ Updating ChangeLogs and ReleaseNotes
 ------------------------------------
 
 https://github.com/Exiv2/exiv2/milestone/1
-
-if Redmine v0.27 Support
-    Run the script to get revision history:
-    $ cd $EXIV2WEB/../contrib/redmine
-    $ ./progress.py getdata release
-    Modify/paste output to var/__ChangeLog__
-
-    $ ./progress.py release console
-    $ cd $EXIV2HOME
-    Modify/paste output to doc/ChangeLog
-End Redmine 0.27 Support
-
 
 Edit $EXIV2HOME/releasenotes/releasenotes.txt
 Inspect/modify $EXIV2HOME/doc/ChangeLog
@@ -94,7 +84,7 @@ total 47124
 520 rmills@rmillsmm:~/gnu/exiv2/team/website $
 
 $ cd $EXIV2WEB
-$ make update                 # respects the builds in $EXIV2WEB/builds
+$ make update                     # respects the builds in $EXIV2WEB/builds
 $ make
 
 Website Details
@@ -115,10 +105,48 @@ Review and update documentation
     $EXIV2HOME/releasenotes/releasenotes.txt    - General Notes for every platform
     $EXIV2HOME/releasenotes/platform/ReadMe.txt - Notes for individual platform.
 
-Archive
--------
+Archiving Releases
+------------------
 
-To be written.
+The "old releases" are:
+1) listed    on $EXIV2WEB/archive.html
+2) published at $EXIV2WEB/html/releases/
+3) stored    at $EXIV2WEB/../releases   == svn://dev.exiv2.org/svn/team/releases
+
+Updates required by $ make all
+a) ditto $EXIV2WEB/../releases
+b) generate archive.html correctly
+
+When you make a new release, copy Source to svn://dev.exiv2.org/svn/team/releases
+$ cd $EXIV2WEB
+$ file=$(ls -1 builds/*Source*|cut -d/ -f 2|cut -d- -f 1-3)
+$ cp ./builds/*Source* ../releases
+$ svn add ../releases/$file.tar.gz
+$ cd ../releases
+$ svn commit --message "Release $file"
+
+Archive the release on the buildserver:
+
+$ tar czf ~/Jenkins/builds/all/exiv2-0.27.0.2-Website-2018:11:15_21:00:00.tar.gz ~/Jenkins/website
+
+Notes concerning Redmine and ChangeLogs
+---------------------------------------
+
+1) As of Exiv2 v0.27.0.2 have no open v0.27 issues on Redmine.
+2) I will review open issues on Redmine at the start of Exiv2 v0.28
+   and open new appropriate issues on github
+
+Manually updating var/__ChangeLog__ and doc/ChangeLog (should be unnecessary)
+
+Updating
+Run the script to get revision history:
+$ cd $EXIV2WEB/../contrib/redmine
+$ ./progress.py getdata release
+Modify/paste output to var/__ChangeLog__
+
+$ ./progress.py release console
+$ cd $EXIV2HOME
+Modify/paste output to doc/ChangeLog
 
 # That's all Folks!
 ##
