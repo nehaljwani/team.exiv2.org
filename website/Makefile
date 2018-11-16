@@ -121,7 +121,9 @@ ifeq ("$(wildcard $(EXIV2WEB)/bin/rssdate)","")
 endif
 
 html: news
+	@ditto ../releases html/releases
 	@bin/download.sh
+	@bin/archive.sh
 	@bin/gen.py master/*.in
 	@echo "Moving files to html/ ..."
 	-@mv -f master/*.html html/

@@ -4,9 +4,9 @@ Changes from version 0.26 to 0.27
 
 <a href="https://github.com/Exiv2/exiv2/milestone/1">https://github.com/Exiv2/exiv2/milestone/1</a>
 
-70 issues have been closed on Redmine
+88 issues have been closed on Redmine
 
-* Build: (7)
+* Build: (11)
 	- <a href="http://dev.exiv2.org/issues/0001362">0001362</a>:	Fix Clang build
 				(David Carlos Manuelda)
 	- <a href="http://dev.exiv2.org/issues/0001358">0001358</a>:	Unsuccessful build (Win7, MSVC2015, amd64_x86)
@@ -15,15 +15,43 @@ Changes from version 0.26 to 0.27
 				(Sridhar Boovaraghavan)
 	- <a href="http://dev.exiv2.org/issues/0001329">0001329</a>:	Error during cmake with gcc version parsing
 				(Maxime Daisy)
+	- <a href="http://dev.exiv2.org/issues/0001310">0001310</a>:	Provide support for msys/2.0
 	- <a href="http://dev.exiv2.org/issues/0001299">0001299</a>:	exiv2-0.26-trunk.tar.gz changed on download server
 				(Jonathan Riddell)
 	- <a href="http://dev.exiv2.org/issues/0001270">0001270</a>:	Using libexiv2.a/.lib  in multhreaded app segfaults.
 				(Ben Touchette)
 	- <a href="http://dev.exiv2.org/issues/0001237">0001237</a>:	Report CMake/MinGW issues to Kitware
+	- <a href="http://dev.exiv2.org/issues/0001188">0001188</a>:	Provide build support for C++11
+	- <a href="http://dev.exiv2.org/issues/0001174">0001174</a>:	Visual Studio Support Enhancements
+	- <a href="http://dev.exiv2.org/issues/0001121">0001121</a>:	Visual Studio support for v0.27
 
 * Basicio: (1)
 	- <a href="http://dev.exiv2.org/issues/0001374">0001374</a>:	excessively often calls stat()
 				(Johannes Berg)
+
+* Coverity: (11)
+	- <a href="http://dev.exiv2.org/issues/0001265">0001265</a>:	[ Coverity : /src/basicio.cpp ] Unchecked return value from library , Time of check time of use , Incorrect deallocator used , Dereference before null check , String not null terminated
+				(Mahesh Hegde)
+	- <a href="http://dev.exiv2.org/issues/0001264">0001264</a>:	[ Coverity : /src/actions.cpp ] Unchecked return value from library , Logically dead code , Not restoring ostream format
+				(Mahesh Hegde)
+	- <a href="http://dev.exiv2.org/issues/0001263">0001263</a>:	[ Coverity : 1396730 Uninitialized scalar field ] /include/exiv2/xmp.hpp
+				(Mahesh Hegde)
+	- <a href="http://dev.exiv2.org/issues/0001262">0001262</a>:	[ Coverity : XMPSDK Errors ] Unused value , Explicit null dereferenced
+				(Mahesh Hegde)
+	- <a href="http://dev.exiv2.org/issues/0001261">0001261</a>:	[ Coverity : 1296083 Resource leak ] /src/exiv2.cpp
+				(Mahesh Hegde)
+	- <a href="http://dev.exiv2.org/issues/0001260">0001260</a>:	[ Coverity : 1296084 Resource leak ] /src/http.cpp
+				(Mahesh Hegde)
+	- <a href="http://dev.exiv2.org/issues/0001259">0001259</a>:	[ Coverity : 1396717 Out-of-bounds read ] /src/easyaccess.cpp
+				(Mahesh Hegde)
+	- <a href="http://dev.exiv2.org/issues/0001258">0001258</a>:	[ Coverity 1396718 Out-of-bounds access ] /src/webpimage.cpp
+				(Mahesh Hegde)
+	- <a href="http://dev.exiv2.org/issues/0001257">0001257</a>:	[ Coverity 1396719 Resource leak ] /src/tiffcomposite.cpp
+				(Mahesh Hegde)
+	- <a href="http://dev.exiv2.org/issues/0001256">0001256</a>:	[ Coverity 1396721 : /src/basicio.cpp ]  String not null terminated
+				(Mahesh Hegde)
+	- <a href="http://dev.exiv2.org/issues/0000883">0000883</a>:	Use Coverity SCAN on exiv2 code-base
+				(Mahesh Hegde)
 
 * Camera: (1)
 	- <a href="http://dev.exiv2.org/issues/0001352">0001352</a>:	Support camera Canon M100
@@ -105,17 +133,17 @@ Changes from version 0.26 to 0.27
 	- <a href="http://dev.exiv2.org/issues/0001304">0001304</a>:	Lens missing Tamron SP 90mm f/2.8 Di Macro 1:1 VC USD F017
 				(Matze G)
 
-* Makernote: (2)
-	- <a href="http://dev.exiv2.org/issues/0001343">0001343</a>:	Irix 15mm f/2.4 on Nikon
-				(Ben Perston)
-	- <a href="http://dev.exiv2.org/issues/0001324">0001324</a>:	Pentax Makernote written twice
-				(Dominique Nerriec)
-
 * Miscellaneous: (2)
 	- <a href="http://dev.exiv2.org/issues/0001314">0001314</a>:	it is a stack-overflow vulnerability in Exiv2::Internal::stringFormat[abi:cxx11] ( in image.cpp:975 )
 				(Zhu Liu)
 	- <a href="http://dev.exiv2.org/issues/0001305">0001305</a>:	Segmentation fault on certain image
 				(Oleg Antonyan)
+
+* Makernote: (2)
+	- <a href="http://dev.exiv2.org/issues/0001343">0001343</a>:	Irix 15mm f/2.4 on Nikon
+				(Ben Perston)
+	- <a href="http://dev.exiv2.org/issues/0001324">0001324</a>:	Pentax Makernote written twice
+				(Dominique Nerriec)
 
 * Metadata: (7)
 	- <a href="http://dev.exiv2.org/issues/0001341">0001341</a>:	Date/Time Original not modified for NEFs
@@ -162,9 +190,15 @@ Changes from version 0.26 to 0.27
 	- <a href="http://dev.exiv2.org/issues/0001330">0001330</a>:	Crash in Exiv2::TiffImage::readMetadata
 				(Tobias E.)
 
-* Website: (2)
+* Video: (2)
+	- <a href="http://dev.exiv2.org/issues/0001068">0001068</a>:	Video Code Umbrella
+	- <a href="http://dev.exiv2.org/issues/0001028">0001028</a>:	Add GSoC13 video-write code
+
+* Website: (3)
 	- <a href="http://dev.exiv2.org/issues/0001308">0001308</a>:	Move directory <exiv2dir>/website to svn://dev.exiv2.org/svn/team/website
 	- <a href="http://dev.exiv2.org/issues/0001302">0001302</a>:	Use sha256 Checksums on Downloads and Archive pages of the web site.
+	- <a href="http://dev.exiv2.org/issues/0001288">0001288</a>:	site defaults to http://, and https:// certificate is bogus
+				(Matthias Andree)
 
 * Xmp: (3)
 	- <a href="http://dev.exiv2.org/issues/0001354">0001354</a>:	Inconsistency with long XMP namespaces (e.g. 'Iptc4xmpExt')

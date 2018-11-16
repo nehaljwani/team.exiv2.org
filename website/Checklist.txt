@@ -111,11 +111,11 @@ Archiving Releases
 The "old releases" are:
 1) listed    on $EXIV2WEB/archive.html
 2) published at $EXIV2WEB/html/releases/
-3) stored    at $EXIV2WEB/../releases   == svn://dev.exiv2.org/svn/team/releases
+3) stored    at $EXIV2WEB/../releases == svn://dev.exiv2.org/svn/team/releases
 
-Updates required by $ make all
+$ make html does the following:
 a) ditto $EXIV2WEB/../releases
-b) generate archive.html correctly
+b) generate archive.html using bin/archive.sh
 
 When you make a new release, copy Source to svn://dev.exiv2.org/svn/team/releases
 $ cd $EXIV2WEB
@@ -126,8 +126,12 @@ $ cd ../releases
 $ svn commit --message "Release $file"
 
 Archive the release on the buildserver:
+---------------------------------------
 
 $ tar czf ~/Jenkins/builds/all/exiv2-0.27.0.2-Website-2018:11:15_21:00:00.tar.gz ~/Jenkins/website
+$ cd $EXIV2WEB/../contrib/buildserver
+$ ./categorize.py ~/Jenkins/builds
+
 
 Notes concerning Redmine and ChangeLogs
 ---------------------------------------
