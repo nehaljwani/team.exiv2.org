@@ -44,7 +44,7 @@ Rebuilding the website
 3   Update the website
     cd $EXIV2WEB
     $ pushd bin ; make rssdate ; popd                 # make sure rssdate is built
-    $ echo -e '0.27.0.2' > var/__version__            # build stamp for web pages
+    $ echo -n '0.27.0.2' > var/__version__            # build stamp for web pages
     $ make get-latest                                 # get "Latest" builds from Jenkins !!
                                                       # OR Manually download them (see below)
     $ make update                                     # makes Exiv2.pdf and other stuff
