@@ -52,6 +52,8 @@ Rebuilding the website
     $ open html/index.html (http://rmillsmm-exiv2)    # website should look fine from file://$EXIV2WEB/html/index.html
     $ make publish                                    # copies the web to ~/Jenkins/website/html/
 
+    EDIT ~/Jenkins/website/html/include/exiv2.css to remove "PreRelease"
+
     Validate uploaded webpages with W3C HTML checker  # https://validator.w3.org
 
 4   Cleanup local build

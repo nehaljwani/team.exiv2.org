@@ -36,13 +36,20 @@ __navbar__
 	<p class="version text-center text-muted"><small>Currently v__version__</small></p>
 
 	<h2>Build Server</h2>
-	<p>The project has a build server which builds and tests the code on 5 platforms every night.
-	Additionally, the build server builds selected branches of our repository
-	to assist Team Exiv2 Contributors when they submit code.</p>
-	<p>The buildserver is located at:  <a href="http://exiv2.dyndns.org:8080">http://exiv2.dyndns.org:8080</a></p>
-	<p>You can access builds here:<a href="http://exiv2.dyndns.org:8080/userContent/builds/">http://exiv2.dyndns.org:8080/userContent/builds/</a></p>
-      </div><!-- /.col-sm-6 -->
-      <div class="col-sm-6">
+	<p>The project has a build server which builds and tests the code on supported platforms every night.</p>
+	<p class="text-center margin-top-s">
+	<a class="btn btn-primary" href="http://exiv2.dyndns.org:8080">Buildserver</a>
+	<a class="btn btn-primary" href="http://exiv2.dyndns.org:8080/userContent/builds/">Recent Builds</a>
+	</p>
+
+    <p>An archive of older release is provided.  See the <a title="Changelog" href="changelog.html">ChangeLog</a> for a detailed list of changes between releases.</p>
+
+	<p class="text-center margin-top-s">
+          <a href="archive.html" class="btn btn-lg btn-success">Downloads Archive
+	  </a>
+	</p>
+    </div><!-- /.col-sm-6 -->
+    <div class="col-sm-6">
 	<h2>Builds</h2>
 	<p>The project buildserver builds every night.  Each build includes
 	builds of the library and sample applications.
@@ -71,8 +78,7 @@ __navbar__
 
 <h2>Package details</h2>
 
-<p>These are the details for the current packages. <a title="Old packages" href="archive.html">Older releases</a> are
- also still available. See the <a title="Changelog" href="changelog.html">ChangeLog</a> for a detailed list of changes between releases.</p>
+<p>See the <a title="Changelog" href="changelog.html">ChangeLog</a> for a detailed list of changes between releases.</p>
 
 <div class="table-responsive">
 <table class="table table-striped">
