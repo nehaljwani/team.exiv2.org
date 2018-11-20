@@ -148,6 +148,15 @@ dir() {
         $list "$@"
     fi
 }
+
+renew() {
+	base=$(basename $PWD)
+	cd ..
+	rm -rf $base
+	mkdir  $base
+	cd     $base
+}
+
 # http://askubuntu.com/questions/21657/show-apt-get-installed-packages-history-via-commandline
 ### apt-history [install | remove | rollback]
 function apt-history(){
