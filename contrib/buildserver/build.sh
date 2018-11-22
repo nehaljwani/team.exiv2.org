@@ -3,7 +3,7 @@
 syntax() {
     echo "usage: $0 { --help | -? | -h | platform | option value | switch }+ "
     echo "platform:  all | cygwin | linux | macosx | mingw | mingw32 | msvc"
-    echo "switch: --2015 | --2017 | --publish | --status | --clone | --test"
+    echo "switch: --2015 | --2017 | --publish | --status | --clone | --test | --debug"
     echo "option: --branch x | --server x | --user x | --builds x"
 }
 
@@ -71,7 +71,7 @@ git pull  --rebase
 git       status
 mkdir -p  build
 cd        build
-cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DEXIV2_BUILD_PO=On
+cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DEXIV2_BUILD_PO=On -DCMAKE_BUILD_TYPE=${config}
 make
 make package
 make tests
@@ -85,7 +85,6 @@ msvcBuild()
 {
     # $1 = server                   (eg rmillsmm-w7)
     cd=c:\\\\Users\\\\rmills\\\\gnu\\\\github\\\\exiv2\\\\
-    config=Release
     profile=msvc2017Release64
     generator='"Visual Studio 15 2017 Win64"'
 
@@ -133,6 +132,7 @@ test=0
 edition=2017
 branch=master
 clone=0
+config=Release
 server=rmillsmm
 user=rmills
 status=0
@@ -160,6 +160,7 @@ while [ "$#" != "0" ]; do
       --publish) publish=1     ;;
       --clone)   clone=1       ;;
       --static)  static=1      ;;
+      --debug)   config=Debug  ;;
       --2017)    edition=2017  ;;
       --2015)    edition=2015  ;;
       --status)  status=1      ;;
