@@ -2,9 +2,10 @@
 
 syntax() {
     echo "usage: $0 { --help | -? | -h | platform | option value | switch }+ "
-    echo "platform:  all | cygwin | linux | macosx | mingw | mingw32 | msvc"
-    echo "switch: --2015 | --2017 | --publish | --status | --clone | --test | --debug"
-    echo "option: --branch x | --server x | --user x | --builds x"
+    echo "platform:        all | cygwin     | linux    | macosx    | mingw    | mingw32  | msvc"
+    echo "switch:    --publish | --status   | --clone  | --debug   | --static | --video  | --nonls"
+    echo "msvc:         --2015 | --2017     | --2013   | --2012    | --2010   | --2008   | --32"
+    echo "option:   --branch A | --server B | --user C | --builds D"
 }
 
 announce()
@@ -71,7 +72,7 @@ git pull  --rebase
 git       status
 mkdir -p  build
 cd        build
-cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DEXIV2_BUILD_PO=On -DCMAKE_BUILD_TYPE=${config}
+cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_BUILD_PO=$nls -EXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config}
 make
 make package
 make tests
@@ -85,13 +86,21 @@ msvcBuild()
 {
     # $1 = server                   (eg rmillsmm-w7)
     cd=c:\\\\Users\\\\rmills\\\\gnu\\\\github\\\\exiv2\\\\
-    profile=msvc2017Release64
-    generator='"Visual Studio 15 2017 Win64"'
 
-    if [ "$edition" == "2015" ]; then
-        profile=msvc2015Release64
-        generator='"Visual Studio 14 2015 Win64"'
+    profile=msvc${edition}${config}${bits}
+    case "$edition" in
+      2017) generator='Visual Studio 15 2017' ;;
+      2015) generator='Visual Studio 14 2015' ;;
+      2013) generator='Visual Studio 12 2013' ;;
+      2012) generator='Visual Studio 11 2012' ;;
+      2010) generator='Visual Studio 10 2010' ;;
+      2008) generator='Visual Studio 9 2008'  ;;
+    esac
+
+    if [ "$bits" == "64" ]; then
+         generator="${generator} Win64"
     fi
+    generator="\"${generator}\""
     announce  $1 ${profile}
 
     if [ "$status" == "1" ]; then
@@ -108,7 +117,7 @@ git status
 if NOT EXIST build mkdir build
 cd           build
 conan install .. --profile ${profile} --build missing
-cmake         .. -G ${generator} -DCMAKE_BUILD_TYPE=${config} -DEXIV2_TEAM_PACKAGING=On -DEXIV2_ENABLE_NLS=Off -DCMAKE_INSTALL_PREFIX=..\\dist\\${profile}
+cmake         .. -G ${generator} -DCMAKE_BUILD_TYPE=${config} -DBUILD_SHARED_LIBS=${shared} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_TEAM_PACKAGING=On -DEXIV2_ENABLE_NLS=Off -DCMAKE_INSTALL_PREFIX=..\\dist\\${profile}
 cmake --build .  --config ${config}   --target install
 cmake --build .  --config ${config}   --target package
 ls -alt *.zip
@@ -130,13 +139,17 @@ help=0
 publish=0
 test=0
 edition=2017
-branch=master
+video=0
+branch=0.27-RC3
 clone=0
 config=Release
 server=rmillsmm
 user=rmills
 status=0
+shared=1
 all=0
+bits=64
+nls=1
 builds=/Users/rmills/Jenkins/builds
 
 tag=$(date '+%Y:%m:%d_%H:%M:%S')
@@ -156,6 +169,7 @@ while [ "$#" != "0" ]; do
       mingw)     mingw=1       ;;
       mingw32)   mingw32=1     ;;
       msvc)      msvc=1        ;;
+      --32)      bits=32       ;;
       --test)    test=1        ;;
       --publish) publish=1     ;;
       --clone)   clone=1       ;;
@@ -163,7 +177,14 @@ while [ "$#" != "0" ]; do
       --debug)   config=Debug  ;;
       --2017)    edition=2017  ;;
       --2015)    edition=2015  ;;
+      --2013)    edition=2013  ;;
+      --2012)    edition=2012  ;;
+      --2010)    edition=2010  ;;
+      --2008)    edition=2008  ;;
       --status)  status=1      ;;
+      --static)  shared=0      ;;
+      --video)   video=0       ;;
+      --nonls)   nls=0         ;;
       --server)  if [ $# -gt 0 ]; then server="$1"  ; shift; else bomb $arg ; fi ;;
       --branch)  if [ $# -gt 0 ]; then branch="$1"  ; shift; else bomb $arg ; fi ;;
       --user)    if [ $# -gt 0 ]; then user="$1"    ; shift; else bomb $arg ; fi ;;
@@ -206,10 +227,12 @@ publishBundle()
 
 if [ $publish == 1 ]; then
     ## create the source package
+    cyg=cygwin64
+    if [ "$bits" == "32" ]; then cyg='cygwin32' ; fi
     publishBundle $server-ubuntu bash     /home/$user/gnu/github/exiv2/buildserver/build            '.tar.gz'
     publishBundle $server-w7     msys32   /c/msys32/home/$user/gnu/github/exiv2/buildserver/build   '.tar.gz'
     publishBundle $server-w7     msys64   /c/msys64/home/$user/gnu/github/exiv2/buildserver/build   '.tar.gz'
-    publishBundle $server-w7     cygwin64 /c/cygwin64/home/$user/gnu/github/exiv2/buildserver/build '.tar.gz'
+    publishBundle $server-w7     $cyg     /c/cygwin64/home/$user/gnu/github/exiv2/buildserver/build '.tar.gz'
     publishBundle $server-w7     msys64   /c/users/$user/gnu/github/exiv2/buildserver/build         '.zip'
     echo "+++++++++++++++++++++++++++++++++++++++++"
     echo "+++ build Source in exiv2/buildserver +++"
@@ -228,6 +251,7 @@ fi
 if [ $cygwin == 1 ]; then
     cd=/home/rmills/gnu/github/exiv2/
     command='cygwin64'
+    if [ "$bits" == "32" ]; then command='cygwin32' ; fi
     unixBuild ${server}-w7 Cygwin
 fi
 
