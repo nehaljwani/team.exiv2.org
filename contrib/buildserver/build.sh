@@ -4,7 +4,7 @@ syntax() {
     echo "usage: $0 { --help | -? | -h | platform | option value | switch }+ "
     echo "platform:        all | cygwin     | linux    | macosx    | mingw    | mingw32  | msvc"
     echo "switch:    --publish | --status   | --clone  | --debug   | --static | --video  | --nonls"
-    echo "msvc:         --2015 | --2017     | --2013   | --2012    | --2010   | --2008   | --32"
+    echo "msvc:         --2015 | --2017     | --2013   | --2012    | --2010   | --2008   | --32 | --64"
     echo "option:   --branch A | --server B | --user C | --builds D"
 }
 
@@ -28,7 +28,8 @@ writeTag()
     # $1 = server name (eg rmillsmm-w7)
     # $2 = command for ssh (eg msys64 or bash)
     # $3 = destination of tag
-    echo "echo tag=$tag > $3" | ssh ${user}@$1 $2
+    # $4 = tag
+    echo "echo tag=$4 > $3" | ssh ${user}@$1 $2
 }
 
 # if we're asked to clone, we remove the old build directory
@@ -72,13 +73,16 @@ git pull  --rebase
 git       status
 mkdir -p  build
 cd        build
-cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_BUILD_PO=$nls -EXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config}
-make
+if [ -e logs ]; then rm -rf logs ; fi
+mkdir  -p logs
+cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=O -DBUILD_SHARED_LIBS=${shared} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_BUILD_PO=$nls -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} 2>&1 | tee - > logs/build.txt
+make                            2>&1      | tee - >> logs/build.txt
+make                            2>&1      | tee - >> logs/build.txt
+make tests                      2>&1      | tee - >> logs/test.txt
+ls -alt *.tar.gz | sed -E -e 's/\+ / /g'  | tee - >> logs/test.txt
 make package
-make tests
-ls -alt *.tar.gz | sed -E -e 's/\+ / /g'
 EOF
-        writeTag $1 $command ${cd}buildserver/build/tag
+        writeTag $1 $command ${cd}buildserver/build/tag $tag
     fi
 }
 
@@ -107,7 +111,8 @@ msvcBuild()
         reportStatus $1 msys64 "cd ${cd}\\\\buildserver\\\\build ; ls -alt *.zip | sed -E -e 's/\+ / /g'"
     else
         prepareToClone $1 "rmdir/s/q ${cd}buildserver"
-        ! ssh ${user}@$1 <<EOF
+        ! ssh ${user}@$1 cmd64 <<EOF
+setlocal
 cd ${cd}
 IF NOT EXIST buildserver git clone --branch ${branch} https://github.com/exiv2/exiv2 buildserver --depth 1
 cd buildserver
@@ -116,14 +121,29 @@ git pull  --rebase
 git status
 if NOT EXIST build mkdir build
 cd           build
-conan install .. --profile ${profile} --build missing
-cmake         .. -G ${generator} -DCMAKE_BUILD_TYPE=${config} -DBUILD_SHARED_LIBS=${shared} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_TEAM_PACKAGING=On -DEXIV2_ENABLE_NLS=Off -DCMAKE_INSTALL_PREFIX=..\\dist\\${profile}
-cmake --build .  --config ${config}   --target install
-cmake --build .  --config ${config}   --target package
-ls -alt *.zip
-if EXIST ..\\dist rmdir/s/q ..\\dist
+if     EXIST logs  rmdir/s/q logs
+mkdir logs
+echo test log for $tag                                  2>&1 >> logs\\test.txt
+echo ++++++++++++++++++++++++++++++                     2>&1 >> logs\\build.txt
+set                                                     2>&1 >> logs\\build.txt
+echo ++++++++++++++++++++++++++++++                     2>&1 >> logs\\build.txt
+conan install .. --profile ${profile} --build missing   2>&1 >> logs\\build.txt
+cmake         .. -G ${generator} -DCMAKE_BUILD_TYPE=${config} -DBUILD_SHARED_LIBS=${shared} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_TEAM_PACKAGING=On -DCMAKE_INSTALL_PREFIX=..\\dist\\${profile}  2>&1 >> logs\\build.txt
+cmake --build .  --config ${config}                     2>&1 >> logs\\build.txt
+type                                                            logs\\build.txt
+pushd  ..\\test
+set EXIV2_EXT=.exe
+set OLD_PATH=%PATH%
+set PATH=c:\\\\Python34;c:\\\\msys64\\\\usr\\\\bin;%PATH%;
+make test EXIV2_BINDIR=c:\\Users\\rmills\\gnu\\github\\exiv2\\buildserver\\build\\bin  2>&1 >> ..\\build\\logs\\test.txt
+if  NOT %ERRORLEVEL% 1 set RESULT=ignored
+set PATH=%OLD_PATH%
+popd
+type                                                            logs\\test.txt
+cmake --build .  --config ${config} --target package
+exit 0
 EOF
-        writeTag $1 msys64 ${cd}buildserver\\\\build\\\\tag
+        writeTag $1 msys64 ${cd}buildserver\\\\build\\\\tag $tag
     fi
 }
 
@@ -148,7 +168,8 @@ user=rmills
 status=0
 shared=1
 all=0
-bits=64
+b32=0
+b64=0
 nls=1
 builds=/Users/rmills/Jenkins/builds
 
@@ -169,7 +190,8 @@ while [ "$#" != "0" ]; do
       mingw)     mingw=1       ;;
       mingw32)   mingw32=1     ;;
       msvc)      msvc=1        ;;
-      --32)      bits=32       ;;
+      --32)      b32=1         ;;
+      --64)      b64=1         ;;
       --test)    test=1        ;;
       --publish) publish=1     ;;
       --clone)   clone=1       ;;
@@ -198,6 +220,10 @@ if [ $help == 1 ]; then
     exit 0;
 fi
 
+if [ "$b32" == "0" -a "$b64" == "0" ]; then
+	b64=1
+fi
+
 if [ "$all" == "1" ]; then
     cygwin=1; linux=1; macosx=1; mingw=1; mingw32=1;msvc=1;
 fi
@@ -208,6 +234,7 @@ publishBundle()
     # $2 = command   (eg msys32)
     # $3 = path      (eg /c/msys32/home/rmills/gnu/github/exiv2/buildserver/build)
     # $4 = extension (eg tar.gz or zip)
+
     # find the build tag left during the build
     tag_saved=$tag
     if [ -e tag ]; then rm -rf tag ; fi
@@ -227,13 +254,6 @@ publishBundle()
 
 if [ $publish == 1 ]; then
     ## create the source package
-    cyg=cygwin64
-    if [ "$bits" == "32" ]; then cyg='cygwin32' ; fi
-    publishBundle $server-ubuntu bash     /home/$user/gnu/github/exiv2/buildserver/build            '.tar.gz'
-    publishBundle $server-w7     msys32   /c/msys32/home/$user/gnu/github/exiv2/buildserver/build   '.tar.gz'
-    publishBundle $server-w7     msys64   /c/msys64/home/$user/gnu/github/exiv2/buildserver/build   '.tar.gz'
-    publishBundle $server-w7     $cyg     /c/cygwin64/home/$user/gnu/github/exiv2/buildserver/build '.tar.gz'
-    publishBundle $server-w7     msys64   /c/users/$user/gnu/github/exiv2/buildserver/build         '.zip'
     echo "+++++++++++++++++++++++++++++++++++++++++"
     echo "+++ build Source in exiv2/buildserver +++"
     pushd ~/gnu/github/exiv2/buildserver/build >/dev/null
@@ -241,7 +261,7 @@ if [ $publish == 1 ]; then
     ls    -alt *Source.tar.gz|sed -E -e 's/\+ / /g'
     popd >/dev/null
     echo "+++++++++++++++++++++++++++++++++++++++++"
-    publishBundle $server        bash     /Users/$user/gnu/github/exiv2/buildserver/build           '.tar.gz'
+    publishBundle $server                      bash       /Users/$user/gnu/github/exiv2/buildserver/build             '.tar.gz'
     cygwin=0; linux=0; macosx=0; mingw=0; mingw32=0;msvc=0; # don't build anything
     $(dirname $0)/categorize.py  $builds
 fi
@@ -250,38 +270,64 @@ fi
 # perform builds
 if [ $cygwin == 1 ]; then
     cd=/home/rmills/gnu/github/exiv2/
-    command='cygwin64'
-    if [ "$bits" == "32" ]; then command='cygwin32' ; fi
-    unixBuild ${server}-w7 Cygwin
+    if [ "$b64" == "1" ]; then
+    	command='cygwin64'
+        unixBuild ${server}-w7 Cygwin64
+        publishBundle $server-w7             ${command}   /c/cygwin64/home/$user/gnu/github/exiv2/buildserver/build   '.tar.gz'
+    fi
+    if [ "$b32" == "1" ]; then
+        command='cygwin32' ;
+        unixBuild    ${server}-w7 cygwin32
+        publishBundle $server-w7             ${command}   /c/cygwin32/home/$user/gnu/github/exiv2/buildserver/build   '.tar.gz'
+    fi
 fi
 
 if [ $linux == 1 ]; then
     cd=/home/rmills/gnu/github/exiv2/
     command='bash'
-    unixBuild ${server}-ubuntu Linux
+    if [ "$b64" == "1" ]; then
+        unixBuild     ${server}-ubuntu Linux
+        publishBundle ${server}-ubuntu       ${command}   /home/$user/gnu/github/exiv2/buildserver/build              '.tar.gz'
+    fi
+    if [ "$b32" == "1" ]; then
+        unixBuild     ${server}-ubuntu32 Linux32
+        publishBundle ${server}-ubuntu32     ${command}   /home/$user/gnu/github/exiv2/buildserver/build              '.tar.gz'
+    fi
 fi
 
 if [ $macosx == 1 ]; then
     cd=/Users/rmills/gnu/github/exiv2/
     command='bash'
-    unixBuild ${server} MacOSX
+    unixBuild         ${server} MacOSX
+    publishBundle     ${server}              ${command}   /Users/$user/gnu/github/exiv2/buildserver/build             '.tar.gz'
 fi
 
 if [ $mingw == 1 ]; then
     cd=/home/rmills/gnu/github/exiv2/
     command='msys64'
-    unixBuild ${server}-w7 MinGW/64
+    unixBuild         ${server}-w7 MinGW/64
+    publishBundle     ${server}-w7           ${command}   /c/msys64/home/$user/gnu/github/exiv2/buildserver/build     '.tar.gz'
 fi
 
 if [ $mingw32 == 1 ]; then
     cd=/home/rmills/gnu/github/exiv2/
     command='msys32'
-    unixBuild ${server}-w7 MinGW/32
+    unixBuild         ${server}-w7 MinGW/32
+    publishBundle     ${server}-w7           ${command}   /c/msys32/home/$user/gnu/github/exiv2/buildserver/build     '.tar.gz'
 fi
 
 if [ $msvc == 1 ]; then
     command='cmd64'
-    msvcBuild ${server}-w7
+    if [ "$b64" == "1" ]; then
+        bits=64
+        msvcBuild     ${server}-w7
+        publishBundle ${server}-w7             msys64     /c/Users/$user/gnu/github/exiv2/buildserver/build           '.zip'
+    fi
+    if [ "$b32" == "1" ]; then
+        bits=''
+        msvcBuild     ${server}-w7
+        publishBundle ${server}-w7             msys64     /c/Users/$user/gnu/github/exiv2/buildserver/build           '.zip'
+    fi
 fi
 
 # That's all Folks
