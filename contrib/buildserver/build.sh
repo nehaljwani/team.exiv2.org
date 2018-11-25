@@ -76,10 +76,10 @@ cd        build
 if [ -e logs ]; then rm -rf logs ; fi
 mkdir  -p logs
 cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=O -DBUILD_SHARED_LIBS=${shared} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_BUILD_PO=$nls -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} 2>&1 | tee - > logs/build.txt
-make                            2>&1      | tee - >> logs/build.txt
-make                            2>&1      | tee - >> logs/build.txt
-make tests                      2>&1      | tee - >> logs/test.txt
-ls -alt *.tar.gz | sed -E -e 's/\+ / /g'  | tee - >> logs/test.txt
+make                            2>&1      | tee -a logs/build.txt
+make                            2>&1      | tee -a logs/build.txt
+make tests                      2>&1      | tee -a logs/test.txt
+ls -alt *.tar.gz | sed -E -e 's/\+ / /g'  | tee -a logs/test.txt
 make package
 EOF
         writeTag $1 $command ${cd}buildserver/build/tag $tag
@@ -123,14 +123,13 @@ if NOT EXIST build mkdir build
 cd           build
 if     EXIST logs  rmdir/s/q logs
 mkdir logs
-echo test log for $tag                                  2>&1 >> logs\\test.txt
-echo ++++++++++++++++++++++++++++++                     2>&1 >> logs\\build.txt
-set                                                     2>&1 >> logs\\build.txt
-echo ++++++++++++++++++++++++++++++                     2>&1 >> logs\\build.txt
-conan install .. --profile ${profile} --build missing   2>&1 >> logs\\build.txt
-cmake         .. -G ${generator} -DCMAKE_BUILD_TYPE=${config} -DBUILD_SHARED_LIBS=${shared} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_TEAM_PACKAGING=On -DCMAKE_INSTALL_PREFIX=..\\dist\\${profile}  2>&1 >> logs\\build.txt
-cmake --build .  --config ${config}                     2>&1 >> logs\\build.txt
-type                                                            logs\\build.txt
+echo test log for $tag                                  2>&1 | c:\\\\msys64\\\\usr\\\\bin\\\\tee -a logs\\test.txt
+echo ++++++++++++++++++++++++++++++                     2>&1 | c:\\\\msys64\\\\usr\\\\bin\\\\tee -a logs\\build.txt
+set                                                     2>&1 | c:\\\\msys64\\\\usr\\\\bin\\\\tee -a logs\\build.txt
+echo ++++++++++++++++++++++++++++++                     2>&1 | c:\\\\msys64\\\\usr\\\\bin\\\\tee -a logs\\build.txt
+conan install .. --profile ${profile} --build missing   2>&1 | c:\\\\msys64\\\\usr\\\\bin\\\\tee -a logs\\build.txt
+cmake         .. -G ${generator} -DCMAKE_BUILD_TYPE=${config} -DBUILD_SHARED_LIBS=${shared} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_TEAM_PACKAGING=On -DCMAKE_INSTALL_PREFIX=..\\dist\\${profile}  2>&1 | c:\\\\msys64\\\\usr\\\\bin\\\\tee -a  logs\\build.txt
+cmake --build .  --config ${config}                     2>&1 | c:\\\\msys64\\\\usr\\\\bin\\\\tee -a logs\\build.txt
 pushd  ..\\test
 set EXIV2_EXT=.exe
 set OLD_PATH=%PATH%
@@ -139,7 +138,6 @@ make test EXIV2_BINDIR=c:\\Users\\rmills\\gnu\\github\\exiv2\\buildserver\\build
 if  NOT %ERRORLEVEL% 1 set RESULT=ignored
 set PATH=%OLD_PATH%
 popd
-type                                                            logs\\test.txt
 cmake --build .  --config ${config} --target package
 exit 0
 EOF
