@@ -89,7 +89,7 @@ EOF
 msvcBuild()
 {
     # $1 = server                   (eg rmillsmm-w7)
-    cd=c:\\\\Users\\\\rmills\\\\gnu\\\\github\\\\exiv2\\\\
+    cd=c:\\Users\\rmills\\gnu\\github\\exiv2\\
 
     profile=msvc${edition}${config}${bits}
     case "$edition" in
@@ -108,7 +108,7 @@ msvcBuild()
     announce  $1 ${profile}
 
     if [ "$status" == "1" ]; then
-        reportStatus $1 msys64 "cd ${cd}\\\\buildserver\\\\build ; ls -alt *.zip | sed -E -e 's/\+ / /g'"
+        reportStatus $1 msys64 "cd ${cd}\\buildserver\\build ; ls -alt *.zip | sed -E -e 's/\+ / /g'"
     else
         prepareToClone $1 "rmdir/s/q ${cd}buildserver"
         ! ssh ${user}@$1 cmd64 <<EOF
@@ -123,25 +123,25 @@ if NOT EXIST build mkdir build
 cd           build
 if     EXIST logs  rmdir/s/q logs
 mkdir logs
-echo test log for $tag                                  2>&1 | c:\\\\msys64\\\\usr\\\\bin\\\\tee -a logs\\test.txt
-echo ++++++++++++++++++++++++++++++                     2>&1 | c:\\\\msys64\\\\usr\\\\bin\\\\tee -a logs\\build.txt
-set                                                     2>&1 | c:\\\\msys64\\\\usr\\\\bin\\\\tee -a logs\\build.txt
-echo ++++++++++++++++++++++++++++++                     2>&1 | c:\\\\msys64\\\\usr\\\\bin\\\\tee -a logs\\build.txt
-conan install .. --profile ${profile} --build missing   2>&1 | c:\\\\msys64\\\\usr\\\\bin\\\\tee -a logs\\build.txt
-cmake         .. -G ${generator} -DCMAKE_BUILD_TYPE=${config} -DBUILD_SHARED_LIBS=${shared} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_TEAM_PACKAGING=On -DCMAKE_INSTALL_PREFIX=..\\dist\\${profile}  2>&1 | c:\\\\msys64\\\\usr\\\\bin\\\\tee -a  logs\\build.txt
-cmake --build .  --config ${config}                     2>&1 | c:\\\\msys64\\\\usr\\\\bin\\\\tee -a logs\\build.txt
-pushd  ..\\test
+echo test log for $tag                                  2>&1 | c:\msys64\usr\bin\tee -a logs\test.txt
+echo ++++++++++++++++++++++++++++++                     2>&1 | c:\msys64\usr\bin\tee -a logs\build.txt
+set                                                     2>&1 | c:\msys64\usr\bin\tee -a logs\build.txt
+echo ++++++++++++++++++++++++++++++                     2>&1 | c:\msys64\usr\bin\tee -a logs\build.txt
+conan install .. --profile ${profile} --build missing   2>&1 | c:\msys64\usr\bin\tee -a logs\build.txt
+cmake         .. -G ${generator} -DCMAKE_BUILD_TYPE=${config} -DBUILD_SHARED_LIBS=${shared} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_TEAM_PACKAGING=On -DCMAKE_INSTALL_PREFIX=..\dist\${profile}  2>&1 | c:\msys64\usr\bin\tee -a  logs\build.txt
+cmake --build .  --config ${config}                     2>&1 | c:\msys64\usr\bin\tee -a logs\build.txt
+pushd  ..\test
 set EXIV2_EXT=.exe
 set OLD_PATH=%PATH%
-set PATH=c:\\\\Python34;c:\\\\msys64\\\\usr\\\\bin;%PATH%;
-make test EXIV2_BINDIR=c:\\Users\\rmills\\gnu\\github\\exiv2\\buildserver\\build\\bin  2>&1 >> ..\\build\\logs\\test.txt
+set PATH=c:\\Python34;c:\\msys64\\usr\\bin;%PATH%;
+make test EXIV2_BINDIR=c:\Users\rmills\gnu\github\exiv2\buildserver\build\bin  2>&1 | c:\msys64\usr\bin\tee -a  ..\build\logs\test.txt
 if  NOT %ERRORLEVEL% 1 set RESULT=ignored
 set PATH=%OLD_PATH%
 popd
 cmake --build .  --config ${config} --target package
 exit 0
 EOF
-        writeTag $1 msys64 ${cd}buildserver\\\\build\\\\tag $tag
+        writeTag $1 msys64 ${cd}buildserver\\build\\tag $tag
     fi
 }
 
