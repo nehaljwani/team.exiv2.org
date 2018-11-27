@@ -2,9 +2,9 @@
 
 syntax() {
     echo "usage: $0 { --help | -? | -h | platform | option value | switch }+ "
-    echo "platform:        all | cygwin     | linux    | macosx    | mingw    | mingw32  | msvc"
-    echo "switch:    --publish | --status   | --clone  | --debug   | --static | --video  | --nonls"
-    echo "msvc:         --2015 | --2017     | --2013   | --2012    | --2010   | --2008   | --32 | --64"
+    echo "platform:        all | cygwin[32] | linux[32]| macosx    | mingw[32] | msvc[32]"
+    echo "switch:    --publish | --status   | --clone  | --debug   | --static  | --video  | --nonls"
+    echo "msvc:         --2015 | --2017     | --2013   | --2012    | --2010    | --2008"
     echo "option:   --branch A | --server B | --user C | --builds D"
 }
 
@@ -12,7 +12,7 @@ announce()
 {
     if [ "$status" != "1" ]; then
         echo ++++++++++++++++++++++++++++++++
-        echo $*
+        echo $* ${build_type}${library_type}
         echo ++++++++++++++++++++++++++++++++
     fi
 }
@@ -130,14 +130,14 @@ echo ++++++++++++++++++++++++++++++                     2>&1 | c:\msys64\usr\bin
 conan install .. --profile ${profile} --build missing   2>&1 | c:\msys64\usr\bin\tee -a logs\build.txt
 cmake         .. -G ${generator} -DCMAKE_BUILD_TYPE=${config} -DBUILD_SHARED_LIBS=${shared} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_TEAM_PACKAGING=On -DCMAKE_INSTALL_PREFIX=..\dist\${profile}  2>&1 | c:\msys64\usr\bin\tee -a  logs\build.txt
 cmake --build .  --config ${config}                     2>&1 | c:\msys64\usr\bin\tee -a logs\build.txt
-pushd  ..\test
+cd    ..\test
 set EXIV2_EXT=.exe
 set OLD_PATH=%PATH%
 set PATH=c:\\Python34;c:\\msys64\\usr\\bin;%PATH%;
 make test EXIV2_BINDIR=c:\Users\rmills\gnu\github\exiv2\buildserver\build\bin  2>&1 | c:\msys64\usr\bin\tee -a  ..\build\logs\test.txt
 if  NOT %ERRORLEVEL% 1 set RESULT=ignored
 set PATH=%OLD_PATH%
-popd
+cd    ..\build
 cmake --build .  --config ${config} --target package
 exit 0
 EOF
@@ -148,11 +148,14 @@ EOF
 ##
 # assign defaults
 cygwin=0
+cygwin32=0
 linux=0
+linux32=0
 macosx=0
 mingw=0
 mingw32=0
 msvc=0
+msvc32=0
 help=0
 publish=0
 test=0
@@ -166,9 +169,8 @@ user=rmills
 status=0
 shared=1
 all=0
-b32=0
-b64=0
 nls=1
+shared=1
 builds=/Users/rmills/Jenkins/builds
 
 tag=$(date '+%Y:%m:%d_%H:%M:%S')
@@ -182,18 +184,18 @@ while [ "$#" != "0" ]; do
     case "$arg" in
       -h|--help|-\?) help=1    ;;
       all)       all=1         ;;
-      cygwin)    cygwin=1      ;;
-      linux)     linux=1       ;;
+      cygwin)    cygwin=1;     ;;
+      cygwin32)  cygwin32=1;   ;;
+      linux)     linux=1;      ;;
+      linux32)   linux32=1;    ;;
       macosx)    macosx=1      ;;
-      mingw)     mingw=1       ;;
-      mingw32)   mingw32=1     ;;
+      mingw)     mingw=1;      ;;
+      mingw32)   mingw32=1;    ;;
       msvc)      msvc=1        ;;
-      --32)      b32=1         ;;
-      --64)      b64=1         ;;
+      msvc32)    msvc32=1      ;;
       --test)    test=1        ;;
       --publish) publish=1     ;;
       --clone)   clone=1       ;;
-      --static)  static=1      ;;
       --debug)   config=Debug  ;;
       --2017)    edition=2017  ;;
       --2015)    edition=2015  ;;
@@ -218,12 +220,8 @@ if [ $help == 1 ]; then
     exit 0;
 fi
 
-if [ "$b32" == "0" -a "$b64" == "0" ]; then
-	b64=1
-fi
-
 if [ "$all" == "1" ]; then
-    cygwin=1; linux=1; macosx=1; mingw=1; mingw32=1;msvc=1;
+    cygwin=1; linux=1; macosx=1; mingw=1; msvc=1;
 fi
 
 publishBundle()
@@ -260,37 +258,40 @@ if [ $publish == 1 ]; then
     popd >/dev/null
     echo "+++++++++++++++++++++++++++++++++++++++++"
     publishBundle $server                      bash       /Users/$user/gnu/github/exiv2/buildserver/build             '.tar.gz'
-    cygwin=0; linux=0; macosx=0; mingw=0; mingw32=0;msvc=0; # don't build anything
+    cygwin=0; linux=0; macosx=0; mingw=0; msvc=0; # don't build anything
+    cygwin32=0; linux32=0; mingw32=0; msvc32=0;
     $(dirname $0)/categorize.py  $builds
 fi
+
+libary_type=''
+if [ $shared != 1 ]; then library_type=Static; fi
 
 ##
 # perform builds
 if [ $cygwin == 1 ]; then
     cd=/home/rmills/gnu/github/exiv2/
-    if [ "$b64" == "1" ]; then
-    	command='cygwin64'
-        unixBuild ${server}-w7 Cygwin64
-        publishBundle $server-w7             ${command}   /c/cygwin64/home/$user/gnu/github/exiv2/buildserver/build   '.tar.gz'
-    fi
-    if [ "$b32" == "1" ]; then
-        command='cygwin32' ;
-        unixBuild    ${server}-w7 cygwin32
-        publishBundle $server-w7             ${command}   /c/cygwin32/home/$user/gnu/github/exiv2/buildserver/build   '.tar.gz'
-    fi
+    command='cygwin64'
+    unixBuild ${server}-w7 Cygwin64
+    publishBundle $server-w7                 ${command}   /c/cygwin64/home/$user/gnu/github/exiv2/buildserver/build   '.tar.gz'
+fi
+if [ $cygwin32 == 1 ]; then
+    cd=/home/rmills/gnu/github/exiv2/
+    command='cygwin32' ;
+    unixBuild    ${server}-w7 Cygwin32
+    publishBundle $server-w7                 ${command}   /c/cygwin32/home/$user/gnu/github/exiv2/buildserver/build   '.tar.gz'
 fi
 
 if [ $linux == 1 ]; then
     cd=/home/rmills/gnu/github/exiv2/
     command='bash'
-    if [ "$b64" == "1" ]; then
-        unixBuild     ${server}-ubuntu Linux
-        publishBundle ${server}-ubuntu       ${command}   /home/$user/gnu/github/exiv2/buildserver/build              '.tar.gz'
-    fi
-    if [ "$b32" == "1" ]; then
-        unixBuild     ${server}-ubuntu32 Linux32
-        publishBundle ${server}-ubuntu32     ${command}   /home/$user/gnu/github/exiv2/buildserver/build              '.tar.gz'
-    fi
+    unixBuild     ${server}-ubuntu Linux64
+    publishBundle ${server}-ubuntu           ${command}   /home/$user/gnu/github/exiv2/buildserver/build              '.tar.gz'
+fi
+if [ $linux32 == 1 ]; then
+    cd=/home/rmills/gnu/github/exiv2/
+    command='bash'
+    unixBuild     ${server}-ubuntu32 Linux32
+    publishBundle ${server}-ubuntu32         ${command}   /home/$user/gnu/github/exiv2/buildserver/build              '.tar.gz'
 fi
 
 if [ $macosx == 1 ]; then
@@ -306,7 +307,6 @@ if [ $mingw == 1 ]; then
     unixBuild         ${server}-w7 MinGW/64
     publishBundle     ${server}-w7           ${command}   /c/msys64/home/$user/gnu/github/exiv2/buildserver/build     '.tar.gz'
 fi
-
 if [ $mingw32 == 1 ]; then
     cd=/home/rmills/gnu/github/exiv2/
     command='msys32'
@@ -316,16 +316,15 @@ fi
 
 if [ $msvc == 1 ]; then
     command='cmd64'
-    if [ "$b64" == "1" ]; then
-        bits=64
-        msvcBuild     ${server}-w7
-        publishBundle ${server}-w7             msys64     /c/Users/$user/gnu/github/exiv2/buildserver/build           '.zip'
-    fi
-    if [ "$b32" == "1" ]; then
-        bits=''
-        msvcBuild     ${server}-w7
-        publishBundle ${server}-w7             msys64     /c/Users/$user/gnu/github/exiv2/buildserver/build           '.zip'
-    fi
+    bits=64
+    msvcBuild     ${server}-w7
+    publishBundle ${server}-w7                msys64      /c/Users/$user/gnu/github/exiv2/buildserver/build           '.zip'
+fi
+if [ $msvc32 == 1 ]; then
+    command='cmd64'
+    bits=''
+    msvcBuild     ${server}-w7
+    publishBundle ${server}-w7                msys64      /c/Users/$user/gnu/github/exiv2/buildserver/build           '.zip'
 fi
 
 # That's all Folks
