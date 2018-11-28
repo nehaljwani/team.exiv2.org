@@ -3,7 +3,7 @@
 syntax() {
     echo "usage: $0 { --help | -? | -h | platform | option value | switch }+ "
     echo "platform:        all | cygwin[32] | linux[32]| macosx    | mingw[32] | msvc[32]"
-    echo "switch:    --publish | --status   | --clone  | --debug   | --static  | --video  | --nonls"
+    echo "switch:    --publish | --status   | --clone  | --debug   | --static  | --video  | --nonls | --clang"
     echo "msvc:         --2015 | --2017     | --2013   | --2012    | --2010    | --2008"
     echo "option:   --branch A | --server B | --user C | --builds D"
 }
@@ -64,6 +64,12 @@ unixBuild()
         ! ssh ${user}@$1 ${command} <<EOF
 PATH="/usr/local/bin/:/usr/bin:/mingw64/bin:$PATH"
 cd ${cd}
+if [ $clang == 1 ]; then
+   if [ $(uname) != Darwin ]; then
+	 export CC=$(which clang)
+	 export CXX=$(which clang++)
+  fi
+fi
 if [ ! -e buildserver ]; then
     git clone --branch $branch https://github.com/exiv2/exiv2 buildserver --depth 1
 fi
@@ -162,6 +168,7 @@ test=0
 edition=2017
 video=0
 branch=0.27-RC3
+clang=0
 clone=0
 config=Release
 server=rmillsmm
@@ -195,6 +202,7 @@ while [ "$#" != "0" ]; do
       msvc32)    msvc32=1      ;;
       --test)    test=1        ;;
       --publish) publish=1     ;;
+      --clang    clang=1       ;;
       --clone)   clone=1       ;;
       --debug)   config=Debug  ;;
       --2017)    edition=2017  ;;
