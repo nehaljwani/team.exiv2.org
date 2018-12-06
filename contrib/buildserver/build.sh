@@ -1,12 +1,12 @@
 #!/bin/bash
 
 syntax() {
-    echo "usage: $0 { --help | -? | -h | platform | location value | switch | option }+ "
-    echo "platform:        all | cygwin[32] | linux[32]| macosx    | mingw[32] | msvc[32]"
-    echo "switch:    --publish | --status   | --clone  | --debug   | --static  | --clang"
-    echo "options:     --nonls | --video    | --unit   | --webready| --curl    | --ssh"
-    echo "msvc:         --2015 | --2017     | --2013   | --2012    | --2010    | --2008"
-    echo "location: --branch A | --server B | --user C | --builds D"
+    echo "usage: $0   { --help | -?  |   -h | platform  | switch     | option    | location value }+ "
+    echo "platform:        all | cygwin[32] | linux[32] | macosx     | mingw[32] | msvc[32]"
+    echo "switch:     --source | --clone    | --debug   | --static   | --clang   | --categorize | --status "
+    echo "options:     --nonls | --video    | --unit    | --webready | --curl    | --ssh        | --asan"
+    echo "msvc:         --2015 | --2017     | --2013    | --2012     | --2010    | --2008"
+    echo "location: --branch A | --server B | --user C  | --builds D"
 }
 
 announce()
@@ -15,7 +15,7 @@ announce()
         compiler=''
         if [ $clang == 1 ]; then compiler=Clang ; fi
         echo ++++++++++++++++++++++++++++++++
-        echo $* ${compiler}${build_type}${library_type}
+        echo $* ${compiler}${config}${library_type}
         echo ++++++++++++++++++++++++++++++++
     fi
 }
@@ -82,13 +82,14 @@ cd        build
 if [ -e logs ]; then rm -rf logs ; fi
 mkdir  -p logs
 export                                         2>&1 | tee - >> logs/build.txt
-echo cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_BUILD_PO=$nls -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} 2>&1 | tee - >> logs/build.txt
-     cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_BUILD_PO=$nls -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} 2>&1 | tee - >> logs/build.txt
+echo cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_TEAM_USE_SANITIZERS=${asan} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_BUILD_PO=$nls -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} 2>&1 | tee - >> logs/build.txt
+     cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_TEAM_USE_SANITIZERS=${asan}  -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_BUILD_PO=$nls -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} 2>&1 | tee - >> logs/build.txt
 make                                           2>&1 | tee -a logs/build.txt
 make tests                                     2>&1 | tee -a logs/test.txt
+ls -alt bin                                    2>&1 | tee -a logs/test.txt
 if [ -e bin/unit_tests ]; then bin/unit_tests  2>&1 | tee -a logs/test.txt      ; fi
-ls -alt *.tar.gz | sed -E -e 's/\+ / /g'       2>&1 | tee -a logs/test.txt
 make package
+ls -alt *.tar.gz | sed -E -e 's/\+ / /g'       2>&1 | tee -a logs/test.txt
 EOF
         writeTag $1 $command ${cd}buildserver/build/tag $tag
     fi
@@ -157,8 +158,20 @@ EOF
 
 ##
 # assign defaults
+all=0
+all32=0
+asan=0
+branch=0.27-RC3
+builds=/Users/rmills/Jenkins/builds
+categorize=0
+clang=0
+clone=0
+config=Release
+curl=False
 cygwin=0
 cygwin32=0
+edition=2017
+help=0
 linux=0
 linux32=0
 macosx=0
@@ -166,26 +179,17 @@ mingw=0
 mingw32=0
 msvc=0
 msvc32=0
-help=0
-publish=0
-unit=False
-webready=False
-curl=False
-ssh=False
-edition=2017
-video=0
-branch=0.27-RC3
-clang=0
-clone=0
-config=Release
-server=rmillsmm
-user=rmills
-status=0
-shared=1
-all=0
 nls=1
+publish=0
+server=$(hostname|cut -d. -f 1)
 shared=1
-builds=/Users/rmills/Jenkins/builds
+source=0
+ssh=False
+status=0
+unit=False
+user=$(whoami)
+video=0
+webready=False
 
 tag=$(date '+%Y:%m:%d_%H:%M:%S')
 if [ "$#" == "0" ]; then help=1; fi
@@ -196,43 +200,52 @@ while [ "$#" != "0" ]; do
     arg="$1"
     shift
     case "$arg" in
-      -h|--help|-\?) help=1    ;;
-      all)        all=1         ;;
-      cygwin)     cygwin=1      ;;
-      cygwin32)   cygwin32=1    ;;
-      linux)      linux=1       ;;
-      linux32)    linux32=1     ;;
-      macosx)     macosx=1      ;;
-      mingw)      mingw=1       ;;
-      mingw32)    mingw32=1     ;;
-      msvc)       msvc=1        ;;
-      msvc32)     msvc32=1      ;;
-      --unit)     unit=1        ;;
-      --publish)  publish=1     ;;
-      --clang)    clang=1       ;;
-      --clone)    clone=1       ;;
-      --debug)    config=Debug  ;;
-      --2017)     edition=2017  ;;
-      --2015)     edition=2015  ;;
-      --2013)     edition=2013  ;;
-      --2012)     edition=2012  ;;
-      --2010)     edition=2010  ;;
-      --2008)     edition=2008  ;;
-      --unit)     unit=True     ;;
-      --webready) webready=True;;
-      --curl)     curl=True     ;;
-      --ssh)      ssh=True      ;;
-      --status)   status=1      ;;
-      --static)   shared=0      ;;
-      --video)    video=0       ;;
-      --nonls)    nls=0         ;;
-      --server)   if [ $# -gt 0 ]; then server="$1"  ; shift; else bomb $arg ; fi ;;
-      --branch)   if [ $# -gt 0 ]; then branch="$1"  ; shift; else bomb $arg ; fi ;;
-      --user)     if [ $# -gt 0 ]; then user="$1"    ; shift; else bomb $arg ; fi ;;
-      --builds)   if [ $# -gt 0 ]; then builds="$1"  ; shift; else bomb $arg ; fi ;;
-      *)          echo "*** invalid option: $arg ***" 1>&2; help=1; ;;
+      -h|--help|-\?) help=1       ;;
+      all)          all=1;all32=0 ;;
+      all32)        all=0;all32=1 ;;
+      cygwin)       cygwin=1      ;;
+      cygwin32)     cygwin32=1    ;;
+      linux)        linux=1       ;;
+      linux32)      linux32=1     ;;
+      macosx)       macosx=1      ;;
+      macosx32)     macosx32=1    ;;
+      mingw)        mingw=1       ;;
+      mingw32)      mingw32=1     ;;
+      msvc)         msvc=1        ;;
+      msvc32)       msvc32=1      ;;
+      --asan)       asan=1        ;;
+      --categorize) categorize=1  ;;
+      --clang)      clang=1       ;;
+      --clone)      clone=1       ;;
+      --curl)       curl=True     ;;
+      --debug)      config=Debug  ;;
+      --full)       full=1        ;;
+      --nonls)      nls=0         ;;
+      --publish)    publish=1     ;;
+      --source)     source=1      ;;
+      --ssh)        ssh=True      ;;
+      --static)     shared=0      ;;
+      --status)     status=1      ;;
+      --unit)       unit=True     ;;
+      --video)      video=0       ;;
+      --webready)   webready=True ;;
+      --2008)       edition=2008  ;;
+      --2010)       edition=2010  ;;
+      --2012)       edition=2012  ;;
+      --2013)       edition=2013  ;;
+      --2015)       edition=2015  ;;
+      --2017)       edition=2017  ;;
+      --server)     if [ $# -gt 0 ]; then server="$1"  ; shift; else bomb $arg ; fi ;;
+      --branch)     if [ $# -gt 0 ]; then branch="$1"  ; shift; else bomb $arg ; fi ;;
+      --user)       if [ $# -gt 0 ]; then user="$1"    ; shift; else bomb $arg ; fi ;;
+      --builds)     if [ $# -gt 0 ]; then builds="$1"  ; shift; else bomb $arg ; fi ;;
+      *)            echo "*** invalid option: $arg ***" 1>&2; help=1; ;;
     esac
 done
+
+if [ $asan == 1 ]; then
+    debug=1
+fi
 
 if [ $help == 1 ]; then
     syntax;
@@ -241,6 +254,16 @@ fi
 
 if [ "$all" == "1" ]; then
     cygwin=1; linux=1; macosx=1; mingw=1; msvc=1;
+fi
+if [ "$all32" == "1" ]; then
+    cygwin32=1; linux32=1; macosx32=1; mingw32=1; msvc32=1;
+fi
+
+if [ "$full" == "1" ]; then
+	ssh=1
+	video=1
+	curl=1
+	webready=1
 fi
 
 publishBundle()
@@ -267,21 +290,6 @@ publishBundle()
     tag=$tag_saved
 }
 
-if [ $publish == 1 ]; then
-    ## create the source package
-    echo "+++++++++++++++++++++++++++++++++++++++++"
-    echo "+++ build Source in exiv2/buildserver +++"
-    pushd ~/gnu/github/exiv2/buildserver/build >/dev/null
-    make  package_source
-    ls    -alt *Source.tar.gz|sed -E -e 's/\+ / /g'
-    popd >/dev/null
-    echo "+++++++++++++++++++++++++++++++++++++++++"
-    publishBundle $server                      bash       /Users/$user/gnu/github/exiv2/buildserver/build             '.tar.gz'
-    cygwin=0; linux=0; macosx=0; mingw=0; msvc=0; # don't build anything
-    cygwin32=0; linux32=0; mingw32=0; msvc32=0;
-    $(dirname $0)/categorize.py  $builds
-fi
-
 libary_type=''
 if [ $shared != 1 ]; then library_type=Static; fi
 
@@ -301,24 +309,37 @@ if [ $linux32 == 1 ]; then
 fi
 
 clang=0  # clang is not supported on Cygwin/MacOSX/MinGW/MSVC
+if [ $macosx == 1 -o $macosx32 == 1 ]; then
+    cd=/Users/rmills/gnu/github/exiv2/
+    command='bash'
+    unixBuild         ${server} MacOSX
+    publishBundle     ${server}              ${command}   /Users/$user/gnu/github/exiv2/buildserver/build             '.tar.gz'
+fi
+
+if [ $msvc == 1 ]; then
+    command='cmd64'
+    bits=64
+    msvcBuild     ${server}-w7
+    publishBundle ${server}-w7                msys64      /c/Users/$user/gnu/github/exiv2/buildserver/build           '.zip'
+fi
+if [ $msvc32 == 1 ]; then
+    command='cmd64'
+    bits=''
+    msvcBuild     ${server}-w7
+    publishBundle ${server}-w7                msys64      /c/Users/$user/gnu/github/exiv2/buildserver/build           '.zip'
+fi
+
 if [ $cygwin == 1 ]; then
     cd=/home/rmills/gnu/github/exiv2/
     command='cygwin64'
-    unixBuild ${server}-w7 Cygwin64
+    unixBuild ${server}-w7 Cygwin/64
     publishBundle $server-w7                 ${command}   /c/cygwin64/home/$user/gnu/github/exiv2/buildserver/build   '.tar.gz'
 fi
 if [ $cygwin32 == 1 ]; then
     cd=/home/rmills/gnu/github/exiv2/
     command='cygwin32' ;
-    unixBuild    ${server}-w7 Cygwin32
+    unixBuild    ${server}-w7 Cygwin/32
     publishBundle $server-w7                 ${command}   /c/cygwin32/home/$user/gnu/github/exiv2/buildserver/build   '.tar.gz'
-fi
-
-if [ $macosx == 1 ]; then
-    cd=/Users/rmills/gnu/github/exiv2/
-    command='bash'
-    unixBuild         ${server} MacOSX
-    publishBundle     ${server}              ${command}   /Users/$user/gnu/github/exiv2/buildserver/build             '.tar.gz'
 fi
 
 if [ $mingw == 1 ]; then
@@ -334,17 +355,20 @@ if [ $mingw32 == 1 ]; then
     publishBundle     ${server}-w7           ${command}   /c/msys32/home/$user/gnu/github/exiv2/buildserver/build     '.tar.gz'
 fi
 
-if [ $msvc == 1 ]; then
-    command='cmd64'
-    bits=64
-    msvcBuild     ${server}-w7
-    publishBundle ${server}-w7                msys64      /c/Users/$user/gnu/github/exiv2/buildserver/build           '.zip'
+if [ $source == 1 ]; then
+    ## create the source package
+    echo "+++++++++++++++++++++++++++++++++++++++++"
+    echo "+++ build Source in exiv2/buildserver +++"
+    pushd ~/gnu/github/exiv2/buildserver/build >/dev/null
+    make  package_source
+    ls    -alt *Source.tar.gz|sed -E -e 's/\+ / /g'
+    popd >/dev/null
+    echo "+++++++++++++++++++++++++++++++++++++++++"
+    publishBundle $server                      bash       /Users/$user/gnu/github/exiv2/buildserver/build             '.tar.gz'
 fi
-if [ $msvc32 == 1 ]; then
-    command='cmd64'
-    bits=''
-    msvcBuild     ${server}-w7
-    publishBundle ${server}-w7                msys64      /c/Users/$user/gnu/github/exiv2/buildserver/build           '.zip'
+
+if [ $categorize == 1 ]; then
+    $(dirname $0)/categorize.py  $builds
 fi
 
 # That's all Folks

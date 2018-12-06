@@ -2,6 +2,28 @@
 <news>
 
  <newsitem>
+  <date>07-Dec-2018</date>
+  <title>Exiv2 v0.27 RC3</title>
+  <abstract>Release Candidate 3</abstract>
+  <desc>Third (and probably final) Release Candidate for Exiv2 0.27.
+	  <p>Very useful feedback from Gilles and others.
+	     Every issue raised has been fixed and listed in releasenotes.txt.</p>
+	  <p>Built and tested in 104 configurations:<br></br>
+		  <table>
+			<tr><td width="1%"><i>Platform</i></td><td width="1%"><b>Compilers</b></td><td width="1%"><b>Bits</b></td><td width="1%"><b>Config</b></td><td width="1%"><b>Library</b></td><td width="1%"><b>Kind</b></td><td width="1%" align="right"><b>Total = 104</b></td><td width="1%" ></td></tr>
+			<tr><td><b>Linux</b>   </td><td>gcc, clang</td><td>64, 32</td><td>Static, Shared</td><td>Release, Debug</td><td>Normal, Full</td><td align="right">32</td></tr>
+			<tr><td><b>MacOSX</b>  </td><td>clang</td><td>64 </td><td>Static, Shared</td><td>Release, Debug</td><td>Normal, Full</td><td align="right">8</td></tr>
+			<tr><td><b>MinGW</b>   </td><td>gcc</td><td>64, 32</td><td>Static, Shared</td><td>Release, Debug</td><td>Normal, Full</td><td align="right">16</td></tr>
+			<tr><td><b>Cygwin</b>  </td><td>gcc</td><td>64, 32</td><td>Static, Shared</td><td>Release, Debug</td><td>Normal, Full</td><td align="right">16</td></tr>
+			<tr><td><b>MSVC</b>    </td><td>2015, 2017</td><td>64, 32</td><td>Static, DLL</td><td>Release, Debug</td><td>Normal, Full</td><td align="right">32</td></tr>
+		  </table></p>
+	  <p>A <b><i>Normal</i></b> build is Exiv2 with expat and zlib.  A <b><i>Full</i></b> build also includes Video and Webready support.</p>
+	  <p>No open issues.  The code is now frozen.</p>
+	  <p>See <a title="ChangeLog" href="changelog.html#v0.27">ChangeLog</a> for details.</p>
+  </desc>
+ </newsitem>
+
+ <newsitem>
   <date>15-Nov-2018</date>
   <title>Exiv2 v0.27 RC2</title>
   <abstract>Release Candidate 2</abstract>
