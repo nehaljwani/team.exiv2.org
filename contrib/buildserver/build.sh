@@ -2,9 +2,9 @@
 
 syntax() {
     echo "usage: $0   { --help | -?  |   -h | platform  | switch     | option    | location value }+ "
-    echo "platform:        all | cygwin[32] | linux[32] | macosx     | mingw[32] | msvc[32]"
-    echo "switch:     --source | --clone    | --debug   | --static   | --clang   | --categorize | --status "
-    echo "options:     --nonls | --video    | --unit    | --webready | --curl    | --ssh        | --asan"
+    echo "platform:        all | cygwin[32] | linux[32] | macosx[32] | mingw[32] | msvc[32]"
+    echo "switch:     --source | --clone    | --debug   | --static   | --clang   | --categorize "
+    echo "options:     --nonls | --video    | --asan    | --webready | --unit    | --status"
     echo "msvc:         --2015 | --2017     | --2013    | --2012     | --2010    | --2008"
     echo "location: --branch A | --server B | --user C  | --builds D"
 }
@@ -13,9 +13,12 @@ announce()
 {
     if [ "$status" != "1" ]; then
         compiler=''
-        if [ $clang == 1 ]; then compiler=Clang ; fi
+        options=''
+        if [ $clang    == 1 ]; then compiler=Clang ; fi
+        if [ $video    == 1 ]; then options="${options}Video "    ; fi
+        if [ $webready == 1 ]; then options="${options}Webready " ; fi
         echo ++++++++++++++++++++++++++++++++
-        echo $* ${compiler}${config}${library_type}
+        echo $* ${compiler}${config}${library_type} ${options} ${branch}
         echo ++++++++++++++++++++++++++++++++
     fi
 }
@@ -82,8 +85,8 @@ cd        build
 if [ -e logs ]; then rm -rf logs ; fi
 mkdir  -p logs
 export                                         2>&1 | tee - >> logs/build.txt
-echo cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_TEAM_USE_SANITIZERS=${asan} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_BUILD_PO=$nls -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} 2>&1 | tee - >> logs/build.txt
-     cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_TEAM_USE_SANITIZERS=${asan}  -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_BUILD_PO=$nls -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} 2>&1 | tee - >> logs/build.txt
+echo cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_TEAM_USE_SANITIZERS=${asan} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_ENABLE_SSH=${webready} -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_BUILD_PO=$nls -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} 2>&1 | tee - >> logs/build.txt
+     cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_TEAM_USE_SANITIZERS=${asan} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_ENABLE_SSH=${webready} -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_BUILD_PO=$nls -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} 2>&1 | tee - >> logs/build.txt
 make                                           2>&1 | tee -a logs/build.txt
 make tests                                     2>&1 | tee -a logs/test.txt
 ls -alt bin                                    2>&1 | tee -a logs/test.txt
@@ -135,7 +138,7 @@ mkdir logs
 echo  test log for $tag                                                               2>&1 | c:\msys64\usr\bin\tee -a logs\test.txt
 set                                                                                   2>&1 | c:\msys64\usr\bin\tee -a logs\build.txt
 conan install .. --profile ${profile} --options webready=${webready} --build missing  2>&1 | c:\msys64\usr\bin\tee -a logs\build.txt
-cmake         .. -G ${generator} -DCMAKE_BUILD_TYPE=${config} -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_WEBREADY=${webready} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_TEAM_PACKAGING=On -DCMAKE_INSTALL_PREFIX=..\dist\${profile}  2>&1 | c:\msys64\usr\bin\tee -a  logs\build.txt
+cmake         .. -G ${generator} -DCMAKE_BUILD_TYPE=${config} -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=${webready} -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_TEAM_PACKAGING=On -DCMAKE_INSTALL_PREFIX=..\dist\${profile}  2>&1 | c:\msys64\usr\bin\tee -a  logs\build.txt
 cmake --build .  --config ${config}                                                   2>&1 | c:\msys64\usr\bin\tee -a logs\build.txt
 cd    bin
 set   EXIV2_BINDIR=%CD%
@@ -184,7 +187,6 @@ publish=0
 server=$(hostname|cut -d. -f 1)
 shared=1
 source=0
-ssh=False
 status=0
 unit=False
 user=$(whoami)
@@ -208,7 +210,7 @@ while [ "$#" != "0" ]; do
       linux)        linux=1       ;;
       linux32)      linux32=1     ;;
       macosx)       macosx=1      ;;
-      macosx32)     macosx32=1    ;;
+      macosx32)     macosx=1      ;;
       mingw)        mingw=1       ;;
       mingw32)      mingw32=1     ;;
       msvc)         msvc=1        ;;
@@ -217,17 +219,15 @@ while [ "$#" != "0" ]; do
       --categorize) categorize=1  ;;
       --clang)      clang=1       ;;
       --clone)      clone=1       ;;
-      --curl)       curl=True     ;;
       --debug)      config=Debug  ;;
       --full)       full=1        ;;
       --nonls)      nls=0         ;;
       --publish)    publish=1     ;;
       --source)     source=1      ;;
-      --ssh)        ssh=True      ;;
       --static)     shared=0      ;;
       --status)     status=1      ;;
       --unit)       unit=True     ;;
-      --video)      video=0       ;;
+      --video)      video=1       ;;
       --webready)   webready=True ;;
       --2008)       edition=2008  ;;
       --2010)       edition=2010  ;;
@@ -256,7 +256,7 @@ if [ "$all" == "1" ]; then
     cygwin=1; linux=1; macosx=1; mingw=1; msvc=1;
 fi
 if [ "$all32" == "1" ]; then
-    cygwin32=1; linux32=1; macosx32=1; mingw32=1; msvc32=1;
+    cygwin32=1; linux32=1; macosx=1; mingw32=1; msvc32=1;
 fi
 
 if [ "$full" == "1" ]; then
@@ -309,7 +309,7 @@ if [ $linux32 == 1 ]; then
 fi
 
 clang=0  # clang is not supported on Cygwin/MacOSX/MinGW/MSVC
-if [ $macosx == 1 -o $macosx32 == 1 ]; then
+if [ $macosx == 1 ]; then
     cd=/Users/rmills/gnu/github/exiv2/
     command='bash'
     unixBuild         ${server} MacOSX
@@ -324,7 +324,7 @@ if [ $msvc == 1 ]; then
 fi
 if [ $msvc32 == 1 ]; then
     command='cmd64'
-    bits=''
+    bits='32'
     msvcBuild     ${server}-w7
     publishBundle ${server}-w7                msys64      /c/Users/$user/gnu/github/exiv2/buildserver/build           '.zip'
 fi
