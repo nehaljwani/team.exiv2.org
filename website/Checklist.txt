@@ -130,7 +130,7 @@ $ svn commit --message "Release $file"
 Archive the release on the buildserver:
 ---------------------------------------
 
-$ tar czf ~/Jenkins/builds/all/exiv2-0.27.0.2-Website-2018:11:15_21:00:00.tar.gz ~/Jenkins/website
+$ tar czf ~/Jenkins/builds/all/exiv2-0.27.0.2-Website-2018:11:15_21:00:00.tar.gz ~/Jenkins/website "--exclude=*Website*.tar.gz"
 $ cd $EXIV2WEB/../contrib/buildserver
 $ ./categorize.py ~/Jenkins/builds
 
