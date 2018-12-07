@@ -209,94 +209,89 @@
        <B>-p</B> <I>mode</I>
               Print mode for the 'print' action. Possible modes are:
 
-              s      print a summary of the Exif metadata (the default)
-              a      print Exif, IPTC and XMP metadata (shortcut for -Pkyct)
-              t      interpreted (translated) Exif tags (-PEkyct)
-              v      plain Exif tag values (-PExgnycv)
-              h      hexdump of the Exif data (-PExgnycsh)
-              i      IPTC datasets (-PIkyct)
-              x      XMP properties (-PXkyct)
-              c      JPEG comment
-              k      key
-              l      tag label
-              n      tag name
-              y      type
-              c      number of components (count)
-              s      size in bytes
-              v      plain data value
-              t      interpreted (translated) data
-              h      hexdump of the data
+              s : print a summary of the Exif metadata (the default)
+              a : print Exif, IPTC and XMP metadata (shortcut for -Pkyct)
+              e : print Exif metadata (shortcut for -PEkycv)
+              t : interpreted (translated) Exif tags (-PEkyct)
+              v : plain Exif tag values (-PExgnycv)
+              h : hexdump of the Exif data (-PExgnycsh)
+              i : IPTC datasets (-PIkyct)
+              x : XMP properties (-PXkyct)
+              X : XMP properties
+              x : print a column with the tag number
+              g : group name
+              k : key
+              l : tag label
+              n : tag name
+              y : type
+              c : number of components (count)
+              s : size in bytes
+              v : plain data value (vanilla values)
+              V : plain data value AND the word 'set ' (for use with exiv2 -m-)
+              t : interpreted (translated) human readable data
+              h : hexdump of the data
 
        <B>-d</B> <I>tgt</I> Delete target(s) for the 'delete' action. Possible targets are:
 
-              a      all supported metadata (the default)
-              e      Exif section
-              t      Exif thumbnail only
-              i      IPTC data
-              x      XMP packet
-              c      JPEG comment
+              a : all supported metadata (the default)
+              e : Exif section
+              t : Exif thumbnail only
+              i : IPTC data
+              x : XMP packet
+              c : JPEG comment
+              C : ICC Profile
+              I : All IPTC data
 
+       <B>-i</B> <I>tgt</I> Insert  target(s)  for the 'insert' action. Possible targets are
+              the same as those for the <B>-d</B> option, plus an optional modifier:
 
+              X : Insert metadata from an XMP  sidecar  file  &lt;file&gt;.xmp.  The
+              remaining  insert targets determine what metadata to insert from
+              the sidecar file. Possible  are  Exif,  IPTC  and  XMP  and  the
+              default  is  all of these. Note that the inserted XMP properties
+              include those converted to Exif and IPTC.
 
-              <B>-i</B> <I>tgt</I> Insert target(s) for the 'insert' action. Possible
-              targets are the same as those for the <B>-d</B> option, plus  an
-              optional modifier:
+              XX: Insert "raw" XMP metadata from a sidecar (see option -pX)
 
-              X  : Insert metadata from an XMP sidecar file &lt;file&gt;.xmp.
-              The remaining insert targets determine what  metadata  to
-              insert from the sidecar file. Possible are Exif, IPTC and
-              XMP and the default  is  all  of  these.  Note  that  the
-              inserted  XMP  properties include those converted to Exif
-              and IPTC.
+              - : Read from stdin.  This option is intended for "filter" oper-
+              ations such as:
+              $  exiv2 -e{tgt}- <I>filename</I> | xmllint .... | exiv2 -i{tgt}- <I>file-</I>
+              <I>name</I>
 
-              XX: Insert "raw" XMP metadata from a sidecar (see  option
-              -pX)
+              Only JPEG thumbnails can be inserted (not TIFF thumbnails),  and
+              must be named <I>file</I>-thumb.jpg.
 
-              -  :  Read from stdin.  This option is intended for "fil-
-              ter" operations such as:
-              $ exiv2 -e{tgt}- <I>filename</I> | xmllint .... | exiv2 -i{tgt}-
-              <I>filename</I>
+       <B>-e</B> <I>tgt</I> Extract target(s) for the 'extract' action. Possible targets are
+              the same as those for the <B>-d</B> option, plus a  target  to  extract
+              preview images and a modifier to generate an XMP sidecar file:
+              p[&lt;n&gt;[,&lt;m&gt;  ...]]  :  Extract preview images. The optional comma
+              separated list of preview image numbers  is  used  to  determine
+              which  preview  images  to extract. The available preview images
+              and their numbers are displayed with the 'print' option <B>-pp</B>.
 
-              Only  JPEG  thumbnails  can  be inserted (not TIFF thumb-
-              nails), and must be named <I>file</I>-thumb.jpg.
-
-       <B>-e</B> <I>tgt</I> Extract target(s) for the 'extract' action. Possible tar-
-              gets are the same as those for the <B>-d</B> option, plus a tar-
-              get to extract preview images and a modifier to  generate
-              an XMP sidecar file:
-              p[&lt;n&gt;[,&lt;m&gt;  ...]]  : Extract preview images. The optional
-              comma separated list of preview image numbers is used  to
-              determine  which preview images to extract. The available
-              preview images and their numbers are displayed  with  the
-              'print' option <B>-pp</B>.
-
-
-       <B>-r</B> <I>fmt</I> Filename format  for  the  'rename'  action.  The  format
-              string  follows  <B>strftime(3)</B>  and  supports the following
-              keywords:
+       <B>-r</B> <I>fmt</I> Filename  format for the 'rename' action. The format string fol-
+              lows <B>strftime(3)</B> and supports the following keywords:
 
               :basename:     original filename without extension
               :dirname:      name of the directory holding the original file
               :parentname:   name of parent directory
               Default filename format is %Y%m%d_%H%M%S.
 
-       <B>-c</B> <I>txt</I> JPEG  comment  string  to  set  in  the  image  ('modify'
-              action).  This option can also be used with the 'extract'
-              and 'insert' actions to modify metadata on-the-fly.
+       <B>-c</B> <I>txt</I> JPEG comment string to set in the image ('modify' action).  This
+              option  can also be used with the 'extract' and 'insert' actions
+              to modify metadata on-the-fly.
 
        <B>-m</B> <I>file</I>
-              Command file for the 'modify'  action.  This  option  can
-              also  be  used with the 'extract' and 'insert' actions to
-              modify metadata  on-the-fly.   -m-  represents  standard-
-              input.
+              Command file for the 'modify' action. This option  can  also  be
+              used  with the 'extract' and 'insert' actions to modify metadata
+              on-the-fly.  -m- represents standard-input.
 
-       <B>-M</B> <I>cmd</I> Command  line  for  the  'modify' action. This option can
-              also be used with the 'extract' and 'insert'  actions  to
-              modify  metadata on-the-fly.  The format for the commands
-              is the same as that of the lines of a command file.
+       <B>-M</B> <I>cmd</I> Command line for the 'modify' action. This option  can  also  be
+              used  with the 'extract' and 'insert' actions to modify metadata
+              on-the-fly.  The format for the commands is the same as that  of
+              the lines of a command file.
 
-       <B>-l</B> <I>dir</I> Location  (directory)  for  files  to  be   inserted   or
-              extracted.
+       <B>-l</B> <I>dir</I> Location (directory) for files to be inserted or extracted.
 
        <B>-S</B> <I>.suf</I>
               Use suffix <I>.suf</I> for source files in 'insert' action.
@@ -304,8 +299,7 @@
 
 </PRE>
 <H2>COMMANDS</H2><PRE>
-       Commands  for  the  'modify'  action  can be read from a command
-       file, e.g.,
+       Commands for the 'modify' action can be read from a command file, e.g.,
 
           exiv2 -m cmd.txt image.jpg
 
@@ -313,105 +307,102 @@
 
           exiv2 -M"add Iptc.Application2.Credit String Mr. Smith" image.jpg
 
-       Note the quotes. Multiple <B>-m</B> and <B>-M</B> options can be combined, and
-       a non-standard XMP namespace registered.
+       Note the quotes. Multiple <B>-m</B> and <B>-M</B> options can be combined, and a non-
+       standard XMP namespace registered.
 
           exiv2 -M"reg myprefix http://ns.myprefix.me/" -M"add Xmp.myprefix.Whom Mr. Smith" -M"set Exif.Image.Artist Mr. Smith" image.jpg
 
-       When  writing Exif, IPTC and XMP metadata, <B>exiv2</B> enforces only a
-       correct metadata structure. It is possible to  write  tags  with
-       types  and  values  different  from those specified in the stan-
-       dards, duplicate Exif tags, undefined tags, or incomplete  meta-
-       data.  While  <B>exiv2</B>  is  able  to  read all metadata that it can
-       <B>del</B>    Delete all occurrences of a tag (requires only a <I>key</I>).
+       When writing Exif, IPTC and XMP metadata, <B>exiv2</B> enforces only a correct
+       metadata structure. It is possible to write tags with types and  values
+       different  from  those specified in the standards, duplicate Exif tags,
+       undefined tags, or incomplete metadata. While <B>exiv2</B> is able to read all
+       metadata  that  it can write, other programs may have difficulties with
+       images that contain non standard-conforming metadata.
 
-       <I>key</I>    Exiv2 Exif, IPTC or XMP key.
+   <B>Command</B> <B>format</B>
+       The format of a command is
 
-       <I>type</I>   <B>Byte</B>  <B>|</B>  <B>Ascii</B>  <B>|</B>  <B>Short</B>  <B>|</B> <B>Long</B> <B>|</B> <B>Rational</B> <B>|</B> <B>Undefined</B> <B>|</B>
-              <B>SShort</B> <B>|</B> <B>SLong</B> <B>|</B> <B>SRational</B> <B>|</B> <B>Comment</B> for Exif keys,
-              <B>String</B> <B>|</B> <B>Date</B> <B>|</B> <B>Time</B> <B>|</B> <B>Short</B> <B>|</B> <B>Undefined</B> for  IPTC  keys,
-              and
-              <B>XmpText</B>  <B>|</B>  <B>XmpAlt</B>  <B>|</B>  <B>XmpBag</B>  <B>|</B> <B>XmpSeq</B> <B>|</B> <B>LangAlt</B> for XMP
-              keys.
+       <B>set</B> <B>|</B> <B>add</B> <B>|</B> <B>del</B> <I>key</I> [[<I>type</I>] <I>value</I>]
+              <B>XmpText</B> <B>|</B> <B>XmpAlt</B> <B>|</B> <B>XmpBag</B> <B>|</B> <B>XmpSeq</B> <B>|</B> <B>LangAlt</B> for XMP keys.
 
-              A default <I>type</I> is used if none is explicitly  given.  The
-              default is determined based on <I>key</I>.
+              A  default <I>type</I> is used if none is explicitly given. The default
+              is determined based on <I>key</I>.
 
-       <I>value</I>  The  remaining  text  on  the  line  is the value. It can
-              optionally be enclosed in single quotes ('<I>value</I>') or dou-
-              ble quotes ("<I>value</I>").
+       <I>value</I>  The remaining text on the line is the value. It  can  optionally
+              be   enclosed  in  single  quotes  ('<I>value</I>')  or  double  quotes
+              ("<I>value</I>").
 
-              The value is optional. Not providing any value is equiva-
-              lent to an empty value ("") and is mainly useful to  cre-
-              ate an XMP array property, e.g., a bag.
+              The value is optional. Not providing any value is equivalent  to
+              an  empty value ("") and is mainly useful to create an XMP array
+              property, e.g., a bag.
 
-              The  format  of  Exif <B>Comment</B> values includes an optional
-              charset specification at the beginning:
+              The format of Exif <B>Comment</B> values includes an  optional  charset
+              specification at the beginning:
               <B>[charset=Ascii|Jis|Unicode|Undefined</B> <B>]</B><I>comment</I>
 
-              <B>Undefined</B> is used by default if the value  doesn't  start
-              with a charset definition.
+              <B>Undefined</B>  is  used by default if the value doesn't start with a
+              charset definition.
 
               The format for an IPTC <B>Date</B> value is:
+
                   YYYY-MM-DD (year, month, day)
-       The format for an IPTC <B>Time</B> value is:
+
+              The format for an IPTC <B>Time</B> value is:
+
                   HH:MM:SS (hours, minutes, seconds)
-       and may optionally be followed by:
+
+              and may optionally be followed by:
+
                  -HH:MM or +HH:MM (hours, minutes ahead/behind UTC)
-       The format of <B>Rational</B> (and <B>SRational</B>) is one of:
 
-                     integer
+              The format of <B>Rational</B> (and <B>SRational</B>) is one of:
 
-                     integer-numerator/integer-denominator
+                 integer | integer/integer | Fnumber | number
 
-                     Fnumber
+              Rational Examples:
 
-                     fnumber
-       Rational Examples:
-              exiv2 "-Mset Exif.Photo.MaxApertureValue 557429/62500" X.jpg
-              exiv2 "-Mset Exif.Photo.MaxApertureValue F5.6" X.jpg
+              $ exiv2 "-Mset Exif.Photo.MaxApertureValue 557429/62500" X.jpg
+              $ exiv2 "-Mset Exif.Photo.MaxApertureValue F5.6" X.jpg
 
-       The  Rational format Fnumber (or fnumber) is for the convenience
-       of setting aperture values.  Aperture values are stored in  Exif
-       is an <B>APEX</B> value which can be evaluated by the expression:
+              The Rational format Fnumber is for the  convenience  of  setting
+              aperture  values.  Aperture values are stored in Exif is an <B>APEX</B>
+              value which can be evaluated by the expression:
 
-              $ exiv2 -M'set Xmp.dc.title lang="de-DE" Euros' X.jpg
-              $ exiv2 -M'set Xmp.dc.title lang="en-GB" Pounds' X.jpg
-              $ exiv2 -M'set Xmp.dc.title lang="en-US" In God We Trust' X.jpg
-              $ exiv2 -M'set Xmp.dc.title All others pay cash' X.jpg
-       To  remove  a language specification, set the value to '' (empty
-       string)
-       exiv2 -M'set Xmp.dc.title lang="en-US"' X.jpg
+              apex-value  =    log(Fnumber) * 2.0 / log(2.0)
+              number      = exp(apex-value * log(2.0) / 2.0)
+
+              The Rational format Fnumber is valid for any <B>Rational</B>, even when
+              the  key  is not an Aperture.  More information about <B>APEX</B> value
+              is available from: http://en.wikipedia.org/wiki/APEX_system
+
+              exiv2 -M'set Xmp.dc.title lang="en-US"' X.jpg
               To remove all language specifications, delete the key:
-       $ exiv2 -M'del Xmp.dc.title' X.jpg
-              To register additional XMP namespaces, combine  the  com-
-              mand with:
-       <B>reg</B> <I>prefix</I> <I>namespace</I>
+              $ exiv2 -M'del Xmp.dc.title' X.jpg
+              To register additional XMP namespaces, combine the command with:
+              <B>reg</B> <I>prefix</I> <I>namespace</I>
 
    <B>Command</B> <B>file</B> <B>format</B>
-       Empty  lines  and  lines  starting  with <B>#</B> in a command file are
-       ignored (comments). Remaining lines are  commands  as  described
-       above.
+       Empty lines and lines starting with <B>#</B> in a  command  file  are  ignored
+       (comments). Remaining lines are commands as described above.
 
 
 </PRE>
 <H2>CONFIGURATION FILE</H2><PRE>
-       Exiv2  can  read an optional configuration file ~/.exiv2 on Unix
-       systems and %USERPROFILE%\exiv2.ini on Windows (using  a  Visual
-       Studio  build).   Cygwin and MinGW/msys2 follow the unix conven-
-       tion and use ~/.exiv2  You can fine the location of the configu-
-       ration file with the command:
+       Exiv2  can read an optional configuration file ~/.exiv2 on Unix systems
+       and %USERPROFILE%\exiv2.ini on Windows (using a Visual  Studio  build).
+       Cygwin and MinGW/msys2 follow the unix convention and use ~/.exiv2  You
+       can fine the location of the configuration file with the command:
 
        $ exiv2 --verbose --version --grep config_path
        exiv2 0.27.0.1
        config_path=/Users/rmills/.exiv2
 
-       The  purpose  of  the  configuration  file is to define your own
-       lenses for recognition by Exiv2.  The configuration file  is  in
-       Windows  .ini format and has sections for each of the major cam-
-       era manufactures  canon,nikon,pentax,minolta,olympus  and  sony.
-       The lens metadata is stored as a integer called the lensID.  You
-       can change the lens name associated with any lensID.
+       The purpose of the configuration file is to define your own lenses  for
+       recognition by Exiv2.  The configuration file is in Windows .ini format
+       and  has  sections  for  each  of   the   major   camera   manufactures
+       canon,nikon,pentax,minolta,olympus  and  sony.   The  lens  metadata is
+       stored as a integer called the lensID.  You can change  the  lens  name
+       associated with any lensID.
 
        $ cat ~/.exiv2
        [nikon]
@@ -430,50 +421,46 @@
 </PRE>
 <H2>EXAMPLES</H2><PRE>
        exiv2 *.jpg
-              Prints a summary of the Exif  information  for  all  JPEG
-              img1-thumb.jpg and img2-thumb.jpg.
+              Prints  a  summary of the Exif information for all JPEG files in
+              the directory.
 
-       exiv2 -it img1.jpg img2.jpg
-              Inserts  (copies)  metadata from img1.exv to img1.jpg and
-              from img2.exv to img2.jpg.
+       exiv2 -pi image.jpg
+              Prints the IPTC metadata of the image.
 
-       exiv2 -ep1,2 image.jpg
-              Extracts previews 1 and 2 from the  image  to  the  files
-              image-preview1.jpg and image-preview2.jpg.
+       exiv2 rename img_1234.jpg
+              Renames  img_1234.jpg  (taken  on  13-Nov-05  at  22:58:31)   to
+              20051113_225831.jpg
+
 
        exiv2 -eiX image.jpg
-              Extracts IPTC datasets into an XMP sidecar file image.xmp
-              and in the process  converts  them  to  "IPTC  Core"  XMP
-              schema.
+              Extracts IPTC datasets into an XMP sidecar file image.xmp and in
+              the process converts them to "IPTC Core" XMP schema.
 
        exiv2 -iixX image.jpg
-              Inserts  IPTC  and  XMP metadata from an XMP sidecar file
-              image.xmp into image.jpg.  The  resulting  IPTC  datasets
-              are  converted from the "IPTC Core" XMP schema properties
-              in the sidecar file to the older IPTC  IIM4  format.  The
-              inserted  XMP properties include those in the "IPTC Core"
-              XMP schema.
+              Inserts IPTC and XMP metadata from an XMP sidecar file image.xmp
+              into image.jpg.  The resulting IPTC datasets are converted  from
+              the "IPTC Core" XMP schema properties in the sidecar file to the
+              older IPTC IIM4 format.  The  inserted  XMP  properties  include
+              those in the "IPTC Core" XMP schema.
 
-       exiv2 -M"set Exif.Photo.UserComment charset=Ascii New Exif  com-
-       ment" image.jpg
+       exiv2  -M"set  Exif.Photo.UserComment  charset=Ascii  New Exif comment"
+       image.jpg
               Sets the Exif comment to an ASCII string.
 
-       exiv2 -M"set Exif.GPSInfo.GPSLatitude 4/1 15/1  33/1"  \  -M"set
+       exiv2   -M"set   Exif.GPSInfo.GPSLatitude   4/1  15/1  33/1"  \  -M"set
        Exif.GPSInfo.GPSLatitudeRef N" image.jpg
-              Sets the latitude to 4 degrees, 15 minutes and 33 seconds
-              north.  The Exif standard stipulates that the GPSLatitude
-              tag consists of three Rational numbers for  the  degrees,
-              minutes  and  seconds  of the latitude and GPSLatitudeRef
-              contains either 'N' or 'S' for north  or  south  latitude
-              respectively.
+              Sets the latitude to 4 degrees, 15 minutes and 33 seconds north.
+              The Exif standard stipulates that the GPSLatitude  tag  consists
+              of  three  Rational numbers for the degrees, minutes and seconds
+              of the latitude and GPSLatitudeRef contains either  'N'  or  'S'
+              for north or south latitude respectively.
 
        exiv2 insert -l/tmp -S.CRW /data/*.JPG
-              Copy all metadata from CRW files in the /tmp directory to
-              JPG files  with  corresponding  basenames  in  the  /data
-              directory.  Note that this copies metadata as is, without
-              any modifications to adapt it to the requirements of  the
-              target  format.  Some  tags copied like this may not make
-              sense in the target image.
+              Copy  all  metadata  from CRW files in the /tmp directory to JPG
+              files with corresponding basenames in the /data directory.  Note
+              that  this  copies  metadata as is, without any modifications to
+              adapt it to the requirements of the  target  format.  Some  tags
+              copied like this may not make sense in the target image.
 
 
 </PRE>
@@ -487,6 +474,16 @@
 
 </PRE>
 <H2>AUTHORS</H2><PRE>
+       <B>exiv2</B>  was written by Andreas Huggel and others.  The Exiv2 project web
+       site is http://exiv2.dyndns.org.  The  code  is  hosted  on  GitHub  at
+       https://github.com/exiv2/exiv2
+
+       This manual page was originally created for the Debian project by KELE-
+       MEN Peter &lt;fuji@debian.org&gt;.
+
+
+
+                                 Nov 26, 2018                         <B>EXIV2(1)</B>
 </PRE>
 <HR>
 <ADDRESS>
