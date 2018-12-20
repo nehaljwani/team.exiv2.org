@@ -6,7 +6,7 @@ syntax() {
     echo "switch:     --source | --clone    | --debug   | --static   | --clang   | --categorize "
     echo "options:     --nonls | --video    | --asan    | --webready | --unit    | --status"
     echo "msvc:         --2015 | --2017     | --2013    | --2012     | --2010    | --2008"
-    echo "location: --branch A | --server B | --user C  | --builds D"
+    echo "location: --branch A | --server B | --user C  | --builds D | --master {rmillsmm,github,E}"
 }
 
 announce()
@@ -74,19 +74,20 @@ PATH="/usr/local/bin/:/usr/bin:/mingw64/bin:$PATH"
 cd ${cd}
 ${CLANG}
 if [ ! -e buildserver ]; then
-    git clone --branch $branch https://github.com/exiv2/exiv2 buildserver --depth 1
+    git clone --branch $branch $master buildserver --depth 1
 fi
 cd  buildserver
 git fetch --unshallow
 git pull  --rebase
 git       status
+rm    -rf build
 mkdir -p  build
 cd        build
-if [ -e logs ]; then rm -rf logs ; fi
-mkdir  -p logs
+rm    -rf logs
+mkdir -p  logs
 export                                         2>&1 | tee - >> logs/build.txt
-echo cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_TEAM_USE_SANITIZERS=${asan} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_ENABLE_SSH=${webready} -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_BUILD_PO=$nls -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} 2>&1 | tee - >> logs/build.txt
-     cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_TEAM_USE_SANITIZERS=${asan} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_ENABLE_SSH=${webready} -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_BUILD_PO=$nls -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} 2>&1 | tee - >> logs/build.txt
+echo cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_TEAM_USE_SANITIZERS=${asan} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=${webready} -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_BUILD_PO=$nls -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} 2>&1 | tee - >> logs/build.txt
+     cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_TEAM_USE_SANITIZERS=${asan} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=${webready} -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_BUILD_PO=$nls -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} 2>&1 | tee - >> logs/build.txt
 make                                           2>&1 | tee -a logs/build.txt
 make tests                                     2>&1 | tee -a logs/test.txt
 ls -alt bin                                    2>&1 | tee -a logs/test.txt
@@ -126,11 +127,16 @@ msvcBuild()
         ! ssh ${user}@$1 cmd64 <<EOF
 setlocal
 cd ${cd}
-IF NOT EXIST buildserver git clone --branch ${branch} https://github.com/exiv2/exiv2 buildserver --depth 1
+IF NOT EXIST buildserver git clone --branch ${branch} $master --branch 0.27 buildserver --depth 1
+IF NOT EXIST buildserver (
+   echo +++++++++++++++ clone failed ++++++++++++++++++++++++++++++++
+   exit 1
+)
 cd buildserver
 git fetch --unshallow
 git pull  --rebase
 git status
+if     EXIST build rmdir/s/q build
 if NOT EXIST build mkdir build
 cd           build
 if     EXIST logs  rmdir/s/q logs
@@ -138,7 +144,7 @@ mkdir logs
 echo  test log for $tag                                                               2>&1 | c:\msys64\usr\bin\tee -a logs\test.txt
 set                                                                                   2>&1 | c:\msys64\usr\bin\tee -a logs\build.txt
 conan install .. --profile ${profile} --options webready=${webready} --build missing  2>&1 | c:\msys64\usr\bin\tee -a logs\build.txt
-cmake         .. -G ${generator} -DCMAKE_BUILD_TYPE=${config} -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=${webready} -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_TEAM_PACKAGING=On -DCMAKE_INSTALL_PREFIX=..\dist\${profile}  2>&1 | c:\msys64\usr\bin\tee -a  logs\build.txt
+cmake         .. -G ${generator} -DCMAKE_BUILD_TYPE=${config} -DBUILD_SHARED_LIBS=${shared} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=${webready} -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_TEAM_PACKAGING=On -DCMAKE_INSTALL_PREFIX=..\dist\${profile}  2>&1 | c:\msys64\usr\bin\tee -a  logs\build.txt
 cmake --build .  --config ${config}                                                   2>&1 | c:\msys64\usr\bin\tee -a logs\build.txt
 cd    bin
 set   EXIV2_BINDIR=%CD%
@@ -164,7 +170,7 @@ EOF
 all=0
 all32=0
 asan=0
-branch=0.27-RC3
+branch=master
 builds=/Users/rmills/Jenkins/builds
 categorize=0
 clang=0
@@ -178,6 +184,7 @@ help=0
 linux=0
 linux32=0
 macosx=0
+master=github
 mingw=0
 mingw32=0
 msvc=0
@@ -235,10 +242,12 @@ while [ "$#" != "0" ]; do
       --2013)       edition=2013  ;;
       --2015)       edition=2015  ;;
       --2017)       edition=2017  ;;
-      --server)     if [ $# -gt 0 ]; then server="$1"  ; shift; else bomb $arg ; fi ;;
       --branch)     if [ $# -gt 0 ]; then branch="$1"  ; shift; else bomb $arg ; fi ;;
-      --user)       if [ $# -gt 0 ]; then user="$1"    ; shift; else bomb $arg ; fi ;;
       --builds)     if [ $# -gt 0 ]; then builds="$1"  ; shift; else bomb $arg ; fi ;;
+      --master)     if [ $# -gt 0 ]; then master="$1"  ; shift; else bomb $arg ; fi ;;
+      --server)     if [ $# -gt 0 ]; then server="$1"  ; shift; else bomb $arg ; fi ;;
+      --tag)        if [ $# -gt 0 ]; then tag="$1"     ; shift; else bomb $arg ; fi ;;
+      --user)       if [ $# -gt 0 ]; then user="$1"    ; shift; else bomb $arg ; fi ;;
       *)            echo "*** invalid option: $arg ***" 1>&2; help=1; ;;
     esac
 done
@@ -252,6 +261,10 @@ if [ $help == 1 ]; then
     exit 0;
 fi
 
+if [ $master == github   ]; then master=https://github.com/exiv2/exiv2 ; fi
+if [ $master == rmillsmm ]; then master=rmills@rmillsmm:/Users/rmills/gnu/github/exiv2/master ; fi
+
+
 if [ "$all" == "1" ]; then
     cygwin=1; linux=1; macosx=1; mingw=1; msvc=1;
 fi
@@ -263,7 +276,7 @@ if [ "$full" == "1" ]; then
 	ssh=1
 	video=1
 	curl=1
-	webready=1
+	webready=True
 fi
 
 publishBundle()

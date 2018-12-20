@@ -130,10 +130,26 @@ $ svn commit --message "Release $file"
 Archive the release on the buildserver:
 ---------------------------------------
 
-$ tar czf ~/Jenkins/builds/all/exiv2-0.27.0.2-Website-2018:11:15_21:00:00.tar.gz ~/Jenkins/website "--exclude=*Website*.tar.gz"
+$ tar czf ~/Jenkins/builds/all/exiv2-0.27.0.2-Website-2018:11:15_21:00:00.tar.gz ~/Jenkins/website "--exclude=*Website*.tar.gz" "--exclude=*.zip"
 $ cd $EXIV2WEB/../contrib/buildserver
 $ ./categorize.py ~/Jenkins/builds
 
+Copying to exiv2.org
+--------------------
+
+$ cd $EXIV2WEB
+$ tar czf release.tar.gz html/*
+$ scp release.tar.gz   root@exiv2.org:/tmp
+$ rm -rf  release.tar.gz
+$ --------- work on exiv2.org -------
+$ ssh root@exiv2.org
+$ cd tmp
+$ tar xzf release.tar.gz
+$ rm release.tar.gz
+$ mv /var/www /var/www.old
+$ mv  html   /var/www
+$ -------- Test  When you're happy --------
+$ rm -rf /var/www.old
 
 Notes concerning Redmine and ChangeLogs
 ---------------------------------------

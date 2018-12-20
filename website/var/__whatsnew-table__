@@ -1,5 +1,31 @@
 <table class="table table-striped">
 <tr>
+<td class="text-nowrap">20-Dec-2018</td>
+<td>
+<b><a name="item1">Exiv2 v0.27</a></b>
+
+<p>Thank You to <b>Dan</b> and <b>Luis</b> for their huge contribution this release.</p>
+
+<p>Contributors: Ben, Freddy, Gilles, Henri, Michal, Phil, Shridar, Toni and Thomas.</p>
+
+<p>The headline features are:</p>
+<ol>
+<li>Security fixes</li>
+<li>Bug Fixes</li>
+<li>Rewritten CMake Support</li>
+<li>Conan Support to build dependencies</li>
+<li>Adobe XMPsdk 2016 support</li>
+<li>New python test suite</li>
+<li>AppVeyor, Travis, CodeCov and GitLabs monitor submissions</li>
+<li>Support for MinGW/msys2</li>
+<li>Jenkins buildserver operates from GitHub</li>
+<li>New Documentation: Markdown, ReleaseNotes, Platform/ReadMe.txt and Website</li>
+</ol>
+<p>With Exiv2 v0.27, Team Exiv2 will offer "Long Term Support" and plan "dot" releases with security and critical fixes in 2019 and 2020.</p>
+</tr>
+
+
+<tr>
 <td class="text-nowrap">07-Dec-2018</td>
 <td>
 <b><a name="item1">Exiv2 v0.27 RC3</a></b><br>Third (and probably final) Release Candidate for Exiv2 0.27.
@@ -17,7 +43,8 @@
 <td width="1%" align="right"><b>Total = 104</b></td>
 <td width="1%"></td>
 </tr>
-			<tr>
+
+<tr>
 <td>
 <b>Linux</b>   </td>
 <td>gcc, clang</td>
@@ -27,7 +54,8 @@
 <td>Normal, Full</td>
 <td align="right">32</td>
 </tr>
-			<tr>
+
+<tr>
 <td>
 <b>MacOSX</b>  </td>
 <td>clang</td>
