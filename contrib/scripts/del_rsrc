@@ -1,0 +1,52 @@
+#!/usr/local/bin/env perl -w
+#
+# https://github.com/Exiv2/exiv2/issues/620#issuecomment-480335011
+#
+# Description:  Delete resource of specified file
+#
+# Syntax:       del_rsrc FILE1 [FILE2...]
+#
+# Revisions:    2006-11-06 - PH Created
+#               2014-02-14 - PH Use "xattr -c" instead of ditto
+#               2018-02-26 - PH Speed things up by clearing only files with resources
+#
+use strict;
+
+die "SYNTAX: del_rsrc FILE [FILE...]\n" unless @ARGV;
+
+my $old_way;    # set to non-zero to use old technique
+
+my $count = 0;
+my @files;
+
+if ($old_way) {
+    @files = @ARGV;
+} else {
+    my @result = `xattr @ARGV`;
+    my $file = '';
+    foreach (@result) {
+        next unless /^(.*?): /;
+        next if $1 eq $file;
+        push @files, ($file = $1);
+    }
+}
+
+foreach (@files) {
+    -e $_ or die "$_ does not exist\n";
+    -d $_ and next; # (don't do directories)
+    my $result;
+    if ($old_way) {
+        my $tmp = "$_-tmp";
+        -e $tmp and die "temporary file $tmp exists\n";
+        $result = system("ditto --norsrc '$_' '$tmp';mv '$tmp' '$_'");
+    } else {
+        $result = system("xattr -c '$_'");
+    }
+    $result and die "Error cleaning $_\n";
+    ++$count;
+}
+
+printf "%5d files cleaned\n", $count;
+printf "%5d files already clean\n", @ARGV - @files if @ARGV != @files;
+
+#end
