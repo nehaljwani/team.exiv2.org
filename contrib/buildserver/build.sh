@@ -1,14 +1,14 @@
-#!/bin/bash
+#!/usr/local/bin/env bash
 
 syntax() {
     echo "usage: $0   { --help | -?  |   -h | platform  | switch     | option    | location value }+ "
     echo "platform:        all | cygwin[32] | linux[32] | macosx[32] | mingw[32] | msvc[32]"
-    echo "switch:     --source | --clone    | --debug   | --static   | --clang   | --categorize "
+    echo "switch:     --source | --clone    | --debug   | --static   | --clang"
     echo "options:     --nonls | --video    | --asan    | --webready | --unit    | --status"
-    echo "msvc:         --2015 | --2017     | --2013    | --2012     | --2010    | --2008"
+    echo "msvc:         --2019 | --2017     | --2015    | --2013     | --2012    | --2010    | --2008"
     echo "location: --branch A | --server B | --user C  | --builds D | --master {rmillsmm,github,E}"
 }
-
+this="$0"
 announce()
 {
     if [ "$status" != "1" ]; then
@@ -85,15 +85,19 @@ mkdir -p  build
 cd        build
 rm    -rf logs
 mkdir -p  logs
-export                                         2>&1 | tee - >> logs/build.txt
-echo cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_TEAM_USE_SANITIZERS=${asan} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=${webready} -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_BUILD_PO=$nls -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} 2>&1 | tee - >> logs/build.txt
-     cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_TEAM_USE_SANITIZERS=${asan} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=${webready} -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_BUILD_PO=$nls -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} 2>&1 | tee - >> logs/build.txt
-make                                           2>&1 | tee -a logs/build.txt
-make tests                                     2>&1 | tee -a logs/test.txt
-ls -alt bin                                    2>&1 | tee -a logs/test.txt
-if [ -e bin/unit_tests ]; then bin/unit_tests  2>&1 | tee -a logs/test.txt      ; fi
-make package
-ls -alt *.tar.gz | sed -E -e 's/\+ / /g'       2>&1 | tee -a logs/test.txt
+export                                             2>&1 | tee -a logs/build.txt
+echo cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_TEAM_USE_SANITIZERS=${asan} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=${webready} -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_BUILD_PO=$nls -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} 2>&1 | tee -a logs/build.txt
+     cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_TEAM_USE_SANITIZERS=${asan} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=${webready} -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_BUILD_PO=$nls -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} 2>&1 | tee -a logs/build.txt
+if [ "$source" == "0" ]; then
+    make                                           2>&1 | tee -a logs/build.txt
+    ls -alt bin                                    2>&1 | tee -a logs/test.txt
+    make tests                                     2>&1 | tee -a logs/test.txt
+    if [ -e bin/unit_tests ]; then bin/unit_tests  2>&1 | tee -a logs/test.txt      ; fi
+    make package
+else
+    make package_source
+fi
+ls -alt *.tar.gz | sed -E -e 's/\+ / /g'           2>&1 | tee -a logs/test.txt
 EOF
         writeTag $1 $command ${cd}buildserver/build/tag $tag
     fi
@@ -106,6 +110,7 @@ msvcBuild()
 
     profile=msvc${edition}${config}${bits}
     case "$edition" in
+      2019) generator='Visual Studio 16 2019' ; bits='' ;;
       2017) generator='Visual Studio 15 2017' ;;
       2015) generator='Visual Studio 14 2015' ;;
       2013) generator='Visual Studio 12 2013' ;;
@@ -127,7 +132,7 @@ msvcBuild()
         ! ssh ${user}@$1 cmd64 <<EOF
 setlocal
 cd ${cd}
-IF NOT EXIST buildserver git clone --branch ${branch} $master --branch 0.27 buildserver --depth 1
+IF NOT EXIST buildserver git clone --branch ${branch} $master buildserver --depth 1
 IF NOT EXIST buildserver (
    echo +++++++++++++++ clone failed ++++++++++++++++++++++++++++++++
    exit 1
@@ -151,7 +156,7 @@ set   EXIV2_BINDIR=%CD%
 cd    ..\..\test
 set   EXIV2_EXT=.exe
 set   OLD_PATH=%PATH%
-set   PATH=c:\Python34;c:\msys64\usr\bin;%PATH%;
+set   PATH=c:\Python37;c:\msys64\usr\bin;%PATH%;
 make  test                                                                            2>&1 | c:\msys64\usr\bin\tee -a  ..\build\logs\test.txt
 if    NOT %ERRORLEVEL% 1 set RESULT=ignored
 if    EXIST %EXIV2_BINDIR%\unit_tests.exe %EXIV2_BINDIR%\unit_tests.exe               2>&1 | c:\msys64\usr\bin\tee -a  ..\build\logs\test.txt
@@ -170,8 +175,8 @@ EOF
 all=0
 all32=0
 asan=0
-branch=master
-builds=/Users/rmills/Jenkins/builds
+branch=Changes_for_v0.27.1
+builds=/Users/Shared/Jenkins/Home/userContent/builds
 categorize=0
 clang=0
 clone=0
@@ -191,7 +196,7 @@ msvc=0
 msvc32=0
 nls=1
 publish=0
-server=$(hostname|cut -d. -f 1)
+server=$(hostname|cut -d. -f 1|cut -d- -f 1)
 shared=1
 source=0
 status=0
@@ -252,6 +257,10 @@ while [ "$#" != "0" ]; do
     esac
 done
 
+if [ $source == 1 ]; then
+    clone=1
+fi
+
 if [ $asan == 1 ]; then
     debug=1
 fi
@@ -261,15 +270,14 @@ if [ $help == 1 ]; then
     exit 0;
 fi
 
-if [ $master == github   ]; then master=https://github.com/exiv2/exiv2 ; fi
+if [ $master == github   ]; then master=git://github.com/exiv2/exiv2                          ; fi
 if [ $master == rmillsmm ]; then master=rmills@rmillsmm:/Users/rmills/gnu/github/exiv2/master ; fi
 
-
 if [ "$all" == "1" ]; then
-    cygwin=1; linux=1; macosx=1; mingw=1; msvc=1;
+    cygwin=1; linux=1; macosx=1; mingw=1; msvc=1;unit=1;clone=1;
 fi
 if [ "$all32" == "1" ]; then
-    cygwin32=1; linux32=1; macosx=1; mingw32=1; msvc32=1;
+    cygwin32=1; linux32=1; macosx=1; mingw32=1; msvc32=1;clone=1;
 fi
 
 if [ "$full" == "1" ]; then
@@ -301,6 +309,7 @@ publishBundle()
         fi
     done
     tag=$tag_saved
+    $(dirname $this)/categorize.py  $builds
 }
 
 libary_type=''
@@ -313,12 +322,20 @@ if [ $linux == 1 ]; then
     command='bash'
     unixBuild     ${server}-ubuntu Linux64
     publishBundle ${server}-ubuntu           ${command}   /home/$user/gnu/github/exiv2/buildserver/build              '.tar.gz'
+    # recursively build package_source on a clean clone
+    "$this" --source --clone --tag "$tag" --branch "$branch" --master "$master"
 fi
 if [ $linux32 == 1 ]; then
     cd=/home/rmills/gnu/github/exiv2/
     command='bash'
     unixBuild     ${server}-ubuntu32 Linux32
     publishBundle ${server}-ubuntu32         ${command}   /home/$user/gnu/github/exiv2/buildserver/build              '.tar.gz'
+fi
+if [ $source == 1 ]; then
+    cd=/home/rmills/gnu/github/exiv2/
+    command='bash'
+    unixBuild     ${server}-ubuntu Source
+    publishBundle ${server}-ubuntu           ${command}   /home/$user/gnu/github/exiv2/buildserver/build              '.tar.gz'
 fi
 
 clang=0  # clang is not supported on Cygwin/MacOSX/MinGW/MSVC
@@ -366,22 +383,6 @@ if [ $mingw32 == 1 ]; then
     command='msys32'
     unixBuild         ${server}-w7 MinGW/32
     publishBundle     ${server}-w7           ${command}   /c/msys32/home/$user/gnu/github/exiv2/buildserver/build     '.tar.gz'
-fi
-
-if [ $source == 1 ]; then
-    ## create the source package
-    echo "+++++++++++++++++++++++++++++++++++++++++"
-    echo "+++ build Source in exiv2/buildserver +++"
-    pushd ~/gnu/github/exiv2/buildserver/build >/dev/null
-    make  package_source
-    ls    -alt *Source.tar.gz|sed -E -e 's/\+ / /g'
-    popd >/dev/null
-    echo "+++++++++++++++++++++++++++++++++++++++++"
-    publishBundle $server                      bash       /Users/$user/gnu/github/exiv2/buildserver/build             '.tar.gz'
-fi
-
-if [ $categorize == 1 ]; then
-    $(dirname $0)/categorize.py  $builds
 fi
 
 # That's all Folks

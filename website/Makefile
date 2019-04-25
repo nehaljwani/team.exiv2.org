@@ -144,9 +144,9 @@ doc: html
 	@mv -f ttt doxygen/exiv2-footer.html
         # API doc generation
         # diff -u oldfile newfile > a.patch
-	@cp $(EXIV2HOME)/cmake/Doxyfile.in doxygen/Doxyfile
-	@patch  doxygen/Doxyfile doxygen/Doxyfile.patch
-	doxygen doxygen/Doxyfile
+	# @cp $(EXIV2HOME)/cmake/Doxyfile.in doxygen/Doxyfile
+	# @patch  doxygen/Doxyfile doxygen/Doxyfile.patch
+	doxygen doxygen/Doxyfile.v27
         # Postprocessing
 	-@cp -f doxygen/doxy-boot.js html/doc/
         # Cleanup

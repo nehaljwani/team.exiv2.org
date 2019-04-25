@@ -2,6 +2,63 @@
 <news>
 
  <newsitem>
+  <date>12-Apr-2019</date>
+  <title>Exiv2 v0.27.1 (0.27.1)</title>
+  <abstract>Exiv2 v0.27.1</abstract>
+  <desc>
+   <p>Thanks to Luis, Dan and Thomas, Nehal and Andreas H for their work to make this release possible.</p>
+   <p>Thanks to Elliot at HostPresto for hosting http://exiv2.org.uk</p>
+   <p>Contributors: Andreas S, Freddie, Gilles, Michal, Phil.</p>
+   <ol>
+    <li>Bug and security fixes.</li>
+    <li>Deprecation warnings for Video, EPS and SSH support.</li>
+    <li>Relocated https://exiv2.org</li>
+    <li>Branch 0.27-maintenance for "dots" to avoid confusion with tag 0.27 (== 0.27.0 code).</li>
+   </ol>
+  </desc>
+ </newsitem>
+
+ <newsitem>
+  <date>29-Mar-2019</date>
+  <title>Exiv2 v0.27.1 RC1 (0.27.1.1)</title>
+  <abstract>Exiv2 v0.27.1 RC1</abstract>
+  <desc>Exiv2 v0.27.1 RC1</desc>
+ </newsitem>
+
+ <newsitem>
+  <date>02-Jan-2019</date>
+  <title>Exiv2 v0.27.0a</title>
+  <abstract>Exiv2 v0.27 Release Source Repackaging</abstract>
+  <desc>No code changes. The source bundle has to been repackaged. https://github.com/Exiv2/exiv2/issues/620</desc>
+ </newsitem>
+
+ <newsitem>
+  <date>20-Dec-2018</date>
+  <title>Exiv2 v0.27</title>
+  <abstract>Exiv2 v0.27 Release</abstract>
+  <desc>Thank You to <b>Dan</b> and <b>Luis</b> for their huge contribution to this release.
+    <p>
+     Contributors: Ben, Freddy, Gilles, Henri, Michal, Phil, Shridar, Toni and Thomas.
+    </p><p>
+     The headline features are:
+    </p><ol>
+    <li>Security fixes</li>
+    <li>Bug Fixes</li>
+    <li>Rewritten CMake Support</li>
+    <li>Conan Support to build dependencies</li>
+    <li>Adobe XMPsdk 2016 support</li>
+    <li>New python test suite</li>
+    <li>AppVeyor, Travis, CodeCov and GitLabs monitor submissions</li>
+    <li>Support for MinGW/msys2</li>
+    <li>Jenkins buildserver operates from GitHub</li>
+    <li>Jenkins buildserver operates from GitHub</li>
+    <li>New Documentation: Markdown, ReleaseNotes, Platform/ReadMe.txt and Website</li>
+    </ol>
+    <p>With Exiv2 v0.27, Team Exiv2 will offer "Long Term Support" and plan "dot" releases with security and critical fixes in 2019 and 2020.</p>
+  </desc>
+ </newsitem>
+
+ <newsitem>
   <date>07-Dec-2018</date>
   <title>Exiv2 v0.27 RC3</title>
   <abstract>Release Candidate 3</abstract>

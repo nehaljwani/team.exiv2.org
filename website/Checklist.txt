@@ -6,7 +6,7 @@ Caution: This is not a "push button" operation.
          Making a major new release can take several days to be certain everything is good.
          Making a dot release takes about 2-3 hours to  update docs, build, test, publish.
 
-$ export EXIV2HOME=~/gnu/github/exiv2/exiv2
+$ export EXIV2HOME=~/gnu/github/exiv2/0.27-maintenance
 $ export EXIV2WEB=~/gnu/exiv2/team/website
 $ alias  home='cd $EXIV2HOME'
 $ alias  web='cd $EXIV2WEB'
@@ -52,6 +52,10 @@ Rebuilding the website
     $ open html/index.html (http://rmillsmm-exiv2)    # website should look fine from file://$EXIV2WEB/html/index.html
     $ make publish                                    # copies the web to ~/Jenkins/website/html/
 
+4   Tweaking the web-site footer labels
+    $ cd ~/Jenkinns/website/html/
+    $ find . -name "*.html" | xargs sed -E -e  "s/^          Exiv2 v0.27.1.1$/          Exiv2 v0.27.1 RC1/" -i .bak
+    $ find . -name "*.bak"  | xargs rm -rf
     EDIT ~/Jenkins/website/html/include/exiv2.css to remove "PreRelease"
 
     Validate uploaded webpages with W3C HTML checker  # https://validator.w3.org
@@ -63,6 +67,41 @@ Rebuilding the website
     Exiv2    forum announcement
     Facebook fan page update
     https://discuss.pixls.us
+
+Patching doxygen/Doxyfile
+-------------------------
+8c8
+< OUTPUT_DIRECTORY       =
+---
+> OUTPUT_DIRECTORY       = doc
+98c98
+< FILE_PATTERNS          = *.hpp
+---
+> FILE_PATTERNS          =
+100c100
+< EXCLUDE                = $(EXIV2HOME)/samples/Jzon.h \
+---
+> EXCLUDE                = @ROOTDIR@/samples/Jzon.h \
+104c104
+< EXAMPLE_PATH           = $(EXIV2HOME)/samples doxygen
+---
+> EXAMPLE_PATH           = @ROOTDIR@/samples/
+130c130
+< HTML_OUTPUT            = $(EXIV2WEB)/html/doc
+---
+> HTML_OUTPUT            =
+135c135
+< HTML_EXTRA_STYLESHEET  = doxygen/customdoxygen.css
+---
+> HTML_EXTRA_STYLESHEET  =
+157c157
+< QHP_NAMESPACE          = org.doxygen.Project
+---
+> QHP_NAMESPACE          =
+242c242
+< # GENERATE_TAGFILE       = NO
+---
+> GENERATE_TAGFILE       = doc/html/exiv2.xml
 
 Downloading Builds
 ------------------
@@ -137,12 +176,21 @@ $ ./categorize.py ~/Jenkins/builds
 Copying to exiv2.org
 --------------------
 
+Websites are /var/www/websites/
+$ ssh ubuntu@exiv2.org 'ls -l /var/www/websites/'
+drwxr-xr-x 9 ubuntu www-data 12288 Mar 26 10:45 exiv2
+drwxr-xr-x 9 ubuntu www-data  4096 Mar 29 17:13 pre-release
+
+With rsync (preferred)
+$ rsync -varz ~/Jenkins/website/html/* ubuntu@exiv2.org:/var/www/websites/pre-release/
+
+Manually
 $ cd $EXIV2WEB
 $ tar czf release.tar.gz html/*
-$ scp release.tar.gz   root@exiv2.org:/tmp
+$ scp release.tar.gz   ubuntu@exiv2.org:/tmp
 $ rm -rf  release.tar.gz
 $ --------- work on exiv2.org -------
-$ ssh root@exiv2.org
+$ ssh ubuntu@exiv2.org
 $ cd tmp
 $ tar xzf release.tar.gz
 $ rm release.tar.gz

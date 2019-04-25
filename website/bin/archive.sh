@@ -34,16 +34,29 @@ for p in $releases; do
 	# date=unknown
 	checkSum=$(sha256sum $p | cut -d' ' -f 1)
 
+	# labels for 0.26 and earlier releases (Source = .tar.gz, Windows = -win.zip, Doc = -doc.tar.gz)
 	file=$(   echo $p    | cut -d/ -f 4-)
 	stub=$(echo $file | cut -d- -f 2-)
 	source=$(echo $file | cut -d- -f 2)
-	version=$(subString "$stub" ".tar.gz"   $(echo $stub |sed -E -e 's/.tar.gz//') $(echo $stub |sed -E -e 's/-win.zip//'))
-	kind=$(subString  "$p"    ".tar.gz"  "Source"           "Windows Executable" )
-	kind=$(subString  "$p"    "doc"      "Documentation"    "$kind"              )
-    version=$(subString  "$file" "Source"   "$source"       "$version"           )
+	version=$(subString "$stub" ".tar.gz"    $(echo $stub |sed -E -e 's/.tar.gz//') $(echo $stub |sed -E -e 's/-win.zip//'))
+	kind=$(   subString "$p"    ".tar.gz"    "Source"           "Windows Executable" )
+	kind=$(   subString "$p"    "doc"        "Documentation"    "$kind"              )
+    version=$(subString "$file" "Source"     "$source"          "$version"           )
+
+    # labels for v0.27 and later (exiv2-0.27.0-msvc64.zip, exiv2-0.27.1-Source.tar.gz exiv2-0.27.0-Linux.tar.gz)
+    case "$file" in
+        *msvc*   ) kind='Windows Build'   ;;
+        *Linux*  ) kind='Linux Build'     ;;
+        *CYGWIN* ) kind='Cygwin Build'    ;;
+        *MinGW*  ) kind='MinGW Build'     ;;
+        *Darwin* ) kind='MacOSX Build'    ;;
+    esac
+    case "$kind" in
+         *Build* ) version=$(echo $version | cut -d- -f 1) ;;
+    esac
 
 	echo "<tr>  \
-            <td>Exiv2 $version $kind</td> \
+            <td>Exiv2 v$version $kind</td> \
             <td><a href=\"/releases/$file\">$file</a></td> \
             <td align=\"right\">$size</td> \
             <!-- <td class=\"text-nowrap\">$date</td> --> \

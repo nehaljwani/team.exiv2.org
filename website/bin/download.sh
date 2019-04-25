@@ -21,17 +21,14 @@ do
     platform=$(echo $P | cut -d- -f 3   ) # CYGWIN
     S=$(       echo $P | cut -d- -f 1-3 ) # ./builds/exiv2-0.27.0.2-CYGWIN
     stub=$(    echo $S | cut -d/ -f 3-  ) # exiv2-0.27.0.2-CYGWIN
-    ext=$(     echo $P | cut -d. -f 5-  ) # tar.gz
+    if echo "$P" | grep .zip ; then ext=zip ; else ext=tar.gz ; fi
     p=$stub.$ext                          # exiv2-0.27.0.2-CYGWIN.tar.gz
-    if [ 1 -eq 2 ]; then
-		echo P = $P
-		echo platform = $platform
-		echo S = $S
-		echo stub = $stub
-		echo ext  = $ext
-		echo p = $p
-		exit 1
-    fi
+	echo P = $P
+	echo platform = $platform
+	echo S = $S
+	echo stub = $stub
+	echo ext  = $ext
+	echo p = $p
 
     cp    -p  $P  $basedir/html/builds/$p
 	size=$(ls -la        html/builds/$p | cut -d' ' -f 5)
