@@ -70,6 +70,11 @@ Rebuilding the website
 
 Patching doxygen/Doxyfile
 -------------------------
+Caution: Makefile uses doxygen/Doxyfile.v27 with Doxygen as the HTML made by
+         patching doxygen/Doxyfile generates menus in the HTML.
+         I haven't discovered why!  Use the v27 file for the moment.
+
+< = doxygen/Doxyfile     > $HOMEDIR/cmake/Doxyfile.in
 8c8
 < OUTPUT_DIRECTORY       =
 ---
@@ -182,7 +187,12 @@ drwxr-xr-x 9 ubuntu www-data 12288 Mar 26 10:45 exiv2
 drwxr-xr-x 9 ubuntu www-data  4096 Mar 29 17:13 pre-release
 
 With rsync (preferred)
-$ rsync -varz ~/Jenkins/website/html/* ubuntu@exiv2.org:/var/www/websites/pre-release/
+$ ssh ubuntu@exiv2.org
+// Set up the exiv2 website
+// mkdir /var/www/websites/exiv2 ; sudo chgrp ubuntu /var/www/websites/exiv2 ; sudo chown ubuntu /var/www/websites/exiv2
+$ cd $EXIV2WEB/html
+$ rsync -varz . ubuntu@exiv2.org:/var/www/websites/exiv2
+// Takes about 10 minutes from the MacMini
 
 Manually
 $ cd $EXIV2WEB

@@ -465,17 +465,17 @@
 
 </PRE>
 <H2>SEE ALSO</H2><PRE>
-       <I>http://exiv2.dyndns.org/sample.html#modify</I>
+       <I>https://exiv2.org/sample.html#modify</I>
               Sample command files.
 
-       <I>http://exiv2.dyndns.org/metadata.html</I>
+       <I>https://exiv2.org/metadata.html</I>
               Taglists with <I>key</I> and default <I>type</I> values.
 
 
 </PRE>
 <H2>AUTHORS</H2><PRE>
        <B>exiv2</B>  was written by Andreas Huggel and others.  The Exiv2 project web
-       site is http://exiv2.dyndns.org.  The  code  is  hosted  on  GitHub  at
+       site  is  https://exiv2.org.   The  code  is  hosted   on   GitHub   at
        https://github.com/exiv2/exiv2
 
        This manual page was originally created for the Debian project by KELE-
@@ -483,7 +483,7 @@
 
 
 
-                                 Nov 26, 2018                         <B>EXIV2(1)</B>
+                                 Apr 25, 2019                         <B>EXIV2(1)</B>
 </PRE>
 <HR>
 <ADDRESS>
