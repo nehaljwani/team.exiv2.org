@@ -11,6 +11,7 @@
     <li>Deprecation warnings for Video, EPS and SSH support.</li>
     <li>Relocated https://exiv2.org</li>
     <li>Branch 0.27-maintenance for "dots" to avoid confusion with tag 0.27 (== 0.27.0 code).</li>
+    <li>Support for Visual Studio 2019 using Conan and CMake</li>
    </ol>
   </td>
 </tr>
