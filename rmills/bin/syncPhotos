@@ -18,7 +18,7 @@ declare -A drives=( \
    # ["Photos"]="/Volumes/Photos/" \
    # ["BackupXX"]="/Volumes/Backup/Photos/" \
    # ["Backup"]="rmills@exiv2.dyndns.org:/Volumes/Backup/Photos/"
-   ["Backup"]="rmills@rmillsmm:/Volumes/Backup/Photos/"
+   ["Backup"]="rmills@rmillsmm.local:/Volumes/Backup/Photos/"
 )
 
 reportDrives() {

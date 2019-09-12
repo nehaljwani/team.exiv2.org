@@ -19,11 +19,6 @@ int main(int argc, char* argv[])
 	char* filename = argv[1] ;
 	FILE* f = NULL ;
 
-//  GCC_PREFIX_HEADER = dmpf.pch
-//	GCC_PRECOMPILE_PREFIX_HEADER = YES
-//	printf("engineer = %s\n",ENGINEER) ; // compiled in by dmpf.pch
-
-
 	if ( argc < 2 ) {
 		syntax() ;
 		error = errorSyntax ;
@@ -57,7 +52,9 @@ int main(int argc, char* argv[])
 			}
 			// blank pad the ascii
 			int save = n ;
-			while ( n++ < sizeof(buff) ) l += sprintf(line+l," ") ;
+			while ( n++ < sizeof(buff) ) {
+			    l += sprintf(line+l," ") ;
+			}
 			n = save     ;
 
 		    // hex code
@@ -65,12 +62,17 @@ int main(int argc, char* argv[])
 			for ( int i = 0 ; i < n ; i++ )
 			{
 				unsigned char c = buff[i] ;
-				l += sprintf(line+l,printable(c) ? "  %c" : " %02x" ,c) ;
+				l += sprintf(line+l," %02x" ,c) ;
 			}
 
 			line[l] = 0 ;
 			printf("%s\n",line) ;
 		}
+
+        if ( f != stdin ) {
+            fclose(f);
+            f = NULL;
+        }
 	}
 
 	return error ;

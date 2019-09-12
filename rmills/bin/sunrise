@@ -147,7 +147,7 @@ if [  $y -lt 100 ]; then let y=$((y+2000)) ; fi
 if [ "$(( y==((y/4)*4) ))" -ne 0 ]; then T=29; else T=28; fi
 if [ "$f"                  -lt 1 ]; then f=1            ; fi
 
-let m=$(expr $m)
+let m=$(echo $m | sed 's/^0*//') # strip leading zeros
 case $m in
 	# 1|3|5|7|8|10|12) ;;
 	4|6|9|11) if [ "$t" -gt 30   ]; then t=30; fi ;;

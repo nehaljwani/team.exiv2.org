@@ -73,7 +73,7 @@ upgif        = 'up.gif'
 nextgif      = 'next.gif'
 photogif     = 'robinali.gif'
 email        = 'webmaster@clanmills.com'
-copyright    = '1996-2018 Robin Mills'
+copyright    = '1996-2019 Robin Mills'
 prev         = default + ext
 lightbox     = 'lightbox'
 download     = '2.35mb'
@@ -439,20 +439,23 @@ def writeImage(webDir,theDir,filename,pathname,width,aspect,rotate,cols,bGeotagI
         else:
             image    = Image.open(pathname)
             imageBox = image.getbbox()
-            w = float(imageBox[2])
-            h = float(imageBox[3])
-            W = float(width)
+            try:
+				w = float(imageBox[2])
+				h = float(imageBox[3])
+				W = float(width)
 
-            scale = (W/w) if w > h else (W/h) ;
+				scale = (W/w) if w > h else (W/h) ;
 
-            if rotate==90 or rotate==270:
-                a = float(h)/float(w)
-                scale = scale/a
+				if rotate==90 or rotate==270:
+					a = float(h)/float(w)
+					scale = scale/a
 
-            size  = ( int(w*scale),int(h*scale))
-            print 'filename =', filename,     'size =', size,     'rotate =', rotate
-            image.thumbnail(size,imageQuality)
-            image.rotate(-rotate).save(imagename, "JPEG")
+				size  = ( int(w*scale),int(h*scale))
+				print 'filename =', filename,     'size =', size,     'rotate =', rotate
+				image.thumbnail(size,imageQuality)
+				image.rotate(-rotate).save(imagename, "JPEG")
+            except:
+        		print 'trouble with imageBox on '+pathname
 
         if bGeotagIcon:
             geotagIcon(imagename,"brm")
@@ -496,6 +499,7 @@ def writeWebPage(webDir,filename,pathname,webPageString,subs,width,aspect,rotate
     file.write(string.Template(webPageString).safe_substitute(subs))
 
     file.close()
+    subs['caption']=''
     writeImages(webDir,filename,pathname,width,aspect,rotate,cols,bGeotagIcon,subs['caption'],filedict)
 
 ##

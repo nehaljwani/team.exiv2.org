@@ -1,4 +1,4 @@
-#!/opt/local/bin/perl
+#!/usr/bin/perl
 
 my $VERSION='0.1';
 
@@ -63,7 +63,7 @@ sub fixup
 	         , ['/2012/NewYearsDay'    	, '/2011/Christmas/NewYearsDay'] # New Year 2011 correction
 	         , ['AppleOffice/IMG_3502' 	, 'Apple' ]                      # New Year 2011 correction
 	         , ["$ENV{PHOTOS}/"        	, '/'     ]
-	         , ['$Pictures'             , "/$year"]
+	         , ['$Pictures'             , ""]
 	         );
 	for my $i (0 .. $#P) {
 		my $p=$P[$i][0];
@@ -152,7 +152,7 @@ Collage::OK($collage,$force);
 
 ##
 # open and resample the image
-my $image = Imager->new(file=>$photo) or die "Cannot load $photo: ";#, $image->errstr;
+my $image = Imager->new(file=>$photo);# or die "Cannot load $photo: ";#, $image->errstr;
 my $W     =   $image->getwidth;
 my $H     =   $image->getheight;
 

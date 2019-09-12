@@ -514,7 +514,7 @@ differ () {
 	     $cmd ${args[*]} &
 }
 
-export EXIV2HOME=~/gnu/github/exiv2/exiv2
+export EXIV2HOME=~/gnu/github/exiv2/0.27-maintenance
 export EXIV2WEB=~/gnu/exiv2/team/website
 alias web='cd ${EXIV2WEB}'
 alias home='cd ${EXIV2HOME}'
@@ -591,7 +591,7 @@ if [ "$PLATFORM" == "linux" ]; then
 fi
 
 export CS_HOME=$HOME/copperspice/
-
+export GOOGLE_MAPS_KEY=AIzaSyC2BukuQbBJbFaZA6e9tAxiHdGq1jIDKsE
 
 themes=/cygdrive/c/Users/rmills/AppData/Local/Microsoft/BingDesktop/themes/
 if [ -e $themes ]; then
@@ -608,6 +608,20 @@ else
 	export "DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$BOOST_ROOT"
 fi
 
+# http://gitimmersion.com/lab_11.html
+alias gs='git status '
+alias ga='git add '
+alias gb='git branch '
+alias gc='git commit'
+alias gd='git diff'
+alias go='git checkout '
+alias gk='gitk --all&'
+alias gx='gitx --all'
+alias z='xattr -d com.apple.quarantine'
+alias book='cd ~/gnu/exiv2/team/book'
+
+alias got='git '
+alias get='git '
 # That's all Folks!
 ##
 
@@ -629,3 +643,9 @@ export PATH=$PATH:/opt/local/bin:/opt/local/sbin:/opt/pkgconfig/bin
 # Finished adapting your PATH environment variable for use with MacPorts.
 
 export PATH="/usr/local/opt/gettext/bin:$PATH"
+
+
+# Setting PATH for Python 3.7
+# The original version is saved in .profile.pysave
+PATH="/Library/Frameworks/Python.framework/Versions/3.7/bin:${PATH}"
+export PATH
