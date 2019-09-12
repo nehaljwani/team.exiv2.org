@@ -49,13 +49,17 @@ def dumpTags(ifd):
 		mcolor    = 'blue'
 		zoom      = '12'  # 1 = Globe, 14 = Streets
 		maptype   = 'roadmap' # roadmap satellite hybrid terrain
-		url       = "https://maps.googleapis.com/maps/api/staticmap?key=%s&center=%s,%s&zoom=%s&size=%s&markers=color:%s%%7C%s,%s&format=%s&scale=%s&maptype=%s" % (
+		url       = """https://maps.googleapis.com/maps/api/staticmap?
+		key=%s&center=%s,%s&zoom=%s&size=%s&markers=color:%s%%7C%s,%s&format=%s&scale=%s&maptype=%s
+		""" % (
 			os.environ.get('GOOGLE_MAPS_KEY'),
 			latitude, longitude,
 			zoom, size, mcolor,
 			latitude, longitude,
 			format, scale,maptype
 		)
+		# remove white space
+		url = url.replace('\n', '').replace('\r', '').replace(' ','').replace('\t','')
 
 		print("opening " + url);
 		opener     = urllib.request.urlopen(url)
