@@ -2,6 +2,55 @@
 <news>
 
  <newsitem>
+  <date>2019-07-28</date>
+  <title>Exiv2 v0.27.2</title>
+  <abstract>Exiv2 v0.27.2</abstract>
+  <desc>
+   <p>Thank You to Kevin for security contributions to this release.<br></br>
+      Thank You to Ting-Wei for Unix contributions to this release.<br></br>
+      Thank You to Dan and Luis for their solid efforts on Exiv2.<br></br>
+      Thank You to Andreas S for representing Team Exiv2 at LGM 2019.<br></br>
+      Contributors: Jens, Nehal, Phil, Paul, Toni
+   </p>
+   <ol>
+    <li>Bug and security fixes</li>
+    <li>Support for Nikon/AutoFocus and Sony/FocusPosition Metadata</li>
+    <li>Documentation and man page revisions</li>
+    <li>Updated Catalan Localisation</li>
+    <li>Using mergify to sync select PRs between 0.27-maintenance and 0.28</li>
+    <li>Monitoring API changes for v0.27 dot releases</li>
+    <li>Prelinary Dutch Localisation</li>
+    <li>Prelinary Support for Unix (FreeBSD and NetBSD)</li>
+    <li>Better Build Bundle Dependency handling</li>
+   </ol>
+  </desc>
+ </newsitem>
+
+ <newsitem>
+  <date>2019-07-19</date>
+  <title>Exiv2 v0.27.2 RC3 (0.27.2.3)</title>
+  <abstract>Exiv2 v0.27.2 RC3</abstract>
+  <desc>
+  </desc>
+ </newsitem>
+
+ <newsitem>
+  <date>2019-06-29</date>
+  <title>Exiv2 v0.27.2 RC2 (0.27.2.2)</title>
+  <abstract>Exiv2 v0.27.2 RC2</abstract>
+  <desc>
+  </desc>
+ </newsitem>
+
+ <newsitem>
+  <date>2019-06-13</date>
+  <title>Exiv2 v0.27.2 RC1 (0.27.2.1)</title>
+  <abstract>Exiv2 v0.27.2 RC1</abstract>
+  <desc>
+  </desc>
+ </newsitem>
+
+ <newsitem>
   <date>26-Apr-2019</date>
   <title>Exiv2 v0.27.1 (0.27.1)</title>
   <abstract>Exiv2 v0.27.1</abstract>

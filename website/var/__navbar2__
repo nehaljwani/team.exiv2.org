@@ -18,6 +18,8 @@
         <li><a href="../whatsnew.html">What's New</a></li>
         <li><a href="../metadata.html">Metadata</a></li>
         <li><a href="../makernote.html">Makernote</a></li>
+        <li><a href="../doc/examples.html">Examples</a></li>
+        <li><a href="../manpage.html">Manual</a></li>
         <li class="dropdown active">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">API <span class="caret"></span></a>
           <ul class="dropdown-menu">
@@ -26,10 +28,9 @@
             <li><a href="classes.html"><span class="glyphicon glyphicon-th" aria-hidden="true"></span>&nbsp; Class index</a></li>
             <li><a href="hierarchy.html"><span class="glyphicon glyphicon-list" aria-hidden="true"></span>&nbsp; Class hierarchy</a></li>
             <li><a href="files.html"><span class="glyphicon glyphicon-file" aria-hidden="true"></span>&nbsp; File list</a></li>
-            <li><a href="../examples.html"><span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>&nbsp; Examples</a></li>
+            <li><a href="../examples.html"><span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>&nbsp; Libary Examples</a></li>
           </ul>
         </li>
-        <li><a href="../manpage.html">Manual</a></li>
         <li><a href="https://github.com/exiv2/exiv2" target="_blank">GitHub</a></li>
       </ul>
     </div><!--/.nav-collapse -->

@@ -34,13 +34,15 @@ __navbar__
 	  </a>
 	</p>
 	<p class="version text-center text-muted"><small>Currently v__version__</small></p>
-
+<!--
 	<h2>Build Server</h2>
 	<p>The project has a build server which builds and tests the code on supported platforms every night.</p>
 	<p class="text-center margin-top-s">
 	<a class="btn btn-primary" href="http://exiv2.dyndns.org:8080">Buildserver</a>
 	<a class="btn btn-primary" href="http://exiv2.dyndns.org:8080/userContent/builds/">Recent Builds</a>
 	</p>
+-->
+	<h2>Downloads Archive</h2>
 
     <p>An archive of older release is provided.  See the <a title="Changelog" href="changelog.html">ChangeLog</a> for a detailed list of changes between releases.</p>
 

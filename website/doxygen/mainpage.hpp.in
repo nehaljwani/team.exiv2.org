@@ -27,3 +27,59 @@
   @example xmpsample.cpp
   Sample usage of high-level XMP classes.
  */
+/*!
+  @example addmoddel.cpp
+  Sample usage of high-level metadata operations.
+ */
+/*!
+  @example exifprint.cpp
+  Sample program to print Exif data from an image.
+ */
+/*!
+  @example exifcomment.cpp
+  Sample program showing how to set the Exif comment of an image.
+ */
+/*!
+  @example exifdata.cpp
+  Prints Exif metadata in different formats in an image.
+ */
+/*!
+  @example exifvalue.cpp
+  Prints the value of a single Exif tag in a file
+ */
+/*!
+  @example exiv2json.cpp
+  Extracts data from image in JSON format.
+ */
+/*!
+  @example geotag.cpp
+  Reads GPX data and updates images with GPS Tags
+ */
+/*!
+  @example iptceasy.cpp
+  The quickest way to access, set or modify IPTC metadata
+ */
+/*!
+  @example iptcprint.cpp
+  Demonstrates Exiv2 library APIs to print Iptc data
+ */
+/*!
+  @example metacopy.cpp
+  Demonstrates copying metadata from one image to another
+ */
+/*!
+  @example mrwthumb.cpp
+  Sample program to extract a Minolta thumbnail from the makernote
+ */
+/*!
+  @example xmpsample.cpp
+  Sample usage of high-level XMP classes.
+ */
+/*!
+  @example xmpparse.cpp
+  Read an XMP packet from a file, parse it and print all (known) properties.
+ */
+/*!
+  @example xmpprint.cpp
+  Read an XMP from a file, parse it and print all (known) properties
+ */
