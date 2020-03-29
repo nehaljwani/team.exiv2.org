@@ -516,8 +516,12 @@ differ () {
 
 export EXIV2HOME=~/gnu/github/exiv2/0.27-maintenance
 export EXIV2WEB=~/gnu/exiv2/team/website
+export EXIV2BUILDS=/Users/Shared/Jenkins/Home/userContent/builds/all
+export EXIV2BUILDER=~/gnu/exiv2/team/contrib/buildserver
 alias web='cd ${EXIV2WEB}'
 alias home='cd ${EXIV2HOME}'
+alias builds='cd ${EXIV2BUILDS}'
+alias builder='cd ${EXIV2BUILDER}'
 
 ##
 # platform adjustments
