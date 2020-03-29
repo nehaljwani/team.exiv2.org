@@ -5,18 +5,21 @@ T A B L E   of   C O N T E N T S
 --------------------------------
 
 1    Build Architecture
+1.1  Setting up VMs for Linux and Windows
+1.2  Building packages
+1.3  Unix Support
 2    Install and configure Jenkins
 2.1  Build Projects
 2.2  Build Nodes
 2.3  Jenkins User Interface Sidebar
 3    Setting up the web server on the Mac Mini
-3.1  Disable MacOS-X Server Profiles
+3.1  Disable macOS Server Profiles
 3.2  Edit /etc/apache2/httpd.conf
 3.3  Edit /etc/apache2/extra/httpd-vhosts.conf
 3.4  Edit /etc/hosts
 4    Setting up SSH
 4.1  Setting up SSH on the Windows VM
-4.2  Setting up SSH on Linux and MacOS-X
+4.2  Setting up SSH on Linux and macOS
 
 1 Build Architecture
 --------------------
@@ -28,28 +31,22 @@ The build is executed by the script <exiv2dir>/contrib/buildserver/build.sh
 You are expected to set up VMs as follows:
 
 Option: --server server --user user
-server              shell                    directory
-------              -----                    ---------
-$server             bash                     /Users/$user/gnu/github/exiv2/buildserver
-$server-w7          msys32                   /home/$user/gnu/github/exiv2/buildserver
-                    msys64                   /home/$user/gnu/github/exiv2/buildserver
-                    cygwin64                 /home/$user/gnu/github/exiv2/buildserver
-                    cmd64                    /c/Users/$user/gnu/github/exiv2/buildserver
-$server-ubuntu      bash                     /home/$user/gnu/github/exiv2/buildserver
+server              platform   shell      directory
+------              --------   -----      ---------
+$server             macOS      bash       /Users/$user/gnu/github/exiv2/buildserver
+$server-w10         mingw      msys64     /home/$user/gnu/github/exiv2/buildserver
+                    cygwin     cygwin64   /home/$user/gnu/github/exiv2/buildserver
+                    msvc       cmd64      /cygdrive/c/Users/$user/gnu/github/exiv2/buildserver
+$server-ubuntu      18.04 LTS  bash       /home/$user/gnu/github/exiv2/buildserver
+$server-ubuntu32    14.04 LTS  bash       /home/$user/gnu/github/exiv2/buildserver
 
-The script msys32.bat, msys64.bat and cygwin64 are documented in README.md
-The script cmd64.bat in has a limited PATH c:\Users\rmills\com\cmd64.bat
+The scripts msys64.bat and cygwin64 are documented in README.md
+The script cmd64.bat has a limited PATH c:\Users\rmills\com\cmd64.bat
 @echo off
 setlocal
 set  "PATH=C:\Python34\;C:\Python27\;C:\Python27\Scripts;C:\Perl64\site\bin;C:\Perl64\bin;C:\WINDOWS\system32;C:\Program Files\Git\cmd;c:\Program Files\cmake\bin;"
 cd   %HOMEPATH%
 cmd
-
-+--------------------------------------------+
-| IMPORTANT                                  |
-| c:\msys32> autorebase.bat to "fixup" DLLs  |
-+--------------------------------------------+
-
 
 1.2 Building packages
 ---------------------
@@ -57,14 +54,20 @@ The build is performed and the package is built in sub-directory: build.  For ex
 
 ~/gnu/github/exiv2/buildserver/build/exiv2-0.27.0.2-Darwin.tar.gz
 
-The build of the "Source" is only performed on the Mac Mini in the directory:
-/User/rmills/gnu/github/exiv2/buildserver/build
-/User/rmills/gnu/github/exiv2/buildserver/build/exiv2-0.27.0.1-Source.tar.gz
+The build of the "Source" is only performed on the Linux in the directory:
+/home/rmills/gnu/github/exiv2/buildserver/build
+/home/rmills/gnu/github/exiv2/buildserver/build/exiv2-0.27.0.1-Source.tar.gz
+
+1.3 Unix Support
+----------------
+Support is being added in Exiv2 v0.27.3 for Unix: solaris, freebsd and netbsd
+The script ./build.sh supports those platforms.
+Unix Support is currently work-in-progress.
 
 2 Install and configure Jenkins on the MacMini
 ----------------------------------------------
 
-I can't anything special about the setup as it has been running on the MacMini for several years.  I'll set up a new MacOS-X VM and install Jenkins to see if there's something unusual about this.
+I can't anything special about the setup as it has been running on the MacMini for several years.  I'll set up a new macOS VM and install Jenkins to see if there's something unusual about this.
 
 The builds are performed on the VMs and copied to directory /Users/rmills/Jenkins/builds/all by build.sh --publish
 
@@ -77,15 +80,15 @@ At present there is no script to remove old/stale builds for builds/all
 
 There are two Jenkins projects to perform the build:
 1) daily-github-exiv2-exiv2
-This expects 6 builders (labels): macosx, linux, mingw, mingw32, cygwin, msvc
-All builds are performed from MacOS-X using the build.sh script.
+This expects 6 builders (labels): macos, linux, mingw, cygwin, msvc
+All builds are performed from macOS using the build.sh script.
 
 The build command is:
 /User/rmills/gnu/github/exiv2/exiv2/contrib/buildserver/build.sh $label --clone --branch 0.27-RC2
 
 2) daily-github-exiv2-exiv2-publish
 The project is executed by Jenkins when the build on every label finishes.
-This project expects a single builder (macosx)
+This project expects a single builder (macos)
 
 The build command is:
 /User/rmills/gnu/github/exiv2/exiv2/contrib/buildserver/build.sh $label --publish
@@ -96,7 +99,7 @@ The build command is:
 You only configure the Mac because build.sh performs the builds over ssh.
 Jenkins does not know about the Windows and Linux servers.
 
-The 'master' (rmillsmm) should have the labels macosx linux cygwin mingw mingw32 msvc
+The 'master' (rmillsmm) should have the labels macos linux cygwin mingw mingw msvc
 Launch method: "Launch agent agents via SSH"
 Host: rmillsmm
 Credentials: rmills/********
@@ -149,7 +152,7 @@ Test Files      /userContent/testfiles /usrContent/icon-test.png
 3 Setting up Apache on the MacMini
 ----------------------------------
 
-3.1) Disable MacOS-X Server Profiles
+3.1) Disable macOS Server Profiles
 
 3.2) Edit /etc/apache2/httpd.conf
 
@@ -241,18 +244,18 @@ DocumentRoot "/Users/rmills/clanmills"
 4.1) Setting up SSH on the Windows VM
 --------------------------------------
 
-I highly recommend using the Bitvise SSH server on Windows.  It's free for personal and open-source use.  You should configure it to run cmd.exe as the shell.  You should install msys32 and msys64 as described in README.md.  And put the scripts msys32.bat and msys64.bat on the PATH.
+I highly recommend using the Bitvise SSH server on Windows.  It's free for personal and open-source use.  You should configure it to run cmd.exe as the shell.  You should install msys64 and cygwin64 as described in README.md.  And put the scripts msys64.bat and cygwin64.bat on the PATH.
 
-I installed two public keys into Bitvise (from rmillsmbp and rmillsmm) to avoid the headache of passwords.  The connection is always made from the build 'master' to the build node (from rmillsmm to rmillsmm-W7).  Copy ~/.ssh/id_rsa.pub into Bitvise using the dialog box "Manage Host Keys".  I believe I also use the "password cache" in Bitvise.
+I installed two public keys into Bitvise (from rmillsmbp and rmillsmm) to avoid the headache of passwords.  The connection is always made from the build 'master' to the build node (for example rmillsmm to rmillsmm-w10).  Copy ~/.ssh/id_rsa.pub into Bitvise using the dialog box "Manage Host Keys".  I believe I also use the "password cache" in Bitvise.
 
-The command: echo "ls -alt" | ssh $user/$server-w7 msys32 will connect you to the msys32 shell and process whatever you pipe on standard-input.  The script build.sh typically uses HERE scripts.
+The command: echo "ls -alt" | ssh $user/$server-w10 msys64 will connect you to the msys64 shell and process whatever you pipe on standard-input.  The script build.sh typically uses HERE scripts.
 
-554 rmills@rmillsmm:~ $ echo 'pwd;echo ++++ ;ls gnu' | ssh rmills@rmillsmm-w7 msys32
+554 rmills@rmillsmm:~ $ echo 'pwd;echo ++++ ;ls gnu' | ssh rmills@rmillsmm-w10 msys64
 /c/Users/rmills
 ++++
 exiv2
 github
-555 rmills@rmillsmm:~ $ echo 'cd && echo ++++  && cd gnu && dir' | ssh rmills@rmillsmm-w7 cmd
+555 rmills@rmillsmm:~ $ echo 'cd && echo ++++  && cd gnu && dir' | ssh rmills@rmillsmm-w10 cmd
 C:\Users\rmills>cd && echo ++++  && cd gnu && dir
 C:\Users\rmills
 ++++
@@ -266,8 +269,8 @@ C:\Users\rmills
 C:\Users\rmills\gnu>560 rmills@rmillsmm:~ $
 556 rmills@rmillsmm:~
 
-4.2) Setting up SSH on the Linux VM and MacOS-X
------------------------------------------------
+4.2) Setting up SSH on the Linux VM and macOS
+---------------------------------------------
 
 You should copy your public key (~/.ssh/id_rsa.pub) from rmillsmm to the server ~/.ssh/authorized_keys  There are many articles on the web about how to do this.
 
@@ -291,4 +294,4 @@ mytimer
 
 Robin Mills
 robin@clanmills.com
-2018-10-23
+2020-03-29
