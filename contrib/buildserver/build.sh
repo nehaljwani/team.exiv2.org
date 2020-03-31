@@ -4,7 +4,7 @@ syntax() {
     echo "usage: $0   { --help | -?  |   -h | platform  | switch     | option     | location value }+ "
     echo "platform:    all[32] | cygwin     | freebsd   | linux[32]  | macos      | mingw | msvc[32] | netbsd"
     echo "switch:     --source | --clone    | --debug   | --static   | --clang"
-    echo "options:       --nls | --video    | --asan    | --webready | --unit     | --status"
+    echo "options:   --[no]nls | --video    | --asan    | --webready | --unit     | --status"
     echo "msvc:         --2019 | --2017     | --2015    | --2013     | --2012     | --2010    | --2008"
     echo "location: --branch A | --server B | --user C  | --builds D | --tag tag  | --github {rmillsmm,github,E}"
 }
@@ -136,9 +136,11 @@ msvcBuild()
         ! ssh ${user}@$1 cmd64 <<EOF
 setlocal
 cd ${cd}
+@echo off
 IF NOT EXIST buildserver git clone --branch ${branch} $github buildserver --depth 1
-@IF NOT EXIST buildserver echo +++++++++++++++ clone failed ++++++++++++++++++++++++++++++++
-@IF NOT EXIST buildserver    exit 1
+IF NOT EXIST buildserver echo +++++++++++++++ clone failed ++++++++++++++++++++++++++++++++
+IF NOT EXIST buildserver exit 1
+@echo on
 cd buildserver
 git fetch --unshallow
 git pull  --rebase
@@ -158,7 +160,7 @@ set   EXIV2_BINDIR=%CD%
 cd    ..\..\test
 set   EXIV2_EXT=.exe
 set   OLD_PATH=%PATH%
-set   PATH=c:\Python37;c:\msys64\usr\bin;%PATH%;
+set   PATH=c:\Python37;C:\Python37\Scripts;c:\msys64\usr\bin;%PATH%;
 make  test                                                                            2>&1 | c:\msys64\usr\bin\tee -a  ..\build\logs\test.txt
 if    NOT %ERRORLEVEL% 1 set RESULT=ignored
 if    EXIST %EXIV2_BINDIR%\unit_tests.exe %EXIV2_BINDIR%\unit_tests.exe               2>&1 | c:\msys64\usr\bin\tee -a  ..\build\logs\test.txt
@@ -198,7 +200,7 @@ mingw32=0
 msvc=0
 msvc32=0
 netbsd=0
-nls=0
+nls=1
 publish=0
 server=$(hostname|cut -d. -f 1|cut -d- -f 1)
 shared=1
@@ -237,6 +239,7 @@ while [ "$#" != "0" ]; do
       --debug)      config=Debug  ;;
       --full)       full=1        ;;
       --nls)        nls=1         ;;
+      --nonls)      nls=0         ;;
       --publish)    publish=1     ;;
       --source)     source=1      ;;
       --static)     shared=0      ;;
