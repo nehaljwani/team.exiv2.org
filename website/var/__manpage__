@@ -141,7 +141,7 @@
               When <B>-V</B> is combined with <B>-v</B> (Verbose version), build information
               is printed to standard  output  along  with  a  list  of  shared
               libraries which have been loaded into memory. Verbose version is
-              supported on Windows (MSVC, Cygwin and MinGW builds), MacOSX and
+              supported on Windows (MSVC, Cygwin and MinGW builds), macOS  and
               Linux and is provided for test and debugging.
 
        <B>-v</B>     Be verbose during the program run.
@@ -371,9 +371,30 @@
               an empty value ("") and is mainly useful to create an XMP  array
               property, e.g., a bag.
 
-              The  format  of Exif <B>Comment</B> values includes an optional charset
-              specification at the beginning:
-              <B>[charset=Ascii|Jis|Unicode|Undefined</B> <B>]</B><I>comment</I>
+              The  format  of  Exif <B>Comment</B> values include an optional charset
+              specification at the beginning.  Comments are used by  the  tags
+              Exif.Photo.UserComment,   Exif.GPSInfo.GPSProcessingMethod   and
+              $ exiv2 -pa --grep UserComment x.jpg
+              Exif.Photo.UserComment                       Undefined  18  Robin
+              $ exiv2 -pv --grep UserComment x.jpg
+              0x9286 Photo        UserComment                 Undefined  18  charset="Unicode" Robin
+
+              $ exiv2 -M'set Exif.GPSInfo.GPSProcessingMethod HYBRID-FIX' x.jpg
+              $ exiv2 -pa --grep ProcessingMethod        x.jpg
+              Exif.GPSInfo.GPSProcessingMethod             Undefined  18  HYBRID-FIX
+              $ exiv2 -pv --grep ProcessingMethod        x.jpg
+              0x001b GPSInfo     GPSProcessingMethod       Undefined  18  HYBRID-FIX
+
+              The format for an IPTC <B>Date</B> value is:
+
+                  YYYY-MM-DD (year, month, day)
+
+              The format for an IPTC <B>Time</B> value is:
+
+                  HH:MM:SS (hours, minutes, seconds)
+
+              and may optionally be followed by:
+
                  -HH:MM or +HH:MM (hours, minutes ahead/behind UTC)
 
               The format of <B>Rational</B> (and <B>SRational</B>) is one of:
@@ -385,49 +406,94 @@
               $ exiv2 "-Mset Exif.Photo.MaxApertureValue 557429/62500" X.jpg
               $ exiv2 "-Mset Exif.Photo.MaxApertureValue F5.6" X.jpg
 
-              The  Rational  format  Fnumber is for the convenience of setting
-              aperture values.  Aperture values are stored in Exif is an  <B>APEX</B>
+              The Rational format Fnumber is for the  convenience  of  setting
+              aperture  values.  Aperture values are stored in Exif is an <B>APEX</B>
               value which can be evaluated by the expression:
 
               apex-value  =    log(Fnumber) * 2.0 / log(2.0)
               number      = exp(apex-value * log(2.0) / 2.0)
 
               The Rational format Fnumber is valid for any <B>Rational</B>, even when
-              the key is not an Aperture.  More information about  <B>APEX</B>  value
+              the  key  is not an Aperture.  More information about <B>APEX</B> value
               is available from: http://en.wikipedia.org/wiki/APEX_system
 
-              The  format  of XMP <B>LangAlt</B> values includes an optional language
+              The format of XMP <B>LangAlt</B> values includes an  optional  language
               qualifier:
               <B>lang="</B><I>language-code"</I> <I>text</I>
 
-              lang="x-default" is used if the value doesn't start with a  lan-
+              lang="x-default"  is used if the value doesn't start with a lan-
               guage qualifier.
 
               $ exiv2 -M'set Xmp.dc.title lang="de-DE" Euros' X.jpg
               $ exiv2 -M'set Xmp.dc.title lang="en-GB" Pounds' X.jpg
-              $ exiv2 -M'set Xmp.dc.title lang="en-US" In God We Trust' X.jpg
-              $ exiv2 -M'set Xmp.dc.title All others pay cash' X.jpg
 
-              To  remove  a language specification, set the value to '' (empty
-              string)
-              exiv2 -M'set Xmp.dc.title lang="en-US"' X.jpg
-              To remove all language specifications, delete the key:
-              $ exiv2 -M'del Xmp.dc.title' X.jpg
-              To register additional XMP namespaces, combine the command with:
-              <B>reg</B> <I>prefix</I> <I>namespace</I>
 
-   <B>Command</B> <B>file</B> <B>format</B>
-       Empty  lines  and  lines  starting with <B>#</B> in a command file are ignored
-       (comments). Remaining lines are commands as described above.
 
 
 </PRE>
-<H2>CONFIGURATION FILE</H2><PRE>
-       Exiv2 can read an optional configuration file ~/.exiv2 on Unix  systems
-       and  %USERPROFILE%\exiv2.ini  on Windows (using a Visual Studio build).
-       Cygwin and MinGW/msys2 follow the unix convention and use ~/.exiv2  You
-       can fine the location of the configuration file with the command:
+<H2>EXIF TAGNAMES AND VALUES</H2><PRE>
+       Exiv2 displays metadata tags and values.
 
+       The tag is a triplet of Family.Group.Tagname.  The following groups are
+       defined for the family Exif:
+
+       GPSInfo           Canon           Fujifilm      NikonLd1      OlympusFe1     Pentax
+       Image             CanonCf                       NikonLd2      OlympusFe2     PentaxDng
+       Image2            CanonCs         Nikon1        NikonLd3      OlympusFe3
+       Image3            CanonF1         Nikon2        NikonMe       OlympusFe4     Samsung2
+       Iop               CanonPa         Nikon3        NikonPc       OlympusFe5     SamsungPictureWizard
+       MakerNote         CanonPi         NikonAFT      NikonPreview  OlympusFe6     SamsungPreview
+       MpfInfo           CanonPr         NikonAf       NikonSi01xx   OlympusFe7
+       Photo             CanonSi         NikonAf2      NikonSi02xx   OlympusFe8     Sony1
+       SubImage1         CanonTi         NikonAf22     NikonSiD300a  OlympusFe9     Sony1Cs
+       SubImage2                         NikonCb1      NikonSiD300b  OlympusFi      Sony1Cs2
+       SubImage3         Casio           NikonCb2      NikonSiD40    OlympusIp      Sony1MltCs7D
+       SubImage4         Casio2          NikonCb2a     NikonSiD80    OlympusRd      Sony1MltCsA100
+       SubImage5                         NikonCb3      NikonVr       OlympusRd2     Sony1MltCsNew
+       SubImage6         Minolta         NikonCb4      NikonWt       OlympusRi      Sony1MltCsOld
+       SubImage7         MinoltaCs5D     NikonFi                                    Sony2
+       SubImage8         MinoltaCs7D     NikonFl1      Olympus       Panasonic      Sony2Cs
+       SubImage9         MinoltaCsNew    NikonFl2      Olympus2      PanasonicRaw   Sony2Cs2
+       SubThumb1         MinoltaCsOld    NikonFl3      OlympusCs                    Sony2Fp
+       Thumbnail                         NikonIi       OlympusEq     Sigma          SonyMinolta
+
+       Exiv2 supports Exif 2.2 Standard Tags.  Exiv2 also supports reading and
+       writing manufacturer's MakerNote.  The information in Exif.Photo.Maker-
+       Note is encoded as manufacturer's sub-records.   For  example,  CanonCs
+       are  Camera Settings, NikonAf are Nikon Auto Focus records, NikonCb are
+       Nikon Color Balance Records.  Every tag is defined by  a  unique  tagId
+       (16 bit integer) which is unique within a Group.
+
+       You  can  query  Exiv2  groups and tags with the sample program taglist
+       which is documented in README-SAMPLES.md
+
+       Exif Metadata values are defined in the Exif Standard.  All data is  an
+       array  of  data elements.  The Count defines the number elements in the
+       array.  All elements in an array have the same type.
+
+       Type               Explanation
+        1 BYTE            An 8-bit unsigned integer.
+        2 ASCII           7-bit ASCII. NUL terminated.
+        3 SHORT           A 16-bit (2-byte) unsigned integer.
+        4 LONG            A 32-bit (4-byte) unsigned integer
+        5 RATIONAL        Two LONGs. Numerator, denominator.
+        7 UNDEFINED       An 8-bit byte.
+        8 SSHORT          A 16-bit (2-byte) signed integer.
+        9 SLONG           A 32-bit (4-byte) signed integer.
+
+       exiv2 0.27.0.1
+       config_path=/Users/rmills/.exiv2
+
+       The purpose of the configuration file is to define your own lenses  for
+       recognition by Exiv2.  The configuration file is in Windows .ini format
+       and  has  sections  for  each  of   the   major   camera   manufactures
+       canon,nikon,pentax,minolta,olympus  and  sony.   The  lens  metadata is
+       stored as a integer called the lensID.  You can change  the  lens  name
+       associated with any lensID.
+
+       $ cat ~/.exiv2
+       [nikon]
+       146=Robin's Sigma Lens  &lt;--- The name of your lens
 
        You obtain the lensID for your camera with the command:
 
@@ -442,7 +508,7 @@
 </PRE>
 <H2>EXAMPLES</H2><PRE>
        exiv2 *.jpg
-              Prints a summary of the Exif information for all JPEG  files  in
+              Prints  a  summary of the Exif information for all JPEG files in
               the directory.  The summary report is rather brief and presenta-
               tion does not use the Family.Group.Tag convention.
 
@@ -456,38 +522,38 @@
               Prints the IPTC metadata of the image.
 
        exiv2 rename img_1234.jpg
-              Renames   img_1234.jpg  (taken  on  13-Nov-05  at  22:58:31)  to
+              Renames  img_1234.jpg  (taken  on  13-Nov-05  at  22:58:31)   to
               20051113_225831.jpg
 
        exiv2 -r':basename:_%Y%m' rename img_1234.jpg
               Renames img_1234.jpg to img_1234_200511.jpg
 
        exiv2 -et img1.jpg img2.jpg
-              Extracts  the  Exif  thumbnails  from   the   two   files   into
+              Extracts   the   Exif   thumbnails   from  the  two  files  into
               img1-thumb.jpg and img2-thumb.jpg.
 
        exiv2 -it img1.jpg img2.jpg
-              Inserts  (copies)  metadata  from  img1.exv to img1.jpg and from
+              Inserts (copies) metadata from img1.exv  to  img1.jpg  and  from
               img2.exv to img2.jpg.
+              those in the "IPTC Core" XMP schema.
 
-       exiv2 -ep1,2 image.jpg
-              Extracts previews 1 and 2 from the image to the files image-pre-
-              view1.jpg and image-preview2.jpg.
+       exiv2  -M"set  Exif.Photo.UserComment  charset=Ascii  New Exif comment"
+       image.jpg
+              Sets the Exif comment to an ASCII string.
 
-       exiv2 -eiX image.jpg
-              Extracts IPTC datasets into an XMP sidecar file image.xmp and in
-              the process converts them to "IPTC Core" XMP schema.
-
-       exiv2 -iixX image.jpg
-              Inserts IPTC and XMP metadata from an XMP sidecar file image.xmp
-              into  image.jpg.  The resulting IPTC datasets are converted from
-              the "IPTC Core" XMP schema properties in the sidecar file to the
+       exiv2   -M"set   Exif.GPSInfo.GPSLatitude   4/1  15/1  33/1"  \  -M"set
+       Exif.GPSInfo.GPSLatitudeRef N" image.jpg
+              Sets the latitude to 4 degrees, 15 minutes and 33 seconds north.
+              The Exif standard stipulates that the GPSLatitude  tag  consists
+              of  three  Rational numbers for the degrees, minutes and seconds
+              of the latitude and GPSLatitudeRef contains either  'N'  or  'S'
+              for north or south latitude respectively.
 
        exiv2 insert -l/tmp -S.CRW /data/*.JPG
-              Copy all metadata from CRW files in the /tmp  directory  to  JPG
-              files  with corresponding basenames in the /data directory. Note
-              that this copies metadata as is, without  any  modifications  to
-              adapt  it  to  the  requirements of the target format. Some tags
+              Copy  all  metadata  from CRW files in the /tmp directory to JPG
+              files with corresponding basenames in the /data directory.  Note
+              that  this  copies  metadata as is, without any modifications to
+              adapt it to the requirements of the  target  format.  Some  tags
               copied like this may not make sense in the target image.
 
 
@@ -502,8 +568,8 @@
 
 </PRE>
 <H2>AUTHORS</H2><PRE>
-       <B>exiv2</B> was written by Andreas Huggel and others.  The Exiv2 project  web
-       site   is   https://exiv2.org.    The  code  is  hosted  on  GitHub  at
+       <B>exiv2</B>  was written by Andreas Huggel and others.  The Exiv2 project web
+       site  is  https://exiv2.org.   The  code  is  hosted   on   GitHub   at
        https://github.com/exiv2/exiv2
 
        This manual page was originally created for the Debian project by KELE-
@@ -511,7 +577,7 @@
 
 
 
-                                 May 22, 2019                         <B>EXIV2(1)</B>
+                                March 28, 2020                        <B>EXIV2(1)</B>
 </PRE>
 <HR>
 <ADDRESS>

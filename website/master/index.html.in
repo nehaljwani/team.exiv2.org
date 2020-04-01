@@ -22,6 +22,7 @@ __navbar__
     <hr width="50%">
     <center>&nbsp;<br>&nbsp;<br><table><tr>
     <td valign="top">
+    <!--
 	<p class="lead"><center>Developed with CLion:<br><a href="https://www.jetbrains.com/clion/" target="_blank">https://www.jetbrains.com/clion/</a>
 	   <br><br><a href="https://www.jetbrains.com/clion/" target="_blank"><img src="clion_logo_300x300.png" width="125"></a><br>
 	   <svg data-name='Layer 1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32'><defs><linearGradient id='a' x1='2.18' y1='23.255' x2='30.041' y2='8.782' gradientUnits='userSpaceOnUse'><stop offset='.043' stop-color='#ff8618'/><stop offset='.382' stop-color='#ff246e'/><stop offset='.989' stop-color='#af1df5'/></linearGradient></defs><title>ToolBox_trayIcon_colour_32-01</title><path d='M26,22.4713l-6.83,3.8311V23.2578L26,19.4268v3.0445Z' fill='#fff'/><path fill='#000001' d='M16 32.076L30 24.065 30 8.057 16 16.067 16 32.076z'/><path fill='#fff' d='M18.925 24.641L18.925 27.041 25.026 23.55 25.026 21.15 18.925 24.641z'/><path fill='url(#a)' d='M16 0.076L2 8.057 2 8.057 2 8.057 2 24.065 16 32.076 16 16.067 30 8.057 16 0.076z'/></svg>
@@ -30,7 +31,9 @@ __navbar__
 	</td><td width="20%">&nbsp;</td><td valign="top">
 	<p class="lead"><center>Website Hosted by:<br><a href="https://hostpresto.com" target="_blank">https://hostpresto.com</a><br><br>
 	    <a href="https://hostpresto.com" target="_blank"><img src="hostpresto.png"></a></center></p>
-    </td></tr></table></center>
+    </td>
+    -->
+    </tr></table></center>
 
   </div><!-- /.jumbotron -->
 </div><!-- /.container -->
