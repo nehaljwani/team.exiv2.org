@@ -35,7 +35,7 @@ writeTag()
     # $2 = command for ssh (eg msys64 or bash)
     # $3 = destination of tag
     # $4 = tag
-    echo "echo tag=$4 > $3" | ssh ${user}@$1 $2
+    echo "echo tag=$4 > $3" | ssh  -o ConnectTimeout=30 ${user}@$1 $2
 }
 
 # if we're asked to clone, we remove the old build directory
@@ -44,7 +44,7 @@ prepareToClone()
     # $1 = server name (eg rmillsmm-w10)
     # $2 = command to remove directory 'buildserver' ("rmdir/s/q ${cd}buildserver")
     if [ "$clone" == "1" ]; then
-        echo "$2" | ssh ${user}@$1 ${command} 2>/dev/null
+        echo "$2" | ssh -o ConnectTimeout=30 ${user}@$1 ${command} 2>/dev/null
     fi
 }
 
@@ -54,7 +54,7 @@ reportStatus()
     # $1 = server (eg rmillsmm-w10)
     # $2 = program to run (eg msys64 or bash)
     # $3 = string to execute (eg cd .../buildserver/build ; ls -alt *.tar *.zip)
-    echo "$3" | ssh ${user}@$1 $2
+    echo "$3" | ssh -o ConnectTimeout=30 ${user}@$1 $2
 }
 
 unixBuild()
@@ -69,7 +69,7 @@ unixBuild()
         prepareToClone $1 "rm -rf ${cd}/buildserver"
         CLANG=""
         if [ $clang == 1 ]; then CLANG='echo "using Clang";export CC=$(which clang);export CXX=$(which clang++)' ; fi
-        ! ssh ${user}@$1 ${command} <<EOF
+        ! ssh -o ConnectTimeout=30 ${user}@$1 ${command} <<EOF
 PATH="/usr/local/bin/:/usr/bin:/mingw64/bin:/usr/pkg/bin/:/usr/pkg/sbin:$PATH"
 cd ${cd}
 ${CLANG}
@@ -86,8 +86,8 @@ cd        build
 rm    -rf logs
 mkdir -p  logs
 export                                             2>&1 | tee -a logs/build.txt
-echo cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_TEAM_USE_SANITIZERS=${asan} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=${webready} -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} 2>&1 | tee -a logs/build.txt
-     cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_TEAM_USE_SANITIZERS=${asan} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=${webready} -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} 2>&1 | tee -a logs/build.txt
+echo cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_TEAM_USE_SANITIZERS=${asan} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=0 -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} 2>&1 | tee -a logs/build.txt
+     cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_TEAM_USE_SANITIZERS=${asan} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=0 -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} 2>&1 | tee -a logs/build.txt
 if [ "$source" == "0" ]; then
     make                                           2>&1 | tee -a logs/build.txt
     ls -alt bin                                    2>&1 | tee -a logs/test.txt
@@ -133,7 +133,7 @@ msvcBuild()
         reportStatus $1 msys64 "cd ${cd}\\buildserver\\build ; ls -alt *.zip | sed -E -e 's/\+ / /g'"
     else
         prepareToClone $1 "rmdir/s/q ${cd}buildserver"
-        ! ssh ${user}@$1 cmd64 <<EOF
+        ! ssh -o ConnectTimeout=30 ${user}@$1 cmd64 <<EOF
 setlocal
 cd ${cd}
 @echo off
@@ -153,7 +153,7 @@ mkdir logs
 echo  test log for $tag                                                               2>&1 | c:\msys64\usr\bin\tee -a logs\test.txt
 set                                                                                   2>&1 | c:\msys64\usr\bin\tee -a logs\build.txt
 conan install .. --profile ${profile} --options webready=${webready} --build missing  2>&1 | c:\msys64\usr\bin\tee -a logs\build.txt
-cmake         .. -G ${generator} -DCMAKE_BUILD_TYPE=${config} -DEXIV2_ENABLE_DYNAMIC_RUNTIME=${shared} -DBUILD_SHARED_LIBS=${shared} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=${webready} -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_TEAM_PACKAGING=On -DCMAKE_INSTALL_PREFIX=..\dist\${profile}  2>&1 | c:\msys64\usr\bin\tee -a  logs\build.txt
+cmake         .. -G ${generator} -DCMAKE_BUILD_TYPE=${config} -DEXIV2_ENABLE_DYNAMIC_RUNTIME=${shared} -DBUILD_SHARED_LIBS=${shared} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=0 -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_TEAM_PACKAGING=On -DCMAKE_INSTALL_PREFIX=..\dist\${profile}  2>&1 | c:\msys64\usr\bin\tee -a  logs\build.txt
 cmake --build .  --config ${config}                                                   2>&1 | c:\msys64\usr\bin\tee -a logs\build.txt
 cd    bin
 set   EXIV2_BINDIR=%CD%
@@ -188,7 +188,7 @@ config=Release
 curl=False
 cygwin=0
 cygwin32=0
-edition=2017
+edition=2019
 freebsd=0
 help=0
 linux=0
@@ -253,6 +253,7 @@ while [ "$#" != "0" ]; do
       --2013)       edition=2013  ;;
       --2015)       edition=2015  ;;
       --2017)       edition=2017  ;;
+      --2019)       edition=2019  ;;
       --branch)     if [ $# -gt 0 ]; then branch="$1"  ; shift; else bomb $arg ; fi ;;
       --builds)     if [ $# -gt 0 ]; then builds="$1"  ; shift; else bomb $arg ; fi ;;
       --github)     if [ $# -gt 0 ]; then github="$1"  ; shift; else bomb $arg ; fi ;;
@@ -287,7 +288,7 @@ if [ "$all32" == "1" ]; then
 fi
 
 if [ "$full" == "1" ]; then
-	ssh=1
+	ssh=0
 	video=1
 	curl=1
 	webready=True
@@ -307,7 +308,7 @@ publishBundle()
     if [ -e tag ]; then source tag; fi                          # and read it!
 
     # echo ++-- "ls -l $3/*$4"
-    files=$(echo ls -1 $3/*$4 | ssh $user@$1 $2 2>/dev/null)    # find the names of the bundles
+    files=$(echo ls -1 $3/*$4 | ssh -o ConnectTimeout=30 $user@$1 $2 2>/dev/null)    # find the names of the bundles
     # echo +++ files = $files # after ssh $user@$1 $2 ls -1 $3/\*$4
     for file in $files; do
         # echo ++++++ '>'$file'<'
@@ -329,7 +330,7 @@ if [ $linux == 1 ]; then
     cd=/home/rmills/gnu/github/exiv2/
     command='bash'
     unixBuild     ${server}-ubuntu Linux64
-    publishBundle ${server}-ubuntu           ${command}   /home/$user/gnu/github/exiv2/buildserver/build              '.tar.gz'
+    publishBundle ${server}-ubuntu           ${command}   /home/$user/gnu/github/exiv2/buildserver/build               '.tar.gz'
     # recursively build package_source on a clean clone
     "$this" --source --clone --tag "$tag" --branch "$branch" --github "$github"
 fi
@@ -337,14 +338,14 @@ if [ $linux32 == 1 ]; then
     cd=/home/rmills/gnu/github/exiv2/
     command='bash'
     unixBuild     ${server}-ubuntu32 Linux32
-    publishBundle ${server}-ubuntu32         ${command}   /home/$user/gnu/github/exiv2/buildserver/build              '.tar.gz'
+    publishBundle ${server}-ubuntu32         ${command}   /home/$user/gnu/github/exiv2/buildserver/build               '.tar.gz'
 fi
 
 if [ $source == 1 ]; then
     cd=/home/rmills/gnu/github/exiv2/
     command='bash'
     unixBuild     ${server}-ubuntu Source
-    publishBundle ${server}-ubuntu           ${command}   /home/$user/gnu/github/exiv2/buildserver/build              '.tar.gz'
+    publishBundle ${server}-ubuntu           ${command}   /home/$user/gnu/github/exiv2/buildserver/build               '.tar.gz'
 fi
 
 if [ $freebsd == 1 ]; then
@@ -357,7 +358,7 @@ if [ $netbsd == 1 ]; then
     cd=/home/rmills/gnu/github/exiv2/
     command='bash'
     unixBuild     ${server}-netbsd NetBSD
-    publishBundle ${server}-netbsd           ${command}   /home/$user/gnu/github/exiv2/buildserver/build              '.tar.gz'
+    publishBundle ${server}-netbsd           ${command}   /home/$user/gnu/github/exiv2/buildserver/build               '.tar.gz'
 fi
 
 clang=0  # clang is not supported on Cygwin/macOS/MinGW/msvc/FreeBSD/NetBSD
@@ -365,7 +366,7 @@ if [ $macos == 1 ]; then
     cd=/Users/rmills/gnu/github/exiv2/
     command='bash'
     unixBuild         ${server} macOS
-    publishBundle     ${server}              bash         /Users/$user/gnu/github/exiv2/buildserver/build             '.tar.gz'
+    publishBundle     ${server}                bash        /Users/$user/gnu/github/exiv2/buildserver/build             '.tar.gz'
 fi
 
 if [ $msvc == 1 ]; then
