@@ -281,10 +281,10 @@ if [ $github == github   ]; then github=git://github.com/exiv2/exiv2            
 if [ $github == rmillsmm ]; then github=rmills@rmillsmm:/Users/rmills/gnu/github/exiv2/github ; fi
 
 if [ "$all" == "1" ]; then
-    cygwin=1; freebsd=0; linux=1; macos=1; mingw=1; msvc=1; netbsd=0;unit=0;clone=1;
+    cygwin=1; freebsd=0; linux=1; macos=1; mingw=1; msvc=1; netbsd=0;unit=0;clone=1;publish=1;
 fi
 if [ "$all32" == "1" ]; then
-    linux32=1; msvc32=1;clone=1;
+    linux32=1; msvc32=1;clone=1;publish=1
 fi
 
 if [ "$full" == "1" ]; then
@@ -292,6 +292,7 @@ if [ "$full" == "1" ]; then
 	video=1
 	curl=1
 	webready=True
+	publish=1
 fi
 
 publishBundle()
@@ -300,25 +301,26 @@ publishBundle()
     # $2 = command   (eg msys32)
     # $3 = path      (eg /c/msys32/home/rmills/gnu/github/exiv2/buildserver/build)
     # $4 = extension (eg tar.gz or zip)
+    if [ $publish == 1 ]; then
+		# find the build tag left during the build
+		tag_saved=$tag
+		if [ -e tag ]; then rm -rf tag ; fi
+		scp -q "$user@$1:$3/tag" . 2>/dev/null                      # silently collect build tag file
+		if [ -e tag ]; then source tag; fi                          # and read it!
 
-    # find the build tag left during the build
-    tag_saved=$tag
-    if [ -e tag ]; then rm -rf tag ; fi
-    scp -q "$user@$1:$3/tag" . 2>/dev/null                      # silently collect build tag file
-    if [ -e tag ]; then source tag; fi                          # and read it!
-
-    # echo ++-- "ls -l $3/*$4"
-    files=$(echo ls -1 $3/*$4 | ssh -o ConnectTimeout=30 $user@$1 $2 2>/dev/null)    # find the names of the bundles
-    # echo +++ files = $files # after ssh $user@$1 $2 ls -1 $3/\*$4
-    for file in $files; do
-        # echo ++++++ '>'$file'<'
-        if [ ! -z $file ]; then                                 # copy to builds/all and merge the tag into the filename
-            echo scp -pq "$user@$1:$file" $builds/all/$(basename $file $4)-$tag$4
-                 scp -pq "$user@$1:$file" $builds/all/$(basename $file $4)-$tag$4 2>/dev/null
-        fi
-    done
-    tag=$tag_saved
-    $(dirname $this)/categorize.py  $builds
+		# echo ++-- "ls -l $3/*$4"
+		files=$(echo ls -1 $3/*$4 | ssh -o ConnectTimeout=30 $user@$1 $2 2>/dev/null)    # find the names of the bundles
+		# echo +++ files = $files # after ssh $user@$1 $2 ls -1 $3/\*$4
+		for file in $files; do
+			# echo ++++++ '>'$file'<'
+			if [ ! -z $file ]; then                                 # copy to builds/all and merge the tag into the filename
+				echo scp -pq "$user@$1:$file" $builds/all/$(basename $file $4)-$tag$4
+					 scp -pq "$user@$1:$file" $builds/all/$(basename $file $4)-$tag$4 2>/dev/null
+			fi
+		done
+		tag=$tag_saved
+		$(dirname $this)/categorize.py  $builds
+    fi
 }
 
 libary_type=''
@@ -331,8 +333,10 @@ if [ $linux == 1 ]; then
     command='bash'
     unixBuild     ${server}-ubuntu Linux64
     publishBundle ${server}-ubuntu           ${command}   /home/$user/gnu/github/exiv2/buildserver/build               '.tar.gz'
-    # recursively build package_source on a clean clone
-    "$this" --source --clone --tag "$tag" --branch "$branch" --github "$github"
+    if [ $publish == 1 ]; then
+		# recursively build package_source on a clean clone
+		"$this" --source --clone --tag "$tag" --branch "$branch" --github "$github" --publish
+	fi
 fi
 if [ $linux32 == 1 ]; then
     cd=/home/rmills/gnu/github/exiv2/
