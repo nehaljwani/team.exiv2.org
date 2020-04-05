@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+# find the photos
+photos=/Volumes/CANON
+if [ ! -e $photos ]; then photos=/Volumes/NIKON; fi
+
+if [ ! -e $photos ]; then
+    echo "*** no photo card detected ***"
+    exit 2
+fi
+
+# find the destination
+if [ ${#*} -gt 0 ]; then
+    year=$(date +"%Y")
+    dir=~/Pictures/$1
+    if [ ! -d $dir ]; then
+        dir=~/Pictures/$year/$1
+    fi
+else
+	echo "*** usage: getPhotos directory ***"
+	exit 1
+fi
+
+if [ ! -d $dir ]; then
+    mkdir $dir
+fi
+
+if [ ! -d $dir ]; then
+    echo "*** $dir  does not exist ***"
+    exit 3
+fi
+
+# copy from photos to dir and delete original
+count=0
+for i in $(find $photos -name "*.JPG" 2>/dev/null) ; do
+    to=$(basename $i .JPG)
+    cp -v  $i $dir/$to.jpg
+    rm -rf $i
+    count=$((count+1))
+done
+
+# report the result and eject the photo card
+if [ "$count" == "0" ]; then
+    echo "***" ; echo "*** no photos on $photos ***" ; echo "***"
+else
+    echo "$count photos copied from $photos to $dir"
+fi
+ls -l $dir/*.jpg
+diskutil eject $photos
+open     $dir
+open '/Applications/ACDSee Photo Studio 5.app/'
+
+# That's all Folks!
+##
