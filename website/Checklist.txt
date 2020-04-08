@@ -69,11 +69,18 @@ Rebuilding the website
 6   Tag the Release
     cd $EXIV2WEB
     git tag -a 'v0.27.2-RC3'
-    Goto https://github.com/exiv2/exiv2
-    Select  'releases' from the ribbon (commits, branches, releases, contributores, license)
-    Title should be "Third Release Candidate for Exiv2 v0.27.2"
 
-7   When you're sure it's good, tell the world:
+7   Publish the release on github
+    Discussion: https://github.com/Exiv2/exiv2/issues/1
+                https://github.com/Exiv2/exiv2/issues/915
+    a) Goto https://github.com/exiv2/exiv2
+       Select  'releases' from the ribbon (commits, branches, releases, contributores, license)
+       Title should be something like: "Third Release Candidate for Exiv2 v0.27.2"
+
+    b) Be sure to publish a copy of the source from the buildserver
+       Eg exiv2-0.27.0.2-Source-2018:10:30_15:16:17.tar.gz
+
+8   When you're sure it's good, tell the world:
     Exiv2    forum announcement
     Facebook fan page update
     https://discuss.pixls.us
