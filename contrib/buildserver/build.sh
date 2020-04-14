@@ -6,7 +6,8 @@ syntax() {
     echo "switch:     --source | --clone    | --debug   | --static   | --clang"
     echo "options:   --[no]nls | --video    | --asan    | --webready | --unit     | --status"
     echo "msvc:         --2019 | --2017     | --2015    | --2013     | --2012     | --2010    | --2008"
-    echo "location: --branch A | --server B | --user C  | --builds D | --tag tag  | --github {rmillsmm,github,E}"
+    echo "location: --branch A | --server B | --user C  | --builds D | --tag tag"
+    echo "location: --github {rmillsmm,github,E}        | --checkout checkout"
 }
 this="$0"
 announce()
@@ -79,6 +80,7 @@ fi
 cd  buildserver
 git fetch --unshallow
 git pull  --rebase
+git checkout $checkout
 git       status
 rm    -rf build
 mkdir -p  build
@@ -144,6 +146,7 @@ IF NOT EXIST buildserver exit 1
 cd buildserver
 git fetch --unshallow
 git pull  --rebase
+git checkout $checkout
 git status
 if     EXIST build rmdir/s/q build
 if NOT EXIST build mkdir build
@@ -256,6 +259,7 @@ while [ "$#" != "0" ]; do
       --2019)       edition=2019  ;;
       --branch)     if [ $# -gt 0 ]; then branch="$1"  ; shift; else bomb $arg ; fi ;;
       --builds)     if [ $# -gt 0 ]; then builds="$1"  ; shift; else bomb $arg ; fi ;;
+      --checkout)   if [ $# -gt 0 ]; then checkout="$1"; shift; else bomb $arg ; fi ;;
       --github)     if [ $# -gt 0 ]; then github="$1"  ; shift; else bomb $arg ; fi ;;
       --server)     if [ $# -gt 0 ]; then server="$1"  ; shift; else bomb $arg ; fi ;;
       --tag)        if [ $# -gt 0 ]; then tag="$1"     ; shift; else bomb $arg ; fi ;;
@@ -275,6 +279,11 @@ fi
 if [ $help == 1 ]; then
     syntax;
     exit 0;
+fi
+
+if [ ! -z $checkout ]; then
+    clone=1
+    publish=1
 fi
 
 if [ $github == github   ]; then github=git://github.com/exiv2/exiv2                          ; fi
@@ -335,7 +344,11 @@ if [ $linux == 1 ]; then
     publishBundle ${server}-ubuntu           ${command}   /home/$user/gnu/github/exiv2/buildserver/build               '.tar.gz'
     if [ $publish == 1 ]; then
 		# recursively build package_source on a clean clone
-		"$this" --source --clone --tag "$tag" --branch "$branch" --github "$github" --publish
+		if [ -z $checkout ]; then
+		   "$this" --source --clone --tag "$tag" --branch   "$branch"   --github "$github" --publish
+		else
+		   "$this" --source --clone --tag "$tag" --checkout "$checkout" --github "$github" --publish
+		fi
 	fi
 fi
 if [ $linux32 == 1 ]; then
