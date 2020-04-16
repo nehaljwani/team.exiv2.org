@@ -2,7 +2,7 @@
 
 syntax() {
     echo "usage: $0   { --help | -?  |   -h | platform  | switch     | option     | location value }+ "
-    echo "platform:    all[32] | cygwin     | freebsd   | linux[32]  | macos      | mingw | msvc[32] | netbsd"
+    echo "platform:    all[32] | cygwin     | freebsd   | linux[32]  | macos      | mingw | msvc[32] | netbsd | solaris"
     echo "switch:     --source | --clone    | --debug   | --static   | --clang"
     echo "options:   --[no]nls | --video    | --asan    | --webready | --unit     | --status"
     echo "msvc:         --2019 | --2017     | --2015    | --2013     | --2012     | --2010    | --2008"
@@ -64,7 +64,7 @@ unixBuild()
     # $2 = string for announcement  (eg 'MinGW 64' )
     announce  $1 $2
     if [ "$status" == "1" ]; then
-        reportStatus $1 $command "cd ${cd}/buildserver/build; ls -alt *.tar.gz | sed -E -e 's/\+ / /g'"
+        reportStatus $1 $command "cd ${cd}/buildserver/build; ls -alt *.tar.gz | sed -e 's/\+ / /g'"
     else
         # remove the buildserver directory if we are to clone
         prepareToClone $1 "rm -rf ${cd}/buildserver"
@@ -92,14 +92,14 @@ echo cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=
      cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_TEAM_USE_SANITIZERS=${asan} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=0 -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} 2>&1 | tee -a logs/build.txt
 if [ "$source" == "0" ]; then
     make                                           2>&1 | tee -a logs/build.txt
-    ls -alt bin                                    2>&1 | tee -a logs/test.txt
-    make tests                                     2>&1 | tee -a logs/test.txt
-    if [ -e bin/unit_tests ]; then bin/unit_tests  2>&1 | tee -a logs/test.txt      ; fi
+    ls -alt bin                                    2>&1 | tee -a logs/build.txt
+    make tests                                     2>&1 | tee -a logs/build.txt
+    if [ -e bin/unit_tests ]; then bin/unit_tests  2>&1 | tee -a logs/build.txt      ; fi
     make package
 else
     make package_source
 fi
-ls -alt *.tar.gz | sed -E -e 's/\+ / /g'           2>&1 | tee -a logs/test.txt
+ls -alt *.tar.gz | sed -e 's/\+ / /g'           2>&1 | tee -a logs/test.txt
 EOF
         writeTag $1 $command ${cd}buildserver/build/tag $tag
     fi
@@ -132,7 +132,7 @@ msvcBuild()
     announce  $1 ${profile}
 
     if [ "$status" == "1" ]; then
-        reportStatus $1 msys64 "cd ${cd}\\buildserver\\build ; ls -alt *.zip | sed -E -e 's/\+ / /g'"
+        reportStatus $1 msys64 "cd ${cd}\\buildserver\\build ; ls -alt *.zip | sed -e 's/\+ / /g'"
     else
         prepareToClone $1 "rmdir/s/q ${cd}buildserver"
         ! ssh -o ConnectTimeout=30 ${user}@$1 cmd64 <<EOF
@@ -207,6 +207,7 @@ nls=1
 publish=0
 server=$(hostname|cut -d. -f 1|cut -d- -f 1)
 shared=1
+solaris=0
 source=0
 status=0
 unit=False
@@ -235,6 +236,7 @@ while [ "$#" != "0" ]; do
       msvc)         msvc=1        ;;
       msvc32)       msvc32=1      ;;
       netbsd)       netbsd=1      ;;
+      solaris)      solaris=1     ;;
       --asan)       asan=1        ;;
       --categorize) categorize=1  ;;
       --clang)      clang=1       ;;
@@ -290,7 +292,7 @@ if [ $github == github   ]; then github=git://github.com/exiv2/exiv2            
 if [ $github == rmillsmm ]; then github=rmills@rmillsmm:/Users/rmills/gnu/github/exiv2/github ; fi
 
 if [ "$all" == "1" ]; then
-    cygwin=1; freebsd=0; linux=1; macos=1; mingw=1; msvc=1; netbsd=0;unit=0;clone=1;publish=1;
+    cygwin=1; linux=1; macos=1; mingw=1; msvc=1;unit=0;clone=1;publish=1;
 fi
 if [ "$all32" == "1" ]; then
     linux32=1; msvc32=1;clone=1;publish=1
@@ -341,7 +343,7 @@ if [ $linux == 1 ]; then
     cd=/home/rmills/gnu/github/exiv2/
     command='bash'
     unixBuild     ${server}-ubuntu Linux64
-    publishBundle ${server}-ubuntu           ${command}   /home/$user/gnu/github/exiv2/buildserver/build               '.tar.gz'
+    publishBundle ${server}-ubuntu           ${command}   /home/$user/gnu/github/exiv2/buildserver/build              '.tar.gz'
     if [ $publish == 1 ]; then
 		# recursively build package_source on a clean clone
 		if [ -z $checkout ]; then
@@ -355,7 +357,7 @@ if [ $linux32 == 1 ]; then
     cd=/home/rmills/gnu/github/exiv2/
     command='bash'
     unixBuild     ${server}-ubuntu32 Linux32
-    publishBundle ${server}-ubuntu32         ${command}   /home/$user/gnu/github/exiv2/buildserver/build               '.tar.gz'
+    publishBundle ${server}-ubuntu32         ${command}   /home/$user/gnu/github/exiv2/buildserver/build              '.tar.gz'
 fi
 
 if [ $source == 1 ]; then
@@ -369,41 +371,50 @@ if [ $freebsd == 1 ]; then
     cd=/home/rmills/gnu/github/exiv2/
     command='bash'
     unixBuild     ${server}-freebsd FreeBSD
-    publishBundle ${server}-freebsd           ${command}   /home/$user/gnu/github/exiv2/buildserver/build              '.tar.gz'
+    publishBundle ${server}-freebsd          ${command}   /home/$user/gnu/github/exiv2/buildserver/build              '.tar.gz'
 fi
 if [ $netbsd == 1 ]; then
     cd=/home/rmills/gnu/github/exiv2/
     command='bash'
     unixBuild     ${server}-netbsd NetBSD
-    publishBundle ${server}-netbsd           ${command}   /home/$user/gnu/github/exiv2/buildserver/build               '.tar.gz'
+    publishBundle ${server}-netbsd           ${command}   /home/$user/gnu/github/exiv2/buildserver/build              '.tar.gz'
+fi
+if [ $solaris == 1 ]; then
+    nls_saved=$nls
+    nls=0                  # gettest isn't installed on rmillsmm-solaris
+    cd=/export/home/rmills/gnu/github/exiv2/
+    command='bash'
+    unixBuild     ${server}-solaris Solaris
+    publishBundle ${server}-solaris          ${command}   /export/home/$user/gnu/github/exiv2/buildserver/build       '.tar.gz'
+    nls=nls_saved
 fi
 
-clang=0  # clang is not supported on Cygwin/macOS/MinGW/msvc/FreeBSD/NetBSD
+clang=0  # clang is not supported on Cygwin/macOS/MinGW/msvc/FreeBSD/NetBSD/Solaris
 if [ $macos == 1 ]; then
     cd=/Users/rmills/gnu/github/exiv2/
     command='bash'
     unixBuild         ${server} macOS
-    publishBundle     ${server}                bash        /Users/$user/gnu/github/exiv2/buildserver/build             '.tar.gz'
+    publishBundle     ${server}                bash        /Users/$user/gnu/github/exiv2/buildserver/build            '.tar.gz'
 fi
 
 if [ $msvc == 1 ]; then
     command='cmd64'
     bits=64
     msvcBuild     ${server}-w10
-    publishBundle ${server}-w10                msys64      /c/Users/$user/gnu/github/exiv2/buildserver/build           '.zip'
+    publishBundle ${server}-w10                msys64      /c/Users/$user/gnu/github/exiv2/buildserver/build          '.zip'
 fi
 if [ $msvc32 == 1 ]; then
     command='cmd64'
     bits='32'
     msvcBuild     ${server}-w10
-    publishBundle ${server}-w10                msys64      /c/Users/$user/gnu/github/exiv2/buildserver/build           '.zip'
+    publishBundle ${server}-w10                msys64      /c/Users/$user/gnu/github/exiv2/buildserver/build          '.zip'
 fi
 
 if [ $cygwin == 1 ]; then
     cd=/home/rmills/gnu/github/exiv2/
     command='cygwin64'
     unixBuild ${server}-w10 Cygwin/64
-    publishBundle ${server}-w10                msys64      /c/cygwin64/home/$user/gnu/github/exiv2/buildserver/build   '.tar.gz'
+    publishBundle ${server}-w10                msys64      /c/cygwin64/home/$user/gnu/github/exiv2/buildserver/build  '.tar.gz'
 fi
 
 if [ $mingw == 1 ]; then
