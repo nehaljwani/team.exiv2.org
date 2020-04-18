@@ -62,13 +62,15 @@ def visitfile(file,path,myData):
 
     if os.path.isfile(path) and file.find('-') != -1:
         # parse exiv2-0.27.0.1-MSVC-2018:10:20_06:33:13.zip
+        # parse exiv2-0.27.0.1-MSVC-2018-10-20_06:33:13.zip
         # print('file = ' + file)
         splits = file.split('-') # ( 'exiv2', '0.27.0.1', 'MSVC', '2018:10:20_06:33:13.zip')
-        version  = splits[1]               # 0.27.0.1
-        platform = splits[2]               # MSVC
-        date     = splits[3].split('.')[0] # 2018:10:20_06:33:13
-        monthly= year_month(date)          # 2018:10
-        weekly = year_week(date)           # 2018:43
+                                 # (                              '2018', '10', '20_06:33:13.zip')
+        version  = splits[1]                   # 0.27.0.1
+        platform = splits[2]                   # MSVC
+        date     = splits[3].split('.')[0] if len(splits)==4 else splits[3]+':'+splits[4]+':'+splits[5].split('.')[0] # 2018:10:20_06:33:13
+        monthly= year_month(date)              # 2018:10
+        weekly = year_week(date)               # 2018:43
         # print( "%s -> platform = %s version = %s date = %s " % (file , platform,version,date) )
 
         myData ['platform'].add(platform)

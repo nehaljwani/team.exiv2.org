@@ -1,13 +1,13 @@
 #!/usr/local/bin/env bash
 
 syntax() {
-    echo "usage: $0   { --help | -?  |   -h | platform  | switch     | option     | location value }+ "
-    echo "platform:    all[32] | cygwin     | freebsd   | linux[32]  | macos      | mingw | msvc[32] | netbsd | solaris"
-    echo "switch:     --source | --clone    | --debug   | --static   | --clang"
-    echo "options:   --[no]nls | --video    | --asan    | --webready | --unit     | --status"
-    echo "msvc:         --2019 | --2017     | --2015    | --2013     | --2012     | --2010    | --2008"
-    echo "location: --branch A | --server B | --user C  | --builds D | --tag tag"
-    echo "location: --github {rmillsmm,github,E}        | --checkout checkout"
+    echo "usage: $0   { --help | -?  |   -h | platform   | switch     | option     | location value }+ "
+    echo "platform:    all[32] | cygwin     | freebsd    | linux[32]  | macos|unix | mingw | msvc[32] | netbsd | solaris"
+    echo "switch:     --source | --clone    | --debug    | --static   | --clang"
+    echo "options:   --[no]nls | --video    | --asan     | --webready | --unit     | --status"
+    echo "msvc:         --2019 | --2017     | --2015     | --2013     | --2012     | --2010    | --2008"
+    echo "location: --server B | --user C   | --builds D | --stamp stamp"
+    echo "location: --github {rmillsmm,github,E}         | { --branch branch | --tag tag } "
 }
 this="$0"
 announce()
@@ -29,14 +29,14 @@ bomb() {
     exit 1
 }
 
-# write tag into the build directory (in Unix format without \r)
-writeTag()
+# write stamp into the build directory (in Unix format without \r)
+writeStamp()
 {
     # $1 = server name (eg rmillsmm-w10)
     # $2 = command for ssh (eg msys64 or bash)
-    # $3 = destination of tag
-    # $4 = tag
-    echo "echo tag=$4 > $3" | ssh  -o ConnectTimeout=30 ${user}@$1 $2
+    # $3 = destination of stamp
+    # $4 = stamp
+    echo "echo stamp=$4 > $3" | ssh  -o ConnectTimeout=30 ${user}@$1 $2
 }
 
 # if we're asked to clone, we remove the old build directory
@@ -80,7 +80,7 @@ fi
 cd  buildserver
 git fetch --unshallow
 git pull  --rebase
-git checkout $checkout
+git checkout $tag
 git       status
 rm    -rf build
 mkdir -p  build
@@ -91,17 +91,17 @@ export                                             2>&1 | tee -a logs/build.txt
 echo cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_TEAM_USE_SANITIZERS=${asan} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=0 -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} 2>&1 | tee -a logs/build.txt
      cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_TEAM_USE_SANITIZERS=${asan} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=0 -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} 2>&1 | tee -a logs/build.txt
 if [ "$source" == "0" ]; then
-    make                                           2>&1 | tee -a logs/build.txt
-    ls -alt bin                                    2>&1 | tee -a logs/build.txt
-    make tests                                     2>&1 | tee -a logs/build.txt
-    if [ -e bin/unit_tests ]; then bin/unit_tests  2>&1 | tee -a logs/build.txt      ; fi
+    make                                                                   2>&1 | tee -a logs/build.txt
+    ls -alt bin                                                            2>&1 | tee -a logs/build.txt
+    make tests                                                             2>&1 | tee -a logs/build.txt
+    if [ -e bin/unit_tests -o -e bin/unit_test.exe ]; then bin/unit_tests  2>&1 | tee -a logs/build.txt      ; fi
     make package
 else
     make package_source
 fi
 ls -alt *.tar.gz | sed -e 's/\+ / /g'           2>&1 | tee -a logs/test.txt
 EOF
-        writeTag $1 $command ${cd}buildserver/build/tag $tag
+        writeStamp $1 $command ${cd}buildserver/build/stamp $stamp
     fi
 }
 
@@ -146,14 +146,14 @@ IF NOT EXIST buildserver exit 1
 cd buildserver
 git fetch --unshallow
 git pull  --rebase
-git checkout $checkout
+git checkout $tag
 git status
 if     EXIST build rmdir/s/q build
 if NOT EXIST build mkdir build
 cd           build
 if     EXIST logs  rmdir/s/q logs
 mkdir logs
-echo  test log for $tag                                                               2>&1 | c:\msys64\usr\bin\tee -a logs\test.txt
+echo  test log for $stamp                                                               2>&1 | c:\msys64\usr\bin\tee -a logs\test.txt
 set                                                                                   2>&1 | c:\msys64\usr\bin\tee -a logs\build.txt
 conan install .. --profile ${profile} --options webready=${webready} --build missing  2>&1 | c:\msys64\usr\bin\tee -a logs\build.txt
 cmake         .. -G ${generator} -DCMAKE_BUILD_TYPE=${config} -DEXIV2_ENABLE_DYNAMIC_RUNTIME=${shared} -DBUILD_SHARED_LIBS=${shared} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=0 -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_TEAM_PACKAGING=On -DCMAKE_INSTALL_PREFIX=..\dist\${profile}  2>&1 | c:\msys64\usr\bin\tee -a  logs\build.txt
@@ -173,7 +173,7 @@ cd    ..\build
 cmake --build .  --config ${config} --target package
 exit  0
 EOF
-        writeTag $1 msys64 ${cd}buildserver\\build\\tag $tag
+        writeStamp $1 msys64 ${cd}buildserver\\build\\stamp stamp
     fi
 }
 
@@ -211,11 +211,11 @@ solaris=0
 source=0
 status=0
 unit=False
+unix=0
 user=$(whoami)
 video=0
 webready=False
-
-tag=$(date '+%Y:%m:%d_%H:%M:%S')
+stamp=$(date '+%Y-%m-%d_%H:%M:%S')
 if [ "$#" == "0" ]; then help=1; fi
 
 ##
@@ -237,6 +237,7 @@ while [ "$#" != "0" ]; do
       msvc32)       msvc32=1      ;;
       netbsd)       netbsd=1      ;;
       solaris)      solaris=1     ;;
+      unix)         unix=1        ;;
       --asan)       asan=1        ;;
       --categorize) categorize=1  ;;
       --clang)      clang=1       ;;
@@ -261,9 +262,9 @@ while [ "$#" != "0" ]; do
       --2019)       edition=2019  ;;
       --branch)     if [ $# -gt 0 ]; then branch="$1"  ; shift; else bomb $arg ; fi ;;
       --builds)     if [ $# -gt 0 ]; then builds="$1"  ; shift; else bomb $arg ; fi ;;
-      --checkout)   if [ $# -gt 0 ]; then checkout="$1"; shift; else bomb $arg ; fi ;;
       --github)     if [ $# -gt 0 ]; then github="$1"  ; shift; else bomb $arg ; fi ;;
       --server)     if [ $# -gt 0 ]; then server="$1"  ; shift; else bomb $arg ; fi ;;
+      --stamp)      if [ $# -gt 0 ]; then stamp="$1"   ; shift; else bomb $arg ; fi ;;
       --tag)        if [ $# -gt 0 ]; then tag="$1"     ; shift; else bomb $arg ; fi ;;
       --user)       if [ $# -gt 0 ]; then user="$1"    ; shift; else bomb $arg ; fi ;;
       *)            echo "*** invalid option: $arg ***" 1>&2; help=1; ;;
@@ -283,7 +284,7 @@ if [ $help == 1 ]; then
     exit 0;
 fi
 
-if [ ! -z $checkout ]; then
+if [ ! -z $tag ]; then
     clone=1
     publish=1
 fi
@@ -292,7 +293,10 @@ if [ $github == github   ]; then github=git://github.com/exiv2/exiv2            
 if [ $github == rmillsmm ]; then github=rmills@rmillsmm:/Users/rmills/gnu/github/exiv2/github ; fi
 
 if [ "$all" == "1" ]; then
-    cygwin=1; linux=1; macos=1; mingw=1; msvc=1;unit=0;clone=1;publish=1;
+    cygwin=1; linux=1; macos=1; mingw=1; msvc=1;unit=True;clone=1;publish=1;
+fi
+if [ "$unix" == "1" ]; then
+    solaris=1;freebsd=1;netbsd=1;publish=1;unit=True;clone=1;
 fi
 if [ "$all32" == "1" ]; then
     linux32=1; msvc32=1;clone=1;publish=1
@@ -313,23 +317,23 @@ publishBundle()
     # $3 = path      (eg /c/msys32/home/rmills/gnu/github/exiv2/buildserver/build)
     # $4 = extension (eg tar.gz or zip)
     if [ $publish == 1 ]; then
-		# find the build tag left during the build
-		tag_saved=$tag
-		if [ -e tag ]; then rm -rf tag ; fi
-		scp -q "$user@$1:$3/tag" . 2>/dev/null                      # silently collect build tag file
-		if [ -e tag ]; then source tag; fi                          # and read it!
+		# find the build stamp left during the build
+		stamp_saved=$stamp
+		if [ -e stamp ]; then rm -rf stamp ; fi
+		scp -q "$user@$1:$3/stamp" . 2>/dev/null                    # silently collect build stamp file
+		if [ -e stamp ]; then source stamp; fi                      # and read it!
 
 		# echo ++-- "ls -l $3/*$4"
 		files=$(echo ls -1 $3/*$4 | ssh -o ConnectTimeout=30 $user@$1 $2 2>/dev/null)    # find the names of the bundles
 		# echo +++ files = $files # after ssh $user@$1 $2 ls -1 $3/\*$4
 		for file in $files; do
 			# echo ++++++ '>'$file'<'
-			if [ ! -z $file ]; then                                 # copy to builds/all and merge the tag into the filename
-				echo scp -pq "$user@$1:$file" $builds/all/$(basename $file $4)-$tag$4
-					 scp -pq "$user@$1:$file" $builds/all/$(basename $file $4)-$tag$4 2>/dev/null
+			if [ ! -z $file ]; then                                 # copy to builds/all and merge the stamp into the filename
+				echo scp -pq "$user@$1:$file" $builds/all/$(basename $file $4)-$stamp$4
+					 scp -pq "$user@$1:$file" $builds/all/$(basename $file $4)-$stamp$4 2>/dev/null
 			fi
 		done
-		tag=$tag_saved
+		stamp=$stamp_saved
 		$(dirname $this)/categorize.py  $builds
     fi
 }
@@ -346,10 +350,10 @@ if [ $linux == 1 ]; then
     publishBundle ${server}-ubuntu           ${command}   /home/$user/gnu/github/exiv2/buildserver/build              '.tar.gz'
     if [ $publish == 1 ]; then
 		# recursively build package_source on a clean clone
-		if [ -z $checkout ]; then
-		   "$this" --source --clone --tag "$tag" --branch   "$branch"   --github "$github" --publish
+		if [ -z $tag ]; then
+		   "$this" --source --clone --stamp "$stamp" --branch   "$branch"   --github "$github" --publish
 		else
-		   "$this" --source --clone --tag "$tag" --checkout "$checkout" --github "$github" --publish
+		   "$this" --source --clone --stamp "$stamp" --tag      "$tag"      --github "$github" --publish
 		fi
 	fi
 fi
