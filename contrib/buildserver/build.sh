@@ -80,21 +80,23 @@ fi
 cd  buildserver
 git fetch --unshallow
 git pull  --rebase
-git checkout $tag
-git       status
+if [ ! -z $tag ]; then git checkout $tag ; fi
 rm    -rf build
 mkdir -p  build
 cd        build
 rm    -rf logs
 mkdir -p  logs
-export                                             2>&1 | tee -a logs/build.txt
+echo Build Directory $PWD                                                  2>&1 | tee -a logs/build.txt
+git status                                                                 2>&1 | tee -a logs/build.txt
+uname -a                                                                   2>&1 | tee -a logs/build.txt
+export                                                                     2>&1 | tee -a logs/build.txt
 echo cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_TEAM_USE_SANITIZERS=${asan} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=0 -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} 2>&1 | tee -a logs/build.txt
      cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_TEAM_USE_SANITIZERS=${asan} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=0 -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} 2>&1 | tee -a logs/build.txt
 if [ "$source" == "0" ]; then
     make                                                                   2>&1 | tee -a logs/build.txt
     ls -alt bin                                                            2>&1 | tee -a logs/build.txt
     make tests                                                             2>&1 | tee -a logs/build.txt
-    if [ -e bin/unit_tests -o -e bin/unit_test.exe ]; then bin/unit_tests  2>&1 | tee -a logs/build.txt      ; fi
+    if [ -e bin/unit_tests -o -e bin/unit_test.exe ]; then bin/unit_tests  2>&1 | tee -a logs/build.txt ; fi
     make package
 else
     make package_source
@@ -138,6 +140,7 @@ msvcBuild()
         ! ssh -o ConnectTimeout=30 ${user}@$1 cmd64 <<EOF
 setlocal
 cd ${cd}
+python -c "import platform;print(platform.uname())"
 @echo off
 IF NOT EXIST buildserver git clone --branch ${branch} $github buildserver --depth 1
 IF NOT EXIST buildserver echo +++++++++++++++ clone failed ++++++++++++++++++++++++++++++++
@@ -153,20 +156,23 @@ if NOT EXIST build mkdir build
 cd           build
 if     EXIST logs  rmdir/s/q logs
 mkdir logs
-echo  test log for $stamp                                                               2>&1 | c:\msys64\usr\bin\tee -a logs\test.txt
-set                                                                                   2>&1 | c:\msys64\usr\bin\tee -a logs\build.txt
-conan install .. --profile ${profile} --options webready=${webready} --build missing  2>&1 | c:\msys64\usr\bin\tee -a logs\build.txt
+echo  log for $stamp                                                                   2>&1 | c:\msys64\usr\bin\tee -a logs\build.txt
+python -c "import platform;print(platform.uname())"                                    2>&1 | c:\msys64\usr\bin\tee -a logs\build.txt
+set                                                                                    2>&1 | c:\msys64\usr\bin\tee -a logs\build.txt
+conan install .. --profile ${profile} --options webready=${webready} --build missing   2>&1 | c:\msys64\usr\bin\tee -a logs\build.txt
 cmake         .. -G ${generator} -DCMAKE_BUILD_TYPE=${config} -DEXIV2_ENABLE_DYNAMIC_RUNTIME=${shared} -DBUILD_SHARED_LIBS=${shared} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=0 -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_TEAM_PACKAGING=On -DCMAKE_INSTALL_PREFIX=..\dist\${profile}  2>&1 | c:\msys64\usr\bin\tee -a  logs\build.txt
-cmake --build .  --config ${config}                                                   2>&1 | c:\msys64\usr\bin\tee -a logs\build.txt
+if %ERRORLEVEL% NEQ 0 exit 1
+cmake --build .  --config ${config}                                                    2>&1 | c:\msys64\usr\bin\tee -a logs\build.txt
+if %ERRORLEVEL% NEQ 0 exit 2
 cd    bin
 set   EXIV2_BINDIR=%CD%
 cd    ..\..\test
 set   EXIV2_EXT=.exe
 set   OLD_PATH=%PATH%
 set   PATH=c:\Python37;C:\Python37\Scripts;c:\msys64\usr\bin;%PATH%;
-make  test                                                                            2>&1 | c:\msys64\usr\bin\tee -a  ..\build\logs\test.txt
+make  test                                                                             2>&1 | c:\msys64\usr\bin\tee -a  %EXIV2_BINDIR%\..\logs\build.txt
 if    NOT %ERRORLEVEL% 1 set RESULT=ignored
-if    EXIST %EXIV2_BINDIR%\unit_tests.exe %EXIV2_BINDIR%\unit_tests.exe               2>&1 | c:\msys64\usr\bin\tee -a  ..\build\logs\test.txt
+if    EXIST %EXIV2_BINDIR%\unit_tests.exe %EXIV2_BINDIR%\unit_tests.exe                2>&1 | c:\msys64\usr\bin\tee -a  %EXIV2_BINDIR%\..\logs\build.txt
 if    NOT %ERRORLEVEL% 1 set RESULT=ignored
 set   PATH=%OLD_PATH%
 cd    ..\build
