@@ -74,13 +74,19 @@ unixBuild()
 PATH="/usr/local/bin/:/usr/bin:/mingw64/bin:/usr/pkg/bin/:/usr/pkg/sbin:$PATH"
 cd ${cd}
 ${CLANG}
+
+echo ---- $(uname -a) --------
+pwd
+ls -l
 if [ ! -e buildserver ]; then
-    git clone --branch $branch $github buildserver --depth 1
+    echo git clone --branch $branch $github buildserver --depth 1
+         git clone --branch $branch $github buildserver --depth 1
 fi
 cd  buildserver
+git status
 git fetch --unshallow
 git pull  --rebase
-if [ ! -z $tag ]; then git checkout $tag ; fi
+if [ ! -z "$tag" ]; then git checkout $tag ; fi
 rm    -rf build
 mkdir -p  build
 cd        build
@@ -96,7 +102,6 @@ if [ "$source" == "0" ]; then
     make                                                                   2>&1 | tee -a logs/build.txt
     ls -alt bin                                                            2>&1 | tee -a logs/build.txt
     make tests                                                             2>&1 | tee -a logs/build.txt
-    if [ -e bin/unit_tests -o -e bin/unit_test.exe ]; then bin/unit_tests  2>&1 | tee -a logs/build.txt ; fi
     make package
 else
     make package_source
@@ -170,9 +175,7 @@ cd    ..\..\test
 set   EXIV2_EXT=.exe
 set   OLD_PATH=%PATH%
 set   PATH=c:\Python37;C:\Python37\Scripts;c:\msys64\usr\bin;%PATH%;
-make  test                                                                             2>&1 | c:\msys64\usr\bin\tee -a  %EXIV2_BINDIR%\..\logs\build.txt
-if    NOT %ERRORLEVEL% 1 set RESULT=ignored
-if    EXIST %EXIV2_BINDIR%\unit_tests.exe %EXIV2_BINDIR%\unit_tests.exe                2>&1 | c:\msys64\usr\bin\tee -a  %EXIV2_BINDIR%\..\logs\build.txt
+make  tests                                                                            2>&1 | c:\msys64\usr\bin\tee -a  %EXIV2_BINDIR%\..\logs\build.txt
 if    NOT %ERRORLEVEL% 1 set RESULT=ignored
 set   PATH=%OLD_PATH%
 cd    ..\build
@@ -188,7 +191,7 @@ EOF
 all=0
 all32=0
 asan=0
-branch=0.27-maintenance
+# branch=0.27-maintenance
 builds=/Users/Shared/Jenkins/Home/userContent/builds
 categorize=0
 clang=0
@@ -290,19 +293,20 @@ if [ $help == 1 ]; then
     exit 0;
 fi
 
-if [ ! -z $tag ]; then
-    clone=1
-    publish=1
+if [ -z "$branch" -a -z "$tag" ]; then
+    branch=0.27-maintenance
 fi
 
 if [ $github == github   ]; then github=git://github.com/exiv2/exiv2                          ; fi
 if [ $github == rmillsmm ]; then github=rmills@rmillsmm:/Users/rmills/gnu/github/exiv2/github ; fi
 
 if [ "$all" == "1" ]; then
-    cygwin=1; linux=1; macos=1; mingw=1; msvc=1;unit=True;clone=1;publish=1;
+    cygwin=1; linux=1; macos=1; mingw=1; msvc=1;
+    unit=True;clone=1;publish=1;
 fi
 if [ "$unix" == "1" ]; then
-    solaris=1;freebsd=1;netbsd=1;publish=1;unit=True;clone=1;
+    solaris=1;freebsd=1;netbsd=1;
+    unit=True;clone=1;publish=1;
 fi
 if [ "$all32" == "1" ]; then
     linux32=1; msvc32=1;clone=1;publish=1
