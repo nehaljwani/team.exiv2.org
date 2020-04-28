@@ -2,6 +2,25 @@
 <news>
 
  <newsitem>
+  <date>2020-04-28</date>
+  <title>Exiv2 v0.27.3 RC1 Preview</title>
+  <abstract>Exiv2 v0.27.3 RC1 Preview</abstract>
+  <desc>
+   <p>Thank you to Phil, Sridhar, Luis, Kevin, and Andreas S for working with me on the release.<br></br>
+      As always, thanks to my wife Alison and our cat Lizzie for their support.
+   </p>
+   <ol>
+    <li>Bug and security fixes</li>
+    <li>Revised build and test environments</li>
+    <li>Revised documentation </li>
+    <li>Better UNIX suppport</li>
+    <li>Other improvements</li>
+   </ol>
+   <p>More details: <a href="https://github.com/Exiv2/exiv2/issues/1018#issuecomment-604539346" _target="_blank">Change List</a></p>
+  </desc>
+ </newsitem>
+
+ <newsitem>
   <date>2019-07-28</date>
   <title>Exiv2 v0.27.2</title>
   <abstract>Exiv2 v0.27.2</abstract>

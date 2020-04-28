@@ -48,8 +48,8 @@ for p in $releases; do
         *msvc*   ) kind='Windows Build'   ;;
         *Linux*  ) kind='Linux Build'     ;;
         *CYGWIN* ) kind='Cygwin Build'    ;;
-        *MinGW*  ) kind='MinGW Build'     ;;
-        *Darwin* ) kind='MacOSX Build'    ;;
+        *MinGW*  ) kind='MinGW/msys2 Build'     ;;
+        *Darwin* ) kind='macOS Build'    ;;
     esac
     case "$kind" in
          *Build* ) version=$(echo $version | cut -d- -f 1) ;;

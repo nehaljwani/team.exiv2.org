@@ -9,13 +9,14 @@ buttons=__download_buttons__
 
 rm -rf $basedir/var/$table
 rm -rf $basedir/var/$buttons
+rm -rf $basedir/var/$buttons.tmp
 
 ##
 # clean up from last time and copy builds html/builds
 if [ -e   $basedir/html/builds ]; then rm -rf $basedir/html/builds ; fi
 mkdir -p  $basedir/html/builds
 
-for P in $basedir/builds/*
+for P in $(ls -1 $basedir/builds/* | sort --ignore-case)
 do
     # P = ./builds/exiv2-0.27.0.2-CYGWIN-2018:10:31_11:57:09.tar.gz
     platform=$(echo $P | cut -d- -f 3   ) # CYGWIN
@@ -44,9 +45,9 @@ do
           </tr>"  >> $basedir/var/$table
 
 	config="64 bit shared libraries"
-	if [ "$platform" == Darwin   ]; then platform="MacOSX"                 ; fi
+	if [ "$platform" == Darwin   ]; then platform="macOS"                  ; fi
 	if [ "$platform" == MinGW32  ]; then config="32 bit shared libraries"  ; fi
-	if [ "$platform" == MSVC     ]; then platform="Visual Studio"; config="64 bit DLLs for<br>Visual Studio 2017"; fi
+	if [ "$platform" == MSVC     ]; then platform="Visual Studio"; config="64 bit DLLs for<br>Visual Studio 2019"; fi
 	if [ "$platform" != Source   ]; then
   	  echo "<tr><td>$platform<h3></td><td>$config</td> \
 	        <td> \
@@ -55,10 +56,11 @@ do
 	            <span class=\"glyphicon glyphicon-download-alt\" aria-hidden=\"true\"></span>&nbsp;$p \
 	            </a> \
 	         </p3> \
-            </td></tr>" >> $basedir/var/$buttons
+            </td></tr>" >> $basedir/var/$buttons.tmp
     fi
 done
-ls -l $basedir/html/builds/*
+ls -l $basedir/html/builds/* | sort --key=9 --ignore-case
+cat $basedir/var/$buttons.tmp | sort --ignore-case > $basedir/var/$buttons ; rm -rf $basedir/var/$buttons.tmp
 
 # That's all Folks!
 ##

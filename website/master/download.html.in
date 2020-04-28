@@ -18,8 +18,10 @@ __navbar__
       <div class="col-sm-6">
 	<h2>Packages</h2>
     <p>Two types of packages are available for download: Source and Builds.</p>
-    <p>Exiv2 is supported on Linux, MacOS-X, Cygwin, MinGW/msys2 and Microsoft Visual Studio.
-       The code can be build in 32 or 64 bits as a static or shared library (DLL)</p>
+    <p>Exiv2 is supported on Linux, macOS, Cygwin, MinGW/msys2 and Microsoft Visual Studio.
+       The code can be build in 32 or 64 bits as a static or shared library (DLL)
+       32bit is obsolete on the macOS, Cygwin and MinGW/msys2 platforms.
+       </p>
     <p>Source code for every revision of Exiv2 is available from GitHUB.</p>
 	<h2>Source</h2>
 	<p>The complete source code to build the Exiv2 library, command
