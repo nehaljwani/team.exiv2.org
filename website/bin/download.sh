@@ -45,10 +45,10 @@ do
           </tr>"  >> $basedir/var/$table
 
 	config="64 bit shared libraries"
-	if [ "$platform" == Darwin   ]; then platform="macOS"                  ; fi
-	if [ "$platform" == MinGW32  ]; then config="32 bit shared libraries"  ; fi
-	if [ "$platform" == MSVC     ]; then platform="Visual Studio"; config="64 bit DLLs for<br>Visual Studio 2019"; fi
-	if [ "$platform" != Source   ]; then
+	if [ "$platform"  = "Darwin"   ]; then platform="macOS"                  ; fi
+	if [ "$platform"  = "MinGW32"  ]; then config="32 bit shared libraries"  ; fi
+	if [ "$platform"  = "MSVC"     ]; then platform="Visual Studio"; config="64 bit DLLs for<br>Visual Studio 2019"; fi
+	if [ "$platform" != "Source"   ]; then
   	  echo "<tr><td>$platform<h3></td><td>$config</td> \
 	        <td> \
 	          <p3 class=\"text-center\"> \
@@ -58,6 +58,7 @@ do
 	         </p3> \
             </td></tr>" >> $basedir/var/$buttons.tmp
     fi
+    echo
 done
 ls -l $basedir/html/builds/* | sort --key=9 --ignore-case
 cat $basedir/var/$buttons.tmp | sort --ignore-case > $basedir/var/$buttons ; rm -rf $basedir/var/$buttons.tmp

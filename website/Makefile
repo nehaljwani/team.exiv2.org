@@ -121,7 +121,8 @@ ifeq ("$(wildcard $(EXIV2WEB)/bin/rssdate)","")
 endif
 
 html: news
-	@ditto ../releases html/releases
+	@mkdir -p         html/releases
+	@cp ../releases/* html/releases
 	@bin/download.sh
 	@bin/archive.sh
 	@bin/gen.py master/*.in
@@ -171,9 +172,11 @@ html/rss.xml: master/news.xml
 update: update-manpage update-intro update-sample update-conversion update-changelog update-tags update-makernotes
 
 update-manpage:
-	@man -t exiv2 | ps2pdf   - html/exiv2-manpage.pdf
-	@man    exiv2 | man2html - > var/__manpage__
-	@patch --forward             var/__manpage__ var/manpage.patch
+	@/usr/bin/env "MANPATH=$${EXIV2HOME}/man:$$MANPATH" man -t exiv2 | ps2pdf - html/exiv2-manpage.pdf
+	@man2html              $${EXIV2HOME}/man/man1/exiv2.1  | \
+	sed -e s'_http://localhost/cgi-bin/man/man2html_/_g'     \
+	    -e s'_Manpage of EXIV2</TITLE>_<HTML>Manpage of EXIV2</TITLE><LINK href="manpage.css" REL="stylesheet" type="text/css">_' \
+	> var/__manpage__
 
 update-intro:
 # commented for now, until the doc/ intro is updated accordingly
@@ -227,4 +230,4 @@ get-latest:
 	@./bin/getLatest.sh
 
 publish:
-	ditto html ~/Jenkins/website/html
+	cp -r  html ~/Jenkins/website/html
