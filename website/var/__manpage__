@@ -2,7 +2,7 @@
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
 </HEAD><BODY>
 <H1>EXIV2</H1>
-Section: User Commands  (1)<BR>Updated: April 29, 2020<BR><A HREF="#index">Index</A>
+Section: User Commands  (1)<BR>Updated: April 30, 2020<BR><A HREF="#index">Index</A>
 <A HREF="/">Return to Main Contents</A><HR>
 
 
@@ -210,8 +210,6 @@ mod             s | a | e | t | v | h | i | x | c | p | i | C | R | S | X
 
 tgt             a | c | e | i | p | t | x | C | X | XX | -
                 all, comment, exif, iptc, preview, thumb, xmp, ICC Profile, SideCar, RawXMP, stdin/out
-
-<BR>
 </PRE>
 
 
@@ -363,9 +361,9 @@ $ curl --silent -O <A HREF="http://clanmills.com/Stonehenge.jpg">http://clanmill
 $ exiv2 --verbose --Force rename Stonehenge.jpg
 File 1/1: Stonehenge.jpg
 Renaming file to ./20150716_153854_1.jpg
-
 </PRE>
 
+<P>
 The 'rename' command will only overwrite files when the option --force is used.  The option --Force is provided to avoid unintentional loss of valuable image files.
 <P>
 The 'extract' command will overwrite files when either --force or --Force is used.  Overwriting extracted files will not cause the loss of image files.
@@ -507,9 +505,10 @@ file. Possible are Exif, IPTC and XMP and the default is all of these.
 XX: Extract &quot;raw&quot; XMP metadata to a sidecar (see -pX)
 <BR>
 
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;You&nbsp;may&nbsp;not&nbsp;use&nbsp;modify&nbsp;commands&nbsp;with&nbsp;the&nbsp;-eXX&nbsp;option&nbsp;and&nbsp;only&nbsp;XMP&nbsp;is&nbsp;written&nbsp;to&nbsp;the&nbsp;sidecar.
+You may not use modify commands with the -eXX option and only XMP is written to the sidecar.
 <P>
-- : Output to stdout (see -i tgt for an example of this feature)
+<B>- </B><I>Output to stdout</I> (see -i tgt for an example of this feature)
+
 <P>
 <DT><B>-c </B><I>txt</I>
 
@@ -661,28 +660,14 @@ $ exiv2 -pv --grep ProcessingMethod        x.jpg
 </PRE>
 
 <P>
-The format for an IPTC <B>Date</B> value is:
-<BR>
-
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;YYYY-MM-DD&nbsp;(year,&nbsp;month,&nbsp;day)
+The format for an IPTC <B>Date</B> value is: YYYY-MM-DD (year, month, day)
 <P>
-The format for an IPTC <B>Time</B> value is:
-<BR>
-
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;HH:MM:SS&nbsp;(hours,&nbsp;minutes,&nbsp;seconds)
-<BR>
-
-and may optionally be followed by:
-<BR>
-
-<BR>&nbsp;&nbsp;&nbsp;-HH:MM&nbsp;or&nbsp;+HH:MM&nbsp;(hours,&nbsp;minutes&nbsp;ahead/behind&nbsp;UTC)
+The format for an IPTC <B>Time</B> value is: HH:MM:SS (hours, minutes, seconds) and may optionally be followed by: -HH:MM or +HH:MM (hours, minutes ahead/behind UTC)
 <P>
-The format of <B>Rational</B> (and <B>SRational</B>) is one of:
+The format of <B>Rational</B> (and <B>SRational</B>) is one of: <B>integer | integer/integer | Fnumber | number</B>
 <BR>
 
-<BR>&nbsp;&nbsp;&nbsp;integer&nbsp;|&nbsp;integer/integer&nbsp;|&nbsp;Fnumber&nbsp;|&nbsp;number
-<P>
-Rational Examples:
+<B>Rational</B> Examples:
 <P>
 <PRE>
 $ exiv2 &quot;-Mset Exif.Photo.MaxApertureValue 557429/62500&quot; X.jpg
@@ -690,7 +675,7 @@ $ exiv2 &quot;-Mset Exif.Photo.MaxApertureValue F5.6&quot; X.jpg
 </PRE>
 
 <P>
-The Rational format Fnumber is for the convenience of setting aperture values.  Aperture values
+The <B>Rational</B> format Fnumber is for the convenience of setting aperture values.  Aperture values
 are stored in Exif is an <B>APEX</B> value which can be evaluated by the expression:
 <P>
 <PRE>
@@ -699,7 +684,7 @@ number      = exp(apex-value * log(2.0) / 2.0)
 </PRE>
 
 <P>
-The Rational format Fnumber is valid for any <B>Rational</B>, even when the key is not an Aperture.
+The <B>Rational</B> format Fnumber is valid for any <B>Rational</B>, even when the key is not an Aperture.
 More information about <B>APEX</B> value is available from: <A HREF="http://en.wikipedia.org/wiki/APEX_system">http://en.wikipedia.org/wiki/APEX_system</A>
 <P>
 The format of XMP <B>LangAlt</B> values includes an optional language qualifier:
@@ -866,42 +851,47 @@ $ exiv2 -pi image.jpg
 </PRE>
 
 Prints the IPTC metadata of the image.
+<P>
 <PRE>
 $ exiv2 rename img_1234.jpg
-
 </PRE>
 
 Renames img_1234.jpg (taken on 13-Nov-05 at 22:58:31) to 20051113_225831.jpg
+<P>
 <PRE>
 $ exiv2 -r':basename:_%Y%m' rename img_1234.jpg
-
 </PRE>
 
 Renames img_1234.jpg to img_1234_200511.jpg
+<P>
 <PRE>
 $ exiv2 -et img1.jpg img2.jpg
 </PRE>
 
 Extracts the Exif thumbnails from the two files into img1-thumb.jpg
 and img2-thumb.jpg.
+<P>
 <PRE>
 $ exiv2 -it img1.jpg img2.jpg
 </PRE>
 
 Inserts (copies) metadata from img1.exv to img1.jpg and from img2.exv
 to img2.jpg.
+<P>
 <PRE>
 $ exiv2 -ep1,2 image.jpg
 </PRE>
 
 Extracts previews 1 and 2 from the image to the files image-preview1.jpg
 and image-preview2.jpg.
+<P>
 <PRE>
 $ exiv2 -eiX image.jpg
 </PRE>
 
 Extracts IPTC datasets into an XMP sidecar file image.xmp and in the
 process converts them to &quot;IPTC Core&quot; XMP schema.
+<P>
 <PRE>
 $ exiv2 -iixX image.jpg
 </PRE>
@@ -911,11 +901,13 @@ image.jpg.  The resulting IPTC datasets are converted from the &quot;IPTC
 Core&quot; XMP schema properties in the sidecar file to the older IPTC IIM4
 format. The inserted XMP properties include those in the &quot;IPTC Core&quot;
 XMP schema.
+<P>
 <PRE>
 $ exiv2 -M&quot;set Exif.Photo.UserComment charset=Ascii New Exif comment&quot; image.jpg
 </PRE>
 
 Sets the Exif comment to an ASCII string.
+<P>
 <PRE>
 $ exiv2 -M&quot;set Exif.GPSInfo.GPSLatitude 4/1 15/1 33/1&quot; \ -M&quot;set Exif.GPSInfo.GPSLatitudeRef N&quot; image.jpg
 </PRE>
@@ -925,12 +917,13 @@ Exif standard stipulates that the GPSLatitude tag consists of three
 Rational numbers for the degrees, minutes and seconds of the latitude
 and GPSLatitudeRef contains either 'N' or 'S' for north or south
 latitude respectively.
+<P>
 <PRE>
 $ exiv2 insert -l/tmp -S.CRW /data/*.JPG
 </PRE>
 
 Copy all metadata from CRW files in the /tmp directory to JPG files
-<BR>&nbsp;&nbsp;&nbsp;dwith&nbsp;corresponding&nbsp;basenames&nbsp;in&nbsp;the&nbsp;/data&nbsp;directory.&nbsp;Note&nbsp;that&nbsp;this
+with corresponding basenames in the /data directory. Note that this
 copies metadata as is, without any modifications to adapt it to the
 requirements of the target format. Some tags copied like this may not
 make sense in the target image.
@@ -954,11 +947,11 @@ Taglists with <I>key</I> and default <I>type</I> values.
 <B>exiv2</B>
 
 was written by Andreas Huggel and others.
-<A NAME="lbAQ">&nbsp;</A>
-<H2>PROJECT</H2>
+<BR>
 
 The Exiv2 project web site is <A HREF="https://exiv2.org.">https://exiv2.org.</A>
-<P>
+<BR>
+
 The code is hosted on GitHub at <A HREF="https://github.com/exiv2/exiv2">https://github.com/exiv2/exiv2</A>
 <P>
 
@@ -982,12 +975,11 @@ The code is hosted on GitHub at <A HREF="https://github.com/exiv2/exiv2">https:/
 <DT><A HREF="#lbAN">EXAMPLES</A><DD>
 <DT><A HREF="#lbAO">SEE ALSO</A><DD>
 <DT><A HREF="#lbAP">AUTHORS</A><DD>
-<DT><A HREF="#lbAQ">PROJECT</A><DD>
 </DL>
 <HR>
 This document was created by
 <A HREF="http://github.com/hamano/man2html/">man2html</A>,
 using the manual pages.<BR>
-Time: 19:22:32 GMT, April 29, 2020
+Time: 17:17:17 GMT, April 30, 2020
 </BODY>
 </HTML>

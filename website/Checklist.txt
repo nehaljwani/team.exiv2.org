@@ -41,12 +41,18 @@ Rebuilding the website
     mkdir build etc ....                              # the website scripts use Exiv2 sample programs
     cd doc/templates ; make                           # create Exif.xml, Iptc.xml etc
 
-3   Update the website
+3   Tag the Release
+    $ cd $EXIV2HOME
+    $ git tag -a 'v0.27.2-RC3'
+    Visit https://github.com/Exiv2/exiv2/releases
+    Download the Source Asset (which you'll need in step 4)
+    $ make get-latest                                 # get "Latest" builds from Jenkins !!
+    COPY the Source Asset over the buildserver Source Asset
+
+4   Update the website
     cd ${EXIV2WEB}
     $ pushd bin ; make rssdate ; popd                 # make sure rssdate is built
     $ echo -n '0.27.0.2' > var/__version__            # build stamp for web pages
-    $ make get-latest                                 # get "Latest" builds from Jenkins !!
-                                                      # OR Manually download them (see below)
     $ make update                                     # makes Exiv2.pdf and other stuff
     $ make                                            # runs Doxygen to make the web site
     $ open html/index.html                            # website should look fine from file://$EXIV2WEB/html/index.html
@@ -65,9 +71,6 @@ Rebuilding the website
     $ cd ${EXIV2HOME}/doc/template
     $ make clean
 
-6   Tag the Release
-    cd $EXIV2WEB
-    git tag -a 'v0.27.2-RC3'
 
 7   Publish the release on github
     Discussion: https://github.com/Exiv2/exiv2/issues/1
@@ -203,11 +206,8 @@ $ ssh ubuntu@exiv2.org 'ls -l /var/www/websites/'
 drwxr-xr-x 9 ubuntu www-data 12288 Mar 26 10:45 exiv2
 drwxr-xr-x 9 ubuntu www-data  4096 Mar 29 17:13 pre-release
 
-With rsync (preferred)
-$ ssh ubuntu@exiv2.org
-// Set up the exiv2 website
-// mkdir /var/www/websites/exiv2 ; sudo chgrp ubuntu /var/www/websites/exiv2 ; sudo chown ubuntu /var/www/websites/exiv2
-$ cd $EXIV2WEB/html
+$ cd $EXIV2WEB
+$ cd html
 $ rsync -varz . ubuntu@exiv2.org:/var/www/websites/pre-release
 // Takes about 10 minutes from the MacMini
 
