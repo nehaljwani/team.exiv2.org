@@ -82,11 +82,17 @@ if [ ! -e buildserver ]; then
     echo git clone --branch $branch $github buildserver --depth 1
          git clone --branch $branch $github buildserver --depth 1
 fi
+if [ ! -d buildserver ]; then
+   echo "***"
+   echo "***" no directory buildserver "***"
+   echo "***"
+   exit 1
+fi
 cd  buildserver
 git status
-git fetch --unshallow
-git pull  --rebase
-if [ ! -z "$tag" ]; then git checkout $tag ; fi
+# git fetch --unshallow
+# git pull  --rebase
+# if [ ! -z "$tag" ]; then git checkout $tag ; fi
 rm    -rf build
 mkdir -p  build
 cd        build
@@ -98,8 +104,10 @@ uname -a                                                                   2>&1 
 export                                                                     2>&1 | tee -a logs/build.txt
 echo cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_TEAM_USE_SANITIZERS=${asan} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=0 -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} 2>&1 | tee -a logs/build.txt
      cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_TEAM_USE_SANITIZERS=${asan} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=0 -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} 2>&1 | tee -a logs/build.txt
+echo ---- git status ; git status
 if [ "$source" == "0" ]; then
     make                                                                   2>&1 | tee -a logs/build.txt
+    echo ---- git status ; git status
     ls -alt bin                                                            2>&1 | tee -a logs/build.txt
     make tests                                                             2>&1 | tee -a logs/build.txt
     make package
@@ -169,16 +177,13 @@ cmake         .. -G ${generator} -DCMAKE_BUILD_TYPE=${config} -DEXIV2_ENABLE_DYN
 if %ERRORLEVEL% NEQ 0 exit 1
 cmake --build .  --config ${config}                                                    2>&1 | c:\msys64\usr\bin\tee -a logs\build.txt
 if %ERRORLEVEL% NEQ 0 exit 2
-cd    bin
-set   EXIV2_BINDIR=%CD%
-cd    ..\..\test
+SETLOCAL
 set   EXIV2_EXT=.exe
-set   OLD_PATH=%PATH%
-set   PATH=c:\Python37;C:\Python37\Scripts;c:\msys64\usr\bin;%PATH%;
-make  tests                                                                            2>&1 | c:\msys64\usr\bin\tee -a  %EXIV2_BINDIR%\..\logs\build.txt
+set   EXIV2_BINDIR=%CD%\bin
+set   PATH=c:\Python37;C:\Python37\Scripts;c:\Program Files\cmake\bin;c:\msys64\usr\bin;%PATH%;
+cmake --build . --config ${config}  --target tests                                     2>&1 | c:\msys64\usr\bin\tee -a  %EXIV2_BINDIR%\..\logs\build.txt
 if    NOT %ERRORLEVEL% 1 set RESULT=ignored
-set   PATH=%OLD_PATH%
-cd    ..\build
+ENDLOCAL
 cmake --build .  --config ${config} --target package
 exit  0
 EOF
@@ -297,7 +302,7 @@ if [ -z "$branch" -a -z "$tag" ]; then
     branch=0.27-maintenance
 fi
 
-if [ $github == github   ]; then github=git://github.com/exiv2/exiv2                          ; fi
+if [ $github == github   ]; then github=https://github.com/exiv2/exiv2                        ; fi
 if [ $github == rmillsmm ]; then github=rmills@rmillsmm:/Users/rmills/gnu/github/exiv2/github ; fi
 
 if [ "$all" == "1" ]; then
@@ -382,10 +387,12 @@ if [ $source == 1 ]; then
 fi
 
 if [ $freebsd == 1 ]; then
+    nls_saved=$nls;nls=0 # building nls corrupts po/nl.po on freebsd
     cd=/home/rmills/gnu/github/exiv2/
     command='bash'
     unixBuild     ${server}-freebsd FreeBSD
     publishBundle ${server}-freebsd          ${command}   /home/$user/gnu/github/exiv2/buildserver/build              '.tar.gz'
+    nls=$nls_saved
 fi
 if [ $netbsd == 1 ]; then
     cd=/home/rmills/gnu/github/exiv2/
