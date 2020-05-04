@@ -409,8 +409,8 @@ if [ $PLATFORM == linux ]; then
     export JAVA_HOME=$J
     export PATH=$PATH:$HOME/bin:$JAVA_HOME/bin
 
-    if [ -z "$LD_LIBRARY_PATH"]; then export LD_LIBRARY_PATH=/usr/local/lib
-    else                              export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib"
+    if [ -z "$LD_LIBRARY_PATH" ]; then export LD_LIBRARY_PATH=/usr/local/lib
+    else                               export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib"
     fi
 
     # JRE_HOME=/usr/local/java/jre1.7.0_21
