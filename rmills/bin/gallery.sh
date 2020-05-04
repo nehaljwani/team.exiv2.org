@@ -121,7 +121,7 @@ EOF
 	pi=Plates
 	if [ ! -e $pi ]; then pi=Images ; fi
 
-	for I in $(find $pi -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -maxdepth 1 | sort --ignore-case ); do
+	for I in $(find $pi -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -maxdepth 1 | xargs ls -t | reverse); do
 		i=$(basename "$I")
 		S=$(pathname "$I")
 		c=$(exiv2 -Pv --grep caption/i "$I") # caption

@@ -42,6 +42,7 @@ BIN=${HOME}/bin
 export PLATFORM=''
 if [ `uname` == Darwin  ]; then
     PLATFORM=macosx
+    alias unq='xattr -d com.apple.quarantine'
 elif [ `uname -o` == Cygwin ]; then
     PLATFORM=cygwin
 elif [ `uname -o` == Msys ]; then

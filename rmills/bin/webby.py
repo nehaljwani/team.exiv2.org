@@ -940,6 +940,8 @@ def main(argv):
                     caption='&nbsp;'
                 if re.compile(r"[A-Z]+[0-9]+").match(pname):
                     caption='&nbsp;'
+                if re.compile(r"^202").match(pname): # Photo photos such as 20200420_201146.jpg
+                    caption='&nbsp;'
 
             subs['pname' ]  = fixCaps(pname)
             caption=fixCaps(caption)
