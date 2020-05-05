@@ -3,10 +3,10 @@
 syntax() {
     echo "usage: $0   { --help | -?  |   -h | platform   | switch     | option     | location value }+ "
     echo "platform:    all[32] | cygwin     | freebsd    | linux[32]  | macos|unix | mingw | msvc[32] | netbsd | solaris"
-    echo "switch:     --source | --clone    | --debug    | --static   | --clang"
-    echo "options:   --[no]nls | --video    | --asan     | --webready | --unit     | --status"
+    echo "switch:     --source | --[no]clone| --debug    | --static   | --clang    | --cpp { 98 | 11 | 14 | 17 }"
+    echo "options:   --[no]nls | --video    | --asan     | --webready | --[no]unit | --[no]publish | --status"
     echo "msvc:         --2019 | --2017     | --2015     | --2013     | --2012     | --2010    | --2008"
-    echo "location: --server B | --user C   | --builds D | --stamp stamp"
+    echo "location: --server B | --user C   | --builds D | --stamp stamp" 
     echo "location: --github {rmillsmm,github,E}         | { --branch branch | --tag tag } "
 }
 this="$0"
@@ -102,8 +102,8 @@ echo Build Directory $PWD                                                  2>&1 
 git status                                                                 2>&1 | tee -a logs/build.txt
 uname -a                                                                   2>&1 | tee -a logs/build.txt
 export                                                                     2>&1 | tee -a logs/build.txt
-echo cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_TEAM_USE_SANITIZERS=${asan} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=0 -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} 2>&1 | tee -a logs/build.txt
-     cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_TEAM_USE_SANITIZERS=${asan} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=0 -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} 2>&1 | tee -a logs/build.txt
+echo cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_TEAM_USE_SANITIZERS=${asan} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=0 -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} -DCMAKE_CXX_STANDARD=${cpp} -DCMAKE_CXX_FLAGS=-Wno-deprecated 2>&1 | tee -a logs/build.txt
+     cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_TEAM_USE_SANITIZERS=${asan} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=0 -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} -DCMAKE_CXX_STANDARD=${cpp} -DCMAKE_CXX_FLAGS=-Wno-deprecated 2>&1 | tee -a logs/build.txt
 echo ---- git status ; git status
 if [ "$source" == "0" ]; then
     make                                                                   2>&1 | tee -a logs/build.txt
@@ -173,15 +173,15 @@ echo  log for $stamp                                                            
 python -c "import platform;print(platform.uname())"                                    2>&1 | c:\msys64\usr\bin\tee -a logs\build.txt
 set                                                                                    2>&1 | c:\msys64\usr\bin\tee -a logs\build.txt
 conan install .. --profile ${profile} --options webready=${webready} --build missing   2>&1 | c:\msys64\usr\bin\tee -a logs\build.txt
-cmake         .. -G ${generator} -DCMAKE_BUILD_TYPE=${config} -DEXIV2_ENABLE_DYNAMIC_RUNTIME=${shared} -DBUILD_SHARED_LIBS=${shared} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=0 -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_TEAM_PACKAGING=On -DCMAKE_INSTALL_PREFIX=..\dist\${profile}  2>&1 | c:\msys64\usr\bin\tee -a  logs\build.txt
+cmake         .. -G ${generator} -DCMAKE_BUILD_TYPE=${config} -DEXIV2_ENABLE_DYNAMIC_RUNTIME=${shared} -DBUILD_SHARED_LIBS=${shared} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=0 -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_TEAM_PACKAGING=On -DCMAKE_INSTALL_PREFIX=..\dist\${profile}  -DCMAKE_CXX_STANDARD=${cpp} 2>&1 | c:\msys64\usr\bin\tee -a  logs\build.txt
 if %ERRORLEVEL% NEQ 0 exit 1
-cmake --build .  --config ${config}                                                    2>&1 | c:\msys64\usr\bin\tee -a logs\build.txt
+cmake --build .  --config ${config}                                                    2>&1 | c:\msys64\usr\bin\sed -e "s/^  //" | c:\msys64\usr\bin\tee -a logs\build.txt
 if %ERRORLEVEL% NEQ 0 exit 2
 SETLOCAL
 set   EXIV2_EXT=.exe
 set   EXIV2_BINDIR=%CD%\bin
 set   PATH=c:\Python37;C:\Python37\Scripts;c:\Program Files\cmake\bin;c:\msys64\usr\bin;%PATH%;
-cmake --build . --config ${config}  --target tests                                     2>&1 | c:\msys64\usr\bin\tee -a  %EXIV2_BINDIR%\..\logs\build.txt
+cmake --build . --config ${config}  --target tests                                     2>&1 | c:\msys64\usr\bin\sed -e "s/^  //" | c:\msys64\usr\bin\tee -a  %EXIV2_BINDIR%\..\logs\build.txt
 if    NOT %ERRORLEVEL% 1 set RESULT=ignored
 ENDLOCAL
 cmake --build .  --config ${config} --target package
@@ -200,12 +200,12 @@ asan=0
 builds=/Users/Shared/Jenkins/Home/userContent/builds
 categorize=0
 clang=0
-clone=0
+clone=1
 config=Release
+cpp=98
 curl=False
 cygwin=0
 cygwin32=0
-edition=2019
 freebsd=0
 help=0
 linux=0
@@ -218,13 +218,13 @@ msvc=0
 msvc32=0
 netbsd=0
 nls=1
-publish=0
+publish=1
 server=$(hostname|cut -d. -f 1|cut -d- -f 1)
 shared=1
 solaris=0
 source=0
 status=0
-unit=False
+unit=True
 unix=0
 user=$(whoami)
 video=0
@@ -256,26 +256,30 @@ while [ "$#" != "0" ]; do
       --categorize) categorize=1  ;;
       --clang)      clang=1       ;;
       --clone)      clone=1       ;;
+      --noclone)    clone=0       ;;
       --debug)      config=Debug  ;;
       --full)       full=1        ;;
       --nls)        nls=1         ;;
       --nonls)      nls=0         ;;
       --publish)    publish=1     ;;
+      --nopublish)  publish=0     ;;
       --source)     source=1      ;;
       --static)     shared=0      ;;
       --status)     status=1      ;;
       --unit)       unit=True     ;;
+      --nounit)     unit=False    ;;
       --video)      video=1       ;;
       --webready)   webready=True ;;
-      --2008)       edition=2008  ;;
-      --2010)       edition=2010  ;;
-      --2012)       edition=2012  ;;
-      --2013)       edition=2013  ;;
-      --2015)       edition=2015  ;;
-      --2017)       edition=2017  ;;
-      --2019)       edition=2019  ;;
+      --2008)       editions="$editions 2008" ;;
+      --2010)       editions="$editions 2010" ;;
+      --2012)       editions="$editions 2012" ;;
+      --2013)       editions="$editions 2013" ;;
+      --2015)       editions="$editions 2015" ;;
+      --2017)       editions="$editions 2017" ;;
+      --2019)       editions="$editions 2019" ;;
       --branch)     if [ $# -gt 0 ]; then branch="$1"  ; shift; else bomb $arg ; fi ;;
       --builds)     if [ $# -gt 0 ]; then builds="$1"  ; shift; else bomb $arg ; fi ;;
+      --cpp)        if [ $# -gt 0 ]; then cpp="$1"     ; shift; else bomb $arg ; fi ;;
       --github)     if [ $# -gt 0 ]; then github="$1"  ; shift; else bomb $arg ; fi ;;
       --server)     if [ $# -gt 0 ]; then server="$1"  ; shift; else bomb $arg ; fi ;;
       --stamp)      if [ $# -gt 0 ]; then stamp="$1"   ; shift; else bomb $arg ; fi ;;
@@ -315,6 +319,11 @@ if [ "$unix" == "1" ]; then
 fi
 if [ "$all32" == "1" ]; then
     linux32=1; msvc32=1;clone=1;publish=1
+fi
+if [ ! -z "$editions" ] ; then
+    if [ "$msvc32" == "0" ] ; then
+        msvc=1
+    fi
 fi
 
 if [ "$full" == "1" ]; then
@@ -421,14 +430,20 @@ fi
 if [ $msvc == 1 ]; then
     command='cmd64'
     bits=64
-    msvcBuild     ${server}-w10
-    publishBundle ${server}-w10                msys64      /c/Users/$user/gnu/github/exiv2/buildserver/build          '.zip'
+    if [ -z "$editions" ]; then editions="2019" ; fi
+    for edition in $editions; do
+        msvcBuild     ${server}-w10
+        publishBundle ${server}-w10            msys64      /c/Users/$user/gnu/github/exiv2/buildserver/build          '.zip'
+    done
 fi
 if [ $msvc32 == 1 ]; then
     command='cmd64'
     bits='32'
-    msvcBuild     ${server}-w10
-    publishBundle ${server}-w10                msys64      /c/Users/$user/gnu/github/exiv2/buildserver/build          '.zip'
+    if [ -z "$editions" ]; then editions="2019" ; fi
+    for edition in $editions; do
+        msvcBuild     ${server}-w10
+        publishBundle ${server}-w10            msys64      /c/Users/$user/gnu/github/exiv2/buildserver/build          '.zip'
+    done
 fi
 
 if [ $cygwin == 1 ]; then
