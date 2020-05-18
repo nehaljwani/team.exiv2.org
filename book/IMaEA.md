@@ -47,11 +47,11 @@ I first became interested in metadata because of a trail conversation with Denni
 
 ![gpsexiftags](gpsexiftags.jpg)
 
-I said "Oh, it can't be too difficult to do that!".  And here we are more than a decade later still working on the project.  The program geotag.py was completed in about 6 weeks.  Most of the effort went into porting both Exiv2 and pyexiv2 to Visual Studio and MacOSX.
+I said "Oh, it can't be too difficult to do that!".  And here we are more than a decade later still working on the project.  The program geotag.py was completed in about 6 weeks.  Most of the effort went into porting both Exiv2 and pyexiv2 to Visual Studio and macOS.
 
 The sample application samples/geotag.cpp provides a command line utility to geotag photos and I frequently use this on my own photographs.  Today, I have a Samsung Galaxy Watch which uploads runs to Strava.  I download the GPX from Strava.  The date/time information in the JPG is the key to search for the position data which is written as Exif GPS Tags into the image.
 
-Back in 2008, I wanted to implement this in python as it was a good excuse to learn Python.  Having discovered exiv2 and the python wrapper pyexiv2, I set off with enthusiasm to build a cross-platform script to run on **Windows** _(XP, Visual Studio 2003)_, **Ubuntu Linux** _(Hardy Heron 2008.04 LTS)_ and **MacOSX** _(32 bit Tiger 10.4 on a big-endian PPC)_.  After I finished, I emailed Andreas.  He responded in less than an hour and invited me to join Team Exiv2.  Initialially, I provided support to build Exiv2 with Visual Studio.
+Back in 2008, I wanted to implement this in python as it was a good excuse to learn Python.  Having discovered exiv2 and the python wrapper pyexiv2, I set off with enthusiasm to build a cross-platform script to run on **Windows** _(XP, Visual Studio 2003)_, **Ubuntu Linux** _(Hardy Heron 2008.04 LTS)_ and **macOS** _(32 bit Tiger 10.4 on a big-endian PPC)_.  After I finished, I emailed Andreas.  He responded in less than an hour and invited me to join Team Exiv2.  Initialially, I provided support to build Exiv2 with Visual Studio.
 
 Incidentally, later in 2008, Dennis offered me a contract to port his company's code to Visual Studio to be used on a Windows CE Embedded Controller.  1 million lines of C++ were ported from Linux in 6 weeks.  I worked with Dennis for 4 years on all manner of GPS related software development.
 
@@ -71,7 +71,7 @@ I personally found working with the students to be enjoyable and interesting.  I
 
 ### Where are we now?
 
-After v0.27 was released in 2017, Luis and Dan started making contributions.  They have made many important contributions to in the areas of security, test and build.
+After v0.26 was released in 2017, Luis and Dan started making contributions.  They have made many important contributions in the areas of security, test and build.
 
 I started working on Exiv2 to implement GeoTagging.  As the years have passed, I've explored most of the code.  And I've added new capability such as support for ICC profiles, metadata-piping and file-debugging.  I've done lots of work on the build and test apparatus.  I've talked to users all over the world and closed several hundred issues and feature requests.  After I retired, Alison and I had a trip around the world.  We were invited to stay with Andreas and his family.  We met users in India, Singapore, Armenia, the USA and the UK.  And I've attended 3 Open-Source Conferences. It's been an adventure and mostly rewarding.  It's remarkable how seldom users express appreciation.
 
@@ -543,9 +543,11 @@ This is ingenious magic.  I'll revisit/edit this explanation in the next few day
 ### 8.4 Tiff Visitor
 
 ```
+// visitor.cpp
 #include <iostream>
 #include <string>
 #include <vector>
+#include <map>
 
 // using namespace std;
 
@@ -594,7 +596,6 @@ public:
     std::string name() { return "TheOther"; };
 };
 
-
 // 5. Define the Element type accept() method
 void This::accept(Visitor &v)
 {
@@ -612,38 +613,54 @@ void TheOther::accept(Visitor &v)
 }
 
 // 6. Create a "visitor" derived class for each "operation" to do on "elements"
-class UpVisitor: public Visitor
+class FrenchVisitor: public Visitor
 {
+public:
+    FrenchVisitor()
+    {
+    	dictionary["This"]     = "ce"      ;
+    	dictionary["That"]     = "que"     ;
+    	dictionary["TheOther"] = "l'autre" ;
+    }
+private:
+    std::map<std::string,std::string> dictionary;
+
     void visit(This *e)
     {
-        std::cout << "UpVisitor: " << e->name() << std::endl;
+        std::cout << "FrenchVisitor: " << dictionary[e->name()] << std::endl;
     }
 
     void visit(That *e)
     {
-        std::cout << "UpVisitor: " <<  e->name() << std::endl;
+        std::cout << "FrenchVisitor: " <<  dictionary[e->name()] << std::endl;
     }
     void visit(TheOther *e)
     {
-        std::cout << "UpVisitor: " << e->name() << std::endl;
+        std::cout << "FrenchVisitor: " << dictionary[e->name()] << std::endl;
     }
 };
 
-class DownVisitor: public Visitor
+class UpperCaseVisitor: public Visitor
 {
+    std::string toUpper(std::string str) {
+        // https://stackoverflow.com/questions/735204/convert-a-string-in-c-to-upper-case
+        std::string result = str;
+    	std::transform(result.begin(), result.end(),result.begin(), ::toupper);
+    	return result;
+    }
     void visit(This *e)
     {
-        std::cout << "DownVisitor: " << e->name() << std::endl;
+        std::cout << "UpperCaseVisitor: " << toUpper(e->name()) << std::endl;
     }
 
     void visit(That *e)
     {
-        std::cout << "DownVisitor: " <<  e->name() << std::endl;
+        std::cout << "UpperCaseVisitor: " <<  toUpper(e->name()) << std::endl;
     }
 
     void visit(TheOther *e)
     {
-        std::cout << "DownVisitor: " << e->name() << std::endl;
+        std::cout << "UpperCaseVisitor: " << toUpper(e->name()) << std::endl;
     }
 };
 
@@ -657,14 +674,14 @@ int main() {
     elements.push_back(new That()    );
 
     // traverse objects and visit them
-    UpVisitor   upVisitor;
+    FrenchVisitor   frenchVisitor;
     for ( Elements_it it = elements.begin() ; it != elements.end() ; it++ ) {
-        (*it)->accept(upVisitor);
+        (*it)->accept(frenchVisitor);
     }
 
-    DownVisitor downVisitor;
+    UpperCaseVisitor UpperCaseVisitor;
     for ( Elements_it it = elements.begin() ; it != elements.end() ; it++ ) {
-        (*it)->accept(downVisitor);
+        (*it)->accept(UpperCaseVisitor);
     }
 
     return 0 ;
@@ -691,7 +708,7 @@ int main() {
 
 ### 12.1) C++ Code
 
-Exiv2 is written in C++.  Prior to v0.28, the code is written for C++ 1998 and makes considerable use of STL containers such as vector, map, set, string and many others.  The code started life as a 32-bit library on Unix and today builds well for 32 and 64 bit systems running Linux, Unix, MacOS-X and Windows (Cygwin, MinGW, and Visual Studio).  The Exiv2 project has never supported Mobile Platforms or Embedded Systems, however it should be possible to build for other platforms with a modest effort.
+Exiv2 is written in C++.  Prior to v0.28, the code is written for C++ 1998 and makes considerable use of STL containers such as vector, map, set, string and many others.  The code started life as a 32-bit library on Unix and today builds well for 32 and 64 bit systems running Linux, Unix, macOS and Windows (Cygwin, MinGW, and Visual Studio).  The Exiv2 project has never supported Mobile Platforms or Embedded Systems, however it should be possible to build for other platforms with a modest effort.
 
 The code has taken a great deal of inspiration from the book [Design Patters: Elements of Reusable Object=Oriented Software](https://www.oreilly.com/library/view/design-patterns-elements/0201633612/).
 
@@ -699,7 +716,7 @@ Starting with Exiv2 v0.28, the code requires a C++11 Compiler.  Exiv2 v0.28 is a
 
 ### 12.2) Build
 
-The build code in Exiv2 is implemented using CMake: cross platform make.  This system enables the code to be built on many different platforms in a consistant manner.  CMake recursively reads the files CMakeLists.txt in the source tree and generates build environments for different build systems.  For Exiv2, we actively support using CMake to build on Unix type plaforms (Linux, MacOSX, Cygwin and MinGW), and several editions of Visual Studio.  CMake can generate project files for Xcode and other popular IDEs.
+The build code in Exiv2 is implemented using CMake: cross platform make.  This system enables the code to be built on many different platforms in a consistant manner.  CMake recursively reads the files CMakeLists.txt in the source tree and generates build environments for different build systems.  For Exiv2, we actively support using CMake to build on Unix type plaforms (Linux, macOS, Cygwin and MinGW), and several editions of Visual Studio.  CMake can generate project files for Xcode and other popular IDEs.
 
 Exiv2 has dependencies on other libraries.
 
@@ -851,6 +868,6 @@ int main(int argc, char* argv[])
 ```
 
 
-Robin Mills
-
-Revised: 2019-09-04
+Robin Mills<br>
+robin@clanmills.com<br>
+Revised: 2020-05-18
