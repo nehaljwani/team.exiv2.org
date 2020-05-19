@@ -9,6 +9,8 @@ add_executable(io      io.cpp     ) # compile this
 target_link_libraries(io exiv2lib ) # link exiv2lib
 
 add_executable(visitor visitor.cpp)
+add_executable(args    args.cpp   )
+add_executable(dmpf    dmpf.cpp   )
 
 # That's all Folks!
 ##
