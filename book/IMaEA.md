@@ -10,7 +10,6 @@
 [3 JP2](#1-JP2)<br>
 [4 TIFF](#1-TIFF)<br>
 [5 WebP](#1-WebP)<br>
-
 2. [Tiff and Exif metadata](#2)
 3. [MakerNotes](#3)
 4. [Other metadata containers](#4)
@@ -22,13 +21,15 @@
   [8.2 Metadata Decoder](#8-2)<br>
   [8.3 Metadata Decoder](#8-3)<br>
   [8.4 Tiff Visitor](#8-4)<br>
-  [8.5 printIFDStructure](#8-5)
-9. [Test Suite and Build](#9)
-10. [API/ABI](#10)
-11. [Security](#11)
-12. [Project Management, Release Engineering, User Support](#12)
+  [8.5 printIFDStructure](#8-5)<br>
+  [8.6 TagInfo](#8-6)<br>
+9. [Test Suite and Build](#9)<br>
+10. [API/ABI](#10)<br>
+11. [Security](#11)<br>
+12. [Project Management, Release Engineering and User Support](#12)<br>
+[Appendix.  My home-made debugging tools   ](#a)<br>
 
-A. [Appendix.  My home-made debugging tools   ](#a)
+
 
 ### Foreward
 
@@ -70,9 +71,7 @@ In 2012, Abhinav joined us and contributed the Video read code and was mentored 
 
 I personally found working with the students to be enjoyable and interesting.  I retired from work in 2014 and returned to England after 15 years in Silicon Valley.  In 2016, Alison and I had a trip round the world and spent a day with Mahesh in Bangalore and with Tuan in Singapore.  We subsequently went to Vietnam to attend Tuan's wedding in 2017.
 
-### How did I get involved with Exiv2?
-
-I started working on Exiv2 to implement GeoTagging.  As the years have passed, I've explored most of the code.  And I've added new capability such as support for ICC profiles, metadata-piping and file-debugging.  I've done lots of work on the build and test apparatus.  I've talked to users all over the world and closed several hundred issues and feature requests.  After I retired, Alison and I had a trip around the world.  We were invited to stay with Andreas and his family.  We met users in India, Singapore, Armenia, the USA and the UK.  And I've attended 3 Open-Source Conferences. It's been an adventure and mostly rewarding.  It's remarkable how seldom users express appreciation.
+I started working on Exiv2 to implement GeoTagging.  As the years have passed, I've explored most of the code.  I've added new capability such as support for ICC profiles, metadata-piping and file-debugging.  I've done lots of work on the build, test suite and documentation.  I've talked to users all over the world and closed several hundred issues and feature requests.  After I retired from work, Alison and I had a trip around the world.  We were invited to stay with Andreas and his family.  We met users in India, Singapore, Armenia, the USA and the UK.  I've attended 3 Open-Source Conferences. It's been an adventure and mostly rewarding.  It's remarkable how seldom users express appreciation.
 
 ### Where are we now?
 
@@ -86,16 +85,31 @@ The Libre Graphics Meeting is scheduled to take place in May 2021 in Rennes, Fra
 
 In July 2017 we received our first security CVE.  Not a pleasant experience.  The security folks started hitting us with fuzzed files. These are files which violate format specifications and can cause the code to crash. We responded with v0.27 which will have regular "dot" releases to provide security fixes.  Managing frequent releases and user correspondence consumes lots of my time.
 
-In parallel to "the dots", major work is being carried to prepare Exiv2 for the future. Dan and Luis are working on v0.28 which will be released in 2020. This is a considerable reworking of the code into C++11.
+In parallel with "the dots", major work is being carried to prepare Exiv2 for the future. Dan and Luis are working on v0.28 which will be released in 2020. This is a considerable reworking of the code into C++11.
 
-I'm delighted by the work done by Dan, Luis and Kevin to deal with the assault of the security people. I believe we are responding effectively to security issues. None-the-less, they have dominated the development of Exiv2 for the last couple of years and many ideas could not be persued because security has consumed our engineering resources.
+I'm delighted by the work done by Dan, Luis and Kevin to deal with the assault of the security people. I believe we are responding effectively to security issues. None-the-less, they have dominated the development of Exiv2 for at least two years and many ideas could not be persued because security has consumed our engineering resources.
+
+### Future Development Projects
+
+The code is in good shape, our release process is solid and our user documentation is comprehensive.  As photography advances, there will be many new cameras and image formats to be processed such as CR3, HEIF and BigTiff.   Video support is weak, deprecated in v0.27 and will be removed in 0.28.
+
+A long standing project for Exiv2 is to us a "unified metadata container".  There is an implementation of this in the SVN repository.  Currently we have three containers for Exif, Iptc and Xmp.  This is clumsy.  We also have a restriction a single image per file.  Perhaps both projects can be combined and have a common solution.
+
+The toolset used in Software Engineering evolves with time.  C++ has been around for about 35 years and, while many complain about it, I expect it will out-live most of us.  None-the-less, languages which are less vulnerable to security issues may lead the project to a rewrite in a new language such as Rust.  I hope this book will provide the necessary understanding of metadata engineering to support such an undertaking.
+
+The most common issue raised on GitHub concerns lens recognition.  For v0.26, I added the "Configuration File" feature to enable users to modify lens recognition on their computer.  While this is helpful, many users would like Exiv2 to deal with this perfectly, both now and in the future.
+
+I intend to make a proposal LGM in Rennes in May 2021 concerning this matter. Both exiv2 and ExifTool can format the metadata in .exv format. I'm going to propose to implement a program to read the .exv and return the Lens. That program will have an embedded programming language with the rules to identify the lens. The scripts will be ascii files which can be updated. It will be called M2Lscript (MetaData to Lens Script), pronounced "MillsScript". The M2Lscript interpreter will be available as a command-line program, a perl module (for ExifTool) and a C++ library (for linking into exiv2).
+
+In this way, new lens definitions can be added to "MillsScript" without touching anything in Exiv2.
+
+I can't work on Exiv2 and M2Lscript.  Perhaps a new maintainer will take responsibility for Exiv2 and allow me to retire.  M2Lscript will be my swansong technology project.
 
 ### Purpose and Scope of this book
 
-This book is my legacy to Exiv2.  I hope Exiv2 will continue to exist long into the future and this book is being written to document my discoveries about Image Metadata and Exiv2 Architecture.  However, I want to avoid a "cut'n'paste" of information already in the project documentation.  This book is an effort to collect my knowledge of this code into a single accessible location.  Many topics in this book are discussed in more detail in the issues stored in Redmine and GitHub.  Of course, finding those discussions isn't easy.  I hope this book helps future maintainers to understand Exiv2, solve issues and develop the code for years to come.
+This book is my legacy to Exiv2.  I hope Exiv2 will continue to exist long into the future and this book is being written to document my discoveries about Image Metadata and Exiv2 Architecture.  However, I want to avoid a "cut'n'paste" of information already in the project documentation.  This book is an effort to collect my knowledge of this code into a single location.  Many topics in this book are discussed in more detail in the issue history stored in Redmine and GitHub.  Of course, finding those discussions isn't easy.  I hope this book helps future maintainers to understand Exiv2, solve issues and develop the code for years to come.
 
 [TOC](#TOC)
-
 <div id="1">
 # 1 Image File Formats
 
@@ -108,32 +122,26 @@ The following summaries of the file formats are provided to help reader understa
 ![Exif22Jpg.png](Exif22Jpg.png)
 
 [TOC](#TOC)
-
-
 <div id="1-PNG">
 ### 1.2 PNG
 ![png](png.png)
 
 [TOC](#TOC)
-
 <div id="1-JP2">
 ### 1.3 JPEG 2000
 ![jp2](jp2.png)
 
 [TOC](#TOC)
-
 <div id="1-TIFF">
 ### 1.4 TIFF
 ![Tiff](Tiff.png)
 
 [TOC](#TOC)
-
 <div id="1-WebP">
 ### 1.5 WEBP
 ![webp](webp.png)
 
 [TOC](#TOC)
-
 <div id="2">
 # 2 Tiff and Exif metadata
 
@@ -196,7 +204,7 @@ You can obtain Stonehenge.jpg from https://clanmills.com/Stonehenge.jpg
 The tiff version is available in test/data/Stonehenge.tif
 
 ```
-$ ~/bin/mdump.py  ~/Stonehenge.jpg           $ ~/bin/mdump.py  ~/Stonehenge.jpg
+$ ~/bin/mdump.py  ~/Stonehenge.jpg           $ ~/bin/mdump.py  ~/Stonehenge.tif
 Make -> "NIKON CORPORATION" (17)             ImageLength -> 1 (int)
 Model -> "NIKON D5300" (11)                  BitsPerSample -> (8, 8, 8, 8) 
 Orientation -> 1 (int)                       Compression -> 1 (int)
@@ -276,7 +284,6 @@ GPSDateStamp -> 2015-07-16 00:00:00 (dat     ImageUniqueID -> "090caaf..."
 Data's similar.  The order is different.  Good news is that the commands `$ exiv2 -pe ~/Stonehenge.jpg` and `$ exiv2 -pe ~/Stonehenge.tif`produce similar data in the same order.  We'd hope so and both codes read the same data.
 
 [TOC](#TOC)
-
 <div id="3">
 # 3 MakerNotes
 
@@ -295,23 +302,22 @@ Exif is the most important of the metadata containers.  However the other exist 
 | ImageMagick/PNG | Portable Network Graphics | Not implemented in Exiv2 |
 
 [TOC](#TOC)
-
 <div id="5">
 # 5 Lens Recognition
-[TOC](#TOC)
 
+[TOC](#TOC)
 <div id="6">
 # 6 Sample Applications
-[TOC](#TOC)
 
+[TOC](#TOC)
 <div id="7">
 # 7 I/O in Exiv2
-[TOC](#TOC)
 
+[TOC](#TOC)
 <div id="8">
 # 8 Exiv2 Architecture
-[TOC](#TOC)
 
+[TOC](#TOC)
 <div id="8-1">
 ### 8.1 Tag Names in Exiv2
 
@@ -552,9 +558,6 @@ This is ingenious magic.  I'll revisit/edit this explanation in the next few day
 
 The tiff visitor code is based on the visitor pattern in [Design Patterns: Elements of Reusable Object=Oriented Software](https://www.oreilly.com/library/view/design-patterns-elements/0201633612/).  Before we discuss tiff visitor, let's review the visitor pattern.
 
-The TiffVisitor is ingenious.  It's also difficult to understand.  Exiv2 has two tiff parsers - TiffVisitor and printStructure().  TiffVisitor was written by Andreas Huggel.  It's very robust and has been almost 
-bug free for 15 years.  I wrote the parser in printStructure() to try to understand the structure of a tiff file.  The code in printIFDStructure() is much easier to understand.
-
 The concept in the visitor pattern is to separate the data in an object from the code which that has an interest in the object.  It the following code, we have a vector of students and every student has a name and an age.  We have two visitors.  The French Visitor translates the names of the students.  The AverageAgeVisitor calculates the average age of the visitor.  Two points to recognise in the pattern:
 
 1.  The students know nothing about the visitors.  If the visitors have a public API, the students can obtain data about the visitor.
@@ -676,12 +679,16 @@ tiffvisitor_int.hpp:    class TiffReader  : public TiffVisitor
 
 I'll write more about the TiffVisitor later.
 
+[TOC](#TOC)
 <div id="8-5">
 ### 8.5 printIFDStructure
 
-It's important to realise that metadata is defined recursively.  In a Tiff File, there will be a Tiff Record containing the Exif data (written in Tiff Format).  Within, that Record, there will be MakerNote, also written in Tiff Format.  Tiff Format is referred to as an IFD - an Image File Directory.
+The TiffVisitor is ingenious.  It's also difficult to understand.  Exiv2 has two tiff parsers - TiffVisitor and printIFDStructure().  TiffVisitor was written by Andreas Huggel.  It's very robust and has been almost 
+bug free for 15 years.  I wrote the parser in printStructure() to try to understand the structure of a tiff file.  The code in printIFDStructure() is easier to understand.
 
-The printIFDStructure() parser uses a simple direct approach to parsing the tiff file.  When another IFD is located, printStructure is called recursively.  As a TIFF file is an IFD, we can descend into the tiff file from the beginning.  For other files types, the file handler has to find the Exif IFD and then call printIFDStructure().
+It's important to realise that metadata is defined recursively.  In a Tiff File, there will be a Tiff Record containing the Exif data (written in Tiff Format).  Within, that record, there will be MakerNote which is usually also written in Tiff Format.  Tiff Format is referred to as an IFD - an Image File Directory.
+
+The printIFDStructure() parser uses a simple direct approach to parsing the tiff file.  When another IFD is located, printIFDStructure is called recursively.  As a TIFF file is a header, followed by an IFD, we can descend into the tiff file from the beginning.  For other files types, the file handler has to find the Exif IFD and then call printIFDStructure().
 
 ```
 void Image::printIFDStructure(BasicIo& io, std::ostream& out, Exiv2::PrintStructureOption option,uint32_t start,bool bSwap,char c,int depth)
@@ -870,6 +877,86 @@ void Image::printIFDStructure(BasicIo& io, std::ostream& out, Exiv2::PrintStruct
 
 [TOC](#TOC)
 
+<div id="8-6">
+### 8.6 TagInfo
+
+Another matter to appreciate is that tag definitions are not constant.  A tag is simply an uint16.  The Tiff Standard specifies about 50 tags.  Anybody creating an IFD can use the same tag number for different purposes.  The Tiff Specification says _"TIFF readers must safely skip over these fields if they do not understand or do not wish to use the information."_.  We have to understand every tag.  In a tiff file, the pixels are located using the tag StripOffsets.  We report StripOffsets, however we don't read pixel data.
+
+```
+const TagInfo Nikon1MakerNote::tagInfo_[] = {
+    TagInfo(0x0001, "Version", N_("Version"),
+            N_("Nikon Makernote version"),
+               nikon1Id, makerTags, undefined, -1, printValue),
+    TagInfo(0x0002, "ISOSpeed", N_("ISO Speed"),
+            N_("ISO speed setting"),
+            nikon1Id, makerTags, unsignedShort, -1, print0x0002),
+
+const TagInfo CanonMakerNote::tagInfo_[] = {
+        TagInfo(0x0000, "0x0000", "0x0000", N_("Unknown"), canonId, makerTags, unsignedShort, -1, printValue),
+        TagInfo(0x0001, "CameraSettings", N_("Camera Settings"), N_("Various camera settings"), canonId, makerTags, unsignedShort, -1, printValue),
+        TagInfo(0x0002, "FocalLength", N_("Focal Length"), N_("Focal length"), canonId, makerTags, unsignedShort, -1, printFocalLength),
+
+const TagInfo gpsTagInfo[] = {
+    TagInfo(0x0000, "GPSVersionID", N_("GPS Version ID"),
+            N_("Indicates the version of <GPSInfoIFD>. The version is given "
+            "as 2.0.0.0. This tag is mandatory when <GPSInfo> tag is "
+            "present. (Note: The <GPSVersionID> tag is given in bytes, "
+            "unlike the <ExifVersion> tag. When the version is "
+            "2.0.0.0, the tag value is 02000000.H)."),
+            gpsId, gpsTags, unsignedByte, 4, print0x0000),
+    TagInfo(0x0001, "GPSLatitudeRef", N_("GPS Latitude Reference"),
+            N_("Indicates whether the latitude is north or south latitude. The "
+            "ASCII value 'N' indicates north latitude, and 'S' is south latitude."),
+            gpsId, gpsTags, asciiString, 2, EXV_PRINT_TAG(exifGPSLatitudeRef)),
+```
+
+As we can see, tag == 1 in the Nikon MakerNotes is Version, in Canon MakerNotes, it is CameraSettings and in GPSInfo, it is GPSLatitudeRef.  It means that we require a tag dictionary as we travel through the file.  
+
+```
+1262 rmills@rmillsmbp:~/gnu/github/exiv2/0.27-maintenance $ taglist all | grep -e $"\.Version$" -e "\.GPSLatitudeRef$" -e "\.CameraSettings$"
+GPSInfo.GPSLatitudeRef
+Canon.CameraSettings
+Nikon1.Version
+...
+1263 rmills@rmillsmbp:~/gnu/github/exiv2/0.27-maintenance $ 
+```
+
+Regrettably, printIFDStructure uses a single static dictionary Image::tags_;
+
+```
+const std::string& Image::tagName(uint16_t tag)
+{
+    if ( init_ ) {
+        int idx;
+        const TagInfo* ti ;
+        for (ti = Internal::  mnTagList(), idx = 0; ti[idx].tag_ != 0xffff; ++idx) tags_[ti[idx].tag_] = ti[idx].name_;
+        for (ti = Internal:: iopTagList(), idx = 0; ti[idx].tag_ != 0xffff; ++idx) tags_[ti[idx].tag_] = ti[idx].name_;
+        for (ti = Internal:: gpsTagList(), idx = 0; ti[idx].tag_ != 0xffff; ++idx) tags_[ti[idx].tag_] = ti[idx].name_;
+        for (ti = Internal:: ifdTagList(), idx = 0; ti[idx].tag_ != 0xffff; ++idx) tags_[ti[idx].tag_] = ti[idx].name_;
+        for (ti = Internal::exifTagList(), idx = 0; ti[idx].tag_ != 0xffff; ++idx) tags_[ti[idx].tag_] = ti[idx].name_;
+        for (ti = Internal:: mpfTagList(), idx = 0; ti[idx].tag_ != 0xffff; ++idx) tags_[ti[idx].tag_] = ti[idx].name_;
+        for (ti = Internal::Nikon1MakerNote::tagList(), idx = 0
+                                                ; ti[idx].tag_ != 0xffff; ++idx) tags_[ti[idx].tag_] = ti[idx].name_;
+    }
+    init_ = false;
+    return tags_[tag] ;
+}
+```
+
+The purpose in writing printIFDStructure was to understand how the metadata is stored and accessed in the file.  The correct fix for this is to pass the current stack of tag arrays to tagName() and that can't be achieved without modifying the API.
+
+```
+1267 rmills@rmillsmbp:~/gnu/github/exiv2/0.27-maintenance $ nm -g --demangle  build/lib/libexiv2.27.dylib | grep tagName
+0000000000084910 T Exiv2::Image::tagName(unsigned short)
+00000000000df440 T Exiv2::XmpKey::tagName() const
+...
+1268 rmills@rmillsmbp:~/gnu/github/exiv2/0.27-maintenance $ 
+```
+
+It would be possible to "high jack" the init_ variable to get it to rebuild tags_ appropriately.  I don't think this is worth the effort.  Modifying the API of tagName() in v0.28 is a better worth approach.  Additionally, tagName() is not threadsafe.
+
+
+[TOC](#TOC)
 <div id="9">
 # 9 Test Suite and Build
 [TOC](#TOC)
@@ -1002,7 +1089,7 @@ int main(int argc, char* argv[])
 	if ( !error  )
 	{
 		char line[1000] ;
-		char buff[16]   ;
+		char buff[32]   ;
 		int  n          ;
 		int count = 0   ;
 		while ( (n = fread(buff,1,sizeof buff,f)) > 0 )
@@ -1045,7 +1132,6 @@ int main(int argc, char* argv[])
 	return error ;
 }
 ```
-
 
 Robin Mills<br>
 robin@clanmills.com<br>
