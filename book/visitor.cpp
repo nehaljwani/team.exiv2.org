@@ -19,16 +19,34 @@ public:
 class Student
 {
 public:
-    Student(std::string name,int age) : name_(name), age_(age) {}
-    void accept(class Visitor& v) { v.visit(*this); }
+    Student(std::string name,int age,std::string course)
+    : name_(name)
+    , age_(age)
+    , course_(course)
+    {}
+    void accept(class Visitor& v) {
+      v.visit(*this);
+    }
     std::string name()  { return name_; } 
     int         age()   { return age_;  }
+    std::string course(){ return course_;  }
 private:
-    std::string name_ ;
-    int         age_  ;
+    std::string course_ ;
+    std::string name_   ;
+    int         age_    ;
 };
 
 // 4. Create concrete "visitors"
+class StudentVisitor: public Visitor
+{
+public:
+    StudentVisitor() {}
+    void visit(Student& student)
+    {
+    	std::cout << student.name() <<  " | " << student.age() << " | " << student.course() << std::endl;
+    }
+};
+
 class FrenchVisitor: public Visitor
 {
 public:
@@ -64,14 +82,20 @@ private:
     int students_;
 };
 
+
 int main() {
     // create students
     std::vector<Student>   students;
-    students.push_back(Student("this",10)     );
-    students.push_back(Student("that",12)     );
-    students.push_back(Student("the other",14));
+    students.push_back(Student("this",10,"art"             ));
+    students.push_back(Student("that",12,"music"           ));
+    students.push_back(Student("the other",14,"engineering"));
 
     // traverse objects and visit them
+    StudentVisitor studentVisitor;
+    for ( std::vector<Student>::iterator student = students.begin() ; student != students.end() ; student++ ) {
+        student->accept(studentVisitor);
+    }
+
     FrenchVisitor    frenchVisitor;
     for ( std::vector<Student>::iterator student = students.begin() ; student != students.end() ; student++ ) {
         student->accept(frenchVisitor);

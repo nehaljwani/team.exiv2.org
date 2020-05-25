@@ -24,6 +24,10 @@
   [8.5 printIFDStructure](#8-5)<br>
   [8.6 TagInfo](#8-6)<br>
 9. [Test Suite and Build](#9)<br>
+  [9.1 Bash Tests](#9-1)<br>
+  [9.2 Python Tests](#9-2)<br>
+  [9.3 Unit Tests](#9-3)<br>
+  [9.4 Version Test](#9-4)<br>
 10. [API/ABI](#10)<br>
 11. [Security](#11)<br>
 12. [Project Management, Release Engineering and User Support](#12)<br>
@@ -574,7 +578,7 @@ The concept in the visitor pattern is to separate the data in an object from the
 // 1.  declare types
 class   Student; // forward
 
-// 2. Create abstr act base class with a student visit() method
+// 2. Create abstract "visitor" base class with an element visit() method
 class Visitor
 {
 public:
@@ -582,22 +586,38 @@ public:
     virtual void visit(Student& student) = 0 ;
 };
 
-// 3. Student has an accept(Visitor&) method, an API and private data
+// 3. Student has an accept(Visitor&) method
 class Student
 {
 public:
-    Student(std::string name,int age) : name_(name), age_(age) {}
-    void accept(class Visitor& v) { v.visit(*this); }
-
-//  API
+    Student(std::string name,int age,std::string course)
+    : name_(name)
+    , age_(age)
+    , course_(course)
+    {}
+    void accept(class Visitor& v) {
+      v.visit(*this);
+    }
     std::string name()  { return name_; } 
     int         age()   { return age_;  }
+    std::string course(){ return course_;  }
 private:
-    std::string name_ ;
-    int         age_  ;
+    std::string course_ ;
+    std::string name_   ;
+    int         age_    ;
 };
 
 // 4. Create concrete "visitors"
+class StudentVisitor: public Visitor
+{
+public:
+    StudentVisitor() {}
+    void visit(Student& student)
+    {
+    	std::cout << student.name() <<  " | " << student.age() << " | " << student.course() << std::endl;
+    }
+};
+
 class FrenchVisitor: public Visitor
 {
 public:
@@ -633,14 +653,20 @@ private:
     int students_;
 };
 
+
 int main() {
     // create students
     std::vector<Student>   students;
-    students.push_back(Student("this",10)     );
-    students.push_back(Student("that",12)     );
-    students.push_back(Student("the other",14));
+    students.push_back(Student("this",10,"art"             ));
+    students.push_back(Student("that",12,"music"           ));
+    students.push_back(Student("the other",14,"engineering"));
 
-    // traverse/visit each student
+    // traverse objects and visit them
+    StudentVisitor studentVisitor;
+    for ( std::vector<Student>::iterator student = students.begin() ; student != students.end() ; student++ ) {
+        student->accept(studentVisitor);
+    }
+
     FrenchVisitor    frenchVisitor;
     for ( std::vector<Student>::iterator student = students.begin() ; student != students.end() ; student++ ) {
         student->accept(frenchVisitor);
@@ -660,6 +686,9 @@ And when we run it:
 
 ```
 1181 rmills@rmillsmbp:~/gnu/exiv2/team/book/build $ ./visitor 
+this | 10 | art
+that | 12 | music
+the other | 14 | engineering
 FrenchVisitor: ce
 FrenchVisitor: que
 FrenchVisitor: l'autre
@@ -959,6 +988,212 @@ It would be possible to "high jack" the init_ variable to get it to rebuild tags
 [TOC](#TOC)
 <div id="9">
 # 9 Test Suite and Build
+
+Exiv2 has several different elements in the test suite. They are:
+
+1 Bash Tests
+2 Python Tests
+3 Unit Test
+4 Version Test
+
+[TOC](#TOC)
+
+<div id="9-1">
+# 9.1 Bash Tests
+
+As the name implies, these tests were originally implemented as bash scripts.
+
+```
+#!/usr/bin/env bash
+# Test driver for geotag
+
+source ./functions.source
+
+(   cd "$testdir"
+
+    printf "geotag" >&3
+
+    jpg=FurnaceCreekInn.jpg
+    gpx=FurnaceCreekInn.gpx
+    copyTestFiles $jpg $gpx
+
+    echo --- show GPSInfo tags ---
+    runTest                      exiv2 -pa --grep GPSInfo $jpg
+    tags=$(runTest               exiv2 -Pk --grep GPSInfo $jpg  | tr -d '\r') # MSVC puts out cr-lf lines
+    echo --- deleting the GPSInfo tags
+    for tag in $tags; do runTest exiv2 -M"del $tag" $jpg; done
+    runTest                      exiv2 -pa --grep GPS     $jpg
+    echo --- run geotag ---
+    runTest                      geotag -ascii -tz -8:00 $jpg $gpx | cut -d' ' -f 2-
+    echo --- show GPSInfo tags ---
+    runTest                      exiv2 -pa --grep GPSInfo $jpg
+
+) 3>&1 > $results 2>&1
+
+printf "\n"
+
+# ----------------------------------------------------------------------
+# Evaluate results
+cat $results | tr -d $'\r' > $results-stripped
+mv                           $results-stripped $results
+reportTest                                     $results $good
+
+# That's all Folks!
+##
+
+```
+
+I intend to rewrite the bash tests in python.  This will be done because running bash scripts on windows is painful for most windows users.
+
+```
+#!/usr/bin/env python3
+
+import os
+import shlex
+import shutil
+import subprocess
+
+def error(s):
+	print('**',s,'**')
+def warn(s):
+	print('--',s)
+
+def chop(blob):
+	lines=[]
+	line=''
+	for c in blob.decode('utf-8'):
+		if c == '\n':
+			lines=lines+[line]
+			line=''
+		elif c != '\r':
+			line=line+str(c)
+	if len(line) != 0:
+		lines=lines+line
+	return lines
+
+def runTest(r,cmd):
+	lines=[]
+	try:
+		# print('*runTest*',cmd)
+		p        = subprocess.Popen( shlex.split(cmd), stdout=subprocess.PIPE,shell=False)
+		out,err  = p.communicate()
+		lines=chop(out)
+		if p.returncode != 0:
+			warn('%s returncode = %d' % (cmd,p.returncode) )
+	except:
+		error('%s died' % cmd )
+			
+	return r+lines
+	
+def echo(r,s):
+	return r+[s]
+
+def copyTestFiles(r,a,b):
+	os.makedirs('tmp', exist_ok=True)
+	shutil.copy('data/%s' % a,'tmp/%s' % a)
+	shutil.copy('data/%s' % b,'tmp/%s' % b)
+	return r
+
+def cut(r,delim,field,lines):
+	R=[]
+	for line in lines:
+		i = 0
+		while i < len(line):
+			if line[i]==delim:
+				R=R+[line[i+1:]]
+				i=len(line)
+			else:
+				i=i+1
+	return r+R;
+
+def reportTest(r,t):
+	good = True
+	R=chop(open('data/%s.out' % t ,'rb').read())
+	if len(R) != len(r):
+		error('output length mismatch Referance %d Test %d' % (len(R),len(r)))
+		good=False
+	else:
+		i = 0
+		while good and i < len(r):
+			if R[i] != r[i]:
+				error ('output mismatch at line %d' % i)
+				error ('Reference: %s' % R[i])
+				error ('Test:      %s' % r[i])
+			else:
+				i=i+1
+	if not good:
+		f=open('tmp/%s.out' % t , 'w')
+		for line in r:
+			f.write(line+'\n')
+		f.close()
+
+	print('passed %s' % t) if good else error('failed %s' %t )
+	
+# Update the environment
+key="PATH"
+if key in os.environ:
+	os.environ[key] = os.path.abspath(os.path.join(os.getcwd(),'../build/bin')) + os.pathsep + os.environ[key]
+else:
+	os.environ[key] = os.path.abspath(os.path.join(os.getcwd(),'../build/bin'))
+
+for key in [ "LD_LIBRARY_PATH", "DYLD_LIBRARY_PATH" ]:
+	if key in os.environ:
+		os.environ[key] = os.path.abspath(os.path.join(os.getcwd(),'../build/lib')) + os.pathsep + os.environ[key]
+	else:
+		os.environ[key] = os.path.abspath(os.path.join(os.getcwd(),'../build/lib'))
+
+r=[]
+t=  'geotag-test'
+
+warn('%s'       % t)
+warn('pwd=%s'   % os.getcwd())
+warn('exiv2=%s' % shutil.which("exiv2"))
+
+jpg='FurnaceCreekInn.jpg'
+gpx='FurnaceCreekInn.gpx'
+
+r=          copyTestFiles(r,jpg,gpx)
+r=          echo   (r,'--- show GPSInfo tags ---')
+r=          runTest(r,'exiv2 -pa --grep GPSInfo tmp/%s' % jpg)
+
+r=          echo   (r,'--- deleting the GPSInfo tags')
+tags=       runTest([],'exiv2 -Pk --grep GPSInfo tmp/%s' % jpg)
+for tag in tags:
+     r=     runTest(r,'exiv2 -M"del %s" tmp/%s' % (tag,jpg))
+r=          runTest(r,'exiv2 -pa --grep GPS  tmp/%s' %  jpg)
+r=          echo   (r,'--- run geotag ---')
+lines=      runTest([],'geotag -ascii -tz -8:00 tmp/%s tmp/%s' % (jpg,gpx))
+r=          cut    (r,' ',2,lines)
+r=          echo   (r,'--- show GPSInfo tags ---')
+r=          runTest(r,'exiv2 -pa --grep GPSInfo tmp/%s' % jpg)
+ 
+reportTest(r,t)
+
+# That's all Folks
+##
+```
+
+[TOC](#TOC)
+
+<div id="9-2">
+# 9.2 Python Tests
+
+To be written.
+
+[TOC](#TOC)
+
+<div id="9-3">
+# 9.3 Unit Test
+
+To be written.
+
+[TOC](#TOC)
+
+<div id="9-4">
+# 9.4 Version Test
+
+To be written.
+
 [TOC](#TOC)
 
 <div id="10">
