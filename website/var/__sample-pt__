@@ -21,7 +21,7 @@ Exif.Photo.MaxApertureValue                  Rational    1  F2.8
 Exif.Photo.MeteringMode                      Short       1  Center weighted average
 Exif.Photo.Flash                             Short       1  No, auto
 Exif.Photo.FocalLength                       Rational    1  21.3 mm
-Exif.Photo.MakerNote                         Undefined 450  (Binary value suppressed)
+Exif.Photo.MakerNote                         Undefined 450  12 0 1 0 3 0 40 0 0 0 68 4 0 0 2 0 3 0 4 0 0 0 148 4 0 0 3 0 3 0 4 0 0 0 156 4 0 0 4 0 3 0 27 0 0 0  ...
 Exif.MakerNote.Offset                        Long        1  942
 Exif.MakerNote.ByteOrder                     Ascii       3  II
 Exif.CanonCs.Macro                           Short       1  Off
@@ -80,7 +80,7 @@ Exif.Canon.FileNumber                        Long        1  117-1771
 Exif.Canon.OwnerName                         Ascii      32  Andreas Huggel
 Exif.Canon.ModelID                           Long        1  PowerShot S40
 Exif.Canon.CameraInfo                        Short      21  42 3 32769 378 32769 0 0 0 259 2 0 10 0 0 0 57 198 5 0 0 0
-Exif.Photo.UserComment                       Undefined 264  (Binary value suppressed)
+Exif.Photo.UserComment                       Undefined 264  binary comment
 Exif.Photo.FlashpixVersion                   Undefined   4  1.00
 Exif.Photo.ColorSpace                        Short       1  sRGB
 Exif.Photo.PixelXDimension                   Short       1  2272

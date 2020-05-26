@@ -46,7 +46,6 @@ do
 
 	config="64 bit shared libraries"
 	if [ "$platform"  = "Darwin"   ]; then platform="macOS"                  ; fi
-	if [ "$platform"  = "MinGW32"  ]; then config="32 bit shared libraries"  ; fi
 	if [ "$platform"  = "MSVC"     ]; then platform="Visual Studio"; config="64 bit DLLs for<br>Visual Studio 2019"; fi
 	if [ "$platform" != "Source"   ]; then
   	  echo "<tr><td>$platform<h3></td><td>$config</td> \

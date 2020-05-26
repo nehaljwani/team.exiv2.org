@@ -55,8 +55,9 @@ __navbar__
     </div><!-- /.col-sm-6 -->
     <div class="col-sm-6">
 	<h2>Builds</h2>
-	<p>The project buildserver builds every night.  Each build includes
-	builds of the library and sample applications.
+	<p>Each build includes
+	builds of the library and sample applications.  Please see ReadMe.txt in the bundle for an introduction
+	to the contents its content.
 	The header files and a sample application are included
 	in the bundle and documentation to enable applications to be built.
 	</p>
@@ -73,7 +74,7 @@ __navbar__
 
   <p class="margin-top-s">As an alternative to these packages, most Linux distributions have
     a package management system such as <i>yum, apt or pacman</i> which will
-    install binary builds and header files.  On MacOS-X the package management systems are
+    install binary builds and header files.  On macOS the package management systems are
     <i>port</i> and <i>brew</i>.</p>
 </div>
       </div><!-- /.col-sm-6 -->

@@ -2,7 +2,7 @@
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
 </HEAD><BODY>
 <H1>EXIV2</H1>
-Section: User Commands  (1)<BR>Updated: April 30, 2020<BR><A HREF="#index">Index</A>
+Section: User Commands  (1)<BR>Updated: May 12, 2020<BR><A HREF="#index">Index</A>
 <A HREF="/">Return to Main Contents</A><HR>
 
 
@@ -161,7 +161,7 @@ exiv2 [ opt [arg] ]+ [ act ] file ...
 
 option [arg]    long option     description
 -a      tim     --adjust        Modify time stamps.  [+|-]HH[:MM[:SS[.mmm]]]
--b              --binary        Show large binary values (default is to suppress them).
+-b              --binary        Show large binary values (default is to restrict them).
 -c      txt     --comment       JPEG comment string to set in the image ('modify' action).  ...
 -d      tgt     --delete        Delete target(s) for the 'delete' action. ...
 -D      +-n     --days  Time  adjustment by a positive or negative number of days ...
@@ -251,7 +251,7 @@ to <B>-q</B>. All log messages are written to standard error.
 <DT><B>-b</B>
 
 <DD>
-Show large binary values (default is to suppress them).
+The output from large binary values is to restricted by default.  When outputting the value of a large value such as MakerNote, the default behaviour is to restrict the data and end with &quot;...&quot;.  The option --binary enables you to see all the data.
 <DT><B>-u</B>
 
 <DD>
@@ -644,13 +644,13 @@ $ exiv2 -M'set Exif.Photo.UserComment charset=Ascii My photo' x.jpg
 $ exiv2 -pa --grep UserComment x.jpg
 Exif.Photo.UserComment         Undefined  16  My photo
 $ exiv2 -pv --grep UserComment x.jpg
-0x9286 Photo       UserComment Undefined  16  charset=&quot;Ascii&quot; My photo
+0x9286 Photo       UserComment Undefined  16  charset=Ascii My photo
 
 $ exiv2 -M'set Exif.Photo.UserComment charset=Unicode \u0052\u006f\u0062\u0069\u006e' x.jpg
 $ exiv2 -pa --grep UserComment x.jpg
 Exif.Photo.UserComment                       Undefined  18  Robin
 $ exiv2 -pv --grep UserComment x.jpg
-0x9286 Photo        UserComment                 Undefined  18  charset=&quot;Unicode&quot; Robin
+0x9286 Photo        UserComment                 Undefined  18  charset=Unicode Robin
 
 $ exiv2 -M'set Exif.GPSInfo.GPSProcessingMethod HYBRID-FIX' x.jpg
 $ exiv2 -pa --grep ProcessingMethod        x.jpg
@@ -980,6 +980,6 @@ The code is hosted on GitHub at <A HREF="https://github.com/exiv2/exiv2">https:/
 This document was created by
 <A HREF="http://github.com/hamano/man2html/">man2html</A>,
 using the manual pages.<BR>
-Time: 17:17:17 GMT, April 30, 2020
+Time: 18:26:13 GMT, May 26, 2020
 </BODY>
 </HTML>
