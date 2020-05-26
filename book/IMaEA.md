@@ -991,10 +991,12 @@ It would be possible to "high jack" the init_ variable to get it to rebuild tags
 
 Exiv2 has several different elements in the test suite. They are:
 
-1 Bash Tests
-2 Python Tests
-3 Unit Test
-4 Version Test
+1. Bash Tests
+2. Python Tests
+3. Unit Test
+4. Version Test
+
+In writing this book, I want to avoid duplicating information between Exiv2 documentation and this book.  This book is intended to provide an engineering explanation of how the code works and why various design decisions were chosen.  However, you will find that this book doesn't explain how to use Exiv2. How to use execute the test suite is documented in README.md.
 
 [TOC](#TOC)
 
@@ -1009,11 +1011,7 @@ As the name implies, these tests were originally implemented as bash scripts.
 
 source ./functions.source
 
-(   cd "$testdir"
-
-    printf "geotag" >&3
-
-    jpg=FurnaceCreekInn.jpg
+(   jpg=FurnaceCreekInn.jpg
     gpx=FurnaceCreekInn.gpx
     copyTestFiles $jpg $gpx
 
@@ -1028,15 +1026,8 @@ source ./functions.source
     echo --- show GPSInfo tags ---
     runTest                      exiv2 -pa --grep GPSInfo $jpg
 
-) 3>&1 > $results 2>&1
-
-printf "\n"
-
-# ----------------------------------------------------------------------
-# Evaluate results
-cat $results | tr -d $'\r' > $results-stripped
-mv                           $results-stripped $results
-reportTest                                     $results $good
+) > $results 2>&1
+reportTest
 
 # That's all Folks!
 ##
@@ -1370,4 +1361,4 @@ int main(int argc, char* argv[])
 
 Robin Mills<br>
 robin@clanmills.com<br>
-Revised: 2020-05-18
+Revised: 2020-05-26
