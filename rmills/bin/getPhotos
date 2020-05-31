@@ -30,13 +30,15 @@ if [ ! -d $dir ]; then
     exit 3
 fi
 
-# copy from photos to dir and delete original
+# copy from photos to dir and delete from camera
 count=0
-for i in $(find $photos -name "*.JPG" 2>/dev/null) ; do
-    to=$(basename $i .JPG)
-    cp -v  $i $dir/$to.jpg
+for e in .JPG .NEF; do
+  for i in $(find $photos -name "*$e" 2>/dev/null) ; do
+    to=$(basename $i|tr '[:upper:]' '[:lower:]')
+	cp -v $i $dir/$to
     rm -rf $i
     count=$((count+1))
+  done
 done
 
 # report the result and eject the photo card
@@ -48,7 +50,7 @@ fi
 ls -l $dir/*.jpg
 diskutil eject $photos
 open     $dir
-open '/Applications/ACDSee Photo Studio 5.app/'
+# open '/Applications/ACDSee Photo Studio 5.app/'
 
 # That's all Folks!
 ##

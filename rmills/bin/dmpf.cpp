@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
 	if ( !error  )
 	{
 		char line[1000] ;
-		char buff[16]   ;
+		char buff[32]   ;
 		int  n          ;
 		int count = 0   ;
 		while ( (n = fread(buff,1,sizeof buff,f)) > 0 )

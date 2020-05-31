@@ -649,8 +649,7 @@ export PATH=$PATH:/opt/local/bin:/opt/local/sbin:/opt/pkgconfig/bin
 
 export PATH="/usr/local/opt/gettext/bin:$PATH"
 
-
-# Setting PATH for Python 3.7
+# Setting PATH for Python 3.8
 # The original version is saved in .profile.pysave
-PATH="/Library/Frameworks/Python.framework/Versions/3.7/bin:${PATH}"
+PATH="/Library/Frameworks/Python.framework/Versions/3.8/bin:${PATH}"
 export PATH
