@@ -1,15 +1,16 @@
-#!/usr/local/bin/env bash
+#!/usr/bin/env bash
 
 syntax() {
-    echo "usage: $0   { --help | -?  |   -h | platform   | switch     | option     | location value }+ "
-    echo "platform:    all[32] | cygwin     | freebsd    | linux[32]  | macos|unix | mingw | msvc[32] | netbsd | solaris"
-    echo "switch:     --source | --[no]clone| --debug    | --static   | --clang    | --cpp { 98 | 11 | 14 | 17 }"
-    echo "options:   --[no]nls | --video    | --asan     | --webready | --[no]unit | --[no]publish | --status"
-    echo "msvc:         --2019 | --2017     | --2015     | --2013     | --2012     | --2010    | --2008"
-    echo "location: --server B | --user C   | --builds D | --stamp stamp" 
-    echo "location: --github {rmillsmm,github,E}         | { --branch branch | --tag tag } "
+    echo "usage: ./build.sh  { --help | -? | -h | platform  | switch | option     | location value }+ "
+    echo ""
+    echo "platform:    all[32] | msvc[32] | linux[32]  | macos      | cygwin | mingw | unix | freebsd | netbsd | solaris"
+    echo "switch:     --source | --debug  | --static   | --clang    | --background"
+    echo "options:   --[no]nls | --video  | --asan     | --status   | --[no]unit     | --[no]publish | --[no]webready"
+    echo "msvc:         --2019 | --2017   | --2015     | --2013     | --2012         | --2010  | --2008"
+    echo "location: --server B | --user C | --builds D | --cpp  {98 | 11 | 14 | 17}  | --stamp stamp " 
+    echo "           --github {rmillsmm,github,E}      | {--tag tag | --branch branch}"
 }
-this="$0"
+
 announce()
 {
     if [ "$status" != "1" ]; then
@@ -39,16 +40,6 @@ writeStamp()
     echo "echo stamp=$4 > $3" | ssh  -o ConnectTimeout=30 ${user}@$1 $2
 }
 
-# if we're asked to clone, we remove the old build directory
-prepareToClone()
-{
-    # $1 = server name (eg rmillsmm-w10)
-    # $2 = command to remove directory 'buildserver' ("rmdir/s/q ${cd}buildserver")
-    if [ "$clone" == "1" ]; then
-        echo "$2" | ssh -o ConnectTimeout=30 ${user}@$1 ${command} 2>/dev/null
-    fi
-}
-
 # list the current build
 reportStatus()
 {
@@ -66,8 +57,6 @@ unixBuild()
     if [ "$status" == "1" ]; then
         reportStatus $1 $command "cd ${cd}/buildserver/build; ls -alt *.tar.gz | sed -e 's/\+ / /g'"
     else
-        # remove the buildserver directory if we are to clone
-        prepareToClone $1 "rm -rf ${cd}/buildserver"
         CLANG=""
         if [ $clang == 1 ]; then CLANG='echo "using Clang";export CC=$(which clang);export CXX=$(which clang++)' ; fi
         ! ssh -o ConnectTimeout=30 ${user}@$1 ${command} <<EOF
@@ -78,10 +67,11 @@ ${CLANG}
 echo ---- $(uname -a) --------
 pwd
 ls -l
-if [ ! -e buildserver ]; then
-    echo git clone --branch $branch $github buildserver --depth 1
-         git clone --branch $branch $github buildserver --depth 1
+if [ -e buildserver ]; then
+    rm -rf buildserver
 fi
+echo git clone --branch $branch $github buildserver --depth 1
+     git clone --branch $branch $github buildserver --depth 1
 if [ ! -d buildserver ]; then
    echo "***"
    echo "***" no directory buildserver "***"
@@ -90,9 +80,10 @@ if [ ! -d buildserver ]; then
 fi
 cd  buildserver
 git status
-# git fetch --unshallow
-# git pull  --rebase
-# if [ ! -z "$tag" ]; then git checkout $tag ; fi
+if [ ! -z ${tag} ]; then 
+    git fetch --unshallow
+    git checkout ${tag} 
+fi
 rm    -rf build
 mkdir -p  build
 cd        build
@@ -149,21 +140,19 @@ msvcBuild()
     if [ "$status" == "1" ]; then
         reportStatus $1 msys64 "cd ${cd}\\buildserver\\build ; ls -alt *.zip | sed -e 's/\+ / /g'"
     else
-        prepareToClone $1 "rmdir/s/q ${cd}buildserver"
         ! ssh -o ConnectTimeout=30 ${user}@$1 cmd64 <<EOF
 setlocal
 cd ${cd}
 python -c "import platform;print(platform.uname())"
 @echo off
-IF NOT EXIST buildserver git clone --branch ${branch} $github buildserver --depth 1
-IF NOT EXIST buildserver echo +++++++++++++++ clone failed ++++++++++++++++++++++++++++++++
-IF NOT EXIST buildserver exit 1
+IF EXIST buildserver rmdir/s/q buildserver
+git clone --branch ${branch} $github buildserver --depth 1
 @echo on
 cd buildserver
-git fetch --unshallow
-git pull  --rebase
-git checkout $tag
 git status
+set TAG=${tag}
+if "%TAG%" NEQ "" ( git fetch     --unshallow ) 
+if "%TAG%" NEQ "" ( git checkout  %TAG%       ) 
 if     EXIST build rmdir/s/q build
 if NOT EXIST build mkdir build
 cd           build
@@ -179,7 +168,6 @@ cmake --build .  --config ${config}                                             
 if %ERRORLEVEL% NEQ 0 exit 2
 SETLOCAL
 set   EXIV2_EXT=.exe
-set   EXIV2_BINDIR=%CD%\bin
 set   PATH=c:\Python37;C:\Python37\Scripts;c:\Program Files\cmake\bin;c:\msys64\usr\bin;%PATH%;
 cmake --build . --config ${config}  --target tests                                     2>&1 | c:\msys64\usr\bin\sed -e "s/^  //" | c:\msys64\usr\bin\tee -a  %EXIV2_BINDIR%\..\logs\build.txt
 if    NOT %ERRORLEVEL% 1 set RESULT=ignored
@@ -193,17 +181,17 @@ EOF
 
 ##
 # assign defaults
+this="$0"
 all=0
 all32=0
 asan=0
-# branch=0.27-maintenance
+background=0
+branch=0.27-maintenance
 builds=/Users/Shared/Jenkins/Home/userContent/builds
 categorize=0
 clang=0
-clone=1
 config=Release
 cpp=98
-curl=False
 cygwin=0
 cygwin32=0
 freebsd=0
@@ -229,9 +217,9 @@ unix=0
 user=$(whoami)
 video=0
 webready=False
-stamp=$(date '+%Y-%m-%d_%H:%M:%S')
-if [ "$#" == "0" ]; then help=1; fi
+stamp=$(date '+%Y-%m-%d_%H:%M:00')
 
+if [ "$#" == "0" ]; then help=1; fi
 ##
 # parse command line
 while [ "$#" != "0" ]; do
@@ -241,6 +229,7 @@ while [ "$#" != "0" ]; do
       -h|--help|-\?) help=1       ;;
       all)          all=1;all32=0 ;;
       all32)        all=0;all32=1 ;;
+      background)   background=1  ;;
       cygwin)       cygwin=1      ;;
       freebsd)      freebsd=1     ;;
       linux)        linux=1       ;;
@@ -255,8 +244,6 @@ while [ "$#" != "0" ]; do
       --asan)       asan=1        ;;
       --categorize) categorize=1  ;;
       --clang)      clang=1       ;;
-      --clone)      clone=1       ;;
-      --noclone)    clone=0       ;;
       --debug)      config=Debug  ;;
       --full)       full=1        ;;
       --nls)        nls=1         ;;
@@ -270,13 +257,14 @@ while [ "$#" != "0" ]; do
       --nounit)     unit=False    ;;
       --video)      video=1       ;;
       --webready)   webready=True ;;
-      --2008)       editions="$editions 2008" ;;
-      --2010)       editions="$editions 2010" ;;
-      --2012)       editions="$editions 2012" ;;
-      --2013)       editions="$editions 2013" ;;
-      --2015)       editions="$editions 2015" ;;
-      --2017)       editions="$editions 2017" ;;
-      --2019)       editions="$editions 2019" ;;
+      --nowebready) webready=False;;
+      --2008|2008)  editions="$editions 2008" ;;
+      --2010|2010)  editions="$editions 2010" ;;
+      --2012|2012)  editions="$editions 2012" ;;
+      --2013|2013)  editions="$editions 2013" ;;
+      --2015|2015)  editions="$editions 2015" ;;
+      --2017|2017)  editions="$editions 2017" ;;
+      --2019|2019)  editions="$editions 2019" ;;
       --branch)     if [ $# -gt 0 ]; then branch="$1"  ; shift; else bomb $arg ; fi ;;
       --builds)     if [ $# -gt 0 ]; then builds="$1"  ; shift; else bomb $arg ; fi ;;
       --cpp)        if [ $# -gt 0 ]; then cpp="$1"     ; shift; else bomb $arg ; fi ;;
@@ -288,10 +276,6 @@ while [ "$#" != "0" ]; do
       *)            echo "*** invalid option: $arg ***" 1>&2; help=1; ;;
     esac
 done
-
-if [ $source == 1 ]; then
-    clone=1
-fi
 
 if [ $asan == 1 ]; then
     debug=1
@@ -311,14 +295,14 @@ if [ $github == rmillsmm ]; then github=rmills@rmillsmm:/Users/rmills/gnu/github
 
 if [ "$all" == "1" ]; then
     cygwin=1; linux=1; macos=1; mingw=1; msvc=1;
-    unit=True;clone=1;publish=1;
+    unit=True;publish=1;
 fi
 if [ "$unix" == "1" ]; then
     solaris=1;freebsd=1;netbsd=1;
-    unit=True;clone=1;publish=1;
+    unit=True;publish=1;
 fi
 if [ "$all32" == "1" ]; then
-    linux32=1; msvc32=1;clone=1;publish=1
+    linux32=1; msvc32=1;publish=1
 fi
 if [ ! -z "$editions" ] ; then
     if [ "$msvc32" == "0" ] ; then
@@ -328,8 +312,7 @@ fi
 
 if [ "$full" == "1" ]; then
 	ssh=0
-	video=1
-	curl=1
+	video=0
 	webready=True
 	publish=1
 fi
@@ -373,11 +356,11 @@ if [ $linux == 1 ]; then
     unixBuild     ${server}-ubuntu Linux64
     publishBundle ${server}-ubuntu           ${command}   /home/$user/gnu/github/exiv2/buildserver/build              '.tar.gz'
     if [ $publish == 1 ]; then
-		# recursively build package_source on a clean clone
+		# recursively build package_source
 		if [ -z $tag ]; then
-		   "$this" --source --clone --stamp "$stamp" --branch   "$branch"   --github "$github" --publish
+		   "$this" --source --stamp "$stamp" --branch   "$branch"   --github "$github" --publish
 		else
-		   "$this" --source --clone --stamp "$stamp" --tag      "$tag"      --github "$github" --publish
+		   "$this" --source --stamp "$stamp" --tag      "$tag"      --github "$github" --publish
 		fi
 	fi
 fi
@@ -427,22 +410,18 @@ if [ $macos == 1 ]; then
     publishBundle     ${server}                bash        /Users/$user/gnu/github/exiv2/buildserver/build            '.tar.gz'
 fi
 
-if [ $msvc == 1 ]; then
+if [ "$msvc" == 1  -o "$msvc32" == 1 ]; then
     command='cmd64'
     bits=64
+    if [ $msvc32 == 1 ]; then bits=32 ; fi
     if [ -z "$editions" ]; then editions="2019" ; fi
-    for edition in $editions; do
+    for edition in $(for edition in $editions ; do printf %"s\n" $edition ; done | sort | uniq) ; do
+        save_webready=$webready;save_unit=$unit;
+        webready=False                                 # MSVC/curl is toxic
+        if [ $edition -lt 2012 ]; then unit=False; fi
         msvcBuild     ${server}-w10
         publishBundle ${server}-w10            msys64      /c/Users/$user/gnu/github/exiv2/buildserver/build          '.zip'
-    done
-fi
-if [ $msvc32 == 1 ]; then
-    command='cmd64'
-    bits='32'
-    if [ -z "$editions" ]; then editions="2019" ; fi
-    for edition in $editions; do
-        msvcBuild     ${server}-w10
-        publishBundle ${server}-w10            msys64      /c/Users/$user/gnu/github/exiv2/buildserver/build          '.zip'
+        unit=$save_unit;webready=$save_webready
     done
 fi
 
