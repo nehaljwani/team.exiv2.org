@@ -70,9 +70,6 @@ Rebuilding the website
 6   Tag the Release
     $ cd $EXIV2HOME
     $ git tag -a 'v0.27.2-RC3'
-    Visit https://github.com/Exiv2/exiv2/releases
-    Download the Source Asset (which you'll need in step 4)
-    COPY the Source Asset over the buildserver Source Asset
 
 7   Publish the release on github
     Discussion: https://github.com/Exiv2/exiv2/issues/1
