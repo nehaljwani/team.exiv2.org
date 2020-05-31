@@ -1,6 +1,6 @@
 <table class="table table-striped">
 <tr>
-<td class="text-nowrap">2020-05-28</td>
+<td class="text-nowrap">2020-05-31</td>
 <td>
 <b><a name="item1">Exiv2 v0.27.3 RC2</a></b><br>
    <p>Thank you to Phil, Sridhar, Luis, Kevin, and Andreas S for working with me on the release.<br>
@@ -12,6 +12,7 @@
     <li>Support for building with C++11 and C++14</li>
     <li>Revised build and test environments</li>
     <li>Revised documentation</li>
+    <li>Improved charset handling in UserComment</li>
     <li>Other improvements</li>
    </ol>
    <p>More details: <a href="https://github.com/Exiv2/exiv2/issues/1018#issuecomment-604539346" _target="_blank">Change List</a></p>

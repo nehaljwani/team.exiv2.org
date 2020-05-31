@@ -81,16 +81,9 @@ __navbar__
    <div class="panel panel-primary">
  	 <div class="panel-body">
        <h2>Exiv2 Community and Resources</h2>
- 	   <table><tr><td>
        <p>The Exiv2 Project is hosted on GitHub where can interact with project members and users
 	   to get help and support, report bugs and get involved with the project.</p>
-       </td><td>
-       <p>The Exiv2 Project has a build server which hosts daily builds on the 5 Supported Platforms.</p>
-       </td></tr>
-       <tr><td><a class="btn btn-primary" href="https://github.com/exiv2/exiv2" role="button">Exiv2 GitHub</a>
-       </td><td><a class="btn btn-primary" href="http://exiv2.dyndns.org:8080"   role="button">Exiv2 BuildServer</a>
-       </td></tr>
-       </table>
+	   <p><a class="btn btn-primary" href="https://github.com/exiv2/exiv2" role="button">Exiv2 GitHub</a></p>
 	 </div>
    </div>
 

@@ -2,7 +2,7 @@
 <news>
 
  <newsitem>
-  <date>2020-05-28</date>
+  <date>2020-05-31</date>
   <title>Exiv2 v0.27.3 RC2</title>
   <abstract>Exiv2 v0.27.3 RC2</abstract>
   <desc>
@@ -15,6 +15,7 @@
     <li>Support for building with C++11 and C++14</li>
     <li>Revised build and test environments</li>
     <li>Revised documentation</li>
+    <li>Improved charset handling in UserComment</li>
     <li>Other improvements</li>
    </ol>
    <p>More details: <a href="https://github.com/Exiv2/exiv2/issues/1018#issuecomment-604539346" _target="_blank">Change List</a></p>

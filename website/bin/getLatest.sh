@@ -17,8 +17,9 @@ fi
 rm -rf $out/*
 
 ##
-# copy the builds and chmod them
+# copy the builds, remove the UNIX builds and chmod the others
 cp -p "$builds"/* $out
+rm -rf  $out/*SunOS* $out/*BSD*
 echo ++++++++++++++++++
 chmod 0444 $out/*
 ls -lh     $out/*

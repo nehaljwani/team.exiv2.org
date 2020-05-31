@@ -51,7 +51,10 @@ Rebuilding the website
     $ open html/index.html                            # website should look fine from file://$EXIV2WEB/html/index.html
     $ find html -name "*.html" | xargs sed -E -e  "s/^          Exiv2 v0.27.3.10$/          Exiv2 v0.27.3 RC1 Preview/" -i .bak ; find html -name "*.bak"  | xargs rm -rf
     $ make publish                                    # copies the web to ~/Jenkins/website/html/
-    $ open http://rmillsmm-ubuntu
+    $ open http://rmillsmm-ubuntu                     # TO Setup on rmillsmm-ubuntu
+                                                      # 1) sudo apt install --yes apache2
+                                                      # 2) sudo ln -s  /media/psf/Home/gnu/exiv2/team/website/html/ /var/www/html
+                                                      # 3) sudo /usr/sbin/apachectl start
 
 4   Tweaking the web-site background
     $ cd ~/Jenkins/website/html/
