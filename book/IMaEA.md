@@ -33,7 +33,7 @@
 10. [API/ABI](#10)<br>
 11. [Security](#11)<br>
 12. [Project Management, Release Engineering and User Support](#12)<br>
-13. [Home-made debugging tools](#13)
+13. [Code discussed in this book](#13)
 
 |    |    |    |    |
 |:-- |:-- |:-- |:-- |
@@ -965,7 +965,9 @@ STRUCTURE OF JPEG FILE: /Users/rmills/Stonehenge.jpg
    22671 | 0xffda SOS  
 
 ```
+
 You can see that he identifies the file as follows:
+
 ```
          416 | 0x927c MakerNote                    | UNDEFINED |     3152 |       914 | Nikon_..__II*_.___9_._._.___0211 ...
       STRUCTURE OF TIFF FILE (II): /Users/rmills/Stonehenge.jpg:12->15280:924->3142
@@ -973,7 +975,8 @@ You can see that he identifies the file as follows:
             10 | 0x0001 Version                      | UNDEFINED |        4 |           | 0211
 ...
 ```
-He is working on an IFD which is located at bytes 12..15289.  The is the Tiff IFD.  While processing that, he encountered a MakerNote which occupies byte 924..3142 of that IFD.  As you can see, it four bytes `0211`.  You could locate that data with the command:
+
+He is working on an embedded TIFF which is located at bytes 12..15289.  The is the Tiff IFD.  While processing that, he encountered a MakerNote which occupies byte 924..3142 of that IFD.  As you can see, it four bytes `0211`.  You could locate that data with the command:
 
 ```
 941 rmills@rmillsmbp:~/gnu/exiv2/team/book/build $ dd if=~/Stonehenge.jpg bs=1 skip=$((12+924+10+8)) count=4 2>/dev/null ; echo 
@@ -981,6 +984,8 @@ He is working on an IFD which is located at bytes 12..15289.  The is the Tiff IF
 942 rmills@rmillsmbp:~/gnu/exiv2/team/book/build $ 
 ```
 Using dd to extract metadata is discussed in more detail here: [8.7 Using dd to extract data from an image](#8-7).
+
+Please be aware that there are two ways in which IFDs can occur in the file.  They can be an embedded TIFF which is complete with the `II*_LengthOffset` or `MM_*LengthOffset` 12-byte header followed the IFD.   Or the IFD can be in the file without the header.  printIFD() knows that the date tags such as GpsTag and ExifTag are IFDs and calls printIFD().  For the embedded TIFF (such as Exif), printIFD() creates a TiffImage and calls TimeImage->printStructure() which validates the header and parses the data with IFDprint().
 
 [TOC](#TOC)
 
@@ -1457,7 +1462,27 @@ To be written.
 
 [TOC](#TOC)
 <div id="13">
-# 13 Home made debugging tools.
+# 13 Code discussed in this book
+
+The latest version of this book and the programs discussed are available for download from:
+
+```
+svn://dev.exiv2.org/svn/team/book
+```
+
+To download and build these programs:
+
+```
+$ svn export svn://dev.exiv2.org/svn/team/book
+$ mkdir book/build
+$ cd book/build
+$ cmake ..
+$ make
+```
+
+I strongly encourage you to download, build and install Exiv2.  The current (and all earlier releases) are available from: [https://exiv2.org](https://exiv2.org).
+
+There is substantial documentation provided with the Exiv2 project.  This book does not duplicate the project documentation, but compliments it be explaining how and why the code works. 
 
 #### args.cpp
 ```
