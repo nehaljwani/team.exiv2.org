@@ -12,6 +12,10 @@
 #include <unistd.h>
 
 typedef unsigned char       byte    ;
+enum endian_e
+{   kEndianLittle
+,   kEndianBig
+};
 
 enum type_e {
     unsignedByte       = 1, //!< Exif BYTE type, 8-bit unsigned integer.
@@ -297,7 +301,7 @@ public:
     bool valid() { return false ; }
     
     virtual void printStructure(std::ostream& out, PSopt_e option,const TagDict& tagDict,int depth = 0) =0;
-    virtual void printIFD      (std::ostream& out, PSopt_e option,size_t start,bool bSwap,char c,int depth,const TagDict& tagDict)=0;
+    virtual void printIFD      (std::ostream& out, PSopt_e option,size_t start,endian_e endian,int depth,const TagDict& tagDict)=0;
     friend class TiffImage;
     friend class JpegImage;
 
@@ -306,8 +310,10 @@ private:
     size_t              start_;
     Io                  io_;
     bool                good_;
+    uint16_t            magic_;
     maker_e             maker_;
     TagDict             makerDict_;
+    endian_e            endian_;
     
     bool isStringType(uint16_t type)
     {
@@ -374,67 +380,54 @@ private:
 
         return e.c[0]?true:false;
     }
-    bool isPlatformLittleEndian() { return !isPlatformBigEndian(); }
+    bool   isPlatformLittleEndian() { return !isPlatformBigEndian(); }
+    endian_e platformEndian() { return isPlatformBigEndian() ? kEndianBig : kEndianLittle; }
 
-    uint64_t byteSwap(uint64_t value,bool bSwap) const
+    uint64_t byteSwap(uint64_t value,bool bSwap,uint16_t n) const
     {
         uint64_t result = 0;
-        byte* source_value = reinterpret_cast<byte *>(&value);
+        byte* source_value      = reinterpret_cast<byte *>(&value);
         byte* destination_value = reinterpret_cast<byte *>(&result);
 
-        for (int i = 0; i < 8; i++)
-            destination_value[i] = source_value[8 - i - 1];
+        for (int i = 0; i < n; i++)
+            destination_value[i] = source_value[n - i - 1];
 
         return bSwap ? result : value;
     }
 
-    uint32_t byteSwap(uint32_t value,bool bSwap) const
-    {
-        uint32_t result = 0;
-        result |= (value & 0x000000FF) << 24;
-        result |= (value & 0x0000FF00) << 8;
-        result |= (value & 0x00FF0000) >> 8;
-        result |= (value & 0xFF000000) >> 24;
-        return bSwap ? result : value;
-    }
-
-    uint16_t byteSwap(uint16_t value,bool bSwap) const
-    {
-        uint16_t result = 0;
-        result |= (value & 0x00FF) << 8;
-        result |= (value & 0xFF00) >> 8;
-        return bSwap ? result : value;
-    }
-
-    uint16_t byteSwap2(const DataBuf& buf,size_t offset,bool bSwap) const
+    uint16_t getShort(const DataBuf& buf,size_t offset,bool bSwap) const
     {
         uint16_t v;
         char*    p = (char*) &v;
-        p[0] = buf.pData_[offset];
+        p[0] = buf.pData_[offset+0];
         p[1] = buf.pData_[offset+1];
-        return byteSwap(v,bSwap);
+        return (uint16_t) byteSwap(v,bSwap,2);
     }
 
-    uint32_t byteSwap4(const DataBuf& buf,size_t offset,bool bSwap) const
+    uint32_t getLong(const DataBuf& buf,size_t offset,bool bSwap) const
     {
         uint32_t v;
         char*    p = (char*) &v;
-        p[0] = buf.pData_[offset];
+        p[0] = buf.pData_[offset+0];
         p[1] = buf.pData_[offset+1];
         p[2] = buf.pData_[offset+2];
         p[3] = buf.pData_[offset+3];
-        return byteSwap(v,bSwap);
+        return (uint32_t)byteSwap(v,bSwap,4);
     }
 
-    uint64_t byteSwap8(const DataBuf& buf,size_t offset,bool bSwap) const
+    uint64_t getLongLong(const DataBuf& buf,size_t offset,bool bSwap) const
     {
         uint64_t v;
         byte*    p = reinterpret_cast<byte *>(&v);
-
-        for(int i = 0; i < 8; i++)
-            p[i] = buf.pData_[offset + i];
-
-        return byteSwap(v,bSwap);
+        p[0] = buf.pData_[offset+0];
+        p[1] = buf.pData_[offset+1];
+        p[2] = buf.pData_[offset+2];
+        p[3] = buf.pData_[offset+3];
+        p[4] = buf.pData_[offset+4];
+        p[5] = buf.pData_[offset+5];
+        p[6] = buf.pData_[offset+6];
+        p[7] = buf.pData_[offset+7];
+        return byteSwap (v,bSwap,8);
     }
 
     const char* typeName(uint16_t tag) const
@@ -473,11 +466,8 @@ public:
     TiffImage(std::string path) : Image(path) {}
     TiffImage(Io& io) : Image(io) {} ;
     void printStructure(std::ostream& out, PSopt_e option,const TagDict& tagDict,int depth = 0);
-    void printIFD      (std::ostream& out, PSopt_e option,size_t start,bool bSwap,char c,int depth,const TagDict& tagDict);
+    void printIFD      (std::ostream& out, PSopt_e option,size_t start,endian_e endian,int depth,const TagDict& tagDict);
     bool valid();
-private:
-    bool bSwap_;
-    char c_    ; // 'M' or 'I'
 };
 
 class JpegImage : public Image
@@ -485,10 +475,10 @@ class JpegImage : public Image
 public:
     JpegImage(std::string path) : Image(path) {}
     void printStructure(std::ostream& out, PSopt_e option,const TagDict& tagDict,int depth = 0);
-    void printIFD      (std::ostream& out, PSopt_e option,size_t start,bool bSwap,char c,int depth,const TagDict& tagDict)
+    void printIFD      (std::ostream& out, PSopt_e option,size_t start,endian_e endian,int depth,const TagDict& tagDict)
     {
         TiffImage* p((TiffImage*)this);
-        p->printIFD(out,option,start,bSwap,c,depth,tagDict);
+        p->printIFD(out,option,start,endian,depth,tagDict);
     };
 
     bool valid();
@@ -554,19 +544,18 @@ bool TiffImage::valid()
     io_.read(header);
     io_.seek(restore);
 
-    c_      = (char) header.pData_[0] ;
-    bSwap_  = (    c_ == 'M' && isPlatformLittleEndian() )
-              || ( c_ == 'I' && isPlatformBigEndian()    )
-              ;
-    start_ = byteSwap4(header,4,bSwap_);
-
-    uint16_t  magic = byteSwap2(header,2,bSwap_);
-    result =  magic == 42 && header.pData_[0] == header.pData_[1] && ( header.pData_[0] == 'I' || header.pData_[0] == 'M' ) ;
+    char c      = (char) header.pData_[0] ;
+    char C      = (char) header.pData_[1] ;
+    endian_ = c == 'M' ? kEndianBig : kEndianLittle;
+    
+    start_  = getLong (header,4,endian_);
+    magic_  = getShort(header,2,endian_);
+    result  = magic_ == 42 && c == C && ( c == 'I' || c == 'M' ) && start_ < io_.size() ;
 
     return result;
 }
 
-void TiffImage::printIFD(std::ostream& out, PSopt_e option,size_t start,bool bSwap,char c,int depth,const TagDict& tagDict)
+void TiffImage::printIFD(std::ostream& out, PSopt_e option,size_t start,endian_e endian,int depth,const TagDict& tagDict)
 {
     bool     bFirst  = true  ;
     size_t   restore_at_start = io_.tell();
@@ -585,12 +574,13 @@ void TiffImage::printIFD(std::ostream& out, PSopt_e option,size_t start,bool bSw
         if ( bytesRead != 2) {
             Error(kerCorruptedMetadata);
         }
-        uint16_t   dirLength = byteSwap2(dir,0,bSwap);
 
+        uint16_t   dirLength = getShort(dir,0,endian_);
         bool tooBig = dirLength > 500;
         if ( tooBig ) Error(kerTiffDirectoryTooLarge);
 
         if ( bFirst && bPrint ) {
+            char c = endian_ == kEndianBig ? 'M' : 'I' ;
             out << indent(depth) << stringFormat("STRUCTURE OF TIFF FILE (%c%c): ",c,c) << io_.path() << std::endl;
             if ( tooBig ) out << indent(depth) << "dirLength = " << dirLength << std::endl;
         }
@@ -610,10 +600,10 @@ void TiffImage::printIFD(std::ostream& out, PSopt_e option,size_t start,bool bSw
             bFirst = false;
 
             io_.read(dir.pData_, 12);
-            uint16_t tag    = byteSwap2(dir,0,bSwap);
-            uint16_t type   = byteSwap2(dir,2,bSwap);
-            uint32_t count  = byteSwap4(dir,4,bSwap);
-            uint32_t offset = byteSwap4(dir,8,bSwap);
+            uint16_t tag    = getShort(dir,0,endian_);
+            uint16_t type   = getShort(dir,2,endian_);
+            uint32_t count  = getLong (dir,4,endian_);
+            uint32_t offset = getLong (dir,8,endian_);
 
             // Break for unknown tag types else we may segfault.
             if ( !typeValid(type) ) {
@@ -678,18 +668,18 @@ void TiffImage::printIFD(std::ostream& out, PSopt_e option,size_t start,bool bSw
                                           ,address,tag,tagName(tag,tagDict).c_str(),typeName(type),count,offsetString.c_str());
                 if ( isShortType(type) ){
                     for ( size_t k = 0 ; k < kount ; k++ ) {
-                        out << sp << byteSwap2(buf,k*size,bSwap);
+                        out << sp << getShort(buf,k*size,endian_);
                         sp = " ";
                     }
                 } else if ( isLongType(type) ){
                     for ( size_t k = 0 ; k < kount ; k++ ) {
-                        out << sp << byteSwap4(buf,k*size,bSwap);
+                        out << sp << getLong(buf,k*size,endian_);
                         sp = " ";
                     }
                 } else if ( isRationalType(type) ){
                     for ( size_t k = 0 ; k < kount ; k++ ) {
-                        uint32_t a = byteSwap4(buf,k*size+0,bSwap);
-                        uint32_t b = byteSwap4(buf,k*size+4,bSwap);
+                        uint32_t a = getLong(buf,k*size+0,endian_);
+                        uint32_t b = getLong(buf,k*size+4,endian_);
                         out << sp << a << "/" << b;
                         sp = " ";
                     }
@@ -709,8 +699,8 @@ void TiffImage::printIFD(std::ostream& out, PSopt_e option,size_t start,bool bSw
                                     ;
 
                     for ( size_t k = 0 ; k < count ; k++ ) {
-                        uint32_t offset  = byteSwap4(buf,k*size,bSwap);
-                        printIFD(out,option,offset,bSwap,c,depth,useDict);
+                        uint32_t offset  = getLong(buf,k*size,endian_);
+                        printIFD(out,option,offset,endian_,depth,useDict);
                     }
                 } else if ( option == kpsRecursive && tag == 0x83bb /* IPTCNAA */ ) {
                     // This is an IPTC tag
@@ -738,7 +728,7 @@ void TiffImage::printIFD(std::ostream& out, PSopt_e option,size_t start,bool bSw
         }
         if ( start ) {
             io_.read(dir.pData_, 4);
-            start = tooBig ? 0 : byteSwap4(dir,0,bSwap);
+            start = tooBig ? 0 : getLong(dir,0,endian_);
         }
     } while (start) ;
 
@@ -751,12 +741,11 @@ void TiffImage::printIFD(std::ostream& out, PSopt_e option,size_t start,bool bSw
     io_.seek(restore_at_start); // restore
 } // print IFD
 
-
 void TiffImage::printStructure(std::ostream& out, PSopt_e option,const TagDict& tagDict,int depth)
 {
     if ( option == kpsBasic || option == kpsXMP || option == kpsRecursive || option == kpsIccProfile ) {
         if ( valid() ) {
-            printIFD(out,option,start_,bSwap_,c_,depth,tagDict);
+            printIFD(out,option,start_,endian_,depth,tagDict);
         }
     }
 }
@@ -851,7 +840,7 @@ void JpegImage::printStructure(std::ostream& out, PSopt_e option,const TagDict& 
                 Error(kerFailedToReadImageData);
             if (bufRead < 2)
                 Error(kerNotAJpeg);
-            const uint16_t size = bHasLength[marker] ? byteSwap2(buf,0,isPlatformLittleEndian()):0;
+            const uint16_t size = bHasLength[marker] ? getShort(buf,0,kEndianBig):0;
             
             if (bPrint && bHasLength[marker])
                 out << stringFormat(" | %7d ", size);
