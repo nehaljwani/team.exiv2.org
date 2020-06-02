@@ -23,6 +23,8 @@
   [8.4 Tiff Visitor](#8-4)<br>
   [8.5 printIFDStructure](#8-5)<br>
   [8.6 TagInfo](#8-6)<br>
+  [8.7 Using dd to extract data from an image](#8-7)<br>
+
 9. [Test Suite and Build](#9)<br>
   [9.1 Bash Tests](#9-1)<br>
   [9.2 Python Tests](#9-2)<br>
@@ -31,7 +33,16 @@
 10. [API/ABI](#10)<br>
 11. [Security](#11)<br>
 12. [Project Management, Release Engineering and User Support](#12)<br>
-[Appendix.  My home-made debugging tools   ](#a)<br>
+13. [Home-made debugging tools](#13)
+
+|    |    |    |    |
+|:-- |:-- |:-- |:-- |
+| 12.1) C++ Code | 12.2) Build | 12.3) Security | 12.4) Documentation |
+| 12.5) Testing | 12.6) Sample programs | 12.7) User Support | 12.8) Bug Tracking |
+| 12.9) Release Engineering | 12.10) Platform Support | 12.11) Localisation | 12.12) Build Server |
+| 12.13) Source Code Management | 12.14) Project Web Site | 12.15) Project Servers (apache, SVN, GitHub, Redmine) | 12.16) API Management |
+| 12.17) Recruiting Contributors | 12.18) Project Management and Scheduling | 12.19) Enhancement Requests | 12.20) Tools |
+| 12.21) Licensing | 12.22) Back-porting fixes to earlier releases | 12.23) Other projects demanding support and changes | |
 
 
 
@@ -43,13 +54,13 @@ Before I start to discuss the subject of this book, I want to say "Thank You" to
 
 This book is about Image Metadata and Exiv2 Architecture.
 
-Image Metadata is the information stored in a digital image in addition to the image itself.  Data such as the camera model, date, time, location and camera setting are stored in the image file.  To my knowledge, no book has been written about this important technology.
+Image Metadata is the information stored in a digital image in addition to the image itself.  Data such as the camera model, date, time, location and camera settings are stored in the image file.  To my knowledge, no book has been written about this important technology.
 
 Exiv2 Architecture is about the Exiv2 library and command-line application which implements cross-platform code in C++ to read, modify, insert and delete items of metadata.  I've been working on this code since 2008 and, as I approach my 70th birthday, would like to document my knowledge in the hope that the code will be maintained and developed by others in future.
 
 ### How did I get interested in this matter?
 
-I first became interested in metadata because of a trail conversation with Dennis Connor in 2008.  Dennis and I ran frequently together in Silicon Valley and Dennis was a Software Development Manager in a company that made GPS systems for Precision Agriculture.  I had a Garmin Forerunner 201 Watch.  We realised that we could extract the GPS data from the watch in GPX format, then merge the position into photos.  Today this is called "GeoTagging" and is supported by many applications.  However in 2008, we had never heard the term "GeoTagging".
+I first became interested in metadata because of a trail conversation with Dennis Connor in 2008.  Dennis and I ran frequently together in Silicon Valley and Dennis was a Software Development Manager in a company that made GPS systems for Precision Agriculture.  I had a Garmin Forerunner 201 Watch.  We realised that we could extract the GPS data from the watch in GPX format, then merge the position into photos.  Today this is called "GeoTagging" and is supported by many applications.
 
 ![gpsexiftags](gpsexiftags.jpg)
 
@@ -57,7 +68,7 @@ I said "Oh, it can't be too difficult to do that!".  And here we are more than a
 
 The sample application samples/geotag.cpp provides a command line utility to geotag photos and I frequently use this on my own photographs.  Today, I have a Samsung Galaxy Watch which uploads runs to Strava.  I download the GPX from Strava.  The date/time information in the JPG is the key to search for the position data.  The GPS tags are created and saved in the image.
 
-Back in 2008, I wanted to implement this in python as it was a good excuse to learn Python.  Having discovered exiv2 and the python wrapper pyexiv2, I set off with enthusiasm to build a cross-platform script to run on **Windows** _(XP, Visual Studio 2003)_, **Ubuntu Linux** _(Hardy Heron 2008.04 LTS)_ and **macOS** _(32 bit Tiger 10.4 on a big-endian PPC)_.  After I finished, I emailed Andreas.  He responded in less than an hour and invited me to join Team Exiv2.  Initialially, I provided support to build Exiv2 with Visual Studio.
+Back in 2008, I chose to implement this in python as it was a good excuse to learn Python.  Having discovered exiv2 and the python wrapper pyexiv2, I set off with enthusiasm to build a cross-platform script to run on **Windows** _(XP, Visual Studio 2003)_, **Ubuntu Linux** _(Hardy Heron 2008.04 LTS)_ and **macOS** _(32 bit Tiger 10.4 on a big-endian PPC)_.  After I finished, I emailed Andreas.  He responded in less than an hour and invited me to join Team Exiv2.  Initialially, I provided support to build Exiv2 with Visual Studio.
 
 Incidentally, later in 2008, Dennis offered me a contract to port his company's Linux code to Visual Studio to be used on a Windows CE Embedded Controller.  1 million lines of C++ were ported from Linux in 6 weeks.  I worked with Dennis for 4 years on all manner of GPS related software development.
 
@@ -75,7 +86,7 @@ In 2012, Abhinav joined us and contributed the Video read code and was mentored 
 
 I personally found working with the students to be enjoyable and interesting.  I retired from work in 2014 and returned to England after 15 years in Silicon Valley.  In 2016, Alison and I had a trip round the world and spent a day with Mahesh in Bangalore and with Tuan in Singapore.  We subsequently went to Vietnam to attend Tuan's wedding in 2017.
 
-I started working on Exiv2 to implement GeoTagging.  As the years have passed, I've explored most of the code.  I've added new capability such as support for ICC profiles, metadata-piping and file-debugging.  I've done lots of work on the build, test suite and documentation.  I've talked to users all over the world and closed several hundred issues and feature requests.  After I retired from work, Alison and I had a trip around the world.  We were invited to stay with Andreas and his family.  We met users in India, Singapore, Armenia, the USA and the UK.  I've attended 3 Open-Source Conferences. It's been an adventure and mostly rewarding.  It's remarkable how seldom users express appreciation.
+I started working on Exiv2 to implement GeoTagging.  As the years have passed, I've explored most of the code.  I've added new capability such as support for ICC profiles, metadata-piping and file-debugging.  I've done lots of work on the build, test suite and documentation.  I've talked to users all over the world and closed several hundred issues and feature requests.  On our eound the world trip, we were invited to stay with Andreas and his family.  We met users in India, Singapore, Armenia, the USA and the UK.  I've attended 2 Open-Source Conferences. It's been an adventure and mostly rewarding.  It's remarkable how seldom users express appreciation.
 
 ### Where are we now?
 
@@ -95,15 +106,15 @@ I'm delighted by the work done by Dan, Luis and Kevin to deal with the assault o
 
 ### Future Development Projects
 
-The code is in good shape, our release process is solid and our user documentation is comprehensive.  As photography advances, there will be many new cameras and image formats to be processed such as CR3, HEIF and BigTiff.   Video support is weak, deprecated in v0.27 and will be removed in 0.28.
+The code is in good shape, our release process is solid and our user documentation is comprehensive.  As photography advances, there will be many new cameras and image formats such as CR3, HEIF and BigTiff.   Video support is weak, deprecated in v0.27 and will be removed in 0.28.
 
-A long standing project for Exiv2 is to us a "unified metadata container".  There is an implementation of this in the SVN repository.  Currently we have three containers for Exif, Iptc and Xmp.  This is clumsy.  We also have a restriction a single image per file.  Perhaps both projects can be combined and have a common solution.
+A long standing project for Exiv2 is a "unified metadata container".  There is an implementation of this in the SVN repository.  Currently we have three containers for Exif, Iptc and Xmp.  This is clumsy.  We also have a restriction a single image per file.  Perhaps both projects can be combined and have a common solution.
 
 The toolset used in Software Engineering evolves with time.  C++ has been around for about 35 years and, while many complain about it, I expect it will out-live most of us.  None-the-less, languages which are less vulnerable to security issues may lead the project to a rewrite in a new language such as Rust.  I hope this book will provide the necessary understanding of metadata engineering to support such an undertaking.
 
 The most common issue raised on GitHub concerns lens recognition.  For v0.26, I added the "Configuration File" feature to enable users to modify lens recognition on their computer.  While this is helpful, many users would like Exiv2 to deal with this perfectly, both now and in the future.
 
-I intend to make a proposal LGM in Rennes in May 2021 concerning this matter. Both exiv2 and ExifTool can format the metadata in .exv format. I'm going to propose to implement a program to read the .exv and return the Lens. That program will have an embedded programming language with the rules to identify the lens. The scripts will be ascii files which can be updated. It will be called M2Lscript (MetaData to Lens Script), pronounced "MillsScript". The M2Lscript interpreter will be available as a command-line program, a perl module (for ExifTool) and a C++ library (for linking into exiv2).
+I intend to make a proposal at LGM in Rennes in May 2021 concerning this matter. Both exiv2 and ExifTool can format the metadata in .exv format. I will propose to implement a program to read the .exv and return the Lens. That program will have an embedded programming language with the rules to identify the lens. The scripts will be ascii files which can be updated. It will be called M2Lscript (MetaData to Lens Script), pronounced "MillsScript". The M2Lscript interpreter will be available as a command-line program, a perl module (for ExifTool) and a C++ library (for linking into exiv2).
 
 In this way, new lens definitions can be added to "MillsScript" without touching anything in Exiv2.
 
@@ -747,7 +758,7 @@ void Image::printIFDStructure(BasicIo& io, std::ostream& out, Exiv2::PrintStruct
             if ( tooBig ) out << Internal::indent(depth) << "dirLength = " << dirLength << std::endl;
         }
 
-        // Read the dictionary
+        // Read the directory
         for ( int i = 0 ; i < dirLength ; i ++ ) {
             if ( bFirst && bPrint ) {
                 out << Internal::indent(depth)
@@ -909,7 +920,9 @@ void Image::printIFDStructure(BasicIo& io, std::ostream& out, Exiv2::PrintStruct
 <div id="8-6">
 ### 8.6 TagInfo
 
-Another matter to appreciate is that tag definitions are not constant.  A tag is simply an uint16.  The Tiff Standard specifies about 50 tags.  Anybody creating an IFD can use the same tag number for different purposes.  The Tiff Specification says _"TIFF readers must safely skip over these fields if they do not understand or do not wish to use the information."_.  We have to understand every tag.  In a tiff file, the pixels are located using the tag StripOffsets.  We report StripOffsets, however we don't read pixel data.
+Another matter to appreciate is that tag definitions are not constant.  A tag is simply an uint16.  The Tiff Standard specifies about 50 tags.  Anybody creating an IFD can use the same tag number for different purposes.  The Tiff Specification says _"TIFF readers must safely skip over these fields if they do not understand or do not wish to use the information."_.  We do have to understand every tag.  In a tiff file, the pixels are located using the tag StripOffsets.  We report StripOffsets, however we don't read pixel data.
+
+If the user wishes to recover data such as the pixels, it is possible to do this with the untility dd.  This is discussed here: [8.7 Using dd to extract data from an image](#8-7). 
 
 ```
 const TagInfo Nikon1MakerNote::tagInfo_[] = {
@@ -983,6 +996,62 @@ The purpose in writing printIFDStructure was to understand how the metadata is s
 ```
 
 It would be possible to "high jack" the init_ variable to get it to rebuild tags_ appropriately.  I don't think this is worth the effort.  Modifying the API of tagName() in v0.28 is a better worth approach.  Additionally, tagName() is not threadsafe.
+
+
+[TOC](#TOC)
+<div id="8-7">
+### 8.7 Using dd to extract data from an image
+
+```
+$ exiv2 -pS ~/Stonehenge.jpg 
+STRUCTURE OF JPEG FILE: /Users/rmills/Stonehenge.jpg
+ address | marker       |  length | data
+       0 | 0xffd8 SOI  
+       2 | 0xffe1 APP1  |   15288 | Exif..II*......................
+   15292 | 0xffe1 APP1  |    2610 | http://ns.adobe.com/xap/1.0/.<?x
+   17904 | 0xffed APP13 |      96 | Photoshop 3.0.8BIM.......'.....
+   18002 | 0xffe2 APP2  |    4094 | MPF.II*...............0100.....
+   22098 | 0xffdb DQT   |     132 
+   22232 | 0xffc0 SOF0  |      17 
+   22251 | 0xffc4 DHT   |     418 
+   22671 | 0xffda SOS  
+$
+```
+
+We can see that the Exif metadata is stored at offset=2+2+2+6 and has length 15288-offset.  We can extract that file as follows:
+
+```
+dd if=~/Stonehenge.jpg count=$((15288-(2+2+2+6))) bs=1 skip=$((2+2+2+6)) > foo.tif
+15276+0 records in
+15276+0 records out
+15276 bytes transferred in 0.102577 secs (148922 bytes/sec)
+$ dmpf foo.tif | head -1
+       0        0: II*.............................  ->  49 49 2a 00 08 00 00 00 0b 00 0f 01 02 00 12 00 00 00 92 00 00 00 10 01 02 00 0c 00 00 00 a4 00
+$ file foo.tif
+foo.tif: TIFF image data, little-endian, direntries=11, manufacturer=NIKON CORPORATION, model=NIKON D5300, orientation=upper-left, xresolution=176, yresolution=184, resolutionunit=2, software=Ver.1.00 , datetime=2015:07:16 20:25:28, GPS-Data
+$ exiv2 -pa foo.tif 
+Warning: Directory Thumbnail, entry 0x0201: Data area exceeds data buffer, ignoring it.
+Exif.Image.Make                              Ascii      18  NIKON CORPORATION
+Exif.Image.Model                             Ascii      12  NIKON D5300
+Exif.Image.Orientation                       Short       1  top, left
+Exif.Image.XResolution                       Rational    1  300
+Exif.Image.YResolution                       Rational    1  300
+...
+```
+
+Internally, this is exactly how exiv2 works.  It doesn't use `dd` of course.  However it identifies the Exif IFD and parses it into memory.
+
+Using `dd` is a useful trick to recover data which be easily seen in the file, however exiv2 doesn't return the data.  For example, if you wished to extract the pixels of an image.
+
+You can extract and inspect the metadata with this single _rather elegant_ command:
+
+```
+$ dd if=~/Stonehenge.jpg count=$((15288-(2+2+2+6))) bs=1 skip=$((2+2+2+6)) | exiv2 -pa - | head -3
+Exif.Image.Make                              Ascii      18  NIKON CORPORATION
+Exif.Image.Model                             Ascii      12  NIKON D5300
+Exif.Image.Orientation                       Short       1  top, left
+$
+```
 
 
 [TOC](#TOC)
@@ -1257,9 +1326,8 @@ Every year brings new/different tools (cmake, git, MarkDown, C++11)
 ### 12.23) Other projects demanding support and changes
 
 [TOC](#TOC)
-
-<div id="a">
-# Appendix: Home made debugging tools.
+<div id="13">
+# 13 Home made debugging tools.
 
 #### args.cpp
 ```
@@ -1358,7 +1426,8 @@ int main(int argc, char* argv[])
 	return error ;
 }
 ```
+[TOC](#TOC)
 
 Robin Mills<br>
 robin@clanmills.com<br>
-Revised: 2020-05-26
+Revised: 2020-06-02

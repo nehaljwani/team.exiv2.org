@@ -2,209 +2,284 @@
 #include <set>
 #include <vector>
 #include <string>
+#include <sstream>
 
-// crummy old c magic
+// crummy old c magic for fopen and gang
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-
+/*
 typedef unsigned short int uint16_t ;
 typedef          short int  int16_t ;
+ */
 typedef unsigned char       byte    ;
-
 enum type_e {
-        unsignedByte       = 1, //!< Exif BYTE type, 8-bit unsigned integer.
-        asciiString        = 2, //!< Exif ASCII type, 8-bit byte.
-        unsignedShort      = 3, //!< Exif SHORT type, 16-bit (2-byte) unsigned integer.
-        unsignedLong       = 4, //!< Exif LONG type, 32-bit (4-byte) unsigned integer.
-        unsignedRational   = 5, //!< Exif RATIONAL type, two LONGs: numerator and denumerator of a fraction.
-        signedByte         = 6, //!< Exif SBYTE type, an 8-bit signed (twos-complement) integer.
-        undefined          = 7, //!< Exif UNDEFINED type, an 8-bit byte that may contain anything.
-        signedShort        = 8, //!< Exif SSHORT type, a 16-bit (2-byte) signed (twos-complement) integer.
-        signedLong         = 9, //!< Exif SLONG type, a 32-bit (4-byte) signed (twos-complement) integer.
-        signedRational     =10, //!< Exif SRATIONAL type, two SLONGs: numerator and denumerator of a fraction.
-        tiffFloat          =11, //!< TIFF FLOAT type, single precision (4-byte) IEEE format.
-        tiffDouble         =12, //!< TIFF DOUBLE type, double precision (8-byte) IEEE format.
-        tiffIfd            =13, //!< TIFF IFD type, 32-bit (4-byte) unsigned integer.
-        unsignedLongLong   =16, //!< Exif LONG LONG type, 64-bit (8-byte) unsigned integer.
-        signedLongLong     =17, //!< Exif LONG LONG type, 64-bit (8-byte) signed integer.
-        tiffIfd8           =18, //!< TIFF IFD type, 64-bit (8-byte) unsigned integer.
-        string        =0x10000, //!< IPTC string type.
-        date          =0x10001, //!< IPTC date type.
-        // time          =0x10002, //!< IPTC time type.
-        comment       =0x10003, //!< %Exiv2 type for the Exif user comment.
-        directory     =0x10004, //!< %Exiv2 type for a CIFF directory.
-        xmpText       =0x10005, //!< XMP text type.
-        xmpAlt        =0x10006, //!< XMP alternative type.
-        xmpBag        =0x10007, //!< XMP bag type.
-        xmpSeq        =0x10008, //!< XMP sequence type.
-        langAlt       =0x10009, //!< XMP language alternative type.
-        invalidTypeId =0x1fffe, //!< Invalid type id.
-        lastTypeId    =0x1ffff  //!< Last type id.
-}; 
-
-enum error_e
-{  kerCorruptedMetadata
-,  kerTiffDirectoryTooLarge
-,  kerInvalidTypeValue
-,  kerInvalidMalloc
-,  kerNotATiff
+    unsignedByte       = 1, //!< Exif BYTE type, 8-bit unsigned integer.
+    asciiString        = 2, //!< Exif ASCII type, 8-bit byte.
+    unsignedShort      = 3, //!< Exif SHORT type, 16-bit (2-byte) unsigned integer.
+    unsignedLong       = 4, //!< Exif LONG type, 32-bit (4-byte) unsigned integer.
+    unsignedRational   = 5, //!< Exif RATIONAL type, two LONGs: numerator and denumerator of a fraction.
+    signedByte         = 6, //!< Exif SBYTE type, an 8-bit signed (twos-complement) integer.
+    undefined          = 7, //!< Exif UNDEFINED type, an 8-bit byte that may contain anything.
+    signedShort        = 8, //!< Exif SSHORT type, a 16-bit (2-byte) signed (twos-complement) integer.
+    signedLong         = 9, //!< Exif SLONG type, a 32-bit (4-byte) signed (twos-complement) integer.
+    signedRational     =10, //!< Exif SRATIONAL type, two SLONGs: numerator and denumerator of a fraction.
+    tiffFloat          =11, //!< TIFF FLOAT type, single precision (4-byte) IEEE format.
+    tiffDouble         =12, //!< TIFF DOUBLE type, double precision (8-byte) IEEE format.
+    tiffIfd            =13, //!< TIFF IFD type, 32-bit (4-byte) unsigned integer.
+    unsignedLongLong   =16, //!< Exif LONG LONG type, 64-bit (8-byte) unsigned integer.
+    signedLongLong     =17, //!< Exif LONG LONG type, 64-bit (8-byte) signed integer.
+    tiffIfd8           =18, //!< TIFF IFD type, 64-bit (8-byte) unsigned integer.
+    string        =0x10000, //!< IPTC string type.
+    date          =0x10001, //!< IPTC date type.
+    // time          =0x10002, //!< IPTC time type.
+    comment       =0x10003, //!< %Exiv2 type for the Exif user comment.
+    directory     =0x10004, //!< %Exiv2 type for a CIFF directory.
+    xmpText       =0x10005, //!< XMP text type.
+    xmpAlt        =0x10006, //!< XMP alternative type.
+    xmpBag        =0x10007, //!< XMP bag type.
+    xmpSeq        =0x10008, //!< XMP sequence type.
+    langAlt       =0x10009, //!< XMP language alternative type.
+    invalidTypeId =0x1fffe, //!< Invalid type id.
+    lastTypeId    =0x1ffff  //!< Last type id.
 };
 
-enum PrintStructureOption_e
-{    kpsBasic
-,    kpsXMP 
-,    kpsRecursive
-,    kpsIccProfile
+enum error_e
+{   kerCorruptedMetadata
+,   kerTiffDirectoryTooLarge
+,   kerInvalidTypeValue
+,   kerInvalidMalloc
+,   kerNotATiff
+,   kerFailedToReadImageData
+,   kerNotAJpeg
+,   kerDataSourceOpenFailed
+,   kerNoImageInInputData
+};
+
+enum PSopt_e
+{   kpsBasic
+,   kpsXMP
+,   kpsRecursive
+,   kpsIccProfile
 };
 
 enum seek_e
-{    beg = SEEK_SET
-,    cur = SEEK_CUR
-,    end = SEEK_END
+{   ksStart   = SEEK_SET
+,   ksCurrent = SEEK_CUR
+,   ksEnd     = SEEK_END
 };
+
+void Error (error_e error, std::string msg)
+{
+    switch ( error ) {
+        case   kerCorruptedMetadata      : std::cerr << "corrupted metadata"       ; break;
+        case   kerTiffDirectoryTooLarge  : std::cerr << "tiff directory too large" ; break;
+        case   kerInvalidTypeValue       : std::cerr << "invalid type"             ; break;
+        case   kerInvalidMalloc          : std::cerr << "invalid malloc"           ; break;
+        case   kerNotATiff               : std::cerr << "Not a tiff"               ; break;
+        case   kerFailedToReadImageData  : std::cerr << "failed to read image data"; break;
+        case   kerNotAJpeg               : std::cerr << "not a jpeg"               ; break;
+        case   kerDataSourceOpenFailed   : std::cerr << "data source open failed"  ; break;
+        case   kerNoImageInInputData     : std::cerr << "not image in input data"  ; break;
+        default                          : std::cerr << "unknown"                  ; break;
+    }
+    if ( msg.size() ) std::cerr << " " << msg ;  
+    std::cerr << std::endl;
+    _exit(1); // pull the plug!
+}
 
 void Error (error_e error)
 {
-	std::cerr << "*** error *** ";
-	switch ( error ) {
-	    case   kerCorruptedMetadata      : std::cerr << "corrupted metadata"       ; break;
-	    case   kerTiffDirectoryTooLarge  : std::cerr << "tiff directory too large" ; break;
-	    case   kerInvalidTypeValue       : std::cerr << "invalid type"             ; break;
-	    case   kerInvalidMalloc          : std::cerr << "invalid malloc"           ; break;
-	    case   kerNotATiff               : std::cerr << "Not a tiff"               ; break;
-        default                          : std::cerr << "unknown"                  ; break;
-	}
-	std::cerr << std::endl;
-	_exit(1); // pull the plug!
-}
-
-std::string tagName(uint16_t /* tag */ )
-{
-	return "unknown tag";
+    Error(error,"");
 }
 
 class DataBuf
 {
 public:
-	byte*   pData_;
-	size_t  size_ ;
-	DataBuf(size_t size)
-	: pData_(NULL)
-	, size_(size)
-	{
-		pData_ = new byte[size_];
-	}
-	virtual ~DataBuf()
-	{
-		if ( pData_ ) {
-			delete pData_ ;
-			pData_ = NULL ;
-		}
-		size_ = 0 ;
-	}
+    byte*   pData_;
+    size_t  size_ ;
+    DataBuf(size_t size)
+    : pData_(NULL)
+    , size_(size)
+    {
+        pData_ = new byte[size_];
+    }
+    virtual ~DataBuf()
+    {
+        if ( pData_ ) {
+            delete pData_ ;
+            pData_ = NULL ;
+        }
+        size_ = 0 ;
+    }
+    int  strcmp   (const char* str) { return ::strcmp((const char*)pData_,str);}
+    bool strequals(const char* str) { return strcmp(str)==0                   ;}
 };
 
 std::string indent(size_t s)
 {
-	std::string result ;
-	while ( s-- ) result += "  ";
-	return result ;
+    std::string result ;
+    while ( s-- ) result += "  ";
+    return result ;
 }
 
 std::string stringFormat(const char* format, ...)
 {
-	std::string result;
-	std::vector<char> buffer;
-	size_t need = std::strlen(format)*8;  // initial guess
-	int rc = -1;
+    std::string result;
+    std::vector<char> buffer;
+    size_t need = std::strlen(format)*8;  // initial guess
+    int rc = -1;
 
-	// vsnprintf writes at most size (2nd parameter) bytes (including \0)
-	//           returns the number of bytes required for the formatted string excluding \0
-	// the following loop goes through:
-	// one iteration (if 'need' was large enough for the for formatted string)
-	// or two iterations (after the first call to vsnprintf we know the required length)
-	do {
-		buffer.resize(need + 1);
-		va_list args;            // variable arg list
-		va_start(args, format);  // args start after format
-		rc = vsnprintf(&buffer[0], buffer.size(), format, args);
-		va_end(args);     // free the args
-		assert(rc >= 0);  // rc < 0 => we have made an error in the format string
-		if (rc > 0)
-			need = static_cast<size_t>(rc);
-	} while (buffer.size() <= need);
+    // vsnprintf writes at most size (2nd parameter) bytes (including \0)
+    //           returns the number of bytes required for the formatted string excluding \0
+    // the following loop goes through:
+    // one iteration (if 'need' was large enough for the for formatted string)
+    // or two iterations (after the first call to vsnprintf we know the required length)
+    do {
+        buffer.resize(need + 1);
+        va_list args;            // variable arg list
+        va_start(args, format);  // args start after format
+        rc = vsnprintf(&buffer[0], buffer.size(), format, args);
+        va_end(args);     // free the args
+        assert(rc >= 0);  // rc < 0 => we have made an error in the format string
+        if (rc > 0)
+            need = static_cast<size_t>(rc);
+    } while (buffer.size() <= need);
 
-	if (rc > 0)
-		result = std::string(&buffer[0], need);
-	return result;
+    if (rc > 0)
+        result = std::string(&buffer[0], need);
+    return result;
+}
+
+std::string binaryToString(byte* b,size_t start,size_t size)
+{
+    std::string result;
+    size_t i    = start;
+    while (i < start+size ) {
+        result += (32 <= b[i] && b[i] <= 127) ? b[i]
+                : ( 0 == b[i]               ) ? '_'
+                : '.'
+                ;
+        i++ ;
+    }
+    return result;
 }
 
 std::string binaryToString(DataBuf& dataBuf,size_t start,size_t size)
 {
-	std::string result;
-	size_t i    = start;
-	byte*  buff = dataBuf.pData_;
-	while (i < start+size ) {
-		result += (32 <= buff[i] && buff[i] <= 127) ? buff[i]: '.'; 
-		i++ ;
-	}
-	return result;
+    return binaryToString(dataBuf.pData_,start,size);
+}
+std::string tagName(uint16_t tag)
+{
+    std::string result = stringFormat("tag %d (%#x)",tag,tag);
+    switch (tag) {
+        case 0x8769 : result = "ExifTag"           ; break ;
+        case 0x014a : result = "SubIFD"            ; break ;
+        case 0x927c : result = "MakerNote"         ; break ;
+        case 0x83bb : result = "IPTCNAA"           ; break ;
+        case 0x02bc : result = "XMLPacket"         ; break ;
+        case 0x8773 : result = "InterColorProfile" ; break ;
+    }
+    return result;
 }
 
 class Io
 {
 public:
-	Io(std::string path,std::string open)
-	: path_(path)
-	{ f_ = ::fopen(path.c_str(),open.c_str()); }
-	virtual ~Io() { close() ; }
-	
-	std::string path() { return path_; }
-	
-	size_t read(unsigned char* buff,size_t size) { return fread(buff,size,1,f_);}
-	size_t read(DataBuf& buff)                   { return read(buff.pData_,buff.size_); }
-	int    eof()                                 { return feof(f_) ; }
-    size_t tell()                                { return ftell(f_) ; }
-	int    seek(size_t offset,seek_e from)       { return fseek(f_,offset,from) ; }
-	void   close()                               { if ( good() ) { fclose(f_) ; f_ = NULL  ;} }
-	size_t size()                                { struct stat st ; fstat(fileno(f_),&st) ; return st.st_size ; }
-	bool   good()                                { return f_ ? true : false ; }
+    Io(std::string path,std::string open)
+    : path_   (path)
+    , start_  (0)
+    , size_   (0)
+    , restore_(0)
+    , f_      (NULL)
+    { f_ = ::fopen(path.c_str(),open.c_str()); }
+    
+    Io(Io& io,size_t start,size_t size)
+    : path_   (io.path())
+    , start_  (start)
+    , size_   (size)
+    , restore_(io.tell())
+    , f_      (io.f_)
+    {
+        std::ostringstream os;
+        os << path_ << ":" << start << "->" << size_;
+        path_=os.str();
+        seek(0);
+    };
+
+    virtual ~Io() { close(); }
+    
+    std::string path() { return path_; }
+    
+    size_t read(void* buff,size_t size)            { return fread(buff,1,size,f_);}
+    size_t read(DataBuf& buff)                     { return read(buff.pData_,buff.size_); }
+    byte   getb() { byte b; if (read(&b,1)==1) return b ; else return -1; }
+    int    eof()                                   { return feof(f_) ; }
+    size_t tell()                                  { return ftell(f_)-start_ ; }
+    void   seek(size_t offset,seek_e from=ksStart) { fseek(f_,offset+start_,from) ; }
+    size_t size()                                  { if ( size_ ) return size_ ; struct stat st ; fstat(fileno(f_),&st) ; return st.st_size-start_ ; }
+    bool   good()                                  { return f_ ? true : false ; }
+    void   close()
+    {
+        if ( !f_ ) return ;
+        if ( start_ == 0 && size_ == 0 && restore_ == 0 ) {
+            fclose(f_) ;
+        } else {
+            seek(restore_);
+        }
+        f_ = NULL  ;
+    }
 
 private:
-	FILE*       f_;
-	std::string path_;
+    FILE*       f_;
+    std::string path_;
+    size_t      start_;
+    size_t      size_;
+    size_t      restore_;
 };
 
 class Visitor
 {
 public:
-	Visitor();
-	virtual ~Visitor() {};
-	
-	void directoryBegin();
-	void directoryEnd();
+    Visitor();
+    virtual ~Visitor() {};
+    
+    void directoryBegin();
+    void directoryEnd();
 };
 
-class TiffImage
+class Image
 {
 public:
-	TiffImage(std::string path)
-	: io_(path,"rb")
-	, good_(false)
-	{
-		good_ = io_.good();
-	}
-	virtual ~TiffImage() { io_.close() ; }
-	bool good() { return good_ && io_.good() ; }
-	void printStructure(std::ostream& out, PrintStructureOption_e option,int depth = 0 ,size_t offset = 0 );
+    Image(std::string path)
+    : io_(path,"rb")
+    , good_(false)
+    , start_(0)
+    {
+        good_ = io_.good();
+    }
+    Image(Io io)
+    : io_(io)
+    {
+        good_ = io_.good();
+    }
+    virtual ~Image() { io_.close() ; }
+    bool good() { return good_ && io_.good() ; }
+    bool valid() { return false ; }
+    
+    virtual void printStructure(std::ostream& out, PSopt_e option,int depth = 0 ,size_t offset = 0 ) =0;
+    virtual void printIFD(std::ostream& out, PSopt_e option,size_t start,bool bSwap,char c,int depth)=0;
+    friend class TiffImage;
+    friend class JpegImage;
 
 private:
-    Io             io_;
-	bool           good_;
-    std::set<size_t> visits_; 
-
+    std::set<size_t> visits_;
+    size_t           start_;
+    Io               io_;
+    bool             good_;
+    bool             bCloser_;
+    
     bool isStringType(uint16_t type)
     {
         return type == asciiString
@@ -252,16 +327,16 @@ private:
              || type == tiffDouble
             ;
     }
-    bool isPrintXMP(uint16_t type, PrintStructureOption_e option)
+    bool isPrintXMP(uint16_t type, PSopt_e option)
     {
         return type == 700 && option == kpsXMP;
     }
-    bool isPrintICC(uint16_t type, PrintStructureOption_e option)
+    bool isPrintICC(uint16_t type, PSopt_e option)
     {
         return type == 0x8773 && option == kpsIccProfile;
     }
 
-    bool isBigEndianPlatform()
+    bool isPlatformBigEndian()
     {
         union {
             uint32_t i;
@@ -270,7 +345,7 @@ private:
 
         return e.c[0]?true:false;
     }
-    bool isLittleEndianPlatform() { return !isBigEndianPlatform(); }
+    bool isPlatformLittleEndian() { return !isPlatformBigEndian(); }
 
     uint64_t byteSwap(uint64_t value,bool bSwap) const
     {
@@ -361,252 +436,506 @@ private:
         return type >= 1 && type <= 13 ;
     }
 
-    void printIFD(std::ostream& out, PrintStructureOption_e option,size_t start,bool bSwap,char c,int depth)
+};
+
+class TiffImage : public Image
+{
+public:
+    TiffImage(std::string path)    : Image(path)     {}
+    TiffImage(Io& io) : Image(io) {} ;
+    void printStructure(std::ostream& out, PSopt_e option,int depth = 0 ,size_t offset = 0 );
+    void printIFD(std::ostream& out, PSopt_e option,size_t start,bool bSwap,char c,int depth);
+    bool valid();
+private:
+    bool bSwap_;
+    char c_    ; // 'M' or 'I'
+};
+
+class JpegImage : public Image
+{
+public:
+    JpegImage(std::string path) : Image(path) {}
+    void printStructure(std::ostream& out, PSopt_e option,int depth = 0 ,size_t offset = 0 );
+    void printIFD(std::ostream& out, PSopt_e option,size_t start,bool bSwap,char c,int depth)
     {
-        depth++;
-        if ( depth == 1 ) visits_.clear();
-        bool bFirst  = true  ;
+        TiffImage* p((TiffImage*)this);
+        p->printIFD(out,option,start,bSwap,c,depth);
+    };
 
-        // buffer
-        const size_t dirSize = 32;
-        DataBuf  dir(dirSize);
-        bool bPrint = option == kpsBasic || option == kpsRecursive;
+    bool valid();
+private:
+    const byte     dht_      = 0xc4;
+    const byte     dqt_      = 0xdb;
+    const byte     dri_      = 0xdd;
+    const byte     sos_      = 0xda;
+    const byte     eoi_      = 0xd9;
+    const byte     app0_     = 0xe0;
+    const byte     app1_     = 0xe1;
+    const byte     app2_     = 0xe2;
+    const byte     app13_    = 0xed;
+    const byte     com_      = 0xfe;
 
-        do {
-            // Read top of directory
-            const int seekSuccess = !io_.seek(start,beg);
-            const long bytesRead = io_.read(dir.pData_, 2);
-            if (!seekSuccess || bytesRead == 0) {
-                Error(kerCorruptedMetadata);
-            }
-            uint16_t   dirLength = byteSwap2(dir,0,bSwap);
+    // Start of Frame markers, nondifferential Huffman-coding frames
+    const byte     sof0_     = 0xc0;        // start of frame 0, baseline DCT
+    const byte     sof1_     = 0xc1;        // start of frame 1, extended sequential DCT, Huffman coding
+    const byte     sof2_     = 0xc2;        // start of frame 2, progressive DCT, Huffman coding
+    const byte     sof3_     = 0xc3;        // start of frame 3, lossless sequential, Huffman coding
 
-            bool tooBig = dirLength > 500;
-            if ( tooBig ) Error(kerTiffDirectoryTooLarge);
+    // Start of Frame markers, differential Huffman-coding frames
+    const byte     sof5_     = 0xc5;        // start of frame 5, differential sequential DCT, Huffman coding
+    const byte     sof6_     = 0xc6;        // start of frame 6, differential progressive DCT, Huffman coding
+    const byte     sof7_     = 0xc7;        // start of frame 7, differential lossless, Huffman coding
 
-            if ( bFirst && bPrint ) {
-                out << indent(depth) << stringFormat("STRUCTURE OF TIFF FILE (%c%c): ",c,c) << io_.path() << std::endl;
-                if ( tooBig ) out << indent(depth) << "dirLength = " << dirLength << std::endl;
-            }
+    // Start of Frame markers, nondifferential arithmetic-coding frames
+    const byte     sof9_     = 0xc9;        // start of frame 9, extended sequential DCT, arithmetic coding
+    const byte     sof10_    = 0xca;        // start of frame 10, progressive DCT, arithmetic coding
+    const byte     sof11_    = 0xcb;        // start of frame 11, lossless sequential, arithmetic coding
 
-            // Read the dictionary
-            for ( int i = 0 ; i < dirLength ; i ++ ) {
-                if ( visits_.find(io_.tell()) != visits_.end()  ) { // never visit the same place twice!
-                    Error(kerCorruptedMetadata);
-                }
-                visits_.insert(io_.tell());
-                
-                if ( bFirst && bPrint ) {
-                    out << indent(depth)
-                        << " address |    tag                              |     "
-                        << " type |    count |    offset | value\n";
-                }
-                bFirst = false;
+    // Start of Frame markers, differential arithmetic-coding frames
+    const byte     sof13_    = 0xcd;        // start of frame 13, differential sequential DCT, arithmetic coding
+    const byte     sof14_    = 0xce;        // start of frame 14, progressive DCT, arithmetic coding
+    const byte     sof15_    = 0xcf;        // start of frame 15, differential lossless, arithmetic coding
 
-                io_.read(dir.pData_, 12);
-                uint16_t tag    = byteSwap2(dir,0,bSwap);
-                uint16_t type   = byteSwap2(dir,2,bSwap);
-                uint32_t count  = byteSwap4(dir,4,bSwap);
-                uint32_t offset = byteSwap4(dir,8,bSwap);
-
-                // Break for unknown tag types else we may segfault.
-                if ( !typeValid(type) ) {
-                    std::cerr << "invalid type in tiff structure" << type << std::endl;
-                    start = 0; // break from do loop
-                    Error(kerInvalidTypeValue);
-                }
-
-                std::string sp  = "" ; // output spacer
-
-                //prepare to print the value
-                uint32_t kount  = isPrintXMP(tag,option) ? count // haul in all the data
-                                : isPrintICC(tag,option) ? count // ditto
-                                : isStringType(type)     ? (count > 32 ? 32 : count) // restrict long arrays
-                                : count > 5              ? 5
-                                : count
-                                ;
-                uint32_t pad    = isStringType(type) ? 1 : 0;
-                uint32_t size   = isStringType(type) ? 1
-                                : is2ByteType(type)  ? 2
-                                : is4ByteType(type)  ? 4
-                                : is8ByteType(type)  ? 8
-                                : 1
-                                ;
-
-                // if ( offset > io_.size() ) offset = 0; // Denial of service?
-
-                // #55 and #56 memory allocation crash test/data/POC8
-                long long allocate = (long long) size*count + pad+20;
-                if ( allocate > (long long) io_.size() ) {
-                    Error(kerInvalidMalloc);
-                }
-                DataBuf  buf((long)allocate);  // allocate a buffer
-                std::memset(buf.pData_, 0, buf.size_);
-                std::memcpy(buf.pData_,dir.pData_+8,4);  // copy dir[8:11] into buffer (short strings)
-                const bool bOffsetIsPointer = count*size > 4;
-
-                if ( bOffsetIsPointer ) {         // read into buffer
-                    size_t   restore = io_.tell();  // save
-                    io_.seek(offset,beg);  // position
-                    io_.read(buf.pData_,count*size);// read
-                    io_.seek(restore,beg); // restore
-                }
-
-                if ( bPrint ) {
-                    const uint32_t address = start + 2 + i*12 ;
-                    const std::string offsetString = bOffsetIsPointer?
-                        stringFormat("%10u", offset):
-                        "";
-
-                    out << indent(depth)
-                    << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
-                                              ,address,tag,tagName(tag).c_str(),typeName(type),count,offsetString.c_str());
-                    if ( isShortType(type) ){
-                        for ( size_t k = 0 ; k < kount ; k++ ) {
-                            out << sp << byteSwap2(buf,k*size,bSwap);
-                            sp = " ";
-                        }
-                    } else if ( isLongType(type) ){
-                        for ( size_t k = 0 ; k < kount ; k++ ) {
-                            out << sp << byteSwap4(buf,k*size,bSwap);
-                            sp = " ";
-                        }
-
-                    } else if ( isRationalType(type) ){
-                        for ( size_t k = 0 ; k < kount ; k++ ) {
-                            uint32_t a = byteSwap4(buf,k*size+0,bSwap);
-                            uint32_t b = byteSwap4(buf,k*size+4,bSwap);
-                            out << sp << a << "/" << b;
-                            sp = " ";
-                        }
-                    } else if ( isStringType(type) ) {
-                        out << sp << binaryToString(buf, 0, kount);
-                    }
-
-                    sp = kount == count ? "" : " ...";
-                    out << sp << std::endl;
-
-                    if ( option == kpsRecursive && (tag == 0x8769 /* ExifTag */ || tag == 0x014a/*SubIFDs*/  || type == tiffIfd) ) {
-                        for ( size_t k = 0 ; k < count ; k++ ) {
-                            size_t   restore = io_.tell();
-                            uint32_t offset = byteSwap4(buf,k*size,bSwap);
-                            printIFD(out,option,offset,bSwap,c,depth);
-                            io_.seek(restore,beg);
-                        }
-                    } else if ( option == kpsRecursive && tag == 0x83bb /* IPTCNAA */ ) {
-
-                        if (count + offset > io_.size() ) { // static_cast<size_t>(Safe::add(count, offset)) > io_.size()) {
-                            Error(kerCorruptedMetadata);
-                        }
-#if 0
-                        const size_t restore = io_.tell();
-                        io_.seek(offset, beg);  // position
-                        std::vector<byte> bytes(count) ;  // allocate memory
-                        // TODO: once we have C++11 use bytes.data()
-                        const long read_bytes = io_.read(&bytes[0], count);
-                        io_.seek(restore, beg);
-                        // TODO: once we have C++11 use bytes.data()
-                        IptcData::printStructure(out, makeSliceUntil(&bytes[0], read_bytes), depth);
-#endif
-                    }  else if ( option == kpsRecursive && tag == 0x927c /* MakerNote */ && count > 10) {
-#if 0      
-                        size_t   restore = io_.tell();  // save
-
-                        uint32_t jump= 10           ;
-                        byte     bytes[20]          ;
-                        const char* chars = (const char*) &bytes[0] ;
-                        io_.seek(offset,beg);  // position
-                        io_.read(bytes,jump    )     ;  // read
-                        bytes[jump]=0               ;
-                        if ( ::strcmp("Nikon",chars) == 0 ) {
-                            // tag is an embedded tiff
-                            byte* bytes=new byte[count-jump] ;  // allocate memory
-                            io_.read(bytes,count-jump)        ;  // read
-                            MemIo memIo(bytes,count-jump)    ;  // create a file
-                            printTiffStructure(memIo,out,option,depth);
-                            delete[] bytes                   ;  // free
-                        } else {
-                            // tag is an IFD
-                            io_.seek(0,beg);  // position
-                            printIFD(out,option,offset,bSwap,c,depth);
-                        }
-
-                        io_.seek(restore,beg); // restore
-#endif
-                    }
-                }
-#if 0
-                if ( isPrintXMP(tag,option) ) {
-                    buf.pData_[count]=0;
-                    out << (char*) buf.pData_;
-                }
-                if ( isPrintICC(tag,option) ) {
-                    out.write((const char*)buf.pData_,count);
-                }
-#endif
-            }
-            if ( start ) {
-                io_.read(dir.pData_, 4);
-                start = tooBig ? 0 : byteSwap4(dir,0,bSwap);
-            }
-        } while (start) ;
-
-        if ( bPrint ) {
-            out << indent(depth) << "END " << io_.path() << std::endl;
+    int advanceToMarker()
+    {
+        int c = -1;
+        // Skips potential padding between markers
+        while ((c=io_.getb()) != 0xff) {
+            if (io_.eof() )
+                return -1;
         }
-        out.flush();
-        depth--;
+
+        // Markers can start with any number of 0xff
+        while ((c=io_.getb()) == 0xff) {
+            if (io_.eof() )
+                return -2;
+        }
+        return c;
     }
 };
 
-void TiffImage::printStructure(std::ostream& out, PrintStructureOption_e option,int depth  ,size_t offset  )
+bool TiffImage::valid()
 {
-	int rc = 3;
-	if ( option == kpsBasic || option == kpsXMP || option == kpsRecursive || option == kpsIccProfile ) {
-		// buffer
-		const size_t dirSize = 32;
-		DataBuf  dir(dirSize);
+    bool         result  = false ;
+    size_t       restore = io_.tell();
+    io_.seek(0);
+    // read header
+    DataBuf      header(16);
+    io_.seek(0);
+    io_.read(header);
+    io_.seek(restore);
 
-		// read header
-		io_.seek(offset,beg);
-		io_.read(dir.pData_,  8);
+    c_      = (char) header.pData_[0] ;
+    bSwap_  = (    c_ == 'M' && isPlatformLittleEndian() )
+              || ( c_ == 'I' && isPlatformBigEndian()    )
+              ;
+    start_ = byteSwap4(header,4,bSwap_);
 
-		char c = (char) dir.pData_[0] ;
-		bool bSwap   = ( c == 'M' && isLittleEndianPlatform() )
-					|| ( c == 'I' && isBigEndianPlatform()    )
-					;
-		uint32_t start = byteSwap4(dir,4,bSwap);
-		
-    	uint16_t magic = byteSwap2(dir,2,bSwap);
-    	if ( magic != 42 || dir.pData_[0] != dir.pData_[1]
-    	|| ( dir.pData_[0] != 'I' && dir.pData_[0] != 'M' )
-    	){
-    		Error(kerNotATiff);
-    	}
-		
-		printIFD(out,option,start+offset,bSwap,c,depth);
-		rc = 0;
-	} 
+    uint16_t  magic = byteSwap2(header,2,bSwap_);
+    result =  magic == 42 && header.pData_[0] == header.pData_[1] && ( header.pData_[0] == 'I' || header.pData_[0] == 'M' ) ;
+
+    return result;
 }
+
+void TiffImage::printIFD(std::ostream& out, PSopt_e option,size_t start,bool bSwap,char c,int depth)
+{
+    bool     bFirst  = true  ;
+    size_t   restore_at_start = io_.tell();
+
+    depth++;
+    if ( depth == 1 ) visits_.clear();
+    // buffer
+    const size_t dirSize = 32;
+    DataBuf  dir(dirSize);
+    bool bPrint = option == kpsBasic || option == kpsRecursive;
+
+    do {
+        // Read top of directory
+        io_.seek(start);
+        const long bytesRead  = io_.read(dir.pData_, 2);
+        if ( bytesRead != 2) {
+            Error(kerCorruptedMetadata);
+        }
+        uint16_t   dirLength = byteSwap2(dir,0,bSwap);
+
+        bool tooBig = dirLength > 500;
+        if ( tooBig ) Error(kerTiffDirectoryTooLarge);
+
+        if ( bFirst && bPrint ) {
+            out << indent(depth) << stringFormat("STRUCTURE OF TIFF FILE (%c%c): ",c,c) << io_.path() << std::endl;
+            if ( tooBig ) out << indent(depth) << "dirLength = " << dirLength << std::endl;
+        }
+
+        // Read the dictionary
+        for ( int i = 0 ; i < dirLength ; i ++ ) {
+            if ( visits_.find(io_.tell()) != visits_.end()  ) { // never visit the same place twice!
+                Error(kerCorruptedMetadata);
+            }
+            visits_.insert(io_.tell());
+            
+            if ( bFirst && bPrint ) {
+                out << indent(depth)
+                    << " address |    tag                              |     "
+                    << " type |    count |    offset | value\n";
+            }
+            bFirst = false;
+
+            io_.read(dir.pData_, 12);
+            uint16_t tag    = byteSwap2(dir,0,bSwap);
+            uint16_t type   = byteSwap2(dir,2,bSwap);
+            uint32_t count  = byteSwap4(dir,4,bSwap);
+            uint32_t offset = byteSwap4(dir,8,bSwap);
+
+            // Break for unknown tag types else we may segfault.
+            if ( !typeValid(type) ) {
+                std::cerr << "invalid type in tiff structure" << type << std::endl;
+                start = 0; // break from do loop
+                Error(kerInvalidTypeValue);
+            }
+
+            std::string sp  = "" ; // output spacer
+
+            //prepare to print the value
+            uint32_t kount  = isPrintXMP(tag,option) ? count // haul in all the data
+                            : isPrintICC(tag,option) ? count // ditto
+                            : isStringType(type)     ? (count > 32 ? 32 : count) // restrict long arrays
+                            : count > 5              ? 5
+                            : count
+                            ;
+            uint32_t pad    = isStringType(type) ? 1 : 0;
+            uint32_t size   = isStringType(type) ? 1
+                            : is2ByteType(type)  ? 2
+                            : is4ByteType(type)  ? 4
+                            : is8ByteType(type)  ? 8
+                            : 1
+                            ;
+
+            // if ( offset > io_.size() ) offset = 0; // Denial of service?
+
+            // #55 and #56 memory allocation crash test/data/POC8
+            long long allocate = (long long) size*count + pad+20;
+            if ( allocate > (long long) io_.size() ) {
+                Error(kerInvalidMalloc);
+            }
+            DataBuf  buf((long)allocate);  // allocate a buffer
+            std::memset(buf.pData_, 0, buf.size_);
+            std::memcpy(buf.pData_,dir.pData_+8,4);  // copy dir[8:11] into buffer (short strings)
+            const bool bOffsetIsPointer = count*size > 4;
+
+            if ( bOffsetIsPointer ) {            // read into buffer
+                size_t   restore = io_.tell();   // save
+                io_.seek(offset);                // position
+                io_.read(buf.pData_,count*size); // read
+                io_.seek(restore);               // restore
+            }
+
+            if ( bPrint ) {
+                const size_t address = start + 2 + i*12 ;
+                const std::string offsetString = bOffsetIsPointer?
+                    stringFormat("%10u", offset):
+                    "";
+
+                out << indent(depth)
+                << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
+                                          ,address,tag,tagName(tag).c_str(),typeName(type),count,offsetString.c_str());
+                if ( isShortType(type) ){
+                    for ( size_t k = 0 ; k < kount ; k++ ) {
+                        out << sp << byteSwap2(buf,k*size,bSwap);
+                        sp = " ";
+                    }
+                } else if ( isLongType(type) ){
+                    for ( size_t k = 0 ; k < kount ; k++ ) {
+                        out << sp << byteSwap4(buf,k*size,bSwap);
+                        sp = " ";
+                    }
+
+                } else if ( isRationalType(type) ){
+                    for ( size_t k = 0 ; k < kount ; k++ ) {
+                        uint32_t a = byteSwap4(buf,k*size+0,bSwap);
+                        uint32_t b = byteSwap4(buf,k*size+4,bSwap);
+                        out << sp << a << "/" << b;
+                        sp = " ";
+                    }
+                } else if ( isStringType(type) ) {
+                    out << sp << binaryToString(buf, 0, kount);
+                }
+
+                sp = kount == count ? "" : " ...";
+                out << sp << std::endl;
+
+                if ( option == kpsRecursive && (tag == 0x8769 /* ExifTag */ || tag == 0x014a /*SubIFDs*/  || type == tiffIfd) ) {
+                    for ( size_t k = 0 ; k < count ; k++ ) {
+                        size_t   restore = io_.tell();
+                        uint32_t offset  = byteSwap4(buf,k*size,bSwap);
+                        printIFD(out,option,offset,bSwap,c,depth);
+                        io_.seek(restore);
+                    }
+                } else if ( option == kpsRecursive && tag == 0x83bb /* IPTCNAA */ ) {
+                    if (count + offset > io_.size() ) { // static_cast<size_t>(Safe::add(count, offset)) > io_.size()) {
+                        Error(kerCorruptedMetadata);
+                    }
+                } else if ( option == kpsRecursive && tag == 0x927c /* MakerNote */ && count > 10) {
+                    size_t punt = 0 ;
+                    if ( buf.strequals("Nikon")) {
+                        punt = 10;
+                    }
+                    size_t restore = io_.tell();
+                    {
+                        Io io(io_,offset+punt,count-punt);
+                        TiffImage makerNote(io);
+                        makerNote.printStructure(out,option,depth,0); // position at II*\0
+                    }
+                    io_.seek(restore);
+                }
+            }
+
+            if ( isPrintXMP(tag,option) ) {
+                buf.pData_[count]=0;
+                out << (char*) buf.pData_;
+            }
+            if ( isPrintICC(tag,option) ) {
+                out.write((const char*)buf.pData_,count);
+            }
+        }
+        if ( start ) {
+            io_.read(dir.pData_, 4);
+            start = tooBig ? 0 : byteSwap4(dir,0,bSwap);
+        }
+    } while (start) ;
+
+    if ( bPrint ) {
+        out << indent(depth) << "END " << io_.path() << std::endl;
+    }
+    out.flush();
+    depth--;
+    
+    io_.seek(restore_at_start); // restore
+} // print IFD
+
+
+void TiffImage::printStructure(std::ostream& out, PSopt_e option,int depth  ,size_t offset  )
+{
+    if ( option == kpsBasic || option == kpsXMP || option == kpsRecursive || option == kpsIccProfile ) {
+        if ( valid() ) {
+            printIFD(out,option,start_+offset,bSwap_,c_,depth);
+        }
+    }
+}
+
+bool JpegImage::valid()
+{
+    io_.seek(0,ksStart);
+    byte   h[2];
+    size_t n = io_.read(h,2);
+    io_.seek(0,ksStart);
+    bool result = n == 2 && h[0] == 0xff && h[1] == 0xd8;
+//  std::cout << stringFormat("%ld %#x %#x result = %s\n",n,h[0],h[1],result?"true":"false");
+    return result;
+}
+
+#define REPORT_MARKER if ( (option == kpsBasic||option == kpsRecursive) ) \
+     out << stringFormat("%8ld | 0xff%02x %-5s", \
+     io_.tell()-2,marker,nm[marker].c_str())
+
+#define FLUSH(bLF) if (bLF) { out << std::endl; bLF = false;}
+
+void JpegImage::printStructure(std::ostream& out, PSopt_e option,int depth,size_t offset)
+{
+    if (!io_.good())
+        Error(kerDataSourceOpenFailed, io_.path());
+    // Ensure that this is the correct image type
+    if (!valid()) {
+        if (!io_.good() || io_.eof())
+            Error(kerFailedToReadImageData);
+        Error(kerNotAJpeg);
+    }
+
+    bool bPrint = option == kpsBasic || option == kpsRecursive;
+
+    if (bPrint || option == kpsXMP) {
+        // nmonic for markers
+        std::string nm[256];
+        nm[0xd8] = "SOI";
+        nm[0xd9] = "EOI";
+        nm[0xda] = "SOS";
+        nm[0xdb] = "DQT";
+        nm[0xdd] = "DRI";
+        nm[0xfe] = "COM";
+
+        // 0xe0 .. 0xef are APPn
+        // 0xc0 .. 0xcf are SOFn (except 4)
+        nm[0xc4] = "DHT";
+        for (int i = 0; i <= 15; i++) {
+            char MN[16];
+            sprintf(MN, "APP%d", i);
+            nm[0xe0 + i] = MN;
+            if (i != 4) {
+                sprintf(MN, "SOF%d", i);
+                nm[0xc0 + i] = MN;
+            }
+        }
+
+        // which markers have a length field?
+        bool bHasLength[256];
+        for (int i = 0; i < 256; i++)
+            bHasLength[i] = (i >= sof0_ && i <= sof15_) || (i >= app0_ && i <= (app0_ | 0x0F)) ||
+                            (i == dht_  || i == dqt_    || i == dri_   || i == com_  ||i == sos_);
+
+        // Container for the signature
+        bool bExtXMP = false;
+        long bufRead = 0;
+        const long bufMinSize = 36;
+        DataBuf buf(bufMinSize);
+
+        // Read section marker
+        int marker = advanceToMarker();
+        if (marker < 0)
+            Error(kerNotAJpeg);
+
+        bool done = false;
+        bool first = true;
+        while (!done) {
+            size_t current = io_.tell();
+            // print marker bytes
+            if (first && bPrint) {
+                out << "STRUCTURE OF JPEG FILE: " << io_.path() << std::endl;
+                out << " address | marker       |  length | data" << std::endl;
+                REPORT_MARKER;
+            }
+            first = false;
+            bool bLF = bPrint;
+
+            // Read size and signature
+            std::memset(buf.pData_, 0x0, buf.size_);
+            bufRead = io_.read(buf.pData_, bufMinSize);
+            if (!io_.good())
+                Error(kerFailedToReadImageData);
+            if (bufRead < 2)
+                Error(kerNotAJpeg);
+            const uint16_t size = bHasLength[marker] ? byteSwap2(buf,0,isPlatformLittleEndian()):0;
+            
+            if (bPrint && bHasLength[marker])
+                out << stringFormat(" | %7d ", size);
+
+            // print signature for APPn
+            if (marker >= app0_ && marker <= (app0_ | 0x0F)) {
+                // http://www.adobe.com/content/dam/Adobe/en/devnet/xmp/pdfs/XMPSpecificationPart3.pdf p75
+                const std::string signature = binaryToString(buf,0, buf.size_ - 2);
+
+                // 728 rmills@rmillsmbp:~/gnu/exiv2/ttt $ exiv2 -pS test/data/exiv2-bug922.jpg
+                // STRUCTURE OF JPEG FILE: test/data/exiv2-bug922.jpg
+                // address | marker     | length  | data
+                //       0 | 0xd8 SOI   |       0
+                //       2 | 0xe1 APP1  |     911 | Exif..MM.*.......%.........#....
+                //     915 | 0xe1 APP1  |     870 | http://ns.adobe.com/xap/1.0/.<x:
+                //    1787 | 0xe1 APP1  |   65460 | http://ns.adobe.com/xmp/extensio
+                if (option == kpsXMP && signature.find("http://ns.adobe.com/x") == 0) {
+                    // extract XMP
+                    if (size > 0) {
+                        io_.seek(-bufRead, ksCurrent);
+                        std::vector<byte> xmp(size + 1);
+                        io_.read(&xmp[0], size);
+                        int start = 0;
+
+                        // http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/xmp/pdfs/XMPSpecificationPart3.pdf
+                        // if we find HasExtendedXMP, set the flag and ignore this block
+                        // the first extended block is a copy of the Standard block.
+                        // a robust implementation allows extended blocks to be out of sequence
+                        // we could implement out of sequence with a dictionary of sequence/offset
+                        // and dumping the XMP in a post read operation similar to kpsIptcErase
+                        // for the moment, dumping 'on the fly' is working fine
+                        if (!bExtXMP) {
+                            while (xmp.at(start)) {
+                                start++;
+                            }
+                            start++;
+                            const std::string xmp_from_start = binaryToString(
+                                reinterpret_cast<byte*>(&xmp.at(0)),start, size - start);
+                            if (xmp_from_start.find("HasExtendedXMP", start) != xmp_from_start.npos) {
+                                start = size;  // ignore this packet, we'll get on the next time around
+                                bExtXMP = true;
+                            }
+                        } else {
+                            start = 2 + 35 + 32 + 4 + 4;  // Adobe Spec, p19
+                        }
+
+                        out.write(reinterpret_cast<const char*>(&xmp.at(start)), size - start);
+                        bufRead = size;
+                        done = !bExtXMP;
+                    }
+                } else if (bPrint) {
+                    const size_t start = size > 0 ? 2 : 0;
+                    const size_t end = start + (size > 32 ? 32 : size);
+                    out << "| " << binaryToString(buf, start, end);
+                }
+                FLUSH(bLF)
+
+                // std::cout << "app0_+1 = " << app0_+1 << " compare " << signature << " = " << signature.find("Exif") == 2 << std::endl;
+				bool bExif = option == kpsRecursive && marker == (app0_ + 1) && signature.find("Exif") == 2;
+
+				if ( bExif ) {
+                    Io io(io_,current+2+6,size-2-6);
+                    TiffImage exif(io);
+                    exif.printStructure(out,option,depth,0); // position at II*\0
+				}
+            }
+
+            // print COM marker
+            if (bPrint && marker == com_) {
+                // size includes 2 for the two bytes for size!
+                const int n = (size - 2) > 32 ? 32 : size - 2;
+                // start after the two bytes
+                out << "| " << binaryToString(buf, 2, n + 2);
+            }
+
+            // Skip the segment if the size is known
+            io_.seek(size - bufRead, ksCurrent);
+            FLUSH(bLF)
+
+            if (marker != sos_) {
+                // Read the beginning of the next segment
+                marker = advanceToMarker();
+                REPORT_MARKER;
+            }
+            done |= marker == eoi_ || marker == sos_;
+            if (done && bPrint)
+                out << std::endl;
+        }
+    }
+}  // JpegImage::printStructure
 
 int main(int argc,const char* argv[])
 {
-	int rc = 0;
-	if ( argc == 2 ) {
-		TiffImage tiff(argv[1]) ;
-		// Visitor   visitor       ;
-	
-		if ( tiff.good() ) {
-			tiff.printStructure(std::cout,kpsRecursive);
-		} else {
-			std::cerr << "not good!" << std::endl;
-			rc=2;
-		}
-	} else {
-		std::cout << "usage: " << argv[0] << " path" << std::endl;
-		rc = 1;
-	}
-	return rc;
+    int rc = 0;
+    if ( argc == 2 || argc == 3 ) {
+        const char* path = argv[argc-1];
+        Image* image = NULL ;
+        TiffImage tiff(path);
+        JpegImage jpeg(path);
+        
+        PSopt_e opt = kpsBasic;
+        if ( argc == 3 ) {
+            char c = tolower(argv[1][0]);
+            opt = c == 's' ? kpsBasic
+                : c == 'r' ? kpsRecursive
+                : c == 'x' ? kpsXMP
+                : c == 'i' ? kpsRecursive
+                : opt
+                ;
+        }
+        if ( tiff.valid() ) image = &tiff ;
+        if ( jpeg.valid() ) image = &jpeg ;
+        if ( image ) {
+            image->printStructure(std::cout,opt);
+        } else {
+            std::cerr << "file type not recognised " << path << std::endl;
+            rc=2;
+        }
+    } else {
+        std::cout << "usage: [ {S | R | X | I} ] " << argv[0] << " path" << std::endl;
+        rc = 1;
+    }
+    return rc;
 }
 
 // That's all Folks!
