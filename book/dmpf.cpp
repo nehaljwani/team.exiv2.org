@@ -12,7 +12,7 @@ void syntax()
 	printf("syntax: dmpf [-option]+ filename\n") ;
 }
 
-bool printable(unsigned char c) { return c >= 32 && c < 127 && c != '.' ; }
+unsigned char print(unsigned char c) { return c >= 32 && c < 127 ? c : c==0 ? '_' : '.' ; }
 
 int main(int argc, char* argv[])
 {
@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
 			for ( int i = 0 ; i < n ; i++ )
 			{
 				char c = buff[i] ;
-		        l += sprintf(line+l,"%c", printable(c) ? c : '.' ) ;
+		        l += sprintf(line+l,"%c", print(c)) ;
 			}
 			// blank pad the ascii
 			int save = n ;

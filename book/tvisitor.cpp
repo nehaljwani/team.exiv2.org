@@ -183,6 +183,7 @@ TagDict tiffDict  ;
 TagDict exifDict  ;
 TagDict canonDict ;
 TagDict nikonDict ;
+TagDict gpsDict   ;
 
 TagDict copyDict(TagDict old)
 {
@@ -685,7 +686,6 @@ void TiffImage::printIFD(std::ostream& out, PSopt_e option,size_t start,bool bSw
                         out << sp << byteSwap4(buf,k*size,bSwap);
                         sp = " ";
                     }
-
                 } else if ( isRationalType(type) ){
                     for ( size_t k = 0 ; k < kount ; k++ ) {
                         uint32_t a = byteSwap4(buf,k*size+0,bSwap);
@@ -699,17 +699,23 @@ void TiffImage::printIFD(std::ostream& out, PSopt_e option,size_t start,bool bSw
 
                 sp = kount == count ? "" : " ...";
                 out << sp << std::endl;
+                
+                if ( option == kpsRecursive && (tag == 0x8769 /* ExifTag */ || tag == 0x014a /*SubIFDs*/  || tag == 0x8825 /* GPSTag */ || type == tiffIfd) ) {
+                    // these tags are IFDs, not a embedded TIFF
+                    TagDict useDict = tag == 0x8769 ? joinDict( tagDict,exifDict  )
+                                    : tag == 0x8825 ? joinDict( tagDict,gpsDict   )
+                                    : tag == 0x927c ? joinDict( tagDict,makerDict_)
+                                    :                 copyDict( tagDict)
+                                    ;
 
-                if ( option == kpsRecursive && (tag == 0x8769 /* ExifTag */ || tag == 0x014a /*SubIFDs*/  || type == tiffIfd) ) {
                     for ( size_t k = 0 ; k < count ; k++ ) {
                         uint32_t offset  = byteSwap4(buf,k*size,bSwap);
-                        printIFD(out,option,offset,bSwap,c,depth,joinDict(tagDict,exifDict));
+                        printIFD(out,option,offset,bSwap,c,depth,useDict);
                     }
                 } else if ( option == kpsRecursive && tag == 0x83bb /* IPTCNAA */ ) {
-                    if (count + offset > io_.size() ) {
-                        Error(kerCorruptedMetadata);
-                    }
+                    // This is an IPTC tag
                 } else if ( option == kpsRecursive && tag == 0x927c /* MakerNote */ && count > 10) {
+                    // MakerNote is not and IFD, it's an emabedd tiff `II*_.....`
                     size_t punt = 0 ;
                     if ( buf.strequals("Nikon")) {
                         punt = 10;
@@ -719,6 +725,8 @@ void TiffImage::printIFD(std::ostream& out, PSopt_e option,size_t start,bool bSw
                     makerNote.printStructure(out,option,joinDict(tagDict,makerDict_),depth);
                 }
             }
+            
+            if ( tag == 0x8825 ) std::cout << "found GPS" << std::endl;
 
             if ( isPrintXMP(tag,option) ) {
                 buf.pData_[count]=0;
@@ -902,7 +910,7 @@ void JpegImage::printStructure(std::ostream& out, PSopt_e option,const TagDict& 
                 FLUSH(bLF)
 
                 // std::cout << "app0_+1 = " << app0_+1 << " compare " << signature << " = " << signature.find("Exif") == 2 << std::endl;
-				bool bExif = option == kpsRecursive && marker == (app0_ + 1) && signature.find("Exif") == 2;
+				bool bExif = option == kpsRecursive && marker == (app0_ + 1) && signature.find("Exif") == 0;
 
 				if ( bExif ) {
                     Io io(io_,current+2+6,size-2-6);
@@ -937,38 +945,38 @@ void JpegImage::printStructure(std::ostream& out, PSopt_e option,const TagDict& 
 
 void init()
 {
-    tiffDict[ 0x8769 ] = "ExifTag";
-    tiffDict[ 0x014a ] = "SubIFD";
-    tiffDict[ 0x927c ] = "MakerNote";
-    tiffDict[ 0x83bb ] = "IPTCNAA";
-    tiffDict[ 0x02bc ] = "XMLPacket";
-    tiffDict[ 0x8773 ] = "InterColorProfile";
-    tiffDict[ 0x010f ] = "Make";
-    tiffDict[ 0x0110 ] = "Model";
-    tiffDict[ 0x0112 ] = "Orientation";
-    tiffDict[ 0x011a ] = "XResolution";
-    tiffDict[ 0x011b ] = "YResolution";
-    tiffDict[ 0x0128 ] = "ResolutionUnit";
-    tiffDict[ 0x0131 ] = "Software";
-    tiffDict[ 0x0132 ] = "DateTime";
-    tiffDict[ 0x0213 ] = "YCbCrPositioning";
+    tiffDict  [ 0x8769 ] = "ExifTag";
+    tiffDict  [ 0x014a ] = "SubIFD";
+    tiffDict  [ 0x927c ] = "MakerNote";
+    tiffDict  [ 0x83bb ] = "IPTCNAA";
+    tiffDict  [ 0x02bc ] = "XMLPacket";
+    tiffDict  [ 0x8773 ] = "InterColorProfile";
+    tiffDict  [ 0x010f ] = "Make";
+    tiffDict  [ 0x0110 ] = "Model";
+    tiffDict  [ 0x0112 ] = "Orientation";
+    tiffDict  [ 0x011a ] = "XResolution";
+    tiffDict  [ 0x011b ] = "YResolution";
+    tiffDict  [ 0x0128 ] = "ResolutionUnit";
+    tiffDict  [ 0x0131 ] = "Software";
+    tiffDict  [ 0x0132 ] = "DateTime";
+    tiffDict  [ 0x0213 ] = "YCbCrPositioning";
 
-    exifDict[ 0x829a ] = "ExposureTime";
-    exifDict[ 0x829d ] = "FNumber";
-    exifDict[ 0x8822 ] = "ExposureProgram";
-    exifDict[ 0x8827 ] = "ISOSpeedRatings";
-    exifDict[ 0x8830 ] = "SensitivityType";
-    exifDict[ 0x9000 ] = "ExifVersion";
-    exifDict[ 0x9003 ] = "DateTimeOriginal";
-    exifDict[ 0x9004 ] = "DateTimeDigitized";
-    exifDict[ 0x9101 ] = "ComponentsConfiguration";
-    exifDict[ 0x9102 ] = "CompressedBitsPerPixel";
-    exifDict[ 0x9204 ] = "ExposureBiasValue";
-    exifDict[ 0x9205 ] = "MaxApertureValue";
-    exifDict[ 0x9207 ] = "MeteringMode";
-    exifDict[ 0x9208 ] = "LightSource";
-    exifDict[ 0x9209 ] = "Flash";
-    exifDict[ 0x920a ] = "FocalLength";
+    exifDict  [ 0x829a ] = "ExposureTime";
+    exifDict  [ 0x829d ] = "FNumber";
+    exifDict  [ 0x8822 ] = "ExposureProgram";
+    exifDict  [ 0x8827 ] = "ISOSpeedRatings";
+    exifDict  [ 0x8830 ] = "SensitivityType";
+    exifDict  [ 0x9000 ] = "ExifVersion";
+    exifDict  [ 0x9003 ] = "DateTimeOriginal";
+    exifDict  [ 0x9004 ] = "DateTimeDigitized";
+    exifDict  [ 0x9101 ] = "ComponentsConfiguration";
+    exifDict  [ 0x9102 ] = "CompressedBitsPerPixel";
+    exifDict  [ 0x9204 ] = "ExposureBiasValue";
+    exifDict  [ 0x9205 ] = "MaxApertureValue";
+    exifDict  [ 0x9207 ] = "MeteringMode";
+    exifDict  [ 0x9208 ] = "LightSource";
+    exifDict  [ 0x9209 ] = "Flash";
+    exifDict  [ 0x920a ] = "FocalLength";
     
     nikonDict [ 0x0001 ] = "Version";
     nikonDict [ 0x0002 ] = "ISOSpeed";
@@ -1007,7 +1015,18 @@ void init()
     canonDict [ 0x0010 ] = "ISOSpeed";
     canonDict [ 0x0011 ] = "MeteringMode";
     canonDict [ 0x0012 ] = "FocusType";
-
+    
+    gpsDict   [ 0x0000 ] = "GPSVersionID";
+    gpsDict   [ 0x0001 ] = "GPSLatitudeRef";
+    gpsDict   [ 0x0002 ] = "GPSLatitude";
+    gpsDict   [ 0x0003 ] = "GPSLongitudeRef";
+    gpsDict   [ 0x0004 ] = "GPSLongitude";
+    gpsDict   [ 0x0005 ] = "GPSAltitudeRef";
+    gpsDict   [ 0x0006 ] = "GPSAltitude";
+    gpsDict   [ 0x0007 ] = "GPSTimeStamp";
+    gpsDict   [ 0x0008 ] = "GPSSatellites";
+    gpsDict   [ 0x0012 ] = "GPSMapDatum";
+    gpsDict   [ 0x001d ] = "GPSDateStamp";
 }
 
 int main(int argc,const char* argv[])
@@ -1023,11 +1042,12 @@ int main(int argc,const char* argv[])
         
         PSopt_e opt = kpsBasic;
         if ( argc == 3 ) {
-            char c = tolower(argv[1][0]);
+            const char*      arg = argv[1];
+            char c = tolower(arg[0]);
             opt = c == 's' ? kpsBasic
                 : c == 'r' ? kpsRecursive
                 : c == 'x' ? kpsXMP
-                : c == 'i' ? kpsRecursive
+                : c == 'i' ? kpsIccProfile
                 : opt
                 ;
         }

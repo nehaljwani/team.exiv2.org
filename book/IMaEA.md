@@ -21,7 +21,7 @@
   [8.2 Metadata Decoder](#8-2)<br>
   [8.3 Metadata Decoder](#8-3)<br>
   [8.4 Tiff Visitor](#8-4)<br>
-  [8.5 printIFDStructure](#8-5)<br>
+  [8.5 printIFD](#8-5)<br>
   [8.6 TagInfo](#8-6)<br>
   [8.7 Using dd to extract data from an image](#8-7)<br>
 
@@ -37,12 +37,12 @@
 
 |    |    |    |    |
 |:-- |:-- |:-- |:-- |
-| 12.1) C++ Code | 12.2) Build | 12.3) Security | 12.4) Documentation |
-| 12.5) Testing | 12.6) Sample programs | 12.7) User Support | 12.8) Bug Tracking |
-| 12.9) Release Engineering | 12.10) Platform Support | 12.11) Localisation | 12.12) Build Server |
-| 12.13) Source Code Management | 12.14) Project Web Site | 12.15) Project Servers (apache, SVN, GitHub, Redmine) | 12.16) API Management |
-| 12.17) Recruiting Contributors | 12.18) Project Management and Scheduling | 12.19) Enhancement Requests | 12.20) Tools |
-| 12.21) Licensing | 12.22) Back-porting fixes to earlier releases | 12.23) Other projects demanding support and changes | |
+| [12.1) C++ Code](#12-1) | [12.2) Build](#12-2) | [12.3) Security](#12-3) | [12.4) Documentation](#12-4) |
+| [12.5) Testing](#12-5) | [12.6) Sample programs](#12-6) | [12.7) User Support](#12-7) | [12.8) Bug Tracking](#12-8) |
+| [12.9) Release Engineering](#12-9) | [12.10) Platform Support](#12-10) | [12.11) Localisation](#12-11) | [12.12) Build Server](#12-12) |
+| [12.13) Source Code Management](#12-13) | [12.14) Project Web Site](#12-14) | [12.15) Project Servers (apache, SVN, GitHub, Redmine)](#12-15) | [12.16) API Management](#12-16) |
+| [12.17) Recruiting Contributors](#12-17) | [12.18) Project Management and Scheduling](#12-18) | [12.19) Enhancement Requests](#12-19) | [12.20) Tools](#12-20) |
+| [12.21) Licensing](#12-21) | [12.22) Back-porting fixes to earlier releases](#12-22) | [12.23) Other projects demanding support and changes](#12-23) | |
 
 
 
@@ -332,7 +332,6 @@ Exif is the most important of the metadata containers.  However the other exist 
 <div id="8">
 # 8 Exiv2 Architecture
 
-[TOC](#TOC)
 <div id="8-1">
 ### 8.1 Tag Names in Exiv2
 
@@ -721,21 +720,25 @@ I'll write more about the TiffVisitor later.
 
 [TOC](#TOC)
 <div id="8-5">
-### 8.5 printIFDStructure
+### 8.5 printIFD
 
 The TiffVisitor is ingenious.  It's also difficult to understand.  Exiv2 has two tiff parsers - TiffVisitor and printIFDStructure().  TiffVisitor was written by Andreas Huggel.  It's very robust and has been almost 
 bug free for 15 years.  I wrote the parser in printStructure() to try to understand the structure of a tiff file.  The code in printIFDStructure() is easier to understand.
 
+The code which accompanies this book has a simplified version of printIFDStructure() calle printIFD() and that's what will be discussed here.
+
 It's important to realise that metadata is defined recursively.  In a Tiff File, there will be a Tiff Record containing the Exif data (written in Tiff Format).  Within, that record, there will be MakerNote which is usually also written in Tiff Format.  Tiff Format is referred to as an IFD - an Image File Directory.
 
-The printIFDStructure() parser uses a simple direct approach to parsing the tiff file.  When another IFD is located, printIFDStructure is called recursively.  As a TIFF file is a header, followed by an IFD, we can descend into the tiff file from the beginning.  For other files types, the file handler has to find the Exif IFD and then call printIFDStructure().
+The printIFD() parser uses a simple direct approach to parsing the tiff file.  When another IFD is located, printIFD is called recursively.  As a TIFF file is a header, followed by an IFD, we can descend into the tiff file from the beginning.  For other files types, the file handler has to find the Exif IFD and then call printIFDStructure().
 
 ```
-void Image::printIFDStructure(BasicIo& io, std::ostream& out, Exiv2::PrintStructureOption option,uint32_t start,bool bSwap,char c,int depth)
+void TiffImage::printIFD(std::ostream& out, PSopt_e option,size_t start,bool bSwap,char c,int depth,const TagDict& tagDict)
 {
-    depth++;
-    bool bFirst  = true  ;
+    bool     bFirst  = true  ;
+    size_t   restore_at_start = io_.tell();
 
+    depth++;
+    if ( depth == 1 ) visits_.clear();
     // buffer
     const size_t dirSize = 32;
     DataBuf  dir(dirSize);
@@ -743,31 +746,36 @@ void Image::printIFDStructure(BasicIo& io, std::ostream& out, Exiv2::PrintStruct
 
     do {
         // Read top of directory
-        const int seekSuccess = !io.seek(start,BasicIo::beg);
-        const long bytesRead = io.read(dir.pData_, 2);
-        if (!seekSuccess || bytesRead == 0) {
-            throw Error(kerCorruptedMetadata);
+        io_.seek(start);
+        const long bytesRead  = io_.read(dir.pData_, 2);
+        if ( bytesRead != 2) {
+            Error(kerCorruptedMetadata);
         }
         uint16_t   dirLength = byteSwap2(dir,0,bSwap);
 
         bool tooBig = dirLength > 500;
-        if ( tooBig ) throw Error(kerTiffDirectoryTooLarge);
+        if ( tooBig ) Error(kerTiffDirectoryTooLarge);
 
         if ( bFirst && bPrint ) {
-            out << Internal::indent(depth) << Internal::stringFormat("STRUCTURE OF TIFF FILE (%c%c): ",c,c) << io.path() << std::endl;
-            if ( tooBig ) out << Internal::indent(depth) << "dirLength = " << dirLength << std::endl;
+            out << indent(depth) << stringFormat("STRUCTURE OF TIFF FILE (%c%c): ",c,c) << io_.path() << std::endl;
+            if ( tooBig ) out << indent(depth) << "dirLength = " << dirLength << std::endl;
         }
 
-        // Read the directory
+        // Read the dictionary
         for ( int i = 0 ; i < dirLength ; i ++ ) {
+            if ( visits_.find(io_.tell()) != visits_.end()  ) { // never visit the same place twice!
+                Error(kerCorruptedMetadata);
+            }
+            visits_.insert(io_.tell());
+            
             if ( bFirst && bPrint ) {
-                out << Internal::indent(depth)
+                out << indent(depth)
                     << " address |    tag                              |     "
                     << " type |    count |    offset | value\n";
             }
             bFirst = false;
 
-            io.read(dir.pData_, 12);
+            io_.read(dir.pData_, 12);
             uint16_t tag    = byteSwap2(dir,0,bSwap);
             uint16_t type   = byteSwap2(dir,2,bSwap);
             uint32_t count  = byteSwap4(dir,4,bSwap);
@@ -777,7 +785,7 @@ void Image::printIFDStructure(BasicIo& io, std::ostream& out, Exiv2::PrintStruct
             if ( !typeValid(type) ) {
                 std::cerr << "invalid type in tiff structure" << type << std::endl;
                 start = 0; // break from do loop
-                throw Error(kerInvalidTypeValue);
+                Error(kerInvalidTypeValue);
             }
 
             std::string sp  = "" ; // output spacer
@@ -797,31 +805,43 @@ void Image::printIFDStructure(BasicIo& io, std::ostream& out, Exiv2::PrintStruct
                             : 1
                             ;
 
-            long long allocate = (long long) size*count + pad+20;
-            if ( allocate > (long long) io.size() ) {
-                throw Error(kerInvalidMalloc);
+            size_t allocate = size*count + pad+20;
+            if ( allocate > io_.size() ) {
+                Error(kerInvalidMalloc);
             }
-            DataBuf  buf((long)allocate);  // allocate a buffer
+            DataBuf  buf(allocate);              // allocate a buffer
             std::memset(buf.pData_, 0, buf.size_);
             std::memcpy(buf.pData_,dir.pData_+8,4);  // copy dir[8:11] into buffer (short strings)
             const bool bOffsetIsPointer = count*size > 4;
 
-            if ( bOffsetIsPointer ) {          // read into buffer
-                size_t   restore = io.tell();  // save
-                io.seek(offset,BasicIo::beg);  // position
-                io.read(buf.pData_,count*size);// read
-                io.seek(restore,BasicIo::beg); // restore
+            if ( bOffsetIsPointer ) {            // read into buffer
+                size_t   restore = io_.tell();   // save
+                io_.seek(offset);                // position
+                io_.read(buf.pData_,count*size); // read
+                io_.seek(restore);               // restore
+            }
+            
+            if ( depth == 1 && tag == 0x010f /* Make */ ) {
+                maker_ = buf.strequals("Canon"            )? kCanon
+            	       : buf.strequals("NIKON CORPORATION")? kNikon
+            	       : maker_
+            	       ;
+                switch ( maker_ ) {
+                    case kCanon : makerDict_ = copyDict(canonDict) ; break;
+                    case kNikon : makerDict_ = copyDict(nikonDict) ; break;
+                    default : /* do nothing */                     ; break;
+                }
             }
 
             if ( bPrint ) {
-                const uint32_t address = start + 2 + i*12 ;
+                const size_t address = start + 2 + i*12 ;
                 const std::string offsetString = bOffsetIsPointer?
-                    Internal::stringFormat("%10u", offset):
+                    stringFormat("%10u", offset):
                     "";
 
-                out << Internal::indent(depth)
-                << Internal::stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
-                                          ,address,tag,tagName(tag).c_str(),typeName(type),count,offsetString.c_str());
+                out << indent(depth)
+                << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
+                                          ,address,tag,tagName(tag,tagDict).c_str(),typeName(type),count,offsetString.c_str());
                 if ( isShortType(type) ){
                     for ( size_t k = 0 ; k < kount ; k++ ) {
                         out << sp << byteSwap2(buf,k*size,bSwap);
@@ -832,7 +852,6 @@ void Image::printIFDStructure(BasicIo& io, std::ostream& out, Exiv2::PrintStruct
                         out << sp << byteSwap4(buf,k*size,bSwap);
                         sp = " ";
                     }
-
                 } else if ( isRationalType(type) ){
                     for ( size_t k = 0 ; k < kount ; k++ ) {
                         uint32_t a = byteSwap4(buf,k*size+0,bSwap);
@@ -841,57 +860,39 @@ void Image::printIFDStructure(BasicIo& io, std::ostream& out, Exiv2::PrintStruct
                         sp = " ";
                     }
                 } else if ( isStringType(type) ) {
-                    out << sp << Internal::binaryToString(makeSlice(buf, 0, kount));
+                    out << sp << binaryToString(buf, 0, kount);
                 }
 
                 sp = kount == count ? "" : " ...";
                 out << sp << std::endl;
+                
+                if ( option == kpsRecursive && (tag == 0x8769 /* ExifTag */ || tag == 0x014a /*SubIFDs*/  || tag == 0x8825 /* GPSTag */ || type == tiffIfd) ) {
+                    // these tags are IFDs, not a embedded TIFF
+                    TagDict useDict = tag == 0x8769 ? joinDict( tagDict,exifDict  )
+                                    : tag == 0x8825 ? joinDict( tagDict,gpsDict   )
+                                    : tag == 0x927c ? joinDict( tagDict,makerDict_)
+                                    :                 copyDict( tagDict)
+                                    ;
 
-                if ( option == kpsRecursive && (tag == 0x8769 /* ExifTag */ || tag == 0x014a/*SubIFDs*/  || type == tiffIfd) ) {
                     for ( size_t k = 0 ; k < count ; k++ ) {
-                        size_t   restore = io.tell();
-                        uint32_t offset = byteSwap4(buf,k*size,bSwap);
-                        printIFDStructure(io,out,option,offset,bSwap,c,depth);
-                        io.seek(restore,BasicIo::beg);
+                        uint32_t offset  = byteSwap4(buf,k*size,bSwap);
+                        printIFD(out,option,offset,bSwap,c,depth,useDict);
                     }
                 } else if ( option == kpsRecursive && tag == 0x83bb /* IPTCNAA */ ) {
-
-                    if (static_cast<size_t>(Safe::add(count, offset)) > io.size()) {
-                        throw Error(kerCorruptedMetadata);
+                    // This is an IPTC tag
+                } else if ( option == kpsRecursive && tag == 0x927c /* MakerNote */ && count > 10) {
+                    // MakerNote is not and IFD, it's an emabedd tiff `II*_.....`
+                    size_t punt = 0 ;
+                    if ( buf.strequals("Nikon")) {
+                        punt = 10;
                     }
-
-                    const size_t restore = io.tell();
-                    io.seek(offset, BasicIo::beg);    // position
-                    std::vector<byte> bytes(count) ;  // allocate memory
-                    const long read_bytes = io.read(&bytes[0], count);
-                    io.seek(restore, BasicIo::beg);
-                    IptcData::printStructure(out, makeSliceUntil(&bytes[0], read_bytes), depth);
-
-                }  else if ( option == kpsRecursive && tag == 0x927c /* MakerNote */ && count > 10) {
-                    size_t   restore = io.tell();  // save
-
-                    uint32_t jump= 10           ;
-                    byte     bytes[20]          ;
-                    const char* chars = (const char*) &bytes[0] ;
-                    io.seek(offset,BasicIo::beg);  // position
-                    io.read(bytes,jump    )     ;  // read
-                    bytes[jump]=0               ;
-                    if ( ::strcmp("Nikon",chars) == 0 ) {
-                        // tag is an embedded tiff
-                        byte* bytes=new byte[count-jump] ;  // allocate memory
-                        io.read(bytes,count-jump)        ;  // read
-                        MemIo memIo(bytes,count-jump)    ;  // create a file
-                        printTiffStructure(memIo,out,option,depth);
-                        delete[] bytes                   ;  // free
-                    } else {
-                        // tag is an IFD
-                        io.seek(0,BasicIo::beg);  // position
-                        printIFDStructure(io,out,option,offset,bSwap,c,depth);
-                    }
-
-                    io.seek(restore,BasicIo::beg); // restore
+                    Io io(io_,offset+punt,count-punt);
+                    TiffImage makerNote(io);
+                    makerNote.printStructure(out,option,joinDict(tagDict,makerDict_),depth);
                 }
             }
+            
+            if ( tag == 0x8825 ) std::cout << "found GPS" << std::endl;
 
             if ( isPrintXMP(tag,option) ) {
                 buf.pData_[count]=0;
@@ -902,18 +903,84 @@ void Image::printIFDStructure(BasicIo& io, std::ostream& out, Exiv2::PrintStruct
             }
         }
         if ( start ) {
-            io.read(dir.pData_, 4);
+            io_.read(dir.pData_, 4);
             start = tooBig ? 0 : byteSwap4(dir,0,bSwap);
         }
     } while (start) ;
 
     if ( bPrint ) {
-        out << Internal::indent(depth) << "END " << io.path() << std::endl;
+        out << indent(depth) << "END " << io_.path() << std::endl;
     }
     out.flush();
     depth--;
-}
+    
+    io_.seek(restore_at_start); // restore
+} // print IFD
 ```
+
+The code `tvisitor.cpp` is a standalone version of the function Image::printStructure() in the Exiv2 library.  It can be executed with four different options which are equivalent to exiv2 options:
+
+| _tvisitor option_ | _exiv2 option_ |
+|:--              |:-----        |
+| $ ./tvisitor path<br>$ ./tvisitor S path | $ exiv2 -pS path |
+| $ ./tvisitor R path   | $ exiv2 -pR path |
+| $ ./tvisitor X path   | $ exiv2 -pX path |
+| $ ./tvisitor I path   | $ exiv2 -pI path |
+
+Let's see the recursive version in action:
+
+```
+$ ./tvisitor R ~/Stonehenge.jpg 
+STRUCTURE OF JPEG FILE: /Users/rmills/Stonehenge.jpg
+ address | marker       |  length | data
+       0 | 0xffd8 SOI  
+       2 | 0xffe1 APP1  |   15288 | Exif__II*_.___._..._.___.___..._._
+  STRUCTURE OF TIFF FILE (II): /Users/rmills/Stonehenge.jpg:12->15280
+   address |    tag                              |      type |    count |    offset | value
+        10 | 0x010f Make                         |     ASCII |       18 |       146 | NIKON CORPORATION_
+        22 | 0x0110 Model                        |     ASCII |       12 |       164 | NIKON D5300_
+...
+       118 | 0x8769 ExifTag                      |      LONG |        1 |           | 222
+    STRUCTURE OF TIFF FILE (II): /Users/rmills/Stonehenge.jpg:12->15280
+     address |    tag                              |      type |    count |    offset | value
+         224 | 0x829a ExposureTime                 |  RATIONAL |        1 |       732 | 10/4000
+         236 | 0x829d FNumber                      |  RATIONAL |        1 |       740 | 100/10
+...
+         416 | 0x927c MakerNote                    | UNDEFINED |     3152 |       914 | Nikon_..__II*_.___9_._._.___0211 ...
+      STRUCTURE OF TIFF FILE (II): /Users/rmills/Stonehenge.jpg:12->15280:924->3142
+       address |    tag                              |      type |    count |    offset | value
+            10 | 0x0001 Version                      | UNDEFINED |        4 |           | 0211
+...
+    END /Users/rmills/Stonehenge.jpg:12->15280
+       130 | 0x8825 tag 34853 (0x8825)           |      LONG |        1 |           | 4060
+...
+      4410 | 0x0213 YCbCrPositioning             |     SHORT |        1 |           | 1
+  END /Users/rmills/Stonehenge.jpg:12->15280
+   15292 | 0xffe1 APP1  |    2610 | http://ns.adobe.com/xap/1.0/_<?xpa
+   17904 | 0xffed APP13 |      96 | Photoshop 3.0_8BIM.._____'..__._..
+   18002 | 0xffe2 APP2  |    4094 | MPF_II*_.___.__.._.___0100..._.___
+   22098 | 0xffdb DQT   |     132 
+   22232 | 0xffc0 SOF0  |      17 
+   22251 | 0xffc4 DHT   |     418 
+   22671 | 0xffda SOS  
+
+```
+You can see that he identifies the file as follows:
+```
+         416 | 0x927c MakerNote                    | UNDEFINED |     3152 |       914 | Nikon_..__II*_.___9_._._.___0211 ...
+      STRUCTURE OF TIFF FILE (II): /Users/rmills/Stonehenge.jpg:12->15280:924->3142
+       address |    tag                              |      type |    count |    offset | value
+            10 | 0x0001 Version                      | UNDEFINED |        4 |           | 0211
+...
+```
+He is working on an IFD which is located at bytes 12..15289.  The is the Tiff IFD.  While processing that, he encountered a MakerNote which occupies byte 924..3142 of that IFD.  As you can see, it four bytes `0211`.  You could locate that data with the command:
+
+```
+941 rmills@rmillsmbp:~/gnu/exiv2/team/book/build $ dd if=~/Stonehenge.jpg bs=1 skip=$((12+924+10+8)) count=4 2>/dev/null ; echo 
+0211
+942 rmills@rmillsmbp:~/gnu/exiv2/team/book/build $ 
+```
+Using dd to extract metadata is discussed in more detail here: [8.7 Using dd to extract data from an image](#8-7).
 
 [TOC](#TOC)
 
@@ -952,55 +1019,14 @@ const TagInfo gpsTagInfo[] = {
             gpsId, gpsTags, asciiString, 2, EXV_PRINT_TAG(exifGPSLatitudeRef)),
 ```
 
-As we can see, tag == 1 in the Nikon MakerNotes is Version, in Canon MakerNotes, it is CameraSettings and in GPSInfo, it is GPSLatitudeRef.  It means that we require a tag dictionary as we travel through the file.  
-
-```
-1262 rmills@rmillsmbp:~/gnu/github/exiv2/0.27-maintenance $ taglist all | grep -e $"\.Version$" -e "\.GPSLatitudeRef$" -e "\.CameraSettings$"
-GPSInfo.GPSLatitudeRef
-Canon.CameraSettings
-Nikon1.Version
-...
-1263 rmills@rmillsmbp:~/gnu/github/exiv2/0.27-maintenance $ 
-```
-
-Regrettably, printIFDStructure uses a single static dictionary Image::tags_;
-
-```
-const std::string& Image::tagName(uint16_t tag)
-{
-    if ( init_ ) {
-        int idx;
-        const TagInfo* ti ;
-        for (ti = Internal::  mnTagList(), idx = 0; ti[idx].tag_ != 0xffff; ++idx) tags_[ti[idx].tag_] = ti[idx].name_;
-        for (ti = Internal:: iopTagList(), idx = 0; ti[idx].tag_ != 0xffff; ++idx) tags_[ti[idx].tag_] = ti[idx].name_;
-        for (ti = Internal:: gpsTagList(), idx = 0; ti[idx].tag_ != 0xffff; ++idx) tags_[ti[idx].tag_] = ti[idx].name_;
-        for (ti = Internal:: ifdTagList(), idx = 0; ti[idx].tag_ != 0xffff; ++idx) tags_[ti[idx].tag_] = ti[idx].name_;
-        for (ti = Internal::exifTagList(), idx = 0; ti[idx].tag_ != 0xffff; ++idx) tags_[ti[idx].tag_] = ti[idx].name_;
-        for (ti = Internal:: mpfTagList(), idx = 0; ti[idx].tag_ != 0xffff; ++idx) tags_[ti[idx].tag_] = ti[idx].name_;
-        for (ti = Internal::Nikon1MakerNote::tagList(), idx = 0
-                                                ; ti[idx].tag_ != 0xffff; ++idx) tags_[ti[idx].tag_] = ti[idx].name_;
-    }
-    init_ = false;
-    return tags_[tag] ;
-}
-```
-
-The purpose in writing printIFDStructure was to understand how the metadata is stored and accessed in the file.  The correct fix for this is to pass the current stack of tag arrays to tagName() and that can't be achieved without modifying the API.
-
-```
-1267 rmills@rmillsmbp:~/gnu/github/exiv2/0.27-maintenance $ nm -g --demangle  build/lib/libexiv2.27.dylib | grep tagName
-0000000000084910 T Exiv2::Image::tagName(unsigned short)
-00000000000df440 T Exiv2::XmpKey::tagName() const
-...
-1268 rmills@rmillsmbp:~/gnu/github/exiv2/0.27-maintenance $ 
-```
-
-It would be possible to "high jack" the init_ variable to get it to rebuild tags_ appropriately.  I don't think this is worth the effort.  Modifying the API of tagName() in v0.28 is a better worth approach.  Additionally, tagName() is not threadsafe.
+As we can see, tag == 1 in the Nikon MakerNotes is Version.  In Canon MakerNotes, it is CameraSettings.  IN GPSInfo it is GPSLatitudeRef.  It need to modify the tag tag dictionary as we travel through the file.  This is achieved in printIFD by calling joinDict to modify the dictionary for the IFD being parsed.
 
 
 [TOC](#TOC)
 <div id="8-7">
 ### 8.7 Using dd to extract data from an image
+
+The exiv2 option `-pS` prints the structure of an image.
 
 ```
 $ exiv2 -pS ~/Stonehenge.jpg 
@@ -1018,15 +1044,16 @@ STRUCTURE OF JPEG FILE: /Users/rmills/Stonehenge.jpg
 $
 ```
 
-We can see that the Exif metadata is stored at offset=2+2+2+6 and has length 15288-offset.  We can extract that file as follows:
+We can see that the Exif metadata is stored at offset=2+2+2+6 and has length 15288-offset.  We can extract that as follows:
 
 ```
-dd if=~/Stonehenge.jpg count=$((15288-(2+2+2+6))) bs=1 skip=$((2+2+2+6)) > foo.tif
+$ dd if=~/Stonehenge.jpg count=$((15288-(2+2+2+6))) bs=1 skip=$((2+2+2+6)) > foo.tif
 15276+0 records in
 15276+0 records out
 15276 bytes transferred in 0.102577 secs (148922 bytes/sec)
-$ dmpf foo.tif | head -1
-       0        0: II*.............................  ->  49 49 2a 00 08 00 00 00 0b 00 0f 01 02 00 12 00 00 00 92 00 00 00 10 01 02 00 0c 00 00 00 a4 00
+$ dd if=~/Stonehenge.jpg count=$((15288-(2+2+2+6))) bs=1 skip=$((2+2+2+6)) | dmpf - | head -1
+       0        0: II*_.___._..._.___.___..._.___._  ->  49 49 2a 00 08 00 ...
+915 rmills@rmillsmbp:~/gnu/exiv2/team/book $ 
 $ file foo.tif
 foo.tif: TIFF image data, little-endian, direntries=11, manufacturer=NIKON CORPORATION, model=NIKON D5300, orientation=upper-left, xresolution=176, yresolution=184, resolutionunit=2, software=Ver.1.00 , datetime=2015:07:16 20:25:28, GPS-Data
 $ exiv2 -pa foo.tif 
@@ -1046,13 +1073,30 @@ Using `dd` is a useful trick to recover data which be easily seen in the file, h
 You can extract and inspect the metadata with this single _rather elegant_ command:
 
 ```
-$ dd if=~/Stonehenge.jpg count=$((15288-(2+2+2+6))) bs=1 skip=$((2+2+2+6)) | exiv2 -pa - | head -3
+$ dd if=~/Stonehenge.jpg count=$((15288-(2+2+2+6))) bs=1 skip=$((2+2+2+6)) 2>/dev/null | exiv2 -pa - 2>/dev/null| head -3
 Exif.Image.Make                              Ascii      18  NIKON CORPORATION
 Exif.Image.Model                             Ascii      12  NIKON D5300
 Exif.Image.Orientation                       Short       1  top, left
 $
 ```
 
+The exiv2 command `exiv2 -pS image` reveals the structure of a file with `|` separated fields.  The data is presented to look nice.  However it's also very convenient for parsing in bash with the utility `cut`:
+
+```
+$ image=~/Stonehenge.jpg
+$ exiv2 -pS $image 2>/dev/null | grep APP1 | grep Exif
+$        2 | 0xffe1 APP1  |   15288 | Exif..II*......................
+$ line=$(exiv2 -pS ~/Stonehenge.jpg 2>/dev/null | grep APP1 | grep Exif )
+$ start=$(echo $line|cut  -d'|' -f 1)
+$ count=$(echo $line|cut  -d'|' -f 3)
+$ dd if=$image count=$((count-10)) bs=1 skip=$((start+10)) 2>/dev/null | exiv2 -pa - 2>/dev/null | head -3
+Exif.Image.Make                              Ascii      18  NIKON CORPORATION
+Exif.Image.Model                             Ascii      12  NIKON D5300
+Exif.Image.Orientation                       Short       1  top, left
+$
+```
+
+You may be interested to discover that option `-pS` option which arrived with Exiv2 v0.25 was joined in Exiv2 v0.26 by `-pR`.  This is a "recursive" version of -pS.  Internally, it dumps the structure not only of the file, but also every subfiles (mostly tiff IFDs).  The is discussed in detail here: [8.5 printIFDStructure](#8-5).
 
 [TOC](#TOC)
 <div id="9">
@@ -1267,6 +1311,7 @@ To be written.
 <div id="12">
 # 12 Project Management, Release Engineering, User Support
 
+<div id="12-1">
 ### 12.1) C++ Code
 
 Exiv2 is written in C++.  Prior to v0.28, the code is written for C++ 1998 and makes considerable use of STL containers such as vector, map, set, string and many others.  The code started life as a 32-bit library on Unix and today builds well for 32 and 64 bit systems running Linux, Unix, macOS and Windows (Cygwin, MinGW, and Visual Studio).  The Exiv2 project has never supported Mobile Platforms or Embedded Systems, however it should be possible to build for other platforms with a modest effort.
@@ -1275,55 +1320,140 @@ The code has taken a great deal of inspiration from the book [Design Patterns: E
 
 Starting with Exiv2 v0.28, the code requires a C++11 Compiler.  Exiv2 v0.28 is a major refactoring of the code and provides a new API.  The project maintains a series of v0.27 "dot" releases for security updates.  These releases are intended to ease the transition of existing applications in adapting to the new APIs in the v0.28.
 
+<div id="12-2">
 ### 12.2) Build
 
 The build code in Exiv2 is implemented using CMake: cross platform make.  This system enables the code to be built on many different platforms in a consistant manner.  CMake recursively reads the files CMakeLists.txt in the source tree and generates build environments for different build systems.  For Exiv2, we actively support using CMake to build on Unix type plaforms (Linux, macOS, Cygwin and MinGW, NetBSD, Solaris and FreeBSD), and several editions of Visual Studio.  CMake can generate project files for Xcode and other popular IDEs.
 
 Exiv2 has dependencies on other libraries.
 
+[TOC](#TOC)
+<div id="12-3">
 ### 12.3) Security
 
+To be written.
+
+[TOC](#TOC)
+<div id="12-4">
 ### 12.4) Documentation
 
+To be written.
+
+[TOC](#TOC)
+<div id="12-5">
 ### 12.5) Testing
 
+To be written.
+
+[TOC](#TOC)
+<div id="12-6">
 ### 12.6) Sample programs
 
+To be written.
+
+[TOC](#TOC)
+<div id="12-7">
 ### 12.7) User Support
 
+To be written.
+
+[TOC](#TOC)
+<div id="12-8">
 ### 12.8) Bug Tracking
 
+To be written.
+
+[TOC](#TOC)
+<div id="12-9">
 ### 12.9) Release Engineering
 
+To be written.
+
+[TOC](#TOC)
+<div id="12-10">
 ### 12.10) Platform Support
 
+To be written.
+
+[TOC](#TOC)
+<div id="12-11">
 ### 12.11) Localisation
 
+To be written.
+
+[TOC](#TOC)
+<div id="12-12">
 ### 12.12) Build Server
 
+To be written.
+
+[TOC](#TOC)
+<div id="12-13">
 ### 12.13) Source Code Management
 
+To be written.
+
+[TOC](#TOC)
+<div id="12-14">
 ### 12.14) Project Web Site
 
+To be written.
+
+[TOC](#TOC)
+<div id="12-15">
 ### 12.15) Project Servers (apache, SVN, GitHub, Redmine)
 
+To be written.
+
+[TOC](#TOC)
+<div id="12-16">
 ### 12.16) API Management
 
+To be written.
+
+[TOC](#TOC)
+<div id="12-17">
 ### 12.17) Recruiting Contributors
 
+To be written.
+
+[TOC](#TOC)
+<div id="12-18">
 ### 12.18) Project Management and Scheduling
 
+To be written.
+
+[TOC](#TOC)
+<div id="12-19">
 ### 12.19) Enhancement Requests
 
+To be written.
+
+[TOC](#TOC)
+<div id="12-2">
 ### 12.20) Tools
 
 Every year brings new/different tools (cmake, git, MarkDown, C++11)
 
+To be written.
+
+[TOC](#TOC)
+<div id="12-21">
 ### 12.21) Licensing
 
+To be written.
+
+[TOC](#TOC)
+<div id="12-22">
 ### 12.22) Back-porting fixes to earlier releases
 
+To be written.
+
+[TOC](#TOC)
+<div id="12-23">
 ### 12.23) Other projects demanding support and changes
+
+To be written.
 
 [TOC](#TOC)
 <div id="13">
@@ -1360,7 +1490,7 @@ void syntax()
 	printf("syntax: dmpf [-option]+ filename\n") ;
 }
 
-bool printable(unsigned char c) { return c >= 32 && c < 127 && c != '.' ; }
+unsigned char print(unsigned char c) { return c >= 32 && c < 127 ? c : c==0 ? '_' : '.' ; }
 
 int main(int argc, char* argv[])
 {
@@ -1396,7 +1526,7 @@ int main(int argc, char* argv[])
 			for ( int i = 0 ; i < n ; i++ )
 			{
 				char c = buff[i] ;
-		        l += sprintf(line+l,"%c", printable(c) ? c : '.' ) ;
+		        l += sprintf(line+l,"%c", print(c)) ;
 			}
 			// blank pad the ascii
 			int save = n ;
