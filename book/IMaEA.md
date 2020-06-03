@@ -732,34 +732,26 @@ It's important to realise that metadata is defined recursively.  In a Tiff File,
 The printIFD() parser uses a simple direct approach to parsing the tiff file.  When another IFD is located, printIFD is called recursively.  As a TIFF file is a header, followed by an IFD, we can descend into the tiff file from the beginning.  For other files types, the file handler has to find the Exif IFD and then call printIFDStructure().
 
 ```
-void TiffImage::printIFD(std::ostream& out, PSopt_e option,size_t start,bool bSwap,char c,int depth,const TagDict& tagDict)
+void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,const TagDict& tagDict,bool bHasNext)
 {
-    bool     bFirst  = true  ;
     size_t   restore_at_start = io_.tell();
-
     depth++;
     if ( depth == 1 ) visits_.clear();
+    
+    v.visitBegin(*this,depth); // tell the visitor
+    
     // buffer
     const size_t dirSize = 32;
     DataBuf  dir(dirSize);
-    bool bPrint = option == kpsBasic || option == kpsRecursive;
 
     do {
         // Read top of directory
         io_.seek(start);
-        const long bytesRead  = io_.read(dir.pData_, 2);
-        if ( bytesRead != 2) {
-            Error(kerCorruptedMetadata);
-        }
-        uint16_t   dirLength = byteSwap2(dir,0,bSwap);
+        io_.read(dir.pData_, 2);
 
+        uint16_t dirLength = getShort(dir,0,endian_);
         bool tooBig = dirLength > 500;
         if ( tooBig ) Error(kerTiffDirectoryTooLarge);
-
-        if ( bFirst && bPrint ) {
-            out << indent(depth) << stringFormat("STRUCTURE OF TIFF FILE (%c%c): ",c,c) << io_.path() << std::endl;
-            if ( tooBig ) out << indent(depth) << "dirLength = " << dirLength << std::endl;
-        }
 
         // Read the dictionary
         for ( int i = 0 ; i < dirLength ; i ++ ) {
@@ -767,155 +759,70 @@ void TiffImage::printIFD(std::ostream& out, PSopt_e option,size_t start,bool bSw
                 Error(kerCorruptedMetadata);
             }
             visits_.insert(io_.tell());
-            
-            if ( bFirst && bPrint ) {
-                out << indent(depth)
-                    << " address |    tag                              |     "
-                    << " type |    count |    offset | value\n";
-            }
-            bFirst = false;
+            const size_t address = start + 2 + i*12 ;
 
             io_.read(dir.pData_, 12);
-            uint16_t tag    = byteSwap2(dir,0,bSwap);
-            uint16_t type   = byteSwap2(dir,2,bSwap);
-            uint32_t count  = byteSwap4(dir,4,bSwap);
-            uint32_t offset = byteSwap4(dir,8,bSwap);
+            uint16_t tag    = getShort(dir,0,endian_);
+            type_e   type   = (type_e) getShort(dir,2,endian_);
+            uint32_t count  = getLong (dir,4,endian_);
+            uint32_t offset = getLong (dir,8,endian_);
 
-            // Break for unknown tag types else we may segfault.
             if ( !typeValid(type) ) {
                 std::cerr << "invalid type in tiff structure" << type << std::endl;
-                start = 0; // break from do loop
                 Error(kerInvalidTypeValue);
             }
 
-            std::string sp  = "" ; // output spacer
-
-            //prepare to print the value
-            uint32_t kount  = isPrintXMP(tag,option) ? count // haul in all the data
-                            : isPrintICC(tag,option) ? count // ditto
-                            : isStringType(type)     ? (count > 32 ? 32 : count) // restrict long arrays
-                            : count > 5              ? 5
-                            : count
-                            ;
-            uint32_t pad    = isStringType(type) ? 1 : 0;
-            uint32_t size   = isStringType(type) ? 1
-                            : is2ByteType(type)  ? 2
-                            : is4ByteType(type)  ? 4
-                            : is8ByteType(type)  ? 8
-                            : 1
-                            ;
-
+            uint16_t pad    = isStringType(type) ? 1 : 0;
+            uint16_t size   = typeSize(type);
             size_t allocate = size*count + pad+20;
-            if ( allocate > io_.size() ) {
+            if (   allocate > io_.size() ) {
                 Error(kerInvalidMalloc);
             }
-            DataBuf  buf(allocate);              // allocate a buffer
-            std::memset(buf.pData_, 0, buf.size_);
+            DataBuf  buf(allocate);                  // allocate a buffer
             std::memcpy(buf.pData_,dir.pData_+8,4);  // copy dir[8:11] into buffer (short strings)
-            const bool bOffsetIsPointer = count*size > 4;
 
-            if ( bOffsetIsPointer ) {            // read into buffer
-                size_t   restore = io_.tell();   // save
-                io_.seek(offset);                // position
-                io_.read(buf.pData_,count*size); // read
-                io_.seek(restore);               // restore
-            }
-            
-            if ( depth == 1 && tag == 0x010f /* Make */ ) {
-                maker_ = buf.strequals("Canon"            )? kCanon
-            	       : buf.strequals("NIKON CORPORATION")? kNikon
-            	       : maker_
-            	       ;
-                switch ( maker_ ) {
-                    case kCanon : makerDict_ = copyDict(canonDict) ; break;
-                    case kNikon : makerDict_ = copyDict(nikonDict) ; break;
-                    default : /* do nothing */                     ; break;
+            if ( depth == 1 && tag == 0x010f /* Make */ ) setMaker(buf);
+
+            v.visitTag(*this,depth,address,tag,type,count,offset,tagDict,buf); // tell the visitor
+
+            // these tags are IFDs, not a embedded TIFF
+            if ( v.option() == kpsRecursive && (tag == 0x8769 /* ExifTag */ 
+            || tag == 0x014a /*SubIFDs*/  || tag == 0x8825 /* GPSTag */ || type == tiffIfd) ) {
+                TagDict  useDict = tag == 0x8769 ? copyDict(exifDict) // joinDict( tagDict,exifDict  )
+                                 : tag == 0x8825 ? copyDict(gpsDict)  // joinDict( tagDict,gpsDict   )
+                                 : tag == 0x927c ? copyDict(makerDict_) // joinDict( tagDict,makerDict_)
+                                 :                 copyDict(tagDict)
+                                 ;
+                for ( size_t k = 0 ; k < count ; k++ ) {
+                    uint32_t offset  = getLong(buf,k*size,endian_);
+                    tourIFD(v,offset,endian_,depth,useDict);
                 }
-            }
-
-            if ( bPrint ) {
-                const size_t address = start + 2 + i*12 ;
-                const std::string offsetString = bOffsetIsPointer?
-                    stringFormat("%10u", offset):
-                    "";
-
-                out << indent(depth)
-                << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
-                                          ,address,tag,tagName(tag,tagDict).c_str(),typeName(type),count,offsetString.c_str());
-                if ( isShortType(type) ){
-                    for ( size_t k = 0 ; k < kount ; k++ ) {
-                        out << sp << byteSwap2(buf,k*size,bSwap);
-                        sp = " ";
-                    }
-                } else if ( isLongType(type) ){
-                    for ( size_t k = 0 ; k < kount ; k++ ) {
-                        out << sp << byteSwap4(buf,k*size,bSwap);
-                        sp = " ";
-                    }
-                } else if ( isRationalType(type) ){
-                    for ( size_t k = 0 ; k < kount ; k++ ) {
-                        uint32_t a = byteSwap4(buf,k*size+0,bSwap);
-                        uint32_t b = byteSwap4(buf,k*size+4,bSwap);
-                        out << sp << a << "/" << b;
-                        sp = " ";
-                    }
-                } else if ( isStringType(type) ) {
-                    out << sp << binaryToString(buf, 0, kount);
-                }
-
-                sp = kount == count ? "" : " ...";
-                out << sp << std::endl;
-                
-                if ( option == kpsRecursive && (tag == 0x8769 /* ExifTag */ || tag == 0x014a /*SubIFDs*/  || tag == 0x8825 /* GPSTag */ || type == tiffIfd) ) {
-                    // these tags are IFDs, not a embedded TIFF
-                    TagDict useDict = tag == 0x8769 ? joinDict( tagDict,exifDict  )
-                                    : tag == 0x8825 ? joinDict( tagDict,gpsDict   )
-                                    : tag == 0x927c ? joinDict( tagDict,makerDict_)
-                                    :                 copyDict( tagDict)
-                                    ;
-
-                    for ( size_t k = 0 ; k < count ; k++ ) {
-                        uint32_t offset  = byteSwap4(buf,k*size,bSwap);
-                        printIFD(out,option,offset,bSwap,c,depth,useDict);
-                    }
-                } else if ( option == kpsRecursive && tag == 0x83bb /* IPTCNAA */ ) {
-                    // This is an IPTC tag
-                } else if ( option == kpsRecursive && tag == 0x927c /* MakerNote */ && count > 10) {
-                    // MakerNote is not and IFD, it's an emabedd tiff `II*_.....`
-                    size_t punt = 0 ;
-                    if ( buf.strequals("Nikon")) {
-                        punt = 10;
-                    }
+            } else if ( v.option() == kpsRecursive && tag == 0x927c /* MakerNote */ ) {
+                // Nikon MakerNote is not and IFD, it's an emabedd tiff `II*_.....`
+                if ( maker_ == kSony && buf.strequals("SONY DSC ") ) {
+                    // Sony MakerNote IFD does not have a next pointer.
+                    size_t punt   = 12 ;
+                    tourIFD(v,offset+punt,endian_,depth,sonyDict,false);
+                } else {
+                    size_t punt = buf.strequals("Nikon") ? 10 : 0 ;
                     Io io(io_,offset+punt,count-punt);
                     TiffImage makerNote(io);
-                    makerNote.printStructure(out,option,joinDict(tagDict,makerDict_),depth);
+                    makerNote.tourFile(v,makerDict_,depth);
                 }
             }
-            
-            if ( tag == 0x8825 ) std::cout << "found GPS" << std::endl;
-
-            if ( isPrintXMP(tag,option) ) {
-                buf.pData_[count]=0;
-                out << (char*) buf.pData_;
-            }
-            if ( isPrintICC(tag,option) ) {
-                out.write((const char*)buf.pData_,count);
-            }
-        }
-        if ( start ) {
+        } // while i < dirLength;
+        if ( bHasNext ) {
             io_.read(dir.pData_, 4);
-            start = tooBig ? 0 : byteSwap4(dir,0,bSwap);
+            start = getLong(dir,0,endian_);
+        } else {
+            start=0;// stop!
         }
     } while (start) ;
-
-    if ( bPrint ) {
-        out << indent(depth) << "END " << io_.path() << std::endl;
-    }
-    out.flush();
+    v.visitEnd(*this,depth); // tell the visitor
     depth--;
     
     io_.seek(restore_at_start); // restore
-} // print IFD
+} // tourIFD
 ```
 
 The code `tvisitor.cpp` is a standalone version of the function Image::printStructure() in the Exiv2 library.  It can be executed with four different options which are equivalent to exiv2 options:

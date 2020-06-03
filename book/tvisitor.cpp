@@ -16,6 +16,18 @@ enum endian_e
 {   kEndianLittle
 ,   kEndianBig
 };
+bool isPlatformBigEndian()
+{
+    union {
+        uint32_t i;
+        char c[4];
+    } e = { 0x01000000 };
+
+    return e.c[0]?true:false;
+}
+bool   isPlatformLittleEndian() { return !isPlatformBigEndian(); }
+endian_e platformEndian() { return isPlatformBigEndian() ? kEndianBig : kEndianLittle; }
+
 
 enum type_e
 {   typeMin            = 0,
@@ -52,10 +64,147 @@ enum type_e
     lastTypeId    =0x1ffff  //!< Last type id.
 };
 
+class DataBuf
+{
+public:
+    byte*   pData_;
+    size_t  size_ ;
+    DataBuf(size_t size)
+    : pData_(NULL)
+    , size_(size)
+    {
+        pData_ = new byte[size_];
+        if ( pData_) {
+            std::memset(pData_, 0,size_);
+        }
+    }
+    virtual ~DataBuf()
+    {
+        if ( pData_ ) {
+            delete pData_ ;
+            pData_ = NULL ;
+        }
+        size_ = 0 ;
+    }
+    int  strcmp   (const char* str) { return ::strcmp((const char*)pData_,str);}
+    bool strequals(const char* str) { return strcmp(str)==0                   ;}
+};
+
+bool isStringType(type_e type)
+{
+    return type == asciiString
+        || type == unsignedByte
+        || type == signedByte
+        || type == undefined
+        ;
+}
+bool isShortType(type_e type) {
+     return type == unsignedShort
+         || type == signedShort
+         ;
+}
+bool isLongType(type_e type) {
+     return type == unsignedLong
+         || type == signedLong
+         ;
+}
+bool isLongLongType(type_e type) {
+    return type == unsignedLongLong
+        || type == signedLongLong
+        ;
+}
+bool isRationalType(type_e type) {
+     return type == unsignedRational
+         || type == signedRational
+         ;
+}
+bool is2ByteType(type_e type)
+{
+    return isShortType(type);
+}
+bool is4ByteType(type_e type)
+{
+    return isLongType(type)
+        || type == tiffFloat
+        || type == tiffIfd
+        ;
+}
+bool is8ByteType(type_e type)
+{
+    return  isRationalType(type)
+         || isLongLongType(type)
+         || type == tiffIfd8
+         || type == tiffDouble
+         ;
+}
+uint16_t typeSize(type_e type)
+{
+    return isStringType(type) ? 1
+        :  is2ByteType(type)  ? 2
+        :  is4ByteType(type)  ? 4
+        :  is8ByteType(type)  ? 8
+        :  1 ;
+}
+uint64_t byteSwap(uint64_t value,bool bSwap,uint16_t n)
+{
+    uint64_t result = 0;
+    byte* source_value      = reinterpret_cast<byte *>(&value);
+    byte* destination_value = reinterpret_cast<byte *>(&result);
+
+    for (int i = 0; i < n; i++)
+        destination_value[i] = source_value[n - i - 1];
+
+    return bSwap ? result : value;
+}
+
+uint16_t getShort(const DataBuf& buf,size_t offset,endian_e endian)
+{
+    uint16_t v;
+    char*    p = (char*) &v;
+    p[0] = buf.pData_[offset+0];
+    p[1] = buf.pData_[offset+1];
+    bool bSwap = endian != ::platformEndian();
+    return (uint16_t) byteSwap(v,bSwap,2);
+}
+type_e getType(const DataBuf& buf,size_t offset,endian_e endian)
+{
+    return (type_e) getShort(buf,offset,endian);
+}
+
+uint32_t getLong(const DataBuf& buf,size_t offset,endian_e endian)
+{
+    uint32_t v;
+    char*    p = (char*) &v;
+    p[0] = buf.pData_[offset+0];
+    p[1] = buf.pData_[offset+1];
+    p[2] = buf.pData_[offset+2];
+    p[3] = buf.pData_[offset+3];
+    bool bSwap = endian != ::platformEndian();
+    return (uint32_t)byteSwap(v,bSwap,4);
+}
+
+uint64_t getLongLong(const DataBuf& buf,size_t offset,endian_e endian)
+{
+    uint64_t v;
+    byte*    p = reinterpret_cast<byte *>(&v);
+    p[0] = buf.pData_[offset+0];
+    p[1] = buf.pData_[offset+1];
+    p[2] = buf.pData_[offset+2];
+    p[3] = buf.pData_[offset+3];
+    p[4] = buf.pData_[offset+4];
+    p[5] = buf.pData_[offset+5];
+    p[6] = buf.pData_[offset+6];
+    p[7] = buf.pData_[offset+7];
+    bool bSwap = endian != ::platformEndian();
+    return byteSwap (v,bSwap,8);
+}
+
+
+
 enum maker_e
-{    kUnknown
-,    kCanon
-,    kNikon
+{   kUnknown
+,   kCanon
+,   kNikon
 ,   kSony
 };
 
@@ -108,32 +257,6 @@ void Error (error_e error)
     Error(error,"");
 }
 
-class DataBuf
-{
-public:
-    byte*   pData_;
-    size_t  size_ ;
-    DataBuf(size_t size)
-    : pData_(NULL)
-    , size_(size)
-    {
-        pData_ = new byte[size_];
-        if ( pData_) {
-            std::memset(pData_, 0,size_);
-        }
-    }
-    virtual ~DataBuf()
-    {
-        if ( pData_ ) {
-            delete pData_ ;
-            pData_ = NULL ;
-        }
-        size_ = 0 ;
-    }
-    int  strcmp   (const char* str) { return ::strcmp((const char*)pData_,str);}
-    bool strequals(const char* str) { return strcmp(str)==0                   ;}
-};
-
 std::string indent(size_t s)
 {
     std::string result ;
@@ -169,7 +292,7 @@ std::string stringFormat(const char* format, ...)
     return result;
 }
 
-std::string binaryToString(byte* b,size_t start,size_t size)
+std::string binaryToString(const byte* b,size_t start,size_t size)
 {
     std::string result;
     size_t i    = start;
@@ -183,7 +306,7 @@ std::string binaryToString(byte* b,size_t start,size_t size)
     return result;
 }
 
-std::string binaryToString(DataBuf& dataBuf,size_t start,size_t size)
+std::string binaryToString(const DataBuf& dataBuf,size_t start,size_t size)
 {
     return binaryToString(dataBuf.pData_,start,size);
 }
@@ -311,6 +434,7 @@ private:
 
 // 1.  declare types
 class   Image; // forward
+class   TiffImage;
 
 // 2. Create abstract "visitor" base class with an element visit() method
 class Visitor
@@ -322,7 +446,7 @@ public:
     {};
     virtual void visitBegin(Image& image,int depth) = 0 ;
     virtual void visitEnd  (Image& image,int depth) = 0 ;
-    virtual void visitTag  (Image& image,int depth,size_t address,uint16_t tag,const TagDict& tagDict,type_e type,uint16_t count,const std::string& offsetString,const std::string& value,const DataBuf& buf)=0;
+    virtual void visitTag  (Image& image,int depth,size_t address,const TagDict& tagDict)=0;
     PSopt_e option()    { return option_ ; }
     std::ostream& out() { return out_    ; }
 public:
@@ -351,16 +475,22 @@ public:
     }
     virtual ~Image() { io_.close() ; }
     bool good()        { return good_ && io_.good() ; }
-    bool valid()       { return false ; }
-    std::string path() { return path_ ; }
+    bool valid()       { return false  ; }
+    std::string path() { return path_  ; }
     endian_e  endian() { return endian_; }
+    Io&       io()     { return io_    ; }
     
     void accept(class Visitor& v);
     
-    virtual void printStructure(Visitor& v,const TagDict& tagDict,int depth = 0) =0;
-    virtual void printIFD      (Visitor& v,size_t start,endian_e endian,int depth,const TagDict& tagDict,bool bHasNext=true)=0;
+    virtual void tourTiff(Visitor& v,const TagDict& tagDict,int depth = 0) =0;
+    virtual void tourIFD (Visitor& v,size_t start,endian_e endian,int depth,const TagDict& tagDict,bool bHasNext=true)=0;
     friend class TiffImage;
     friend class JpegImage;
+    friend class Visitor  ;
+    friend class StructureVisitor;
+    friend class RecursiveVisitor;
+    friend class XMPVisitor;
+    friend class ICCVisitor;
 
 private:
     std::set<size_t>    visits_;
@@ -373,53 +503,6 @@ private:
     endian_e            endian_;
     std::string         path_;
     
-    bool isStringType(uint16_t type)
-    {
-        return type == asciiString
-            || type == unsignedByte
-            || type == signedByte
-            || type == undefined
-            ;
-    }
-    bool isShortType(uint16_t type) {
-         return type == unsignedShort
-             || type == signedShort
-             ;
-    }
-    bool isLongType(uint16_t type) {
-         return type == unsignedLong
-             || type == signedLong
-             ;
-    }
-    bool isLongLongType(uint16_t type) {
-        return type == unsignedLongLong
-            || type == signedLongLong
-            ;
-    }
-    bool isRationalType(uint16_t type) {
-         return type == unsignedRational
-             || type == signedRational
-             ;
-    }
-    bool is2ByteType(uint16_t type)
-    {
-        return isShortType(type);
-    }
-    bool is4ByteType(uint16_t type)
-    {
-        return isLongType(type)
-            || type == tiffFloat
-            || type == tiffIfd
-            ;
-    }
-    bool is8ByteType(uint16_t type)
-    {
-        return isRationalType(type)
-             || isLongLongType(type)
-             || type == tiffIfd8
-             || type == tiffDouble
-            ;
-    }
     bool isPrintXMP(uint16_t type, PSopt_e option)
     {
         return type == 700 && option == kpsXMP;
@@ -429,78 +512,34 @@ private:
         return type == 0x8773 && option == kpsIccProfile;
     }
 
-    bool isPlatformBigEndian()
-    {
-        union {
-            uint32_t i;
-            char c[4];
-        } e = { 0x01000000 };
-
-        return e.c[0]?true:false;
-    }
-    bool   isPlatformLittleEndian() { return !isPlatformBigEndian(); }
-    endian_e platformEndian() { return isPlatformBigEndian() ? kEndianBig : kEndianLittle; }
-
-    uint64_t byteSwap(uint64_t value,bool bSwap,uint16_t n) const
-    {
-        uint64_t result = 0;
-        byte* source_value      = reinterpret_cast<byte *>(&value);
-        byte* destination_value = reinterpret_cast<byte *>(&result);
-
-        for (int i = 0; i < n; i++)
-            destination_value[i] = source_value[n - i - 1];
-
-        return bSwap ? result : value;
-    }
-
-    uint16_t getShort(const DataBuf& buf,size_t offset,bool bSwap) const
-    {
-        uint16_t v;
-        char*    p = (char*) &v;
-        p[0] = buf.pData_[offset+0];
-        p[1] = buf.pData_[offset+1];
-        return (uint16_t) byteSwap(v,bSwap,2);
-    }
-
-    uint32_t getLong(const DataBuf& buf,size_t offset,bool bSwap) const
-    {
-        uint32_t v;
-        char*    p = (char*) &v;
-        p[0] = buf.pData_[offset+0];
-        p[1] = buf.pData_[offset+1];
-        p[2] = buf.pData_[offset+2];
-        p[3] = buf.pData_[offset+3];
-        return (uint32_t)byteSwap(v,bSwap,4);
-    }
-
-    uint64_t getLongLong(const DataBuf& buf,size_t offset,bool bSwap) const
-    {
-        uint64_t v;
-        byte*    p = reinterpret_cast<byte *>(&v);
-        p[0] = buf.pData_[offset+0];
-        p[1] = buf.pData_[offset+1];
-        p[2] = buf.pData_[offset+2];
-        p[3] = buf.pData_[offset+3];
-        p[4] = buf.pData_[offset+4];
-        p[5] = buf.pData_[offset+5];
-        p[6] = buf.pData_[offset+6];
-        p[7] = buf.pData_[offset+7];
-        return byteSwap (v,bSwap,8);
-    }
-
     static bool typeValid(type_e type)
     {
         return type  > typeMin  && type <  typeMax
             && type != typeNot1 && type != typeNot2
         ;
     }
+    
+    void setMaker(DataBuf& buf)
+    {
+        maker_ = buf.strequals("Canon"            )? kCanon
+               : buf.strequals("NIKON CORPORATION")? kNikon
+               : buf.strequals("SONY")             ? kSony
+               : maker_
+               ;
+        switch ( maker_ ) {
+            case kCanon : makerDict_ = copyDict(canonDict) ; break;
+            case kNikon : makerDict_ = copyDict(nikonDict) ; break;
+            case kSony  : makerDict_ = copyDict(sonyDict ) ; break;
+            default : /* do nothing */                     ; break;
+        }
+    } // setMaker
 };
 
 // 4. Create concrete "visitors"
-class DumpVisitor: public Visitor
+class StructureVisitor: public Visitor
 {
 public:
-    DumpVisitor(std::ostream& out, PSopt_e option)
+    StructureVisitor(std::ostream& out, PSopt_e option)
     : Visitor(out,option)
     {}
     void visitBegin(Image& image,int depth)
@@ -517,17 +556,63 @@ public:
     ( Image&                image
     , int                   depth
     , size_t                address
-    , uint16_t              tag
     , const TagDict&        tagDict
-    , type_e                type
-    , uint16_t              count
-    , const std::string&    offsetString
-    , const std::string&    value
-    , const DataBuf&        buf
     ) {
+        endian_e endian = image.endian();
+        Io& io = image.io();
+        
+        size_t restore = io.tell(); // save io position
+        io.seek(address);
+        DataBuf tiffTag(12);
+        io.read(tiffTag);
+        uint16_t tag    = getShort(tiffTag,0,endian);
+        type_e   type   = getType(tiffTag,2,endian);
+        uint32_t count  = getLong(tiffTag,4,endian);
+        size_t   offset = ::getLong(tiffTag,8,endian);
+        uint16_t size   = ::typeSize(type);
+
+        // allocate a buff and read the data
+        DataBuf buf(count*size);
+        std::string offsetString ;
+        if ( count*size > 4 ) {               // read into buffer
+            io.seek(offset);                  // position
+            io.read(buf.pData_,count*size);   // read
+        } else {
+            offsetString = stringFormat("%10u", offset);
+        }
+        io.seek(restore);                 // restore
+        
+        // format the output
         std::string name = ::tagName(tag,tagDict);
         if ( name.size() > 28) {
             name = name.substr(0,26)+"..";
+        }
+        std::ostringstream os;
+        std::string sp;
+        if ( isShortType(type) ){
+            for ( size_t k = 0 ; k < count ; k++ ) {
+                os << sp << ::getShort(buf,k*size,endian);
+                sp = " ";
+            }
+        } else if ( isLongType(type) ){
+            for ( size_t k = 0 ; k < count ; k++ ) {
+                os << sp << ::getLong(buf,k*size,endian);
+                sp = " ";
+            }
+        } else if ( isRationalType(type) ){
+            for ( size_t k = 0 ; k < count ; k++ ) {
+                uint32_t a = ::getLong(buf,k*size+0,endian);
+                uint32_t b = ::getLong(buf,k*size+4,endian);
+                os << sp << a << "/" << b;
+                sp = " ";
+            }
+        } else if ( isStringType(type) ) {
+            os << sp << binaryToString(buf, 0, (size_t)count);
+        }
+        
+        std::string value = os.str();
+        if ( value.size() > 40 ) {
+            value = value.substr(0,36) + " +++";
         }
 
         out_ << indent(depth)
@@ -543,14 +628,44 @@ public:
     }
 };
 
+class XMPVisitor: public Visitor
+{
+public:
+    XMPVisitor(std::ostream& out, PSopt_e option)
+    : Visitor(out,option)
+    {}
+    void visitBegin(Image& image,int depth)
+    {
+    }
+    void visitTag( Image&  image, int depth, size_t address,const TagDict& tagDict) {
+    }
+    void visitEnd(Image& image,int depth)
+    {
+    }
+};
+class ICCVisitor: public Visitor
+{
+public:
+    ICCVisitor(std::ostream& out, PSopt_e option)
+    : Visitor(out,option)
+    {}
+    void visitBegin(Image& image,int depth)
+    {
+    }
+    void visitTag( Image&  image, int depth, size_t address,const TagDict& tagDict) {
+    }
+    void visitEnd(Image& image,int depth)
+    {
+    }
+};
 
 class TiffImage : public Image
 {
 public:
     TiffImage(std::string path) : Image(path) {}
     TiffImage(Io& io) : Image(io) {} ;
-    void printStructure(Visitor& v,const TagDict& tagDict,int depth = 0);
-    void printIFD      (Visitor& v,size_t start,endian_e endian,int depth,const TagDict& tagDict,bool bHasNext=true);
+    void tourTiff(Visitor& v,const TagDict& tagDict,int depth = 0);
+    void tourIFD (Visitor& v,size_t start,endian_e endian,int depth,const TagDict& tagDict,bool bHasNext=true);
     bool valid();
 };
 
@@ -558,11 +673,11 @@ class JpegImage : public Image
 {
 public:
     JpegImage(std::string path) : Image(path) {}
-    void printStructure(Visitor& v,const TagDict& tagDict,int depth = 0);
-    void printIFD      (Visitor& v,size_t start,endian_e endian,int depth,const TagDict& tagDict,bool bHasNext=true)
+    void tourTiff(Visitor& v,const TagDict& tagDict,int depth = 0);
+    void tourIFD (Visitor& v,size_t start,endian_e endian,int depth,const TagDict& tagDict,bool bHasNext=true)
     {
         TiffImage* p((TiffImage*)this);
-        p->printIFD(v,start,endian,depth,tagDict);
+        p->tourIFD(v,start,endian,depth,tagDict);
     };
 
     bool valid();
@@ -639,7 +754,7 @@ bool TiffImage::valid()
     return result;
 }
 
-void TiffImage::printIFD(Visitor& v,size_t start,endian_e endian,int depth,const TagDict& tagDict,bool bHasNext)
+void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,const TagDict& tagDict,bool bHasNext)
 {
     size_t   restore_at_start = io_.tell();
 
@@ -650,33 +765,32 @@ void TiffImage::printIFD(Visitor& v,size_t start,endian_e endian,int depth,const
     // buffer
     const size_t dirSize = 32;
     DataBuf  dir(dirSize);
-    bool bPrint = v.option() == kpsBasic || v.option() == kpsRecursive;
 
     do {
         // Read top of directory
         io_.seek(start);
-        const long bytesRead  = io_.read(dir.pData_, 2);
-        if ( bytesRead != 2) {
-            Error(kerCorruptedMetadata);
-        }
+        io_.read(dir.pData_, 2);
 
-        uint16_t dirLength = getShort(dir,0,endian_);
+        uint16_t      dirLength = getShort(dir,0,endian_);
         bool tooBig = dirLength > 500;
         if ( tooBig ) Error(kerTiffDirectoryTooLarge);
 
         // Read the dictionary
         for ( int i = 0 ; i < dirLength ; i ++ ) {
+            const size_t address = start + 2 + i*12 ;
+            io_.seek(address);
+            
             if ( visits_.find(io_.tell()) != visits_.end()  ) { // never visit the same place twice!
                 Error(kerCorruptedMetadata);
             }
             visits_.insert(io_.tell());
-
+            v.visitTag(*this,depth,address,tagDict);  // Tell the visitor
 
             io_.read(dir.pData_, 12);
-            uint16_t tag    =          getShort(dir,0,endian_);
-            type_e   type   = (type_e) getShort(dir,2,endian_);
-            uint32_t count  =          getLong (dir,4,endian_);
-            uint32_t offset =          getLong (dir,8,endian_);
+            uint16_t tag    = getShort(dir,0,endian_);
+            type_e   type   = getType (dir,2,endian_);
+            uint32_t count  = getLong (dir,4,endian_);
+            uint32_t offset = getLong (dir,8,endian_);
 
             // Break for unknown tag types else we may segfault.
             if ( !typeValid(type) ) {
@@ -685,137 +799,67 @@ void TiffImage::printIFD(Visitor& v,size_t start,endian_e endian,int depth,const
                 Error(kerInvalidTypeValue);
             }
 
-            std::string sp  = "" ; // output spacer
-
-            //prepare to print the value
-            uint32_t kount  = isPrintXMP(tag,v.option()) ? count // haul in all the data
-                            : isPrintICC(tag,v.option()) ? count // ditto
-                            : isStringType(type)     ? (count > 32 ? 32 : count) // restrict long arrays
-                            : count > 5              ? 5
-                            : count
-                            ;
-            uint32_t pad    = isStringType(type) ? 1 : 0;
-            uint32_t size   = isStringType(type) ? 1
-                            : is2ByteType(type)  ? 2
-                            : is4ByteType(type)  ? 4
-                            : is8ByteType(type)  ? 8
-                            : 1
-                            ;
+            uint16_t pad    = isStringType(type) ? 1 : 0;
+            uint16_t size   = typeSize(type);
             size_t allocate = size*count + pad+20;
             if (   allocate > io_.size() ) {
                 Error(kerInvalidMalloc);
             }
             DataBuf  buf(allocate);                  // allocate a buffer
-            std::memcpy(buf.pData_,dir.pData_+8,4);  // copy dir[8:11] into buffer (short strings)
+            size_t restore = io_.tell();
+            io_.seek(offset);
+            io_.read(buf);
+            io_.seek(restore);
+            if ( depth == 1 && tag == 0x010f /* Make */ ) setMaker(buf);
             
-            std::string offsetString ;
-
-            if ( count*size > 4 ) {                  // read into buffer
-                size_t   restore = io_.tell();       // save
-                io_.seek(offset);                    // position
-                io_.read(buf.pData_,count*size);     // read
-                io_.seek(restore);                   // restore
-                offsetString = stringFormat("%10u", offset);
-            }
-
-            if ( depth == 1 && tag == 0x010f /* Make */ ) {
-                maker_ = buf.strequals("Canon"            )? kCanon
-                       : buf.strequals("NIKON CORPORATION")? kNikon
-                       : buf.strequals("SONY")             ? kSony
-                       : maker_
-                       ;
-                switch ( maker_ ) {
-                    case kCanon : makerDict_ = copyDict(canonDict) ; break;
-                    case kNikon : makerDict_ = copyDict(nikonDict) ; break;
-                    case kSony  : makerDict_ = copyDict(sonyDict ) ; break;
-                    default : /* do nothing */                     ; break;
-                }
-            }
-
-            if ( bPrint ) {
-                const size_t address = start + 2 + i*12 ;
-                std::ostringstream os;
-                if ( isShortType(type) ){
-                    for ( size_t k = 0 ; k < kount ; k++ ) {
-                        os << sp << getShort(buf,k*size,endian_);
-                        sp = " ";
-                    }
-                } else if ( isLongType(type) ){
-                    for ( size_t k = 0 ; k < kount ; k++ ) {
-                        os << sp << getLong(buf,k*size,endian_);
-                        sp = " ";
-                    }
-                } else if ( isRationalType(type) ){
-                    for ( size_t k = 0 ; k < kount ; k++ ) {
-                        uint32_t a = getLong(buf,k*size+0,endian_);
-                        uint32_t b = getLong(buf,k*size+4,endian_);
-                        os << sp << a << "/" << b;
-                        sp = " ";
-                    }
-                } else if ( isStringType(type) ) {
-                    os << sp << binaryToString(buf, 0, kount);
-                }
-                if ( kount < count ) os << " ...";
-                
-                std::string value = os.str();
-                v.visitTag(*this,depth,address,tag,tagDict,type,count,offsetString,value,buf);
-
+            
+            // do we need to recurse?
+            TagDict useDict = tag == 0x8769 ? copyDict( exifDict  )
+                            : tag == 0x8825 ? copyDict( gpsDict   )
+                            : tag == 0x927c ? copyDict( makerDict_)
+                            :                 copyDict( tagDict   )
+                            ;
+            if ( tag == 0x8769 /* ExifTag */ || tag == 0x014a /*SubIFDs*/
+            ||   tag == 0x8825 /* GPSTag  */ || type == tiffIfd ) {
                 // these tags are IFDs, not a embedded TIFF
-                if ( v.option() == kpsRecursive && (tag == 0x8769 /* ExifTag */ || tag == 0x014a /*SubIFDs*/  || tag == 0x8825 /* GPSTag */ || type == tiffIfd) ) {
-                    TagDict  useDict = tag == 0x8769 ? copyDict(exifDict) // joinDict( tagDict,exifDict  )
-                                     : tag == 0x8825 ? copyDict(gpsDict)  // joinDict( tagDict,gpsDict   )
-                                     : tag == 0x927c ? copyDict(makerDict_) // joinDict( tagDict,makerDict_)
-                                     :                 copyDict(tagDict)
-                                     ;
-                    for ( size_t k = 0 ; k < count ; k++ ) {
-                        uint32_t offset  = getLong(buf,k*size,endian_);
-                        printIFD(v,offset,endian_,depth,useDict);
+                tourIFD(v,offset,endian,depth,useDict);
+            } else if ( tag == 0x927c /* MakerNote */ ) {
+                if ( maker_ == kNikon ) {
+                    // MakerNote is not and IFD, it's an emabeded tiff `II*_.....`
+                    size_t punt = 0 ;
+                    if ( buf.strequals("Nikon")) {
+                        punt = 10;
                     }
-                } else if ( v.option() == kpsRecursive && tag == 0x83bb /* IPTCNAA */ ) {
-                    // This is an IPTC tag
-                } else if ( v.option() == kpsRecursive && tag == 0x927c /* MakerNote */ && count > 10) {
-                    // Nikon MakerNote is not and IFD, it's an emabedd tiff `II*_.....`
-                    if ( maker_ == kSony && buf.strequals("SONY DSC ") ) {
-                        // Sony MakerNote IFD does not have a next pointer.
-                        size_t punt   = 12 ;
-                        printIFD(v,offset+punt,endian_,depth,sonyDict,false);
-                    } else {
-                        size_t punt = buf.strequals("Nikon") ? 10 : 0 ;
-                        Io io(io_,offset+punt,count-punt);
-                        TiffImage makerNote(io);
-                        makerNote.printStructure(v,makerDict_,depth);
-                    }
+                    Io io(io_,offset+punt,count-punt);
+                    TiffImage makerNote(io);
+                    makerNote.tourTiff(v,useDict,depth);
+                } else if ( maker_ == kSony && buf.strequals("SONY DSC ") ) {
+                    // Sony MakerNote IFD does not have a next pointer.
+                    size_t punt   = 12 ;
+                    tourIFD(v,offset+punt,endian_,depth,sonyDict,false);
+                } else {
+                    tourIFD(v,offset,endian_,depth,makerDict_);
                 }
             }
-            
-            if ( isPrintXMP(tag,v.option()) ) {
-                buf.pData_[count]=0;
-                v.out() << (char*) buf.pData_;
-            }
-            if ( isPrintICC(tag,v.option()) ) {
-                v.out().write((const char*)buf.pData_,count);
-            }
-        }
-        if ( start ) {
-            if ( bHasNext && !tooBig ) {
-                io_.read(dir.pData_, 4);
-                start = getLong(dir,0,endian_);
-            } else {
-                start=0;
-            }
+
+        } // for i < dirLength
+        start = 0; // !stop
+        if ( bHasNext ) {
+            io_.read(dir.pData_, 4);
+            start = getLong(dir,0,endian_);
         }
     } while (start) ;
     v.visitEnd(*this,depth);
     depth--;
     
     io_.seek(restore_at_start); // restore
-} // print IFD
+} // tourIFD
 
-void TiffImage::printStructure(Visitor& v,const TagDict& tagDict,int depth)
+void TiffImage::tourTiff(Visitor& v,const TagDict& tagDict,int depth)
 {
     if ( v.option() == kpsBasic || v.option() == kpsXMP || v.option() == kpsRecursive || v.option() == kpsIccProfile ) {
         if ( valid() ) {
-            printIFD(v,start_,endian_,depth,tagDict);
+            tourIFD(v,start_,endian_,depth,tagDict);
         }
     }
 }
@@ -837,7 +881,7 @@ bool JpegImage::valid()
 
 #define FLUSH(bLF) if (bLF) { out << std::endl; bLF = false;}
 
-void JpegImage::printStructure(Visitor& v,const TagDict& tagDict,int depth)
+void JpegImage::tourTiff(Visitor& v,const TagDict& tagDict,int depth)
 {
     if (!io_.good())
         Error(kerDataSourceOpenFailed, io_.path());
@@ -970,7 +1014,7 @@ void JpegImage::printStructure(Visitor& v,const TagDict& tagDict,int depth)
                 if ( bExif ) {
                     Io io(io_,current+2+6,size-2-6);
                     TiffImage exif(io);
-                    exif.printStructure(v,tiffDict,depth);
+                    exif.tourTiff(v,tiffDict,depth);
                 }
             }
 
@@ -1148,8 +1192,20 @@ int main(int argc,const char* argv[])
         if ( tiff.valid() ) image = &tiff ;
         if ( jpeg.valid() ) image = &jpeg ;
         if ( image ) {
-            DumpVisitor dumper(std::cout,option);
-            image->printStructure(dumper,tiffDict);
+            switch (option ) {
+                case kpsXMP: {
+                     XMPVisitor visitor(std::cout,option);
+                     image->tourTiff(visitor,tiffDict);
+                } break;
+                case kpsIccProfile: {
+                     ICCVisitor visitor(std::cout,option);
+                     image->tourTiff(visitor,tiffDict);
+                } break;
+                default: {
+                     StructureVisitor visitor(std::cout,option);
+                     image->tourTiff(visitor,tiffDict);
+                } break;
+            }
         } else {
             std::cerr << "file type not recognised " << path << std::endl;
             rc=2;
