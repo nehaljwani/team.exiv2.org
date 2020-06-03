@@ -17,7 +17,8 @@ enum endian_e
 ,   kEndianBig
 };
 
-enum type_e {
+enum type_e
+{   typeMin            = 0,
     unsignedByte       = 1, //!< Exif BYTE type, 8-bit unsigned integer.
     asciiString        = 2, //!< Exif ASCII type, 8-bit byte.
     unsignedShort      = 3, //!< Exif SHORT type, 16-bit (2-byte) unsigned integer.
@@ -31,9 +32,12 @@ enum type_e {
     tiffFloat          =11, //!< TIFF FLOAT type, single precision (4-byte) IEEE format.
     tiffDouble         =12, //!< TIFF DOUBLE type, double precision (8-byte) IEEE format.
     tiffIfd            =13, //!< TIFF IFD type, 32-bit (4-byte) unsigned integer.
+    typeNot1           =14,
+    typeNot2           =15,
     unsignedLongLong   =16, //!< Exif LONG LONG type, 64-bit (8-byte) unsigned integer.
     signedLongLong     =17, //!< Exif LONG LONG type, 64-bit (8-byte) signed integer.
     tiffIfd8           =18, //!< TIFF IFD type, 64-bit (8-byte) unsigned integer.
+    typeMax            =19,
     string        =0x10000, //!< IPTC string type.
     date          =0x10001, //!< IPTC date type.
 //  time          =0x10002, //!< IPTC time type.
@@ -49,9 +53,9 @@ enum type_e {
 };
 
 enum maker_e
-{	kUnknown
-,	kCanon
-,	kNikon
+{    kUnknown
+,    kCanon
+,    kNikon
 ,   kSony
 };
 
@@ -94,7 +98,7 @@ void Error (error_e error, std::string msg)
         case   kerNoImageInInputData     : std::cerr << "not image in input data"  ; break;
         default                          : std::cerr << "unknown"                  ; break;
     }
-    if ( msg.size() ) std::cerr << " " << msg ;  
+    if ( msg.size() ) std::cerr << " " << msg ;
     std::cerr << std::endl;
     _exit(1); // pull the plug!
 }
@@ -114,6 +118,9 @@ public:
     , size_(size)
     {
         pData_ = new byte[size_];
+        if ( pData_) {
+            std::memset(pData_, 0,size_);
+        }
     }
     virtual ~DataBuf()
     {
@@ -224,6 +231,28 @@ std::string tagName(uint16_t tag,const TagDict& tagDict)
     if ( name.size() ) result += "." + name;
     return result;
 }
+const char* typeName(type_e tag)
+{
+    //! List of TIFF image tags
+    const char* result = NULL;
+    switch (tag ) {
+        case unsignedByte     : result = "BYTE"      ; break;
+        case asciiString      : result = "ASCII"     ; break;
+        case unsignedShort    : result = "SHORT"     ; break;
+        case unsignedLong     : result = "LONG"      ; break;
+        case unsignedRational : result = "RATIONAL"  ; break;
+        case signedByte       : result = "SBYTE"     ; break;
+        case undefined        : result = "UNDEFINED" ; break;
+        case signedShort      : result = "SSHORT"    ; break;
+        case signedLong       : result = "SLONG"     ; break;
+        case signedRational   : result = "SRATIONAL" ; break;
+        case tiffFloat        : result = "FLOAT"     ; break;
+        case tiffDouble       : result = "DOUBLE"    ; break;
+        case tiffIfd          : result = "IFD"       ; break;
+        default               : result = "unknown"   ; break;
+    }
+    return result;
+}
 
 class Io
 {
@@ -280,16 +309,28 @@ private:
     size_t      restore_;
 };
 
+// 1.  declare types
+class   Image; // forward
+
+// 2. Create abstract "visitor" base class with an element visit() method
 class Visitor
 {
 public:
-    Visitor();
-    virtual ~Visitor() {};
-    
-    void directoryBegin();
-    void directoryEnd();
+    Visitor(std::ostream& out,PSopt_e option)
+    : out_   (out)
+    , option_(option)
+    {};
+    virtual void visitBegin(Image& image,int depth) = 0 ;
+    virtual void visitEnd  (Image& image,int depth) = 0 ;
+    virtual void visitTag  (Image& image,int depth,size_t address,uint16_t tag,const TagDict& tagDict,type_e type,uint16_t count,const std::string& offsetString,const std::string& value,const DataBuf& buf)=0;
+    PSopt_e option()    { return option_ ; }
+    std::ostream& out() { return out_    ; }
+public:
+    PSopt_e       option_;
+    std::ostream& out_;
 };
 
+// 3. Image has an accept(Visitor&) method
 class Image
 {
 public:
@@ -298,6 +339,7 @@ public:
     , good_(false)
     , start_(0)
     , maker_(kUnknown)
+    , path_(path)
     {
         good_ = io_.good();
     }
@@ -305,13 +347,18 @@ public:
     : io_(io)
     {
         good_ = io_.good();
+        path_ = io.path();
     }
     virtual ~Image() { io_.close() ; }
-    bool good()  { return good_ && io_.good() ; }
-    bool valid() { return false ; }
+    bool good()        { return good_ && io_.good() ; }
+    bool valid()       { return false ; }
+    std::string path() { return path_ ; }
+    endian_e  endian() { return endian_; }
     
-    virtual void printStructure(std::ostream& out, PSopt_e option,const TagDict& tagDict,int depth = 0) =0;
-    virtual void printIFD      (std::ostream& out, PSopt_e option,size_t start,endian_e endian,int depth,const TagDict& tagDict,bool bHasNext=true)=0;
+    void accept(class Visitor& v);
+    
+    virtual void printStructure(Visitor& v,const TagDict& tagDict,int depth = 0) =0;
+    virtual void printIFD      (Visitor& v,size_t start,endian_e endian,int depth,const TagDict& tagDict,bool bHasNext=true)=0;
     friend class TiffImage;
     friend class JpegImage;
 
@@ -324,6 +371,7 @@ private:
     maker_e             maker_;
     TagDict             makerDict_;
     endian_e            endian_;
+    std::string         path_;
     
     bool isStringType(uint16_t type)
     {
@@ -440,43 +488,69 @@ private:
         return byteSwap (v,bSwap,8);
     }
 
-    const char* typeName(uint16_t tag) const
+    static bool typeValid(type_e type)
     {
-        //! List of TIFF image tags
-        const char* result = NULL;
-        switch (tag ) {
-            case unsignedByte     : result = "BYTE"      ; break;
-            case asciiString      : result = "ASCII"     ; break;
-            case unsignedShort    : result = "SHORT"     ; break;
-            case unsignedLong     : result = "LONG"      ; break;
-            case unsignedRational : result = "RATIONAL"  ; break;
-            case signedByte       : result = "SBYTE"     ; break;
-            case undefined        : result = "UNDEFINED" ; break;
-            case signedShort      : result = "SSHORT"    ; break;
-            case signedLong       : result = "SLONG"     ; break;
-            case signedRational   : result = "SRATIONAL" ; break;
-            case tiffFloat        : result = "FLOAT"     ; break;
-            case tiffDouble       : result = "DOUBLE"    ; break;
-            case tiffIfd          : result = "IFD"       ; break;
-            default            : result = "unknown"   ; break;
-        }
-        return result;
+        return type  > typeMin  && type <  typeMax
+            && type != typeNot1 && type != typeNot2
+        ;
     }
-
-    static bool typeValid(uint16_t type)
-    {
-        return type >= 1 && type <= 13 ;
-    }
-
 };
+
+// 4. Create concrete "visitors"
+class DumpVisitor: public Visitor
+{
+public:
+    DumpVisitor(std::ostream& out, PSopt_e option)
+    : Visitor(out,option)
+    {}
+    void visitBegin(Image& image,int depth)
+    {
+        char c = image.endian() == kEndianBig ? 'M' : 'I';
+        out_ << indent(depth) << stringFormat("STRUCTURE OF TIFF FILE (%c%c): ",c,c) << image.path() << std::endl;
+        out_ << indent(depth)
+             << " address |    tag                              |     "
+             << " type |    count |    offset | value"
+             << std::endl
+             ;
+    }
+    void visitTag
+    ( Image&                image
+    , int                   depth
+    , size_t                address
+    , uint16_t              tag
+    , const TagDict&        tagDict
+    , type_e                type
+    , uint16_t              count
+    , const std::string&    offsetString
+    , const std::string&    value
+    , const DataBuf&        buf
+    ) {
+        std::string name = ::tagName(tag,tagDict);
+        if ( name.size() > 28) {
+            name = name.substr(0,26)+"..";
+        }
+
+        out_ << indent(depth)
+             << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
+                    ,address,tag,name.c_str(),typeName(type),count,offsetString.c_str())
+             << value
+             << std::endl ;
+    }
+    
+    void visitEnd(Image& image,int depth)
+    {
+        out_ << indent(depth) << "END: " << image.path() << std::endl;
+    }
+};
+
 
 class TiffImage : public Image
 {
 public:
     TiffImage(std::string path) : Image(path) {}
     TiffImage(Io& io) : Image(io) {} ;
-    void printStructure(std::ostream& out, PSopt_e option,const TagDict& tagDict,int depth = 0);
-    void printIFD      (std::ostream& out, PSopt_e option,size_t start,endian_e endian,int depth,const TagDict& tagDict,bool bHasNext=true);
+    void printStructure(Visitor& v,const TagDict& tagDict,int depth = 0);
+    void printIFD      (Visitor& v,size_t start,endian_e endian,int depth,const TagDict& tagDict,bool bHasNext=true);
     bool valid();
 };
 
@@ -484,11 +558,11 @@ class JpegImage : public Image
 {
 public:
     JpegImage(std::string path) : Image(path) {}
-    void printStructure(std::ostream& out, PSopt_e option,const TagDict& tagDict,int depth = 0);
-    void printIFD      (std::ostream& out, PSopt_e option,size_t start,endian_e endian,int depth,const TagDict& tagDict,bool bHasNext=true)
+    void printStructure(Visitor& v,const TagDict& tagDict,int depth = 0);
+    void printIFD      (Visitor& v,size_t start,endian_e endian,int depth,const TagDict& tagDict,bool bHasNext=true)
     {
         TiffImage* p((TiffImage*)this);
-        p->printIFD(out,option,start,endian,depth,tagDict);
+        p->printIFD(v,start,endian,depth,tagDict);
     };
 
     bool valid();
@@ -565,17 +639,18 @@ bool TiffImage::valid()
     return result;
 }
 
-void TiffImage::printIFD(std::ostream& out, PSopt_e option,size_t start,endian_e endian,int depth,const TagDict& tagDict,bool bHasNext)
+void TiffImage::printIFD(Visitor& v,size_t start,endian_e endian,int depth,const TagDict& tagDict,bool bHasNext)
 {
-    bool     bFirst  = true  ;
     size_t   restore_at_start = io_.tell();
 
     depth++;
     if ( depth == 1 ) visits_.clear();
+    v.visitBegin(*this,depth);
+
     // buffer
     const size_t dirSize = 32;
     DataBuf  dir(dirSize);
-    bool bPrint = option == kpsBasic || option == kpsRecursive;
+    bool bPrint = v.option() == kpsBasic || v.option() == kpsRecursive;
 
     do {
         // Read top of directory
@@ -589,32 +664,19 @@ void TiffImage::printIFD(std::ostream& out, PSopt_e option,size_t start,endian_e
         bool tooBig = dirLength > 500;
         if ( tooBig ) Error(kerTiffDirectoryTooLarge);
 
-        if ( bFirst && bPrint ) {
-            char c = endian_ == kEndianBig ? 'M' : 'I' ;
-            out << indent(depth) << stringFormat("STRUCTURE OF TIFF FILE (%c%c): ",c,c) << io_.path()
-                << " dirLength = " << dirLength << " tagDict = " << tagName(0xffff,tagDict)
-                << std::endl;
-        }
-
         // Read the dictionary
         for ( int i = 0 ; i < dirLength ; i ++ ) {
             if ( visits_.find(io_.tell()) != visits_.end()  ) { // never visit the same place twice!
                 Error(kerCorruptedMetadata);
             }
             visits_.insert(io_.tell());
-            
-            if ( bFirst && bPrint ) {
-                out << indent(depth)
-                    << " address |    tag                              |     "
-                    << " type |    count |    offset | value\n";
-            }
-            bFirst = false;
+
 
             io_.read(dir.pData_, 12);
-            uint16_t tag    = getShort(dir,0,endian_);
-            uint16_t type   = getShort(dir,2,endian_);
-            uint32_t count  = getLong (dir,4,endian_);
-            uint32_t offset = getLong (dir,8,endian_);
+            uint16_t tag    =          getShort(dir,0,endian_);
+            type_e   type   = (type_e) getShort(dir,2,endian_);
+            uint32_t count  =          getLong (dir,4,endian_);
+            uint32_t offset =          getLong (dir,8,endian_);
 
             // Break for unknown tag types else we may segfault.
             if ( !typeValid(type) ) {
@@ -626,8 +688,8 @@ void TiffImage::printIFD(std::ostream& out, PSopt_e option,size_t start,endian_e
             std::string sp  = "" ; // output spacer
 
             //prepare to print the value
-            uint32_t kount  = isPrintXMP(tag,option) ? count // haul in all the data
-                            : isPrintICC(tag,option) ? count // ditto
+            uint32_t kount  = isPrintXMP(tag,v.option()) ? count // haul in all the data
+                            : isPrintICC(tag,v.option()) ? count // ditto
                             : isStringType(type)     ? (count > 32 ? 32 : count) // restrict long arrays
                             : count > 5              ? 5
                             : count
@@ -639,29 +701,29 @@ void TiffImage::printIFD(std::ostream& out, PSopt_e option,size_t start,endian_e
                             : is8ByteType(type)  ? 8
                             : 1
                             ;
-
             size_t allocate = size*count + pad+20;
-            if ( allocate > io_.size() ) {
+            if (   allocate > io_.size() ) {
                 Error(kerInvalidMalloc);
             }
-            DataBuf  buf(allocate);              // allocate a buffer
-            std::memset(buf.pData_, 0, buf.size_);
+            DataBuf  buf(allocate);                  // allocate a buffer
             std::memcpy(buf.pData_,dir.pData_+8,4);  // copy dir[8:11] into buffer (short strings)
-            const bool bOffsetIsPointer = count*size > 4;
-
-            if ( bOffsetIsPointer ) {            // read into buffer
-                size_t   restore = io_.tell();   // save
-                io_.seek(offset);                // position
-                io_.read(buf.pData_,count*size); // read
-                io_.seek(restore);               // restore
-            }
             
+            std::string offsetString ;
+
+            if ( count*size > 4 ) {                  // read into buffer
+                size_t   restore = io_.tell();       // save
+                io_.seek(offset);                    // position
+                io_.read(buf.pData_,count*size);     // read
+                io_.seek(restore);                   // restore
+                offsetString = stringFormat("%10u", offset);
+            }
+
             if ( depth == 1 && tag == 0x010f /* Make */ ) {
                 maker_ = buf.strequals("Canon"            )? kCanon
-            	       : buf.strequals("NIKON CORPORATION")? kNikon
-            	       : buf.strequals("SONY")             ? kSony
-            	       : maker_
-            	       ;
+                       : buf.strequals("NIKON CORPORATION")? kNikon
+                       : buf.strequals("SONY")             ? kSony
+                       : maker_
+                       ;
                 switch ( maker_ ) {
                     case kCanon : makerDict_ = copyDict(canonDict) ; break;
                     case kNikon : makerDict_ = copyDict(nikonDict) ; break;
@@ -672,38 +734,34 @@ void TiffImage::printIFD(std::ostream& out, PSopt_e option,size_t start,endian_e
 
             if ( bPrint ) {
                 const size_t address = start + 2 + i*12 ;
-                const std::string offsetString = bOffsetIsPointer?
-                    stringFormat("%10u", offset):
-                    "";
-                out << indent(depth)
-                << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
-                                          ,address,tag,tagName(tag,tagDict).c_str(),typeName(type),count,offsetString.c_str());
+                std::ostringstream os;
                 if ( isShortType(type) ){
                     for ( size_t k = 0 ; k < kount ; k++ ) {
-                        out << sp << getShort(buf,k*size,endian_);
+                        os << sp << getShort(buf,k*size,endian_);
                         sp = " ";
                     }
                 } else if ( isLongType(type) ){
                     for ( size_t k = 0 ; k < kount ; k++ ) {
-                        out << sp << getLong(buf,k*size,endian_);
+                        os << sp << getLong(buf,k*size,endian_);
                         sp = " ";
                     }
                 } else if ( isRationalType(type) ){
                     for ( size_t k = 0 ; k < kount ; k++ ) {
                         uint32_t a = getLong(buf,k*size+0,endian_);
                         uint32_t b = getLong(buf,k*size+4,endian_);
-                        out << sp << a << "/" << b;
+                        os << sp << a << "/" << b;
                         sp = " ";
                     }
                 } else if ( isStringType(type) ) {
-                    out << sp << binaryToString(buf, 0, kount);
+                    os << sp << binaryToString(buf, 0, kount);
                 }
-
-                sp = kount == count ? "" : " ...";
-                out << sp << std::endl;
+                if ( kount < count ) os << " ...";
                 
+                std::string value = os.str();
+                v.visitTag(*this,depth,address,tag,tagDict,type,count,offsetString,value,buf);
+
                 // these tags are IFDs, not a embedded TIFF
-                if ( option == kpsRecursive && (tag == 0x8769 /* ExifTag */ || tag == 0x014a /*SubIFDs*/  || tag == 0x8825 /* GPSTag */ || type == tiffIfd) ) {
+                if ( v.option() == kpsRecursive && (tag == 0x8769 /* ExifTag */ || tag == 0x014a /*SubIFDs*/  || tag == 0x8825 /* GPSTag */ || type == tiffIfd) ) {
                     TagDict  useDict = tag == 0x8769 ? copyDict(exifDict) // joinDict( tagDict,exifDict  )
                                      : tag == 0x8825 ? copyDict(gpsDict)  // joinDict( tagDict,gpsDict   )
                                      : tag == 0x927c ? copyDict(makerDict_) // joinDict( tagDict,makerDict_)
@@ -711,57 +769,53 @@ void TiffImage::printIFD(std::ostream& out, PSopt_e option,size_t start,endian_e
                                      ;
                     for ( size_t k = 0 ; k < count ; k++ ) {
                         uint32_t offset  = getLong(buf,k*size,endian_);
-                        printIFD(out,option,offset,endian_,depth,useDict);
+                        printIFD(v,offset,endian_,depth,useDict);
                     }
-                } else if ( option == kpsRecursive && tag == 0x83bb /* IPTCNAA */ ) {
+                } else if ( v.option() == kpsRecursive && tag == 0x83bb /* IPTCNAA */ ) {
                     // This is an IPTC tag
-                } else if ( option == kpsRecursive && tag == 0x927c /* MakerNote */ && count > 10) {
+                } else if ( v.option() == kpsRecursive && tag == 0x927c /* MakerNote */ && count > 10) {
                     // Nikon MakerNote is not and IFD, it's an emabedd tiff `II*_.....`
                     if ( maker_ == kSony && buf.strequals("SONY DSC ") ) {
                         // Sony MakerNote IFD does not have a next pointer.
                         size_t punt   = 12 ;
-                        printIFD(out,option,offset+punt,endian_,depth,sonyDict,false);
+                        printIFD(v,offset+punt,endian_,depth,sonyDict,false);
                     } else {
                         size_t punt = buf.strequals("Nikon") ? 10 : 0 ;
                         Io io(io_,offset+punt,count-punt);
                         TiffImage makerNote(io);
-                        makerNote.printStructure(out,option,makerDict_,depth);
+                        makerNote.printStructure(v,makerDict_,depth);
                     }
                 }
             }
             
-            if ( isPrintXMP(tag,option) ) {
+            if ( isPrintXMP(tag,v.option()) ) {
                 buf.pData_[count]=0;
-                out << (char*) buf.pData_;
+                v.out() << (char*) buf.pData_;
             }
-            if ( isPrintICC(tag,option) ) {
-                out.write((const char*)buf.pData_,count);
+            if ( isPrintICC(tag,v.option()) ) {
+                v.out().write((const char*)buf.pData_,count);
             }
         }
         if ( start ) {
-            if ( bHasNext ) {
+            if ( bHasNext && !tooBig ) {
                 io_.read(dir.pData_, 4);
-                start = tooBig ? 0 : getLong(dir,0,endian_);
+                start = getLong(dir,0,endian_);
             } else {
                 start=0;
             }
         }
     } while (start) ;
-
-    if ( bPrint ) {
-        out << indent(depth) << "END " << io_.path() << std::endl;
-    }
-    out.flush();
+    v.visitEnd(*this,depth);
     depth--;
     
     io_.seek(restore_at_start); // restore
 } // print IFD
 
-void TiffImage::printStructure(std::ostream& out, PSopt_e option,const TagDict& tagDict,int depth)
+void TiffImage::printStructure(Visitor& v,const TagDict& tagDict,int depth)
 {
-    if ( option == kpsBasic || option == kpsXMP || option == kpsRecursive || option == kpsIccProfile ) {
+    if ( v.option() == kpsBasic || v.option() == kpsXMP || v.option() == kpsRecursive || v.option() == kpsIccProfile ) {
         if ( valid() ) {
-            printIFD(out,option,start_,endian_,depth,tagDict);
+            printIFD(v,start_,endian_,depth,tagDict);
         }
     }
 }
@@ -783,7 +837,7 @@ bool JpegImage::valid()
 
 #define FLUSH(bLF) if (bLF) { out << std::endl; bLF = false;}
 
-void JpegImage::printStructure(std::ostream& out, PSopt_e option,const TagDict& tagDict,int depth)
+void JpegImage::printStructure(Visitor& v,const TagDict& tagDict,int depth)
 {
     if (!io_.good())
         Error(kerDataSourceOpenFailed, io_.path());
@@ -793,7 +847,9 @@ void JpegImage::printStructure(std::ostream& out, PSopt_e option,const TagDict& 
             Error(kerFailedToReadImageData);
         Error(kerNotAJpeg);
     }
-
+    PSopt_e option = v.option();
+    std::ostream& out = v.out();
+    
     bool bPrint = option == kpsBasic || option == kpsRecursive;
 
     if (bPrint || option == kpsXMP) {
@@ -840,12 +896,6 @@ void JpegImage::printStructure(std::ostream& out, PSopt_e option,const TagDict& 
         bool first = true;
         while (!done) {
             size_t current = io_.tell();
-            // print marker bytes
-            if (first && bPrint) {
-                out << "STRUCTURE OF JPEG FILE: " << io_.path() << std::endl;
-                out << " address | marker       |  length | data" << std::endl;
-                REPORT_MARKER;
-            }
             first = false;
             bool bLF = bPrint;
 
@@ -915,13 +965,13 @@ void JpegImage::printStructure(std::ostream& out, PSopt_e option,const TagDict& 
                 FLUSH(bLF)
 
                 // std::cout << "app0_+1 = " << app0_+1 << " compare " << signature << " = " << signature.find("Exif") == 2 << std::endl;
-				bool bExif = option == kpsRecursive && marker == (app0_ + 1) && signature.find("Exif") == 0;
+                bool bExif = option == kpsRecursive && marker == (app0_ + 1) && signature.find("Exif") == 0;
 
-				if ( bExif ) {
+                if ( bExif ) {
                     Io io(io_,current+2+6,size-2-6);
                     TiffImage exif(io);
-                    exif.printStructure(out,option,tiffDict,depth);
-				}
+                    exif.printStructure(v,tiffDict,depth);
+                }
             }
 
             // print COM marker
@@ -953,7 +1003,6 @@ void init()
     tiffDict  [ 0xffff ] = "Image";
     tiffDict  [ 0x8769 ] = "ExifTag";
     tiffDict  [ 0x014a ] = "SubIFD";
-    tiffDict  [ 0x927c ] = "MakerNote";
     tiffDict  [ 0x83bb ] = "IPTCNAA";
     tiffDict  [ 0x02bc ] = "XMLPacket";
     tiffDict  [ 0x8773 ] = "InterColorProfile";
@@ -969,6 +1018,7 @@ void init()
     tiffDict  [ 0x0213 ] = "YCbCrPositioning";
 
     exifDict  [ 0xffff ] = "Photo";
+    exifDict  [ 0x927c ] = "MakerNote";
     exifDict  [ 0x829a ] = "ExposureTime";
     exifDict  [ 0x829d ] = "FNumber";
     exifDict  [ 0x8822 ] = "ExposureProgram";
@@ -1084,21 +1134,22 @@ int main(int argc,const char* argv[])
         TiffImage tiff(path);
         JpegImage jpeg(path);
         
-        PSopt_e opt = kpsBasic;
+        PSopt_e option = kpsBasic;
         if ( argc == 3 ) {
             const char*      arg = argv[1];
             char c = tolower(arg[0]);
-            opt = c == 's' ? kpsBasic
-                : c == 'r' ? kpsRecursive
-                : c == 'x' ? kpsXMP
-                : c == 'i' ? kpsIccProfile
-                : opt
-                ;
+            option = c == 's' ? kpsBasic
+                   : c == 'r' ? kpsRecursive
+                   : c == 'x' ? kpsXMP
+                   : c == 'i' ? kpsIccProfile
+                   : option
+                   ;
         }
         if ( tiff.valid() ) image = &tiff ;
         if ( jpeg.valid() ) image = &jpeg ;
         if ( image ) {
-            image->printStructure(std::cout,opt,tiffDict);
+            DumpVisitor dumper(std::cout,option);
+            image->printStructure(dumper,tiffDict);
         } else {
             std::cerr << "file type not recognised " << path << std::endl;
             rc=2;
