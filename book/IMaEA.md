@@ -725,7 +725,7 @@ I'll write more about the TiffVisitor later.
 The TiffVisitor is ingenious.  It's also difficult to understand.  Exiv2 has two tiff parsers - TiffVisitor and printIFDStructure().  TiffVisitor was written by Andreas Huggel.  It's very robust and has been almost 
 bug free for 15 years.  I wrote the parser in printStructure() to try to understand the structure of a tiff file.  The code in printIFDStructure() is easier to understand.
 
-The code which accompanies this book has a simplified version of printIFDStructure() calle printIFD() and that's what will be discussed here.
+The code which accompanies this book has a simplified version of printIFDStructure() called printIFD() and that's what will be discussed here.  The code that accompanies this book is explained here: [Code discussed in this book](#13)
 
 It's important to realise that metadata is defined recursively.  In a Tiff File, there will be a Tiff Record containing the Exif data (written in Tiff Format).  Within, that record, there will be MakerNote which is usually also written in Tiff Format.  Tiff Format is referred to as an IFD - an Image File Directory.
 
@@ -987,6 +987,8 @@ Using dd to extract metadata is discussed in more detail here: [8.7 Using dd to 
 
 Please be aware that there are two ways in which IFDs can occur in the file.  They can be an embedded TIFF which is complete with the `II*_LengthOffset` or `MM_*LengthOffset` 12-byte header followed the IFD.   Or the IFD can be in the file without the header.  printIFD() knows that the date tags such as GpsTag and ExifTag are IFDs and calls printIFD().  For the embedded TIFF (such as Exif), printIFD() creates a TiffImage and calls TimeImage->printStructure() which validates the header and parses the data with IFDprint().
 
+One other matter to understand is that although the Tiff Specification expects the IFD to end with a next offset == 0, Sony (and other) maker notes don't provide that.  The IFD is a single directory of 12 byte tags.
+
 [TOC](#TOC)
 
 <div id="8-6">
@@ -994,7 +996,7 @@ Please be aware that there are two ways in which IFDs can occur in the file.  Th
 
 Another matter to appreciate is that tag definitions are not constant.  A tag is simply an uint16.  The Tiff Standard specifies about 50 tags.  Anybody creating an IFD can use the same tag number for different purposes.  The Tiff Specification says _"TIFF readers must safely skip over these fields if they do not understand or do not wish to use the information."_.  We do have to understand every tag.  In a tiff file, the pixels are located using the tag StripOffsets.  We report StripOffsets, however we don't read pixel data.
 
-If the user wishes to recover data such as the pixels, it is possible to do this with the untility dd.  This is discussed here: [8.7 Using dd to extract data from an image](#8-7). 
+If the user wishes to recover data such as the pixels, it is possible to do this with the utility dd.  This is discussed here: [8.7 Using dd to extract data from an image](#8-7). 
 
 ```
 const TagInfo Nikon1MakerNote::tagInfo_[] = {
@@ -1024,8 +1026,7 @@ const TagInfo gpsTagInfo[] = {
             gpsId, gpsTags, asciiString, 2, EXV_PRINT_TAG(exifGPSLatitudeRef)),
 ```
 
-As we can see, tag == 1 in the Nikon MakerNotes is Version.  In Canon MakerNotes, it is CameraSettings.  IN GPSInfo it is GPSLatitudeRef.  It need to modify the tag tag dictionary as we travel through the file.  This is achieved in printIFD by calling joinDict to modify the dictionary for the IFD being parsed.
-
+As we can see, tag == 1 in the Nikon MakerNotes is Version.  In Canon MakerNotes, it is CameraSettings.  IN GPSInfo it is GPSLatitudeRef.  We need to use the appropriate tag dictionary for the IFD being parsed.  The tag 0xffff in the tagDict is used to store the family name of the tags.
 
 [TOC](#TOC)
 <div id="8-7">

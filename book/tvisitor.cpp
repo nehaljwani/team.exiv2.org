@@ -52,6 +52,7 @@ enum maker_e
 {	kUnknown
 ,	kCanon
 ,	kNikon
+,   kSony
 };
 
 enum error_e
@@ -187,6 +188,7 @@ TagDict tiffDict  ;
 TagDict exifDict  ;
 TagDict canonDict ;
 TagDict nikonDict ;
+TagDict sonyDict  ;
 TagDict gpsDict   ;
 
 TagDict copyDict(TagDict old)
@@ -197,21 +199,29 @@ TagDict copyDict(TagDict old)
     return result;
 }
 
-TagDict joinDict(TagDict old,TagDict add)
+bool tagKnown(uint16_t tag,const TagDict& tagDict)
 {
-    TagDict result = copyDict(old);
-    for ( TagDict::iterator it = add.begin() ; it != add.end() ; it++ )
-        result[it->first] = it->second;
-    return result;
+    return tagDict.find(tag) != tagDict.end();
 }
-
 
 std::string tagName(uint16_t tag,const TagDict& tagDict)
 {
-    std::string result = stringFormat("tag %d (%#x)",tag,tag);
-    if ( tagDict.find(tag) != tagDict.end() ) {
-    	result = tagDict.find(tag)->second;
+    std::string name ;
+    if ( tag != 0xffff ) {
+        if ( tagDict.find(tag) != tagDict.end() ) {
+            name = tagDict.find(tag)->second;
+        } else {
+            name = stringFormat("%#x",tag);
+        }
     }
+    std::string family = "Unknown";
+    tag = 0xffff;
+    if ( tagDict.find(tag) != tagDict.end() ) {
+        family =  tagDict.find(tag)->second;
+    }
+    
+    std::string result =  "Exif." + family ;
+    if ( name.size() ) result += "." + name;
     return result;
 }
 
@@ -297,11 +307,11 @@ public:
         good_ = io_.good();
     }
     virtual ~Image() { io_.close() ; }
-    bool good() { return good_ && io_.good() ; }
+    bool good()  { return good_ && io_.good() ; }
     bool valid() { return false ; }
     
     virtual void printStructure(std::ostream& out, PSopt_e option,const TagDict& tagDict,int depth = 0) =0;
-    virtual void printIFD      (std::ostream& out, PSopt_e option,size_t start,endian_e endian,int depth,const TagDict& tagDict)=0;
+    virtual void printIFD      (std::ostream& out, PSopt_e option,size_t start,endian_e endian,int depth,const TagDict& tagDict,bool bHasNext=true)=0;
     friend class TiffImage;
     friend class JpegImage;
 
@@ -466,7 +476,7 @@ public:
     TiffImage(std::string path) : Image(path) {}
     TiffImage(Io& io) : Image(io) {} ;
     void printStructure(std::ostream& out, PSopt_e option,const TagDict& tagDict,int depth = 0);
-    void printIFD      (std::ostream& out, PSopt_e option,size_t start,endian_e endian,int depth,const TagDict& tagDict);
+    void printIFD      (std::ostream& out, PSopt_e option,size_t start,endian_e endian,int depth,const TagDict& tagDict,bool bHasNext=true);
     bool valid();
 };
 
@@ -475,7 +485,7 @@ class JpegImage : public Image
 public:
     JpegImage(std::string path) : Image(path) {}
     void printStructure(std::ostream& out, PSopt_e option,const TagDict& tagDict,int depth = 0);
-    void printIFD      (std::ostream& out, PSopt_e option,size_t start,endian_e endian,int depth,const TagDict& tagDict)
+    void printIFD      (std::ostream& out, PSopt_e option,size_t start,endian_e endian,int depth,const TagDict& tagDict,bool bHasNext=true)
     {
         TiffImage* p((TiffImage*)this);
         p->printIFD(out,option,start,endian,depth,tagDict);
@@ -555,7 +565,7 @@ bool TiffImage::valid()
     return result;
 }
 
-void TiffImage::printIFD(std::ostream& out, PSopt_e option,size_t start,endian_e endian,int depth,const TagDict& tagDict)
+void TiffImage::printIFD(std::ostream& out, PSopt_e option,size_t start,endian_e endian,int depth,const TagDict& tagDict,bool bHasNext)
 {
     bool     bFirst  = true  ;
     size_t   restore_at_start = io_.tell();
@@ -575,14 +585,15 @@ void TiffImage::printIFD(std::ostream& out, PSopt_e option,size_t start,endian_e
             Error(kerCorruptedMetadata);
         }
 
-        uint16_t   dirLength = getShort(dir,0,endian_);
+        uint16_t dirLength = getShort(dir,0,endian_);
         bool tooBig = dirLength > 500;
         if ( tooBig ) Error(kerTiffDirectoryTooLarge);
 
         if ( bFirst && bPrint ) {
             char c = endian_ == kEndianBig ? 'M' : 'I' ;
-            out << indent(depth) << stringFormat("STRUCTURE OF TIFF FILE (%c%c): ",c,c) << io_.path() << std::endl;
-            if ( tooBig ) out << indent(depth) << "dirLength = " << dirLength << std::endl;
+            out << indent(depth) << stringFormat("STRUCTURE OF TIFF FILE (%c%c): ",c,c) << io_.path()
+                << " dirLength = " << dirLength << " tagDict = " << tagName(0xffff,tagDict)
+                << std::endl;
         }
 
         // Read the dictionary
@@ -648,11 +659,13 @@ void TiffImage::printIFD(std::ostream& out, PSopt_e option,size_t start,endian_e
             if ( depth == 1 && tag == 0x010f /* Make */ ) {
                 maker_ = buf.strequals("Canon"            )? kCanon
             	       : buf.strequals("NIKON CORPORATION")? kNikon
+            	       : buf.strequals("SONY")             ? kSony
             	       : maker_
             	       ;
                 switch ( maker_ ) {
                     case kCanon : makerDict_ = copyDict(canonDict) ; break;
                     case kNikon : makerDict_ = copyDict(nikonDict) ; break;
+                    case kSony  : makerDict_ = copyDict(sonyDict ) ; break;
                     default : /* do nothing */                     ; break;
                 }
             }
@@ -662,7 +675,6 @@ void TiffImage::printIFD(std::ostream& out, PSopt_e option,size_t start,endian_e
                 const std::string offsetString = bOffsetIsPointer?
                     stringFormat("%10u", offset):
                     "";
-
                 out << indent(depth)
                 << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
                                           ,address,tag,tagName(tag,tagDict).c_str(),typeName(type),count,offsetString.c_str());
@@ -690,14 +702,13 @@ void TiffImage::printIFD(std::ostream& out, PSopt_e option,size_t start,endian_e
                 sp = kount == count ? "" : " ...";
                 out << sp << std::endl;
                 
+                // these tags are IFDs, not a embedded TIFF
                 if ( option == kpsRecursive && (tag == 0x8769 /* ExifTag */ || tag == 0x014a /*SubIFDs*/  || tag == 0x8825 /* GPSTag */ || type == tiffIfd) ) {
-                    // these tags are IFDs, not a embedded TIFF
-                    TagDict useDict = tag == 0x8769 ? joinDict( tagDict,exifDict  )
-                                    : tag == 0x8825 ? joinDict( tagDict,gpsDict   )
-                                    : tag == 0x927c ? joinDict( tagDict,makerDict_)
-                                    :                 copyDict( tagDict)
-                                    ;
-
+                    TagDict  useDict = tag == 0x8769 ? copyDict(exifDict) // joinDict( tagDict,exifDict  )
+                                     : tag == 0x8825 ? copyDict(gpsDict)  // joinDict( tagDict,gpsDict   )
+                                     : tag == 0x927c ? copyDict(makerDict_) // joinDict( tagDict,makerDict_)
+                                     :                 copyDict(tagDict)
+                                     ;
                     for ( size_t k = 0 ; k < count ; k++ ) {
                         uint32_t offset  = getLong(buf,k*size,endian_);
                         printIFD(out,option,offset,endian_,depth,useDict);
@@ -705,19 +716,20 @@ void TiffImage::printIFD(std::ostream& out, PSopt_e option,size_t start,endian_e
                 } else if ( option == kpsRecursive && tag == 0x83bb /* IPTCNAA */ ) {
                     // This is an IPTC tag
                 } else if ( option == kpsRecursive && tag == 0x927c /* MakerNote */ && count > 10) {
-                    // MakerNote is not and IFD, it's an emabedd tiff `II*_.....`
-                    size_t punt = 0 ;
-                    if ( buf.strequals("Nikon")) {
-                        punt = 10;
+                    // Nikon MakerNote is not and IFD, it's an emabedd tiff `II*_.....`
+                    if ( maker_ == kSony && buf.strequals("SONY DSC ") ) {
+                        // Sony MakerNote IFD does not have a next pointer.
+                        size_t punt   = 12 ;
+                        printIFD(out,option,offset+punt,endian_,depth,sonyDict,false);
+                    } else {
+                        size_t punt = buf.strequals("Nikon") ? 10 : 0 ;
+                        Io io(io_,offset+punt,count-punt);
+                        TiffImage makerNote(io);
+                        makerNote.printStructure(out,option,makerDict_,depth);
                     }
-                    Io io(io_,offset+punt,count-punt);
-                    TiffImage makerNote(io);
-                    makerNote.printStructure(out,option,joinDict(tagDict,makerDict_),depth);
                 }
             }
             
-            if ( tag == 0x8825 ) std::cout << "found GPS" << std::endl;
-
             if ( isPrintXMP(tag,option) ) {
                 buf.pData_[count]=0;
                 out << (char*) buf.pData_;
@@ -727,8 +739,12 @@ void TiffImage::printIFD(std::ostream& out, PSopt_e option,size_t start,endian_e
             }
         }
         if ( start ) {
-            io_.read(dir.pData_, 4);
-            start = tooBig ? 0 : getLong(dir,0,endian_);
+            if ( bHasNext ) {
+                io_.read(dir.pData_, 4);
+                start = tooBig ? 0 : getLong(dir,0,endian_);
+            } else {
+                start=0;
+            }
         }
     } while (start) ;
 
@@ -904,7 +920,7 @@ void JpegImage::printStructure(std::ostream& out, PSopt_e option,const TagDict& 
 				if ( bExif ) {
                     Io io(io_,current+2+6,size-2-6);
                     TiffImage exif(io);
-                    exif.printStructure(out,option,joinDict(tagDict,exifDict),depth);
+                    exif.printStructure(out,option,tiffDict,depth);
 				}
             }
 
@@ -934,12 +950,14 @@ void JpegImage::printStructure(std::ostream& out, PSopt_e option,const TagDict& 
 
 void init()
 {
+    tiffDict  [ 0xffff ] = "Image";
     tiffDict  [ 0x8769 ] = "ExifTag";
     tiffDict  [ 0x014a ] = "SubIFD";
     tiffDict  [ 0x927c ] = "MakerNote";
     tiffDict  [ 0x83bb ] = "IPTCNAA";
     tiffDict  [ 0x02bc ] = "XMLPacket";
     tiffDict  [ 0x8773 ] = "InterColorProfile";
+    tiffDict  [ 0x010e ] = "ImageDescription";
     tiffDict  [ 0x010f ] = "Make";
     tiffDict  [ 0x0110 ] = "Model";
     tiffDict  [ 0x0112 ] = "Orientation";
@@ -950,6 +968,7 @@ void init()
     tiffDict  [ 0x0132 ] = "DateTime";
     tiffDict  [ 0x0213 ] = "YCbCrPositioning";
 
+    exifDict  [ 0xffff ] = "Photo";
     exifDict  [ 0x829a ] = "ExposureTime";
     exifDict  [ 0x829d ] = "FNumber";
     exifDict  [ 0x8822 ] = "ExposureProgram";
@@ -966,7 +985,25 @@ void init()
     exifDict  [ 0x9208 ] = "LightSource";
     exifDict  [ 0x9209 ] = "Flash";
     exifDict  [ 0x920a ] = "FocalLength";
+    exifDict  [ 0xa000 ] = "FlashpixVersion";
+    exifDict  [ 0xa001 ] = "ColorSpace";
+    exifDict  [ 0xa002 ] = "PixelXDimension";
+    exifDict  [ 0xa003 ] = "PixelYDimension";
+    exifDict  [ 0xa005 ] = "InteropTag";
+    exifDict  [ 0x0001 ] = "InteropIndex";
+    exifDict  [ 0x0002 ] = "InteropVersion";
+    exifDict  [ 0xa300 ] = "FileSource";
+    exifDict  [ 0xa301 ] = "SceneType";
+    exifDict  [ 0xa401 ] = "CustomRendered";
+    exifDict  [ 0xa402 ] = "ExposureMode";
+    exifDict  [ 0xa403 ] = "WhiteBalance";
+    exifDict  [ 0xa406 ] = "SceneCaptureType";
+    exifDict  [ 0xa408 ] = "Contrast";
+    exifDict  [ 0xa409 ] = "Saturation";
+    exifDict  [ 0xa40a ] = "Sharpness";
+    exifDict  [ 0xc4a5 ] = "PrintImageMatching";
     
+    nikonDict [ 0xffff ] = "Nikon";
     nikonDict [ 0x0001 ] = "Version";
     nikonDict [ 0x0002 ] = "ISOSpeed";
     nikonDict [ 0x0004 ] = "Quality";
@@ -989,6 +1026,7 @@ void init()
     nikonDict [ 0x001d ] = "SerialNumber";
     nikonDict [ 0x001e ] = "ColorSpace";
     
+    canonDict [ 0xffff ] = "Canon";
     canonDict [ 0x0001 ] = "Macro";
     canonDict [ 0x0002 ] = "Selftimer";
     canonDict [ 0x0003 ] = "Quality";
@@ -1005,6 +1043,7 @@ void init()
     canonDict [ 0x0011 ] = "MeteringMode";
     canonDict [ 0x0012 ] = "FocusType";
     
+    gpsDict   [ 0xffff ] = "GPSInfo";
     gpsDict   [ 0x0000 ] = "GPSVersionID";
     gpsDict   [ 0x0001 ] = "GPSLatitudeRef";
     gpsDict   [ 0x0002 ] = "GPSLatitude";
@@ -1016,6 +1055,22 @@ void init()
     gpsDict   [ 0x0008 ] = "GPSSatellites";
     gpsDict   [ 0x0012 ] = "GPSMapDatum";
     gpsDict   [ 0x001d ] = "GPSDateStamp";
+
+    sonyDict  [ 0xffff ] = "Sony";
+    sonyDict  [ 0x0001 ] = "Offset";
+    sonyDict  [ 0x0002 ] = "ByteOrder";
+    sonyDict  [ 0xb020 ] = "ColorReproduction";
+    sonyDict  [ 0xb040 ] = "Macro";
+    sonyDict  [ 0xb041 ] = "ExposureMode";
+    sonyDict  [ 0xb042 ] = "FocusMode";
+    sonyDict  [ 0xb043 ] = "AFMode";
+    sonyDict  [ 0xb044 ] = "AFIlluminator";
+    sonyDict  [ 0xb047 ] = "JPEGQuality";
+    sonyDict  [ 0xb048 ] = "FlashLevel";
+    sonyDict  [ 0xb049 ] = "ReleaseMode";
+    sonyDict  [ 0xb04a ] = "SequenceNumber";
+    sonyDict  [ 0xb04b ] = "AntiBlur";
+    sonyDict  [ 0xb04e ] = "LongExposureNoiseReduction";
 }
 
 int main(int argc,const char* argv[])
