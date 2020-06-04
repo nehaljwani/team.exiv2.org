@@ -1,7 +1,7 @@
-<div id="TOC">
 ![Exiv2](exiv2.png)
 # Image Metadata and Exiv2 Architecture
 
+<div id="TOC">
 ### TABLE OF CONTENTS
 
 1. [Image File Formats](#1)<br>
@@ -65,7 +65,7 @@ I first became interested in metadata because of a trail conversation with Denni
 
 I said "Oh, it can't be too difficult to do that!".  And here we are more than a decade later still working on the project.  The program geotag.py was completed in about 6 weeks.  Most of the effort went into porting both Exiv2 and pyexiv2 to Visual Studio and macOS as both were Linux only at that time.
 
-The sample application samples/geotag.cpp provides a command line utility to geotag photos and I frequently use this on my own photographs.  Today, I have a Samsung Galaxy Watch which uploads runs to Strava.  I download the GPX from Strava.  The date/time information in the JPG is the key to search for the position data.  The GPS tags are created and saved in the image.
+The sample application samples/geotag.c++ provides a command line utility to geotag photos and I frequently use this on my own photographs.  Today, I have a Samsung Galaxy Watch which uploads runs to Strava.  I download the GPX from Strava.  The date/time information in the JPG is the key to search for the position data.  The GPS tags are created and saved in the image.
 
 Back in 2008, I chose to implement this in python as it was a good excuse to learn Python.  Having discovered exiv2 and the python wrapper pyexiv2, I set off with enthusiasm to build a cross-platform script to run on **Windows** _(XP, Visual Studio 2003)_, **Ubuntu Linux** _(Hardy Heron 2008.04 LTS)_ and **macOS** _(32 bit Tiger 10.4 on a big-endian PPC)_.  After I finished, I emailed Andreas.  He responded in less than an hour and invited me to join Team Exiv2.  Initialially, I provided support to build Exiv2 with Visual Studio.
 
@@ -121,7 +121,11 @@ I can't work on Exiv2 and M2Lscript.  Perhaps a new maintainer will take respons
 
 ### Purpose and Scope of this book
 
-This book is my legacy to Exiv2.  I hope Exiv2 will continue to exist long into the future and this book is being written to document my discoveries about Image Metadata and Exiv2 Architecture.  However, I want to avoid a "cut'n'paste" of information already in the project documentation.  This book is an effort to collect my knowledge of this code into a single location.  Many topics in this book are discussed in more detail in the issue history stored in Redmine and GitHub.  Of course, finding those discussions isn't easy.  I hope this book helps future maintainers to understand Exiv2, solve issues and develop the code for years to come.
+This book is my legacy to Exiv2.  I hope Exiv2 will continue to exist long into the future and this book is being written to document my discoveries about Image Metadata and Exiv2 Architecture.  However, I want to avoid a "cut'n'paste" of information already in the project documentation.  This book is an effort to collect my knowledge of this code into a single location.  Many topics in this book are discussed in more detail in the issue history stored in Redmine and GitHub.  I hope this book helps future maintainers to understand Exiv2, solve issues and develop the code for years to come.
+
+I wish you a happy adventure in the world of Image Metadata.  If you'd like to discuss matters concerning this book, please open an issue on GitHub and share your thoughts with Team Exiv2.
+
+![Robin](RobinEuphonium.jpg)
 
 [TOC](#TOC)
 <div id="1">
@@ -217,7 +221,7 @@ if __name__ == '__main__':
 You can obtain Stonehenge.jpg from https://clanmills.com/Stonehenge.jpg
 The tiff version is available in test/data/Stonehenge.tif
 
-```
+```bash
 $ ~/bin/mdump.py  ~/Stonehenge.jpg           $ ~/bin/mdump.py  ~/Stonehenge.tif
 Make -> "NIKON CORPORATION" (17)             ImageLength -> 1 (int)
 Model -> "NIKON D5300" (11)                  BitsPerSample -> (8, 8, 8, 8) 
@@ -331,24 +335,24 @@ Exif is the most important of the metadata containers.  However others exist and
 
 I/O in Exiv2 is achieved using the class BasicIo and derived classes which are:
 
-| _Name_ | _Purpose_ |
-|:--     |:--        |
-| BasicIo | Abstract |
-| FileIo  | FILE*    |
-| MemIo   | DataBuf_t |
-| RemoteIo | Abstract |
-| HttpIo   | http:, https: |
-| CurlIo   | http:,https: |
-| SshIo    | server:path |
-| FtpIo    | ftp:,ftps: |
-| StdinIo    | - |
-| Base64Io   | 0x64..... |
+| _Name_ | _Purpose_ | _Description_ |
+|:--     |:--        |:-- |
+| BasicIo | Abstract | Defines methods such as open(), read(), seek() and others |
+| FileIo  | FILE*    | Operates on a FILE or memory-mapped file |
+| MemIo   | DataBuf_t | Operates on a memory buffer |
+| RemoteIo | Abstract | provides support for url parsing |
+| HttpIo   | http:  | Simple http 1.1 non-chunked support |
+| FtpIo    | ftp:,ftps: | Requires CurlIo |
+| CurlIo   | http:,https: | Comprehensive remote I/O support |
+| SshIo    | server:path | Requires libssh |
+| StdinIo    | - | Read from std-in |
+| Base64Io   | data:..... | Decodes ascii encoded binary |
 
-You will find a simplified version of BasicIo in tvisitor.cpp in the code that accompanies this book.  Io has two constructors.  The obvious one is Io(std::string) which calls `fopen()`.  The subtle on is Io(io,from,size) which create a sub-file on an existing stream.  This design is use to deal with embedded files.  Most metadata is written in a format designated by the standards body and embedded in the file.  For example, Exif metadata data is written in Tiff Format and embedded in the file.  We discuss the embedding of Exif metadata in: 
+You will find a simplified version of BasicIo in tvisitor.c++ in the code that accompanies this book.  Io has two constructors.  The obvious one is Io(std::string) which calls `fopen()`.  The subtle on is Io(io,from,size) which create a sub-file on an existing stream.  This design is use to deal with embedded files.  Most metadata is written in a format designated by the standards body and embedded in the file.  For example, Exif metadata data is written in Tiff Format and embedded in the file.  We discuss the embedding of Exif metadata in: 
 
 Other metadata standards use a parallel mechanism.  Xmp is embedded XML, an Icc Profile is a major block of technology.  Exiv2 knows how to extract to extract, insert, delete and replace an Icc Profile.  It knows noting about the contents of the Icc Profile.  With Xmp, Exiv2 using Adobe's XMPsdk to enable the the Xmp data to be modified.
 
-Exiv2 has an abstract RemoteIo object which can read/write on the internet.  For http, there is a basic implementation of the http protocol in src/http.cpp.  For production use, Exiv2 should be linked with libcurl.  The reason for providing a "no thrills" implementation of http was two fold.  Firstly, it enabled the project to proceed rapidly without leaning the curl API.  Secondly, I wanted all versions of the exiv2 command-line to have http support as I thought it would be useful for testing as we could store video and other large file formats remotely.
+Exiv2 has an abstract RemoteIo object which can read/write on the internet.  For http, there is a basic implementation of the http protocol in src/http.c++.  For production use, Exiv2 should be linked with libcurl.  The reason for providing a "no thrills" implementation of http was two fold.  Firstly, it enabled the project to proceed rapidly without leaning the curl API.  Secondly, I wanted all versions of the exiv2 command-line to have http support as I thought it would be useful for testing as we could store video and other large file formats remotely.
 
 The MemIo class enables memory to be used as a stream.  This is fast and convenient for small temporary files.  When memory mapped files are available, FileIo uses that in preference to FILE*.  When the project started in 2004, memory-mapped files were not provided on some legacy platforms such as DOS.  Today, all operating systems provide memory mapped files.  I've never heard of Exiv2 being used in an embedded controller, however I'm confident that this is feasible.  I've worked on embedded controllers with no operating system and only a standard "C" io library.  Exiv2 can be built for such a device.
 
@@ -363,7 +367,7 @@ Most camera manufacturers are large corporations.  I'm sure they have their own 
 
 The exiv2 option `-pS` prints the structure of an image.
 
-```
+```bash
 $ exiv2 -pS ~/Stonehenge.jpg 
 STRUCTURE OF JPEG FILE: /Users/rmills/Stonehenge.jpg
  address | marker       |  length | data
@@ -381,7 +385,7 @@ $
 
 We can see that the Exif metadata is stored at offset=2+2+2+6 and has length 15288-offset.  We can extract that as follows:
 
-```
+```bash
 $ dd if=~/Stonehenge.jpg count=$((15288-(2+2+2+6))) bs=1 skip=$((2+2+2+6)) > foo.tif
 15276+0 records in
 15276+0 records out
@@ -403,11 +407,11 @@ Exif.Image.YResolution                       Rational    1  300
 
 Internally, this is exactly how exiv2 works.  It doesn't use `dd` of course.  However it identifies the Exif IFD and parses it into memory.
 
-Using `dd` is a useful trick to recover data which be easily seen in the file, however exiv2 doesn't return the data.  For example, if you wished to extract the pixels of an image.
+Using `dd` is a useful trick to recover data which be easily seen in the file.  For example, if you wished to extract the pixels from an image, dd can extract them.  Of course you have to determine the offset and length to extract and exiv2 has excellent tools to provide that data.
 
 You can extract and inspect the metadata with this single _rather elegant_ command:
 
-```
+```bash
 $ dd if=~/Stonehenge.jpg count=$((15288-(2+2+2+6))) bs=1 skip=$((2+2+2+6)) 2>/dev/null | exiv2 -pa - 2>/dev/null| head -3
 Exif.Image.Make                              Ascii      18  NIKON CORPORATION
 Exif.Image.Model                             Ascii      12  NIKON D5300
@@ -417,7 +421,7 @@ $
 
 The exiv2 command `exiv2 -pS image` reveals the structure of a file with `|` separated fields.  The data is presented to look nice.  However it's also very convenient for parsing in bash with the utility `cut`:
 
-```
+```bash
 $ image=~/Stonehenge.jpg
 $ exiv2 -pS $image 2>/dev/null | grep APP1 | grep Exif
 $        2 | 0xffe1 APP1  |   15288 | Exif..II*......................
@@ -440,7 +444,7 @@ You may be interested to discover that option `-pS` option which arrived with Ex
 
 The following test program is very useful for understanding tags:
 
-```
+```bash
 $ taglist --help
 Usage: taglist [--help]
            [--group name|
@@ -457,7 +461,7 @@ Tag: Family.Group.TagName<br>
 Family: Exif | Iptc | Xmp<br>
 Group : There are 106 groups:
 
-```
+```bash
 $ taglist Groups | wc
      106     106    1016
 $ taglist Groups | grep Minolta
@@ -472,7 +476,7 @@ $
 
 TagName: Can be almost anything and depends on the Group.
 
-```
+```bash
 $ taglist MinoltaCsNew
 ExposureMode,	1,	0x0001,	MinoltaCsNew,	Exif.MinoltaCsNew.ExposureMode,	Long,	Exposure mode
 FlashMode,	2,	0x0002,	MinoltaCsNew,	Exif.MinoltaCsNew.FlashMode,	Long,	Flash mode
@@ -483,7 +487,7 @@ $
 
 There isn't a tag Exif.MinoltaCsNew.ISOSpeed.  There is a Exif.MinoltaCSNew.ISO
 
-```
+```bash
 $ taglist all | grep ISOSpeed$         $ taglist all | grep \\.ISO$
 Photo.ISOSpeed                         Casio.ISO
 PanasonicRaw.ISOSpeed                  Casio2.ISO
@@ -504,7 +508,7 @@ Sony1MltCs7D.ISOSpeed                  Sony1MltCsOld.ISO
 
 You can use the program exifvalue to look for a tag in a file.  If the tag doesn't exist in the file, it will report "value not set":
 
-```
+```bash
 $ exifvalue ~/Stonehenge.jpg Exif.MinoltaCsNew.ISO
 Caught Exiv2 exception 'Value not set'
 $
@@ -512,7 +516,7 @@ $
 
 If the tag is not known, it will report 'Invalid tag':
 
-```
+```bash
 $ exifvalue ~/Stonehenge.jpg Exif.MinoltaCsNew.ISOSpeed
 Caught Exiv2 exception 'Invalid tag name or ifdId `ISOSpeed', ifdId 37'
 $
@@ -520,7 +524,7 @@ $
 
 Is there a way to report every tag known to exiv2?  Yes.  There are 5430 known tags:
 
-```
+```bash
 $ for group in $(taglist Groups); do for tag in $(taglist $group | cut -d, -f 1) ; do echo $group.$tag ; done; done
 Image.ProcessingSoftware
 Image.NewSubfileType
@@ -534,7 +538,7 @@ $
 
 Now, let me explain why there are 106 groups.  There are about 10 camera manufacturers (Canon, Minolta, Nikon etc) and they use the tag Exif.Photo.MakerNote to store data in a myriad of different (and proprietary standards).
 
-```
+```bash
 $ exifvalue ~/Stonehenge.jpg Exif.Photo.MakerNote
 78 105 107 111 110 0 2 ...
 ```
@@ -543,7 +547,7 @@ Exiv2 has code to read/modify/write makernotes.  All achieved by reverse enginee
 
 The MakerNote usually isn't a simple structure.  The manufacturer usually has "sub-records" for Camera Settings (Cs), AutoFocus (Af) and so on.  Additionally, t ehe format of the sub-records can evolve and change with time.  For example (as above)
 
-```
+```bash
 $ taglist Groups | grep Minolta
 Minolta
 MinoltaCs5D
@@ -558,7 +562,7 @@ So, Minolta have 6 "sub-records".  Other manufacturers have more.  Let's say 10 
 
 Now to address your concern about `Exif.MinoltaCsNew.ISOSpeed`.  It will throw an exception in Exiv2 v0.27.2.  Was it defined in an earlier version of Exiv2 such as 0.21?  I don't know.
 
-Your application code has to use exception handlers to catch these matters and determine what to do.  Without getting involved with your application code, I can't comment on your best approach to dealing with this.  There is a macro EXIV2_TEST_VERSION which enables you to have version specific code in your application.
+Your application code has to use exception handlers to catch these matters and determine what to do.  Without getting involved with your application code, I can't comment on your best approach to dealing with this.  There is a macro EXIV2\_TEST\_VERSION which enables you to have version specific code in your application.
 
 [TOC](#TOC)
 
@@ -569,7 +573,7 @@ Another matter to appreciate is that tag definitions are not constant.  A tag is
 
 If the user wishes to recover data such as the pixels, it is possible to do this with the utility dd.  This is discussed here: [8.1 Using dd to extract data from an image](#8-1). 
 
-```
+```cpp
 const TagInfo Nikon1MakerNote::tagInfo_[] = {
     TagInfo(0x0001, "Version", N_("Version"),
             N_("Nikon Makernote version"),
@@ -612,8 +616,8 @@ The concept in the visitor pattern is to separate the data in an object from the
 
 2.  The visitors use the student API to get data about a student.
 
-```
-// visitor.cpp
+```cpp
+// visitor.c++
 #include <iostream>
 #include <string>
 #include <vector>
@@ -728,7 +732,7 @@ int main() {
 
 And when we run it:
 
-```
+```bash
 1181 rmills@rmillsmbp:~/gnu/exiv2/team/book/build $ ./visitor 
 this | 10 | art
 that | 12 | music
@@ -767,11 +771,11 @@ The tourIFD() parser uses a simple direct approach to parsing the tiff file.  Wh
 
 There are actually two "flavours" of tourIFD.  tourTiff() starts with the tiff header `II*_` or `MM_*` and then calls `tourIFD`.  Makernotes are almost always an IFD.  Some manufactures (Nikon) embed a Tiff.  Some (Canon and Sony) embed an IFD.  It's quite common (Sony) to embed a single IFD which is not terminated with a two byte null uint16_t.
 
-The program tvisitor has two file handlers.  One for Tiff and one for JPEG.  Exiv2 has handlers for about 20 different formats.  If you understand TIFF and JPEG, the others are boring variations.  The program tvisitor.cpp does not handle BigTiff, although it needs very few changes to do so.  I invite you, the reader, to investigate and send me a patch.  Best submission wins a free copy of this book.
+The program tvisitor has two file handlers.  One for Tiff and one for JPEG.  Exiv2 has handlers for about 20 different formats.  If you understand TIFF and JPEG, the others are boring variations.  The program tvisitor.c++ does not handle BigTiff, although it needs very few changes to do so.  I invite you, the reader, to investigate and send me a patch.  Best submission wins a free copy of this book.
 
 The following code is possibly the most beautiful and elegant 100 lines I have ever written.
 
-```
+```cpp
 void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,TagDict& tagDict,bool bHasNext)
 {
     size_t   restore_at_start = io_.tell();
@@ -867,7 +871,7 @@ void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,TagDic
 
 To complete the story, here's the tourTiff() and valid():
 
-```
+```cpp
 bool TiffImage::valid()
 {
     bool   result  = false ;
@@ -898,9 +902,9 @@ void TiffImage::tourTiff(Visitor& v,TagDict& tagDict,int depth)
 } // TiffImage::tourTiff
 ```
 
-In JpegImage, accept() navigates the chain of "chunks".  When he finds the embedded TIFF in the APP1 chunk, he does this:
+JpegImage::accept() navigates the chain of "segments".  When he finds the embedded TIFF in the APP1 segment, he does this:
 
-```
+```cpp
             // Pure beauty.  Create a TiffImage and ask him to entertain the visitor
             if ( bExif ) {
                 Io io(io_,current+2+6,size-2-6);
@@ -909,11 +913,11 @@ In JpegImage, accept() navigates the chain of "chunks".  When he finds the embed
             }
 ```
 
-He discovers the TIFF file hidden in the data, he opens  an Io stream, attaches it to a Tiff object and says "Tiff Accept this visitor".  Software doesn't get any more beautiful, simple and elegant than this.
+He discovers the TIFF file hidden in the data, he opens  an Io stream, attaches it to a Tiff objects and calls "Tiff::accept(visitor)".  Software doesn't get simpler, more beautiful or as elegant than this.
 
-Just to remind you, the BasicIo class in Exiv2 supports http/ssh and other protocols.  This code will safely recursively descent a remote file without copying it locally.  This is discussed in section [7 I/O in Exiv2](#7)
+Just to remind you, the BasicIo class in Exiv2 supports http/ssh and other protocols.  This code will recursively descend into a remote file without copying it locally.  And he does it with great efficiency.  This is discussed in section [7 I/O in Exiv2](#7)
 
-The code `tvisitor.cpp` is a standalone version of the function Image::printStructure() in the Exiv2 library.  It can be executed with four different options which are equivalent to exiv2 options:
+The code `tvisitor.c++` is a standalone version of the function Image::printStructure() in the Exiv2 library.  It can be executed with four different options which are equivalent to exiv2 options:
 
 | _tvisitor option_ | _exiv2 option_ | Description |
 |:--              |:-----        |:-- |
@@ -921,11 +925,11 @@ The code `tvisitor.cpp` is a standalone version of the function Image::printStru
 | $ ./tvisitor R path   | $ exiv2 -pR path | Recursively print the structure of the image |
 | $ ./tvisitor X path   | $ exiv2 -pX path | Print the XMP/xml in the image |
 
-There's a deliberate bug in the code in tvisitor.cpp.  He doesn't know how to recover the XMP/xml from a tiff.  You the reader, can investigate a fix.  You can look in c
+There's a deliberate bug in the code in tvisitor.c++.  He doesn't know how to recover the XMP/xml from a tiff.  You the reader, can investigate a fix.  You can look in c
 
 Let's see the recursive version in action:
 
-```
+```bash
 $ ./tvisitor R ~/Stonehenge.jpg 
 STRUCTURE OF JPEG FILE: /Users/rmills/Stonehenge.jpg
  address | marker       |  length | data
@@ -964,7 +968,7 @@ STRUCTURE OF JPEG FILE: /Users/rmills/Stonehenge.jpg
 
 You can see that he identifies the file as follows:
 
-```
+```bash
          416 | 0x927c MakerNote                    | UNDEFINED |     3152 |       914 | Nikon_..__II*_.___9_._._.___0211 ...
       STRUCTURE OF TIFF FILE (II): /Users/rmills/Stonehenge.jpg:12->15280:924->3142
        address |    tag                              |      type |    count |    offset | value
@@ -974,8 +978,8 @@ You can see that he identifies the file as follows:
 
 He is working on an embedded TIFF which is located at bytes 12..15289.  The is the Tiff IFD.  While processing that, he encountered a MakerNote which occupies byte 924..3142 of that IFD.  As you can see, it four bytes `0211`.  You could locate that data with the command:
 
-```
-941 rmills@rmillsmbp:~/gnu/exiv2/team/book/build $ dd if=~/Stonehenge.jpg bs=1 skip=$((12+924+10+8)) count=4 2>/dev/null ; echo 
+```bash
+$ dd if=~/Stonehenge.jpg bs=1 skip=$((12+924+10+8)) count=4 2>/dev/null ; echo 
 0211
 942 rmills@rmillsmbp:~/gnu/exiv2/team/book/build $ 
 ```
@@ -991,7 +995,7 @@ One other details is that although the Tiff Specification expects the IFD to end
 
 Please read: [#988](https://github.com/Exiv2/exiv2/pull/988)
 
-This PR uses a decoder listed in TiffMappingInfo to decode Exif.Canon.AFInfo. The decoding function "manufactures" Exif tags such as Exif.Canon.AFNumPoints from the data in Exif.Canon.AFInfo. These tags must never be written to file and are removed from the metadata in exif.cpp/ExifParser::encode().
+This PR uses a decoder listed in TiffMappingInfo to decode Exif.Canon.AFInfo. The decoding function "manufactures" Exif tags such as Exif.Canon.AFNumPoints from the data in Exif.Canon.AFInfo. These tags must never be written to file and are removed from the metadata in exif.c++/ExifParser::encode().
 
 Three of the tags created (AFPointsInFocus,AFPointsSelected, AFPrimaryPoint) are bitmasks. As the camera can have up to 64 focus points, the tags are a 64 bit mask to say which points are active. The function printBitmask() reports data such as 1,2,3 or (none).
 
@@ -1013,18 +1017,18 @@ The tag for Nikon's AutoFocus data is 0x00b7
 
 Nikon encode their version of tag in the first 4 bytes.  There was a 40 byte version of AutoFocus which decodes as Exif.NikonAf2.XXX.  This new version (1.01) is 84 bytes in length and decoded as Exif.NikonAf22.XXX.
 
-The two versions (NikonAF2 and NikonAF22) are now encoded as a set with the selector in tiffimage_int.cpp
+The two versions (NikonAF2 and NikonAF22) are now encoded as a set with the selector in tiffimage_int.c++
 
-```
+```cpp
     extern const ArraySet nikonAf2Set[] = {
         { nikonAf21Cfg, nikonAf21Def, EXV_COUNTOF(nikonAf21Def) },
         { nikonAf22Cfg, nikonAf22Def, EXV_COUNTOF(nikonAf22Def) },
     };
 ```
 
-The binary layout of the record is defined in tiff image_int.cpp.  For example, AF22 is:
+The binary layout of the record is defined in tiff image_int.c++.  For example, AF22 is:
 
-```
+```cpp
     extern const ArrayCfg nikonAf22Cfg = {
         nikonAf22Id,      // Group for the elements
         littleEndian,     // Byte order
@@ -1052,24 +1056,24 @@ The binary layout of the record is defined in tiff image_int.cpp.  For example, 
     };
 ```
 
-The two versions of the data are encoded in tiffimage_int.cpp
+The two versions of the data are encoded in tiffimage_int.c++
 
-```
+```cpp
         { Tag::root, nikonAf21Id,      nikon3Id,         0x00b7    },
         { Tag::root, nikonAf22Id,      nikon3Id,         0x00b7    },
 ```
 
 ### Binary Selector
 
-The code to determine which version is decoded is in tiffimage_int.cpp
+The code to determine which version is decoded is in tiffimage_int.c++
 
-```
+```cpp
        {    0x00b7, nikon3Id,         EXV_COMPLEX_BINARY_ARRAY(nikonAf2Set, nikonAf2Selector) },
 ```
 
 When the tiffvisitor encounters 0x00b7, he calls nikonAf2Selector() to return the index of the binary array to be used.  By default it returns 0 (the existing `nikonAf21Id`).  If the tag length is 84, he returns 1 for `nikonAf21Id`
 
-```
+```cpp
     int nikonAf2Selector(uint16_t tag, const byte* /*pData*/, uint32_t size, TiffComponent* const /*pRoot*/)
     {
         int result = tag == 0x00b7 ? 0 : -1 ;
@@ -1082,7 +1086,7 @@ When the tiffvisitor encounters 0x00b7, he calls nikonAf2Selector() to return th
 
 ### The decoder
 
-```
+```cpp
 EXV_CALL_MEMBER_FN(*this, decoderFct)(object);
 ```
 
@@ -1109,7 +1113,7 @@ In writing this book, I want to avoid duplicating information between Exiv2 docu
 
 As the name implies, these tests were originally implemented as bash scripts.
 
-```
+```bash
 #!/usr/bin/env bash
 # Test driver for geotag
 
@@ -1140,7 +1144,7 @@ reportTest
 
 I intend to rewrite the bash tests in python.  This will be done because running bash scripts on windows is painful for most windows users.
 
-```
+```python
 #!/usr/bin/env python3
 
 import os
@@ -1322,7 +1326,7 @@ Exiv2 has dependencies on the following libraries.  All are optional, however it
 | _Name_ | _Purpose_ |
 |:--    |:--- |
 | zlib  | Compression library.  Necessary to support PNG files |
-| expat | XML Library.  Necessary to support Xmp (and samples/geotag) |
+| expat | XML Library.  Necessary to for XMP and samples/geotag.c++ |
 | xmpsdk | Adobe Library for xmp.  Source is embedded in the Exiv2 code base |
 | libcurl | http, https, ftp, ftps support |
 | libssh | ssh support |
@@ -1463,13 +1467,13 @@ To be written.
 
 The latest version of this book and the programs discussed are available for download from:
 
-```
+```bash
 svn://dev.exiv2.org/svn/team/book
 ```
 
 To download and build these programs:
 
-```
+```bash
 $ svn export svn://dev.exiv2.org/svn/team/book
 $ mkdir book/build
 $ cd book/build
@@ -1481,8 +1485,9 @@ I strongly encourage you to download, build and install Exiv2.  The current (and
 
 There is substantial documentation provided with the Exiv2 project.  This book does not duplicate the project documentation, but compliments it by explaining how and why the code works. 
 
-#### args.cpp
-```
+#### args.c++
+
+```cpp
 #include <stdio.h>
 int main(int argc, char* argv[])
 {
@@ -1495,9 +1500,9 @@ int main(int argc, char* argv[])
 }
 ```
 
-#### dmpf.cpp
+#### dmpf.c++
 
-```
+```cpp
 #include <stdio.h>
 #include <string.h>
 
