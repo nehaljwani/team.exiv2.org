@@ -17,13 +17,13 @@
 6. [Sample Applications](#6)
 7. [I/O in Exiv2](#7)
 8. [Exiv2 Architecture](#8)<br>
-  [8.1 Tag Names in Exiv2](#8-1)<br>
-  [8.2 Metadata Decoder](#8-2)<br>
-  [8.3 Metadata Binary Tag Decoder](#8-3)<br>
-  [8.4 Tiff Visitor](#8-4)<br>
-  [8.5 TagInfo](#8-5)<br>
-  [8.6 tourIFD and tourTiff](#8-6)<br>
-  [8.7 Using dd to extract data from an image](#8-7)
+  [8.1 Using dd to extract data from an image](#8-1)<br>
+  [8.2 Tag Names in Exiv2](#8-2)<br>
+  [8.3 TagInfo](#8-3)<br>
+  [8.4 Visitor Design Pattern](#8-4)<br>
+  [8.5 tourIFD and tourTiff](#8-5)<br>
+  [8.6 Metadata Decoder](#8-6)<br>
+  [8.7 Metadata Binary Tag Decoder](#8-7)<br>
 9. [Test Suite and Build](#9)<br>
   [9.1 Bash Tests](#9-1)<br>
   [9.2 Python Tests](#9-2)<br>
@@ -359,7 +359,84 @@ Most camera manufacturers are large corporations.  I'm sure they have their own 
 # 8 Exiv2 Architecture
 
 <div id="8-1">
-### 8.1 Tag Names in Exiv2
+### 8.1 Using dd to extract data from an image
+
+The exiv2 option `-pS` prints the structure of an image.
+
+```
+$ exiv2 -pS ~/Stonehenge.jpg 
+STRUCTURE OF JPEG FILE: /Users/rmills/Stonehenge.jpg
+ address | marker       |  length | data
+       0 | 0xffd8 SOI  
+       2 | 0xffe1 APP1  |   15288 | Exif..II*......................
+   15292 | 0xffe1 APP1  |    2610 | http://ns.adobe.com/xap/1.0/.<?x
+   17904 | 0xffed APP13 |      96 | Photoshop 3.0.8BIM.......'.....
+   18002 | 0xffe2 APP2  |    4094 | MPF.II*...............0100.....
+   22098 | 0xffdb DQT   |     132 
+   22232 | 0xffc0 SOF0  |      17 
+   22251 | 0xffc4 DHT   |     418 
+   22671 | 0xffda SOS  
+$
+```
+
+We can see that the Exif metadata is stored at offset=2+2+2+6 and has length 15288-offset.  We can extract that as follows:
+
+```
+$ dd if=~/Stonehenge.jpg count=$((15288-(2+2+2+6))) bs=1 skip=$((2+2+2+6)) > foo.tif
+15276+0 records in
+15276+0 records out
+15276 bytes transferred in 0.102577 secs (148922 bytes/sec)
+$ dd if=~/Stonehenge.jpg count=$((15288-(2+2+2+6))) bs=1 skip=$((2+2+2+6)) | dmpf - | head -1
+       0        0: II*_.___._..._.___.___..._.___._  ->  49 49 2a 00 08 00 ...
+915 rmills@rmillsmbp:~/gnu/exiv2/team/book $ 
+$ file foo.tif
+foo.tif: TIFF image data, little-endian, direntries=11, manufacturer=NIKON CORPORATION, model=NIKON D5300, orientation=upper-left, xresolution=176, yresolution=184, resolutionunit=2, software=Ver.1.00 , datetime=2015:07:16 20:25:28, GPS-Data
+$ exiv2 -pa foo.tif 
+Warning: Directory Thumbnail, entry 0x0201: Data area exceeds data buffer, ignoring it.
+Exif.Image.Make                              Ascii      18  NIKON CORPORATION
+Exif.Image.Model                             Ascii      12  NIKON D5300
+Exif.Image.Orientation                       Short       1  top, left
+Exif.Image.XResolution                       Rational    1  300
+Exif.Image.YResolution                       Rational    1  300
+...
+```
+
+Internally, this is exactly how exiv2 works.  It doesn't use `dd` of course.  However it identifies the Exif IFD and parses it into memory.
+
+Using `dd` is a useful trick to recover data which be easily seen in the file, however exiv2 doesn't return the data.  For example, if you wished to extract the pixels of an image.
+
+You can extract and inspect the metadata with this single _rather elegant_ command:
+
+```
+$ dd if=~/Stonehenge.jpg count=$((15288-(2+2+2+6))) bs=1 skip=$((2+2+2+6)) 2>/dev/null | exiv2 -pa - 2>/dev/null| head -3
+Exif.Image.Make                              Ascii      18  NIKON CORPORATION
+Exif.Image.Model                             Ascii      12  NIKON D5300
+Exif.Image.Orientation                       Short       1  top, left
+$
+```
+
+The exiv2 command `exiv2 -pS image` reveals the structure of a file with `|` separated fields.  The data is presented to look nice.  However it's also very convenient for parsing in bash with the utility `cut`:
+
+```
+$ image=~/Stonehenge.jpg
+$ exiv2 -pS $image 2>/dev/null | grep APP1 | grep Exif
+$        2 | 0xffe1 APP1  |   15288 | Exif..II*......................
+$ line=$(exiv2 -pS ~/Stonehenge.jpg 2>/dev/null | grep APP1 | grep Exif )
+$ start=$(echo $line|cut  -d'|' -f 1)
+$ count=$(echo $line|cut  -d'|' -f 3)
+$ dd if=$image count=$((count-10)) bs=1 skip=$((start+10)) 2>/dev/null | exiv2 -pa - 2>/dev/null | head -3
+Exif.Image.Make                              Ascii      18  NIKON CORPORATION
+Exif.Image.Model                             Ascii      12  NIKON D5300
+Exif.Image.Orientation                       Short       1  top, left
+$
+```
+
+You may be interested to discover that option `-pS` option which arrived with Exiv2 v0.25 was joined in Exiv2 v0.26 by `-pR`.  This is a "recursive" version of -pS.  Internally, it dumps the structure not only of the file, but also every subfiles (mostly tiff IFDs).  The is discussed in detail here: [8.5 tourIFD and tourTiff](#8-5).
+
+[TOC](#TOC)
+
+<div id="8-2">
+### 8.2 Tag Names in Exiv2
 
 The following test program is very useful for understanding tags:
 
@@ -484,114 +561,48 @@ Now to address your concern about `Exif.MinoltaCsNew.ISOSpeed`.  It will throw a
 Your application code has to use exception handlers to catch these matters and determine what to do.  Without getting involved with your application code, I can't comment on your best approach to dealing with this.  There is a macro EXIV2_TEST_VERSION which enables you to have version specific code in your application.
 
 [TOC](#TOC)
-<div id="8-2">
-### 8.2 Metadata Decoder
 
-Please read: [#988](https://github.com/Exiv2/exiv2/pull/988)
-
-This PR uses a decoder listed in TiffMappingInfo to decode Exif.Canon.AFInfo. The decoding function "manufactures" Exif tags such as Exif.Canon.AFNumPoints from the data in Exif.Canon.AFInfo. These tags must never be written to file and are removed from the metadata in exif.cpp/ExifParser::encode().
-
-Three of the tags created (AFPointsInFocus,AFPointsSelected, AFPrimaryPoint) are bitmasks. As the camera can have up to 64 focus points, the tags are a 64 bit mask to say which points are active. The function printBitmask() reports data such as 1,2,3 or (none).
-
-This decoding function decodeCanonAFInfo() added to TiffMappingInfo manufactures the new tags. Normally, tags are processed by the binary tag decoder and that approach was taken in branch fix981_canonAf. However, the binary tag decoder cannot deal with AFInfo because the size of some metadata arrays cannot be determined at compile time.
-
-We should support decoding AFInfo in 0.28, however we should NOT auto-port this PR. We can avoid having to explicitly delete tags from the metadata before writing by adding a "read-only" flag to TagInfo. This would break the Exiv2 v0.27 API and has been avoided. There is an array in decodeCanonAFInfo() which lists the "manufactured" tags such as Exif.Canon.AFNumPoints. In the Exiv2 v0.28 architecture, a way might be designed to generate that data at run-time.
-
-[TOC](#TOC)
 <div id="8-3">
-### 8.3 Metadata Binary Tag Decoder
+### 8.3 TagInfo
 
-Please read: [#900](https://github.com/Exiv2/exiv2/pull/900)
+Another matter to appreciate is that tag definitions are not constant.  A tag is simply an uint16.  The Tiff Standard specifies about 50 tags.  Anybody creating an IFD can use the same tag number for different purposes.  The Tiff Specification says _"TIFF readers must safely skip over these fields if they do not understand or do not wish to use the information."_.  We do have to understand every tag.  In a tiff file, the pixels are located using the tag StripOffsets.  We report StripOffsets, however we don't read pixel data.
 
-There is a long discussion in [#646](https://github.com/Exiv2/exiv2/pull/646) about this issue and my investigation into the how the makernotes are decoded.
-
-### History
-
-The tag for Nikon's AutoFocus data is 0x00b7
-
-Nikon encode their version of tag in the first 4 bytes.  There was a 40 byte version of AutoFocus which decodes as Exif.NikonAf2.XXX.  This new version (1.01) is 84 bytes in length and decoded as Exif.NikonAf22.XXX.
-
-The two versions (NikonAF2 and NikonAF22) are now encoded as a set with the selector in tiffimage_int.cpp
+If the user wishes to recover data such as the pixels, it is possible to do this with the utility dd.  This is discussed here: [8.1 Using dd to extract data from an image](#8-1). 
 
 ```
-    extern const ArraySet nikonAf2Set[] = {
-        { nikonAf21Cfg, nikonAf21Def, EXV_COUNTOF(nikonAf21Def) },
-        { nikonAf22Cfg, nikonAf22Def, EXV_COUNTOF(nikonAf22Def) },
-    };
+const TagInfo Nikon1MakerNote::tagInfo_[] = {
+    TagInfo(0x0001, "Version", N_("Version"),
+            N_("Nikon Makernote version"),
+               nikon1Id, makerTags, undefined, -1, printValue),
+    TagInfo(0x0002, "ISOSpeed", N_("ISO Speed"),
+            N_("ISO speed setting"),
+            nikon1Id, makerTags, unsignedShort, -1, print0x0002),
+
+const TagInfo CanonMakerNote::tagInfo_[] = {
+        TagInfo(0x0000, "0x0000", "0x0000", N_("Unknown"), canonId, makerTags, unsignedShort, -1, printValue),
+        TagInfo(0x0001, "CameraSettings", N_("Camera Settings"), N_("Various camera settings"), canonId, makerTags, unsignedShort, -1, printValue),
+        TagInfo(0x0002, "FocalLength", N_("Focal Length"), N_("Focal length"), canonId, makerTags, unsignedShort, -1, printFocalLength),
+
+const TagInfo gpsTagInfo[] = {
+    TagInfo(0x0000, "GPSVersionID", N_("GPS Version ID"),
+            N_("Indicates the version of <GPSInfoIFD>. The version is given "
+            "as 2.0.0.0. This tag is mandatory when <GPSInfo> tag is "
+            "present. (Note: The <GPSVersionID> tag is given in bytes, "
+            "unlike the <ExifVersion> tag. When the version is "
+            "2.0.0.0, the tag value is 02000000.H)."),
+            gpsId, gpsTags, unsignedByte, 4, print0x0000),
+    TagInfo(0x0001, "GPSLatitudeRef", N_("GPS Latitude Reference"),
+            N_("Indicates whether the latitude is north or south latitude. The "
+            "ASCII value 'N' indicates north latitude, and 'S' is south latitude."),
+            gpsId, gpsTags, asciiString, 2, EXV_PRINT_TAG(exifGPSLatitudeRef)),
 ```
 
-The binary layout of the record is defined in tiff image_int.cpp.  For example, AF22 is:
-
-```
-    extern const ArrayCfg nikonAf22Cfg = {
-        nikonAf22Id,      // Group for the elements
-        littleEndian,     // Byte order
-        ttUndefined,      // Type for array entry
-        notEncrypted,     // Not encrypted
-        false,            // No size element
-        true,             // Write all tags
-        true,            // Concatenate gaps
-        { 0, ttUnsignedByte,  1 }
-    };
-    //! Nikon Auto Focus 22 binary array - definition
-    extern const ArrayDef nikonAf22Def[] = {
-        {  0, ttUndefined,     4 }, // Version
-        {  4, ttUnsignedByte,  1 }, // ContrastDetectAF
-        {  5, ttUnsignedByte,  1 }, // AFAreaMode
-        {  6, ttUnsignedByte,  1 }, // PhaseDetectAF
-        {  7, ttUnsignedByte,  1 }, // PrimaryAFPoint
-        {  8, ttUnsignedByte,  7 }, // AFPointsUsed
-        { 70, ttUnsignedShort, 1 }, // AFImageWidth
-        { 72, ttUnsignedShort, 1 }, // AFImageHeight
-        { 74, ttUnsignedShort, 1 }, // AFAreaXPosition
-        { 76, ttUnsignedShort, 1 }, // AFAreaYPosition
-        { 78, ttUnsignedShort, 1 }, // AFAreaWidth
-        { 80, ttUnsignedShort, 1 }, // AFAreaHeight
-    };
-```
-
-The two versions of the data are encoded in tiffimage_int.cpp
-
-```
-        { Tag::root, nikonAf21Id,      nikon3Id,         0x00b7    },
-        { Tag::root, nikonAf22Id,      nikon3Id,         0x00b7    },
-```
-
-### Binary Selector
-
-The code to determine which version is decoded is in tiffimage_int.cpp
-
-```
-       {    0x00b7, nikon3Id,         EXV_COMPLEX_BINARY_ARRAY(nikonAf2Set, nikonAf2Selector) },
-```
-
-When the tiffvisitor encounters 0x00b7, he calls nikonAf2Selector() to return the index of the binary array to be used.  By default it returns 0 (the existing `nikonAf21Id`).  If the tag length is 84, he returns 1 for `nikonAf21Id`
-
-```
-    int nikonAf2Selector(uint16_t tag, const byte* /*pData*/, uint32_t size, TiffComponent* const /*pRoot*/)
-    {
-        int result = tag == 0x00b7 ? 0 : -1 ;
-        if (result > -1 && size == 84 ) {
-            result = 1;
-        }
-        return result;
-    }
-```
-
-### The decoder
-
-```
-EXV_CALL_MEMBER_FN(*this, decoderFct)(object);
-```
-
-This function understands how to decode byte-by-byte from `const ArrayDef` into the Exiv2 tag/values such as Exif.NikonAF22.AFAreaYPosition which it stores in the ExifData vector.
-
-This is ingenious magic.  I'll revisit/edit this explanation in the next few days when I have more time to explain this with more clarity.
-
+As we can see, tag == 1 in the Nikon MakerNotes is Version.  In Canon MakerNotes, it is CameraSettings.  IN GPSInfo it is GPSLatitudeRef.  We need to use the appropriate tag dictionary for the IFD being parsed.  The tag 0xffff in the tagDict is used to store the family name of the tags.
 
 [TOC](#TOC)
+
 <div id="8-4">
-### 8.4 Tiff Visitor
+### 8.4 Visitor Design Pattern
 
 The tiff visitor code is based on the visitor pattern in [Design Patterns: Elements of Reusable Object=Oriented Software](https://www.oreilly.com/library/view/design-patterns-elements/0201633612/).  Before we discuss tiff visitor, let's review the visitor pattern.
 
@@ -731,57 +742,19 @@ average age = 12
 
 Exiv2 has an abstract TiffVisitor class, and the following concrete visitors:
 
-```
-tiffvisitor_int.hpp:    class TiffFinder  : public TiffVisitor 
-tiffvisitor_int.hpp:    class TiffCopier  : public TiffVisitor 
-tiffvisitor_int.hpp:    class TiffDecoder : public TiffVisitor 
-tiffvisitor_int.hpp:    class TiffEncoder : public TiffVisitor
-tiffvisitor_int.hpp:    class TiffReader  : public TiffVisitor
-```
+| _Class_ | _Derived from_ | Purpose |
+|:--                |:--                  |:---- |
+| class TiffFinder  | public TiffVisitor    | Searching |
+| class TiffCopier  | public TiffVisitor  | Visits a file and copies update a new file |
+| class TiffDecoder | public TiffVisitor | Decodes meta data |
+| class TiffEncoder | public TiffVisitor | Encodes meta data |
+| class TiffReader  | public TiffVisitor | Reads meta data in to memory |
 
-I'll write more about the TiffVisitor later.
+I need to do more research into this complex design.
 
 [TOC](#TOC)
 <div id="8-5">
-### 8.5 TagInfo
-
-Another matter to appreciate is that tag definitions are not constant.  A tag is simply an uint16.  The Tiff Standard specifies about 50 tags.  Anybody creating an IFD can use the same tag number for different purposes.  The Tiff Specification says _"TIFF readers must safely skip over these fields if they do not understand or do not wish to use the information."_.  We do have to understand every tag.  In a tiff file, the pixels are located using the tag StripOffsets.  We report StripOffsets, however we don't read pixel data.
-
-If the user wishes to recover data such as the pixels, it is possible to do this with the utility dd.  This is discussed here: [8.7 Using dd to extract data from an image](#8-7). 
-
-```
-const TagInfo Nikon1MakerNote::tagInfo_[] = {
-    TagInfo(0x0001, "Version", N_("Version"),
-            N_("Nikon Makernote version"),
-               nikon1Id, makerTags, undefined, -1, printValue),
-    TagInfo(0x0002, "ISOSpeed", N_("ISO Speed"),
-            N_("ISO speed setting"),
-            nikon1Id, makerTags, unsignedShort, -1, print0x0002),
-
-const TagInfo CanonMakerNote::tagInfo_[] = {
-        TagInfo(0x0000, "0x0000", "0x0000", N_("Unknown"), canonId, makerTags, unsignedShort, -1, printValue),
-        TagInfo(0x0001, "CameraSettings", N_("Camera Settings"), N_("Various camera settings"), canonId, makerTags, unsignedShort, -1, printValue),
-        TagInfo(0x0002, "FocalLength", N_("Focal Length"), N_("Focal length"), canonId, makerTags, unsignedShort, -1, printFocalLength),
-
-const TagInfo gpsTagInfo[] = {
-    TagInfo(0x0000, "GPSVersionID", N_("GPS Version ID"),
-            N_("Indicates the version of <GPSInfoIFD>. The version is given "
-            "as 2.0.0.0. This tag is mandatory when <GPSInfo> tag is "
-            "present. (Note: The <GPSVersionID> tag is given in bytes, "
-            "unlike the <ExifVersion> tag. When the version is "
-            "2.0.0.0, the tag value is 02000000.H)."),
-            gpsId, gpsTags, unsignedByte, 4, print0x0000),
-    TagInfo(0x0001, "GPSLatitudeRef", N_("GPS Latitude Reference"),
-            N_("Indicates whether the latitude is north or south latitude. The "
-            "ASCII value 'N' indicates north latitude, and 'S' is south latitude."),
-            gpsId, gpsTags, asciiString, 2, EXV_PRINT_TAG(exifGPSLatitudeRef)),
-```
-
-As we can see, tag == 1 in the Nikon MakerNotes is Version.  In Canon MakerNotes, it is CameraSettings.  IN GPSInfo it is GPSLatitudeRef.  We need to use the appropriate tag dictionary for the IFD being parsed.  The tag 0xffff in the tagDict is used to store the family name of the tags.
-
-[TOC](#TOC)
-<div id="8-6">
-### 8.6 tourIFD and tourTiff
+### 8.5 tourIFD and tourTiff
 
 The TiffVisitor is ingenious.  It's also difficult to understand.  Exiv2 has two tiff parsers - TiffVisitor and printIFDStructure().  TiffVisitor was written by Andreas Huggel.  It's very robust and has been almost 
 bug free for 15 years.  I wrote the parser in Image::printStructure() to try to understand the structure of a tiff file.  The code in Image::printIFDStructure() is easier to understand.
@@ -893,6 +866,7 @@ void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,TagDic
 ```
 
 To complete the story, here's the tourTiff() and valid():
+
 ```
 bool TiffImage::valid()
 {
@@ -924,14 +898,30 @@ void TiffImage::tourTiff(Visitor& v,TagDict& tagDict,int depth)
 } // TiffImage::tourTiff
 ```
 
+In JpegImage, accept() navigates the chain of "chunks".  When he finds the embedded TIFF in the APP1 chunk, he does this:
+
+```
+            // Pure beauty.  Create a TiffImage and ask him to entertain the visitor
+            if ( bExif ) {
+                Io io(io_,current+2+6,size-2-6);
+                TiffImage exif(io);
+                exif.accept(v);
+            }
+```
+
+He discovers the TIFF file hidden in the data, he opens  an Io stream, attaches it to a Tiff object and says "Tiff Accept this visitor".  Software doesn't get any more beautiful, simple and elegant than this.
+
+Just to remind you, the BasicIo class in Exiv2 supports http/ssh and other protocols.  This code will safely recursively descent a remote file without copying it locally.  This is discussed in section [7 I/O in Exiv2](#7)
+
 The code `tvisitor.cpp` is a standalone version of the function Image::printStructure() in the Exiv2 library.  It can be executed with four different options which are equivalent to exiv2 options:
 
-| _tvisitor option_ | _exiv2 option_ |
-|:--              |:-----        |
-| $ ./tvisitor path<br>$ ./tvisitor S path | $ exiv2 -pS path |
-| $ ./tvisitor R path   | $ exiv2 -pR path |
-| $ ./tvisitor X path   | $ exiv2 -pX path |
-| $ ./tvisitor I path   | $ exiv2 -pI path |
+| _tvisitor option_ | _exiv2 option_ | Description |
+|:--              |:-----        |:-- |
+| $ ./tvisitor path<br>$ ./tvisitor S path | $ exiv2 -pS path | Print the structure of the image |
+| $ ./tvisitor R path   | $ exiv2 -pR path | Recursively print the structure of the image |
+| $ ./tvisitor X path   | $ exiv2 -pX path | Print the XMP/xml in the image |
+
+There's a deliberate bug in the code in tvisitor.cpp.  He doesn't know how to recover the XMP/xml from a tiff.  You the reader, can investigate a fix.  You can look in c
 
 Let's see the recursive version in action:
 
@@ -989,87 +979,116 @@ He is working on an embedded TIFF which is located at bytes 12..15289.  The is t
 0211
 942 rmills@rmillsmbp:~/gnu/exiv2/team/book/build $ 
 ```
-Using dd to extract metadata is discussed in more detail here: [8.7 Using dd to extract data from an image](#8-7).
+Using dd to extract metadata is discussed in more detail here: [8.1 Using dd to extract data from an image](#8-1).
 
 Please be aware that there are two ways in which IFDs can occur in the file.  They can be an embedded TIFF which is complete with the `II*_LengthOffset` or `MM_*LengthOffset` 12-byte header followed the IFD.   Or the IFD can be in the file without the header.  tourIFD() knows that the tags such as GpsTag and ExifTag are IFDs and calls tourIFD().  For the embedded TIFF (such as Nikon MakerNote), tourIFD() creates a TiffImage and calls TimeImage.tourTiff() which validates the header and calls tourIFD().
 
 One other details is that although the Tiff Specification expects the IFD to end with a uint16_t offset == 0, Sony (and other) maker notes do not.  The IFD is a single directory of 12 byte tags.
 
 [TOC](#TOC)
+<div id="8-6">
+### 8.6 Metadata Decoder
+
+Please read: [#988](https://github.com/Exiv2/exiv2/pull/988)
+
+This PR uses a decoder listed in TiffMappingInfo to decode Exif.Canon.AFInfo. The decoding function "manufactures" Exif tags such as Exif.Canon.AFNumPoints from the data in Exif.Canon.AFInfo. These tags must never be written to file and are removed from the metadata in exif.cpp/ExifParser::encode().
+
+Three of the tags created (AFPointsInFocus,AFPointsSelected, AFPrimaryPoint) are bitmasks. As the camera can have up to 64 focus points, the tags are a 64 bit mask to say which points are active. The function printBitmask() reports data such as 1,2,3 or (none).
+
+This decoding function decodeCanonAFInfo() added to TiffMappingInfo manufactures the new tags. Normally, tags are processed by the binary tag decoder and that approach was taken in branch fix981_canonAf. However, the binary tag decoder cannot deal with AFInfo because the size of some metadata arrays cannot be determined at compile time.
+
+We should support decoding AFInfo in 0.28, however we should NOT auto-port this PR. We can avoid having to explicitly delete tags from the metadata before writing by adding a "read-only" flag to TagInfo. This would break the Exiv2 v0.27 API and has been avoided. There is an array in decodeCanonAFInfo() which lists the "manufactured" tags such as Exif.Canon.AFNumPoints. In the Exiv2 v0.28 architecture, a way might be designed to generate that data at run-time.
+
+[TOC](#TOC)
 <div id="8-7">
-### 8.7 Using dd to extract data from an image
+### 8.7 Metadata Binary Tag Decoder
 
-The exiv2 option `-pS` prints the structure of an image.
+Please read: [#900](https://github.com/Exiv2/exiv2/pull/900)
 
-```
-$ exiv2 -pS ~/Stonehenge.jpg 
-STRUCTURE OF JPEG FILE: /Users/rmills/Stonehenge.jpg
- address | marker       |  length | data
-       0 | 0xffd8 SOI  
-       2 | 0xffe1 APP1  |   15288 | Exif..II*......................
-   15292 | 0xffe1 APP1  |    2610 | http://ns.adobe.com/xap/1.0/.<?x
-   17904 | 0xffed APP13 |      96 | Photoshop 3.0.8BIM.......'.....
-   18002 | 0xffe2 APP2  |    4094 | MPF.II*...............0100.....
-   22098 | 0xffdb DQT   |     132 
-   22232 | 0xffc0 SOF0  |      17 
-   22251 | 0xffc4 DHT   |     418 
-   22671 | 0xffda SOS  
-$
-```
+There is a long discussion in [#646](https://github.com/Exiv2/exiv2/pull/646) about this issue and my investigation into the how the makernotes are decoded.
 
-We can see that the Exif metadata is stored at offset=2+2+2+6 and has length 15288-offset.  We can extract that as follows:
+### History
+
+The tag for Nikon's AutoFocus data is 0x00b7
+
+Nikon encode their version of tag in the first 4 bytes.  There was a 40 byte version of AutoFocus which decodes as Exif.NikonAf2.XXX.  This new version (1.01) is 84 bytes in length and decoded as Exif.NikonAf22.XXX.
+
+The two versions (NikonAF2 and NikonAF22) are now encoded as a set with the selector in tiffimage_int.cpp
 
 ```
-$ dd if=~/Stonehenge.jpg count=$((15288-(2+2+2+6))) bs=1 skip=$((2+2+2+6)) > foo.tif
-15276+0 records in
-15276+0 records out
-15276 bytes transferred in 0.102577 secs (148922 bytes/sec)
-$ dd if=~/Stonehenge.jpg count=$((15288-(2+2+2+6))) bs=1 skip=$((2+2+2+6)) | dmpf - | head -1
-       0        0: II*_.___._..._.___.___..._.___._  ->  49 49 2a 00 08 00 ...
-915 rmills@rmillsmbp:~/gnu/exiv2/team/book $ 
-$ file foo.tif
-foo.tif: TIFF image data, little-endian, direntries=11, manufacturer=NIKON CORPORATION, model=NIKON D5300, orientation=upper-left, xresolution=176, yresolution=184, resolutionunit=2, software=Ver.1.00 , datetime=2015:07:16 20:25:28, GPS-Data
-$ exiv2 -pa foo.tif 
-Warning: Directory Thumbnail, entry 0x0201: Data area exceeds data buffer, ignoring it.
-Exif.Image.Make                              Ascii      18  NIKON CORPORATION
-Exif.Image.Model                             Ascii      12  NIKON D5300
-Exif.Image.Orientation                       Short       1  top, left
-Exif.Image.XResolution                       Rational    1  300
-Exif.Image.YResolution                       Rational    1  300
-...
+    extern const ArraySet nikonAf2Set[] = {
+        { nikonAf21Cfg, nikonAf21Def, EXV_COUNTOF(nikonAf21Def) },
+        { nikonAf22Cfg, nikonAf22Def, EXV_COUNTOF(nikonAf22Def) },
+    };
 ```
 
-Internally, this is exactly how exiv2 works.  It doesn't use `dd` of course.  However it identifies the Exif IFD and parses it into memory.
-
-Using `dd` is a useful trick to recover data which be easily seen in the file, however exiv2 doesn't return the data.  For example, if you wished to extract the pixels of an image.
-
-You can extract and inspect the metadata with this single _rather elegant_ command:
+The binary layout of the record is defined in tiff image_int.cpp.  For example, AF22 is:
 
 ```
-$ dd if=~/Stonehenge.jpg count=$((15288-(2+2+2+6))) bs=1 skip=$((2+2+2+6)) 2>/dev/null | exiv2 -pa - 2>/dev/null| head -3
-Exif.Image.Make                              Ascii      18  NIKON CORPORATION
-Exif.Image.Model                             Ascii      12  NIKON D5300
-Exif.Image.Orientation                       Short       1  top, left
-$
+    extern const ArrayCfg nikonAf22Cfg = {
+        nikonAf22Id,      // Group for the elements
+        littleEndian,     // Byte order
+        ttUndefined,      // Type for array entry
+        notEncrypted,     // Not encrypted
+        false,            // No size element
+        true,             // Write all tags
+        true,            // Concatenate gaps
+        { 0, ttUnsignedByte,  1 }
+    };
+    //! Nikon Auto Focus 22 binary array - definition
+    extern const ArrayDef nikonAf22Def[] = {
+        {  0, ttUndefined,     4 }, // Version
+        {  4, ttUnsignedByte,  1 }, // ContrastDetectAF
+        {  5, ttUnsignedByte,  1 }, // AFAreaMode
+        {  6, ttUnsignedByte,  1 }, // PhaseDetectAF
+        {  7, ttUnsignedByte,  1 }, // PrimaryAFPoint
+        {  8, ttUnsignedByte,  7 }, // AFPointsUsed
+        { 70, ttUnsignedShort, 1 }, // AFImageWidth
+        { 72, ttUnsignedShort, 1 }, // AFImageHeight
+        { 74, ttUnsignedShort, 1 }, // AFAreaXPosition
+        { 76, ttUnsignedShort, 1 }, // AFAreaYPosition
+        { 78, ttUnsignedShort, 1 }, // AFAreaWidth
+        { 80, ttUnsignedShort, 1 }, // AFAreaHeight
+    };
 ```
 
-The exiv2 command `exiv2 -pS image` reveals the structure of a file with `|` separated fields.  The data is presented to look nice.  However it's also very convenient for parsing in bash with the utility `cut`:
+The two versions of the data are encoded in tiffimage_int.cpp
 
 ```
-$ image=~/Stonehenge.jpg
-$ exiv2 -pS $image 2>/dev/null | grep APP1 | grep Exif
-$        2 | 0xffe1 APP1  |   15288 | Exif..II*......................
-$ line=$(exiv2 -pS ~/Stonehenge.jpg 2>/dev/null | grep APP1 | grep Exif )
-$ start=$(echo $line|cut  -d'|' -f 1)
-$ count=$(echo $line|cut  -d'|' -f 3)
-$ dd if=$image count=$((count-10)) bs=1 skip=$((start+10)) 2>/dev/null | exiv2 -pa - 2>/dev/null | head -3
-Exif.Image.Make                              Ascii      18  NIKON CORPORATION
-Exif.Image.Model                             Ascii      12  NIKON D5300
-Exif.Image.Orientation                       Short       1  top, left
-$
+        { Tag::root, nikonAf21Id,      nikon3Id,         0x00b7    },
+        { Tag::root, nikonAf22Id,      nikon3Id,         0x00b7    },
 ```
 
-You may be interested to discover that option `-pS` option which arrived with Exiv2 v0.25 was joined in Exiv2 v0.26 by `-pR`.  This is a "recursive" version of -pS.  Internally, it dumps the structure not only of the file, but also every subfiles (mostly tiff IFDs).  The is discussed in detail here: [8.6 tourIFD and tourTiff](#8-6).
+### Binary Selector
+
+The code to determine which version is decoded is in tiffimage_int.cpp
+
+```
+       {    0x00b7, nikon3Id,         EXV_COMPLEX_BINARY_ARRAY(nikonAf2Set, nikonAf2Selector) },
+```
+
+When the tiffvisitor encounters 0x00b7, he calls nikonAf2Selector() to return the index of the binary array to be used.  By default it returns 0 (the existing `nikonAf21Id`).  If the tag length is 84, he returns 1 for `nikonAf21Id`
+
+```
+    int nikonAf2Selector(uint16_t tag, const byte* /*pData*/, uint32_t size, TiffComponent* const /*pRoot*/)
+    {
+        int result = tag == 0x00b7 ? 0 : -1 ;
+        if (result > -1 && size == 84 ) {
+            result = 1;
+        }
+        return result;
+    }
+```
+
+### The decoder
+
+```
+EXV_CALL_MEMBER_FN(*this, decoderFct)(object);
+```
+
+This function understands how to decode byte-by-byte from `const ArrayDef` into the Exiv2 tag/values such as Exif.NikonAF22.AFAreaYPosition which it stores in the ExifData vector.
+
+This is ingenious magic.  I'll revisit/edit this explanation in the next few days when I have more time to explain this with more clarity.
 
 [TOC](#TOC)
 <div id="9">
@@ -1460,7 +1479,7 @@ $ make
 
 I strongly encourage you to download, build and install Exiv2.  The current (and all earlier releases) are available from: [https://exiv2.org](https://exiv2.org).
 
-There is substantial documentation provided with the Exiv2 project.  This book does not duplicate the project documentation, but compliments it be explaining how and why the code works. 
+There is substantial documentation provided with the Exiv2 project.  This book does not duplicate the project documentation, but compliments it by explaining how and why the code works. 
 
 #### args.cpp
 ```

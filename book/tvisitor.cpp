@@ -11,14 +11,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-// this will probably be removed later
-enum PSopt_e
-{   kpsBasic
-,   kpsXMP
-,   kpsRecursive
-,   kpsIccProfile
-};
-
 // Error support
 enum error_e
 {   kerCorruptedMetadata
@@ -423,6 +415,13 @@ private:
     size_t      restore_;
 };
 
+// Options for ReportVisitor
+enum PSopt_e
+{   kpsBasic
+,   kpsXMP
+,   kpsRecursive
+};
+
 // 1.  declare types
 class   Image; // forward
 class   TiffImage;
@@ -435,9 +434,11 @@ public:
     : out_   (out)
     , option_(option)
     {};
-    virtual void visitBegin(Image& image,int depth) = 0 ;
-    virtual void visitEnd  (Image& image,int depth) = 0 ;
-    virtual void visitTag  (Image& image,int depth,size_t address,const TagDict& tagDict)=0;
+    virtual void visitBegin (Image& image,int depth=0) = 0 ;
+    virtual void visitEnd   (Image& image,int depth=0) = 0 ;
+    virtual void visitReport(std::ostringstream& out)=0  ;
+    virtual void visitReport(std::ostringstream& out,bool& bLF)=0  ;
+    virtual void visitTag   (Image& image,int depth,size_t address,const TagDict& tagDict)=0;
     PSopt_e option()    { return option_ ; }
     std::ostream& out() { return out_    ; }
 public:
@@ -451,15 +452,13 @@ class Image
 public:
     Image(std::string path)
     : io_(path,"rb")
-    , good_(false)
     , start_(0)
     , maker_(kUnknown)
     , path_(path)
     , makerDict_(emptyDict)
     , bigtiff_(false)
-    {
-        good_ = io_.good();
-    }
+    , endian_(kEndianLittle)
+    {}
     Image(Io io)
     : io_(io)
     , makerDict_(emptyDict)
@@ -467,22 +466,19 @@ public:
         good_ = io_.good();
         path_ = io.path();
     }
-    virtual ~Image() { io_.close() ; }
-    bool good()        { return good_ && io_.good() ; }
-    bool valid()       { return false  ; }
-    std::string path() { return path_  ; }
-    endian_e  endian() { return endian_; }
-    Io&       io()     { return io_    ; }
+    virtual    ~Image()    { io_.close()   ; }
+    bool        good()     { return good_ && io_.good() ; }
+    bool        valid()    { return false  ; }
+    std::string path()     { return path_  ; }
+    endian_e    endian()   { return endian_; }
+    Io&         io()       { return io_    ; }
+    std::string format()   { return format_; }
     
-    void accept(class Visitor& v);
+    virtual void accept(class Visitor& v)=0;
     
-    virtual void tourTiff(Visitor& v,TagDict& tagDict,int depth = 0) =0;
-    virtual void tourIFD (Visitor& v,size_t start,endian_e endian,int depth,TagDict& tagDict,bool bHasNext=true)=0;
     friend class TiffImage;
     friend class JpegImage;
-    friend class StructureVisitor;
-    friend class XMPVisitor;
-    friend class ICCVisitor;
+    friend class ReportVisitor;
 
 private:
     std::set<size_t>    visits_;
@@ -495,14 +491,11 @@ private:
     endian_e            endian_;
     std::string         path_;
     bool                bigtiff_;
+    std::string         format_; // "TIFF" or "JPEG"
     
     bool isPrintXMP(uint16_t type, PSopt_e option)
     {
         return type == 700 && option == kpsXMP;
-    }
-    bool isPrintICC(uint16_t type, PSopt_e option)
-    {
-        return type == 0x8773 && option == kpsIccProfile;
     }
 
     static bool typeValid(type_e type)
@@ -529,22 +522,44 @@ private:
 };
 
 // 4. Create concrete "visitors"
-class StructureVisitor: public Visitor
+class ReportVisitor: public Visitor
 {
 public:
-    StructureVisitor(std::ostream& out, PSopt_e option)
+    ReportVisitor(std::ostream& out, PSopt_e option)
     : Visitor(out,option)
     {}
+    
     void visitBegin(Image& image,int depth)
     {
+        if ( option_ != kpsBasic && option_ != kpsRecursive ) return;
+        
         char c = image.endian() == kEndianBig ? 'M' : 'I';
-        out_ << indent(depth) << stringFormat("STRUCTURE OF TIFF FILE (%c%c): ",c,c) << image.path() << std::endl;
-        out_ << indent(depth)
-             << " address |    tag                              |     "
-             << " type |    count |    offset | value"
-             << std::endl
-             ;
+        if ( image.format() == "TIFF" ) {
+            out_ << indent(depth) << stringFormat("STRUCTURE OF %s FILE (%c%c): ",image.format().c_str(),c,c) <<  image.path() << std::endl;
+            out_ << indent(depth)
+                 << " address |    tag                              |     "
+                 << " type |    count |    offset | value"
+                 << std::endl
+                 ;
+        }
+        if ( image.format() == "JPEG" ) {
+            out_ << indent(depth) << "STRUCTURE OF JPEG FILE: " << image.path() << std::endl;
+            out_ << "address | marker       |  length | data";
+        }
     }
+    virtual void visitReport(std::ostringstream& os)
+    {
+        out() << os.str();
+        os.str("");// reset the string
+        os.clear();// reset the good/bad/ugly flags
+    }
+    virtual void visitReport(std::ostringstream& os,bool& bLF)
+    {
+        if ( bLF ) os << std::endl;
+        visitReport(os);
+        bLF = false ;
+    }
+
     void visitTag
     ( Image&                image
     , int                   depth
@@ -617,38 +632,8 @@ public:
     
     void visitEnd(Image& image,int depth)
     {
+        if ( option_ != kpsBasic && option_ != kpsRecursive ) return;
         out_ << indent(depth) << "END: " << image.path() << std::endl;
-    }
-};
-
-class XMPVisitor: public Visitor
-{
-public:
-    XMPVisitor(std::ostream& out, PSopt_e option)
-    : Visitor(out,option)
-    {}
-    void visitBegin(Image& image,int depth)
-    {
-    }
-    void visitTag( Image&  image, int depth, size_t address,const TagDict& tagDict) {
-    }
-    void visitEnd(Image& image,int depth)
-    {
-    }
-};
-class ICCVisitor: public Visitor
-{
-public:
-    ICCVisitor(std::ostream& out, PSopt_e option)
-    : Visitor(out,option)
-    {}
-    void visitBegin(Image& image,int depth)
-    {
-    }
-    void visitTag( Image&  image, int depth, size_t address,const TagDict& tagDict) {
-    }
-    void visitEnd(Image& image,int depth)
-    {
     }
 };
 
@@ -658,55 +643,21 @@ class TiffImage : public Image
 public:
     TiffImage(std::string path) : Image(path) {}
     TiffImage(Io& io) : Image(io) {} ;
-    void tourTiff(Visitor& v,TagDict& tagDict,int depth = 0);
+    void tourTiff(Visitor& v,TagDict& tagDict=tiffDict,int depth = 0);
     void tourIFD (Visitor& v,size_t start,endian_e endian,int depth,TagDict& tagDict,bool bHasNext=true);
     bool valid();
+
+    virtual void accept(class Visitor& v) { tourTiff(v); }
 };
 
 class JpegImage : public Image
 {
 public:
-    JpegImage(std::string path) : Image(path) {}
-    void tourTiff(Visitor& v,TagDict& tagDict,int depth = 0);
-    void tourIFD (Visitor& v,size_t start,endian_e endian,int depth,TagDict& tagDict,bool bHasNext=true)
-    {
-        TiffImage* p((TiffImage*)this);
-        p->tourIFD(v,start,endian,depth,tagDict);
-    };
-
+    JpegImage(std::string path)
+    : Image(path)
+    {}
+    virtual void accept(class Visitor& v);
     bool valid();
-private:
-    const byte     dht_      = 0xc4;
-    const byte     dqt_      = 0xdb;
-    const byte     dri_      = 0xdd;
-    const byte     sos_      = 0xda;
-    const byte     eoi_      = 0xd9;
-    const byte     app0_     = 0xe0;
-    const byte     app1_     = 0xe1;
-    const byte     app2_     = 0xe2;
-    const byte     app13_    = 0xed;
-    const byte     com_      = 0xfe;
-
-    // Start of Frame markers, nondifferential Huffman-coding frames
-    const byte     sof0_     = 0xc0;        // start of frame 0, baseline DCT
-    const byte     sof1_     = 0xc1;        // start of frame 1, extended sequential DCT, Huffman coding
-    const byte     sof2_     = 0xc2;        // start of frame 2, progressive DCT, Huffman coding
-    const byte     sof3_     = 0xc3;        // start of frame 3, lossless sequential, Huffman coding
-
-    // Start of Frame markers, differential Huffman-coding frames
-    const byte     sof5_     = 0xc5;        // start of frame 5, differential sequential DCT, Huffman coding
-    const byte     sof6_     = 0xc6;        // start of frame 6, differential progressive DCT, Huffman coding
-    const byte     sof7_     = 0xc7;        // start of frame 7, differential lossless, Huffman coding
-
-    // Start of Frame markers, nondifferential arithmetic-coding frames
-    const byte     sof9_     = 0xc9;        // start of frame 9, extended sequential DCT, arithmetic coding
-    const byte     sof10_    = 0xca;        // start of frame 10, progressive DCT, arithmetic coding
-    const byte     sof11_    = 0xcb;        // start of frame 11, lossless sequential, arithmetic coding
-
-    // Start of Frame markers, differential arithmetic-coding frames
-    const byte     sof13_    = 0xcd;        // start of frame 13, differential sequential DCT, arithmetic coding
-    const byte     sof14_    = 0xce;        // start of frame 14, progressive DCT, arithmetic coding
-    const byte     sof15_    = 0xcf;        // start of frame 15, differential lossless, arithmetic coding
 
     int advanceToMarker()
     {
@@ -836,6 +787,7 @@ bool TiffImage::valid()
     
     bigtiff_ = magic_ == 43;
     if ( bigtiff_ ) Error(kerBigtiffNotSupported);
+    if ( result ) format_ = "TIFF";
 
     io_.seek(restore);
     return result;
@@ -856,16 +808,11 @@ bool JpegImage::valid()
     io_.seek(0,ksStart);
     bool result = n == 2 && h[0] == 0xff && h[1] == 0xd8;
 //  std::cout << stringFormat("%ld %#x %#x result = %s\n",n,h[0],h[1],result?"true":"false");
+    if ( result ) format_ = "JPEG";
     return result;
 }
 
-#define REPORT_MARKER if ( (option == kpsBasic||option == kpsRecursive) ) \
-     out << stringFormat("%8ld | 0xff%02x %-5s", \
-     io_.tell()-2,marker,nm[marker].c_str())
-
-#define FLUSH(bLF) if (bLF) { out << std::endl; bLF = false;}
-
-void JpegImage::tourTiff(Visitor& v,TagDict& tagDict,int depth)
+void JpegImage::accept(Visitor& v)
 {
     if (!io_.good())
         Error(kerDataSourceOpenFailed, io_.path());
@@ -876,155 +823,168 @@ void JpegImage::tourTiff(Visitor& v,TagDict& tagDict,int depth)
         Error(kerNotAJpeg);
     }
     PSopt_e option = v.option();
-    std::ostream& out = v.out();
-    
     bool bPrint = option == kpsBasic || option == kpsRecursive;
+    v.visitBegin((*this));
 
-    if (bPrint || option == kpsXMP) {
-        // nmonic for markers
-        std::string nm[256];
-        nm[0xd8] = "SOI";
-        nm[0xd9] = "EOI";
-        nm[0xda] = "SOS";
-        nm[0xdb] = "DQT";
-        nm[0xdd] = "DRI";
-        nm[0xfe] = "COM";
+    // navigate the JPEG chunks
+    std::ostringstream os; // string buffer for output to v.visitReport()
+    
+    // nmonic for markers
+    std::string nm[256];
+    nm[0xd8] = "SOI";
+    nm[0xd9] = "EOI";
+    nm[0xda] = "SOS";
+    nm[0xdb] = "DQT";
+    nm[0xdd] = "DRI";
+    nm[0xfe] = "COM";
 
-        // 0xe0 .. 0xef are APPn
-        // 0xc0 .. 0xcf are SOFn (except 4)
-        nm[0xc4] = "DHT";
-        for (int i = 0; i <= 15; i++) {
-            char MN[16];
-            sprintf(MN, "APP%d", i);
-            nm[0xe0 + i] = MN;
-            if (i != 4) {
-                sprintf(MN, "SOF%d", i);
-                nm[0xc0 + i] = MN;
-            }
-        }
-
-        // which markers have a length field?
-        bool bHasLength[256];
-        for (int i = 0; i < 256; i++)
-            bHasLength[i] = (i >= sof0_ && i <= sof15_) || (i >= app0_ && i <= (app0_ | 0x0F)) ||
-                            (i == dht_  || i == dqt_    || i == dri_   || i == com_  ||i == sos_);
-
-        // Container for the signature
-        bool bExtXMP = false;
-        long bufRead = 0;
-        const long bufMinSize = 36;
-        DataBuf buf(bufMinSize);
-
-        // Read section marker
-        int marker = advanceToMarker();
-        if (marker < 0)
-            Error(kerNotAJpeg);
-
-        bool done = false;
-        bool first = true;
-        while (!done) {
-            size_t current = io_.tell();
-            first = false;
-            bool bLF = bPrint;
-
-            // Read size and signature
-            std::memset(buf.pData_, 0x0, buf.size_);
-            bufRead = io_.read(buf.pData_, bufMinSize);
-            if (!io_.good())
-                Error(kerFailedToReadImageData);
-            if (bufRead < 2)
-                Error(kerNotAJpeg);
-            const uint16_t size = bHasLength[marker] ? getShort(buf,0,kEndianBig):0;
-            
-            if (bPrint && bHasLength[marker])
-                out << stringFormat(" | %7d ", size);
-
-            // print signature for APPn
-            if (marker >= app0_ && marker <= (app0_ | 0x0F)) {
-                // http://www.adobe.com/content/dam/Adobe/en/devnet/xmp/pdfs/XMPSpecificationPart3.pdf p75
-                const std::string signature = binaryToString(buf,2, buf.size_ - 2);
-
-                // 728 rmills@rmillsmbp:~/gnu/exiv2/ttt $ exiv2 -pS test/data/exiv2-bug922.jpg
-                // STRUCTURE OF JPEG FILE: test/data/exiv2-bug922.jpg
-                // address | marker     | length  | data
-                //       0 | 0xd8 SOI   |       0
-                //       2 | 0xe1 APP1  |     911 | Exif..MM.*.......%.........#....
-                //     915 | 0xe1 APP1  |     870 | http://ns.adobe.com/xap/1.0/.<x:
-                //    1787 | 0xe1 APP1  |   65460 | http://ns.adobe.com/xmp/extensio
-                if (option == kpsXMP && signature.find("http://ns.adobe.com/x") == 0) {
-                    // extract XMP
-                    if (size > 0) {
-                        io_.seek(-bufRead, ksCurrent);
-                        std::vector<byte> xmp(size + 1);
-                        io_.read(&xmp[0], size);
-                        int start = 0;
-
-                        // http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/xmp/pdfs/XMPSpecificationPart3.pdf
-                        // if we find HasExtendedXMP, set the flag and ignore this block
-                        // the first extended block is a copy of the Standard block.
-                        // a robust implementation allows extended blocks to be out of sequence
-                        // we could implement out of sequence with a dictionary of sequence/offset
-                        // and dumping the XMP in a post read operation similar to kpsIptcErase
-                        // for the moment, dumping 'on the fly' is working fine
-                        if (!bExtXMP) {
-                            while (xmp.at(start)) {
-                                start++;
-                            }
-                            start++;
-                            const std::string xmp_from_start = binaryToString(
-                                reinterpret_cast<byte*>(&xmp.at(0)),start, size - start);
-                            if (xmp_from_start.find("HasExtendedXMP", start) != xmp_from_start.npos) {
-                                start = size;  // ignore this packet, we'll get on the next time around
-                                bExtXMP = true;
-                            }
-                        } else {
-                            start = 2 + 35 + 32 + 4 + 4;  // Adobe Spec, p19
-                        }
-
-                        out.write(reinterpret_cast<const char*>(&xmp.at(start)), size - start);
-                        bufRead = size;
-                        done = !bExtXMP;
-                    }
-                } else if (bPrint) {
-                    const size_t start = size > 0 ? 2 : 0;
-                    const size_t end = start + (size > 32 ? 32 : size);
-                    out << "| " << binaryToString(buf, start, end);
-                }
-                FLUSH(bLF)
-
-                // std::cout << "app0_+1 = " << app0_+1 << " compare " << signature << " = " << signature.find("Exif") == 2 << std::endl;
-                bool bExif = option == kpsRecursive && marker == (app0_ + 1) && signature.find("Exif") == 0;
-
-                if ( bExif ) {
-                    Io io(io_,current+2+6,size-2-6);
-                    TiffImage exif(io);
-                    exif.tourTiff(v,tiffDict,depth);
-                }
-            }
-
-            // print COM marker
-            if (bPrint && marker == com_) {
-                // size includes 2 for the two bytes for size!
-                const int n = (size - 2) > 32 ? 32 : size - 2;
-                // start after the two bytes
-                out << "| " << binaryToString(buf, 2, n + 2);
-            }
-
-            // Skip the segment if the size is known
-            io_.seek(size - bufRead, ksCurrent);
-            FLUSH(bLF)
-
-            if (marker != sos_) {
-                // Read the beginning of the next segment
-                marker = advanceToMarker();
-                REPORT_MARKER;
-            }
-            done |= marker == eoi_ || marker == sos_;
-            if (done && bPrint)
-                out << std::endl;
+    // 0xe0 .. 0xef are APPn
+    // 0xc0 .. 0xcf are SOFn (except 4)
+    nm[0xc4] = "DHT";
+    for (int i = 0; i <= 15; i++) {
+        char MN[16];
+        sprintf(MN, "APP%d", i);
+        nm[0xe0 + i] = MN;
+        if (i != 4) {
+            sprintf(MN, "SOF%d", i);
+            nm[0xc0 + i] = MN;
         }
     }
-}  // JpegImage::printStructure
+
+    const byte     dht_      = 0xc4;
+    const byte     dqt_      = 0xdb;
+    const byte     dri_      = 0xdd;
+    const byte     sos_      = 0xda;
+    const byte     eoi_      = 0xd9;
+    const byte     app0_     = 0xe0;
+    const byte     com_      = 0xfe;
+
+    // Start of Frame markers
+    const byte     sof0_     = 0xc0;        // start of frame 0, baseline DCT
+    const byte     sof15_    = 0xcf;        // start of frame 15, differential lossless, arithmetic coding
+
+    // which markers have a length field?
+    bool bHasLength[256];
+    for (int i = 0; i < 256; i++)
+        bHasLength[i] = (i >= sof0_ && i <= sof15_) || (i >= app0_ && i <= (app0_ | 0x0F)) ||
+                        (i == dht_  || i == dqt_    || i == dri_   || i == com_  ||i == sos_);
+
+    // Container for the signature
+    bool bExtXMP = false;
+    long bufRead = 0;
+    const long bufMinSize = 36;
+    DataBuf buf(bufMinSize);
+
+    // Read section marker
+    int marker = advanceToMarker();
+    if (marker < 0)
+        Error(kerNotAJpeg);
+
+    bool done = false;
+    while (!done) {
+        size_t current = io_.tell();
+        bool bLF = true; // tell v.visitReport() to append a LF
+
+        // Read size and signature
+        bufRead = io_.read(buf.pData_, bufMinSize);
+        const uint16_t size = bHasLength[marker] ? getShort(buf,0,kEndianBig):0;
+        
+        if (bHasLength[marker])
+            os << stringFormat(" | %7d ", size);
+
+        // print signature for APPn
+        if (marker >= app0_ && marker <= (app0_ | 0x0F)) {
+            // http://www.adobe.com/content/dam/Adobe/en/devnet/xmp/pdfs/XMPSpecificationPart3.pdf p75
+            const std::string signature = binaryToString(buf,2, buf.size_ - 2);
+
+            // 728 rmills@rmillsmbp:~/gnu/exiv2/ttt $ exiv2 -pS test/data/exiv2-bug922.jpg
+            // STRUCTURE OF JPEG FILE: test/data/exiv2-bug922.jpg
+            // address | marker     | length  | data
+            //       0 | 0xd8 SOI   |       0
+            //       2 | 0xe1 APP1  |     911 | Exif..MM.*.......%.........#....
+            //     915 | 0xe1 APP1  |     870 | http://ns.adobe.com/xap/1.0/.<x:
+            //    1787 | 0xe1 APP1  |   65460 | http://ns.adobe.com/xmp/extensio
+            if (option == kpsXMP && signature.find("http://ns.adobe.com/x") == 0) {
+                // extract XMP
+                if (size > 0) {
+                    io_.seek(-bufRead, ksCurrent);
+                    std::vector<byte> xmp(size + 1);
+                    io_.read(&xmp[0], size);
+                    int start = 0;
+
+                    // http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/xmp/pdfs/XMPSpecificationPart3.pdf
+                    // if we find HasExtendedXMP, set the flag and ignore this block
+                    // the first extended block is a copy of the Standard block.
+                    // a robust implementation allows extended blocks to be out of sequence
+                    // we could implement out of sequence with a dictionary of sequence/offset
+                    // and dumping the XMP in a post read operation similar to kpsIptcErase
+                    // for the moment, dumping 'on the fly' is working fine
+                    if (!bExtXMP) {
+                        while (xmp.at(start)) {
+                            start++;
+                        }
+                        start++;
+                        const std::string xmp_from_start = binaryToString(
+                            reinterpret_cast<byte*>(&xmp.at(0)),start, size - start);
+                        if (xmp_from_start.find("HasExtendedXMP", start) != xmp_from_start.npos) {
+                            start = size;  // ignore this packet, we'll get on the next time around
+                            bExtXMP = true;
+                        }
+                    } else {
+                        start = 2 + 35 + 32 + 4 + 4;  // Adobe Spec, p19
+                    }
+                    os.str(""); // clear the buffer
+                    os.write(reinterpret_cast<const char*>(&xmp.at(start)), size - start);// write the xmp
+                    v.visitReport(os); // and tell the visitor
+                    
+                    bufRead = size;
+                    done = !bExtXMP;
+                }
+            } else {
+                const size_t start = size > 0 ? 2 : 0;
+                const size_t end = start + (size > 32 ? 32 : size);
+                os << "| " << binaryToString(buf, start, end);
+            }
+            if (bLF && bPrint) v.visitReport(os,bLF);
+
+            // std::cout << "app0_+1 = " << app0_+1 << " compare " << signature << " = " << signature.find("Exif") == 2 << std::endl;
+            bool bExif = option == kpsRecursive && marker == (app0_ + 1) && signature.find("Exif") == 0;
+
+            // Pure beauty.  Create a TiffImage and ask him to entertain the visitor
+            if ( bExif ) {
+                Io io(io_,current+2+6,size-2-6);
+                TiffImage exif(io);
+                exif.accept(v);
+            }
+        }
+
+        // print COM marker
+        if (marker == com_) {
+            // size includes 2 for the two bytes for size!
+            const int n = (size - 2) > 32 ? 32 : size - 2;
+            // start after the two bytes
+            os << "| " << binaryToString(buf, 2, n + 2);
+        }
+
+        // Skip the segment if the size is known
+        io_.seek(size - bufRead, ksCurrent);
+        if (bLF && bPrint) v.visitReport(os,bLF);
+
+        if (marker != sos_) {
+            // Read the beginning of the next segment
+            marker = advanceToMarker();
+            os << stringFormat("%8ld | 0xff%02x %-5s",
+                                io_.tell()-2,marker,nm[marker].c_str());
+            if ( bPrint ) v.visitReport(os);
+        }
+        done |= marker == eoi_ || marker == sos_;
+        if (done) {
+            if ( bPrint) v.visitReport(os);
+        }
+    }
+    
+    v.visitEnd((*this));
+}  // JpegImage::tourTiff
 
 void init()
 {
@@ -1158,44 +1118,30 @@ int main(int argc,const char* argv[])
     int rc = 0;
     if ( argc == 2 || argc == 3 ) {
         const char* path = argv[argc-1];
-        Image* image = NULL ;
         TiffImage tiff(path);
         JpegImage jpeg(path);
-        
+
         PSopt_e option = kpsBasic;
         if ( argc == 3 ) {
-            const char*      arg = argv[1];
-            char c = tolower(arg[0]);
-            option = c == 's' ? kpsBasic
-                   : c == 'r' ? kpsRecursive
-                   : c == 'x' ? kpsXMP
-                   : c == 'i' ? kpsIccProfile
+            std::string arg(argv[1]);
+            option = arg.find("R") != std::string::npos ? kpsRecursive
+                   : arg.find("X") != std::string::npos ? kpsXMP
+                   : arg.find("S") != std::string::npos ? kpsBasic
                    : option
                    ;
         }
-        if ( tiff.valid() ) image = &tiff ;
-        if ( jpeg.valid() ) image = &jpeg ;
-        if ( image ) {
-            switch (option ) {
-                case kpsXMP: {
-                     XMPVisitor visitor(std::cout,option);
-                     image->tourTiff(visitor,tiffDict);
-                } break;
-                case kpsIccProfile: {
-                     ICCVisitor visitor(std::cout,option);
-                     image->tourTiff(visitor,tiffDict);
-                } break;
-                default: {
-                     StructureVisitor visitor(std::cout,option);
-                     image->tourTiff(visitor,tiffDict);
-                } break;
-            }
+        if ( tiff.valid() ) {
+            ReportVisitor visitor(std::cout,option);
+            tiff.accept(visitor);
+        } else if ( jpeg.valid() ) {
+            ReportVisitor visitor(std::cout,option);
+            jpeg.accept(visitor);
         } else {
             std::cerr << "file type not recognised " << path << std::endl;
             rc=2;
         }
     } else {
-        std::cout << "usage: [ {S | R | X | I} ] " << argv[0] << " path" << std::endl;
+        std::cout << "usage: [ {S | R | X} ] " << argv[0] << " path" << std::endl;
         rc = 1;
     }
     return rc;
