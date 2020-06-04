@@ -21,10 +21,9 @@
   [8.2 Metadata Decoder](#8-2)<br>
   [8.3 Metadata Decoder](#8-3)<br>
   [8.4 Tiff Visitor](#8-4)<br>
-  [8.5 printIFD](#8-5)<br>
-  [8.6 TagInfo](#8-6)<br>
-  [8.7 Using dd to extract data from an image](#8-7)<br>
-
+  [8.5 TagInfo](#8-6)<br>
+  [8.6 tourIFD and tourTiff](#8-5)<br>
+  [8.7 Using dd to extract data from an image](#8-7)
 9. [Test Suite and Build](#9)<br>
   [9.1 Bash Tests](#9-1)<br>
   [9.2 Python Tests](#9-2)<br>
@@ -718,28 +717,69 @@ tiffvisitor_int.hpp:    class TiffReader  : public TiffVisitor
 
 I'll write more about the TiffVisitor later.
 
-[TOC](#TOC)
 <div id="8-5">
-### 8.5 printIFD
+### 8.5 TagInfo
+
+Another matter to appreciate is that tag definitions are not constant.  A tag is simply an uint16.  The Tiff Standard specifies about 50 tags.  Anybody creating an IFD can use the same tag number for different purposes.  The Tiff Specification says _"TIFF readers must safely skip over these fields if they do not understand or do not wish to use the information."_.  We do have to understand every tag.  In a tiff file, the pixels are located using the tag StripOffsets.  We report StripOffsets, however we don't read pixel data.
+
+If the user wishes to recover data such as the pixels, it is possible to do this with the utility dd.  This is discussed here: [8.7 Using dd to extract data from an image](#8-7). 
+
+```
+const TagInfo Nikon1MakerNote::tagInfo_[] = {
+    TagInfo(0x0001, "Version", N_("Version"),
+            N_("Nikon Makernote version"),
+               nikon1Id, makerTags, undefined, -1, printValue),
+    TagInfo(0x0002, "ISOSpeed", N_("ISO Speed"),
+            N_("ISO speed setting"),
+            nikon1Id, makerTags, unsignedShort, -1, print0x0002),
+
+const TagInfo CanonMakerNote::tagInfo_[] = {
+        TagInfo(0x0000, "0x0000", "0x0000", N_("Unknown"), canonId, makerTags, unsignedShort, -1, printValue),
+        TagInfo(0x0001, "CameraSettings", N_("Camera Settings"), N_("Various camera settings"), canonId, makerTags, unsignedShort, -1, printValue),
+        TagInfo(0x0002, "FocalLength", N_("Focal Length"), N_("Focal length"), canonId, makerTags, unsignedShort, -1, printFocalLength),
+
+const TagInfo gpsTagInfo[] = {
+    TagInfo(0x0000, "GPSVersionID", N_("GPS Version ID"),
+            N_("Indicates the version of <GPSInfoIFD>. The version is given "
+            "as 2.0.0.0. This tag is mandatory when <GPSInfo> tag is "
+            "present. (Note: The <GPSVersionID> tag is given in bytes, "
+            "unlike the <ExifVersion> tag. When the version is "
+            "2.0.0.0, the tag value is 02000000.H)."),
+            gpsId, gpsTags, unsignedByte, 4, print0x0000),
+    TagInfo(0x0001, "GPSLatitudeRef", N_("GPS Latitude Reference"),
+            N_("Indicates whether the latitude is north or south latitude. The "
+            "ASCII value 'N' indicates north latitude, and 'S' is south latitude."),
+            gpsId, gpsTags, asciiString, 2, EXV_PRINT_TAG(exifGPSLatitudeRef)),
+```
+
+As we can see, tag == 1 in the Nikon MakerNotes is Version.  In Canon MakerNotes, it is CameraSettings.  IN GPSInfo it is GPSLatitudeRef.  We need to use the appropriate tag dictionary for the IFD being parsed.  The tag 0xffff in the tagDict is used to store the family name of the tags.
+
+[TOC](#TOC)
+<div id="8-6">
+### 8.6 tourIFD and tourTiff
 
 The TiffVisitor is ingenious.  It's also difficult to understand.  Exiv2 has two tiff parsers - TiffVisitor and printIFDStructure().  TiffVisitor was written by Andreas Huggel.  It's very robust and has been almost 
-bug free for 15 years.  I wrote the parser in printStructure() to try to understand the structure of a tiff file.  The code in printIFDStructure() is easier to understand.
+bug free for 15 years.  I wrote the parser in Image::printStructure() to try to understand the structure of a tiff file.  The code in Image::printIFDStructure() is easier to understand.
 
-The code which accompanies this book has a simplified version of printIFDStructure() called printIFD() and that's what will be discussed here.  The code that accompanies this book is explained here: [Code discussed in this book](#13)
+The code which accompanies this book has a simplified version of printIFDStructure() called tourIFD() and that's what will be discussed here.  The code that accompanies this book is explained here: [Code discussed in this book](#13)
 
-It's important to realise that metadata is defined recursively.  In a Tiff File, there will be a Tiff Record containing the Exif data (written in Tiff Format).  Within, that record, there will be MakerNote which is usually also written in Tiff Format.  Tiff Format is referred to as an IFD - an Image File Directory.
+It's important to realise that metadata is defined recursively.  In a Tiff File, there will be a Tiff Record containing the Exif data (written in Tiff Format).  Within, that record, there will be MakerNote which is usually written in Tiff Format.  Tiff Format is referred to as an IFD - an Image File Directory.
 
-The printIFD() parser uses a simple direct approach to parsing the tiff file.  When another IFD is located, printIFD is called recursively.  As a TIFF file is a header, followed by an IFD, we can descend into the tiff file from the beginning.  For other files types, the file handler has to find the Exif IFD and then call printIFDStructure().
+The tourIFD() parser uses a simple direct approach to parsing the tiff file.  When another IFD is located, tourIFD is called recursively.  As a TIFF file is a header, followed by an IFD, we can descend into the tiff file from the beginning.  For other files types, the file handler has to find the Exif IFD and then call printIFDStructure().
+
+There are actually two "flavours" of tourIFD.  tourTiff() starts with the tiff header `II*_` or `MM_*` and then calls `tourIFD`.  Both can handle Tiff and BigTiff.  Makernotes are almost always an IFD.  Some manufactures (Nikon) embed a Tiff.  Some (Canon and Sony) embed an IFD.  It's quite common (Sony) to embed a single IFD which is not terminated with a two byte null uint16_t.
+
+The following code is possibly the most beautiful and elegant 100 lines I have ever written.
 
 ```
 void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,const TagDict& tagDict,bool bHasNext)
 {
     size_t   restore_at_start = io_.tell();
+
     depth++;
     if ( depth == 1 ) visits_.clear();
-    
-    v.visitBegin(*this,depth); // tell the visitor
-    
+    v.visitBegin(*this,depth);
+
     // buffer
     const size_t dirSize = 32;
     DataBuf  dir(dirSize);
@@ -749,26 +789,33 @@ void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,const 
         io_.seek(start);
         io_.read(dir.pData_, 2);
 
-        uint16_t dirLength = getShort(dir,0,endian_);
+        uint16_t      dirLength = getShort(dir,0,endian_);
         bool tooBig = dirLength > 500;
         if ( tooBig ) Error(kerTiffDirectoryTooLarge);
 
         // Read the dictionary
         for ( int i = 0 ; i < dirLength ; i ++ ) {
+            const size_t address = start + 2 + i*12 ;
+            io_.seek(address);
+            
             if ( visits_.find(io_.tell()) != visits_.end()  ) { // never visit the same place twice!
                 Error(kerCorruptedMetadata);
             }
             visits_.insert(io_.tell());
-            const size_t address = start + 2 + i*12 ;
 
+            v.visitTag(*this,depth,address,useDict);  // Tell the visitor
+
+            // read the tag (we might want to change tagDict before a recursion)
             io_.read(dir.pData_, 12);
             uint16_t tag    = getShort(dir,0,endian_);
-            type_e   type   = (type_e) getShort(dir,2,endian_);
+            type_e   type   = getType (dir,2,endian_);
             uint32_t count  = getLong (dir,4,endian_);
             uint32_t offset = getLong (dir,8,endian_);
 
+            // Break for unknown tag types else we may segfault.
             if ( !typeValid(type) ) {
                 std::cerr << "invalid type in tiff structure" << type << std::endl;
+                start = 0; // break from do loop
                 Error(kerInvalidTypeValue);
             }
 
@@ -779,50 +826,54 @@ void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,const 
                 Error(kerInvalidMalloc);
             }
             DataBuf  buf(allocate);                  // allocate a buffer
-            std::memcpy(buf.pData_,dir.pData_+8,4);  // copy dir[8:11] into buffer (short strings)
-
+            size_t restore = io_.tell();
+            io_.seek(offset);
+            io_.read(buf);
+            io_.seek(restore);
             if ( depth == 1 && tag == 0x010f /* Make */ ) setMaker(buf);
+            
+            TagDict useDict = tag == 0x8769 ? copyDict( exifDict  )
+                            : tag == 0x8825 ? copyDict( gpsDict   )
+                            : tag == 0x927c ? copyDict( makerDict_)
+                            :                 copyDict( tagDict   )
+                            ;
 
-            v.visitTag(*this,depth,address,tag,type,count,offset,tagDict,buf); // tell the visitor
-
-            // these tags are IFDs, not a embedded TIFF
-            if ( v.option() == kpsRecursive && (tag == 0x8769 /* ExifTag */ 
-            || tag == 0x014a /*SubIFDs*/  || tag == 0x8825 /* GPSTag */ || type == tiffIfd) ) {
-                TagDict  useDict = tag == 0x8769 ? copyDict(exifDict) // joinDict( tagDict,exifDict  )
-                                 : tag == 0x8825 ? copyDict(gpsDict)  // joinDict( tagDict,gpsDict   )
-                                 : tag == 0x927c ? copyDict(makerDict_) // joinDict( tagDict,makerDict_)
-                                 :                 copyDict(tagDict)
-                                 ;
-                for ( size_t k = 0 ; k < count ; k++ ) {
-                    uint32_t offset  = getLong(buf,k*size,endian_);
-                    tourIFD(v,offset,endian_,depth,useDict);
-                }
-            } else if ( v.option() == kpsRecursive && tag == 0x927c /* MakerNote */ ) {
-                // Nikon MakerNote is not and IFD, it's an emabedd tiff `II*_.....`
-                if ( maker_ == kSony && buf.strequals("SONY DSC ") ) {
+            // do we need to recurse?
+            if ( tag == 0x8769 /* ExifTag */ || tag == 0x014a /*SubIFDs*/
+            ||   tag == 0x8825 /* GPSTag  */ || type == tiffIfd ) {
+                // these tags are IFDs, not embedded TIFF
+                tourIFD(v,offset,endian,depth,useDict);
+            } else if ( tag == 0x927c /* MakerNote */ ) {
+                if ( maker_ == kNikon ) {
+                    // MakerNote is not and IFD, it's an emabeded tiff `II*_.....`
+                    size_t punt = 0 ;
+                    if ( buf.strequals("Nikon")) {
+                        punt = 10;
+                    }
+                    Io io(io_,offset+punt,count-punt);
+                    TiffImage makerNote(io);
+                    makerNote.tourTiff(v,useDict,depth);
+                } else if ( maker_ == kSony && buf.strequals("SONY DSC ") ) {
                     // Sony MakerNote IFD does not have a next pointer.
                     size_t punt   = 12 ;
                     tourIFD(v,offset+punt,endian_,depth,sonyDict,false);
                 } else {
-                    size_t punt = buf.strequals("Nikon") ? 10 : 0 ;
-                    Io io(io_,offset+punt,count-punt);
-                    TiffImage makerNote(io);
-                    makerNote.tourFile(v,makerDict_,depth);
+                    tourIFD(v,offset,endian_,depth,makerDict_);
                 }
             }
-        } // while i < dirLength;
+        } // for i < dirLength
+
+        start = 0; // !stop
         if ( bHasNext ) {
             io_.read(dir.pData_, 4);
             start = getLong(dir,0,endian_);
-        } else {
-            start=0;// stop!
         }
     } while (start) ;
-    v.visitEnd(*this,depth); // tell the visitor
+    v.visitEnd(*this,depth);
     depth--;
     
     io_.seek(restore_at_start); // restore
-} // tourIFD
+} // TiffImage::tourIFD
 ```
 
 The code `tvisitor.cpp` is a standalone version of the function Image::printStructure() in the Exiv2 library.  It can be executed with four different options which are equivalent to exiv2 options:
@@ -892,48 +943,11 @@ He is working on an embedded TIFF which is located at bytes 12..15289.  The is t
 ```
 Using dd to extract metadata is discussed in more detail here: [8.7 Using dd to extract data from an image](#8-7).
 
-Please be aware that there are two ways in which IFDs can occur in the file.  They can be an embedded TIFF which is complete with the `II*_LengthOffset` or `MM_*LengthOffset` 12-byte header followed the IFD.   Or the IFD can be in the file without the header.  printIFD() knows that the date tags such as GpsTag and ExifTag are IFDs and calls printIFD().  For the embedded TIFF (such as Exif), printIFD() creates a TiffImage and calls TimeImage->printStructure() which validates the header and parses the data with IFDprint().
+Please be aware that there are two ways in which IFDs can occur in the file.  They can be an embedded TIFF which is complete with the `II*_LengthOffset` or `MM_*LengthOffset` 12-byte header followed the IFD.   Or the IFD can be in the file without the header.  tourIFD() knows that the tags such as GpsTag and ExifTag are IFDs and calls tourIFD().  For the embedded TIFF (such as Nikon MakerNote), tourIFD() creates a TiffImage and calls TimeImage.tourTiff() which validates the header and calls tourIFD().
 
-One other matter to understand is that although the Tiff Specification expects the IFD to end with a next offset == 0, Sony (and other) maker notes don't provide that.  The IFD is a single directory of 12 byte tags.
+One other details is that although the Tiff Specification expects the IFD to end with a uint16_t offset == 0, Sony (and other) maker notes do not.  The IFD is a single directory of 12 byte tags.
 
 [TOC](#TOC)
-
-<div id="8-6">
-### 8.6 TagInfo
-
-Another matter to appreciate is that tag definitions are not constant.  A tag is simply an uint16.  The Tiff Standard specifies about 50 tags.  Anybody creating an IFD can use the same tag number for different purposes.  The Tiff Specification says _"TIFF readers must safely skip over these fields if they do not understand or do not wish to use the information."_.  We do have to understand every tag.  In a tiff file, the pixels are located using the tag StripOffsets.  We report StripOffsets, however we don't read pixel data.
-
-If the user wishes to recover data such as the pixels, it is possible to do this with the utility dd.  This is discussed here: [8.7 Using dd to extract data from an image](#8-7). 
-
-```
-const TagInfo Nikon1MakerNote::tagInfo_[] = {
-    TagInfo(0x0001, "Version", N_("Version"),
-            N_("Nikon Makernote version"),
-               nikon1Id, makerTags, undefined, -1, printValue),
-    TagInfo(0x0002, "ISOSpeed", N_("ISO Speed"),
-            N_("ISO speed setting"),
-            nikon1Id, makerTags, unsignedShort, -1, print0x0002),
-
-const TagInfo CanonMakerNote::tagInfo_[] = {
-        TagInfo(0x0000, "0x0000", "0x0000", N_("Unknown"), canonId, makerTags, unsignedShort, -1, printValue),
-        TagInfo(0x0001, "CameraSettings", N_("Camera Settings"), N_("Various camera settings"), canonId, makerTags, unsignedShort, -1, printValue),
-        TagInfo(0x0002, "FocalLength", N_("Focal Length"), N_("Focal length"), canonId, makerTags, unsignedShort, -1, printFocalLength),
-
-const TagInfo gpsTagInfo[] = {
-    TagInfo(0x0000, "GPSVersionID", N_("GPS Version ID"),
-            N_("Indicates the version of <GPSInfoIFD>. The version is given "
-            "as 2.0.0.0. This tag is mandatory when <GPSInfo> tag is "
-            "present. (Note: The <GPSVersionID> tag is given in bytes, "
-            "unlike the <ExifVersion> tag. When the version is "
-            "2.0.0.0, the tag value is 02000000.H)."),
-            gpsId, gpsTags, unsignedByte, 4, print0x0000),
-    TagInfo(0x0001, "GPSLatitudeRef", N_("GPS Latitude Reference"),
-            N_("Indicates whether the latitude is north or south latitude. The "
-            "ASCII value 'N' indicates north latitude, and 'S' is south latitude."),
-            gpsId, gpsTags, asciiString, 2, EXV_PRINT_TAG(exifGPSLatitudeRef)),
-```
-
-As we can see, tag == 1 in the Nikon MakerNotes is Version.  In Canon MakerNotes, it is CameraSettings.  IN GPSInfo it is GPSLatitudeRef.  We need to use the appropriate tag dictionary for the IFD being parsed.  The tag 0xffff in the tagDict is used to store the family name of the tags.
 
 [TOC](#TOC)
 <div id="8-7">
@@ -1493,4 +1507,4 @@ int main(int argc, char* argv[])
 
 Robin Mills<br>
 robin@clanmills.com<br>
-Revised: 2020-06-02
+Revised: 2020-06-04

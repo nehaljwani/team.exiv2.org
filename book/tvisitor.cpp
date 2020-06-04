@@ -11,58 +11,15 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-typedef unsigned char       byte    ;
-enum endian_e
-{   kEndianLittle
-,   kEndianBig
+// this will probably be removed later
+enum PSopt_e
+{   kpsBasic
+,   kpsXMP
+,   kpsRecursive
+,   kpsIccProfile
 };
-bool isPlatformBigEndian()
-{
-    union {
-        uint32_t i;
-        char c[4];
-    } e = { 0x01000000 };
 
-    return e.c[0]?true:false;
-}
-bool   isPlatformLittleEndian() { return !isPlatformBigEndian(); }
-endian_e platformEndian() { return isPlatformBigEndian() ? kEndianBig : kEndianLittle; }
-
-
-enum type_e
-{   typeMin            = 0,
-    unsignedByte       = 1, //!< Exif BYTE type, 8-bit unsigned integer.
-    asciiString        = 2, //!< Exif ASCII type, 8-bit byte.
-    unsignedShort      = 3, //!< Exif SHORT type, 16-bit (2-byte) unsigned integer.
-    unsignedLong       = 4, //!< Exif LONG type, 32-bit (4-byte) unsigned integer.
-    unsignedRational   = 5, //!< Exif RATIONAL type, two LONGs: numerator and denumerator of a fraction.
-    signedByte         = 6, //!< Exif SBYTE type, an 8-bit signed (twos-complement) integer.
-    undefined          = 7, //!< Exif UNDEFINED type, an 8-bit byte that may contain anything.
-    signedShort        = 8, //!< Exif SSHORT type, a 16-bit (2-byte) signed (twos-complement) integer.
-    signedLong         = 9, //!< Exif SLONG type, a 32-bit (4-byte) signed (twos-complement) integer.
-    signedRational     =10, //!< Exif SRATIONAL type, two SLONGs: numerator and denumerator of a fraction.
-    tiffFloat          =11, //!< TIFF FLOAT type, single precision (4-byte) IEEE format.
-    tiffDouble         =12, //!< TIFF DOUBLE type, double precision (8-byte) IEEE format.
-    tiffIfd            =13, //!< TIFF IFD type, 32-bit (4-byte) unsigned integer.
-    typeNot1           =14,
-    typeNot2           =15,
-    unsignedLongLong   =16, //!< Exif LONG LONG type, 64-bit (8-byte) unsigned integer.
-    signedLongLong     =17, //!< Exif LONG LONG type, 64-bit (8-byte) signed integer.
-    tiffIfd8           =18, //!< TIFF IFD type, 64-bit (8-byte) unsigned integer.
-    typeMax            =19,
-    string        =0x10000, //!< IPTC string type.
-    date          =0x10001, //!< IPTC date type.
-//  time          =0x10002, //!< IPTC time type.
-    comment       =0x10003, //!< %Exiv2 type for the Exif user comment.
-    directory     =0x10004, //!< %Exiv2 type for a CIFF directory.
-    xmpText       =0x10005, //!< XMP text type.
-    xmpAlt        =0x10006, //!< XMP alternative type.
-    xmpBag        =0x10007, //!< XMP bag type.
-    xmpSeq        =0x10008, //!< XMP sequence type.
-    langAlt       =0x10009, //!< XMP language alternative type.
-    invalidTypeId =0x1fffe, //!< Invalid type id.
-    lastTypeId    =0x1ffff  //!< Last type id.
-};
+typedef unsigned char byte ;
 
 class DataBuf
 {
@@ -89,6 +46,69 @@ public:
     int  strcmp   (const char* str) { return ::strcmp((const char*)pData_,str);}
     bool strequals(const char* str) { return strcmp(str)==0                   ;}
 };
+
+// types of data in Exif Specification
+enum type_e
+{   typeMin            = 0,
+    unsignedByte       = 1, //!< Exif BYTE type, 8-bit unsigned integer.
+    asciiString        = 2, //!< Exif ASCII type, 8-bit byte.
+    unsignedShort      = 3, //!< Exif SHORT type, 16-bit (2-byte) unsigned integer.
+    unsignedLong       = 4, //!< Exif LONG type, 32-bit (4-byte) unsigned integer.
+    unsignedRational   = 5, //!< Exif RATIONAL type, two LONGs: numerator and denumerator of a fraction.
+    signedByte         = 6, //!< Exif SBYTE type, an 8-bit signed (twos-complement) integer.
+    undefined          = 7, //!< Exif UNDEFINED type, an 8-bit byte that may contain anything.
+    signedShort        = 8, //!< Exif SSHORT type, a 16-bit (2-byte) signed (twos-complement) integer.
+    signedLong         = 9, //!< Exif SLONG type, a 32-bit (4-byte) signed (twos-complement) integer.
+    signedRational     =10, //!< Exif SRATIONAL type, two SLONGs: numerator and denumerator of a fraction.
+    tiffFloat          =11, //!< TIFF FLOAT type, single precision (4-byte) IEEE format.
+    tiffDouble         =12, //!< TIFF DOUBLE type, double precision (8-byte) IEEE format.
+    tiffIfd            =13, //!< TIFF IFD type, 32-bit (4-byte) unsigned integer.
+    typeNot1           =14,
+    typeNot2           =15,
+    unsignedLongLong   =16, //!< Exif LONG LONG type, 64-bit (8-byte) unsigned integer.
+    signedLongLong     =17, //!< Exif LONG LONG type, 64-bit (8-byte) signed integer.
+    tiffIfd8           =18, //!< TIFF IFD type, 64-bit (8-byte) unsigned integer.
+    typeMax            =19,
+};
+const char* typeName(type_e tag)
+{
+    //! List of TIFF image tags
+    const char* result = NULL;
+    switch (tag ) {
+        case unsignedByte     : result = "BYTE"      ; break;
+        case asciiString      : result = "ASCII"     ; break;
+        case unsignedShort    : result = "SHORT"     ; break;
+        case unsignedLong     : result = "LONG"      ; break;
+        case unsignedRational : result = "RATIONAL"  ; break;
+        case signedByte       : result = "SBYTE"     ; break;
+        case undefined        : result = "UNDEFINED" ; break;
+        case signedShort      : result = "SSHORT"    ; break;
+        case signedLong       : result = "SLONG"     ; break;
+        case signedRational   : result = "SRATIONAL" ; break;
+        case tiffFloat        : result = "FLOAT"     ; break;
+        case tiffDouble       : result = "DOUBLE"    ; break;
+        case tiffIfd          : result = "IFD"       ; break;
+        default               : result = "unknown"   ; break;
+    }
+    return result;
+}
+
+// endian and byte swappers
+enum endian_e
+{   kEndianLittle
+,   kEndianBig
+};
+bool isPlatformBigEndian()
+{
+    union {
+        uint32_t i;
+        char c[4];
+    } e = { 0x01000000 };
+
+    return e.c[0]?true:false;
+}
+bool   isPlatformLittleEndian() { return !isPlatformBigEndian(); }
+endian_e platformEndian() { return isPlatformBigEndian() ? kEndianBig : kEndianLittle; }
 
 bool isStringType(type_e type)
 {
@@ -170,7 +190,6 @@ type_e getType(const DataBuf& buf,size_t offset,endian_e endian)
 {
     return (type_e) getShort(buf,offset,endian);
 }
-
 uint32_t getLong(const DataBuf& buf,size_t offset,endian_e endian)
 {
     uint32_t v;
@@ -182,7 +201,6 @@ uint32_t getLong(const DataBuf& buf,size_t offset,endian_e endian)
     bool bSwap = endian != ::platformEndian();
     return (uint32_t)byteSwap(v,bSwap,4);
 }
-
 uint64_t getLongLong(const DataBuf& buf,size_t offset,endian_e endian)
 {
     uint64_t v;
@@ -199,8 +217,7 @@ uint64_t getLongLong(const DataBuf& buf,size_t offset,endian_e endian)
     return byteSwap (v,bSwap,8);
 }
 
-
-
+// Camera manufacturers
 enum maker_e
 {   kUnknown
 ,   kCanon
@@ -208,6 +225,7 @@ enum maker_e
 ,   kSony
 };
 
+// Error support
 enum error_e
 {   kerCorruptedMetadata
 ,   kerTiffDirectoryTooLarge
@@ -218,19 +236,6 @@ enum error_e
 ,   kerNotAJpeg
 ,   kerDataSourceOpenFailed
 ,   kerNoImageInInputData
-};
-
-enum PSopt_e
-{   kpsBasic
-,   kpsXMP
-,   kpsRecursive
-,   kpsIccProfile
-};
-
-enum seek_e
-{   ksStart   = SEEK_SET
-,   ksCurrent = SEEK_CUR
-,   ksEnd     = SEEK_END
 };
 
 void Error (error_e error, std::string msg)
@@ -257,6 +262,7 @@ void Error (error_e error)
     Error(error,"");
 }
 
+// string formatting functions
 std::string indent(size_t s)
 {
     std::string result ;
@@ -354,29 +360,13 @@ std::string tagName(uint16_t tag,const TagDict& tagDict)
     if ( name.size() ) result += "." + name;
     return result;
 }
-const char* typeName(type_e tag)
-{
-    //! List of TIFF image tags
-    const char* result = NULL;
-    switch (tag ) {
-        case unsignedByte     : result = "BYTE"      ; break;
-        case asciiString      : result = "ASCII"     ; break;
-        case unsignedShort    : result = "SHORT"     ; break;
-        case unsignedLong     : result = "LONG"      ; break;
-        case unsignedRational : result = "RATIONAL"  ; break;
-        case signedByte       : result = "SBYTE"     ; break;
-        case undefined        : result = "UNDEFINED" ; break;
-        case signedShort      : result = "SSHORT"    ; break;
-        case signedLong       : result = "SLONG"     ; break;
-        case signedRational   : result = "SRATIONAL" ; break;
-        case tiffFloat        : result = "FLOAT"     ; break;
-        case tiffDouble       : result = "DOUBLE"    ; break;
-        case tiffIfd          : result = "IFD"       ; break;
-        default               : result = "unknown"   ; break;
-    }
-    return result;
-}
 
+// IO supprt
+enum seek_e
+{   ksStart   = SEEK_SET
+,   ksCurrent = SEEK_CUR
+,   ksEnd     = SEEK_END
+};
 class Io
 {
 public:
@@ -659,6 +649,7 @@ public:
     }
 };
 
+// Concrete Images
 class TiffImage : public Image
 {
 public:
@@ -784,8 +775,10 @@ void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,const 
                 Error(kerCorruptedMetadata);
             }
             visits_.insert(io_.tell());
+
             v.visitTag(*this,depth,address,tagDict);  // Tell the visitor
 
+            // read the tag (we might want to modify tagDict before we tell the visitor)
             io_.read(dir.pData_, 12);
             uint16_t tag    = getShort(dir,0,endian_);
             type_e   type   = getType (dir,2,endian_);
@@ -812,13 +805,13 @@ void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,const 
             io_.seek(restore);
             if ( depth == 1 && tag == 0x010f /* Make */ ) setMaker(buf);
             
-            
-            // do we need to recurse?
             TagDict useDict = tag == 0x8769 ? copyDict( exifDict  )
                             : tag == 0x8825 ? copyDict( gpsDict   )
                             : tag == 0x927c ? copyDict( makerDict_)
                             :                 copyDict( tagDict   )
                             ;
+
+            // do we need to recurse?
             if ( tag == 0x8769 /* ExifTag */ || tag == 0x014a /*SubIFDs*/
             ||   tag == 0x8825 /* GPSTag  */ || type == tiffIfd ) {
                 // these tags are IFDs, not a embedded TIFF
@@ -841,8 +834,8 @@ void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,const 
                     tourIFD(v,offset,endian_,depth,makerDict_);
                 }
             }
-
         } // for i < dirLength
+
         start = 0; // !stop
         if ( bHasNext ) {
             io_.read(dir.pData_, 4);
@@ -853,7 +846,7 @@ void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,const 
     depth--;
     
     io_.seek(restore_at_start); // restore
-} // tourIFD
+} // TiffImage::tourIFD
 
 void TiffImage::tourTiff(Visitor& v,const TagDict& tagDict,int depth)
 {
@@ -862,7 +855,7 @@ void TiffImage::tourTiff(Visitor& v,const TagDict& tagDict,int depth)
             tourIFD(v,start_,endian_,depth,tagDict);
         }
     }
-}
+} // TiffImage::tourTiff
 
 bool JpegImage::valid()
 {
