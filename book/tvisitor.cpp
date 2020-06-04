@@ -19,6 +19,48 @@ enum PSopt_e
 ,   kpsIccProfile
 };
 
+// Error support
+enum error_e
+{   kerCorruptedMetadata
+,   kerTiffDirectoryTooLarge
+,   kerInvalidTypeValue
+,   kerInvalidMalloc
+,   kerNotATiff
+,   kerFailedToReadImageData
+,   kerNotAJpeg
+,   kerDataSourceOpenFailed
+,   kerNoImageInInputData
+,   kerBigtiffNotSupported
+,   kerFileDidNotOpen
+};
+
+void Error (error_e error, std::string msg)
+{
+    switch ( error ) {
+        case   kerCorruptedMetadata      : std::cerr << "corrupted metadata"       ; break;
+        case   kerTiffDirectoryTooLarge  : std::cerr << "tiff directory too large" ; break;
+        case   kerInvalidTypeValue       : std::cerr << "invalid type"             ; break;
+        case   kerInvalidMalloc          : std::cerr << "invalid malloc"           ; break;
+        case   kerNotATiff               : std::cerr << "Not a tiff"               ; break;
+        case   kerFailedToReadImageData  : std::cerr << "failed to read image data"; break;
+        case   kerNotAJpeg               : std::cerr << "not a jpeg"               ; break;
+        case   kerDataSourceOpenFailed   : std::cerr << "data source open failed"  ; break;
+        case   kerNoImageInInputData     : std::cerr << "not image in input data"  ; break;
+        case   kerBigtiffNotSupported    : std::cerr << "bigtiff not supported"    ; break;
+        case   kerFileDidNotOpen         : std::cerr << "file did not open"        ; break;
+        default                          : std::cerr << "unknown error"            ; break;
+    }
+    if ( msg.size() ) std::cerr << " " << msg ;
+    std::cerr << std::endl;
+    _exit(1); // pull the plug!
+}
+
+void Error (error_e error)
+{
+    Error(error,"");
+}
+
+
 typedef unsigned char byte ;
 
 class DataBuf
@@ -26,10 +68,13 @@ class DataBuf
 public:
     byte*   pData_;
     size_t  size_ ;
-    DataBuf(size_t size)
+    DataBuf(size_t size,size_t size_max=0)
     : pData_(NULL)
     , size_(size)
     {
+        if ( size_max && size > size_max ) {
+            Error(kerInvalidMalloc);
+        }
         pData_ = new byte[size_];
         if ( pData_) {
             std::memset(pData_, 0,size_);
@@ -225,43 +270,6 @@ enum maker_e
 ,   kSony
 };
 
-// Error support
-enum error_e
-{   kerCorruptedMetadata
-,   kerTiffDirectoryTooLarge
-,   kerInvalidTypeValue
-,   kerInvalidMalloc
-,   kerNotATiff
-,   kerFailedToReadImageData
-,   kerNotAJpeg
-,   kerDataSourceOpenFailed
-,   kerNoImageInInputData
-};
-
-void Error (error_e error, std::string msg)
-{
-    switch ( error ) {
-        case   kerCorruptedMetadata      : std::cerr << "corrupted metadata"       ; break;
-        case   kerTiffDirectoryTooLarge  : std::cerr << "tiff directory too large" ; break;
-        case   kerInvalidTypeValue       : std::cerr << "invalid type"             ; break;
-        case   kerInvalidMalloc          : std::cerr << "invalid malloc"           ; break;
-        case   kerNotATiff               : std::cerr << "Not a tiff"               ; break;
-        case   kerFailedToReadImageData  : std::cerr << "failed to read image data"; break;
-        case   kerNotAJpeg               : std::cerr << "not a jpeg"               ; break;
-        case   kerDataSourceOpenFailed   : std::cerr << "data source open failed"  ; break;
-        case   kerNoImageInInputData     : std::cerr << "not image in input data"  ; break;
-        default                          : std::cerr << "unknown"                  ; break;
-    }
-    if ( msg.size() ) std::cerr << " " << msg ;
-    std::cerr << std::endl;
-    _exit(1); // pull the plug!
-}
-
-void Error (error_e error)
-{
-    Error(error,"");
-}
-
 // string formatting functions
 std::string indent(size_t s)
 {
@@ -320,20 +328,13 @@ std::string binaryToString(const DataBuf& dataBuf,size_t start,size_t size)
 // TagDict is use to map tag (uint16_t) to string (for printing)
 typedef std::map<uint16_t,std::string> TagDict;
 
+TagDict emptyDict ;
 TagDict tiffDict  ;
 TagDict exifDict  ;
 TagDict canonDict ;
 TagDict nikonDict ;
 TagDict sonyDict  ;
 TagDict gpsDict   ;
-
-TagDict copyDict(TagDict old)
-{
-    TagDict result;
-    for ( TagDict::iterator it = old.begin() ; it != old.end() ; it++ )
-        result[it->first] = it->second;
-    return result;
-}
 
 bool tagKnown(uint16_t tag,const TagDict& tagDict)
 {
@@ -376,7 +377,7 @@ public:
     , size_   (0)
     , restore_(0)
     , f_      (NULL)
-    { f_ = ::fopen(path.c_str(),open.c_str()); }
+    { f_ = ::fopen(path.c_str(),open.c_str()); if ( !f_ ) Error(kerFileDidNotOpen,path); }
     
     Io(Io& io,size_t start,size_t size) // Io object is a substream
     : path_   (io.path())
@@ -454,11 +455,14 @@ public:
     , start_(0)
     , maker_(kUnknown)
     , path_(path)
+    , makerDict_(emptyDict)
+    , bigtiff_(false)
     {
         good_ = io_.good();
     }
     Image(Io io)
     : io_(io)
+    , makerDict_(emptyDict)
     {
         good_ = io_.good();
         path_ = io.path();
@@ -472,13 +476,11 @@ public:
     
     void accept(class Visitor& v);
     
-    virtual void tourTiff(Visitor& v,const TagDict& tagDict,int depth = 0) =0;
-    virtual void tourIFD (Visitor& v,size_t start,endian_e endian,int depth,const TagDict& tagDict,bool bHasNext=true)=0;
+    virtual void tourTiff(Visitor& v,TagDict& tagDict,int depth = 0) =0;
+    virtual void tourIFD (Visitor& v,size_t start,endian_e endian,int depth,TagDict& tagDict,bool bHasNext=true)=0;
     friend class TiffImage;
     friend class JpegImage;
-    friend class Visitor  ;
     friend class StructureVisitor;
-    friend class RecursiveVisitor;
     friend class XMPVisitor;
     friend class ICCVisitor;
 
@@ -489,9 +491,10 @@ private:
     bool                good_;
     uint16_t            magic_;
     maker_e             maker_;
-    TagDict             makerDict_;
+    TagDict&            makerDict_;
     endian_e            endian_;
     std::string         path_;
+    bool                bigtiff_;
     
     bool isPrintXMP(uint16_t type, PSopt_e option)
     {
@@ -517,10 +520,10 @@ private:
                : maker_
                ;
         switch ( maker_ ) {
-            case kCanon : makerDict_ = copyDict(canonDict) ; break;
-            case kNikon : makerDict_ = copyDict(nikonDict) ; break;
-            case kSony  : makerDict_ = copyDict(sonyDict ) ; break;
-            default : /* do nothing */                     ; break;
+            case kCanon : makerDict_ = canonDict ; break;
+            case kNikon : makerDict_ = nikonDict ; break;
+            case kSony  : makerDict_ = sonyDict  ; break;
+            default : /* do nothing */           ; break;
         }
     } // setMaker
 };
@@ -655,8 +658,8 @@ class TiffImage : public Image
 public:
     TiffImage(std::string path) : Image(path) {}
     TiffImage(Io& io) : Image(io) {} ;
-    void tourTiff(Visitor& v,const TagDict& tagDict,int depth = 0);
-    void tourIFD (Visitor& v,size_t start,endian_e endian,int depth,const TagDict& tagDict,bool bHasNext=true);
+    void tourTiff(Visitor& v,TagDict& tagDict,int depth = 0);
+    void tourIFD (Visitor& v,size_t start,endian_e endian,int depth,TagDict& tagDict,bool bHasNext=true);
     bool valid();
 };
 
@@ -664,8 +667,8 @@ class JpegImage : public Image
 {
 public:
     JpegImage(std::string path) : Image(path) {}
-    void tourTiff(Visitor& v,const TagDict& tagDict,int depth = 0);
-    void tourIFD (Visitor& v,size_t start,endian_e endian,int depth,const TagDict& tagDict,bool bHasNext=true)
+    void tourTiff(Visitor& v,TagDict& tagDict,int depth = 0);
+    void tourIFD (Visitor& v,size_t start,endian_e endian,int depth,TagDict& tagDict,bool bHasNext=true)
     {
         TiffImage* p((TiffImage*)this);
         p->tourIFD(v,start,endian,depth,tagDict);
@@ -723,29 +726,7 @@ private:
     }
 };
 
-bool TiffImage::valid()
-{
-    bool         result  = false ;
-    size_t       restore = io_.tell();
-    io_.seek(0);
-    // read header
-    DataBuf      header(16);
-    io_.seek(0);
-    io_.read(header);
-    io_.seek(restore);
-
-    char c      = (char) header.pData_[0] ;
-    char C      = (char) header.pData_[1] ;
-    endian_ = c == 'M' ? kEndianBig : kEndianLittle;
-    
-    start_  = getLong (header,4,endian_);
-    magic_  = getShort(header,2,endian_);
-    result  = magic_ == 42 && c == C && ( c == 'I' || c == 'M' ) && start_ < io_.size() ;
-
-    return result;
-}
-
-void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,const TagDict& tagDict,bool bHasNext)
+void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,TagDict& tagDict,bool bHasNext)
 {
     size_t   restore_at_start = io_.tell();
 
@@ -787,36 +768,25 @@ void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,const 
 
             // Break for unknown tag types else we may segfault.
             if ( !typeValid(type) ) {
-                std::cerr << "invalid type in tiff structure" << type << std::endl;
-                start = 0; // break from do loop
                 Error(kerInvalidTypeValue);
             }
 
             uint16_t pad    = isStringType(type) ? 1 : 0;
             uint16_t size   = typeSize(type);
-            size_t allocate = size*count + pad+20;
-            if (   allocate > io_.size() ) {
-                Error(kerInvalidMalloc);
-            }
-            DataBuf  buf(allocate);                  // allocate a buffer
-            size_t restore = io_.tell();
+            size_t   alloc  = size*count + pad+20;
+            DataBuf  buf(alloc,io_.size());
+            size_t   restore = io_.tell();
             io_.seek(offset);
             io_.read(buf);
             io_.seek(restore);
             if ( depth == 1 && tag == 0x010f /* Make */ ) setMaker(buf);
-            
-            TagDict useDict = tag == 0x8769 ? copyDict( exifDict  )
-                            : tag == 0x8825 ? copyDict( gpsDict   )
-                            : tag == 0x927c ? copyDict( makerDict_)
-                            :                 copyDict( tagDict   )
-                            ;
 
-            // do we need to recurse?
-            if ( tag == 0x8769 /* ExifTag */ || tag == 0x014a /*SubIFDs*/
-            ||   tag == 0x8825 /* GPSTag  */ || type == tiffIfd ) {
-                // these tags are IFDs, not a embedded TIFF
-                tourIFD(v,offset,endian,depth,useDict);
-            } else if ( tag == 0x927c /* MakerNote */ ) {
+            // anybody for a recursion?
+            if      ( tag == 0x8769   ) tourIFD(v,offset,endian,depth,exifDict); /* ExifTag   */
+            else if ( tag == 0x8825   ) tourIFD(v,offset,endian,depth,gpsDict ); /* GPSTag    */
+            else if ( type == tiffIfd ) tourIFD(v,offset,endian,depth,tagDict );
+            else if ( tag == 0x014a   ) tourIFD(v,offset,endian,depth,tagDict ); /* SubIFDs   */
+            else if ( tag == 0x927c   ) {                                        /* MakerNote */
                 if ( maker_ == kNikon ) {
                     // MakerNote is not and IFD, it's an emabeded tiff `II*_.....`
                     size_t punt = 0 ;
@@ -825,7 +795,7 @@ void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,const 
                     }
                     Io io(io_,offset+punt,count-punt);
                     TiffImage makerNote(io);
-                    makerNote.tourTiff(v,useDict,depth);
+                    makerNote.tourTiff(v,nikonDict,depth);
                 } else if ( maker_ == kSony && buf.strequals("SONY DSC ") ) {
                     // Sony MakerNote IFD does not have a next pointer.
                     size_t punt   = 12 ;
@@ -848,12 +818,33 @@ void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,const 
     io_.seek(restore_at_start); // restore
 } // TiffImage::tourIFD
 
-void TiffImage::tourTiff(Visitor& v,const TagDict& tagDict,int depth)
+bool TiffImage::valid()
 {
-    if ( v.option() == kpsBasic || v.option() == kpsXMP || v.option() == kpsRecursive || v.option() == kpsIccProfile ) {
-        if ( valid() ) {
-            tourIFD(v,start_,endian_,depth,tagDict);
-        }
+    size_t restore = io_.tell();
+    io_.seek(0);
+    // read header
+    DataBuf      header(20);
+    io_.seek(0);
+    io_.read(header);
+
+    char c   = (char) header.pData_[0] ;
+    char C   = (char) header.pData_[1] ;
+    endian_  = c == 'M' ? kEndianBig : kEndianLittle;
+    magic_   = getShort(header,2,endian_);
+    start_   = getLong (header,4,endian_);
+    bool result = (magic_ == 42 && c == C) && ( c == 'I' || c == 'M' ) && start_ < io_.size() ;
+    
+    bigtiff_ = magic_ == 43;
+    if ( bigtiff_ ) Error(kerBigtiffNotSupported);
+
+    io_.seek(restore);
+    return result;
+}
+
+void TiffImage::tourTiff(Visitor& v,TagDict& tagDict,int depth)
+{
+    if ( valid() ) {
+        tourIFD(v,start_,endian_,depth,tagDict);
     }
 } // TiffImage::tourTiff
 
@@ -874,7 +865,7 @@ bool JpegImage::valid()
 
 #define FLUSH(bLF) if (bLF) { out << std::endl; bLF = false;}
 
-void JpegImage::tourTiff(Visitor& v,const TagDict& tagDict,int depth)
+void JpegImage::tourTiff(Visitor& v,TagDict& tagDict,int depth)
 {
     if (!io_.good())
         Error(kerDataSourceOpenFailed, io_.path());

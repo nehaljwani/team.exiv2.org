@@ -19,10 +19,10 @@
 8. [Exiv2 Architecture](#8)<br>
   [8.1 Tag Names in Exiv2](#8-1)<br>
   [8.2 Metadata Decoder](#8-2)<br>
-  [8.3 Metadata Decoder](#8-3)<br>
+  [8.3 Metadata Binary Tag Decoder](#8-3)<br>
   [8.4 Tiff Visitor](#8-4)<br>
-  [8.5 TagInfo](#8-6)<br>
-  [8.6 tourIFD and tourTiff](#8-5)<br>
+  [8.5 TagInfo](#8-5)<br>
+  [8.6 tourIFD and tourTiff](#8-6)<br>
   [8.7 Using dd to extract data from an image](#8-7)
 9. [Test Suite and Build](#9)<br>
   [9.1 Bash Tests](#9-1)<br>
@@ -295,17 +295,19 @@ GPSDateStamp -> 2015-07-16 00:00:00 (dat     ImageUniqueID -> "090caaf..."
                                              GPSDateStamp -> 2015-07-16 00:
 ```
 
-Data's similar.  The order is different.  Good news is that the commands `$ exiv2 -pe ~/Stonehenge.jpg` and `$ exiv2 -pe ~/Stonehenge.tif`produce similar data in the same order.  We'd hope so and both codes read the same data.
+Data's similar.  The order is different.  Good news is that the commands `$ exiv2 -pe ~/Stonehenge.jpg` and `$ exiv2 -pe ~/Stonehenge.tif` produce similar data in the same order.  We'd hope so as both commands are reading the same embedded Exif metadata.  The way in which the Exif is embedded in the a Tiff or JPG is different, however the Exif metadata is effectively the same.
 
 [TOC](#TOC)
 <div id="3">
 # 3 MakerNotes
 
+https://exiv2.org/makernote.html
+
+[TOC](#TOC)
 <div id="4">
 # 4 Other metadata containers
 
-Exif is the most important of the metadata containers.  However the other exist and are supported by Exiv2:
-
+Exif is the most important of the metadata containers.  However others exist and are supported by Exiv2:
 
 | Type | Definition | Comment |
 |:---  |:----       |:------  |
@@ -326,6 +328,31 @@ Exif is the most important of the metadata containers.  However the other exist 
 [TOC](#TOC)
 <div id="7">
 # 7 I/O in Exiv2
+
+I/O in Exiv2 is achieved using the class BasicIo and derived classes which are:
+
+| _Name_ | _Purpose_ |
+|:--     |:--        |
+| BasicIo | Abstract |
+| FileIo  | FILE*    |
+| MemIo   | DataBuf_t |
+| RemoteIo | Abstract |
+| HttpIo   | http:, https: |
+| CurlIo   | http:,https: |
+| SshIo    | server:path |
+| FtpIo    | ftp:,ftps: |
+| StdinIo    | - |
+| Base64Io   | 0x64..... |
+
+You will find a simplified version of BasicIo in tvisitor.cpp in the code that accompanies this book.  Io has two constructors.  The obvious one is Io(std::string) which calls `fopen()`.  The subtle on is Io(io,from,size) which create a sub-file on an existing stream.  This design is use to deal with embedded files.  Most metadata is written in a format designated by the standards body and embedded in the file.  For example, Exif metadata data is written in Tiff Format and embedded in the file.  We discuss the embedding of Exif metadata in: 
+
+Other metadata standards use a parallel mechanism.  Xmp is embedded XML, an Icc Profile is a major block of technology.  Exiv2 knows how to extract to extract, insert, delete and replace an Icc Profile.  It knows noting about the contents of the Icc Profile.  With Xmp, Exiv2 using Adobe's XMPsdk to enable the the Xmp data to be modified.
+
+Exiv2 has an abstract RemoteIo object which can read/write on the internet.  For http, there is a basic implementation of the http protocol in src/http.cpp.  For production use, Exiv2 should be linked with libcurl.  The reason for providing a "no thrills" implementation of http was two fold.  Firstly, it enabled the project to proceed rapidly without leaning the curl API.  Secondly, I wanted all versions of the exiv2 command-line to have http support as I thought it would be useful for testing as we could store video and other large file formats remotely.
+
+The MemIo class enables memory to be used as a stream.  This is fast and convenient for small temporary files.  When memory mapped files are available, FileIo uses that in preference to FILE*.  When the project started in 2004, memory-mapped files were not provided on some legacy platforms such as DOS.  Today, all operating systems provide memory mapped files.  I've never heard of Exiv2 being used in an embedded controller, however I'm confident that this is feasible.  I've worked on embedded controllers with no operating system and only a standard "C" io library.  Exiv2 can be built for such a device.
+
+Most camera manufacturers are large corporations.  I'm sure they have their own firmware to handle Exif metadata.  However, the world of photography has an every growing band of start-ups making amazing devices such as Go-Pro.  One day I'll hear the somebody is cycling around on top of Mt Everest with Exiv2 running on top of their head!
 
 [TOC](#TOC)
 <div id="8">
@@ -457,7 +484,6 @@ Now to address your concern about `Exif.MinoltaCsNew.ISOSpeed`.  It will throw a
 Your application code has to use exception handlers to catch these matters and determine what to do.  Without getting involved with your application code, I can't comment on your best approach to dealing with this.  There is a macro EXIV2_TEST_VERSION which enables you to have version specific code in your application.
 
 [TOC](#TOC)
-
 <div id="8-2">
 ### 8.2 Metadata Decoder
 
@@ -472,7 +498,6 @@ This decoding function decodeCanonAFInfo() added to TiffMappingInfo manufactures
 We should support decoding AFInfo in 0.28, however we should NOT auto-port this PR. We can avoid having to explicitly delete tags from the metadata before writing by adding a "read-only" flag to TagInfo. This would break the Exiv2 v0.27 API and has been avoided. There is an array in decodeCanonAFInfo() which lists the "manufactured" tags such as Exif.Canon.AFNumPoints. In the Exiv2 v0.28 architecture, a way might be designed to generate that data at run-time.
 
 [TOC](#TOC)
-
 <div id="8-3">
 ### 8.3 Metadata Binary Tag Decoder
 
@@ -565,7 +590,6 @@ This is ingenious magic.  I'll revisit/edit this explanation in the next few day
 
 
 [TOC](#TOC)
-
 <div id="8-4">
 ### 8.4 Tiff Visitor
 
@@ -717,6 +741,7 @@ tiffvisitor_int.hpp:    class TiffReader  : public TiffVisitor
 
 I'll write more about the TiffVisitor later.
 
+[TOC](#TOC)
 <div id="8-5">
 ### 8.5 TagInfo
 
@@ -765,14 +790,16 @@ The code which accompanies this book has a simplified version of printIFDStructu
 
 It's important to realise that metadata is defined recursively.  In a Tiff File, there will be a Tiff Record containing the Exif data (written in Tiff Format).  Within, that record, there will be MakerNote which is usually written in Tiff Format.  Tiff Format is referred to as an IFD - an Image File Directory.
 
-The tourIFD() parser uses a simple direct approach to parsing the tiff file.  When another IFD is located, tourIFD is called recursively.  As a TIFF file is a header, followed by an IFD, we can descend into the tiff file from the beginning.  For other files types, the file handler has to find the Exif IFD and then call printIFDStructure().
+The tourIFD() parser uses a simple direct approach to parsing the tiff file.  When another IFD is located, tourIFD is called recursively.  As a TIFF file is a header, followed by an IFD, we can descend into the tiff file from the beginning.  For other files types, the file handler has to find the Exif IFD and then call tourIFD().
 
-There are actually two "flavours" of tourIFD.  tourTiff() starts with the tiff header `II*_` or `MM_*` and then calls `tourIFD`.  Both can handle Tiff and BigTiff.  Makernotes are almost always an IFD.  Some manufactures (Nikon) embed a Tiff.  Some (Canon and Sony) embed an IFD.  It's quite common (Sony) to embed a single IFD which is not terminated with a two byte null uint16_t.
+There are actually two "flavours" of tourIFD.  tourTiff() starts with the tiff header `II*_` or `MM_*` and then calls `tourIFD`.  Makernotes are almost always an IFD.  Some manufactures (Nikon) embed a Tiff.  Some (Canon and Sony) embed an IFD.  It's quite common (Sony) to embed a single IFD which is not terminated with a two byte null uint16_t.
+
+The program tvisitor has two file handlers.  One for Tiff and one for JPEG.  Exiv2 has handlers for about 20 different formats.  If you understand TIFF and JPEG, the others are boring variations.  The program tvisitor.cpp does not handle BigTiff, although it needs very few changes to do so.  I invite you, the reader, to investigate and send me a patch.  Best submission wins a free copy of this book.
 
 The following code is possibly the most beautiful and elegant 100 lines I have ever written.
 
 ```
-void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,const TagDict& tagDict,bool bHasNext)
+void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,TagDict& tagDict,bool bHasNext)
 {
     size_t   restore_at_start = io_.tell();
 
@@ -803,9 +830,9 @@ void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,const 
             }
             visits_.insert(io_.tell());
 
-            v.visitTag(*this,depth,address,useDict);  // Tell the visitor
+            v.visitTag(*this,depth,address,tagDict);  // Tell the visitor
 
-            // read the tag (we might want to change tagDict before a recursion)
+            // read the tag (we might want to modify tagDict before we tell the visitor)
             io_.read(dir.pData_, 12);
             uint16_t tag    = getShort(dir,0,endian_);
             type_e   type   = getType (dir,2,endian_);
@@ -814,36 +841,25 @@ void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,const 
 
             // Break for unknown tag types else we may segfault.
             if ( !typeValid(type) ) {
-                std::cerr << "invalid type in tiff structure" << type << std::endl;
-                start = 0; // break from do loop
                 Error(kerInvalidTypeValue);
             }
 
             uint16_t pad    = isStringType(type) ? 1 : 0;
             uint16_t size   = typeSize(type);
-            size_t allocate = size*count + pad+20;
-            if (   allocate > io_.size() ) {
-                Error(kerInvalidMalloc);
-            }
-            DataBuf  buf(allocate);                  // allocate a buffer
-            size_t restore = io_.tell();
+            size_t   alloc  = size*count + pad+20;
+            DataBuf  buf(alloc,io_.size());
+            size_t   restore = io_.tell();
             io_.seek(offset);
             io_.read(buf);
             io_.seek(restore);
             if ( depth == 1 && tag == 0x010f /* Make */ ) setMaker(buf);
-            
-            TagDict useDict = tag == 0x8769 ? copyDict( exifDict  )
-                            : tag == 0x8825 ? copyDict( gpsDict   )
-                            : tag == 0x927c ? copyDict( makerDict_)
-                            :                 copyDict( tagDict   )
-                            ;
 
-            // do we need to recurse?
-            if ( tag == 0x8769 /* ExifTag */ || tag == 0x014a /*SubIFDs*/
-            ||   tag == 0x8825 /* GPSTag  */ || type == tiffIfd ) {
-                // these tags are IFDs, not embedded TIFF
-                tourIFD(v,offset,endian,depth,useDict);
-            } else if ( tag == 0x927c /* MakerNote */ ) {
+            // anybody for a recursion?
+            if      ( tag == 0x8769   ) tourIFD(v,offset,endian,depth,exifDict); /* ExifTag   */
+            else if ( tag == 0x8825   ) tourIFD(v,offset,endian,depth,gpsDict ); /* GPSTag    */
+            else if ( type == tiffIfd ) tourIFD(v,offset,endian,depth,tagDict );
+            else if ( tag == 0x014a   ) tourIFD(v,offset,endian,depth,tagDict ); /* SubIFDs   */
+            else if ( tag == 0x927c   ) {                                        /* MakerNote */
                 if ( maker_ == kNikon ) {
                     // MakerNote is not and IFD, it's an emabeded tiff `II*_.....`
                     size_t punt = 0 ;
@@ -852,7 +868,7 @@ void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,const 
                     }
                     Io io(io_,offset+punt,count-punt);
                     TiffImage makerNote(io);
-                    makerNote.tourTiff(v,useDict,depth);
+                    makerNote.tourTiff(v,nikonDict,depth);
                 } else if ( maker_ == kSony && buf.strequals("SONY DSC ") ) {
                     // Sony MakerNote IFD does not have a next pointer.
                     size_t punt   = 12 ;
@@ -874,6 +890,38 @@ void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,const 
     
     io_.seek(restore_at_start); // restore
 } // TiffImage::tourIFD
+```
+
+To complete the story, here's the tourTiff() and valid():
+```
+bool TiffImage::valid()
+{
+    bool   result  = false ;
+    size_t restore = io_.tell();
+    io_.seek(0);
+    // read header
+    DataBuf      header(16);
+    io_.seek(0);
+    io_.read(header);
+
+    char c      = (char) header.pData_[0] ;
+    char C      = (char) header.pData_[1] ;
+    endian_ = c == 'M' ? kEndianBig : kEndianLittle;
+    
+    start_  = getLong (header,4,endian_);
+    magic_  = getShort(header,2,endian_);
+    result  = magic_ == 42 && c == C && ( c == 'I' || c == 'M' ) && start_ < io_.size() ;
+
+    io_.seek(restore);
+    return result;
+}
+
+void TiffImage::tourTiff(Visitor& v,TagDict& tagDict,int depth)
+{
+    if ( valid() ) {
+        tourIFD(v,start_,endian_,depth,tagDict);
+    }
+} // TiffImage::tourTiff
 ```
 
 The code `tvisitor.cpp` is a standalone version of the function Image::printStructure() in the Exiv2 library.  It can be executed with four different options which are equivalent to exiv2 options:
@@ -946,8 +994,6 @@ Using dd to extract metadata is discussed in more detail here: [8.7 Using dd to 
 Please be aware that there are two ways in which IFDs can occur in the file.  They can be an embedded TIFF which is complete with the `II*_LengthOffset` or `MM_*LengthOffset` 12-byte header followed the IFD.   Or the IFD can be in the file without the header.  tourIFD() knows that the tags such as GpsTag and ExifTag are IFDs and calls tourIFD().  For the embedded TIFF (such as Nikon MakerNote), tourIFD() creates a TiffImage and calls TimeImage.tourTiff() which validates the header and calls tourIFD().
 
 One other details is that although the Tiff Specification expects the IFD to end with a uint16_t offset == 0, Sony (and other) maker notes do not.  The IFD is a single directory of 12 byte tags.
-
-[TOC](#TOC)
 
 [TOC](#TOC)
 <div id="8-7">
@@ -1023,7 +1069,7 @@ Exif.Image.Orientation                       Short       1  top, left
 $
 ```
 
-You may be interested to discover that option `-pS` option which arrived with Exiv2 v0.25 was joined in Exiv2 v0.26 by `-pR`.  This is a "recursive" version of -pS.  Internally, it dumps the structure not only of the file, but also every subfiles (mostly tiff IFDs).  The is discussed in detail here: [8.5 printIFDStructure](#8-5).
+You may be interested to discover that option `-pS` option which arrived with Exiv2 v0.25 was joined in Exiv2 v0.26 by `-pR`.  This is a "recursive" version of -pS.  Internally, it dumps the structure not only of the file, but also every subfiles (mostly tiff IFDs).  The is discussed in detail here: [8.6 tourIFD and tourTiff](#8-6).
 
 [TOC](#TOC)
 <div id="9">
@@ -1039,7 +1085,6 @@ Exiv2 has several different elements in the test suite. They are:
 In writing this book, I want to avoid duplicating information between Exiv2 documentation and this book.  This book is intended to provide an engineering explanation of how the code works and why various design decisions were chosen.  However, you will find that this book doesn't explain how to use Exiv2. How to use execute the test suite is documented in README.md.
 
 [TOC](#TOC)
-
 <div id="9-1">
 # 9.1 Bash Tests
 
@@ -1205,36 +1250,36 @@ reportTest(r,t)
 ```
 
 [TOC](#TOC)
-
 <div id="9-2">
 # 9.2 Python Tests
 
 To be written.
 
 [TOC](#TOC)
-
 <div id="9-3">
 # 9.3 Unit Test
 
 To be written.
 
 [TOC](#TOC)
-
 <div id="9-4">
 # 9.4 Version Test
 
 To be written.
 
 [TOC](#TOC)
-
 <div id="10">
 # 10 API/ABI
-[TOC](#TOC)
 
+To be written.
+
+[TOC](#TOC)
 <div id="11">
 # 11 Security
-[TOC](#TOC)
 
+To be written.
+
+[TOC](#TOC)
 <div id="12">
 # 12 Project Management, Release Engineering, User Support
 
@@ -1247,12 +1292,23 @@ The code has taken a great deal of inspiration from the book [Design Patterns: E
 
 Starting with Exiv2 v0.28, the code requires a C++11 Compiler.  Exiv2 v0.28 is a major refactoring of the code and provides a new API.  The project maintains a series of v0.27 "dot" releases for security updates.  These releases are intended to ease the transition of existing applications in adapting to the new APIs in the v0.28.
 
+[TOC](#TOC)
 <div id="12-2">
 ### 12.2) Build
 
 The build code in Exiv2 is implemented using CMake: cross platform make.  This system enables the code to be built on many different platforms in a consistant manner.  CMake recursively reads the files CMakeLists.txt in the source tree and generates build environments for different build systems.  For Exiv2, we actively support using CMake to build on Unix type plaforms (Linux, macOS, Cygwin and MinGW, NetBSD, Solaris and FreeBSD), and several editions of Visual Studio.  CMake can generate project files for Xcode and other popular IDEs.
 
-Exiv2 has dependencies on other libraries.
+Exiv2 has dependencies on the following libraries.  All are optional, however it's unusual to build without zlib and expat.
+
+| _Name_ | _Purpose_ |
+|:--    |:--- |
+| zlib  | Compression library.  Necessary to support PNG files |
+| expat | XML Library.  Necessary to support Xmp (and samples/geotag) |
+| xmpsdk | Adobe Library for xmp.  Source is embedded in the Exiv2 code base |
+| libcurl | http, https, ftp, ftps support |
+| libssh | ssh support |
+| libiconv | charset transformations |
+| libintl | localisation support |
 
 [TOC](#TOC)
 <div id="12-3">
