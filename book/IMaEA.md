@@ -131,7 +131,7 @@ I wish you a happy adventure in the world of Image Metadata.  If you'd like to d
 <div id="1">
 # 1 Image File Formats
 
-The following summaries of the file formats are provided to help reader understand both this book and the Exiv2 code.  The standard specifications should be consulted for more detail.
+The following summaries of the file formats are provided to help reader understand both this book and the Exiv2 code.  The Standard Specifications should be consulted for more detail.
 
 <div id="1-JPEG">
 ### 1.1 JPEG
@@ -165,8 +165,15 @@ The following summaries of the file formats are provided to help reader understa
 
 ![Exif22Tiff.png](Exif22Tiff.png)
 
-Before we get into the Exiv2 code, let's look at the simpler python JPG/TIFF Exif library: [https://github.com/Moustikitos/tyf](https://github.com/Moustikitos/tyf)
+Before we get into the Exiv2 code, let's look at the simpler python JPG/TIFF Exif library.   [https://github.com/Moustikitos/tyf](https://github.com/Moustikitos/tyf)
 
+You will also need to install PIL
+```bash
+$ sudo python3 -m pip install Pillow
+$ git clone https://github.com/Moustikitos/tyf
+$ cd tyf
+$ sudo python3 setup.py install
+```
 This is a library and I've constructed a simple wrapper to reveal the Exif metadata.
 
 ```python
@@ -176,25 +183,36 @@ import Tyf
 import os
 import sys
 
+import urllib.request
+from io  import BytesIO
+from PIL import Image
+
 ##
 #
 def dumpTags(ifd):
-	for tag in ifd:
-		V=tag[1]
-		v=str(V)
-		if type(V)==type(''):
-			v='"'+v+'"'
-		if len(v) > 50:
-		   v = v[0:48] + '...'
-		t=str(type(V))
-		t=t[8:len(t)-2]
-		if t == 'bytes':
-			t=str(len(V)) + ' ' + t
-		elif t == 'str':
-			t=str(len(V))
-		t='('+t+')'
+	bDumpTags    = True
+	bGenerateMap = False
 
-		print('%s -> %s %s' % ( tag[0], v , t)	)
+	if bDumpTags:
+		for tag in ifd:
+			V=tag[1]
+			v=str(V)
+			if type(V)==type(''):
+				v='"'+v+'"'
+			if len(v) > 30:
+			   v = v[0:26] + '.. '
+			t=str(type(V))
+			t=t[8:len(t)-2]
+			if t == 'bytes':
+				t=str(len(V)) + ' ' + t
+			elif t == 'str':
+				t=str(len(V))
+			if len(t) > 30:
+				t = t[0:26]+'.. '
+				
+			t='('+t+')'
+
+			print('%s -> %s %s' % ( tag[0], v , t)	)
 
 ##
 #
@@ -228,7 +246,7 @@ Model -> "NIKON D5300" (11)                  BitsPerSample -> (8, 8, 8, 8)
 Orientation -> 1 (int)                       Compression -> 1 (int)
 XResolution -> 300.0 (float)                 PhotometricInterpretation -> 2
 YResolution -> 300.0 (float)                 FillOrder -> 1 (int)
-ResolutionUnit -> 2 (int)                    ImageDescription -> "Classic V
+ResolutionUnit -> 2 (int)                    ImageDescription -> "Classic V"
 Software -> "Ver.1.00 " (9)                  Make -> "NIKON CORPORATION" (1
 DateTime -> 2015-07-16 20:25:28 (datetim     Model -> "NIKON D5300" (11)
 YCbCrPositioning -> 1 (int)                  StripOffsets -> 901 (int)
@@ -245,9 +263,9 @@ ComponentsConfiguration -> b\x01\x02\x0      DateTime -> 2015-07-16 20:25:2
 CompressedBitsPerPixel -> 2.0 (float)        ExtraSamples -> 1 (int)
 ExposureBiasValue -> (0, 6) (tuple)          SampleFormat -> (1, 1, 1, 1) (
 MaxApertureValue -> 4.3 (float)              XMP -> (60, 120, 58, 120, 109,
-MeteringMode -> 5 (int)                      IPTC -> b'\x1c\x01Z\x00\x03\x1
+MeteringMode -> 5 (int)                      IPTC -> b'\x1c\x01Z\x00\x03\x1'
 LightSource -> 0 (int)                       Exif IFD -> 8 (int)
-Flash -> 16 (int)                            ICC Profile -> b'\x00\x00\x0cH
+Flash -> 16 (int)                            ICC Profile -> b'\x00\x00\x0cH'
 FocalLength -> 44.0 (float)                  GPS IFD -> 655 (int)
 MakerNote -> b'Nikon\x00\x02\x11\x00\x00'    ExposureTime -> 0.0025 (float)
 UserComment ->                               FNumber -> 10.0 (float)
@@ -256,13 +274,13 @@ SubsecTimeOriginal -> "00" (2)               ISOSpeedRatings -> 200 (int)
 SubsecTimeDigitized -> "00" (2)              ExifVersion -> b'0230' (4 byte
 FlashpixVersion -> b'0100' (4 bytes)         DateTimeOriginal -> 2015-07-16
 ColorSpace -> 1 (int)                        DateTimeDigitized -> 2015-07-1
-PixelXDimension -> 6000 (int)                ComponentsConfiguration -> b'\
+PixelXDimension -> 6000 (int)                ComponentsConfiguration -> 
 PixelYDimension -> 4000 (int)                CompressedBitsPerPixel -> 2.0 
 Interoperability IFD -> 4306 (int)           ExposureBiasValue -> (0, 1) (t
 SensingMethod -> 2 (int)                     MaxApertureValue -> 4.3 (float
 FileSource -> b'\x03' (1 bytes)              MeteringMode -> 5 (int)
 SceneType -> b'\x01' (1 bytes)               LightSource -> 0 (int)
-CFAPattern -> b'\x02\x00\x02\x00\x00\x01     Flash -> 16 (int)
+CFAPattern -> b'\x02\x00\x02\x00\x00\x01'     Flash -> 16 (int)
 CustomRendered -> 0 (int)                    FocalLength -> 44.0 (float)
 ExposureMode -> 0 (int)                      UserComment -> 
 WhiteBalance -> 0 (int)                      SubsecTime -> "00" (2)
@@ -274,7 +292,7 @@ Contrast -> 0 (int)                          PixelXDimension -> 1 (int)
 Saturation -> 0 (int)                        PixelYDimension -> 1 (int)
 Sharpness -> 0 (int)                         SensingMethod -> 2 (int)
 SubjectDistanceRange -> 0 (int)              FileSource -> b'\x03' (1 bytes
-ImageUniqueID -> "090caaf2c085f3e102513b     SceneType -> b'\x01' (1 bytes)
+ImageUniqueID -> "090caaf2c085f3e102513b"    SceneType -> b'\x01' (1 bytes)
 InteropIndex -> "R98" (3)                    CustomRendered -> 0 (int)
 InteropVersion -> b'0100' (4 bytes)          ExposureMode -> 0 (int)
 GPSLatitudeRef -> 1 (int)                    WhiteBalance -> 0 (int)
@@ -733,7 +751,7 @@ int main() {
 And when we run it:
 
 ```bash
-1181 rmills@rmillsmbp:~/gnu/exiv2/team/book/build $ ./visitor 
+.../book/build $ ./visitor 
 this | 10 | art
 that | 12 | music
 the other | 14 | engineering
@@ -741,18 +759,18 @@ FrenchVisitor: ce
 FrenchVisitor: que
 FrenchVisitor: l'autre
 average age = 12
-1158 rmills@rmillsmbp:~/gnu/exiv2/team/book/build $ 
+.../book/build $ 
 ```
 
 Exiv2 has an abstract TiffVisitor class, and the following concrete visitors:
 
 | _Class_ | _Derived from_ | Purpose |
 |:--                |:--                  |:---- |
-| class TiffFinder  | public TiffVisitor    | Searching |
-| class TiffCopier  | public TiffVisitor  | Visits a file and copies update a new file |
-| class TiffDecoder | public TiffVisitor | Decodes meta data |
-| class TiffEncoder | public TiffVisitor | Encodes meta data |
-| class TiffReader  | public TiffVisitor | Reads meta data in to memory |
+| class TiffFinder  | TiffVisitor    | Searching |
+| class TiffCopier  | TiffVisitor  | Visits a file and copies update a new file |
+| class TiffDecoder | TiffVisitor | Decodes meta data |
+| class TiffEncoder | TiffVisitor | Encodes meta data |
+| class TiffReader  | TiffVisitor | Reads meta data in to memory |
 
 I need to do more research into this complex design.
 
@@ -760,16 +778,16 @@ I need to do more research into this complex design.
 <div id="8-5">
 ### 8.5 Navigating the file with readIFD() and readTiff()
 
-The TiffVisitor is ingenious.  It's also difficult to understand.  Exiv2 has two tiff parsers - TiffVisitor and printIFDStructure().  TiffVisitor was written by Andreas Huggel.  It's very robust and has been almost 
+The TiffVisitor is ingenious.  It's also difficult to understand.  Exiv2 has two tiff parsers - TiffVisitor and Image::printIFDStructure().  TiffVisitor was written by Andreas Huggel.  It's very robust and has been almost 
 bug free for 15 years.  I wrote the parser in Image::printIFDStructure() to try to understand the structure of a tiff file.  The code in Image::printIFDStructure() is easier to understand.
 
 The code which accompanies this book has a simplified version of Image::printIFDStructure() called Tiff::readIFD() and that's what will be discussed here.  The code that accompanies this book is explained here: [Code discussed in this book](#13)
 
-It's important to realise that metadata is defined recursively.  In a Tiff File, there will be a Tiff Record containing the Exif data (written in Tiff Format).  Within, that record, there will be MakerNote which is usually written in Tiff Format.  Tiff Format is referred to as an IFD - an Image File Directory.
+It's important to realise that metadata is defined recursively.  In a Tiff File, there will be a Tiff Record containing the Exif data (written in Tiff Format).  Within, that record, there will be a MakerNote which is usually written in Tiff Format.  Tiff Format is referred to as an IFD - an Image File Directory.
 
-Tiff::readIFD() uses a simple direct approach to parsing the tiff file.  When another IFD is located, readIFD() is called recursively.  As a TIFF file is a header, followed by an IFD, we can descend into the tiff file from the beginning.  For other files types, the file handler has to find the Exif IFD and then call readIFD().
+Tiff::readIFD() uses a simple direct approach to parsing the tiff file.  When another IFD is located, readIFD() is called recursively.  As a TIFF file is a 12 byte header which provides the offset to the first IFD.  We can descend into the tiff file from the beginning.  For other files types, the file handler has to find the Exif IFD and then call readIFD().
 
-There are actually two "flavours" of readIFD.  readTiff() starts with the tiff header `II*_` or `MM_*` and then calls `readIFD()`.  Makernotes are almost always an IFD.  Some manufactures (Nikon) embed a Tiff.  Some (Canon and Sony) embed an IFD.  It's quite common (Sony) to embed a single IFD which is not terminated with a four byte null uint32\_t.
+There are actually two "flavours" of readIFD.  readTiff() starts with the tiff header `II*_` or `MM_*` and then calls the other flavour `readIFD()`.  Makernotes are almost always an IFD.  Some manufactures (Nikon) embed a Tiff.  Some (Canon and Sony) embed an IFD.  It's quite common (Sony) to embed a single IFD which is not terminated with a four byte null uint32\_t.
 
 The program tvisitor has two file handlers.  One for Tiff and one for Jpeg.  Exiv2 has handlers for about 20 different formats.  If you understand Tiff and Jpeg, the others are boring variations.  The program tvisitor.cpp does not handle BigTiff, although it needs very few changes to do so.  I invite you, the reader, to investigate and send me a patch.  Best submission wins a free copy of this book.
 
@@ -981,21 +999,21 @@ He is working on an embedded TIFF which is located at bytes 12..15289.  The is t
 ```bash
 $ dd if=~/Stonehenge.jpg bs=1 skip=$((12+924+10+8)) count=4 2>/dev/null ; echo 
 0211
-942 rmills@rmillsmbp:~/gnu/exiv2/team/book/build $ 
+$ 
 ```
 Using dd to extract metadata is discussed in more detail here: [8.1 Using dd to extract data from an image](#8-1).
 
 Please be aware that there are two ways in which IFDs can occur in the file.  They can be an embedded TIFF which is complete with the `II*_LengthOffset` or `MM_*LengthOffset` 12-byte header followed the IFD.   Or the IFD can be in the file without the header.  readIFD() knows that the tags such as GpsTag and ExifTag are IFDs and calls readIFD().  For the embedded TIFF (such as Nikon MakerNote), readIFD() creates a TiffImage and calls TimeImage.readTiff() which validates the header and calls readIFD().
 
-One other important detail is that although the Tiff Specification expects the IFD to end with a uint32\_t offset == 0, Sony (and other) maker notes do not.  The IFD has a uint32_t to define length, followed by 12 byte tags.  There is no trailing null uint32\_t.
+One other important detail is that although the Tiff Specification expects the IFD to end with a uint32\_t offset == 0, Sony (and other) maker notes do not.  The IFD begins with a uint32\_t to define length, followed by 12 byte tags.  There is no trailing null uint32\_t.
 
 [TOC](#TOC)
 <div id="8-6">
 ### Presenting the data with visitTag()
 
-And finally I want to discuss how to decode binary tags and present the data.
+I want to discuss how to decode binary tags and present the data.
 
-I will add support in tvisitor.cpp for one binary tag and I've chosen Nikon Picture Control tag = 0x0023.  You'll see from the output of tvisit that it's 58 bytes.
+I added support in tvisitor.cpp for one binary tag which is Nikon Picture Control tag = 0x0023.  You'll see from the output of tvisit that it's 58 bytes.
 
 ```bash
 .../book/build $ ./tvisitor R ~/Stonehenge.jpg | grep -i picture
@@ -1013,7 +1031,7 @@ Beautifully documented as follows:
 The Exiv2 website is generated by reading the tag definitions in the code-base:
 
 ```bash
-577 rmills@rmillsmbp:~/gnu/exiv2/team/book/build $ taglist ALL | grep NikonPc
+.../book/build $ taglist ALL | grep NikonPc
 NikonPc.Version,	0,	0x0000,	NikonPc,	Exif.NikonPc.Version,	Undefined,	Version
 NikonPc.Name,	4,	0x0004,	NikonPc,	Exif.NikonPc.Name,	Ascii,	Name
 NikonPc.Base,	24,	0x0018,	NikonPc,	Exif.NikonPc.Base,	Ascii,	Base
@@ -1027,7 +1045,7 @@ NikonPc.HueAdjustment,	54,	0x0036,	NikonPc,	Exif.NikonPc.HueAdjustment,	Byte,	Hu
 NikonPc.FilterEffect,	55,	0x0037,	NikonPc,	Exif.NikonPc.FilterEffect,	Byte,	Filter effect
 NikonPc.ToningEffect,	56,	0x0038,	NikonPc,	Exif.NikonPc.ToningEffect,	Byte,	Toning effect
 NikonPc.ToningSaturation,	57,	0x0039,	NikonPc,	Exif.NikonPc.ToningSaturation,	Byte,	Toning saturation
-578 rmills@rmillsmbp:~/gnu/exiv2/team/book/build $ 
+.../book/build $ 
 ```
 
 I've decided to call a binary element a Field.  So we have a class, and vector of fields for a tag, and a map to hold the definitions:
