@@ -643,11 +643,11 @@ class TiffImage : public Image
 public:
     TiffImage(std::string path) : Image(path) {}
     TiffImage(Io& io) : Image(io) {} ;
-    void tourTiff(Visitor& v,TagDict& tagDict=tiffDict,int depth = 0);
-    void tourIFD (Visitor& v,size_t start,endian_e endian,int depth,TagDict& tagDict,bool bHasNext=true);
+    void readTiff(Visitor& visitor,TagDict& tagDict=tiffDict,int depth = 0);
+    void readIFD (Visitor& visitor,size_t start,endian_e endian,int depth,TagDict& tagDict,bool bHasNext=true);
     bool valid();
 
-    virtual void accept(class Visitor& v) { tourTiff(v); }
+    virtual void accept(class Visitor& visitor) { readTiff(visitor); }
 };
 
 class JpegImage : public Image
@@ -677,13 +677,13 @@ public:
     }
 };
 
-void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,TagDict& tagDict,bool bHasNext)
+void TiffImage::readIFD(Visitor& visitor,size_t start,endian_e endian,
+    int depth/*=0*/,TagDict& tagDict/*=tiffDict*/,bool bHasNext/*=true*/)
 {
     size_t   restore_at_start = io_.tell();
 
-    depth++;
-    if ( depth == 1 ) visits_.clear();
-    v.visitBegin(*this,depth);
+    if ( !depth++ ) visits_.clear();
+    visitor.visitBegin(*this,depth);
 
     // buffer
     const size_t dirSize = 32;
@@ -694,21 +694,20 @@ void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,TagDic
         io_.seek(start);
         io_.read(dir.pData_, 2);
 
-        uint16_t      dirLength = getShort(dir,0,endian_);
-        bool tooBig = dirLength > 500;
-        if ( tooBig ) Error(kerTiffDirectoryTooLarge);
+        uint16_t dirLength = getShort(dir,0,endian_);
+        if ( dirLength > 500 ) Error(kerTiffDirectoryTooLarge);
 
         // Read the dictionary
         for ( int i = 0 ; i < dirLength ; i ++ ) {
             const size_t address = start + 2 + i*12 ;
-            io_.seek(address);
             
-            if ( visits_.find(io_.tell()) != visits_.end()  ) { // never visit the same place twice!
+            if ( visits_.find(address) != visits_.end()  ) { // never visit the same place twice!
                 Error(kerCorruptedMetadata);
             }
-            visits_.insert(io_.tell());
+            visits_.insert(address);
+            io_.seek(address);
 
-            v.visitTag(*this,depth,address,tagDict);  // Tell the visitor
+            visitor.visitTag(*this,depth,address,tagDict);  // Tell the visitor
 
             // read the tag (we might want to modify tagDict before we tell the visitor)
             io_.read(dir.pData_, 12);
@@ -722,9 +721,9 @@ void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,TagDic
                 Error(kerInvalidTypeValue);
             }
 
-            uint16_t pad    = isStringType(type) ? 1 : 0;
-            uint16_t size   = typeSize(type);
-            size_t   alloc  = size*count + pad+20;
+            uint16_t pad   = isStringType(type) ? 1 : 0;
+            uint16_t size  = typeSize(type);
+            size_t   alloc = size*count + pad+20;
             DataBuf  buf(alloc,io_.size());
             size_t   restore = io_.tell();
             io_.seek(offset);
@@ -733,11 +732,11 @@ void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,TagDic
             if ( depth == 1 && tag == 0x010f /* Make */ ) setMaker(buf);
 
             // anybody for a recursion?
-            if      ( tag == 0x8769   ) tourIFD(v,offset,endian,depth,exifDict); /* ExifTag   */
-            else if ( tag == 0x8825   ) tourIFD(v,offset,endian,depth,gpsDict ); /* GPSTag    */
-            else if ( type == tiffIfd ) tourIFD(v,offset,endian,depth,tagDict );
-            else if ( tag == 0x014a   ) tourIFD(v,offset,endian,depth,tagDict ); /* SubIFDs   */
-            else if ( tag == 0x927c   ) {                                        /* MakerNote */
+            if      ( tag  == 0x8769  ) readIFD(visitor,offset,endian,depth,exifDict); /* ExifTag   */
+            else if ( tag  == 0x8825  ) readIFD(visitor,offset,endian,depth,gpsDict ); /* GPSTag    */
+            else if ( type == tiffIfd ) readIFD(visitor,offset,endian,depth,tagDict );
+            else if ( tag  == 0x014a  ) readIFD(visitor,offset,endian,depth,tagDict ); /* SubIFDs   */
+            else if ( tag  == 0x927c  ) {                                        /* MakerNote */
                 if ( maker_ == kNikon ) {
                     // MakerNote is not and IFD, it's an emabeded tiff `II*_.....`
                     size_t punt = 0 ;
@@ -746,13 +745,13 @@ void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,TagDic
                     }
                     Io io(io_,offset+punt,count-punt);
                     TiffImage makerNote(io);
-                    makerNote.tourTiff(v,nikonDict,depth);
+                    makerNote.readTiff(visitor,nikonDict,depth);
                 } else if ( maker_ == kSony && buf.strequals("SONY DSC ") ) {
                     // Sony MakerNote IFD does not have a next pointer.
                     size_t punt   = 12 ;
-                    tourIFD(v,offset+punt,endian_,depth,sonyDict,false);
+                    readIFD(visitor,offset+punt,endian_,depth,sonyDict,false);
                 } else {
-                    tourIFD(v,offset,endian_,depth,makerDict_);
+                    readIFD(visitor,offset,endian_,depth,makerDict_);
                 }
             }
         } // for i < dirLength
@@ -763,7 +762,7 @@ void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,TagDic
             start = getLong(dir,0,endian_);
         }
     } while (start) ;
-    v.visitEnd(*this,depth);
+    visitor.visitEnd(*this,depth);
     depth--;
     
     io_.seek(restore_at_start); // restore
@@ -793,10 +792,10 @@ bool TiffImage::valid()
     return result;
 }
 
-void TiffImage::tourTiff(Visitor& v,TagDict& tagDict,int depth)
+void TiffImage::readTiff(Visitor& visitor,TagDict& tagDict,int depth)
 {
     if ( valid() ) {
-        tourIFD(v,start_,endian_,depth,tagDict);
+        readIFD(visitor,start_,endian_,depth,tagDict);
     }
 } // TiffImage::tourTiff
 

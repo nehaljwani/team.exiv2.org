@@ -1,7 +1,7 @@
+<div id="TOC">
 ![Exiv2](exiv2.png)
 # Image Metadata and Exiv2 Architecture
 
-<div id="TOC">
 ### TABLE OF CONTENTS
 
 1. [Image File Formats](#1)<br>
@@ -21,7 +21,7 @@
   [8.2 Tag Names in Exiv2](#8-2)<br>
   [8.3 TagInfo](#8-3)<br>
   [8.4 Visitor Design Pattern](#8-4)<br>
-  [8.5 tourIFD and tourTiff](#8-5)<br>
+  [8.5 readIFD and readTiff](#8-5)<br>
   [8.6 Metadata Decoder](#8-6)<br>
   [8.7 Metadata Binary Tag Decoder](#8-7)<br>
 9. [Test Suite and Build](#9)<br>
@@ -65,7 +65,7 @@ I first became interested in metadata because of a trail conversation with Denni
 
 I said "Oh, it can't be too difficult to do that!".  And here we are more than a decade later still working on the project.  The program geotag.py was completed in about 6 weeks.  Most of the effort went into porting both Exiv2 and pyexiv2 to Visual Studio and macOS as both were Linux only at that time.
 
-The sample application samples/geotag.c++ provides a command line utility to geotag photos and I frequently use this on my own photographs.  Today, I have a Samsung Galaxy Watch which uploads runs to Strava.  I download the GPX from Strava.  The date/time information in the JPG is the key to search for the position data.  The GPS tags are created and saved in the image.
+The sample application samples/geotag.cpp provides a command line utility to geotag photos and I frequently use this on my own photographs.  Today, I have a Samsung Galaxy Watch which uploads runs to Strava.  I download the GPX from Strava.  The date/time information in the JPG is the key to search for the position data.  The GPS tags are created and saved in the image.
 
 Back in 2008, I chose to implement this in python as it was a good excuse to learn Python.  Having discovered exiv2 and the python wrapper pyexiv2, I set off with enthusiasm to build a cross-platform script to run on **Windows** _(XP, Visual Studio 2003)_, **Ubuntu Linux** _(Hardy Heron 2008.04 LTS)_ and **macOS** _(32 bit Tiger 10.4 on a big-endian PPC)_.  After I finished, I emailed Andreas.  He responded in less than an hour and invited me to join Team Exiv2.  Initialially, I provided support to build Exiv2 with Visual Studio.
 
@@ -348,11 +348,11 @@ I/O in Exiv2 is achieved using the class BasicIo and derived classes which are:
 | StdinIo    | - | Read from std-in |
 | Base64Io   | data:..... | Decodes ascii encoded binary |
 
-You will find a simplified version of BasicIo in tvisitor.c++ in the code that accompanies this book.  Io has two constructors.  The obvious one is Io(std::string) which calls `fopen()`.  The subtle on is Io(io,from,size) which create a sub-file on an existing stream.  This design is use to deal with embedded files.  Most metadata is written in a format designated by the standards body and embedded in the file.  For example, Exif metadata data is written in Tiff Format and embedded in the file.  We discuss the embedding of Exif metadata in: 
+You will find a simplified version of BasicIo in tvisitor.cpp in the code that accompanies this book.  Io has two constructors.  The obvious one is Io(std::string) which calls `fopen()`.  More subtle is Io(io,from,size) which creates a sub-file on an existing stream.  This design deals with embedded files.  Most metadata is written in a format designated by the standards body and embedded in the file.  For example, Exif metadata data is written in Tiff Format and embedded in the file.
 
-Other metadata standards use a parallel mechanism.  Xmp is embedded XML, an Icc Profile is a major block of technology.  Exiv2 knows how to extract to extract, insert, delete and replace an Icc Profile.  It knows noting about the contents of the Icc Profile.  With Xmp, Exiv2 using Adobe's XMPsdk to enable the the Xmp data to be modified.
+Other metadata standards use a similar design.  XMP is embedded XML, an Icc Profile is a major block of technology.  Exiv2 knows how to extract, insert, delete and replace an Icc Profile.  It knows noting about the contents of the Icc Profile.  With Xmp, Exiv2 using Adobe's XMPsdk to enable the the Xmp data to be modified.
 
-Exiv2 has an abstract RemoteIo object which can read/write on the internet.  For http, there is a basic implementation of the http protocol in src/http.c++.  For production use, Exiv2 should be linked with libcurl.  The reason for providing a "no thrills" implementation of http was two fold.  Firstly, it enabled the project to proceed rapidly without leaning the curl API.  Secondly, I wanted all versions of the exiv2 command-line to have http support as I thought it would be useful for testing as we could store video and other large file formats remotely.
+Exiv2 has an abstract RemoteIo object which can read/write on the internet.  For http, there is a basic implementation of the http protocol in src/http.cpp.  For production use, Exiv2 should be linked with libcurl.  The reason for providing a "no thrills" implementation of http was two fold.  Firstly, it enabled the project to proceed rapidly without leaning the curl API.  Secondly, I wanted all versions of the exiv2 command-line to have http support as I thought it would be useful for testing as we could store video and other large file formats remotely.
 
 The MemIo class enables memory to be used as a stream.  This is fast and convenient for small temporary files.  When memory mapped files are available, FileIo uses that in preference to FILE*.  When the project started in 2004, memory-mapped files were not provided on some legacy platforms such as DOS.  Today, all operating systems provide memory mapped files.  I've never heard of Exiv2 being used in an embedded controller, however I'm confident that this is feasible.  I've worked on embedded controllers with no operating system and only a standard "C" io library.  Exiv2 can be built for such a device.
 
@@ -435,7 +435,7 @@ Exif.Image.Orientation                       Short       1  top, left
 $
 ```
 
-You may be interested to discover that option `-pS` option which arrived with Exiv2 v0.25 was joined in Exiv2 v0.26 by `-pR`.  This is a "recursive" version of -pS.  Internally, it dumps the structure not only of the file, but also every subfiles (mostly tiff IFDs).  The is discussed in detail here: [8.5 tourIFD and tourTiff](#8-5).
+You may be interested to discover that option `-pS` option which arrived with Exiv2 v0.25 was joined in Exiv2 v0.26 by `-pR`.  This is a "recursive" version of -pS.  Internally, it dumps the structure not only of the file, but also every subfiles (mostly tiff IFDs).  The is discussed in detail here: [8.5 readIFD and readTiff](#8-5).
 
 [TOC](#TOC)
 
@@ -610,14 +610,14 @@ As we can see, tag == 1 in the Nikon MakerNotes is Version.  In Canon MakerNotes
 
 The tiff visitor code is based on the visitor pattern in [Design Patterns: Elements of Reusable Object=Oriented Software](https://www.oreilly.com/library/view/design-patterns-elements/0201633612/).  Before we discuss tiff visitor, let's review the visitor pattern.
 
-The concept in the visitor pattern is to separate the data in an object from the code which that has an interest in the object.  It the following code, we have a vector of students and every student has a name and an age.  We have two visitors.  The French Visitor translates the names of the students.  The AverageAgeVisitor calculates the average age of the visitor.  Two points to recognise in the pattern:
+The concept in the visitor pattern is to separate the data in an object from the code which that has an interest in the object.  In the following code, we have a vector of students and every student has a name and an age.  We have several visitors.  The French Visitor translates the names of the students.  The AverageAgeVisitor calculates the average age of the visitor.  Two points to recognise in the pattern:
 
-1.  The students know nothing about the visitors.  If the visitors have a public API, the students can obtain data about the visitor.
+1.  The students know nothing about the visitors.  However, they know when they are visited.  If the visitor has an API, the students can obtain data about the visitor.
 
 2.  The visitors use the student API to get data about a student.
 
 ```cpp
-// visitor.c++
+// visitor.cpp
 #include <iostream>
 #include <string>
 #include <vector>
@@ -758,31 +758,31 @@ I need to do more research into this complex design.
 
 [TOC](#TOC)
 <div id="8-5">
-### 8.5 tourIFD and tourTiff
+### 8.5 readIFD and readTiff
 
 The TiffVisitor is ingenious.  It's also difficult to understand.  Exiv2 has two tiff parsers - TiffVisitor and printIFDStructure().  TiffVisitor was written by Andreas Huggel.  It's very robust and has been almost 
-bug free for 15 years.  I wrote the parser in Image::printStructure() to try to understand the structure of a tiff file.  The code in Image::printIFDStructure() is easier to understand.
+bug free for 15 years.  I wrote the parser in Image::printIFDStructure() to try to understand the structure of a tiff file.  The code in Image::printIFDStructure() is easier to understand.
 
-The code which accompanies this book has a simplified version of printIFDStructure() called tourIFD() and that's what will be discussed here.  The code that accompanies this book is explained here: [Code discussed in this book](#13)
+The code which accompanies this book has a simplified version of Image::printIFDStructure() called Tiff::readIFD() and that's what will be discussed here.  The code that accompanies this book is explained here: [Code discussed in this book](#13)
 
 It's important to realise that metadata is defined recursively.  In a Tiff File, there will be a Tiff Record containing the Exif data (written in Tiff Format).  Within, that record, there will be MakerNote which is usually written in Tiff Format.  Tiff Format is referred to as an IFD - an Image File Directory.
 
-The tourIFD() parser uses a simple direct approach to parsing the tiff file.  When another IFD is located, tourIFD is called recursively.  As a TIFF file is a header, followed by an IFD, we can descend into the tiff file from the beginning.  For other files types, the file handler has to find the Exif IFD and then call tourIFD().
+Tiff::readIFD() uses a simple direct approach to parsing the tiff file.  When another IFD is located, readIFD() is called recursively.  As a TIFF file is a header, followed by an IFD, we can descend into the tiff file from the beginning.  For other files types, the file handler has to find the Exif IFD and then call readIFD().
 
-There are actually two "flavours" of tourIFD.  tourTiff() starts with the tiff header `II*_` or `MM_*` and then calls `tourIFD`.  Makernotes are almost always an IFD.  Some manufactures (Nikon) embed a Tiff.  Some (Canon and Sony) embed an IFD.  It's quite common (Sony) to embed a single IFD which is not terminated with a two byte null uint16_t.
+There are actually two "flavours" of readIFD.  readTiff() starts with the tiff header `II*_` or `MM_*` and then calls `readIFD()`.  Makernotes are almost always an IFD.  Some manufactures (Nikon) embed a Tiff.  Some (Canon and Sony) embed an IFD.  It's quite common (Sony) to embed a single IFD which is not terminated with a two byte null uint16_t.
 
-The program tvisitor has two file handlers.  One for Tiff and one for JPEG.  Exiv2 has handlers for about 20 different formats.  If you understand TIFF and JPEG, the others are boring variations.  The program tvisitor.c++ does not handle BigTiff, although it needs very few changes to do so.  I invite you, the reader, to investigate and send me a patch.  Best submission wins a free copy of this book.
+The program tvisitor has two file handlers.  One for Tiff and one for Jpeg.  Exiv2 has handlers for about 20 different formats.  If you understand Tiff and Jpeg, the others are boring variations.  The program tvisitor.cpp does not handle BigTiff, although it needs very few changes to do so.  I invite you, the reader, to investigate and send me a patch.  Best submission wins a free copy of this book.
 
 The following code is possibly the most beautiful and elegant 100 lines I have ever written.
 
 ```cpp
-void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,TagDict& tagDict,bool bHasNext)
+void TiffImage::readIFD(Visitor& visitor,size_t start,endian_e endian,
+    int depth/*=0*/,TagDict& tagDict/*=tiffDict*/,bool bHasNext/*=true*/)
 {
     size_t   restore_at_start = io_.tell();
 
-    depth++;
-    if ( depth == 1 ) visits_.clear();
-    v.visitBegin(*this,depth);
+    if ( !depth++ ) visits_.clear();
+    visitor.visitBegin(*this,depth);
 
     // buffer
     const size_t dirSize = 32;
@@ -793,21 +793,20 @@ void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,TagDic
         io_.seek(start);
         io_.read(dir.pData_, 2);
 
-        uint16_t      dirLength = getShort(dir,0,endian_);
-        bool tooBig = dirLength > 500;
-        if ( tooBig ) Error(kerTiffDirectoryTooLarge);
+        uint16_t dirLength = getShort(dir,0,endian_);
+        if ( dirLength > 500 ) Error(kerTiffDirectoryTooLarge);
 
         // Read the dictionary
         for ( int i = 0 ; i < dirLength ; i ++ ) {
             const size_t address = start + 2 + i*12 ;
-            io_.seek(address);
             
-            if ( visits_.find(io_.tell()) != visits_.end()  ) { // never visit the same place twice!
+            if ( visits_.find(address) != visits_.end()  ) { // never visit the same place twice!
                 Error(kerCorruptedMetadata);
             }
-            visits_.insert(io_.tell());
+            visits_.insert(address);
+            io_.seek(address);
 
-            v.visitTag(*this,depth,address,tagDict);  // Tell the visitor
+            visitor.visitTag(*this,depth,address,tagDict);  // Tell the visitor
 
             // read the tag (we might want to modify tagDict before we tell the visitor)
             io_.read(dir.pData_, 12);
@@ -821,9 +820,9 @@ void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,TagDic
                 Error(kerInvalidTypeValue);
             }
 
-            uint16_t pad    = isStringType(type) ? 1 : 0;
-            uint16_t size   = typeSize(type);
-            size_t   alloc  = size*count + pad+20;
+            uint16_t pad   = isStringType(type) ? 1 : 0;
+            uint16_t size  = typeSize(type);
+            size_t   alloc = size*count + pad+20;
             DataBuf  buf(alloc,io_.size());
             size_t   restore = io_.tell();
             io_.seek(offset);
@@ -832,11 +831,11 @@ void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,TagDic
             if ( depth == 1 && tag == 0x010f /* Make */ ) setMaker(buf);
 
             // anybody for a recursion?
-            if      ( tag == 0x8769   ) tourIFD(v,offset,endian,depth,exifDict); /* ExifTag   */
-            else if ( tag == 0x8825   ) tourIFD(v,offset,endian,depth,gpsDict ); /* GPSTag    */
-            else if ( type == tiffIfd ) tourIFD(v,offset,endian,depth,tagDict );
-            else if ( tag == 0x014a   ) tourIFD(v,offset,endian,depth,tagDict ); /* SubIFDs   */
-            else if ( tag == 0x927c   ) {                                        /* MakerNote */
+            if      ( tag  == 0x8769  ) readIFD(visitor,offset,endian,depth,exifDict); /* ExifTag   */
+            else if ( tag  == 0x8825  ) readIFD(visitor,offset,endian,depth,gpsDict ); /* GPSTag    */
+            else if ( type == tiffIfd ) readIFD(visitor,offset,endian,depth,tagDict );
+            else if ( tag  == 0x014a  ) readIFD(visitor,offset,endian,depth,tagDict ); /* SubIFDs   */
+            else if ( tag  == 0x927c  ) {                                        /* MakerNote */
                 if ( maker_ == kNikon ) {
                     // MakerNote is not and IFD, it's an emabeded tiff `II*_.....`
                     size_t punt = 0 ;
@@ -845,13 +844,13 @@ void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,TagDic
                     }
                     Io io(io_,offset+punt,count-punt);
                     TiffImage makerNote(io);
-                    makerNote.tourTiff(v,nikonDict,depth);
+                    makerNote.readTiff(visitor,nikonDict,depth);
                 } else if ( maker_ == kSony && buf.strequals("SONY DSC ") ) {
                     // Sony MakerNote IFD does not have a next pointer.
                     size_t punt   = 12 ;
-                    tourIFD(v,offset+punt,endian_,depth,sonyDict,false);
+                    readIFD(visitor,offset+punt,endian_,depth,sonyDict,false);
                 } else {
-                    tourIFD(v,offset,endian_,depth,makerDict_);
+                    readIFD(visitor,offset,endian_,depth,makerDict_);
                 }
             }
         } // for i < dirLength
@@ -862,14 +861,14 @@ void TiffImage::tourIFD(Visitor& v,size_t start,endian_e endian,int depth,TagDic
             start = getLong(dir,0,endian_);
         }
     } while (start) ;
-    v.visitEnd(*this,depth);
+    visitor.visitEnd(*this,depth);
     depth--;
     
     io_.seek(restore_at_start); // restore
-} // TiffImage::tourIFD
+} // TiffImage::readIFD
 ```
 
-To complete the story, here's the tourTiff() and valid():
+To complete the story, here's valid() and readTiff():
 
 ```cpp
 bool TiffImage::valid()
@@ -878,12 +877,11 @@ bool TiffImage::valid()
     size_t restore = io_.tell();
     io_.seek(0);
     // read header
-    DataBuf      header(16);
-    io_.seek(0);
+    DataBuf  header(20);
     io_.read(header);
 
-    char c      = (char) header.pData_[0] ;
-    char C      = (char) header.pData_[1] ;
+    char c  = (char) header.pData_[0] ;
+    char C  = (char) header.pData_[1] ;
     endian_ = c == 'M' ? kEndianBig : kEndianLittle;
     
     start_  = getLong (header,4,endian_);
@@ -894,15 +892,15 @@ bool TiffImage::valid()
     return result;
 }
 
-void TiffImage::tourTiff(Visitor& v,TagDict& tagDict,int depth)
+void TiffImage::readTiff(Visitor& visitor,TagDict& tagDict,int depth)
 {
     if ( valid() ) {
-        tourIFD(v,start_,endian_,depth,tagDict);
+        readIFD(visitor,start_,endian_,depth,tagDict);
     }
-} // TiffImage::tourTiff
+} // TiffImage::readTiff
 ```
 
-JpegImage::accept() navigates the chain of "segments".  When he finds the embedded TIFF in the APP1 segment, he does this:
+JpegImage::accept() navigates the chain of segments.  When he finds the embedded TIFF in the APP1 segment, he does this:
 
 ```cpp
             // Pure beauty.  Create a TiffImage and ask him to entertain the visitor
@@ -913,11 +911,13 @@ JpegImage::accept() navigates the chain of "segments".  When he finds the embedd
             }
 ```
 
-He discovers the TIFF file hidden in the data, he opens  an Io stream, attaches it to a Tiff objects and calls "Tiff::accept(visitor)".  Software doesn't get simpler, more beautiful or as elegant than this.
+He discovers the TIFF file hidden in the data, he opens an Io stream which he attaches to a Tiff objects and calls "Tiff::accept(visitor)".  Software seldom get simpler, as beautiful, or more elegant than this.
 
-Just to remind you, the BasicIo class in Exiv2 supports http/ssh and other protocols.  This code will recursively descend into a remote file without copying it locally.  And he does it with great efficiency.  This is discussed in section [7 I/O in Exiv2](#7)
+Just to remind you, BasicIo supports http/ssh and other protocols.  This code will recursively descend into a remote file without copying it locally.  And he does it with great efficiency.  This is discussed in section [7 I/O in Exiv2](#7)
 
-The code `tvisitor.c++` is a standalone version of the function Image::printStructure() in the Exiv2 library.  It can be executed with four different options which are equivalent to exiv2 options:
+![Exiv2CloudVision](Exiv2CloudVision.png)<br>
+
+The code `tvisitor.cpp` is a standalone version of the function Image::printStructure() in the Exiv2 library.  It can be executed with options which are equivalent to exiv2 options:
 
 | _tvisitor option_ | _exiv2 option_ | Description |
 |:--              |:-----        |:-- |
@@ -925,7 +925,7 @@ The code `tvisitor.c++` is a standalone version of the function Image::printStru
 | $ ./tvisitor R path   | $ exiv2 -pR path | Recursively print the structure of the image |
 | $ ./tvisitor X path   | $ exiv2 -pX path | Print the XMP/xml in the image |
 
-There's a deliberate bug in the code in tvisitor.c++.  He doesn't know how to recover the XMP/xml from a tiff.  You the reader, can investigate a fix.  You can look in c
+There's a deliberate bug in the code in tvisitor.cpp.  The class Tiff doesn't know how to recover the XMP/xml.  You the reader, can investigate a fix.  You will find the solution in the code in the Exiv2 library.
 
 Let's see the recursive version in action:
 
@@ -985,7 +985,7 @@ $ dd if=~/Stonehenge.jpg bs=1 skip=$((12+924+10+8)) count=4 2>/dev/null ; echo
 ```
 Using dd to extract metadata is discussed in more detail here: [8.1 Using dd to extract data from an image](#8-1).
 
-Please be aware that there are two ways in which IFDs can occur in the file.  They can be an embedded TIFF which is complete with the `II*_LengthOffset` or `MM_*LengthOffset` 12-byte header followed the IFD.   Or the IFD can be in the file without the header.  tourIFD() knows that the tags such as GpsTag and ExifTag are IFDs and calls tourIFD().  For the embedded TIFF (such as Nikon MakerNote), tourIFD() creates a TiffImage and calls TimeImage.tourTiff() which validates the header and calls tourIFD().
+Please be aware that there are two ways in which IFDs can occur in the file.  They can be an embedded TIFF which is complete with the `II*_LengthOffset` or `MM_*LengthOffset` 12-byte header followed the IFD.   Or the IFD can be in the file without the header.  readIFD() knows that the tags such as GpsTag and ExifTag are IFDs and calls readIFD().  For the embedded TIFF (such as Nikon MakerNote), readIFD() creates a TiffImage and calls TimeImage.readTiff() which validates the header and calls readIFD().
 
 One other details is that although the Tiff Specification expects the IFD to end with a uint16_t offset == 0, Sony (and other) maker notes do not.  The IFD is a single directory of 12 byte tags.
 
@@ -995,7 +995,7 @@ One other details is that although the Tiff Specification expects the IFD to end
 
 Please read: [#988](https://github.com/Exiv2/exiv2/pull/988)
 
-This PR uses a decoder listed in TiffMappingInfo to decode Exif.Canon.AFInfo. The decoding function "manufactures" Exif tags such as Exif.Canon.AFNumPoints from the data in Exif.Canon.AFInfo. These tags must never be written to file and are removed from the metadata in exif.c++/ExifParser::encode().
+This PR uses a decoder listed in TiffMappingInfo to decode Exif.Canon.AFInfo. The decoding function "manufactures" Exif tags such as Exif.Canon.AFNumPoints from the data in Exif.Canon.AFInfo. These tags must never be written to file and are removed from the metadata in exif.cpp/ExifParser::encode().
 
 Three of the tags created (AFPointsInFocus,AFPointsSelected, AFPrimaryPoint) are bitmasks. As the camera can have up to 64 focus points, the tags are a 64 bit mask to say which points are active. The function printBitmask() reports data such as 1,2,3 or (none).
 
@@ -1017,7 +1017,7 @@ The tag for Nikon's AutoFocus data is 0x00b7
 
 Nikon encode their version of tag in the first 4 bytes.  There was a 40 byte version of AutoFocus which decodes as Exif.NikonAf2.XXX.  This new version (1.01) is 84 bytes in length and decoded as Exif.NikonAf22.XXX.
 
-The two versions (NikonAF2 and NikonAF22) are now encoded as a set with the selector in tiffimage_int.c++
+The two versions (NikonAF2 and NikonAF22) are now encoded as a set with the selector in tiffimage_int.cpp
 
 ```cpp
     extern const ArraySet nikonAf2Set[] = {
@@ -1026,7 +1026,7 @@ The two versions (NikonAF2 and NikonAF22) are now encoded as a set with the sele
     };
 ```
 
-The binary layout of the record is defined in tiff image_int.c++.  For example, AF22 is:
+The binary layout of the record is defined in tiff image_int.cpp.  For example, AF22 is:
 
 ```cpp
     extern const ArrayCfg nikonAf22Cfg = {
@@ -1056,7 +1056,7 @@ The binary layout of the record is defined in tiff image_int.c++.  For example, 
     };
 ```
 
-The two versions of the data are encoded in tiffimage_int.c++
+The two versions of the data are encoded in tiffimage_int.cpp
 
 ```cpp
         { Tag::root, nikonAf21Id,      nikon3Id,         0x00b7    },
@@ -1065,7 +1065,7 @@ The two versions of the data are encoded in tiffimage_int.c++
 
 ### Binary Selector
 
-The code to determine which version is decoded is in tiffimage_int.c++
+The code to determine which version is decoded is in tiffimage_int.cpp
 
 ```cpp
        {    0x00b7, nikon3Id,         EXV_COMPLEX_BINARY_ARRAY(nikonAf2Set, nikonAf2Selector) },
@@ -1326,7 +1326,7 @@ Exiv2 has dependencies on the following libraries.  All are optional, however it
 | _Name_ | _Purpose_ |
 |:--    |:--- |
 | zlib  | Compression library.  Necessary to support PNG files |
-| expat | XML Library.  Necessary to for XMP and samples/geotag.c++ |
+| expat | XML Library.  Necessary to for XMP and samples/geotag.cpp |
 | xmpsdk | Adobe Library for xmp.  Source is embedded in the Exiv2 code base |
 | libcurl | http, https, ftp, ftps support |
 | libssh | ssh support |
@@ -1485,7 +1485,7 @@ I strongly encourage you to download, build and install Exiv2.  The current (and
 
 There is substantial documentation provided with the Exiv2 project.  This book does not duplicate the project documentation, but compliments it by explaining how and why the code works. 
 
-#### args.c++
+#### args.cpp
 
 ```cpp
 #include <stdio.h>
@@ -1500,7 +1500,7 @@ int main(int argc, char* argv[])
 }
 ```
 
-#### dmpf.c++
+#### dmpf.cpp
 
 ```cpp
 #include <stdio.h>
@@ -1583,8 +1583,10 @@ int main(int argc, char* argv[])
 	return error ;
 }
 ```
-[TOC](#TOC)
+[TOC](#TOC)<br>
+
+![MusicRoom](MusicRoom.jpg)
 
 Robin Mills<br>
 robin@clanmills.com<br>
-Revised: 2020-06-04
+Revised: 2020-06-05
