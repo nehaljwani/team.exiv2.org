@@ -21,9 +21,9 @@
   [8.2 Tag Names in Exiv2](#8-2)<br>
   [8.3 TagInfo](#8-3)<br>
   [8.4 Visitor Design Pattern](#8-4)<br>
-  [8.5 readIFD and readTiff](#8-5)<br>
-  [8.6 Metadata Decoder](#8-6)<br>
-  [8.7 Metadata Binary Tag Decoder](#8-7)<br>
+  [8.5 Navigating the file with readIFD() and readTiff() ](#8-5)<br>
+  [8.6 Presenting the data with visitTag()](#8-6)<br>
+  [8.7 The Exiv2 Metadata and Binary Tag Decoder](#8-7)<br>
 9. [Test Suite and Build](#9)<br>
   [9.1 Bash Tests](#9-1)<br>
   [9.2 Python Tests](#9-2)<br>
@@ -61,7 +61,7 @@ Exiv2 Architecture is about the Exiv2 library and command-line application which
 
 I first became interested in metadata because of a trail conversation with Dennis Connor in 2008.  Dennis and I ran frequently together in Silicon Valley and Dennis was a Software Development Manager in a company that made GPS systems for Precision Agriculture.  I had a Garmin Forerunner 201 Watch.  We realised that we could extract the GPS data from the watch in GPX format, then merge the position into photos.  Today this is called "GeoTagging" and is supported by many applications.
 
-![gpsexiftags](gpsexiftags.jpg)
+<center>![gpsexiftags](gpsexiftags.jpg)</center>
 
 I said "Oh, it can't be too difficult to do that!".  And here we are more than a decade later still working on the project.  The program geotag.py was completed in about 6 weeks.  Most of the effort went into porting both Exiv2 and pyexiv2 to Visual Studio and macOS as both were Linux only at that time.
 
@@ -85,7 +85,7 @@ In 2012, Abhinav joined us and contributed the Video read code and was mentored 
 
 I personally found working with the students to be enjoyable and interesting.  I retired from work in 2014 and returned to England after 15 years in Silicon Valley.  In 2016, Alison and I had a trip round the world and spent a day with Mahesh in Bangalore and with Tuan in Singapore.  We subsequently went to Vietnam to attend Tuan's wedding in 2017.
 
-I started working on Exiv2 to implement GeoTagging.  As the years have passed, I've explored most of the code.  I've added new capability such as support for ICC profiles, metadata-piping and file-debugging.  I've done lots of work on the build, test suite and documentation.  I've talked to users all over the world and closed several hundred issues and feature requests.  On our eound the world trip, we were invited to stay with Andreas and his family.  We met users in India, Singapore, Armenia, the USA and the UK.  I've attended 2 Open-Source Conferences. It's been an adventure and mostly rewarding.  It's remarkable how seldom users express appreciation.
+I started working on Exiv2 to implement GeoTagging.  As the years have passed, I've explored most of the code.  I've added new capability such as support for ICC profiles, metadata-piping and file-debugging.  I've done lots of work on the build, test suite and documentation.  I've talked to users all over the world and closed several hundred issues and feature requests.  On our round the world trip, we were invited to stay with Andreas and his family.  Over the years, I've met users in India, Singapore, Armenia, the USA and the UK.  I've attended 2 Open-Source Conferences. It's been an adventure and mostly rewarding.  It's remarkable how seldom users express appreciation.
 
 ### Where are we now?
 
@@ -105,11 +105,11 @@ I'm delighted by the work done by Dan, Luis and Kevin to deal with the assault o
 
 ### Future Development Projects
 
-The code is in good shape, our release process is solid and our user documentation is comprehensive.  As photography advances, there will be many new cameras and image formats such as CR3, HEIF and BigTiff.   Video support is weak, deprecated in v0.27 and will be removed in 0.28.
+The code is in good shape, our release process is solid and we have comprehensive user documentation.  As photography develops, there will be many new cameras and more image formats such as CR3, HEIF and BigTiff.   Video support is weak, deprecated in v0.27 and will be removed in 0.28.
 
 A long standing project for Exiv2 is a "unified metadata container".  There is an implementation of this in the SVN repository.  Currently we have three containers for Exif, Iptc and Xmp.  This is clumsy.  We also have a restriction a single image per file.  Perhaps both projects can be combined and have a common solution.
 
-The toolset used in Software Engineering evolves with time.  C++ has been around for about 35 years and, while many complain about it, I expect it will out-live most of us.  None-the-less, languages which are less vulnerable to security issues may lead the project to a rewrite in a new language such as Rust.  I hope this book will provide the necessary understanding of metadata engineering to support such an undertaking.
+The toolset used in Software Engineering evolves with time.  C++ has been around for about 35 years and, while many complain about it, I expect it will out-live most of us.  None-the-less, languages which are less vulnerable to security issues may lead the project to a rewrite in a new language such as Rust.  I hope this book provides the necessary understanding of metadata engineering to support such an undertaking.
 
 The most common issue raised on GitHub concerns lens recognition.  For v0.26, I added the "Configuration File" feature to enable users to modify lens recognition on their computer.  While this is helpful, many users would like Exiv2 to deal with this perfectly, both now and in the future.
 
@@ -117,7 +117,7 @@ I intend to make a proposal at LGM in Rennes in May 2021 concerning this matter.
 
 In this way, new lens definitions can be added to "MillsScript" without touching anything in Exiv2.
 
-I can't work on Exiv2 and M2Lscript.  Perhaps a new maintainer will take responsibility for Exiv2 and allow me to retire.  M2Lscript will be my swansong technology project.
+I don't have enough time to work on both Exiv2 and M2Lscript.  Perhaps a new maintainer will take responsibility for Exiv2 and allow me to retire.  M2Lscript will be my swansong technology project.
 
 ### Purpose and Scope of this book
 
@@ -125,13 +125,13 @@ This book is my legacy to Exiv2.  I hope Exiv2 will continue to exist long into 
 
 I wish you a happy adventure in the world of Image Metadata.  If you'd like to discuss matters concerning this book, please open an issue on GitHub and share your thoughts with Team Exiv2.
 
-![Robin](RobinEuphonium.jpg)
+<center>![Robin](RobinEuphonium.jpg)</center>
 
 [TOC](#TOC)
 <div id="1">
 # 1 Image File Formats
 
-The following summaries of the file formats are provided to help reader understand both this book and the Exiv2 code.  The specifications should be consulted for more details.
+The following summaries of the file formats are provided to help reader understand both this book and the Exiv2 code.  The standard specifications should be consulted for more detail.
 
 <div id="1-JPEG">
 ### 1.1 JPEG
@@ -435,7 +435,7 @@ Exif.Image.Orientation                       Short       1  top, left
 $
 ```
 
-You may be interested to discover that option `-pS` option which arrived with Exiv2 v0.25 was joined in Exiv2 v0.26 by `-pR`.  This is a "recursive" version of -pS.  Internally, it dumps the structure not only of the file, but also every subfiles (mostly tiff IFDs).  The is discussed in detail here: [8.5 readIFD and readTiff](#8-5).
+You may be interested to discover that option `-pS` which arrived with Exiv2 v0.25 was joined in Exiv2 v0.26 by `-pR`.  This is a "recursive" version of -pS.  It dumps the structure not only of the file, but also every subfiles (mostly tiff IFDs).  The is discussed in detail here: [8.5 Navigating the file with readIFD() and readTiff()](#8-5).
 
 [TOC](#TOC)
 
@@ -543,9 +543,9 @@ $ exifvalue ~/Stonehenge.jpg Exif.Photo.MakerNote
 78 105 107 111 110 0 2 ...
 ```
 
-Exiv2 has code to read/modify/write makernotes.  All achieved by reverse engineering.  References on the web site.
+Exiv2 has code to read/modify/write makernotes.  All achieved by reverse engineering.  References on the web site. [https://exiv2.org/makernote.html](https://exiv2.org/makernote.html)
 
-The MakerNote usually isn't a simple structure.  The manufacturer usually has "sub-records" for Camera Settings (Cs), AutoFocus (Af) and so on.  Additionally, t ehe format of the sub-records can evolve and change with time.  For example (as above)
+The MakerNote usually isn't a simple structure.  The manufacturer usually has "sub-records" for Camera Settings (Cs), AutoFocus (Af) and so on.  Additionally, the format of the sub-records can evolve and change with time.  For example (as above)
 
 ```bash
 $ taglist Groups | grep Minolta
@@ -758,7 +758,7 @@ I need to do more research into this complex design.
 
 [TOC](#TOC)
 <div id="8-5">
-### 8.5 readIFD and readTiff
+### 8.5 Navigating the file with readIFD() and readTiff()
 
 The TiffVisitor is ingenious.  It's also difficult to understand.  Exiv2 has two tiff parsers - TiffVisitor and printIFDStructure().  TiffVisitor was written by Andreas Huggel.  It's very robust and has been almost 
 bug free for 15 years.  I wrote the parser in Image::printIFDStructure() to try to understand the structure of a tiff file.  The code in Image::printIFDStructure() is easier to understand.
@@ -769,7 +769,7 @@ It's important to realise that metadata is defined recursively.  In a Tiff File,
 
 Tiff::readIFD() uses a simple direct approach to parsing the tiff file.  When another IFD is located, readIFD() is called recursively.  As a TIFF file is a header, followed by an IFD, we can descend into the tiff file from the beginning.  For other files types, the file handler has to find the Exif IFD and then call readIFD().
 
-There are actually two "flavours" of readIFD.  readTiff() starts with the tiff header `II*_` or `MM_*` and then calls `readIFD()`.  Makernotes are almost always an IFD.  Some manufactures (Nikon) embed a Tiff.  Some (Canon and Sony) embed an IFD.  It's quite common (Sony) to embed a single IFD which is not terminated with a two byte null uint16_t.
+There are actually two "flavours" of readIFD.  readTiff() starts with the tiff header `II*_` or `MM_*` and then calls `readIFD()`.  Makernotes are almost always an IFD.  Some manufactures (Nikon) embed a Tiff.  Some (Canon and Sony) embed an IFD.  It's quite common (Sony) to embed a single IFD which is not terminated with a four byte null uint32\_t.
 
 The program tvisitor has two file handlers.  One for Tiff and one for Jpeg.  Exiv2 has handlers for about 20 different formats.  If you understand Tiff and Jpeg, the others are boring variations.  The program tvisitor.cpp does not handle BigTiff, although it needs very few changes to do so.  I invite you, the reader, to investigate and send me a patch.  Best submission wins a free copy of this book.
 
@@ -987,12 +987,205 @@ Using dd to extract metadata is discussed in more detail here: [8.1 Using dd to 
 
 Please be aware that there are two ways in which IFDs can occur in the file.  They can be an embedded TIFF which is complete with the `II*_LengthOffset` or `MM_*LengthOffset` 12-byte header followed the IFD.   Or the IFD can be in the file without the header.  readIFD() knows that the tags such as GpsTag and ExifTag are IFDs and calls readIFD().  For the embedded TIFF (such as Nikon MakerNote), readIFD() creates a TiffImage and calls TimeImage.readTiff() which validates the header and calls readIFD().
 
-One other details is that although the Tiff Specification expects the IFD to end with a uint16_t offset == 0, Sony (and other) maker notes do not.  The IFD is a single directory of 12 byte tags.
+One other important detail is that although the Tiff Specification expects the IFD to end with a uint32\_t offset == 0, Sony (and other) maker notes do not.  The IFD has a uint32_t to define length, followed by 12 byte tags.  There is no trailing null uint32\_t.
 
 [TOC](#TOC)
 <div id="8-6">
-### 8.6 Metadata Decoder
+### Presenting the data with visitTag()
 
+And finally I want to discuss how to decode binary tags and present the data.
+
+I will add support in tvisitor.cpp for one binary tag and I've chosen Nikon Picture Control tag = 0x0023.  You'll see from the output of tvisit that it's 58 bytes.
+
+```bash
+.../book/build $ ./tvisitor R ~/Stonehenge.jpg | grep -i picture
+           286 | 0x0023 Exif.Nikon.PictureControl    | UNDEFINED |       58 |           | 0100STANDARD____________STANDARD____ +++
+.../book/build $ 
+```
+
+Beautifully documented as follows:
+
+| ExifTool | Exiv2 |
+|:--       |:--    |
+| [https://exiftool.org/TagNames/Nikon.html#PictureControl](https://exiftool.org/TagNames/Nikon.html#PictureControl) | [https://exiv2.org/tags-nikon.html](https://exiv2.org/tags-nikon.html) |
+| ![PcET](NikonPcExifTool.png) | ![PcE2](NikonPcExiv2.png) |
+
+The Exiv2 website is generated by reading the tag definitions in the code-base:
+
+```bash
+577 rmills@rmillsmbp:~/gnu/exiv2/team/book/build $ taglist ALL | grep NikonPc
+NikonPc.Version,	0,	0x0000,	NikonPc,	Exif.NikonPc.Version,	Undefined,	Version
+NikonPc.Name,	4,	0x0004,	NikonPc,	Exif.NikonPc.Name,	Ascii,	Name
+NikonPc.Base,	24,	0x0018,	NikonPc,	Exif.NikonPc.Base,	Ascii,	Base
+NikonPc.Adjust,	48,	0x0030,	NikonPc,	Exif.NikonPc.Adjust,	Byte,	Adjust
+NikonPc.QuickAdjust,	49,	0x0031,	NikonPc,	Exif.NikonPc.QuickAdjust,	Byte,	Quick adjust
+NikonPc.Sharpness,	50,	0x0032,	NikonPc,	Exif.NikonPc.Sharpness,	Byte,	Sharpness
+NikonPc.Contrast,	51,	0x0033,	NikonPc,	Exif.NikonPc.Contrast,	Byte,	Contrast
+NikonPc.Brightness,	52,	0x0034,	NikonPc,	Exif.NikonPc.Brightness,	Byte,	Brightness
+NikonPc.Saturation,	53,	0x0035,	NikonPc,	Exif.NikonPc.Saturation,	Byte,	Saturation
+NikonPc.HueAdjustment,	54,	0x0036,	NikonPc,	Exif.NikonPc.HueAdjustment,	Byte,	Hue adjustment
+NikonPc.FilterEffect,	55,	0x0037,	NikonPc,	Exif.NikonPc.FilterEffect,	Byte,	Filter effect
+NikonPc.ToningEffect,	56,	0x0038,	NikonPc,	Exif.NikonPc.ToningEffect,	Byte,	Toning effect
+NikonPc.ToningSaturation,	57,	0x0039,	NikonPc,	Exif.NikonPc.ToningSaturation,	Byte,	Toning saturation
+578 rmills@rmillsmbp:~/gnu/exiv2/team/book/build $ 
+```
+
+I've decided to call a binary element a Field.  So we have a class, and vector of fields for a tag, and a map to hold the definitions:
+
+```cpp
+// Binary Records
+class Field
+{
+public:
+    Field
+    ( std::string name
+    , type_e      type
+    , uint16_t    start
+    , uint16_t    length
+    , endian_e    endian = kEndianFile
+    )
+    : name_  (name)
+    , type_  (type)
+    , start_ (start)
+    , length_(length)
+    , endian_(endian)
+    {};
+    virtual ~Field() {}
+    std::string name  () { return name_   ; }
+    type_e      type  () { return type_   ; }
+    uint16_t    start () { return start_  ; }
+    uint16_t    length() { return length_ ; }
+    endian_e    endian() { return endian_ ; }
+private:
+    std::string name_   ;
+    type_e      type_   ;
+    uint16_t    start_  ;
+    uint16_t    length_ ;
+    endian_e    endian_ ;
+};
+typedef std::vector<Field>   Tag;
+typedef std::map<std::string,Tag> MakerTags;
+// global variable
+MakerTags makerTags;
+```
+
+In the init() function, I've defined the tag:
+
+```cpp
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcVersion"         ,asciiString , 0,4));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcToningEffect"    ,unsignedByte,56,1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcToningSaturation",unsignedByte,57,1));
+```
+
+Lastly, we need to modify `visitTag()` to report this.
+
+```cpp
+void visitTag
+( Image&                image
+, int                   depth
+, size_t                address
+, const TagDict&        tagDict
+) {
+    endian_e endian = image.endian();
+    Io& io = image.io();
+    
+    size_t restore = io.tell(); // save io position
+    io.seek(address);
+    DataBuf tiffTag(12);
+    io.read(tiffTag);
+    uint16_t tag    = getShort(tiffTag,0,endian);
+    type_e   type   = getType(tiffTag,2,endian);
+    uint32_t count  = getLong(tiffTag,4,endian);
+    size_t   offset = ::getLong(tiffTag,8,endian);
+    uint16_t size   = ::typeSize(type);
+
+    // allocate a buff and read the data
+    DataBuf buf(count*size);
+    std::string offsetString ;
+    if ( count*size > 4 ) {               // read into buffer
+        io.seek(offset);                  // position
+        io.read(buf.pData_,count*size);   // read
+    } else {
+        offsetString = stringFormat("%10u", offset);
+    }
+    io.seek(restore);                 // restore
+    
+    // format the output
+    std::string name = ::tagName(tag,tagDict);
+    if ( name.size() > 28) {
+        name = name.substr(0,26)+"..";
+    }
+    std::ostringstream os;
+    std::string sp;
+    if ( isShortType(type) ){
+        for ( size_t k = 0 ; k < count ; k++ ) {
+            os << sp << ::getShort(buf,k*size,endian);
+            sp = " ";
+        }
+    } else if ( isLongType(type) ){
+        for ( size_t k = 0 ; k < count ; k++ ) {
+            os << sp << ::getLong(buf,k*size,endian);
+            sp = " ";
+        }
+    } else if ( isRationalType(type) ){
+        for ( size_t k = 0 ; k < count ; k++ ) {
+            uint32_t a = ::getLong(buf,k*size+0,endian);
+            uint32_t b = ::getLong(buf,k*size+4,endian);
+            os << sp << a << "/" << b;
+            sp = " ";
+        }
+    } else if ( isStringType(type) ) {
+        os << sp << binaryToString(buf, 0, (size_t)count);
+    }
+    
+    std::string value = os.str();
+    if ( value.size() > 40 ) {
+        value = value.substr(0,36) + " +++";
+    }
+
+    out_ << indent(depth)
+         << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
+                ,address,tag,name.c_str(),typeName(type),count,offsetString.c_str())
+         << value
+         << std::endl
+    ;
+    if ( makerTags.find(name) != makerTags.end() ) {
+        for ( Fields::iterator it = makerTags[name].begin() ; it != makerTags[name].end() ; it++ ) {
+            out_ << indent(depth) << "                  "
+                 << groupName(tag,tagDict) << "." << it->name()
+                 << std::endl
+            ;
+        }
+    }
+} // visitTag
+``` 
+
+And here's the beautiful result on ~/Stonehenge.jpg
+
+```bash
+...book/build $ ./tvisitor -pR ~/Stonehenge.jpg | grep -e n\.Pict -e n\.Pc
+           286 | 0x0023 Exif.Nikon.PictureControl    | UNDEFINED |       58 |           | 0100STANDARD____________STANDARD____ +++
+                        Exif.Nikon.PcVersion
+                        Exif.Nikon.PcToningEffect
+                        Exif.Nikon.PcToningSaturation
+...book/build $ 
+
+```
+
+Could this be even better?  Of course.  As always reader, I leave you to send me a patch which will:
+
+1. Decode and format the data correctly
+   a) so asciiString -> ASCII by calling typeName()
+   b) the data is correctly formatted by calling getShort and the like
+   c) the address of the data in the file
+2. Test that we always decode from bytes read from the file.
+3. And you're welcome to suggest other magic!
+
+[TOC](#TOC)
+<div id="8-7">
+### 8.7 The Exiv2 Metadata and Binary Tag Decoder
+
+#### Meatadata Decoder
 Please read: [#988](https://github.com/Exiv2/exiv2/pull/988)
 
 This PR uses a decoder listed in TiffMappingInfo to decode Exif.Canon.AFInfo. The decoding function "manufactures" Exif tags such as Exif.Canon.AFNumPoints from the data in Exif.Canon.AFInfo. These tags must never be written to file and are removed from the metadata in exif.cpp/ExifParser::encode().
@@ -1003,13 +1196,11 @@ This decoding function decodeCanonAFInfo() added to TiffMappingInfo manufactures
 
 We should support decoding AFInfo in 0.28, however we should NOT auto-port this PR. We can avoid having to explicitly delete tags from the metadata before writing by adding a "read-only" flag to TagInfo. This would break the Exiv2 v0.27 API and has been avoided. There is an array in decodeCanonAFInfo() which lists the "manufactured" tags such as Exif.Canon.AFNumPoints. In the Exiv2 v0.28 architecture, a way might be designed to generate that data at run-time.
 
-[TOC](#TOC)
-<div id="8-7">
-### 8.7 Metadata Binary Tag Decoder
+#### Metadata Binary Tag Decoder
 
 Please read: [#900](https://github.com/Exiv2/exiv2/pull/900)
 
-There is a long discussion in [#646](https://github.com/Exiv2/exiv2/pull/646) about this issue and my investigation into the how the makernotes are decoded.
+There is a long discussion in [#646](https://github.com/Exiv2/exiv2/pull/646) about this issue and my investigation into how the makernotes are decoded.
 
 ### History
 
@@ -1585,7 +1776,7 @@ int main(int argc, char* argv[])
 ```
 [TOC](#TOC)<br>
 
-![MusicRoom](MusicRoom.jpg)
+<center>![MusicRoom](MusicRoom.jpg)</center>
 
 Robin Mills<br>
 robin@clanmills.com<br>

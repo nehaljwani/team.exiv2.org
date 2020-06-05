@@ -134,6 +134,7 @@ const char* typeName(type_e tag)
 enum endian_e
 {   kEndianLittle
 ,   kEndianBig
+,   kEndianFile // used by a record to say "use image's endian"
 };
 bool isPlatformBigEndian()
 {
@@ -333,6 +334,16 @@ bool tagKnown(uint16_t tag,const TagDict& tagDict)
     return tagDict.find(tag) != tagDict.end();
 }
 
+std::string groupName(uint16_t tag,const TagDict& tagDict)
+{
+    std::string group = "Unknown";
+    tag = 0xffff;
+    if ( tagDict.find(tag) != tagDict.end() ) {
+        group =  tagDict.find(tag)->second;
+    }
+    return "Exif." + group ;
+}
+
 std::string tagName(uint16_t tag,const TagDict& tagDict)
 {
     std::string name ;
@@ -343,16 +354,44 @@ std::string tagName(uint16_t tag,const TagDict& tagDict)
             name = stringFormat("%#x",tag);
         }
     }
-    std::string family = "Unknown";
-    tag = 0xffff;
-    if ( tagDict.find(tag) != tagDict.end() ) {
-        family =  tagDict.find(tag)->second;
-    }
-    
-    std::string result =  "Exif." + family ;
-    if ( name.size() ) result += "." + name;
-    return result;
+    return groupName(tag,tagDict) + "." + name;
 }
+
+// Binary Records
+class Field
+{
+public:
+    Field
+    ( std::string name
+    , type_e      type
+    , uint16_t    start
+    , uint16_t    length
+    , endian_e    endian = kEndianFile
+    )
+    : name_  (name)
+    , type_  (type)
+    , start_ (start)
+    , length_(length)
+    , endian_(endian)
+    {};
+    virtual ~Field() {}
+    std::string name  () { return name_   ; }
+    type_e      type  () { return type_   ; }
+    uint16_t    start () { return start_  ; }
+    uint16_t    length() { return length_ ; }
+    endian_e    endian() { return endian_ ; }
+private:
+    std::string name_   ;
+    type_e      type_   ;
+    uint16_t    start_  ;
+    uint16_t    length_ ;
+    endian_e    endian_ ;
+};
+typedef std::vector<Field>   Fields;
+typedef std::map<std::string,Fields>  MakerTags;
+
+// global variable
+MakerTags makerTags;
 
 // IO supprt
 enum seek_e
@@ -627,8 +666,17 @@ public:
              << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
                     ,address,tag,name.c_str(),typeName(type),count,offsetString.c_str())
              << value
-             << std::endl ;
-    }
+             << std::endl
+        ;
+        if ( makerTags.find(name) != makerTags.end() ) {
+            for ( Fields::iterator it = makerTags[name].begin() ; it != makerTags[name].end() ; it++ ) {
+                out_ << indent(depth) << "                  "
+                     << groupName(tag,tagDict) << "." << it->name()
+                     << std::endl
+                ;
+            }
+        }
+    } // visitTag
     
     void visitEnd(Image& image,int depth)
     {
@@ -1062,7 +1110,8 @@ void init()
     nikonDict [ 0x001c ] = "ExposureTuning";
     nikonDict [ 0x001d ] = "SerialNumber";
     nikonDict [ 0x001e ] = "ColorSpace";
-    
+    nikonDict [ 0x0023 ] = "PictureControl";
+
     canonDict [ 0xffff ] = "Canon";
     canonDict [ 0x0001 ] = "Macro";
     canonDict [ 0x0002 ] = "Selftimer";
@@ -1108,6 +1157,11 @@ void init()
     sonyDict  [ 0xb04a ] = "SequenceNumber";
     sonyDict  [ 0xb04b ] = "AntiBlur";
     sonyDict  [ 0xb04e ] = "LongExposureNoiseReduction";
+    
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcVersion"         ,asciiString , 0,4));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcToningEffect"    ,unsignedByte,56,1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcToningSaturation",unsignedByte,57,1));
+
 }
 
 int main(int argc,const char* argv[])
