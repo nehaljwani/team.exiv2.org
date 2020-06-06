@@ -1054,7 +1054,6 @@ NikonPc.ToningSaturation,	57,	0x0039,	NikonPc,	Exif.NikonPc.ToningSaturation,	By
 I've decided to call a binary element a Field.  So we have a class, and vector of fields for a tag, and a map to hold the definitions:
 
 ```cpp
-// Binary Records
 class Field
 {
 public:
@@ -1062,30 +1061,31 @@ public:
     ( std::string name
     , type_e      type
     , uint16_t    start
-    , uint16_t    length
-    , endian_e    endian = kEndianFile
+    , uint16_t    count
+    , endian_e    endian = keImage
     )
     : name_  (name)
     , type_  (type)
     , start_ (start)
-    , length_(length)
+    , count_ (count)
     , endian_(endian)
     {};
     virtual ~Field() {}
     std::string name  () { return name_   ; }
     type_e      type  () { return type_   ; }
     uint16_t    start () { return start_  ; }
-    uint16_t    length() { return length_ ; }
+    uint16_t    count () { return count_  ; }
     endian_e    endian() { return endian_ ; }
 private:
     std::string name_   ;
     type_e      type_   ;
     uint16_t    start_  ;
-    uint16_t    length_ ;
+    uint16_t    count_  ;
     endian_e    endian_ ;
 };
-typedef std::vector<Field>   Tag;
-typedef std::map<std::string,Tag> MakerTags;
+typedef std::vector<Field>   Fields;
+typedef std::map<std::string,Fields>  MakerTags;
+
 // global variable
 MakerTags makerTags;
 ```
@@ -1094,6 +1094,8 @@ In the init() function, I've defined the tag:
 
 ```cpp
     makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcVersion"         ,asciiString , 0,4));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcName"            ,asciiString , 4,20));
+...
     makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcToningEffect"    ,unsignedByte,56,1));
     makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcToningSaturation",unsignedByte,57,1));
 ```
@@ -1110,60 +1112,30 @@ void visitTag
     endian_e endian = image.endian();
     Io& io = image.io();
     
-    size_t restore = io.tell(); // save io position
+    size_t restore  = io.tell(); // save io position
     io.seek(address);
     DataBuf tiffTag(12);
     io.read(tiffTag);
     uint16_t tag    = getShort(tiffTag,0,endian);
     type_e   type   = getType(tiffTag,2,endian);
     uint32_t count  = getLong(tiffTag,4,endian);
-    size_t   offset = ::getLong(tiffTag,8,endian);
-    uint16_t size   = ::typeSize(type);
+    size_t   offset = getLong(tiffTag,8,endian);
+    uint16_t size   = typeSize(type);
 
-    // allocate a buff and read the data
+    // allocate a buffer and read the data
     DataBuf buf(count*size);
     std::string offsetString ;
-    if ( count*size > 4 ) {               // read into buffer
-        io.seek(offset);                  // position
-        io.read(buf.pData_,count*size);   // read
-    } else {
+    if ( count*size > 4 ) {  // read into buffer
+        io.seek(offset);     // position
+        io.read(buf);        // read
         offsetString = stringFormat("%10u", offset);
     }
     io.seek(restore);                 // restore
     
     // format the output
-    std::string name = ::tagName(tag,tagDict);
-    if ( name.size() > 28) {
-        name = name.substr(0,26)+"..";
-    }
-    std::ostringstream os;
-    std::string sp;
-    if ( isShortType(type) ){
-        for ( size_t k = 0 ; k < count ; k++ ) {
-            os << sp << ::getShort(buf,k*size,endian);
-            sp = " ";
-        }
-    } else if ( isLongType(type) ){
-        for ( size_t k = 0 ; k < count ; k++ ) {
-            os << sp << ::getLong(buf,k*size,endian);
-            sp = " ";
-        }
-    } else if ( isRationalType(type) ){
-        for ( size_t k = 0 ; k < count ; k++ ) {
-            uint32_t a = ::getLong(buf,k*size+0,endian);
-            uint32_t b = ::getLong(buf,k*size+4,endian);
-            os << sp << a << "/" << b;
-            sp = " ";
-        }
-    } else if ( isStringType(type) ) {
-        os << sp << binaryToString(buf, 0, (size_t)count);
-    }
+    std::string name  = tagName(tag,tagDict,28);
+    std::string value = buf.toString(0,type,count,image.endian(),40);
     
-    std::string value = os.str();
-    if ( value.size() > 40 ) {
-        value = value.substr(0,36) + " +++";
-    }
-
     out_ << indent(depth)
          << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
                 ,address,tag,name.c_str(),typeName(type),count,offsetString.c_str())
@@ -1171,11 +1143,13 @@ void visitTag
          << std::endl
     ;
     if ( makerTags.find(name) != makerTags.end() ) {
-        for ( Fields::iterator it = makerTags[name].begin() ; it != makerTags[name].end() ; it++ ) {
-            out_ << indent(depth) << "                  "
-                 << groupName(tag,tagDict) << "." << it->name()
-                 << std::endl
-            ;
+        for (Field field : makerTags[name] ) {
+            std::string n = join(groupName(tag,tagDict),field.name(),28);
+            out_ << indent(depth)
+<< stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
+                ,offset+field.start(),tag,n.c_str(),typeName(field.type()),field.count(),"")
+<< buf.toString(field.start(),field.type(),field.count(),field.endian()==keImage?image.endian():field.endian(),40)
+<< std::endl ;
         }
     }
 } // visitTag
@@ -1184,29 +1158,35 @@ void visitTag
 And here's the beautiful result on ~/Stonehenge.jpg
 
 ```bash
-...book/build $ ./tvisitor -pR ~/Stonehenge.jpg | grep -e n\.Pict -e n\.Pc
+...book/build $ ./tvisitor -pR ~/Stonehenge.jpg | grep -e PictureControl -e Pc
  286 | 0x0023 Exif.Nikon.PictureControl    | UNDEFINED |       58 |       837 | 0100STANDARD____________STANDARD____ +++
- 837 | 0x0023 Exif.Nikon.PcVersion         |     ASCII |        4 |           | 
- 893 | 0x0023 Exif.Nikon.PcToningEffect    |      BYTE |        1 |           | 
- 894 | 0x0023 Exif.Nikon.PcToningSaturat.. |      BYTE |        1 |           | 
+ 837 | 0x0023 Exif.Nikon.PcVersion         |     ASCII |        4 |           | 0100
+ 841 | 0x0023 Exif.Nikon.PcName            |     ASCII |       20 |           | STANDARD
+ 861 | 0x0023 Exif.Nikon.PcBase            |     ASCII |       20 |           | STANDARD
+ 885 | 0x0023 Exif.Nikon.PcAdjust          |      BYTE |        1 |           | 0
+ 886 | 0x0023 Exif.Nikon.PcQuickAdjust     |      BYTE |        1 |           | 255
+ 887 | 0x0023 Exif.Nikon.PcSharpness       |      BYTE |        1 |           | 0
+ 888 | 0x0023 Exif.Nikon.PcContrast        |      BYTE |        1 |           | 0
+ 889 | 0x0023 Exif.Nikon.PcBrightness      |      BYTE |        1 |           | 128
+ 890 | 0x0023 Exif.Nikon.PcSaturation      |      BYTE |        1 |           | 0
+ 891 | 0x0023 Exif.Nikon.PcHueAdjustment   |      BYTE |        1 |           | 128
+ 892 | 0x0023 Exif.Nikon.PcFilterEffect    |      BYTE |        1 |           | 255
+ 893 | 0x0023 Exif.Nikon.PcFilterEffect    |      BYTE |        1 |           | 255
+ 894 | 0x0023 Exif.Nikon.PcToningSaturat.. |      BYTE |        1 |           | 255
 ...book/build $ 
 
 ```
 
 Could this be even better?  Of course.  As always reader, I leave you to send me a patch which will:
 
-1. Decode and format the data correctly<br>
-   a) so asciiString -> ASCII by calling typeName()<br>
-   b) the data is correctly formatted by calling getShort and the like<br>
-   c) the address of the data in the file<br>
-2. Test that we always decode from bytes read from the file.<br>
-3. And you're welcome to suggest other magic!
+1. Test that we only decode bytes read from image.<br>
+2. You're welcome to suggest other magic!
 
 [TOC](#TOC)
 <div id="8-7">
 ### 8.7 The Exiv2 Metadata and Binary Tag Decoder
 
-#### Meatadata Decoder
+#### Metadata Decoder
 Please read: [#988](https://github.com/Exiv2/exiv2/pull/988)
 
 This PR uses a decoder listed in TiffMappingInfo to decode Exif.Canon.AFInfo. The decoding function "manufactures" Exif tags such as Exif.Canon.AFNumPoints from the data in Exif.Canon.AFInfo. These tags must never be written to file and are removed from the metadata in exif.cpp/ExifParser::encode().
@@ -1797,12 +1777,6 @@ int main(int argc, char* argv[])
 ```
 [TOC](#TOC)<br>
 
-<center>![MusicRoom](MusicRoom.jpg)</center>
-
-Robin Mills<br>
-robin@clanmills.com<br>
-Revised: 2020-06-05
-
 <div id="license">
 
 ```
@@ -2147,4 +2121,12 @@ consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Library General
 Public License instead of this License.
 ```
+[TOC](#TOC)<br>
+
+<center>![MusicRoom](MusicRoom.jpg)</center>
+
+Robin Mills<br>
+robin@clanmills.com<br>
+Revised: 2020-06-05
+
 [TOC](#TOC)<br>

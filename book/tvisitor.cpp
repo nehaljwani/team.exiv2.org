@@ -10,99 +10,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-
-// Error support
-enum error_e
-{   kerCorruptedMetadata
-,   kerTiffDirectoryTooLarge
-,   kerInvalidTypeValue
-,   kerInvalidMalloc
-,   kerNotATiff
-,   kerFailedToReadImageData
-,   kerNotAJpeg
-,   kerDataSourceOpenFailed
-,   kerNoImageInInputData
-,   kerBigtiffNotSupported
-,   kerFileDidNotOpen
-};
-
-void Error (error_e error, std::string msg)
-{
-    switch ( error ) {
-        case   kerCorruptedMetadata      : std::cerr << "corrupted metadata"       ; break;
-        case   kerTiffDirectoryTooLarge  : std::cerr << "tiff directory too large" ; break;
-        case   kerInvalidTypeValue       : std::cerr << "invalid type"             ; break;
-        case   kerInvalidMalloc          : std::cerr << "invalid malloc"           ; break;
-        case   kerNotATiff               : std::cerr << "Not a tiff"               ; break;
-        case   kerFailedToReadImageData  : std::cerr << "failed to read image data"; break;
-        case   kerNotAJpeg               : std::cerr << "not a jpeg"               ; break;
-        case   kerDataSourceOpenFailed   : std::cerr << "data source open failed"  ; break;
-        case   kerNoImageInInputData     : std::cerr << "not image in input data"  ; break;
-        case   kerBigtiffNotSupported    : std::cerr << "bigtiff not supported"    ; break;
-        case   kerFileDidNotOpen         : std::cerr << "file did not open"        ; break;
-        default                          : std::cerr << "unknown error"            ; break;
-    }
-    if ( msg.size() ) std::cerr << " " << msg ;
-    std::cerr << std::endl;
-    _exit(1); // pull the plug!
-}
-
-void Error (error_e error)
-{
-    Error(error,"");
-}
-
-// string utility functions
-// chop("a very long string",10) -> "a ver +++"
-std::string chop(const std::string& a,size_t max=0)
-{
-    std::string result = a;
-    if ( result.size() > max  && max > 4 ) {
-        result = result.substr(0,max-4) + " +++";
-    }
-    return result;
-}
-// join("Exif.Nikon","PictureControl",22) -> "Exif.Nikon.PictureC.."
-std::string join(const std::string& a,const std::string& b,size_t max=0)
-{
-    std::string c = a + "." +  b ;
-    if ( max > 2 && c.size() > max ) {
-        c = c.substr(0,max-2)+"..";
-    }
-    return c;
-}
-
-typedef unsigned char byte ;
-
-class DataBuf
-{
-public:
-    byte*   pData_;
-    size_t  size_ ;
-    DataBuf(size_t size,size_t size_max=0)
-    : pData_(NULL)
-    , size_(size)
-    {
-        if ( size_max && size > size_max ) {
-            Error(kerInvalidMalloc);
-        }
-        pData_ = new byte[size_];
-        if ( pData_) {
-            std::memset(pData_, 0,size_);
-        }
-    }
-    virtual ~DataBuf()
-    {
-        if ( pData_ ) {
-            delete pData_ ;
-            pData_ = NULL ;
-        }
-        size_ = 0 ;
-    }
-    int  strcmp   (const char* str) { return ::strcmp((const char*)pData_,str);}
-    bool strequals(const char* str) { return strcmp(str)==0                   ;}
-};
-
 // types of data in Exif Specification
 enum type_e
 {   typeMin            = 0,
@@ -149,12 +56,87 @@ const char* typeName(type_e tag)
     return result;
 }
 
-// endian and byte swappers
 enum endian_e
-{   kEndianLittle
-,   kEndianBig
-,   kEndianFile // used by a record to say "use image's endian"
+{   keLittle
+,   keBig
+,   keImage // used by a field  to say "use image's endian"
 };
+
+// Error support
+enum error_e
+{   kerCorruptedMetadata
+,   kerTiffDirectoryTooLarge
+,   kerInvalidTypeValue
+,   kerInvalidMalloc
+,   kerNotATiff
+,   kerFailedToReadImageData
+,   kerNotAJpeg
+,   kerDataSourceOpenFailed
+,   kerNoImageInInputData
+,   kerBigtiffNotSupported
+,   kerFileDidNotOpen
+};
+
+void Error (error_e error, std::string msg)
+{
+    switch ( error ) {
+        case   kerCorruptedMetadata      : std::cerr << "corrupted metadata"       ; break;
+        case   kerTiffDirectoryTooLarge  : std::cerr << "tiff directory too large" ; break;
+        case   kerInvalidTypeValue       : std::cerr << "invalid type"             ; break;
+        case   kerInvalidMalloc          : std::cerr << "invalid malloc"           ; break;
+        case   kerNotATiff               : std::cerr << "Not a tiff"               ; break;
+        case   kerFailedToReadImageData  : std::cerr << "failed to read image data"; break;
+        case   kerNotAJpeg               : std::cerr << "not a jpeg"               ; break;
+        case   kerDataSourceOpenFailed   : std::cerr << "data source open failed"  ; break;
+        case   kerNoImageInInputData     : std::cerr << "not image in input data"  ; break;
+        case   kerBigtiffNotSupported    : std::cerr << "bigtiff not supported"    ; break;
+        case   kerFileDidNotOpen         : std::cerr << "file did not open"        ; break;
+        default                          : std::cerr << "unknown error"            ; break;
+    }
+    if ( msg.size() ) std::cerr << " " << msg ;
+    std::cerr << std::endl;
+    _exit(1); // pull the plug!
+}
+
+void Error (error_e error)
+{
+    Error(error,"");
+}
+
+typedef unsigned char byte ;
+class DataBuf
+{
+public:
+    byte*   pData_;
+    size_t  size_ ;
+    DataBuf(size_t size,size_t size_max=0)
+    : pData_(NULL)
+    , size_(size)
+    {
+        if ( size_max && size > size_max ) {
+            Error(kerInvalidMalloc);
+        }
+        pData_ = new byte[size_];
+        if ( pData_) {
+            std::memset(pData_, 0,size_);
+        }
+    }
+    virtual ~DataBuf()
+    {
+        if ( pData_ ) {
+            delete pData_ ;
+            pData_ = NULL ;
+        }
+        size_ = 0 ;
+    }
+    int  strcmp   (const char* str) { return ::strcmp((const char*)pData_,str);}
+    bool strequals(const char* str) { return strcmp(str)==0                   ;}
+
+    std::string toString(size_t offset,type_e type,uint16_t count,endian_e endian,size_t max=40);
+    std::string binaryToString(size_t start,size_t size);
+};
+
+// endian and byte swappers
 bool isPlatformBigEndian()
 {
     union {
@@ -165,7 +147,7 @@ bool isPlatformBigEndian()
     return e.c[0]?true:false;
 }
 bool   isPlatformLittleEndian() { return !isPlatformBigEndian(); }
-endian_e platformEndian() { return isPlatformBigEndian() ? kEndianBig : kEndianLittle; }
+endian_e platformEndian() { return isPlatformBigEndian() ? keBig : keLittle; }
 
 bool isStringType(type_e type)
 {
@@ -290,6 +272,26 @@ std::string indent(size_t s)
     return result ;
 }
 
+// chop("a very long string",10) -> "a ver +++"
+std::string chop(const std::string& a,size_t max=0)
+{
+    std::string result = a;
+    if ( result.size() > max  && max > 4 ) {
+        result = result.substr(0,max-4) + " +++";
+    }
+    return result;
+}
+
+// join("Exif.Nikon","PictureControl",22) -> "Exif.Nikon.PictureC.."
+std::string join(const std::string& a,const std::string& b,size_t max=0)
+{
+    std::string c = a + "." +  b ;
+    if ( max > 2 && c.size() > max ) {
+        c = c.substr(0,max-2)+"..";
+    }
+    return c;
+}
+
 std::string stringFormat(const char* format, ...)
 {
     std::string result;
@@ -332,14 +334,55 @@ std::string binaryToString(const byte* b,size_t start,size_t size)
     return result;
 }
 
-std::string binaryToString(const DataBuf& dataBuf,size_t start,size_t size)
+std::string DataBuf::binaryToString(size_t start,size_t size)
 {
-    return binaryToString(dataBuf.pData_,start,size);
+    return ::binaryToString(pData_,start,size);
 }
+
+std::string DataBuf::toString(size_t offset,type_e type,uint16_t count,endian_e endian,size_t max)
+{
+    std::ostringstream os;
+    std::string        sp;
+    uint16_t           size = typeSize(type);
+    if ( isShortType(type) ){
+        for ( size_t k = 0 ; k < count ; k++ ) {
+            os << sp << ::getShort(*this,offset+k*size,endian);
+            sp = " ";
+        }
+    } else if ( isLongType(type) ){
+        for ( size_t k = 0 ; k < count ; k++ ) {
+            os << sp << ::getLong(*this,offset+k*size,endian);
+            sp = " ";
+        }
+    } else if ( isRationalType(type) ){
+        for ( size_t k = 0 ; k < count ; k++ ) {
+            uint32_t a = ::getLong(*this,offset+k*size+0,endian);
+            uint32_t b = ::getLong(*this,offset+k*size+4,endian);
+            os << sp << a << "/" << b;
+            sp = " ";
+        }
+    } else if ( type == unsignedByte ) {
+        for ( size_t k = 0 ; k < count ; k++ ) {
+            os << sp << (int) pData_[offset+k];
+            sp = " ";
+        }
+    } else if ( type == asciiString ) {
+        bool bNoNull = true ;
+        for ( size_t k = 0 ; bNoNull && k < count ; k++ )
+            bNoNull = pData_[offset+k];
+        if ( bNoNull )
+            os << binaryToString(offset, (size_t)count);
+        else
+            os << (char*) pData_+offset ;
+    } else {
+        os << sp << binaryToString(offset, (size_t)count);
+    }
+
+    return chop(os.str(),max);
+} // DataBuf::toString
 
 // TagDict is use to map tag (uint16_t) to string (for printing)
 typedef std::map<uint16_t,std::string> TagDict;
-
 TagDict emptyDict ;
 TagDict tiffDict  ;
 TagDict exifDict  ;
@@ -389,26 +432,26 @@ public:
     ( std::string name
     , type_e      type
     , uint16_t    start
-    , uint16_t    length
-    , endian_e    endian = kEndianFile
+    , uint16_t    count
+    , endian_e    endian = keImage
     )
     : name_  (name)
     , type_  (type)
     , start_ (start)
-    , length_(length)
+    , count_ (count)
     , endian_(endian)
     {};
     virtual ~Field() {}
     std::string name  () { return name_   ; }
     type_e      type  () { return type_   ; }
     uint16_t    start () { return start_  ; }
-    uint16_t    length() { return length_ ; }
+    uint16_t    count () { return count_  ; }
     endian_e    endian() { return endian_ ; }
 private:
     std::string name_   ;
     type_e      type_   ;
     uint16_t    start_  ;
-    uint16_t    length_ ;
+    uint16_t    count_  ;
     endian_e    endian_ ;
 };
 typedef std::vector<Field>   Fields;
@@ -520,7 +563,7 @@ public:
     , path_(path)
     , makerDict_(emptyDict)
     , bigtiff_(false)
-    , endian_(kEndianLittle)
+    , endian_(keLittle)
     {}
     Image(Io io)
     : io_(io)
@@ -591,12 +634,12 @@ public:
     ReportVisitor(std::ostream& out, PSopt_e option)
     : Visitor(out,option)
     {}
-    
+
     void visitBegin(Image& image,int depth)
     {
         if ( option_ != kpsBasic && option_ != kpsRecursive ) return;
-        
-        char c = image.endian() == kEndianBig ? 'M' : 'I';
+
+        char c = image.endian() == keBig ? 'M' : 'I';
         if ( image.format() == "TIFF" ) {
             out_ << indent(depth) << stringFormat("STRUCTURE OF %s FILE (%c%c): ",image.format().c_str(),c,c) <<  image.path() << std::endl;
             out_ << indent(depth)
@@ -616,6 +659,8 @@ public:
         os.str("");// reset the string
         os.clear();// reset the good/bad/ugly flags
     }
+
+
     virtual void visitReport(std::ostringstream& os,bool& bLF)
     {
         if ( bLF ) os << std::endl;
@@ -631,7 +676,7 @@ public:
     ) {
         endian_e endian = image.endian();
         Io& io = image.io();
-        
+
         size_t restore = io.tell(); // save io position
         io.seek(address);
         DataBuf tiffTag(12);
@@ -651,33 +696,11 @@ public:
             offsetString = stringFormat("%10u", offset);
         }
         io.seek(restore);                 // restore
-        
+
         // format the output
-        std::string name = tagName(tag,tagDict,28);
-        std::ostringstream os;
-        std::string sp;
-        if ( isShortType(type) ){
-            for ( size_t k = 0 ; k < count ; k++ ) {
-                os << sp << ::getShort(buf,k*size,endian);
-                sp = " ";
-            }
-        } else if ( isLongType(type) ){
-            for ( size_t k = 0 ; k < count ; k++ ) {
-                os << sp << ::getLong(buf,k*size,endian);
-                sp = " ";
-            }
-        } else if ( isRationalType(type) ){
-            for ( size_t k = 0 ; k < count ; k++ ) {
-                uint32_t a = ::getLong(buf,k*size+0,endian);
-                uint32_t b = ::getLong(buf,k*size+4,endian);
-                os << sp << a << "/" << b;
-                sp = " ";
-            }
-        } else if ( isStringType(type) ) {
-            os << sp << binaryToString(buf, 0, (size_t)count);
-        }
-        
-        std::string value = chop(os.str(),40);
+        std::string name  = tagName(tag,tagDict,28);
+        std::string value = buf.toString(0,type,count,image.endian(),40);
+
         out_ << indent(depth)
              << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
                     ,address,tag,name.c_str(),typeName(type),count,offsetString.c_str())
@@ -689,13 +712,14 @@ public:
                 std::string n = join(groupName(tag,tagDict),field.name(),28);
                 out_ << indent(depth)
                      << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
-                                     ,offset+field.start(),tag,n.c_str(),typeName(field.type()),field.length(),"")
+                                     ,offset+field.start(),tag,n.c_str(),typeName(field.type()),field.count(),"")
+                     << buf.toString(field.start(),field.type(),field.count(),field.endian()==keImage?image.endian():field.endian(),40)
                      << std::endl
                 ;
             }
         }
     } // visitTag
-    
+
     void visitEnd(Image& image,int depth)
     {
         if ( option_ != kpsBasic && option_ != kpsRecursive ) return;
@@ -766,7 +790,7 @@ void TiffImage::readIFD(Visitor& visitor,size_t start,endian_e endian,
         // Read the dictionary
         for ( int i = 0 ; i < dirLength ; i ++ ) {
             const size_t address = start + 2 + i*12 ;
-            
+
             if ( visits_.find(address) != visits_.end()  ) { // never visit the same place twice!
                 Error(kerCorruptedMetadata);
             }
@@ -830,7 +854,7 @@ void TiffImage::readIFD(Visitor& visitor,size_t start,endian_e endian,
     } while (start) ;
     visitor.visitEnd(*this,depth);
     depth--;
-    
+
     io_.seek(restore_at_start); // restore
 } // TiffImage::tourIFD
 
@@ -845,11 +869,11 @@ bool TiffImage::valid()
 
     char c   = (char) header.pData_[0] ;
     char C   = (char) header.pData_[1] ;
-    endian_  = c == 'M' ? kEndianBig : kEndianLittle;
+    endian_  = c == 'M' ? keBig : keLittle;
     magic_   = getShort(header,2,endian_);
     start_   = getLong (header,4,endian_);
     bool result = (magic_ == 42 && c == C) && ( c == 'I' || c == 'M' ) && start_ < io_.size() ;
-    
+
     bigtiff_ = magic_ == 43;
     if ( bigtiff_ ) Error(kerBigtiffNotSupported);
     if ( result ) format_ = "TIFF";
@@ -893,7 +917,7 @@ void JpegImage::accept(Visitor& v)
 
     // navigate the JPEG chunks
     std::ostringstream os; // string buffer for output to v.visitReport()
-    
+
     // nmonic for markers
     std::string nm[256];
     nm[0xd8] = "SOI";
@@ -952,17 +976,17 @@ void JpegImage::accept(Visitor& v)
 
         // Read size and signature
         bufRead = io_.read(buf.pData_, bufMinSize);
-        const uint16_t size = bHasLength[marker] ? getShort(buf,0,kEndianBig):0;
-        
+        const uint16_t size = bHasLength[marker] ? getShort(buf,0,keBig):0;
+
         if (bHasLength[marker])
             os << stringFormat(" | %7d ", size);
 
         // print signature for APPn
         if (marker >= app0_ && marker <= (app0_ | 0x0F)) {
             // http://www.adobe.com/content/dam/Adobe/en/devnet/xmp/pdfs/XMPSpecificationPart3.pdf p75
-            const std::string signature = binaryToString(buf,2, buf.size_ - 2);
+            const std::string signature = buf.binaryToString(2, buf.size_ - 2);
 
-            // 728 rmills@rmillsmbp:~/gnu/exiv2/ttt $ exiv2 -pS test/data/exiv2-bug922.jpg
+            // $ exiv2 -pS test/data/exiv2-bug922.jpg
             // STRUCTURE OF JPEG FILE: test/data/exiv2-bug922.jpg
             // address | marker     | length  | data
             //       0 | 0xd8 SOI   |       0
@@ -1001,14 +1025,14 @@ void JpegImage::accept(Visitor& v)
                     os.str(""); // clear the buffer
                     os.write(reinterpret_cast<const char*>(&xmp.at(start)), size - start);// write the xmp
                     v.visitReport(os); // and tell the visitor
-                    
+
                     bufRead = size;
                     done = !bExtXMP;
                 }
             } else {
                 const size_t start = size > 0 ? 2 : 0;
                 const size_t end = start + (size > 32 ? 32 : size);
-                os << "| " << binaryToString(buf, start, end);
+                os << "| " << buf.binaryToString(start, end);
             }
             if (bLF && bPrint) v.visitReport(os,bLF);
 
@@ -1028,7 +1052,7 @@ void JpegImage::accept(Visitor& v)
             // size includes 2 for the two bytes for size!
             const int n = (size - 2) > 32 ? 32 : size - 2;
             // start after the two bytes
-            os << "| " << binaryToString(buf, 2, n + 2);
+            os << "| " << buf.binaryToString(2, n + 2);
         }
 
         // Skip the segment if the size is known
@@ -1047,7 +1071,7 @@ void JpegImage::accept(Visitor& v)
             if ( bPrint) v.visitReport(os);
         }
     }
-    
+
     v.visitEnd((*this));
 }  // JpegImage::tourTiff
 
@@ -1105,7 +1129,7 @@ void init()
     exifDict  [ 0xa409 ] = "Saturation";
     exifDict  [ 0xa40a ] = "Sharpness";
     exifDict  [ 0xc4a5 ] = "PrintImageMatching";
-    
+
     nikonDict [ 0xffff ] = "Nikon";
     nikonDict [ 0x0001 ] = "Version";
     nikonDict [ 0x0002 ] = "ISOSpeed";
@@ -1146,7 +1170,7 @@ void init()
     canonDict [ 0x0010 ] = "ISOSpeed";
     canonDict [ 0x0011 ] = "MeteringMode";
     canonDict [ 0x0012 ] = "FocusType";
-    
+
     gpsDict   [ 0xffff ] = "GPSInfo";
     gpsDict   [ 0x0000 ] = "GPSVersionID";
     gpsDict   [ 0x0001 ] = "GPSLatitudeRef";
@@ -1175,17 +1199,27 @@ void init()
     sonyDict  [ 0xb04a ] = "SequenceNumber";
     sonyDict  [ 0xb04b ] = "AntiBlur";
     sonyDict  [ 0xb04e ] = "LongExposureNoiseReduction";
-    
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcVersion"         ,asciiString , 0,4));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcToningEffect"    ,unsignedByte,56,1));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcToningSaturation",unsignedByte,57,1));
+
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcVersion"         ,asciiString , 0, 4));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcName"            ,asciiString , 4,20));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcBase"            ,asciiString ,24,20));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcAdjust"          ,unsignedByte,48, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcQuickAdjust"     ,unsignedByte,49, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcSharpness"       ,unsignedByte,50, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcContrast"        ,unsignedByte,51, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcBrightness"      ,unsignedByte,52, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcSaturation"      ,unsignedByte,53, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcHueAdjustment"   ,unsignedByte,54, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcFilterEffect"    ,unsignedByte,55, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcFilterEffect"    ,unsignedByte,56, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcToningSaturation",unsignedByte,57, 1));
 
 }
 
 int main(int argc,const char* argv[])
 {
     init();
-    
+
     int rc = 0;
     if ( argc == 2 || argc == 3 ) {
         const char* path = argv[argc-1];
