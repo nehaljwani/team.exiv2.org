@@ -932,7 +932,7 @@ JpegImage::accept() navigates the chain of segments.  When he finds the embedded
             }
 ```
 
-He discovers the TIFF file hidden in the data, he opens an Io stream which he attaches to a Tiff objects and calls "Tiff::accept(visitor)".  Software seldom get simpler, as beautiful, or more elegant than this.
+He discovers the TIFF file hidden in the data, he opens an Io stream which he attaches to a Tiff objects and calls "Tiff::accept(visitor)".  Software seldom gets simpler, as beautiful, or more elegant than this.
 
 Just to remind you, BasicIo supports http/ssh and other protocols.  This code will recursively descend into a remote file without copying it locally.  And he does it with great efficiency.  This is discussed in section [7 I/O in Exiv2](#7)
 
@@ -1185,21 +1185,21 @@ And here's the beautiful result on ~/Stonehenge.jpg
 
 ```bash
 ...book/build $ ./tvisitor -pR ~/Stonehenge.jpg | grep -e n\.Pict -e n\.Pc
-           286 | 0x0023 Exif.Nikon.PictureControl    | UNDEFINED |       58 |           | 0100STANDARD____________STANDARD____ +++
-                        Exif.Nikon.PcVersion
-                        Exif.Nikon.PcToningEffect
-                        Exif.Nikon.PcToningSaturation
+ 286 | 0x0023 Exif.Nikon.PictureControl    | UNDEFINED |       58 |       837 | 0100STANDARD____________STANDARD____ +++
+ 837 | 0x0023 Exif.Nikon.PcVersion         |     ASCII |        4 |           | 
+ 893 | 0x0023 Exif.Nikon.PcToningEffect    |      BYTE |        1 |           | 
+ 894 | 0x0023 Exif.Nikon.PcToningSaturat.. |      BYTE |        1 |           | 
 ...book/build $ 
 
 ```
 
 Could this be even better?  Of course.  As always reader, I leave you to send me a patch which will:
 
-1. Decode and format the data correctly
-   a) so asciiString -> ASCII by calling typeName()
-   b) the data is correctly formatted by calling getShort and the like
-   c) the address of the data in the file
-2. Test that we always decode from bytes read from the file.
+1. Decode and format the data correctly<br>
+   a) so asciiString -> ASCII by calling typeName()<br>
+   b) the data is correctly formatted by calling getShort and the like<br>
+   c) the address of the data in the file<br>
+2. Test that we always decode from bytes read from the file.<br>
 3. And you're welcome to suggest other magic!
 
 [TOC](#TOC)

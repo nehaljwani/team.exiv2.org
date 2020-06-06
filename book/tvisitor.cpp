@@ -52,6 +52,25 @@ void Error (error_e error)
     Error(error,"");
 }
 
+// string utility functions
+// chop("a very long string",10) -> "a ver +++"
+std::string chop(const std::string& a,size_t max=0)
+{
+    std::string result = a;
+    if ( result.size() > max  && max > 4 ) {
+        result = result.substr(0,max-4) + " +++";
+    }
+    return result;
+}
+// join("Exif.Nikon","PictureControl",22) -> "Exif.Nikon.PictureC.."
+std::string join(const std::string& a,const std::string& b,size_t max=0)
+{
+    std::string c = a + "." +  b ;
+    if ( max > 2 && c.size() > max ) {
+        c = c.substr(0,max-2)+"..";
+    }
+    return c;
+}
 
 typedef unsigned char byte ;
 
@@ -344,7 +363,7 @@ std::string groupName(uint16_t tag,const TagDict& tagDict)
     return "Exif." + group ;
 }
 
-std::string tagName(uint16_t tag,const TagDict& tagDict)
+std::string tagName(uint16_t tag,const TagDict& tagDict,const size_t max=0)
 {
     std::string name ;
     if ( tag != 0xffff ) {
@@ -354,7 +373,12 @@ std::string tagName(uint16_t tag,const TagDict& tagDict)
             name = stringFormat("%#x",tag);
         }
     }
-    return groupName(tag,tagDict) + "." + name;
+    
+    name =  groupName(tag,tagDict) + "." + name;
+    if ( max && name.size() > max ){
+        name = name.substr(0,max-2)+"..";
+    }
+    return name;
 }
 
 // Binary Records
@@ -615,25 +639,21 @@ public:
         uint16_t tag    = getShort(tiffTag,0,endian);
         type_e   type   = getType(tiffTag,2,endian);
         uint32_t count  = getLong(tiffTag,4,endian);
-        size_t   offset = ::getLong(tiffTag,8,endian);
-        uint16_t size   = ::typeSize(type);
+        size_t   offset = getLong(tiffTag,8,endian);
+        uint16_t size   = typeSize(type);
 
-        // allocate a buff and read the data
+        // allocate a buffer and read the data
         DataBuf buf(count*size);
         std::string offsetString ;
-        if ( count*size > 4 ) {               // read into buffer
-            io.seek(offset);                  // position
-            io.read(buf.pData_,count*size);   // read
-        } else {
+        if ( count*size > 4 ) {  // read into buffer
+            io.seek(offset);     // position
+            io.read(buf);        // read
             offsetString = stringFormat("%10u", offset);
         }
         io.seek(restore);                 // restore
         
         // format the output
-        std::string name = ::tagName(tag,tagDict);
-        if ( name.size() > 28) {
-            name = name.substr(0,26)+"..";
-        }
+        std::string name = tagName(tag,tagDict,28);
         std::ostringstream os;
         std::string sp;
         if ( isShortType(type) ){
@@ -657,11 +677,7 @@ public:
             os << sp << binaryToString(buf, 0, (size_t)count);
         }
         
-        std::string value = os.str();
-        if ( value.size() > 40 ) {
-            value = value.substr(0,36) + " +++";
-        }
-
+        std::string value = chop(os.str(),40);
         out_ << indent(depth)
              << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
                     ,address,tag,name.c_str(),typeName(type),count,offsetString.c_str())
@@ -669,9 +685,11 @@ public:
              << std::endl
         ;
         if ( makerTags.find(name) != makerTags.end() ) {
-            for ( Fields::iterator it = makerTags[name].begin() ; it != makerTags[name].end() ; it++ ) {
-                out_ << indent(depth) << "                  "
-                     << groupName(tag,tagDict) << "." << it->name()
+            for (Field field : makerTags[name] ) {
+                std::string n = join(groupName(tag,tagDict),field.name(),28);
+                out_ << indent(depth)
+                     << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
+                                     ,offset+field.start(),tag,n.c_str(),typeName(field.type()),field.length(),"")
                      << std::endl
                 ;
             }
