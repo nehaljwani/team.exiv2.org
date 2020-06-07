@@ -537,12 +537,13 @@ public:
     : out_   (out)
     , option_(option)
     {};
-    virtual void visitBegin (Image& image,int depth=0) = 0 ;
-    virtual void visitEnd   (Image& image,int depth=0) = 0 ;
-    virtual void visitDir   (Image& image,size_t dirLength,int depth=0) = 0 ;
-    virtual void visitReport(std::ostringstream& out)=0  ;
-    virtual void visitReport(std::ostringstream& out,bool& bLF)=0  ;
-    virtual void visitTag   (Image& image,int depth,size_t address,const TagDict& tagDict)=0;
+    virtual void visitBegin   (Image& image,int depth=0) = 0 ;
+    virtual void visitEnd     (Image& image,int depth=0) = 0 ;
+    virtual void visitDirBegin(Image& image,size_t dirLength,int depth=0) = 0 ;
+    virtual void visitDirEnd  (Image& image,size_t start    ,int depth=0) = 0 ;
+    virtual void visitReport  (std::ostringstream& out)=0  ;
+    virtual void visitReport  (std::ostringstream& out,bool& bLF)=0  ;
+    virtual void visitTag     (Image& image,int depth,size_t address,const TagDict& tagDict)=0;
     PSopt_e option()    { return option_ ; }
     std::ostream& out() { return out_    ; }
 public:
@@ -642,7 +643,7 @@ public:
             out_ << indent(depth) << stringFormat("STRUCTURE OF %s FILE (%c%c): ",image.format().c_str(),c,c) <<  image.path() << std::endl;
             out_ << indent(depth)
                  << " address |    tag                              |     "
-                 << " type |    count |    offset | value"
+                 << " type |    count |    offset | value" << std::endl;
                  ;
         }
         if ( image.format() == "JPEG" ) {
@@ -650,9 +651,13 @@ public:
             out_ << "address | marker       |  length | data";
         }
     }
-    void visitDir(Image& image,size_t dirLength,int depth)
+    void visitDirBegin(Image& image,size_t dirLength,int depth)
     {
-        out_ << stringFormat(" [directory length = %d]",dirLength) << std::endl;
+        // out_ << indent(depth) << stringFormat("+%d",dirLength) << std::endl;
+    };
+    void visitDirEnd(Image& image,size_t start,int depth)
+    {
+        if ( start ) out_ << std::endl;
     };
 
     virtual void visitReport(std::ostringstream& os)
@@ -661,7 +666,6 @@ public:
         os.str("");// reset the string
         os.clear();// reset the good/bad/ugly flags
     }
-
 
     virtual void visitReport(std::ostringstream& os,bool& bLF)
     {
@@ -792,7 +796,7 @@ void TiffImage::readIFD(Visitor& visitor,size_t start,endian_e endian,
 
         uint16_t dirLength = getShort(dir,0,endian_);
         if ( dirLength > 500 ) Error(kerTiffDirectoryTooLarge);
-        visitor.visitDir(*this,dirLength,depth);
+        visitor.visitDirBegin(*this,dirLength,depth);
 
         // Read the dictionary
         for ( int i = 0 ; i < dirLength ; i ++ ) {
@@ -858,6 +862,7 @@ void TiffImage::readIFD(Visitor& visitor,size_t start,endian_e endian,
             io_.read(dir.pData_, 4);
             start = getLong(dir,0,endian_);
         }
+    	visitor.visitDirEnd(*this,start,depth);
     } while (start) ;
     visitor.visitEnd(*this,depth);
     depth--;
