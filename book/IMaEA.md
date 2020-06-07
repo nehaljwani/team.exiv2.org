@@ -107,7 +107,7 @@ The code is in good shape, our release process is solid and we have comprehensiv
 
 A long standing project for Exiv2 is a "unified metadata container".  There is an implementation of this in the SVN repository.  Currently we have three containers for Exif, Iptc and Xmp.  This is clumsy.  We also have a restriction a single image per file.  Perhaps both projects can be combined and have a common solution.
 
-The toolset used in Software Engineering evolves with time.  C++ has been around for about 35 years and, while many complain about it, I expect it will out-live most of us.  None-the-less, languages which are less vulnerable to security issues may lead the project to a rewrite in a new language such as Rust.  I hope this book provides the necessary understanding of metadata engineering to support such an undertaking.
+The toolset used in Software Engineering evolves with time.  C++ has been around for about 35 years and, while many complain about it, I expect it will out-live most of us.  None-the-less, languages which are less vulnerable to security issues may lead the project to a re-write in a new language such as Rust.  I hope this book provides the necessary understanding of metadata engineering to support such an undertaking.
 
 The most common issue raised on GitHub concerns lens recognition.  For v0.26, I added the "Configuration File" feature to enable users to modify lens recognition on their computer.  While this is helpful, many users would like Exiv2 to deal with this perfectly, both now and in the future.
 
@@ -939,7 +939,7 @@ void TiffImage::readIFD(Visitor& visitor,size_t start,endian_e endian,
             visits_.insert(address);
             io_.seek(address);
 
-            // read the tag (we might want to modify tagDict before we tell the visitor)
+            // read the tag
             io_.read(dir.pData_, 12);
             uint16_t tag    = getShort(dir,0,endian_);
             type_e   type   = getType (dir,2,endian_);
@@ -966,17 +966,15 @@ void TiffImage::readIFD(Visitor& visitor,size_t start,endian_e endian,
             // recursion anybody?
             if ( tag  == 0x927c  ) {                           /* MakerNote */
                 if ( maker_ == kNikon ) {
-                    // MakerNote is not and IFD, it's an emabeded tiff `II*_.....`
+                    // Nikon MakerNote is emabeded tiff `II*_.....` 10 bytes into the data!
                     size_t punt = buf.strequals("Nikon") ? 10 : 0 ;
                     Io io(io_,offset+punt,count-punt);
                     TiffImage makerNote(io);
-                    makerNote.readTiff(visitor,nikonDict,depth);
-                } else if ( maker_ == kSony && buf.strequals("SONY DSC ") ) {
-                    // Sony MakerNote IFD does not have a next pointer.
-                    size_t punt   = 12 ;
-                    readIFD(visitor,offset+punt,endian_,depth,sonyDict,false);
+                    makerNote.readTiff(visitor,makerDict_,depth);
                 } else {
-                    readIFD(visitor,offset,endian_,depth,makerDict_);
+                    bool   bNext = maker_ != kSony;                          // Sony no trailing next
+                    size_t punt  = maker_  == kSony && buf.strequals("SONY DSC ") ? 12 : 0; // Sony 12 byte punt
+                    readIFD(visitor,offset+punt,endian_,depth,makerDict_,bNext);
                 }
             } else if ( tag == 0x8825 ) {                      /* GPSTag    */
                 readIFD(visitor,offset,endian_,depth,gpsDict );
@@ -1494,7 +1492,7 @@ reportTest
 
 ```
 
-I intend to rewrite the bash tests in python.  This will be done because running bash scripts on windows is painful for most windows users.
+I intend to re-write the bash tests in python.  This will be done because running bash scripts on windows is painful for most windows users.
 
 ```python
 #!/usr/bin/env python3
@@ -1654,7 +1652,7 @@ To be written.
 
 ## 11.1 The Fuzzing Police
 
-We received our first CVE from the fuzzing police in July 2017.  Not a pleasant experience.  It was delivered in a blog post demanding that we re-write Exiv2 as it was "unsafe".   Needless to say, no resources were being offered for the rewrite, no justification was offered and no reason why a re-write of 100,000 lines of code would fix anything.
+We received our first CVE from the fuzzing police in July 2017.  Not a pleasant experience.  It was delivered in a blog post demanding that we re-write Exiv2 as it was "unsafe".   Needless to say, no resources were being offered for the re-write, no justification was offered and no explanation why a re-write of 100,000 lines of code would fix anything.
 
 A couple of years later, Kevin send us four security alerts.  When I invited him to solve them, he agreed.  He subsequently wrote this interesting and helpful article.
 

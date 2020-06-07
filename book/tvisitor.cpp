@@ -268,7 +268,7 @@ enum maker_e
 std::string indent(size_t s)
 {
     std::string result ;
-    while ( --s ) result += "  ";
+    while ( s-- > 1) result += "  ";
     return result ;
 }
 
@@ -652,7 +652,7 @@ public:
     }
     void visitDir(Image& image,size_t dirLength,int depth)
     {
-        out_ << indent(depth) << "  directory length = " << dirLength << std::endl;
+        out_ << stringFormat(" [directory length = %d]",dirLength) << std::endl;
     };
 
     virtual void visitReport(std::ostringstream& os)
@@ -699,28 +699,29 @@ public:
             value = buf.toString(0,type,count,image.endian(),40);
             offsetString = stringFormat("%10u", offset);
         } else {
-            offsetString = tiffTag.toString(8,type,count,image.endian(),40);
+            value = tiffTag.toString(8,type,count,image.endian(),40);
         }
         io.seek(restore);                 // restore
 
         // format the output
-        std::string name  = tagName(tag,tagDict,28);
-
-        out_ << indent(depth)
-             << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
-                    ,address,tag,name.c_str(),typeName(type),count,offsetString.c_str())
-             << value
-             << std::endl
-        ;
-        if ( makerTags.find(name) != makerTags.end() ) {
-            for (Field field : makerTags[name] ) {
-                std::string n = join(groupName(tag,tagDict),field.name(),28);
-                out_ << indent(depth)
-                     << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
-                                     ,offset+field.start(),tag,n.c_str(),typeName(field.type()),field.count(),"")
-                     << buf.toString(field.start(),field.type(),field.count(),field.endian()==keImage?image.endian():field.endian(),40)
-                     << std::endl
-                ;
+        std::string name = tagName(tag,tagDict,28);
+        if ( name.find(".0x") == std::string::npos ) { // only print known tags
+            out_ << indent(depth)
+                 << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
+                        ,address,tag,name.c_str(),typeName(type),count,offsetString.c_str())
+                 << value
+                 << std::endl
+            ;
+            if ( makerTags.find(name) != makerTags.end() ) {
+                for (Field field : makerTags[name] ) {
+                    std::string n = join(groupName(tag,tagDict),field.name(),28);
+                    out_ << indent(depth)
+                         << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
+                                         ,offset+field.start(),tag,n.c_str(),typeName(field.type()),field.count(),"")
+                         << buf.toString(field.start(),field.type(),field.count(),field.endian()==keImage?image.endian():field.endian(),40)
+                         << std::endl
+                    ;
+                }
             }
         }
     } // visitTag
@@ -803,7 +804,7 @@ void TiffImage::readIFD(Visitor& visitor,size_t start,endian_e endian,
             visits_.insert(address);
             io_.seek(address);
 
-            // read the tag (we might want to modify tagDict before we tell the visitor)
+            // read the tag
             io_.read(dir.pData_, 12);
             uint16_t tag    = getShort(dir,0,endian_);
             type_e   type   = getType (dir,2,endian_);
@@ -830,17 +831,15 @@ void TiffImage::readIFD(Visitor& visitor,size_t start,endian_e endian,
             // recursion anybody?
             if ( tag  == 0x927c  ) {                           /* MakerNote */
                 if ( maker_ == kNikon ) {
-                    // MakerNote is not and IFD, it's an emabeded tiff `II*_.....`
+                    // Nikon MakerNote is emabeded tiff `II*_.....` 10 bytes into the data!
                     size_t punt = buf.strequals("Nikon") ? 10 : 0 ;
                     Io io(io_,offset+punt,count-punt);
                     TiffImage makerNote(io);
-                    makerNote.readTiff(visitor,nikonDict,depth);
-                } else if ( maker_ == kSony && buf.strequals("SONY DSC ") ) {
-                    // Sony MakerNote IFD does not have a next pointer.
-                    size_t punt   = 12 ;
-                    readIFD(visitor,offset+punt,endian_,depth,sonyDict,false);
+                    makerNote.readTiff(visitor,makerDict_,depth);
                 } else {
-                    readIFD(visitor,offset,endian_,depth,makerDict_);
+                    bool   bNext = maker_ != kSony;                          // Sony no trailing next
+                    size_t punt  = maker_  == kSony && buf.strequals("SONY DSC ") ? 12 : 0; // Sony 12 byte punt
+                    readIFD(visitor,offset+punt,endian_,depth,makerDict_,bNext);
                 }
             } else if ( tag == 0x8825 ) {                      /* GPSTag    */
                 readIFD(visitor,offset,endian_,depth,gpsDict );
@@ -1075,8 +1074,9 @@ void JpegImage::accept(Visitor& v)
             if ( bPrint ) v.visitReport(os);
         }
         done |= marker == eoi_ || marker == sos_;
+        bLF  |= done;
         if (done) {
-            if ( bPrint) v.visitReport(os);
+            if ( bPrint) v.visitReport(os,bLF);
         }
     }
 
