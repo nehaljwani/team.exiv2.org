@@ -927,18 +927,17 @@ void TiffImage::readIFD(Visitor& visitor,size_t start,endian_e endian,
 
         uint16_t dirLength = getShort(dir,0,endian_);
         if ( dirLength > 500 ) Error(kerTiffDirectoryTooLarge);
+        visitor.visitDir(*this,dirLength,depth);
 
         // Read the dictionary
         for ( int i = 0 ; i < dirLength ; i ++ ) {
             const size_t address = start + 2 + i*12 ;
-            
+
             if ( visits_.find(address) != visits_.end()  ) { // never visit the same place twice!
                 Error(kerCorruptedMetadata);
             }
             visits_.insert(address);
             io_.seek(address);
-
-            visitor.visitTag(*this,depth,address,tagDict);  // Tell the visitor
 
             // read the tag (we might want to modify tagDict before we tell the visitor)
             io_.read(dir.pData_, 12);
@@ -952,6 +951,8 @@ void TiffImage::readIFD(Visitor& visitor,size_t start,endian_e endian,
                 Error(kerInvalidTypeValue);
             }
 
+            visitor.visitTag(*this,depth,address,tagDict);  // Tell the visitor
+
             uint16_t pad   = isStringType(type) ? 1 : 0;
             uint16_t size  = typeSize(type);
             size_t   alloc = size*count + pad+20;
@@ -960,20 +961,13 @@ void TiffImage::readIFD(Visitor& visitor,size_t start,endian_e endian,
             io_.seek(offset);
             io_.read(buf);
             io_.seek(restore);
-            if ( depth == 1 && tag == 0x010f /* Make */ ) setMaker(buf);
+            if ( depth == 1 && tag == 0x010f ) setMaker(buf);  /* Make     */
 
-            // anybody for a recursion?
-            if      ( tag  == 0x8769  ) readIFD(visitor,offset,endian,depth,exifDict); /* ExifTag   */
-            else if ( tag  == 0x8825  ) readIFD(visitor,offset,endian,depth,gpsDict ); /* GPSTag    */
-            else if ( type == tiffIfd ) readIFD(visitor,offset,endian,depth,tagDict );
-            else if ( tag  == 0x014a  ) readIFD(visitor,offset,endian,depth,tagDict ); /* SubIFDs   */
-            else if ( tag  == 0x927c  ) {                                        /* MakerNote */
+            // recursion anybody?
+            if ( tag  == 0x927c  ) {                           /* MakerNote */
                 if ( maker_ == kNikon ) {
                     // MakerNote is not and IFD, it's an emabeded tiff `II*_.....`
-                    size_t punt = 0 ;
-                    if ( buf.strequals("Nikon")) {
-                        punt = 10;
-                    }
+                    size_t punt = buf.strequals("Nikon") ? 10 : 0 ;
                     Io io(io_,offset+punt,count-punt);
                     TiffImage makerNote(io);
                     makerNote.readTiff(visitor,nikonDict,depth);
@@ -983,6 +977,15 @@ void TiffImage::readIFD(Visitor& visitor,size_t start,endian_e endian,
                     readIFD(visitor,offset+punt,endian_,depth,sonyDict,false);
                 } else {
                     readIFD(visitor,offset,endian_,depth,makerDict_);
+                }
+            } else if ( tag == 0x8825 ) {                      /* GPSTag    */
+                readIFD(visitor,offset,endian_,depth,gpsDict );
+            } else if ( tag  == 0x8769  ) {                    /* ExifTag   */
+                readIFD(visitor,offset,endian_,depth,exifDict);
+            } else if ( type == tiffIfd || tag == 0x014a ) {   /* SubIFDs   */
+                for ( size_t i = 0 ; i < count ; i++ ) {
+                    uint32_t  off  = count == 1 ? offset : getLong(buf,i*4,endian_) ;
+                    readIFD(visitor,   off,endian_,depth,tagDict );
                 }
             }
         } // for i < dirLength
@@ -995,7 +998,7 @@ void TiffImage::readIFD(Visitor& visitor,size_t start,endian_e endian,
     } while (start) ;
     visitor.visitEnd(*this,depth);
     depth--;
-    
+
     io_.seek(restore_at_start); // restore
 } // TiffImage::readIFD
 ```
