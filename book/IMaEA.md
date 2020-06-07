@@ -5,11 +5,6 @@
 ### TABLE OF CONTENTS
 
 1. [Image File Formats](#1)<br>
-[1 JPEG](#1-JPEG)<br>
-[2 PNG](#1-PNG)<br>
-[3 JP2](#1-JP2)<br>
-[4 TIFF](#1-TIFF)<br>
-[5 WebP](#1-WebP)<br>
 2. [Tiff and Exif metadata](#2)
 3. [MakerNotes](#3)
 4. [Other metadata containers](#4)
@@ -31,33 +26,27 @@
   [9.4 Version Test](#9-4)<br>
 10. [API/ABI](#10)<br>
 11. [Security](#11)<br>
+  [11.1 The Fuzzing Police](#11)<br>
+  [11.2 How we deal with security issues](11-2)<br>
 12. [Project Management, Release Engineering and User Support](#12)<br>
-13. [Code discussed in this book](#13)
+13. [Code discussed in this book](#13)<br>
 14. [License](#license)
 
-|    |    |    |    |
-|:-- |:-- |:-- |:-- |
-| [12.1) C++ Code](#12-1) | [12.2) Build](#12-2) | [12.3) Security](#12-3) | [12.4) Documentation](#12-4) |
-| [12.5) Testing](#12-5) | [12.6) Sample programs](#12-6) | [12.7) User Support](#12-7) | [12.8) Bug Tracking](#12-8) |
-| [12.9) Release Engineering](#12-9) | [12.10) Platform Support](#12-10) | [12.11) Localisation](#12-11) | [12.12) Build Server](#12-12) |
-| [12.13) Source Code Management](#12-13) | [12.14) Project Web Site](#12-14) | [12.15) Project Servers (apache, SVN, GitHub, Redmine)](#12-15) | [12.16) API Management](#12-16) |
-| [12.17) Recruiting Contributors](#12-17) | [12.18) Project Management and Scheduling](#12-18) | [12.19) Enhancement Requests](#12-19) | [12.20) Tools](#12-20) |
-| [12.21) Licensing](#12-21) | [12.22) Back-porting fixes to earlier releases](#12-22) | [12.23) Other projects demanding support and changes](#12-23) | |
+<div id="foreword">
+### Foreword
 
+Before I start to discuss the subject of this book, I want to say "Thank You" to a few folks who have made this possbile.  First, my wife Alison, who has been my loyal support since the day we met in High School in 1967.  Secondly, I'd like to thank many people who have contributed to Exiv2 over the years.  In particular to Andreas Huggel the founder of the project and Luis and Dan who have worked tirelessly with me since 2017.  And (in alphabet order): Abhinav, Alan, Andreas _(both of them)_, Ben, Gilles, Kevin, Mahesh, Nehal, Neils, Phil, Sridhar, Thomas, Tuan .... and others who have contributed to Exiv2.
 
-
-### Foreward
-
-Before I start to discuss the subject of this book, I want to say "Thank You" to a few folks who have made this possbile.  First, my wife Alison, who has been my loyal support since the day we met in High School in 1967.  Secondly, I'd like to thank many people who have contributed to Exiv2 over the years.  In particular to Andreas Huggel the founder of the project and Luis and Dan who have worked tirelessly with me since 2017.  And (in alphabet order): Abhinav, Alan, Ben, Gilles, Kevin, Nehal, Neils, Mahesh, Phil, Thomas, Tuan .... and others who have contributed to Exiv2.
-
+<div id="about">
 ### About this book
 
 This book is about Image Metadata and Exiv2 Architecture.
 
-Image Metadata is the information stored in a digital image in addition to the image itself.  Data such as the camera model, date, time, location and camera settings are stored in the image file.  To my knowledge, no book has been written about this important technology.
+Image Metadata is the information stored in a digital image in addition to the image itself.  Data such as the camera model, date, time, location and camera settings are stored.  To my knowledge, no book has been written about this important technology.
 
 Exiv2 Architecture is about the Exiv2 library and command-line application which implements cross-platform code in C++ to read, modify, insert and delete items of metadata.  I've been working on this code since 2008 and, as I approach my 70th birthday, would like to document my knowledge in the hope that the code will be maintained and developed by others in future.
 
+<div id="begin">
 ### How did I get interested in this matter?
 
 I first became interested in metadata because of a trail conversation with Dennis Connor in 2008.  Dennis and I ran frequently together in Silicon Valley and Dennis was a Software Development Manager in a company that made GPS systems for Precision Agriculture.  I had a Garmin Forerunner 201 Watch.  We realised that we could extract the GPS data from the watch in GPX format, then merge the position into photos.  Today this is called "GeoTagging" and is supported by many applications.
@@ -76,6 +65,8 @@ Incidentally, later in 2008, Dennis offered me a contract to port his company's 
 
 I have never been employed to work on Metadata.  I was a Senior Computer Scientist at Adobe for more than 10 years, however I was never involved with XMP or Metadata.
 
+[TOC](#TOC)
+<div id="2012">
 ### 2012 - 2017
 
 By 2012, Andreas was loosing interest in Exiv2.  Like all folks, he has many matters which deserve his time.  A family, a business, biking and other pursuits.  From 2012 until 2017, I supported Exiv2 mostly alone.  I had lots of encouragement from Alan and other occasional contributors.  Neils did great work on lens recognition and compatibility with ExifTool.  Ben helped greatly with WebP support and managed the transition of the code from SVN to GitHub.  Phil (of ExifTool fame) has been very supportive and helpful.
@@ -88,7 +79,9 @@ I personally found working with the students to be enjoyable and interesting.  I
 
 I started working on Exiv2 to implement GeoTagging.  As the years have passed, I've explored most of the code.  I've added new capability such as support for ICC profiles, metadata-piping and file-debugging.  I've done lots of work on the build, test suite and documentation.  I've talked to users all over the world and closed several hundred issues and feature requests.  On our round the world trip, we were invited to stay with Andreas and his family.  Over the years, I've met users in India, Singapore, Armenia, the USA and the UK.  I've attended 2 Open-Source Conferences. It's been an adventure and mostly rewarding.  It's remarkable how seldom users express appreciation.
 
-### Where are we now?
+[TOC](#TOC)
+<div id="2017">
+### 2017 - 2020
 
 After v0.26 was released in 2017, Luis and Dan started making contributions.  They have made many important contributions in the areas of security, test and build.  In 2019, Kevin joined us.  He discovered and fixed some security issues.
 
@@ -96,6 +89,8 @@ The current release of Exiv2 is v0.27.3 and was released on 2020-06-30.  I hope 
 
 The Libre Graphics Meeting is scheduled to take place in May 2021 in Rennes, France.  I intend to lead a workshop on Image Metadata and Exiv2 Architecture.  This book is being written to be used in that presentation.
 
+[TOC](#TOC)
+<div id="current">
 ### Current Development Priorities
 
 In July 2017 we received our first security CVE.  Not a pleasant experience.  The security folks started hitting us with fuzzed files. These are files which violate format specifications and can cause the code to crash. We responded with v0.27 which will have regular "dot" releases to provide security fixes.  Managing frequent releases and user correspondence consumes lots of my time.
@@ -104,6 +99,8 @@ In parallel with "the dots", major work is being carried to prepare Exiv2 for th
 
 I'm delighted by the work done by Dan, Luis and Kevin to deal with the assault of the security people. I believe we are responding effectively to security issues. None-the-less, they have dominated the development of Exiv2 for at least two years and many ideas could not be persued because security has consumed our engineering resources.
 
+<div id="future">
+[TOC](#TOC)
 ### Future Development Projects
 
 The code is in good shape, our release process is solid and we have comprehensive user documentation.  As photography develops, there will be many new cameras and more image formats such as CR3, HEIF and BigTiff.   Video support is weak, deprecated in v0.27 and will be removed in 0.28.
@@ -120,13 +117,15 @@ In this way, new lens definitions can be added to "MillsScript" without touching
 
 I don't have enough time to work on both Exiv2 and M2Lscript.  Perhaps a new maintainer will take responsibility for Exiv2 and allow me to retire.  M2Lscript will be my swansong technology project.
 
+[TOC](#TOC)
+<div id="scope">
 ### Purpose and Scope of this book
 
 This book is my legacy to Exiv2.  I hope Exiv2 will continue to exist long into the future and this book is being written to document my discoveries about Image Metadata and Exiv2 Architecture.  However, I want to avoid a "cut'n'paste" of information already in the project documentation.  This book is an effort to collect my knowledge of this code into a single location.  Many topics in this book are discussed in more detail in the issue history stored in Redmine and GitHub.  I hope this book helps future maintainers to understand Exiv2, solve issues and develop the code for years to come.
 
 I wish you a happy adventure in the world of Image Metadata.  If you'd like to discuss matters concerning this book, please open an issue on GitHub and share your thoughts with Team Exiv2.
 
-This book is copyright and licensed under GPLv2 and which is attached the end of the document.
+This book is copyright and licensed under GPLv2 and which is included at the end of the document.
 
 <center>![Robin](RobinEuphonium.jpg)</center>
 
@@ -134,7 +133,16 @@ This book is copyright and licensed under GPLv2 and which is attached the end of
 <div id="1">
 # 1 Image File Formats
 
-The following summaries of the file formats are provided to help reader understand both this book and the Exiv2 code.  The Standard Specifications should be consulted for more detail.
+The following summaries of the file formats are provided to help the reader understand both this book and the Exiv2 code.  The Standard Specifications should be consulted for more detail.
+
+
+| | | | |
+|:-- |:-- |:-- |:-- |
+| [1 JPEG](#1-JPEG)                        | [6 DNG Digital Negative](#1-6)   | [11 BigTiff 64bit Tiff](#1-11) | [16 PSD PhotoShop Document](#1-16) |
+| [2 PNG Portable Network Graphics](#1-PNG)    | [7 CRW Canon Raw](#1-7)   | [12 TGA](#1-12)     | [17 PGF Portable Graphics Format](#1-17) |
+| [3 JP2 PJEG 2000](#1-JP2)    | [8 CR2 Canon Raw Format 2](#1-8)   | [13 RW2](#1-13)     | [18 MRW Minolta Raw](#1-18) |
+| [4 TIFF Tagged Image Format](#1-TIFF)  | [9 BMP Bitmap Photo](#1-9)   | [14 RAF](#1-14)     | [19 NEF Nikon Raw Format ](#1-19) |
+| [5 WebP Web Photograph ](#1-WebP)  | [10 GIF Graphical Image Format](#1-10) | [15 ORF Olympus Raw Format](#1-15)     |                 |
 
 <div id="1-JPEG">
 ### 1.1 JPEG
@@ -142,35 +150,139 @@ The following summaries of the file formats are provided to help reader understa
 
 ![Exif22Jpg.png](Exif22Jpg.png)
 
+[Image File Formats](#1)<br>
 [TOC](#TOC)
 <div id="1-PNG">
 ### 1.2 PNG
 ![png](png.png)
 
+[Image File Formats](#1)<br>
 [TOC](#TOC)
 <div id="1-JP2">
 ### 1.3 JPEG 2000
 ![jp2](jp2.png)
 
+[Image File Formats](#1)<br>
 [TOC](#TOC)
 <div id="1-TIFF">
 ### 1.4 TIFF
 ![Tiff](Tiff.png)
 
+[Image File Formats](#1)<br>
 [TOC](#TOC)
 <div id="1-WebP">
 ### 1.5 WEBP
 ![webp](webp.png)
 
+[Image File Formats](#1)<br>
+[TOC](#TOC)
+<div id="1-6">
+### 1.6 DNG
+
+To be written.
+
+[Image File Formats](#1)<br>
+[TOC](#TOC)
+<div id="1-7">
+### 1.7 CRW
+
+To be written.
+
+[Image File Formats](#1)<br>
+[TOC](#TOC)
+<div id="1-8">
+### 1.8 CR2
+
+To be written.
+
+[Image File Formats](#1)<br>
+[TOC](#TOC)
+<div id="1-9">
+### 1.9 BMP
+
+To be written.
+
+[Image File Formats](#1)<br>
+[TOC](#TOC)
+<div id="1-10">
+### 1.10 GIF
+
+To be written.
+
+[Image File Formats](#1)<br>
+[TOC](#TOC)
+<div id="1-11">
+### 1.11 Big Tiff
+
+To be written.
+
+[Image File Formats](#1)<br>
+[TOC](#TOC)
+<div id="1-12">
+### 1.12 TGA
+
+To be written.
+
+[Image File Formats](#1)<br>
+[TOC](#TOC)
+<div id="1-13">
+### 1.13 RW2
+
+To be written.
+
+[Image File Formats](#1)<br>
+[TOC](#TOC)
+<div id="1-14">
+### 1.14 RAF
+
+To be written.
+
+[Image File Formats](#1)<br>
+[TOC](#TOC)
+<div id="1-15">
+### 1.15 ORF
+
+To be written.
+
+[Image File Formats](#1)<br>
+[TOC](#TOC)
+<div id="1-16">
+### 1.16 PSD
+
+To be written.
+
+[Image File Formats](#1)<br>
+[TOC](#TOC)
+<div id="1-17">
+### 1.17 PGF
+
+To be written.
+
+[Image File Formats](#1)<br>
+[TOC](#TOC)
+<div id="1-18">
+### 1.18 MRW
+
+To be written.
+
+[Image File Formats](#1)<br>
+[TOC](#TOC)
+<div id="1-19">
+### 1.19 NEF
+
+To be written.
+
+[Image File Formats](#1)<br>
 [TOC](#TOC)
 <div id="2">
 # 2 Tiff and Exif metadata
 
-![Exif22Tiff.png](Exif22Tiff.png)
+![Tiff](Tiff.png)
 
-Before we get into the Exiv2 code, let's look at the simpler python JPG/TIFF Exif library.   [https://github.com/Moustikitos/tyf](https://github.com/Moustikitos/tyf)
+Before we get into the Exiv2 code, let's look at the simpler python TIFF/Exif library.   [https://github.com/Moustikitos/tyf](https://github.com/Moustikitos/tyf)
 
-You will also need to install PIL
+You will also need to install PIL:
+
 ```bash
 $ sudo python3 -m pip install Pillow
 $ git clone https://github.com/Moustikitos/tyf
@@ -239,8 +351,7 @@ if __name__ == '__main__':
 ##
 ```
 
-You can obtain Stonehenge.jpg from https://clanmills.com/Stonehenge.jpg
-The tiff version is available in test/data/Stonehenge.tif
+Download from [https://clanmills.com/Stonehenge.jpg](https://clanmills.com/Stonehenge.jpg) and [https://clanmills.com/Stonehenge.tif](https://clanmills.com/Stonehenge.tif)
 
 ```bash
 $ ~/bin/mdump.py  ~/Stonehenge.jpg           $ ~/bin/mdump.py  ~/Stonehenge.tif
@@ -936,7 +1047,7 @@ He discovers the TIFF file hidden in the data, he opens an Io stream which he at
 
 Just to remind you, BasicIo supports http/ssh and other protocols.  This code will recursively descend into a remote file without copying it locally.  And he does it with great efficiency.  This is discussed in section [7 I/O in Exiv2](#7)
 
-![Exiv2CloudVision](Exiv2CloudVision.png)<br>
+<center>![Exiv2CloudVision](Exiv2CloudVision.png)</center><br>
 
 The code `tvisitor.cpp` is a standalone version of the function Image::printStructure() in the Exiv2 library.  It can be executed with options which are equivalent to exiv2 options:
 
@@ -1012,7 +1123,7 @@ One other important detail is that although the Tiff Specification expects the I
 
 [TOC](#TOC)
 <div id="8-6">
-### Presenting the data with visitTag()
+### 8.6 Presenting the data with visitTag()
 
 I want to discuss how to decode binary tags and present the data.
 
@@ -1029,7 +1140,7 @@ Beautifully documented as follows:
 | ExifTool | Exiv2 |
 |:--       |:--    |
 | [https://exiftool.org/TagNames/Nikon.html#PictureControl](https://exiftool.org/TagNames/Nikon.html#PictureControl) | [https://exiv2.org/tags-nikon.html](https://exiv2.org/tags-nikon.html) |
-| ![PcET](NikonPcExifTool.png) | ![PcE2](NikonPcExiv2.png) |
+| <center>![PcET](NikonPcExifTool.png)</center> | <center>![PcE2](NikonPcExiv2.png)</center> |
 
 The Exiv2 website is generated by reading the tag definitions in the code-base:
 
@@ -1093,14 +1204,14 @@ MakerTags makerTags;
 In the init() function, I've defined the tag:
 
 ```cpp
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcVersion"         ,asciiString , 0,4));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcVersion"         ,asciiString , 0, 4));
     makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcName"            ,asciiString , 4,20));
-...
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcToningEffect"    ,unsignedByte,56,1));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcToningSaturation",unsignedByte,57,1));
+    ...
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcToningEffect"    ,unsignedByte,56, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcToningSaturation",unsignedByte,57, 1));
 ```
 
-Lastly, we need to modify `visitTag()` to report this.
+We modify `visitTag()` to report this.
 
 ```cpp
 void visitTag
@@ -1155,7 +1266,53 @@ void visitTag
 } // visitTag
 ``` 
 
-And here's the beautiful result on ~/Stonehenge.jpg
+The code in visitTag() uses DataBuf.toString() to format the data:
+
+```cpp
+std::string DataBuf::toString(size_t offset,type_e type,uint16_t count,endian_e endian,size_t max)
+{
+    std::ostringstream os;
+    std::string        sp;
+    uint16_t           size = typeSize(type);
+    if ( isShortType(type) ){
+        for ( size_t k = 0 ; k < count ; k++ ) {
+            os << sp << ::getShort(*this,offset+k*size,endian);
+            sp = " ";
+        }
+    } else if ( isLongType(type) ){
+        for ( size_t k = 0 ; k < count ; k++ ) {
+            os << sp << ::getLong(*this,offset+k*size,endian);
+            sp = " ";
+        }
+    } else if ( isRationalType(type) ){
+        for ( size_t k = 0 ; k < count ; k++ ) {
+            uint32_t a = ::getLong(*this,offset+k*size+0,endian);
+            uint32_t b = ::getLong(*this,offset+k*size+4,endian);
+            os << sp << a << "/" << b;
+            sp = " ";
+        }
+    } else if ( type == unsignedByte ) {
+        for ( size_t k = 0 ; k < count ; k++ ) {
+            os << sp << (int) pData_[offset+k];
+            sp = " ";
+        }
+    } else if ( type == asciiString ) {
+        bool bNoNull = true ;
+        for ( size_t k = 0 ; bNoNull && k < count ; k++ )
+            bNoNull = pData_[offset+k];
+        if ( bNoNull )
+            os << binaryToString(offset, (size_t)count);
+        else
+            os << (char*) pData_+offset ;
+    } else {
+        os << sp << binaryToString(offset, (size_t)count);
+    }
+
+    return chop(os.str(),max);
+} // DataBuf::toString
+```
+
+Here's the beautiful result on ~/Stonehenge.jpg
 
 ```bash
 ...book/build $ ./tvisitor -pR ~/Stonehenge.jpg | grep -e PictureControl -e Pc
@@ -1174,13 +1331,13 @@ And here's the beautiful result on ~/Stonehenge.jpg
  893 | 0x0023 Exif.Nikon.PcFilterEffect    |      BYTE |        1 |           | 255
  894 | 0x0023 Exif.Nikon.PcToningSaturat.. |      BYTE |        1 |           | 255
 ...book/build $ 
-
 ```
 
 Could this be even better?  Of course.  As always reader, I leave you to send me a patch which will:
 
 1. Test that we only decode bytes read from image.<br>
-2. You're welcome to suggest other magic!
+2. Build and run this on a BigEndian machine (PPC, Spark)<br>
+3. You're welcome to suggest other magic!
 
 [TOC](#TOC)
 <div id="8-7">
@@ -1492,11 +1649,41 @@ To be written.
 <div id="11">
 # 11 Security
 
+## 11.1 The Fuzzing Police
+
+We received our first CVE from the fuzzing police in July 2017.  Not a pleasant experience.  It was delivered in a blog post demanding that we re-write Exiv2 as it was "unsafe".   Needless to say, no resources were being offered for the rewrite, no justification was offered and no reason why a re-write of 100,000 lines of code would fix anything.
+
+A couple of years later, Kevin send us four security alerts.  When I invited him to solve them, he agreed.  He subsequently wrote this interesting and helpful article.
+
+[https://securitylab.github.com/research/how-to-escape-from-the-fuzz](https://securitylab.github.com/research/how-to-escape-from-the-fuzz)
+
+While security is an important matter, the behaviour of the fuzzing police is despicable and very demotivating.  They frequently report false positives which consume/waste resources.  None of those people ever say "Thank You" when something is fixed and never apologise for false positives.  They sometimes say something useless like "I did you a favour because there could have been something wrong.".
+
+I must also mention that the fuzzing police use special tools that build and instrument the code to detect any suspicious run-time activity.  Often, there is no end-user bug report to demonstrate an issue.  When they report an issue, they provide a file called `poc` = Proof of Concept.  Their bug reports are usually totally short of information about how to reproduce the issues and there is no cross-reference with their CVE tracking data-base.
+
+Everything is treated as urgent.  All their reports are assigned very high levels of vulnerability.  In short, those people are a pain in the butt and waste enormous amounts of Team Exiv2 engineering resources.
+
+As the fuzzing police maintain their own CVE data base, the number and frequency of security issues is tracked and published.  Their mission in life is negative.  I don't have a good word to say about those peple.
+
+[TOC](#TOC)
+<div id="12">
+## 11.2 How we deal with security issues
+
 To be written.
 
 [TOC](#TOC)
 <div id="12">
 # 12 Project Management, Release Engineering, User Support
+
+|    |    |    |    |
+|:-- |:-- |:-- |:-- |
+| [12.1) C++ Code](#12-1) | [12.2) Build](#12-2) | [12.3) Security](#12-3) | [12.4) Documentation](#12-4) |
+| [12.5) Testing](#12-5) | [12.6) Sample programs](#12-6) | [12.7) User Support](#12-7) | [12.8) Bug Tracking](#12-8) |
+| [12.9) Release Engineering](#12-9) | [12.10) Platform Support](#12-10) | [12.11) Localisation](#12-11) | [12.12) Build Server](#12-12) |
+| [12.13) Source Code Management](#12-13) | [12.14) Project Web Site](#12-14) | [12.15) Project Servers (apache, SVN, GitHub, Redmine)](#12-15) | [12.16) API Management](#12-16) |
+| [12.17) Recruiting Contributors](#12-17) | [12.18) Project Management and Scheduling](#12-18) | [12.19) Enhancement Requests](#12-19) | [12.20) Tools](#12-20) |
+| [12.21) Licensing](#12-21) | [12.22) Back-porting fixes to earlier releases](#12-22) | [12.23) Other projects demanding support and changes](#12-23) | |
+
 
 <div id="12-1">
 ### 12.1) C++ Code
@@ -2127,6 +2314,6 @@ Public License instead of this License.
 
 Robin Mills<br>
 robin@clanmills.com<br>
-Revised: 2020-06-05
+Revised: 2020-06-07<br>
 
 [TOC](#TOC)<br>
