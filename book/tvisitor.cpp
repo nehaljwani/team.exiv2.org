@@ -98,6 +98,13 @@ void Error (error_e error, std::string msg)
     _exit(1); // pull the plug!
 }
 
+void Error (error_e error, size_t n)
+{
+    std::ostringstream os ;
+    os << n ;
+    Error(error,os.str());
+}
+
 void Error (error_e error)
 {
     Error(error,"");
@@ -528,6 +535,7 @@ enum PSopt_e
 // 1.  declare types
 class   Image; // forward
 class   TiffImage;
+class   CrwImage ;
 
 // 2. Create abstract "visitor" base class with an element visit() method
 class Visitor
@@ -583,6 +591,7 @@ public:
     
     friend class TiffImage;
     friend class JpegImage;
+    friend class CrwImage ;
     friend class ReportVisitor;
 
 private:
@@ -596,7 +605,7 @@ private:
     endian_e            endian_;
     std::string         path_;
     bool                bigtiff_;
-    std::string         format_; // "TIFF" or "JPEG"
+    std::string         format_; // "TIFF" or "JPEG" or "CRW"
     
     bool isPrintXMP(uint16_t type, PSopt_e option)
     {
@@ -639,17 +648,11 @@ public:
         if ( option_ != kpsBasic && option_ != kpsRecursive ) return;
 
         char c = image.endian() == keBig ? 'M' : 'I';
-        if ( image.format() == "TIFF" ) {
-            out_ << indent(depth) << stringFormat("STRUCTURE OF %s FILE (%c%c): ",image.format().c_str(),c,c) <<  image.path() << std::endl;
-            out_ << indent(depth)
-                 << " address |    tag                              |     "
-                 << " type |    count |    offset | value" << std::endl;
-                 ;
-        }
-        if ( image.format() == "JPEG" ) {
-            out_ << indent(depth) << "STRUCTURE OF JPEG FILE: " << image.path() << std::endl;
-            out_ << "address | marker       |  length | data";
-        }
+        out_ << indent(depth) << stringFormat("STRUCTURE OF %s FILE (%c%c): ",image.format().c_str(),c,c) <<  image.path() << std::endl;
+        out_ << indent(depth)
+             << " address |    tag                              |     "
+             << " type |    count |    offset | value" << std::endl;
+        ;
     }
     void visitDirBegin(Image& image,size_t dirLength,int depth)
     {
@@ -744,10 +747,72 @@ public:
     TiffImage(std::string path) : Image(path) {}
     TiffImage(Io& io) : Image(io) {} ;
     void readTiff(Visitor& visitor,TagDict& tagDict=tiffDict,int depth = 0);
-    void readIFD (Visitor& visitor,size_t start,endian_e endian,int depth,TagDict& tagDict,bool bHasNext=true);
+    void readIFD (Visitor& visitor,size_t start,endian_e endian,int depth=0,TagDict& tagDict=tiffDict,bool bHasNext=true);
     bool valid();
 
     virtual void accept(class Visitor& visitor) { readTiff(visitor); }
+};
+
+class CrwImage : public Image
+{
+public:
+    CrwImage(std::string path) : Image(path) {}
+    CrwImage(Io& io) : Image(io) {} ;
+    bool valid() {
+        size_t restore = io().tell();
+        bool result = false;
+        DataBuf buf(2+4+8); //xxlongHEAPCCRD xx = II or MM
+        if ( io().good() ) {
+            io().read(buf);
+
+            char I = 'I';
+            char M = 'M';
+            char c = buf.pData_[0];
+            char C = buf.pData_[1];
+            result = ::memcmp(buf.pData_+6,"HEAPCCDR",8) == 0
+                    && c==C && (c == I || c == M)
+            ;
+            if ( result ) {
+                endian_ = c == I ? keLittle : keBig ;
+                start_  = getLong(buf,2,endian_);
+                format_ = "CRW";
+            }
+        }
+        io().seek(restore);
+        return result ;
+    }
+
+    virtual void accept(class Visitor& visitor)
+    {
+        size_t restore = io().tell();
+        
+        io().seek(io().size()-4);
+        DataBuf start(4);
+        io().read(start);
+        io().seek(::getLong(start,0,endian_) + start_);
+
+        DataBuf u(2);
+        io().read(u);
+        uint16_t dirLength = getShort(u,0,endian_);
+        std::cout << stringFormat("CIFF Directory %s dirLength = %d",path().c_str(),dirLength) << std::endl;
+        std::cout <<              "    tag |  count | offset "       << std::endl;
+        DataBuf buf(10); // It's not an IFD!
+        uint32_t offset = 0 ;
+        for ( int i = 0 ; i < dirLength ; i++ ) {
+            io().read(buf);
+            uint16_t tag    = getShort(buf,0,endian_);
+            uint16_t count  = getShort(buf,2,endian_);
+            std::cout << stringFormat(" %6#x | %6d | %d",tag,count,offset) << std::endl;
+            
+            //if ( tag == 0x300a ) { // it's not a IFD, it's a CIFF entry or something.
+            //    TiffImage* t = (TiffImage*) this ;
+            //    t->readIFD(visitor,offset+start_,endian_);
+            //}
+            offset += count;
+        }
+
+        io().seek(restore);
+    }
 };
 
 class JpegImage : public Image
@@ -795,7 +860,7 @@ void TiffImage::readIFD(Visitor& visitor,size_t start,endian_e endian,
         io_.read(dir.pData_, 2);
 
         uint16_t dirLength = getShort(dir,0,endian_);
-        if ( dirLength > 500 ) Error(kerTiffDirectoryTooLarge);
+        if ( dirLength > 500 ) Error(kerTiffDirectoryTooLarge,dirLength);
         visitor.visitDirBegin(*this,dirLength,depth);
 
         // Read the dictionary
@@ -1249,6 +1314,7 @@ int main(int argc,const char* argv[])
         const char* path = argv[argc-1];
         TiffImage tiff(path);
         JpegImage jpeg(path);
+        CrwImage  crw (path);
 
         PSopt_e option = kpsBasic;
         if ( argc == 3 ) {
@@ -1265,6 +1331,9 @@ int main(int argc,const char* argv[])
         } else if ( jpeg.valid() ) {
             ReportVisitor visitor(std::cout,option);
             jpeg.accept(visitor);
+        } else if ( crw.valid() ) {
+            ReportVisitor visitor(std::cout,option);
+            crw.accept(visitor);
         } else {
             std::cerr << "file type not recognised " << path << std::endl;
             rc=2;
