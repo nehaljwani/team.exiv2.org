@@ -111,11 +111,11 @@ The toolset used in Software Engineering evolves with time.  C++ has been around
 
 The most common issue raised on GitHub concerns lens recognition.  For v0.26, I added the "Configuration File" feature to enable users to modify lens recognition on their computer.  While this is helpful, many users would like Exiv2 to deal with this perfectly, both now and in the future.
 
-I intend to make a proposal at LGM in Rennes in May 2021 concerning this matter. Both exiv2 and ExifTool can format the metadata in .exv format. I will propose to implement a program to read the .exv and return the Lens. That program will have an embedded programming language with the rules to identify the lens. The scripts will be ascii files which can be updated. It will be called M2Lscript (MetaData to Lens Script), pronounced "MillsScript". The M2Lscript interpreter will be available as a command-line program, a perl module (for ExifTool) and a C++ library (for linking into exiv2).
+I intend to make a proposal at LGM in Rennes in May 2021 concerning this matter. Both exiv2 and ExifTool can format the metadata in .exv format. I will propose to implement a program to read the .exv and return the Lens. That program will have an embedded programming language with the rules to identify the lens. The scripts will be ascii files which can be updated. It will be called M2Lscript (MetaData to Lens Script), pronounced _**"MillsScript"**_. The M2Lscript interpreter will be available as a command-line program, a perl module (for ExifTool), a C++ library (for linking into exiv2) and perhaps a python module.
 
-In this way, new lens definitions can be added to "MillsScript" without touching anything in Exiv2.
+In this way, new lens definitions can be written in M2Lscript without touching anything in Exiv2 or ExifTool.
 
-I don't have enough time to work on both Exiv2 and M2Lscript.  Perhaps a new maintainer will take responsibility for Exiv2 and allow me to retire.  M2Lscript will be my swansong technology project.
+I don't have enough time to work on both Exiv2 and M2Lscript.  When a new maintainer will takes responsibility for Exiv2, I can retire.  M2Lscript will be my swansong technology project.
 
 [TOC](#TOC)
 <div id="scope">
@@ -148,7 +148,7 @@ The following summaries of the file formats are provided to help the reader unde
 ### 1.1 JPEG
 ![jpeg](jpeg.png)
 
-![Exif22Jpg.png](Exif22Jpg.png)
+![jpegs.png](jpegs.png)
 
 [Image File Formats](#1)<br>
 [TOC](#TOC)
@@ -1660,7 +1660,7 @@ A couple of years later, Kevin send us four security alerts.  When I invited him
 
 While security is an important matter, the behaviour of the fuzzing police is despicable and very demotivating.  They frequently report false positives which consume/waste resources.  None of those people ever say "Thank You" when something is fixed and never apologise for false positives.  They sometimes say something useless like "I did you a favour because there could have been something wrong.".
 
-I must also mention that the fuzzing police use special tools that build and instrument the code to detect any suspicious run-time activity.  Often, there is no end-user bug report to demonstrate an issue.  When they report an issue, they provide a file called `poc` = Proof of Concept.  Their bug reports are usually totally short of information about how to reproduce the issues and there is no cross-reference with their CVE tracking data-base.
+I must also mention that the fuzzing police use special tools that build and instrument the code to detect suspicious run-time activity.  Often, there is no end-user bug report to demonstrate an issue.  When they report an issue, they provide a file called `poc` = Proof of Concept.  Their bug reports are usually totally short of information about how to reproduce the issues and there is no cross-reference with their CVE tracking data-base.
 
 Everything is treated as urgent.  All their reports are assigned very high levels of vulnerability.  In short, those people are a pain in the butt and waste enormous amounts of Team Exiv2 engineering resources.
 
@@ -2315,6 +2315,6 @@ Public License instead of this License.
 
 Robin Mills<br>
 robin@clanmills.com<br>
-Revised: 2020-06-07<br>
+Revised: 2020-06-08<br>
 
 [TOC](#TOC)<br>
