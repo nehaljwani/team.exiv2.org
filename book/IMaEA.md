@@ -32,10 +32,19 @@
 13. [Code discussed in this book](#13)<br>
 14. [License](#license)
 
+[TOC](#TOC) [Foreward](#foreword)
+
 <div id="foreword">
 ### Foreword
 
 Before I start to discuss the subject of this book, I want to say "Thank You" to a few folks who have made this possbile.  First, my wife Alison, who has been my loyal support since the day we met in High School in 1967.  Secondly, I'd like to thank many people who have contributed to Exiv2 over the years.  In particular to Andreas Huggel the founder of the project and Luis and Dan who have worked tirelessly with me since 2017.  And (in alphabet order): Abhinav, Alan, Andreas _(both of them)_, Ben, Gilles, Kevin, Mahesh, Nehal, Neils, Phil, Sridhar, Thomas, Tuan .... and others who have contributed to Exiv2.
+
+| | | |
+|:-- |:-- |:-- |
+| [About this book](#about)                           | [Current Development Priorities](#current)  |
+| [How did I get interested in this matter?](#begin)  | [Future Development Projects](#future)      |
+| [2012 - 2017](#2012)                                | [Scope of Book](#scope)                    |                
+| [2017 - Present](#2017)                             | |
 
 <div id="about">
 ### About this book
@@ -46,6 +55,8 @@ Image Metadata is the information stored in a digital image in addition to the i
 
 Exiv2 Architecture is about the Exiv2 library and command-line application which implements cross-platform code in C++ to read, modify, insert and delete items of metadata.  I've been working on this code since 2008 and, as I approach my 70th birthday, would like to document my knowledge in the hope that the code will be maintained and developed by others in future.
 
+[TOC](#TOC) [Foreward](#foreword)
+
 <div id="begin">
 ### How did I get interested in this matter?
 
@@ -53,11 +64,11 @@ I first became interested in metadata because of a trail conversation with Denni
 
 <center>![gpsexiftags](gpsexiftags.jpg)</center>
 
-I said "Oh, it can't be too difficult to do that!".  And here we are more than a decade later still working on the project.  The program geotag.py was completed in about 6 weeks.  Most of the effort went into porting both Exiv2 and pyexiv2 to Visual Studio and macOS as both were Linux only at that time.
+I said "Oh, it can't be too difficult to do that!".  And here we are more than a decade later still working on the project.  The program geotag.py was completed in about 6 weeks.  Most of the effort went into porting Exiv2 and pyexiv2 to Visual Studio and macOS.  Both Exiv2 and pyexiv2 were Linux only at that time.
 
 The sample application samples/geotag.cpp provides a command line utility to geotag photos and I frequently use this on my own photographs.  Today, I have a Samsung Galaxy Watch which uploads runs to Strava.  I download the GPX from Strava.  The date/time information in the JPG is the key to search for the position data.  The GPS tags are created and saved in the image.
 
-Back in 2008, I chose to implement this in python as it was a good excuse to learn Python.  Having discovered exiv2 and the python wrapper pyexiv2, I set off with enthusiasm to build a cross-platform script to run on **Windows** _(XP, Visual Studio 2003)_, **Ubuntu Linux** _(Hardy Heron 2008.04 LTS)_ and **macOS** _(32 bit Tiger 10.4 on a big-endian PPC)_.  After I finished, I emailed Andreas.  He responded in less than an hour and invited me to join Team Exiv2.  Initialially, I provided support to build Exiv2 with Visual Studio.
+Back in 2008, I chose to implement this in python as a good motivator to learn Python.  Having discovered exiv2 and the python wrapper pyexiv2, I set off with enthusiasm to build a cross-platform script to run on **Windows** _(XP, Visual Studio 2003)_, **Ubuntu Linux** _(Hardy Heron 2008.04 LTS)_ and **macOS** _(32 bit Tiger 10.4 on a big-endian PPC)_.  After I finished, I emailed Andreas.  He responded in less than an hour and invited me to join Team Exiv2.  Initialially, I provided support to build Exiv2 with Visual Studio.
 
 Incidentally, later in 2008, Dennis offered me a contract to port his company's Linux code to Visual Studio to be used on a Windows CE Embedded Controller.  1 million lines of C++ were ported from Linux in 6 weeks.  I worked with Dennis for 4 years on all manner of GPS related software development.
 
@@ -65,7 +76,8 @@ Incidentally, later in 2008, Dennis offered me a contract to port his company's 
 
 I have never been employed to work on Metadata.  I was a Senior Computer Scientist at Adobe for more than 10 years, however I was never involved with XMP or Metadata.
 
-[TOC](#TOC)
+[TOC](#TOC) [Foreward](#foreword)
+
 <div id="2012">
 ### 2012 - 2017
 
@@ -73,13 +85,13 @@ By 2012, Andreas was loosing interest in Exiv2.  Like all folks, he has many mat
 
 I must also mention our adventures with Google Summer of Cocde and our students Abhinav, Tuan and Mahesh.  GSoC is a program at Google to sponsor students to contribute to open source projects. 1200 Students from around the world are given a bounty of $5000 to contribute 500 hours to a project over summer recess.  The projects are supervised by a mentor.  Exiv2 is considered to be part of the KDE family of projects.  Within KDE, there a sub-group of Graphics applications and Technology.  We advertised our projects, the students wrote proposals and some were accepted by Google on the Recommendation of the KDE/Graphics group.
 
-In 2012, Abhinav joined us and contributed the Video read code and was mentored by Andreas.  In 2013, Tuan joined us and contributed the WebReady code and was mentored by me.  Mahesh also joined us and contribute the Video write code and was mentored by Abhinav.
+In 2012, Abhinav joined us and contributed the Video read code and was mentored by Andreas.  In 2013, Tuan joined us and contributed the WebReady code and was mentored by me.  Mahesh also joined us to contribute the Video write code and was mentored by Abhinav.
 
-I personally found working with the students to be enjoyable and interesting.  I retired from work in 2014 and returned to England after 15 years in Silicon Valley.  In 2016, Alison and I had a trip round the world and spent a day with Mahesh in Bangalore and with Tuan in Singapore.  We subsequently went to Vietnam to attend Tuan's wedding in 2017.
+I personally found working with the students to be enjoyable and interesting.  I retired from work in 2014 and returned to England after 15 years in Silicon Valley.  In 2016, Alison and I had a trip round the world and spent a day with Mahesh in Bangalore and with Tuan in Singapore.  We were invited to stay with Andreas and his family.  We subsequently went to Vietnam to attend Tuan's wedding in 2017.
 
-I started working on Exiv2 to implement GeoTagging.  As the years have passed, I've explored most of the code.  I've added new capability such as support for ICC profiles, metadata-piping and file-debugging.  I've done lots of work on the build, test suite and documentation.  I've talked to users all over the world and closed several hundred issues and feature requests.  On our round the world trip, we were invited to stay with Andreas and his family.  Over the years, I've met users in India, Singapore, Armenia, the USA and the UK.  I've attended 2 Open-Source Conferences. It's been an adventure and mostly rewarding.  It's remarkable how seldom users express appreciation.
+I started working on Exiv2 to implement GeoTagging.  As the years have passed, I've explored most of the code.  I've added new capability such as support for ICC profiles, metadata-piping and file-debugging.  I've done lots of work on the build, test suite and documentation.  I've talked to users all over the world and closed several hundred issues and feature requests.  Over the years, I've met users in India, Singapore, Armenia, the USA and the UK.  I've attended 2 Open-Source Conferences. It's been an adventure and mostly rewarding.  It's remarkable how seldom users express appreciation.
 
-[TOC](#TOC)
+[TOC](#TOC) [Foreward](#foreword)
 <div id="2017">
 ### 2017 - 2020
 
@@ -89,7 +101,7 @@ The current release of Exiv2 is v0.27.3 and was released on 2020-06-30.  I hope 
 
 The Libre Graphics Meeting is scheduled to take place in May 2021 in Rennes, France.  I intend to lead a workshop on Image Metadata and Exiv2 Architecture.  This book is being written to be used in that presentation.
 
-[TOC](#TOC)
+[TOC](#TOC) [Foreward](#foreword)
 <div id="current">
 ### Current Development Priorities
 
@@ -97,17 +109,17 @@ In July 2017 we received our first security CVE.  Not a pleasant experience.  Th
 
 In parallel with "the dots", major work is being carried to prepare Exiv2 for the future. Dan and Luis are working on v0.28 which will be released in 2020. This is a considerable reworking of the code into C++11.
 
-I'm delighted by the work done by Dan, Luis and Kevin to deal with the assault of the security people. I believe we are responding effectively to security issues. None-the-less, they have dominated the development of Exiv2 for at least two years and many ideas could not be persued because security has consumed our engineering resources.
+I'm delighted by the work done by Dan, Luis and Kevin to deal with the assault of the security people. I believe we are responding effectively to security issues. None-the-less, they have dominated the development of Exiv2 for at least two years and many ideas could not be pursued because security has consumed our engineering resources.
 
+[TOC](#TOC) [Foreward](#foreword)
 <div id="future">
-[TOC](#TOC)
 ### Future Development Projects
 
 The code is in good shape, our release process is solid and we have comprehensive user documentation.  As photography develops, there will be many new cameras and more image formats such as CR3, HEIF and BigTiff.   Video support is weak, deprecated in v0.27 and will be removed in 0.28.
 
-A long standing project for Exiv2 is a "unified metadata container".  There is an implementation of this in the SVN repository.  Currently we have three containers for Exif, Iptc and Xmp.  This is clumsy.  We also have a restriction a single image per file.  Perhaps both projects can be combined and have a common solution.
+A long standing project for Exiv2 is a "unified metadata container".  There is an implementation of this in the SVN repository.  Currently we have three containers for Exif, Iptc and Xmp.  This is clumsy.  We also have a restriction of one image per file.  Perhaps both projects can be combined and have a common solution.
 
-The toolset used in Software Engineering evolves with time.  C++ has been around for about 35 years and, while many complain about it, I expect it will out-live most of us.  None-the-less, languages which are less vulnerable to security issues may lead the project to a re-write in a new language such as Rust.  I hope this book provides the necessary understanding of metadata engineering to support such an undertaking.
+The toolset used in Software Engineering evolves with time.  C++ has been around for about 35 years and, while many complain about it, I expect it will out-live most of us.  None-the-less, languages which are less vulnerable to security issues may lead the project to a re-write in a new language such as Rust.  I hope this book provides the necessary understanding of metadata to support such an undertaking.
 
 The most common issue raised on GitHub concerns lens recognition.  For v0.26, I added the "Configuration File" feature to enable users to modify lens recognition on their computer.  While this is helpful, many users would like Exiv2 to deal with this perfectly, both now and in the future.
 
@@ -115,9 +127,9 @@ I intend to make a proposal at LGM in Rennes in May 2021 concerning this matter.
 
 In this way, new lens definitions can be written in M2Lscript without touching anything in Exiv2 or ExifTool.
 
-I don't have enough time to work on both Exiv2 and M2Lscript.  When a new maintainer will takes responsibility for Exiv2, I can retire.  M2Lscript will be my swansong technology project.
+I don't have enough time to work on both Exiv2 and M2Lscript.  When a new maintainer takes responsibility for Exiv2, I will retire.  M2Lscript will be my swansong technology project.
 
-[TOC](#TOC)
+[TOC](#TOC) [Foreward](#foreword)
 <div id="scope">
 ### Purpose and Scope of this book
 
@@ -125,150 +137,198 @@ This book is my legacy to Exiv2.  I hope Exiv2 will continue to exist long into 
 
 I wish you a happy adventure in the world of Image Metadata.  If you'd like to discuss matters concerning this book, please open an issue on GitHub and share your thoughts with Team Exiv2.
 
-This book is copyright and licensed under GPLv2 and which is included at the end of the document.
+This book is copyright and licensed under GPLv2 of which a copy is included at the end of the document.
 
 <center>![Robin](RobinEuphonium.jpg)</center>
 
-[TOC](#TOC)
+[TOC](#TOC) [Foreward](#foreword)
 <div id="1">
 # 1 Image File Formats
 
 The following summaries of the file formats are provided to help the reader understand both this book and the Exiv2 code.  The Standard Specifications should be consulted for more detail.
 
-
 | | | | |
 |:-- |:-- |:-- |:-- |
-| [1 JPEG](#1-JPEG)                        | [6 DNG Digital Negative](#1-6)   | [11 BigTiff 64bit Tiff](#1-11) | [16 PSD PhotoShop Document](#1-16) |
-| [2 PNG Portable Network Graphics](#1-PNG)    | [7 CRW Canon Raw](#1-7)   | [12 TGA](#1-12)     | [17 PGF Portable Graphics Format](#1-17) |
-| [3 JP2 PJEG 2000](#1-JP2)    | [8 CR2 Canon Raw Format 2](#1-8)   | [13 RW2](#1-13)     | [18 MRW Minolta Raw](#1-18) |
-| [4 TIFF Tagged Image Format](#1-TIFF)  | [9 BMP Bitmap Photo](#1-9)   | [14 RAF](#1-14)     | [19 NEF Nikon Raw Format ](#1-19) |
-| [5 WebP Web Photograph ](#1-WebP)  | [10 GIF Graphical Image Format](#1-10) | [15 ORF Olympus Raw Format](#1-15)     |                 |
+| [JPEG and EXV Format](#JPEG)          | [DNG Digital Negative](#DNG)       | [PSD PhotoShop Document](#PSD) | [PGF Portable Graphics Format](#PGF) |
+| [PNG Portable Network Graphics](#PNG) | [CRW Canon Raw](#CRW)              | [TGA](#TGA)                    | [MRW Minolta Raw](#MRW)              |
+| [JP2 Jpeg 2000](#JP2)                 | [CR2 Canon Raw Format 2](#CR2)     | [RW2](#RW2)                    | [ISOBMFF](#ISOBMFF)           |
+| [TIFF Tagged Image File](#TIFF)       | [BMP Windows Bitmap](#BMP)         | [RAF](#RAW)                    | [NEF Nikon Raw Format ](#NEF) | 
+| [WebP Web Photograph ](#WebP)         | [GIF Graphical Image Format](#GIF) | [ORF Olympus Raw Format](#ORF) | |
 
-<div id="1-JPEG">
-### 1.1 JPEG
+<div id="JPEG">
+### JPEG and EXV Format
 ![jpeg](jpeg.png)
 
 ![jpegs.png](jpegs.png)
 
+A Jpeg and a .exv are almost the same thing, however most graphics applications will reject a .exv because it has no graphics.  ExifTool supports .exv files.
+
+```bash
+$ exiv2 -pS ~/Stonehenge.jpg
+STRUCTURE OF JPEG FILE: /Users/rmills/Stonehenge.jpg
+ address | marker       |  length | data
+       0 | 0xffd8 SOI  
+       2 | 0xffe1 APP1  |   15288 | Exif..II*......................
+   15292 | 0xffe1 APP1  |    2610 | http://ns.adobe.com/xap/1.0/.<?x
+   17904 | 0xffed APP13 |      96 | Photoshop 3.0.8BIM.............
+   18002 | 0xffe2 APP2  |    4094 | MPF.II*...............0100.....
+   22098 | 0xffdb DQT   |     132 
+   22232 | 0xffc0 SOF0  |      17 
+   22251 | 0xffc4 DHT   |     418 
+   22671 | 0xffda SOS  
+$ exiv2 -ea --verbose ~/Stonehenge.jpg 
+File 1/1: /Users/rmills/Stonehenge.jpg
+Writing Exif data from /Users/rmills/Stonehenge.jpg to /Users/rmills/Stonehenge.exv
+Writing IPTC data from /Users/rmills/Stonehenge.jpg to /Users/rmills/Stonehenge.exv
+Writing XMP data from /Users/rmills/Stonehenge.jpg to /Users/rmills/Stonehenge.exv
+$ exiv2 -pS ~/Stonehenge.exv
+STRUCTURE OF JPEG FILE: /Users/rmills/Stonehenge.exv
+ address | marker       |  length | data
+       0 | 0xff01      
+       7 | 0xffe1 APP1  |   15296 | Exif..II*......................
+   15305 | 0xffe1 APP1  |    2610 | http://ns.adobe.com/xap/1.0/.<?x
+   17917 | 0xffed APP13 |      68 | Photoshop 3.0.8BIM.......'.....
+   17987 | 0xffd9 EOI  
+$ 
+```
+
 [Image File Formats](#1)<br>
 [TOC](#TOC)
-<div id="1-PNG">
-### 1.2 PNG
+<div id="PNG">
+### PNG Portable Network Graphics
 ![png](png.png)
 
 [Image File Formats](#1)<br>
 [TOC](#TOC)
-<div id="1-JP2">
-### 1.3 JPEG 2000
+<div id="JP2">
+### JPEG 2000
 ![jp2](jp2.png)
 
 [Image File Formats](#1)<br>
 [TOC](#TOC)
-<div id="1-TIFF">
-### 1.4 TIFF
+<div id="TIFF">
+### 1.4 TIFF and BigTiff
 ![Tiff](Tiff.png)
+
+The architecture of BigTiff is identical to TIFF.  However it is 64 bit based.  So uint16\_t data types become uint32\_t and uint32\_t become uint64\_t.
+
+| Element | TIFF | BigTiff |
+|:--       |:--  |:--    |
+| Marker | **\*** 0x2a = 42 | **\+** 0x2b = 43 | 
+| Tag    | uint16\_t | uint32\_t  |
+| Type    | uint16\_t | uint32\_t  |
+| Count   | uint32\_t | uint64\_t  |
+| Offset    | uint32\_t | uint64\_t  |
+| Field  | 12 bytes | 24 bytes |
+| Entries **E#** | uint16\_t | uint32\_t  |
+| Next | uint32\_t | uint64\_t  |
+
+BigTiff has 
+
 
 [Image File Formats](#1)<br>
 [TOC](#TOC)
-<div id="1-WebP">
-### 1.5 WEBP
+<div id="WebP">
+### WEBP Web Photograph
 ![webp](webp.png)
 
 [Image File Formats](#1)<br>
 [TOC](#TOC)
-<div id="1-6">
-### 1.6 DNG
+<div id="DNG">
+### DNG Digital Negative
 
 To be written.
 
 [Image File Formats](#1)<br>
 [TOC](#TOC)
-<div id="1-7">
-### 1.7 CRW
+<div id="CRW">
+### CRW Canon Raw Format
+
+![crw](crw.png)
 
 To be written.
 
 [Image File Formats](#1)<br>
 [TOC](#TOC)
-<div id="1-8">
-### 1.8 CR2
+<div id="CR2">
+### CR2 Canon Raw Format 2
 
 To be written.
 
 [Image File Formats](#1)<br>
 [TOC](#TOC)
-<div id="1-9">
-### 1.9 BMP
+<div id="BMP">
+### BMP Windows Bitmap
 
 To be written.
 
 [Image File Formats](#1)<br>
 [TOC](#TOC)
-<div id="1-10">
-### 1.10 GIF
+<div id="GIF">
+### GIF Graphics Image Format
 
 To be written.
 
 [Image File Formats](#1)<br>
 [TOC](#TOC)
-<div id="1-11">
-### 1.11 Big Tiff
+<div id="TGA">
+### TGA
 
 To be written.
 
 [Image File Formats](#1)<br>
 [TOC](#TOC)
-<div id="1-12">
-### 1.12 TGA
+<div id="RW2">
+### RW2
 
 To be written.
 
 [Image File Formats](#1)<br>
 [TOC](#TOC)
-<div id="1-13">
-### 1.13 RW2
+<div id="RAF">
+### RAF
 
 To be written.
 
 [Image File Formats](#1)<br>
 [TOC](#TOC)
-<div id="1-14">
-### 1.14 RAF
-
-To be written.
-
-[Image File Formats](#1)<br>
-[TOC](#TOC)
-<div id="1-15">
-### 1.15 ORF
+<div id="ORF">
+### ORF Olympus Raw Format
 
 To be written.
 
 [Image File Formats](#1)<br>
 [TOC](#TOC)
 <div id="1-16">
-### 1.16 PSD
+### PSD PhotoShop
 
 To be written.
 
 [Image File Formats](#1)<br>
 [TOC](#TOC)
-<div id="1-17">
-### 1.17 PGF
+<div id="PGF">
+### PGF Portable Graphics Format
 
 To be written.
 
 [Image File Formats](#1)<br>
 [TOC](#TOC)
-<div id="1-18">
-### 1.18 MRW
+<div id="MWR">
+### MRW Minolta Raw Format
 
 To be written.
 
 [Image File Formats](#1)<br>
 [TOC](#TOC)
-<div id="1-19">
-### 1.19 NEF
+<div id="ISOBMFF">
+### ISOBMFF
+
+To be written.
+
+[Image File Formats](#1)<br>
+[TOC](#TOC)
+<div id="NEF">
+### NEF Nikon Image Format
 
 To be written.
 
@@ -788,10 +848,10 @@ private:
 };
 
 // 4. Create concrete "visitors"
-class StudentVisitor: public Visitor
+class RollcallVisitor: public Visitor
 {
 public:
-    StudentVisitor() {}
+    RollcallVisitor() {}
     void visit(Student& student)
     {
     	std::cout << student.name() <<  " | " << student.age() << " | " << student.course() << std::endl;
@@ -833,29 +893,41 @@ private:
     int students_;
 };
 
+class College
+{
+public:
+	         College() {};
+	virtual ~College() {};
+
+	void add(Student student) {
+		students_.push_back(student);
+	}
+	void visit(Visitor& visitor) {
+        for ( std::vector<Student>::iterator student = students_.begin() ; student != students_.end() ; student++ ) {
+            student->accept(visitor);
+        }
+	}
+private:
+	std::vector<Student> students_;
+};
 
 int main() {
-    // create students
-    std::vector<Student>   students;
-    students.push_back(Student("this",10,"art"             ));
-    students.push_back(Student("that",12,"music"           ));
-    students.push_back(Student("the other",14,"engineering"));
+    // create a highSchool and add some students
+    College highSchool;
+    
+    highSchool.add(Student("this",10,"art"             ));
+    highSchool.add(Student("that",12,"music"           ));
+    highSchool.add(Student("the other",14,"engineering"));
 
-    // traverse objects and visit them
-    StudentVisitor studentVisitor;
-    for ( std::vector<Student>::iterator student = students.begin() ; student != students.end() ; student++ ) {
-        student->accept(studentVisitor);
-    }
+    // Create different visitors to visit highSchool
+    RollcallVisitor  rollCaller;
+    highSchool.visit(rollCaller);
 
     FrenchVisitor    frenchVisitor;
-    for ( std::vector<Student>::iterator student = students.begin() ; student != students.end() ; student++ ) {
-        student->accept(frenchVisitor);
-    }
+    highSchool.visit(frenchVisitor);
 
     AverageAgeVisitor averageAgeVisitor;
-    for ( std::vector<Student>::iterator student = students.begin() ; student != students.end() ; student++ ) {
-        student->accept(averageAgeVisitor);
-    }
+    highSchool.visit(averageAgeVisitor);
     averageAgeVisitor.reportAverageAge();
 
     return 0 ;
@@ -926,8 +998,8 @@ void TiffImage::readIFD(Visitor& visitor,size_t start,endian_e endian,
         io_.read(dir.pData_, 2);
 
         uint16_t dirLength = getShort(dir,0,endian_);
-        if ( dirLength > 500 ) Error(kerTiffDirectoryTooLarge);
-        visitor.visitDir(*this,dirLength,depth);
+        if ( dirLength > 500 ) Error(kerTiffDirectoryTooLarge,dirLength);
+        visitor.visitDirBegin(*this,dirLength,depth);
 
         // Read the dictionary
         for ( int i = 0 ; i < dirLength ; i ++ ) {
@@ -953,15 +1025,15 @@ void TiffImage::readIFD(Visitor& visitor,size_t start,endian_e endian,
 
             visitor.visitTag(*this,depth,address,tagDict);  // Tell the visitor
 
-            uint16_t pad   = isStringType(type) ? 1 : 0;
-            uint16_t size  = typeSize(type);
+            uint16_t pad   = isByteType(type)   ? 1 : 0;
+            uint16_t size  = typeSize(type)     ;
             size_t   alloc = size*count + pad+20;
             DataBuf  buf(alloc,io_.size());
             size_t   restore = io_.tell();
             io_.seek(offset);
             io_.read(buf);
             io_.seek(restore);
-            if ( depth == 1 && tag == 0x010f ) setMaker(buf);  /* Make     */
+            if ( depth == 1 && tag == 0x010f ) setMaker(buf);  /* Make      */
 
             // recursion anybody?
             if ( tag  == 0x927c  ) {                           /* MakerNote */
@@ -993,6 +1065,7 @@ void TiffImage::readIFD(Visitor& visitor,size_t start,endian_e endian,
             io_.read(dir.pData_, 4);
             start = getLong(dir,0,endian_);
         }
+    	visitor.visitDirEnd(*this,start,depth);
     } while (start) ;
     visitor.visitEnd(*this,depth);
     depth--;

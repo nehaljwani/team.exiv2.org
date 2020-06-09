@@ -37,10 +37,10 @@ private:
 };
 
 // 4. Create concrete "visitors"
-class StudentVisitor: public Visitor
+class RollcallVisitor: public Visitor
 {
 public:
-    StudentVisitor() {}
+    RollcallVisitor() {}
     void visit(Student& student)
     {
     	std::cout << student.name() <<  " | " << student.age() << " | " << student.course() << std::endl;
@@ -82,29 +82,41 @@ private:
     int students_;
 };
 
+class College
+{
+public:
+	         College() {};
+	virtual ~College() {};
+
+	void add(Student student) {
+		students_.push_back(student);
+	}
+	void visit(Visitor& visitor) {
+        for ( std::vector<Student>::iterator student = students_.begin() ; student != students_.end() ; student++ ) {
+            student->accept(visitor);
+        }
+	}
+private:
+	std::vector<Student> students_;
+};
 
 int main() {
-    // create students
-    std::vector<Student>   students;
-    students.push_back(Student("this",10,"art"             ));
-    students.push_back(Student("that",12,"music"           ));
-    students.push_back(Student("the other",14,"engineering"));
+    // create a highSchool and add some students
+    College highSchool;
+    
+    highSchool.add(Student("this",10,"art"             ));
+    highSchool.add(Student("that",12,"music"           ));
+    highSchool.add(Student("the other",14,"engineering"));
 
-    // traverse objects and visit them
-    StudentVisitor studentVisitor;
-    for ( std::vector<Student>::iterator student = students.begin() ; student != students.end() ; student++ ) {
-        student->accept(studentVisitor);
-    }
+    // Create different visitors to visit highSchool
+    RollcallVisitor  rollCaller;
+    highSchool.visit(rollCaller);
 
     FrenchVisitor    frenchVisitor;
-    for ( std::vector<Student>::iterator student = students.begin() ; student != students.end() ; student++ ) {
-        student->accept(frenchVisitor);
-    }
+    highSchool.visit(frenchVisitor);
 
     AverageAgeVisitor averageAgeVisitor;
-    for ( std::vector<Student>::iterator student = students.begin() ; student != students.end() ; student++ ) {
-        student->accept(averageAgeVisitor);
-    }
+    highSchool.visit(averageAgeVisitor);
     averageAgeVisitor.reportAverageAge();
 
     return 0 ;
