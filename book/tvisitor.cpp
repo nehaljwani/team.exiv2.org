@@ -560,7 +560,7 @@ public:
 
     PSopt_e option()    { return option_ ; }
     std::ostream& out() { return out_    ; }
-public:
+private:
     PSopt_e       option_;
     std::ostream& out_;
 };
@@ -650,14 +650,14 @@ public:
     virtual void visitBegin(Image& image)
     {
         depth_++ ;
-        if ( option_ != kpsBasic && option_ != kpsRecursive ) return;
-
-        char c = image.endian() == keBig ? 'M' : 'I';
-        out_ << indent(depth_) << stringFormat("STRUCTURE OF %s FILE (%c%c): ",image.format().c_str(),c,c) <<  image.io().path() << std::endl;
-        out_ << indent(depth_)
-             << " address |    tag                              |     "
-             << " type |    count |    offset | value" << std::endl;
-        ;
+        if ( option() == kpsBasic || option() == kpsRecursive ) {
+            char c = image.endian() == keBig ? 'M' : 'I';
+            out() << indent(depth_) << stringFormat("STRUCTURE OF %s FILE (%c%c): ",image.format().c_str(),c,c) <<  image.io().path() << std::endl;
+            out() << indent(depth_)
+                  << " address |    tag                              |     "
+                  << " type |    count |    offset | value" << std::endl;
+            ;
+        }
     }
     virtual void visitDirBegin(Image& image,size_t dirLength)
     {
@@ -689,7 +689,7 @@ public:
     , const TagDict&        tagDict
     ) {
         endian_e endian = image.endian();
-        Io& io = image.io();
+        Io& io          = image.io();
 
         size_t restore = io.tell(); // save io position
         io.seek(address);
@@ -718,20 +718,20 @@ public:
         // format the output
         std::string name = tagName(tag,tagDict,28);
         if ( name.find(".0x") == std::string::npos ) { // only print known tags
-            out_ << indent(depth_)
-                 << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
+            out() << indent(depth_)
+                  << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
                         ,address,tag,name.c_str(),typeName(type),count,offsetString.c_str())
-                 << value
-                 << std::endl
+                  << value
+                  << std::endl
             ;
             if ( makerTags.find(name) != makerTags.end() ) {
                 for (Field field : makerTags[name] ) {
                     std::string n = join(groupName(tag,tagDict),field.name(),28);
-                    out_ << indent(depth_)
-                         << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
+                    out() << indent(depth_)
+                          << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
                                          ,offset+field.start(),tag,n.c_str(),typeName(field.type()),field.count(),"")
-                         << buf.toString(field.start(),field.type(),field.count(),field.endian()==keImage?image.endian():field.endian(),40)
-                         << std::endl
+                          << buf.toString(field.start(),field.type(),field.count(),field.endian()==keImage?image.endian():field.endian(),40)
+                          << std::endl
                     ;
                 }
             }
@@ -740,8 +740,9 @@ public:
     
     virtual void visitEnd(Image& image)
     {
-        if ( option_ != kpsBasic && option_ != kpsRecursive ) return;
-        out_ << indent(depth_) << "END: " << image.path() << std::endl;
+        if ( option() == kpsBasic || option() == kpsRecursive ) {
+            out() << indent(depth_+1) << "END: " << image.path() << std::endl;
+        }
         depth_-- ;
     } // visitEnd
 private:
@@ -754,11 +755,11 @@ class TiffImage : public Image
 public:
     TiffImage(std::string path) : Image(path) {}
     TiffImage(Io& io) : Image(io) {} ;
-    void readTiff(Visitor& visitor,TagDict& tagDict=tiffDict,int depth = 0);
-    void readIFD (Visitor& visitor,size_t start,endian_e endian,int depth=0,TagDict& tagDict=tiffDict,bool bHasNext=true);
+    void visitTiff(Visitor& visitor,TagDict& tagDict=tiffDict,int depth = 0);
+    void visitIFD (Visitor& visitor,size_t start,endian_e endian,int depth=0,TagDict& tagDict=tiffDict,bool bHasNext=true);
     bool valid();
 
-    virtual void accept(class Visitor& visitor) { readTiff(visitor); }
+    virtual void accept(class Visitor& visitor) { visitTiff(visitor); }
 };
 
 class CrwImage : public Image
@@ -818,7 +819,7 @@ public:
             
             //if ( tag == 0x300a ) { // it's not a IFD, it's a CIFF entry or something.
             //    TiffImage* t = (TiffImage*) this ;
-            //    t->readIFD(visitor,offset,endian_);
+            //    t->visitIFD(visitor,offset,endian_);
             //}
             // offset += count;
         }
@@ -854,18 +855,16 @@ public:
     }
 };
 
-void TiffImage::readIFD(Visitor& visitor,size_t start,endian_e endian,
+void TiffImage::visitIFD(Visitor& visitor,size_t start,endian_e endian,
     int depth/*=0*/,TagDict& tagDict/*=tiffDict*/,bool bHasNext/*=true*/)
 {
-    size_t   restore_at_start = io_.tell();
+    size_t   restore1 = io_.tell();
 
     if ( !depth++ ) visits_.clear();
     visitor.visitBegin(*this);
 
     // buffer
-    const size_t dirSize = 32;
-    DataBuf  dir(dirSize);
-
+    DataBuf  dir(12);
     do {
         // Read top of directory
         io_.seek(start);
@@ -886,7 +885,7 @@ void TiffImage::readIFD(Visitor& visitor,size_t start,endian_e endian,
             io_.seek(address);
 
             // read the tag
-            io_.read(dir.pData_, 12);
+            io_.read(dir);
             uint16_t tag    = getShort(dir,0,endian_);
             type_e   type   = getType (dir,2,endian_);
             uint32_t count  = getLong (dir,4,endian_);
@@ -916,20 +915,20 @@ void TiffImage::readIFD(Visitor& visitor,size_t start,endian_e endian,
                     size_t punt = buf.strequals("Nikon") ? 10 : 0 ;
                     Io io(io_,offset+punt,count-punt);
                     TiffImage makerNote(io);
-                    makerNote.readTiff(visitor,makerDict_,depth);
+                    makerNote.visitTiff(visitor,makerDict_,depth);
                 } else {
-                    bool   bNext = maker_ != kSony;                          // Sony no trailing next
+                    bool   bNext = maker_  != kSony;                                        // Sony no trailing next
                     size_t punt  = maker_  == kSony && buf.strequals("SONY DSC ") ? 12 : 0; // Sony 12 byte punt
-                    readIFD(visitor,offset+punt,endian_,depth,makerDict_,bNext);
+                    visitIFD(visitor,offset+punt,endian_,depth,makerDict_,bNext);
                 }
             } else if ( tag == 0x8825 ) {                      /* GPSTag    */
-                readIFD(visitor,offset,endian_,depth,gpsDict );
+                visitIFD(visitor,offset,endian_,depth,gpsDict );
             } else if ( tag  == 0x8769  ) {                    /* ExifTag   */
-                readIFD(visitor,offset,endian_,depth,exifDict);
+                visitIFD(visitor,offset,endian_,depth,exifDict);
             } else if ( type == tiffIfd || tag == 0x014a ) {   /* SubIFDs   */
                 for ( size_t i = 0 ; i < count ; i++ ) {
                     uint32_t  off  = count == 1 ? offset : getLong(buf,i*4,endian_) ;
-                    readIFD(visitor,   off,endian_,depth,tagDict );
+                    visitIFD(visitor,   off,endian_,depth,tagDict );
                 }
             }
         } // for i < dirLength
@@ -944,8 +943,8 @@ void TiffImage::readIFD(Visitor& visitor,size_t start,endian_e endian,
     visitor.visitEnd(*this);
     depth--;
 
-    io_.seek(restore_at_start); // restore
-} // TiffImage::readIFD
+    io_.seek(restore1); // restore
+} // TiffImage::visitIFD
 
 bool TiffImage::valid()
 {
@@ -971,12 +970,12 @@ bool TiffImage::valid()
     return result;
 }
 
-void TiffImage::readTiff(Visitor& visitor,TagDict& tagDict,int depth)
+void TiffImage::visitTiff(Visitor& visitor,TagDict& tagDict,int depth)
 {
     if ( valid() ) {
-        readIFD(visitor,start_,endian_,depth,tagDict);
+        visitIFD(visitor,start_,endian_,depth,tagDict);
     }
-} // TiffImage::tourTiff
+} // TiffImage::visitTiff
 
 bool JpegImage::valid()
 {
@@ -1163,7 +1162,7 @@ void JpegImage::accept(Visitor& v)
     }
 
     v.visitEnd((*this));
-}  // JpegImage::tourTiff
+}  // JpegImage::visitTiff
 
 void init()
 {

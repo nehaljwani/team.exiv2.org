@@ -16,21 +16,22 @@
   [8.2 Tag Names in Exiv2](#8-2)<br>
   [8.3 TagInfo](#8-3)<br>
   [8.4 Visitor Design Pattern](#8-4)<br>
-  [8.5 Navigating the file with readIFD() and readTiff() ](#8-5)<br>
+  [8.5 Navigating the file with visitIFD() and visitTiff() ](#8-5)<br>
   [8.6 Presenting the data with visitTag()](#8-6)<br>
   [8.7 The Exiv2 Metadata and Binary Tag Decoder](#8-7)<br>
-9. [Test Suite and Build](#9)<br>
-  [9.1 Bash Tests](#9-1)<br>
-  [9.2 Python Tests](#9-2)<br>
-  [9.3 Unit Tests](#9-3)<br>
-  [9.4 Version Test](#9-4)<br>
-10. [API/ABI](#10)<br>
-11. [Security](#11)<br>
-  [11.1 The Fuzzing Police](#11)<br>
-  [11.2 How we deal with security issues](11-2)<br>
-12. [Project Management, Release Engineering and User Support](#12)<br>
-13. [Code discussed in this book](#13)<br>
-14. [License](#license)
+9. [Image Previews](#9)<br>
+10. [Test Suite and Build](#10)<br>
+  [10.1 Bash Tests](#10-1)<br>
+  [10.2 Python Tests](#10-2)<br>
+  [10.3 Unit Tests](#10-3)<br>
+  [10.4 Version Test](#10-4)<br>
+11. [API/ABI](#10)<br>
+12. [Security](#12)<br>
+  [12.1 The Fuzzing Police](#12)<br>
+  [12.2 How we deal with security issues](12-2)<br>
+13. [Project Management, Release Engineering and User Support](#12)<br>
+14. [Code discussed in this book](#13)<br>
+15. [License](#license)
 
 [TOC](#TOC) [Foreward](#foreword)
 
@@ -75,8 +76,8 @@ Incidentally, later in 2008, Dennis offered me a contract to port his company's 
 [https://clanmills.com/articles/gpsexiftags/](https://clanmills.com/articles/gpsexiftags/)
 
 I have never been employed to work on Metadata.  I was a Senior Computer Scientist at Adobe for more than 10 years, however I was never involved with XMP or Metadata.
-
 [TOC](#TOC) [Foreward](#foreword)
+
 
 <div id="2012">
 ### 2012 - 2017
@@ -208,7 +209,7 @@ $
 [TOC](#TOC)
 <div id="TIFF">
 ### 1.4 TIFF and BigTiff
-![Tiff](Tiff.png)
+![tiff](tiff.png)
 
 The architecture of BigTiff is identical to TIFF.  However it is 64 bit based.  So uint16\_t data types become uint32\_t and uint32\_t become uint64\_t.
 
@@ -337,7 +338,7 @@ To be written.
 <div id="2">
 # 2 Tiff and Exif metadata
 
-![Tiff](Tiff.png)
+![tiff](tiff.png)
 
 Before we get into the Exiv2 code, let's look at the simpler python TIFF/Exif library.   [https://github.com/Moustikitos/tyf](https://github.com/Moustikitos/tyf)
 
@@ -542,13 +543,13 @@ I/O in Exiv2 is achieved using the class BasicIo and derived classes which are:
 
 You will find a simplified version of BasicIo in tvisitor.cpp in the code that accompanies this book.  Io has two constructors.  The obvious one is Io(std::string) which calls `fopen()`.  More subtle is Io(io,from,size) which creates a sub-file on an existing stream.  This design deals with embedded files.  Most metadata is written in a format designated by the standards body and embedded in the file.  For example, Exif metadata data is written in Tiff Format and embedded in the file.
 
-Other metadata standards use a similar design.  XMP is embedded XML, an Icc Profile is a major block of technology.  Exiv2 knows how to extract, insert, delete and replace an Icc Profile.  It knows noting about the contents of the Icc Profile.  With Xmp, Exiv2 using Adobe's XMPsdk to enable the the Xmp data to be modified.
+Other metadata standards use a similar design.  XMP is embedded XML, an Icc Profile is a major block of technology.  Exiv2 knows how to extract, insert, delete and replace an Icc Profile.  It knows nothing about the contents of the Icc Profile.  With Xmp, Exiv2 using Adobe's XMPsdk to enable the the Xmp data to be modified.
 
-Exiv2 has an abstract RemoteIo object which can read/write on the internet.  For http, there is a basic implementation of the http protocol in src/http.cpp.  For production use, Exiv2 should be linked with libcurl.  The reason for providing a "no thrills" implementation of http was two fold.  Firstly, it enabled the project to proceed rapidly without leaning the curl API.  Secondly, I wanted all versions of the exiv2 command-line to have http support as I thought it would be useful for testing as we could store video and other large file formats remotely.
+Exiv2 has an abstract RemoteIo object which can read/write on the internet.  For http, there is a basic implementation of the http protocol in src/http.cpp.  For production use, Exiv2 should be linked with libcurl.  The reason for providing a "no thrills" implementation of http was two fold.  Firstly, it enabled the project to proceed rapidly without learning the curl API.  Secondly, I wanted all versions of the exiv2 command-line to have http support as I thought it would be useful for testing as we could store video and other large files remotely.
 
 The MemIo class enables memory to be used as a stream.  This is fast and convenient for small temporary files.  When memory mapped files are available, FileIo uses that in preference to FILE*.  When the project started in 2004, memory-mapped files were not provided on some legacy platforms such as DOS.  Today, all operating systems provide memory mapped files.  I've never heard of Exiv2 being used in an embedded controller, however I'm confident that this is feasible.  I've worked on embedded controllers with no operating system and only a standard "C" io library.  Exiv2 can be built for such a device.
 
-Most camera manufacturers are large corporations.  I'm sure they have their own firmware to handle Exif metadata.  However, the world of photography has an every growing band of start-ups making amazing devices such as Go-Pro.  One day I'll hear the somebody is cycling around on top of Mt Everest with Exiv2 running on top of their head!
+Most camera manufacturers are large corporations.  I'm sure they have their own firmware to handle Exif metadata.  However, the world of photography has an every growing band of start-ups making amazing devices such as Go-Pro.  One day I'll hear the somebody is cycling around on top of Mt Everest with Exiv2 running on top of their head!  One of our users is an astronomer at NASA.  I've never heard that Exiv2 has flown in space, however one day it might.  I can say with pride that I think Exiv2 is out of this world!
 
 [TOC](#TOC)
 <div id="8">
@@ -627,7 +628,7 @@ Exif.Image.Orientation                       Short       1  top, left
 $
 ```
 
-You may be interested to discover that option `-pS` which arrived with Exiv2 v0.25 was joined in Exiv2 v0.26 by `-pR`.  This is a "recursive" version of -pS.  It dumps the structure not only of the file, but also every subfiles (mostly tiff IFDs).  The is discussed in detail here: [8.5 Navigating the file with readIFD() and readTiff()](#8-5).
+You may be interested to discover that option `-pS` which arrived with Exiv2 v0.25 was joined in Exiv2 v0.26 by `-pR`.  This is a "recursive" version of -pS.  It dumps the structure not only of the file, but also every subfiles (mostly tiff IFDs).  This is discussed in detail here: [8.5 Navigating the file with visitIFD() and visitTiff()](#8-5).
 
 [TOC](#TOC)
 
@@ -754,7 +755,7 @@ So, Minolta have 6 "sub-records".  Other manufacturers have more.  Let's say 10 
 
 Now to address your concern about `Exif.MinoltaCsNew.ISOSpeed`.  It will throw an exception in Exiv2 v0.27.2.  Was it defined in an earlier version of Exiv2 such as 0.21?  I don't know.
 
-Your application code has to use exception handlers to catch these matters and determine what to do.  Without getting involved with your application code, I can't comment on your best approach to dealing with this.  There is a macro EXIV2\_TEST\_VERSION which enables you to have version specific code in your application.
+Your application code has to use exception handlers to catch these matters and determine what to do.  Without getting involved with your application code, I can't comment on your best approach to manage this.  There is a macro EXIV2\_TEST\_VERSION which enables you to have version specific code in your application.
 
 [TOC](#TOC)
 
@@ -793,7 +794,7 @@ const TagInfo gpsTagInfo[] = {
             gpsId, gpsTags, asciiString, 2, EXV_PRINT_TAG(exifGPSLatitudeRef)),
 ```
 
-As we can see, tag == 1 in the Nikon MakerNotes is Version.  In Canon MakerNotes, it is CameraSettings.  IN GPSInfo it is GPSLatitudeRef.  We need to use the appropriate tag dictionary for the IFD being parsed.  The tag 0xffff in the tagDict is used to store the family name of the tags.
+As we can see, tag == 1 in the Nikon MakerNotes is Version.  In Canon MakerNotes, it is CameraSettings.  IN GPSInfo it is GPSLatitudeRef.  We need to use the appropriate tag dictionary for the IFD being parsed.  The tag 0xffff in the tagDict in tvisitor.cpp store the group name of the tags.
 
 [TOC](#TOC)
 
@@ -962,36 +963,34 @@ I need to do more research into this complex design.
 
 [TOC](#TOC)
 <div id="8-5">
-### 8.5 Navigating the file with readIFD() and readTiff()
+### 8.5 Navigating the file with visitIFD() and visitTiff()
 
 The TiffVisitor is ingenious.  It's also difficult to understand.  Exiv2 has two tiff parsers - TiffVisitor and Image::printIFDStructure().  TiffVisitor was written by Andreas Huggel.  It's very robust and has been almost 
 bug free for 15 years.  I wrote the parser in Image::printIFDStructure() to try to understand the structure of a tiff file.  The code in Image::printIFDStructure() is easier to understand.
 
-The code which accompanies this book has a simplified version of Image::printIFDStructure() called Tiff::readIFD() and that's what will be discussed here.  The code that accompanies this book is explained here: [Code discussed in this book](#13)
+The code which accompanies this book has a simplified version of Image::printIFDStructure() called Tiff::visitIFD() and that's what will be discussed here.  The code that accompanies this book is explained here: [Code discussed in this book](#13)
 
 It's important to realise that metadata is defined recursively.  In a Tiff File, there will be a Tiff Record containing the Exif data (written in Tiff Format).  Within, that record, there will be a MakerNote which is usually written in Tiff Format.  Tiff Format is referred to as an IFD - an Image File Directory.
 
-Tiff::readIFD() uses a simple direct approach to parsing the tiff file.  When another IFD is located, readIFD() is called recursively.  As a TIFF file is a 12 byte header which provides the offset to the first IFD.  We can descend into the tiff file from the beginning.  For other files types, the file handler has to find the Exif IFD and then call readIFD().
+Tiff::visitIFD() uses a simple direct approach to parsing the tiff file.  When another IFD is located, visitIFD() is called recursively.  As a TIFF file is an 8 byte header which provides the offset to the first IFD.  We can descend into the tiff file from the beginning.  For other files types, the file handler has to find the Exif IFD and then call visitIFD().
 
-There are actually two "flavours" of readIFD.  readTiff() starts with the tiff header `II*_` or `MM_*` and then calls the other flavour `readIFD()`.  Makernotes are almost always an IFD.  Some manufactures (Nikon) embed a Tiff.  Some (Canon and Sony) embed an IFD.  It's quite common (Sony) to embed a single IFD which is not terminated with a four byte null uint32\_t.
+There are actually two "flavours" of visitIFD.  visitTiff() starts with the tiff header `II*_tsfo` or `MM_*ofst` and then calls t`visitIFD()`.  Makernotes are almost always an IFD.  Some manufactures (Nikon) embed a Tiff.  Some (Canon and Sony) embed an IFD.  It's quite common (Sony) to embed a single IFD which is not terminated with a four byte null uint32\_t.
 
-The program tvisitor has two file handlers.  One for Tiff and one for Jpeg.  Exiv2 has handlers for about 20 different formats.  If you understand Tiff and Jpeg, the others are boring variations.  The program tvisitor.cpp does not handle BigTiff, although it needs very few changes to do so.  I invite you, the reader, to investigate and send me a patch.  Best submission wins a free copy of this book.
+The program tvisitor has several file handlers such as TiffImage, JpegImage and CrwImage.  Exiv2 has handlers for about 20 different formats.  If you understand Tiff and Jpeg, the others are boring variations.  The program tvisitor.cpp does not handle BigTiff, although it needs very few changes to do so.  I invite you, the reader, to investigate and send me a patch.  Best submission wins a free copy of this book.
 
-The following code is possibly the most beautiful and elegant 100 lines I have ever written.
+The following code is possibly the most beautiful and elegant 100 lines I have ever written.  One day I will find the courage to make this a template to generate Tiff and BigTiff versions.
 
 ```cpp
-void TiffImage::readIFD(Visitor& visitor,size_t start,endian_e endian,
+void TiffImage::visitIFD(Visitor& visitor,size_t start,endian_e endian,
     int depth/*=0*/,TagDict& tagDict/*=tiffDict*/,bool bHasNext/*=true*/)
 {
-    size_t   restore_at_start = io_.tell();
+    size_t   restore1 = io_.tell();
 
     if ( !depth++ ) visits_.clear();
-    visitor.visitBegin(*this,depth);
+    visitor.visitBegin(*this);
 
     // buffer
-    const size_t dirSize = 32;
-    DataBuf  dir(dirSize);
-
+    DataBuf  dir(12);
     do {
         // Read top of directory
         io_.seek(start);
@@ -999,7 +998,7 @@ void TiffImage::readIFD(Visitor& visitor,size_t start,endian_e endian,
 
         uint16_t dirLength = getShort(dir,0,endian_);
         if ( dirLength > 500 ) Error(kerTiffDirectoryTooLarge,dirLength);
-        visitor.visitDirBegin(*this,dirLength,depth);
+        visitor.visitDirBegin(*this,dirLength);
 
         // Read the dictionary
         for ( int i = 0 ; i < dirLength ; i ++ ) {
@@ -1012,7 +1011,7 @@ void TiffImage::readIFD(Visitor& visitor,size_t start,endian_e endian,
             io_.seek(address);
 
             // read the tag
-            io_.read(dir.pData_, 12);
+            io_.read(dir);
             uint16_t tag    = getShort(dir,0,endian_);
             type_e   type   = getType (dir,2,endian_);
             uint32_t count  = getLong (dir,4,endian_);
@@ -1023,7 +1022,7 @@ void TiffImage::readIFD(Visitor& visitor,size_t start,endian_e endian,
                 Error(kerInvalidTypeValue);
             }
 
-            visitor.visitTag(*this,depth,address,tagDict);  // Tell the visitor
+            visitor.visitTag(*this,address,tagDict);  // Tell the visitor
 
             uint16_t pad   = isByteType(type)   ? 1 : 0;
             uint16_t size  = typeSize(type)     ;
@@ -1042,20 +1041,20 @@ void TiffImage::readIFD(Visitor& visitor,size_t start,endian_e endian,
                     size_t punt = buf.strequals("Nikon") ? 10 : 0 ;
                     Io io(io_,offset+punt,count-punt);
                     TiffImage makerNote(io);
-                    makerNote.readTiff(visitor,makerDict_,depth);
+                    makerNote.visitTiff(visitor,makerDict_,depth);
                 } else {
-                    bool   bNext = maker_ != kSony;                          // Sony no trailing next
+                    bool   bNext = maker_  != kSony;                                        // Sony no trailing next
                     size_t punt  = maker_  == kSony && buf.strequals("SONY DSC ") ? 12 : 0; // Sony 12 byte punt
-                    readIFD(visitor,offset+punt,endian_,depth,makerDict_,bNext);
+                    visitIFD(visitor,offset+punt,endian_,depth,makerDict_,bNext);
                 }
             } else if ( tag == 0x8825 ) {                      /* GPSTag    */
-                readIFD(visitor,offset,endian_,depth,gpsDict );
+                visitIFD(visitor,offset,endian_,depth,gpsDict );
             } else if ( tag  == 0x8769  ) {                    /* ExifTag   */
-                readIFD(visitor,offset,endian_,depth,exifDict);
+                visitIFD(visitor,offset,endian_,depth,exifDict);
             } else if ( type == tiffIfd || tag == 0x014a ) {   /* SubIFDs   */
                 for ( size_t i = 0 ; i < count ; i++ ) {
                     uint32_t  off  = count == 1 ? offset : getLong(buf,i*4,endian_) ;
-                    readIFD(visitor,   off,endian_,depth,tagDict );
+                    visitIFD(visitor,   off,endian_,depth,tagDict );
                 }
             }
         } // for i < dirLength
@@ -1065,13 +1064,13 @@ void TiffImage::readIFD(Visitor& visitor,size_t start,endian_e endian,
             io_.read(dir.pData_, 4);
             start = getLong(dir,0,endian_);
         }
-    	visitor.visitDirEnd(*this,start,depth);
+    	visitor.visitDirEnd(*this,start);
     } while (start) ;
-    visitor.visitEnd(*this,depth);
+    visitor.visitEnd(*this);
     depth--;
 
-    io_.seek(restore_at_start); // restore
-} // TiffImage::readIFD
+    io_.seek(restore1); // restore
+} // TiffImage::visitIFD
 ```
 
 To complete the story, here's valid() and readTiff():
@@ -1098,10 +1097,10 @@ bool TiffImage::valid()
     return result;
 }
 
-void TiffImage::readTiff(Visitor& visitor,TagDict& tagDict,int depth)
+void TiffImage::visitTiff(Visitor& visitor,TagDict& tagDict,int depth)
 {
     if ( valid() ) {
-        readIFD(visitor,start_,endian_,depth,tagDict);
+        visitIFD(visitor,start_,endian_,depth,tagDict);
     }
 } // TiffImage::readTiff
 ```
@@ -1182,7 +1181,7 @@ You can see that he identifies the file as follows:
 ...
 ```
 
-He is working on an embedded TIFF which is located at bytes 12..15289.  The is the Tiff IFD.  While processing that, he encountered a MakerNote which occupies byte 924..3142 of that IFD.  As you can see, it four bytes `0211`.  You could locate that data with the command:
+He is working on an embedded TIFF which is located at bytes 12..15289 which is the Tiff IFD.  While processing that, he encountered a MakerNote which occupies byte 924..3142 of that IFD.  As you can see, it four bytes `0211`.  You could locate that data with the command:
 
 ```bash
 $ dd if=~/Stonehenge.jpg bs=1 skip=$((12+924+10+8)) count=4 2>/dev/null ; echo 
@@ -1191,7 +1190,7 @@ $
 ```
 Using dd to extract metadata is discussed in more detail here: [8.1 Using dd to extract data from an image](#8-1).
 
-Please be aware that there are two ways in which IFDs can occur in the file.  They can be an embedded TIFF which is complete with the `II*_LengthOffset` or `MM_*LengthOffset` 12-byte header followed the IFD.   Or the IFD can be in the file without the header.  readIFD() knows that the tags such as GpsTag and ExifTag are IFDs and calls readIFD().  For the embedded TIFF (such as Nikon MakerNote), readIFD() creates a TiffImage and calls TimeImage.readTiff() which validates the header and calls readIFD().
+Please be aware that there are two ways in which IFDs can occur in the file.  They can be an embedded TIFF which is complete with the `II*_LengthOffset` or `MM_*LengthOffset` 12-byte header followed the IFD.   Or the IFD can be in the file without the header.  visitIFD() knows that the tags such as GpsTag and ExifTag are IFDs and calls visitIFD().  For the embedded TIFF (such as Nikon MakerNote), visitIFD() creates a TiffImage and calls TimeImage.readTiff() which validates the header and calls visitIFD().
 
 One other important detail is that although the Tiff Specification expects the IFD to end with a uint32\_t offset == 0, Sony (and other) maker notes do not.  The IFD begins with a uint32\_t to define length, followed by 12 byte tags.  There is no trailing null uint32\_t.
 
@@ -1205,7 +1204,7 @@ I added support in tvisitor.cpp for one binary tag which is Nikon Picture Contro
 
 ```bash
 .../book/build $ ./tvisitor R ~/Stonehenge.jpg | grep -i picture
-           286 | 0x0023 Exif.Nikon.PictureControl    | UNDEFINED |       58 |           | 0100STANDARD____________STANDARD____ +++
+   286 | 0x0023 Exif.Nikon.PictureControl  | UNDEFINED |   58 |    | 0100STANDARD____________STANDARD____ +++
 .../book/build $ 
 ```
 
@@ -1519,7 +1518,13 @@ This is ingenious magic.  I'll revisit/edit this explanation in the next few day
 
 [TOC](#TOC)
 <div id="9">
-# 9 Test Suite and Build
+# 9 Image Previews
+
+To be written.
+
+[TOC](#TOC)
+<div id="10">
+# 10 Test Suite and Build
 
 Exiv2 has several different elements in the test suite. They are:
 
@@ -1531,8 +1536,8 @@ Exiv2 has several different elements in the test suite. They are:
 In writing this book, I want to avoid duplicating information between Exiv2 documentation and this book.  This book is intended to provide an engineering explanation of how the code works and why various design decisions were chosen.  However, you will find that this book doesn't explain how to use Exiv2. How to use execute the test suite is documented in README.md.
 
 [TOC](#TOC)
-<div id="9-1">
-# 9.1 Bash Tests
+<div id="10-1">
+# 10.1 Bash Tests
 
 As the name implies, these tests were originally implemented as bash scripts.
 
@@ -1654,13 +1659,15 @@ def reportTest(r,t):
 # Update the environment
 key="PATH"
 if key in os.environ:
-	os.environ[key] = os.path.abspath(os.path.join(os.getcwd(),'../build/bin')) + os.pathsep + os.environ[key]
+	os.environ[key] = os.path.abspath(os.path.join(os.getcwd(),'../build/bin'))
+	                + os.pathsep + os.environ[key]
 else:
 	os.environ[key] = os.path.abspath(os.path.join(os.getcwd(),'../build/bin'))
 
 for key in [ "LD_LIBRARY_PATH", "DYLD_LIBRARY_PATH" ]:
 	if key in os.environ:
-		os.environ[key] = os.path.abspath(os.path.join(os.getcwd(),'../build/lib')) + os.pathsep + os.environ[key]
+		os.environ[key] = os.path.abspath(os.path.join(os.getcwd(),'../build/lib'))
+		                + os.pathsep + os.environ[key]
 	else:
 		os.environ[key] = os.path.abspath(os.path.join(os.getcwd(),'../build/lib'))
 
@@ -1696,20 +1703,20 @@ reportTest(r,t)
 ```
 
 [TOC](#TOC)
-<div id="9-2">
-# 9.2 Python Tests
+<div id="10-2">
+# 10.2 Python Tests
 
 To be written.
 
 [TOC](#TOC)
-<div id="9-3">
-# 9.3 Unit Test
+<div id="10-3">
+# 10.3 Unit Test
 
 To be written.
 
 [TOC](#TOC)
-<div id="9-4">
-# 9.4 Version Test
+<div id="10-4">
+# 10.4 Version Test
 
 To be written.
 
@@ -1723,7 +1730,7 @@ To be written.
 <div id="11">
 # 11 Security
 
-## 11.1 The Fuzzing Police
+## 12.1 The Fuzzing Police
 
 We received our first CVE from the fuzzing police in July 2017.  Not a pleasant experience.  It was delivered in a blog post demanding that we re-write Exiv2 as it was "unsafe".   Needless to say, no resources were being offered for the re-write, no justification was offered and no explanation why a re-write of 100,000 lines of code would fix anything.
 
@@ -1733,15 +1740,15 @@ A couple of years later, Kevin send us four security alerts.  When I invited him
 
 While security is an important matter, the behaviour of the fuzzing police is despicable and very demotivating.  They frequently report false positives which consume/waste resources.  None of those people ever say "Thank You" when something is fixed and never apologise for false positives.  They sometimes say something useless like "I did you a favour because there could have been something wrong.".
 
-I must also mention that the fuzzing police use special tools that build and instrument the code to detect suspicious run-time activity.  Often, there is no end-user bug report to demonstrate an issue.  When they report an issue, they provide a file called `poc` = Proof of Concept.  Their bug reports are usually totally short of information about how to reproduce the issues and there is no cross-reference with their CVE tracking data-base.
+I must also mention that the fuzzing police use special tools that build and instrument the code to detect suspicious run-time activity.  Often, there is no end-user bug report to demonstrate an issue.  When they report an issue, they provide a file called `poc` = Proof of Concept.  Their bug reports are usually totally devoid of information about how to reproduce the issue and there is no cross-reference with the CVE tracking data-base.
 
 Everything is treated as urgent.  All their reports are assigned very high levels of vulnerability.  In short, those people are a pain in the butt and waste enormous amounts of Team Exiv2 engineering resources.
 
 As the fuzzing police maintain their own CVE data base, the number and frequency of security issues is tracked and published.  Their mission in life is negative.  I don't have a good word to say about those peple.
 
 [TOC](#TOC)
-<div id="12">
-## 11.2 How we deal with security issues
+<div id="12-2">
+## 12.2 How we deal with security issues
 
 To be written.
 
@@ -1751,30 +1758,30 @@ To be written.
 
 |    |    |    |    |
 |:-- |:-- |:-- |:-- |
-| [12.1) C++ Code](#12-1) | [12.2) Build](#12-2) | [12.3) Security](#12-3) | [12.4) Documentation](#12-4) |
-| [12.5) Testing](#12-5) | [12.6) Sample programs](#12-6) | [12.7) User Support](#12-7) | [12.8) Bug Tracking](#12-8) |
-| [12.9) Release Engineering](#12-9) | [12.10) Platform Support](#12-10) | [12.11) Localisation](#12-11) | [12.12) Build Server](#12-12) |
-| [12.13) Source Code Management](#12-13) | [12.14) Project Web Site](#12-14) | [12.15) Project Servers (apache, SVN, GitHub, Redmine)](#12-15) | [12.16) API Management](#12-16) |
-| [12.17) Recruiting Contributors](#12-17) | [12.18) Project Management and Scheduling](#12-18) | [12.19) Enhancement Requests](#12-19) | [12.20) Tools](#12-20) |
-| [12.21) Licensing](#12-21) | [12.22) Back-porting fixes to earlier releases](#12-22) | [12.23) Other projects demanding support and changes](#12-23) | |
+| [13.1) C++ Code](#13-1) | [13.2) Build](#13-2) | [13.3) Security](#13-3) | [13.4) Documentation](#13-4) |
+| [13.5) Testing](#13-5) | [13.6) Sample programs](#13-6) | [13.7) User Support](#13-7) | [13.8) Bug Tracking](#13-8) |
+| [13.9) Release Engineering](#13-9) | [13.10) Platform Support](#13-10) | [13.11) Localisation](#13-11) | [13.12) Build Server](#13-12) |
+| [13.13) Source Code Management](#13-13) | [13.14) Project Web Site](#13-14) | [13.15) Project Servers (apache, SVN, GitHub, Redmine)](#13-15) | [13.16) API Management](#13-16) |
+| [13.17) Recruiting Contributors](#13-17) | [13.18) Project Management and Scheduling](#13-18) | [13.19) Enhancement Requests](#13-19) | [13.20) Tools](#13-20) |
+| [13.21) Licensing](#13-21) | [13.22) Back-porting fixes to earlier releases](#13-22) | [13.23) Other projects demanding support and changes](#13-23) | |
 
 
-<div id="12-1">
-### 12.1) C++ Code
+<div id="13-1">
+### 13.1) C++ Code
 
-Exiv2 is written in C++.  Prior to v0.28, the code is written for C++ 1998 and makes considerable use of STL containers such as vector, map, set, string and many others.  The code started life as a 32-bit library on Unix and today builds well for 32 and 64 bit systems running Linux, Unix, macOS and Windows (Cygwin, MinGW, and Visual Studio).  The Exiv2 project has never supported Mobile Platforms or Embedded Systems, however it should be possible to build for other platforms with a modest effort.
+Exiv2 is written in C++.  Prior to v0.28, the code was written to the C++ 1998 Standard and makes considerable use of STL containers such as vector, map, set, string and many others.  The code started life as a 32-bit library on Unix and today builds on 32 and 64 bit systems running Linux, Unix, macOS and Windows (Cygwin, MinGW, and Visual Studio).  The Exiv2 project has never supported Mobile Platforms or Embedded Systems, however it should be possible to build for other platforms with modest effort.
 
 The code has taken a great deal of inspiration from the book [Design Patterns: Elements of Reusable Object=Oriented Software](https://www.oreilly.com/library/view/design-patterns-elements/0201633612/).
 
-Starting with Exiv2 v0.28, the code requires a C++11 Compiler.  Exiv2 v0.28 is a major refactoring of the code and provides a new API.  The project maintains a series of v0.27 "dot" releases for security updates.  These releases are intended to ease the transition of existing applications in adapting to the new APIs in the v0.28.
+Starting with Exiv2 v0.28, the code requires a C++11 Compiler.  Exiv2 v0.28 is a major refactoring of the code and provides a new API.  The project maintains a series of v0.27 "dot" releases for security updates.  These releases are intended to ease the transition of existing applications in adapting to the new APIs in v0.28.
 
 [TOC](#TOC)
-<div id="12-2">
-### 12.2) Build
+<div id="13-2">
+### 13.2) Build
 
 The build code in Exiv2 is implemented using CMake: cross platform make.  This system enables the code to be built on many different platforms in a consistant manner.  CMake recursively reads the files CMakeLists.txt in the source tree and generates build environments for different build systems.  For Exiv2, we actively support using CMake to build on Unix type plaforms (Linux, macOS, Cygwin and MinGW, NetBSD, Solaris and FreeBSD), and several editions of Visual Studio.  CMake can generate project files for Xcode and other popular IDEs.
 
-Exiv2 has dependencies on the following libraries.  All are optional, however it's unusual to build without zlib and expat.
+Exiv2 has dependencies on the following libraries.  All are optional, however it's unusual to build without zlib and libexpat.
 
 | _Name_ | _Purpose_ |
 |:--    |:--- |
@@ -1786,137 +1793,167 @@ Exiv2 has dependencies on the following libraries.  All are optional, however it
 | libiconv | charset transformations |
 | libintl | localisation support |
 
+#### Conan
+
+Starting with Exiv2 v0.27, we can use conan to build dependencies.  I very much appreciate Luis bringing this technology to Exiv2 as it has hugely simplified building with Visual Studio.  In the CI builders on GitHub, conan is used to build on Linux and macOS.  At this time (June 2020), I haven't been able to get conan to work on Cygwin and/or MinGW/msys2.  I expect that will soon be rectified.
+
+Prior to using conan, the build environment for Visual Studio were hand built for Visual Studio 2005 and relied on Visual Studio to convert them to the edition in use.  Additionally, source trees for dependencies were required in specify locations on storage.  We did support CMake on Visual Studio, however it was buried in a 500 line cmd file `cmakeBuild.cmd`.  The effort to construct and maintain that apparatus was considerable.
+
+Conan brings a fresh approach to building dependencies.  Every dependancy has a "recipe" which tells conan how to build.  We have a file conanfile.py (written in python) which tells conan which dependencies we need.  Conan follows the recipe to obtain and build the dependency which is cached or future use.  When dealing with very large libraries such as openssl, the recipe might pull prebuilt binaries for your requested configuration.  For more modest libraries (such as expat and zlib), the recipe will pull the source and build.  Conan caches the dependencies on your ~/.conan directory.  This arrangement means that you seldom have to build dependencies as they are usually in the cache.
+
+I have always supported the plan to use CMake as our common build platform and invested a lot of effort in cmakeBuild.cmd.  Using conan with Visual Studio is much superior to our prior methods of working with CMake and Visual Studio.
+
+Luis has made other very useful contributions to Exiv2.  He rewrote most of the CMake code.  It's shorter, more robust, more flexible and easier to understand.  He also introduced CPack which packages both our Source Bundle and binary builds for public release on https://exiv2.org
+
+The final element of CMake which we have not yet deployed is CTest.  Perhaps one day this will be investigated and integrated into the Exiv2 build environment.
+
+Thank You to Luis for introducing Conan to Exiv2 and all your outstanding work with CMake.
+
+The documentation about using Conan with Exiv2 is in [README-CONAN.md](README-CONAN.md)
+
+#### Build Options
+
+There are numerous build options provided for Exiv2.  The documentation for this is in [README.md](README.md).  Most of the options concern dependencies, the configuration { debug | release }, kind { static | shared }, configuration { 32 | 64 }, run-time { shared | static }, compiler { GCC | Clang | 2008 | ... | 2019 } and the language standard { 98 | 11 | 14 | 17 }.  As you will appreciate the build matrix is huge.
+
+There are a number of convenience options to build packages for release, the on-line documentation, unit_tests, with ASAN support.  ASAN is the "Address Sanitizer".  When this option is selected, the code is built and instrumented with address checking.  Every memory access is tested before use.  This has a considerable performance penalty and is only intended for test and development purposes and shouldn't be used in production.
+
+An interesting option is to BUILD\_WITH\_CCACHE.  This option can dramatically speed up rebuilding by caching compiled code for future use.  If CCache determines that there are no code or configuration changes, the compiled object from the cache is copied.  This can boost build performance by 100x.
+
+While lots of effort has been invested in the CMakeLists.txt and *.cmake files, some users may want something that has never been investigated by Team Exiv2.  For example, we do not support building for ARM processors.  It's highly likely that Exiv2 can be successfully built for those machines and the recommended way is to use options such as -DCMAKE\_CXX\_FLAGS to introduce the necessary compiler and linker options.  Other examples of "possible, yet not supported" are to request Visual Studio to use Clang, or its own CMake support, or its own Package Manager.
+
+Regrettably there are users who look to Team Exiv2 to support for every possible configuration.  This is mission impossible.  The essential thing is the cross-platform C++ code is built and tested and many platforms.  Users will always think of novel ways in which to build and deploy. 
+
 [TOC](#TOC)
-<div id="12-3">
-### 12.3) Security
+<div id="13-3">
+### 13.3) Security
 
 To be written.
 
 [TOC](#TOC)
-<div id="12-4">
-### 12.4) Documentation
+<div id="13-4">
+### 13.4) Documentation
 
 To be written.
 
 [TOC](#TOC)
-<div id="12-5">
-### 12.5) Testing
+<div id="13-5">
+### 13.5) Testing
 
 To be written.
 
 [TOC](#TOC)
-<div id="12-6">
-### 12.6) Sample programs
+<div id="13-6">
+### 13.6) Sample programs
 
 To be written.
 
 [TOC](#TOC)
-<div id="12-7">
-### 12.7) User Support
+<div id="13-7">
+### 13.7) User Support
 
 To be written.
 
 [TOC](#TOC)
-<div id="12-8">
-### 12.8) Bug Tracking
+<div id="13-8">
+### 13.8) Bug Tracking
 
 To be written.
 
 [TOC](#TOC)
-<div id="12-9">
-### 12.9) Release Engineering
+<div id="13-9">
+### 13.9) Release Engineering
 
 To be written.
 
 [TOC](#TOC)
-<div id="12-10">
-### 12.10) Platform Support
+<div id="13-10">
+### 13.10) Platform Support
 
 To be written.
 
 [TOC](#TOC)
-<div id="12-11">
-### 12.11) Localisation
+<div id="13-11">
+### 13.11) Localisation
 
 To be written.
 
 [TOC](#TOC)
-<div id="12-12">
-### 12.12) Build Server
+<div id="13-12">
+### 13.12) Build Server
 
 To be written.
 
 [TOC](#TOC)
-<div id="12-13">
-### 12.13) Source Code Management
+<div id="13-13">
+### 13.13) Source Code Management
 
 To be written.
 
 [TOC](#TOC)
-<div id="12-14">
-### 12.14) Project Web Site
+<div id="13-14">
+### 13.14) Project Web Site
 
 To be written.
 
 [TOC](#TOC)
-<div id="12-15">
-### 12.15) Project Servers (apache, SVN, GitHub, Redmine)
+<div id="13-15">
+### 13.15) Project Servers (apache, SVN, GitHub, Redmine)
 
 To be written.
 
 [TOC](#TOC)
-<div id="12-16">
-### 12.16) API Management
+<div id="13-16">
+### 13.16) API Management
 
 To be written.
 
 [TOC](#TOC)
-<div id="12-17">
-### 12.17) Recruiting Contributors
+<div id="13-17">
+### 13.17) Recruiting Contributors
 
 To be written.
 
 [TOC](#TOC)
-<div id="12-18">
-### 12.18) Project Management and Scheduling
+<div id="13-18">
+### 13.18) Project Management and Scheduling
 
 To be written.
 
 [TOC](#TOC)
-<div id="12-19">
-### 12.19) Enhancement Requests
+<div id="13-19">
+### 13.19) Enhancement Requests
 
 To be written.
 
 [TOC](#TOC)
-<div id="12-2">
-### 12.20) Tools
+<div id="13-2">
+### 13.20) Tools
 
 Every year brings new/different tools (cmake, git, MarkDown, C++11)
 
 To be written.
 
 [TOC](#TOC)
-<div id="12-21">
-### 12.21) Licensing
+<div id="13-21">
+### 13.21) Licensing
 
 To be written.
 
 [TOC](#TOC)
-<div id="12-22">
-### 12.22) Back-porting fixes to earlier releases
+<div id="13-22">
+### 13.22) Back-porting fixes to earlier releases
 
 To be written.
 
 [TOC](#TOC)
-<div id="12-23">
-### 12.23) Other projects demanding support and changes
+<div id="13-23">
+### 13.23) Other projects demanding support and changes
 
 To be written.
 
 [TOC](#TOC)
-<div id="13">
-# 13 Code discussed in this book
+<div id="14">
+# 14 Code discussed in this book
 
 The latest version of this book and the programs discussed are available for download from:
 
