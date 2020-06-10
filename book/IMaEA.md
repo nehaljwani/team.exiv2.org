@@ -25,11 +25,11 @@
   [10.2 Python Tests](#10-2)<br>
   [10.3 Unit Tests](#10-3)<br>
   [10.4 Version Test](#10-4)<br>
-11. [API/ABI](#10)<br>
+11. [API/ABI Compatibility](#11)<br>
 12. [Security](#12)<br>
   [12.1 The Fuzzing Police](#12)<br>
   [12.2 How we deal with security issues](12-2)<br>
-13. [Project Management, Release Engineering and User Support](#12)<br>
+13. [Project Management, Release Engineering and User Support](#13)<br>
 14. [Code discussed in this book](#13)<br>
 15. [License](#license)
 
@@ -211,7 +211,7 @@ $
 ### 1.4 TIFF and BigTiff
 ![tiff](tiff.png)
 
-The architecture of BigTiff is identical to TIFF.  However it is 64 bit based.  So uint16\_t data types become uint32\_t and uint32\_t become uint64\_t.
+The architecture of BigTiff is identical to TIFF.  However it is 64 bit based.  So uint16\_t data types become uint32\_t and uint32\_t become uint64\_t.  BigTiff has three additional 8 byte types: longlong, slonglong and tiffifd8.
 
 | Element | TIFF | BigTiff |
 |:--       |:--  |:--    |
@@ -221,7 +221,7 @@ The architecture of BigTiff is identical to TIFF.  However it is 64 bit based.  
 | Count   | uint32\_t | uint64\_t  |
 | Offset    | uint32\_t | uint64\_t  |
 | Field  | 12 bytes | 24 bytes |
-| Entries **E#** | uint16\_t | uint32\_t  |
+| Entries **#E** | uint16\_t | uint32\_t  |
 | Next | uint32\_t | uint64\_t  |
 
 BigTiff has 
@@ -247,7 +247,7 @@ To be written.
 
 ![crw](crw.png)
 
-To be written.
+The specification is here: [CIFFspecV1R04.pdf](https://web.archive.org/web/20081230095207/http://xyrion.org/ciff/CIFFspecV1R04.pdf)
 
 [Image File Formats](#1)<br>
 [TOC](#TOC)
@@ -1728,7 +1728,13 @@ To be written.
 
 [TOC](#TOC)
 <div id="11">
-# 11 Security
+# 11 API/ABI Compatibility
+
+To be written.
+
+[TOC](#TOC)
+<div id="12">
+# 12 Security
 
 ## 12.1 The Fuzzing Police
 
@@ -1753,8 +1759,8 @@ As the fuzzing police maintain their own CVE data base, the number and frequency
 To be written.
 
 [TOC](#TOC)
-<div id="12">
-# 12 Project Management, Release Engineering, User Support
+<div id="13">
+# 13 Project Management, Release Engineering, User Support
 
 |    |    |    |    |
 |:-- |:-- |:-- |:-- |
@@ -1795,7 +1801,7 @@ Exiv2 has dependencies on the following libraries.  All are optional, however it
 
 #### Conan
 
-Starting with Exiv2 v0.27, we can use conan to build dependencies.  I very much appreciate Luis bringing this technology to Exiv2 as it has hugely simplified building with Visual Studio.  In the CI builders on GitHub, conan is used to build on Linux and macOS.  At this time (June 2020), I haven't been able to get conan to work on Cygwin and/or MinGW/msys2.  I expect that will soon be rectified.
+Starting with Exiv2 v0.27, we can use conan to build dependencies.  I very much appreciate Luis bringing this technology to Exiv2 as it has hugely simplified building with Visual Studio.  In the CI builders on GitHub, conan is also used to build on Linux and macOS.  At this time (June 2020), I haven't been able to get conan to work on Cygwin and/or MinGW/msys2.  I expect that will soon be rectified.
 
 Prior to using conan, the build environment for Visual Studio were hand built for Visual Studio 2005 and relied on Visual Studio to convert them to the edition in use.  Additionally, source trees for dependencies were required in specify locations on storage.  We did support CMake on Visual Studio, however it was buried in a 500 line cmd file `cmakeBuild.cmd`.  The effort to construct and maintain that apparatus was considerable.
 
@@ -1815,19 +1821,19 @@ The documentation about using Conan with Exiv2 is in [README-CONAN.md](README-CO
 
 There are numerous build options provided for Exiv2.  The documentation for this is in [README.md](README.md).  Most of the options concern dependencies, the configuration { debug | release }, kind { static | shared }, configuration { 32 | 64 }, run-time { shared | static }, compiler { GCC | Clang | 2008 | ... | 2019 } and the language standard { 98 | 11 | 14 | 17 }.  As you will appreciate the build matrix is huge.
 
-There are a number of convenience options to build packages for release, the on-line documentation, unit_tests, with ASAN support.  ASAN is the "Address Sanitizer".  When this option is selected, the code is built and instrumented with address checking.  Every memory access is tested before use.  This has a considerable performance penalty and is only intended for test and development purposes and shouldn't be used in production.
+There are a number of convenience options to build packages for release, on-line documentation, unit_tests and ASAN support.  ASAN is the "Address Sanitiser".  When this option is selected, the code is built and instrumented with address checking.  Every memory access is tested before use.  This has a considerable performance penalty and is only intended for test and development purposes.  It shouldn't be used in production.
 
-An interesting option is to BUILD\_WITH\_CCACHE.  This option can dramatically speed up rebuilding by caching compiled code for future use.  If CCache determines that there are no code or configuration changes, the compiled object from the cache is copied.  This can boost build performance by 100x.
+An interesting option is BUILD\_WITH\_CCACHE.  This option can dramatically speed up rebuilding by caching compiled code.  If CCache determines that there are no code or configuration changes, the compiled object from the cache is used.  This can boost build performance by 100x.
 
 While lots of effort has been invested in the CMakeLists.txt and *.cmake files, some users may want something that has never been investigated by Team Exiv2.  For example, we do not support building for ARM processors.  It's highly likely that Exiv2 can be successfully built for those machines and the recommended way is to use options such as -DCMAKE\_CXX\_FLAGS to introduce the necessary compiler and linker options.  Other examples of "possible, yet not supported" are to request Visual Studio to use Clang, or its own CMake support, or its own Package Manager.
 
-Regrettably there are users who look to Team Exiv2 to support for every possible configuration.  This is mission impossible.  The essential thing is the cross-platform C++ code is built and tested and many platforms.  Users will always think of novel ways in which to build and deploy. 
+Regrettably there are users who look to Team Exiv2 to support every possible configuration.  This is mission impossible.  The essential thing is that we have built and tested our code and many platforms.  Users will always think of novel ways in which to build and deploy. 
 
 [TOC](#TOC)
 <div id="13-3">
 ### 13.3) Security
 
-To be written.
+This is discussed in detail here: [11 Security](#11).
 
 [TOC](#TOC)
 <div id="13-4">
@@ -1839,13 +1845,13 @@ To be written.
 <div id="13-5">
 ### 13.5) Testing
 
-To be written.
+This is discussed in detail here: [10 Testing](#10).
 
 [TOC](#TOC)
 <div id="13-6">
 ### 13.6) Sample programs
 
-To be written.
+This is discussed in detail here: [6 Sample Applications](#6).
 
 [TOC](#TOC)
 <div id="13-7">

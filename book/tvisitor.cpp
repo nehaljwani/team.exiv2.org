@@ -59,6 +59,13 @@ const char* typeName(type_e tag)
     return result;
 }
 
+enum kCanonType //  bits 14-15 of type
+{   kStg_InHeapSpace   = 0
+,   kStg_InRecordEntry = 1
+,   kStg_InReserved1   = 2
+,   kStg_InReserved2   = 3
+};
+
 enum endian_e
 {   keLittle
 ,   keBig
@@ -397,6 +404,7 @@ TagDict canonDict ;
 TagDict nikonDict ;
 TagDict sonyDict  ;
 TagDict gpsDict   ;
+TagDict crwDict   ;
 
 bool tagKnown(uint16_t tag,const TagDict& tagDict)
 {
@@ -496,6 +504,13 @@ public:
         path_=os.str();
         seek(0);
     };
+    
+    uint32_t getLong(endian_e endian)
+    {
+        DataBuf buf(4);
+        read   (buf);
+        return ::getLong(buf,0,endian);
+    }
 
     virtual ~Io() { close(); }
     
@@ -547,6 +562,7 @@ public:
     Visitor(std::ostream& out,PSopt_e option)
     : out_   (out)
     , option_(option)
+    , depth_ (0)
     {};
     virtual ~Visitor() {};
     
@@ -558,11 +574,12 @@ public:
     virtual void visitReport  (std::ostringstream& out) {} ;
     virtual void visitReport  (std::ostringstream& out,bool& bLF) {} ;
 
-    PSopt_e option()    { return option_ ; }
-    std::ostream& out() { return out_    ; }
+    PSopt_e option()      { return option_ ; }
+    std::ostream& out()   { return out_    ; }
+    size_t        depth_ ;
 private:
     PSopt_e       option_;
-    std::ostream& out_;
+    std::ostream& out_   ;
 };
 
 // 3. Image has an accept(Visitor&) method
@@ -644,7 +661,6 @@ class ReportVisitor: public Visitor
 public:
     ReportVisitor(std::ostream& out, PSopt_e option)
     : Visitor(out,option)
-    , depth_(0)
     {}
 
     virtual void visitBegin(Image& image)
@@ -741,12 +757,10 @@ public:
     virtual void visitEnd(Image& image)
     {
         if ( option() == kpsBasic || option() == kpsRecursive ) {
-            out() << indent(depth_+1) << "END: " << image.path() << std::endl;
+            out() << indent(depth_) << "END: " << image.path() << std::endl;
         }
         depth_-- ;
     } // visitEnd
-private:
-    size_t depth_;
 };
 
 // Concrete Images
@@ -797,6 +811,25 @@ public:
         io().seek(restore);
         return result ;
     }
+    
+    void dumpImageHeader(size_t start,endian_e endian,uint16_t depth)
+    {
+        size_t restore = io().tell();
+        io().seek(start);
+        
+        uint32_t imageWidth         = io().getLong(endian);
+        uint32_t imageHeight        = io().getLong(endian);
+        int32_t  pixelAspectRatio   = (int32_t) io().getLong(endian);
+        float    rotationAngle      = (float) io().getLong(endian);
+        uint32_t componentBitDepth  = io().getLong(endian);
+        uint32_t colorBitDepth      = io().getLong(endian);
+        uint32_t colorBW            = io().getLong(endian);
+        std::cout << indent(depth) << stringFormat("width,height                    = %d,%d  ", imageWidth,imageHeight)          << std::endl;
+        std::cout << indent(depth) << stringFormat("pixelAspectRatio,rotationAngle  = %#x,%f" , pixelAspectRatio,rotationAngle)  << std::endl;
+        std::cout << indent(depth) << stringFormat("componentBitDepth,colorBitDepth = %d,%d"  , componentBitDepth,colorBitDepth) << std::endl;
+        std::cout << indent(depth) << stringFormat("colorBW                         = %d"     , colorBW)                         << std::endl;
+        io().seek(restore);
+    }
 
     virtual void accept(class Visitor& visitor)
     {
@@ -807,21 +840,20 @@ public:
         io().read(u);
         uint16_t dirLength = getShort(u,0,endian_);
         std::cout << stringFormat("CIFF Directory %s dirLength = %d",io().path().c_str(),dirLength) << std::endl;
-        std::cout <<              "    tag |  count | offset "       << std::endl;
+        std::cout <<              "    tag | name                           |  count | offset "       << std::endl;
         DataBuf buf(10); // It's a CIFF not an IFD!
-        // uint32_t offset = 0 ;
         for ( int i = 0 ; i < dirLength ; i++ ) {
             io().read(buf);
             uint16_t tag    = getShort(buf,0,endian_);
             uint32_t count  = getLong (buf,2,endian_);
             uint32_t offset = getLong (buf,6,endian_);
-            std::cout << stringFormat(" %6#x | %6d | %d ",tag,count,offset) << std::endl;
-            
-            //if ( tag == 0x300a ) { // it's not a IFD, it's a CIFF entry or something.
-            //    TiffImage* t = (TiffImage*) this ;
-            //    t->visitIFD(visitor,offset,endian_);
-            //}
-            // offset += count;
+            std::cout << stringFormat(" %6#x | %-30s | %6d | %d ",tag,tagName(tag,crwDict,28).c_str(),count,offset) << std::endl;
+            if ( tag == 0x300a        /* ImageProps      */ ) {
+                dumpImageHeader(offset,endian(),visitor.depth_+3) ;
+            } else if ( tag == 0x300b /* ExifInformation */ ) { // TODO: not test yet!
+                TiffImage* t = (TiffImage*) this ;
+                t->visitIFD(visitor,offset,endian_);
+            }
         }
 
         io().seek(restore);
@@ -1301,6 +1333,61 @@ void init()
     sonyDict  [ 0xb04a ] = "SequenceNumber";
     sonyDict  [ 0xb04b ] = "AntiBlur";
     sonyDict  [ 0xb04e ] = "LongExposureNoiseReduction";
+    
+    crwDict   [ 0xffff ] = "CRW";
+    crwDict   [ 0x0032 ] = "CanonColorInfo1";
+    crwDict   [ 0x0805 ] = "CanonFileDescription";
+    crwDict   [ 0x080a ] = "CanonRawMakeModel";
+    crwDict   [ 0x080b ] = "CanonFirmwareVersion";
+    crwDict   [ 0x080c ] = "ComponentVersion";
+    crwDict   [ 0x080d ] = "ROMOperationMode";
+    crwDict   [ 0x0810 ] = "OwnerName";
+    crwDict   [ 0x0815 ] = "CanonImageType";
+    crwDict   [ 0x0816 ] = "OriginalFileName";
+    crwDict   [ 0x0817 ] = "ThumbnailFileName";
+    crwDict   [ 0x100a ] = "TargetImageType";
+    crwDict   [ 0x1010 ] = "ShutterReleaseMethod";
+    crwDict   [ 0x1011 ] = "ShutterReleaseTiming";
+    crwDict   [ 0x1016 ] = "ReleaseSetting";
+    crwDict   [ 0x101c ] = "BaseISO";
+    crwDict   [ 0x1028 ] = "CanonFlashInfo";
+    crwDict   [ 0x1029 ] = "CanonFocalLength";
+    crwDict   [ 0x102a ] = "CanonShotInfo";
+    crwDict   [ 0x102c ] = "CanonColorInfo2";
+    crwDict   [ 0x102d ] = "CanonCameraSettings";
+    crwDict   [ 0x1030 ] = "WhiteSample";
+    crwDict   [ 0x1031 ] = "SensorInfo";
+    crwDict   [ 0x1033 ] = "CustomFunctions10D";
+    crwDict   [ 0x1038 ] = "CanonAFInfo";
+    crwDict   [ 0x1093 ] = "CanonFileInfo";
+    crwDict   [ 0x10a9 ] = "ColorBalance";
+    crwDict   [ 0x10b5 ] = "RawJpgInfo";
+    crwDict   [ 0x10ae ] = "ColorTemperature";
+    crwDict   [ 0x10b4 ] = "ColorSpace";
+    crwDict   [ 0x1803 ] = "ImageFormat";
+    crwDict   [ 0x1804 ] = "RecordID";
+    crwDict   [ 0x1806 ] = "SelfTimerTime";
+    crwDict   [ 0x1807 ] = "TargetDistanceSetting";
+    crwDict   [ 0x180b ] = "SerialNumber";
+    crwDict   [ 0x180e ] = "TimeStamp";
+    crwDict   [ 0x1810 ] = "ImageInfo";
+    crwDict   [ 0x1813 ] = "FlashInfo";
+    crwDict   [ 0x1814 ] = "MeasuredEV";
+    crwDict   [ 0x1817 ] = "FileNumber";
+    crwDict   [ 0x1818 ] = "ExposureInfo";
+    crwDict   [ 0x1834 ] = "CanonModelID";
+    crwDict   [ 0x1835 ] = "DecoderTable";
+    crwDict   [ 0x183b ] = "SerialNumberFormat";
+    crwDict   [ 0x2005 ] = "RawData";
+    crwDict   [ 0x2007 ] = "JpgFromRaw";
+    crwDict   [ 0x2008 ] = "ThumbnailImage";
+    crwDict   [ 0x2804 ] = "ImageDescription";
+    crwDict   [ 0x2807 ] = "CameraObject";
+    crwDict   [ 0x3002 ] = "ShootingRecord";
+    crwDict   [ 0x3003 ] = "MeasuredInfo";
+    crwDict   [ 0x3004 ] = "CameraSpecification";
+    crwDict   [ 0x300a ] = "ImageProps";
+    crwDict   [ 0x300b ] = "ExifInformation";
 
     makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcVersion"         ,asciiString , 0, 4));
     makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcName"            ,asciiString , 4,20));
