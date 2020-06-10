@@ -543,6 +543,19 @@ private:
     size_t      restore_;
 };
 
+class IoRestorer // useful for ensuring we restore Io when function ends
+{
+public:
+    IoRestorer(Io& io)
+    : io_(io)
+    , restore_(io.tell())
+    {}
+    virtual ~IoRestorer() {io_.seek(restore_);}
+private:
+    Io&    io_;
+    size_t restore_;
+};
+
 // Options for ReportVisitor
 enum PSopt_e
 {   kpsBasic
@@ -670,8 +683,7 @@ public:
             char c = image.endian() == keBig ? 'M' : 'I';
             out() << indent(depth_) << stringFormat("STRUCTURE OF %s FILE (%c%c): ",image.format().c_str(),c,c) <<  image.io().path() << std::endl;
             out() << indent(depth_)
-                  << " address |    tag                              |     "
-                  << " type |    count |    offset | value" << std::endl;
+                  << " address |    tag type      count | value" << std::endl;
             ;
         }
     }
@@ -692,7 +704,7 @@ public:
     }
     virtual void visitReport(std::ostringstream& os,bool& bLF)
     {
-        if ( bLF && os.str().size() ) {
+        if ( bLF ) {
             os << std::endl;
             visitReport(os);
         }
@@ -707,7 +719,7 @@ public:
         endian_e endian = image.endian();
         Io& io          = image.io();
 
-        size_t restore = io.tell(); // save io position
+        IoRestorer restorer(io);
         io.seek(address);
         DataBuf tiffTag(12);
         io.read(tiffTag);
@@ -729,7 +741,6 @@ public:
         } else {
             value = tiffTag.toString(8,type,count,image.endian(),40);
         }
-        io.seek(restore);                 // restore
 
         // format the output
         std::string name = tagName(tag,tagDict,28);
@@ -776,13 +787,86 @@ public:
     virtual void accept(class Visitor& visitor) { visitTiff(visitor); }
 };
 
+class JpegImage : public Image
+{
+public:
+    JpegImage(std::string path)
+    : Image(path)
+    { io_.seek(0); init() ; }
+    JpegImage(Io io,size_t start,size_t count)
+    : Image(Io(io,start,count))
+    { io_.seek(0); init() ; }
+    virtual void accept(class Visitor& v);
+    bool valid();
+
+    int advanceToMarker()
+    {
+        int c = -1;
+        // Skips potential padding between markers
+        while ((c=io_.getb()) != 0xff) {
+            if (io_.eof() )
+                return -1;
+        }
+
+        // Markers can start with any number of 0xff
+        while ((c=io_.getb()) == 0xff) {
+            if (io_.eof() )
+                return -2;
+        }
+        return c;
+    }
+private:
+    const byte     dht_      = 0xc4;
+    const byte     dqt_      = 0xdb;
+    const byte     dri_      = 0xdd;
+    const byte     sos_      = 0xda;
+    const byte     eoi_      = 0xd9;
+    const byte     app0_     = 0xe0;
+    const byte     com_      = 0xfe;
+
+    // Start of Frame markers
+    const byte     sof0_     = 0xc0;        // start of frame 0, baseline DCT
+    const byte     sof15_    = 0xcf;        // start of frame 15, differential lossless, arithmetic coding
+
+    // which markers have a length field?
+    bool bHasLength[256];
+
+    void init()
+    {
+        nm[0xd8] = "SOI";
+        nm[0xd9] = "EOI";
+        nm[0xda] = "SOS";
+        nm[0xdb] = "DQT";
+        nm[0xdd] = "DRI";
+        nm[0xfe] = "COM";
+
+        // 0xe0 .. 0xef are APPn
+        // 0xc0 .. 0xcf are SOFn (except 4)
+        nm[0xc4] = "DHT";
+        for (int i = 0; i <= 15; i++) {
+            char MN[16];
+            sprintf(MN, "APP%d", i);
+            nm[0xe0 + i] = MN;
+            if (i != 4) {
+                sprintf(MN, "SOF%d", i);
+                nm[0xc0 + i] = MN;
+            }
+        }
+        for (int i = 0; i < 256; i++)
+            bHasLength[i] = (i >= sof0_ && i <= sof15_) || (i >= app0_ && i <= (app0_ | 0x0F)) ||
+                            (i == dht_  || i == dqt_    || i == dri_   || i == com_  ||i == sos_);
+    }
+    // nmonic for markers
+    std::string nm[256];
+};
+
 class CrwImage : public Image
 {
 public:
     CrwImage(std::string path) : Image(path) {}
     CrwImage(Io& io) : Image(io) {} ;
     bool valid() {
-        size_t restore = io().tell();
+        IoRestorer restorer(io());
         bool result = false;
         DataBuf buf(2+4+8); //xxlongHEAPCCRD xx = II or MM
         if ( io().good() ) {
@@ -808,13 +892,12 @@ public:
                 start_ = ::getLong(start,0,endian_);
             }
         }
-        io().seek(restore);
         return result ;
     }
     
     void dumpImageHeader(size_t start,endian_e endian,uint16_t depth)
     {
-        size_t restore = io().tell();
+        IoRestorer restorer(io());
         io().seek(start);
         
         uint32_t imageWidth         = io().getLong(endian);
@@ -828,12 +911,11 @@ public:
         std::cout << indent(depth) << stringFormat("pixelAspectRatio,rotationAngle  = %#x,%f" , pixelAspectRatio,rotationAngle)  << std::endl;
         std::cout << indent(depth) << stringFormat("componentBitDepth,colorBitDepth = %d,%d"  , componentBitDepth,colorBitDepth) << std::endl;
         std::cout << indent(depth) << stringFormat("colorBW                         = %d"     , colorBW)                         << std::endl;
-        io().seek(restore);
     }
 
     virtual void accept(class Visitor& visitor)
     {
-        size_t restore = io().tell();
+        IoRestorer restorer(io());
         io().seek(start_);
 
         DataBuf u(2);
@@ -850,47 +932,21 @@ public:
             std::cout << stringFormat(" %6#x | %-30s | %6d | %d ",tag,tagName(tag,crwDict,28).c_str(),count,offset) << std::endl;
             if ( tag == 0x300a        /* ImageProps      */ ) {
                 dumpImageHeader(offset,endian(),visitor.depth_+3) ;
+            } else if ( tag == 0x2008 /* ThumbnailImage  */ ) {
+                JpegImage jpeg(io(),offset,count) ;
+                jpeg.accept(visitor);
             } else if ( tag == 0x300b /* ExifInformation */ ) { // TODO: not test yet!
                 TiffImage* t = (TiffImage*) this ;
                 t->visitIFD(visitor,offset,endian_);
             }
         }
-
-        io().seek(restore);
-    }
-};
-
-class JpegImage : public Image
-{
-public:
-    JpegImage(std::string path)
-    : Image(path)
-    {}
-    virtual void accept(class Visitor& v);
-    bool valid();
-
-    int advanceToMarker()
-    {
-        int c = -1;
-        // Skips potential padding between markers
-        while ((c=io_.getb()) != 0xff) {
-            if (io_.eof() )
-                return -1;
-        }
-
-        // Markers can start with any number of 0xff
-        while ((c=io_.getb()) == 0xff) {
-            if (io_.eof() )
-                return -2;
-        }
-        return c;
     }
 };
 
 void TiffImage::visitIFD(Visitor& visitor,size_t start,endian_e endian,
     int depth/*=0*/,TagDict& tagDict/*=tiffDict*/,bool bHasNext/*=true*/)
 {
-    size_t   restore1 = io_.tell();
+    IoRestorer restorer(io());
 
     if ( !depth++ ) visits_.clear();
     visitor.visitBegin(*this);
@@ -975,12 +1031,11 @@ void TiffImage::visitIFD(Visitor& visitor,size_t start,endian_e endian,
     visitor.visitEnd(*this);
     depth--;
 
-    io_.seek(restore1); // restore
 } // TiffImage::visitIFD
 
 bool TiffImage::valid()
 {
-    size_t restore = io_.tell();
+    IoRestorer restorer(io());
     io_.seek(0);
     // read header
     DataBuf      header(20);
@@ -998,7 +1053,6 @@ bool TiffImage::valid()
     if ( bigtiff_ ) Error(kerBigtiffNotSupported);
     if ( result ) format_ = "TIFF";
 
-    io_.seek(restore);
     return result;
 }
 
@@ -1011,7 +1065,8 @@ void TiffImage::visitTiff(Visitor& visitor,TagDict& tagDict,int depth)
 
 bool JpegImage::valid()
 {
-    io_.seek(0,ksStart);
+    IoRestorer restorer(io());
+    io_.seek(0);
     byte   h[2];
     size_t n = io_.read(h,2);
     io_.seek(0,ksStart);
@@ -1020,6 +1075,8 @@ bool JpegImage::valid()
     if ( result ) format_ = "JPEG";
     return result;
 }
+
+#define REPORT_MARKER os << stringFormat("%8ld | 0xff%02x %-5s", io_.tell()-2,marker,nm[marker].c_str());
 
 void JpegImage::accept(Visitor& v)
 {
@@ -1031,52 +1088,14 @@ void JpegImage::accept(Visitor& v)
             Error(kerFailedToReadImageData);
         Error(kerNotAJpeg);
     }
+    IoRestorer restorer(io());
+    v.visitBegin((*this));
+
     PSopt_e option = v.option();
     bool bPrint = option == kpsBasic || option == kpsRecursive;
-    v.visitBegin((*this));
 
     // navigate the JPEG chunks
     std::ostringstream os; // string buffer for output to v.visitReport()
-
-    // nmonic for markers
-    std::string nm[256];
-    nm[0xd8] = "SOI";
-    nm[0xd9] = "EOI";
-    nm[0xda] = "SOS";
-    nm[0xdb] = "DQT";
-    nm[0xdd] = "DRI";
-    nm[0xfe] = "COM";
-
-    // 0xe0 .. 0xef are APPn
-    // 0xc0 .. 0xcf are SOFn (except 4)
-    nm[0xc4] = "DHT";
-    for (int i = 0; i <= 15; i++) {
-        char MN[16];
-        sprintf(MN, "APP%d", i);
-        nm[0xe0 + i] = MN;
-        if (i != 4) {
-            sprintf(MN, "SOF%d", i);
-            nm[0xc0 + i] = MN;
-        }
-    }
-
-    const byte     dht_      = 0xc4;
-    const byte     dqt_      = 0xdb;
-    const byte     dri_      = 0xdd;
-    const byte     sos_      = 0xda;
-    const byte     eoi_      = 0xd9;
-    const byte     app0_     = 0xe0;
-    const byte     com_      = 0xfe;
-
-    // Start of Frame markers
-    const byte     sof0_     = 0xc0;        // start of frame 0, baseline DCT
-    const byte     sof15_    = 0xcf;        // start of frame 15, differential lossless, arithmetic coding
-
-    // which markers have a length field?
-    bool bHasLength[256];
-    for (int i = 0; i < 256; i++)
-        bHasLength[i] = (i >= sof0_ && i <= sof15_) || (i >= app0_ && i <= (app0_ | 0x0F)) ||
-                        (i == dht_  || i == dqt_    || i == dri_   || i == com_  ||i == sos_);
 
     // Container for the signature
     bool bExtXMP = false;
@@ -1089,10 +1108,13 @@ void JpegImage::accept(Visitor& v)
     if (marker < 0)
         Error(kerNotAJpeg);
 
+    REPORT_MARKER;
+
     bool done = false;
+    bool bFirst = true ;
     while (!done) {
         size_t current = io_.tell();
-        bool bLF = true; // tell v.visitReport() to append a LF
+        bool   bLF     = true; // tell v.visitReport() to append a LF
 
         // Read size and signature
         bufRead = io_.read(buf.pData_, bufMinSize);
@@ -1175,15 +1197,14 @@ void JpegImage::accept(Visitor& v)
             os << "| " << buf.binaryToString(2, n + 2);
         }
 
-        // Skip the segment if the size is known
-        io_.seek(size - bufRead, ksCurrent);
+        // Skip over the segment
+        io_.seek(current+size);
         if (bLF && bPrint) v.visitReport(os,bLF);
 
         if (marker != sos_) {
             // Read the beginning of the next segment
             marker = advanceToMarker();
-            os << stringFormat("%8ld | 0xff%02x %-5s",
-                                io_.tell()-2,marker,nm[marker].c_str());
+            REPORT_MARKER;
             if ( bPrint ) v.visitReport(os);
         }
         done |= marker == eoi_ || marker == sos_;
@@ -1196,6 +1217,47 @@ void JpegImage::accept(Visitor& v)
     v.visitEnd((*this));
 }  // JpegImage::visitTiff
 
+void init(); // prototype
+
+int main(int argc,const char* argv[])
+{
+    init();
+
+    int rc = 0;
+    if ( argc == 2 || argc == 3 ) {
+        const char* path = argv[argc-1];
+        TiffImage tiff(path);
+        JpegImage jpeg(path);
+        CrwImage  crw (path);
+
+        PSopt_e option = kpsBasic;
+        if ( argc == 3 ) {
+            std::string arg(argv[1]);
+            option = arg.find("R") != std::string::npos ? kpsRecursive
+                   : arg.find("X") != std::string::npos ? kpsXMP
+                   : arg.find("S") != std::string::npos ? kpsBasic
+                   : option
+                   ;
+        }
+        ReportVisitor visitor(std::cout,option);
+        if ( tiff.valid() ) {
+            tiff.accept(visitor);
+        } else if ( jpeg.valid() ) {
+            jpeg.accept(visitor);
+        } else if ( crw.valid() ) {
+            crw.accept(visitor);
+        } else {
+            std::cerr << "file type not recognised " << path << std::endl;
+            rc=2;
+        }
+    } else {
+        std::cout << "usage: " << argv[0] << " [ {S | R | X} ] path" << std::endl;
+        rc = 1;
+    }
+    return rc;
+}
+
+// simply data.  Nothing interesting.
 void init()
 {
     if ( tiffDict.size() ) return; // don't do this twice!
@@ -1206,7 +1268,7 @@ void init()
     tiffDict  [ 0x83bb ] = "IPTCNAA";
     tiffDict  [ 0x02bc ] = "XMLPacket";
     tiffDict  [ 0x8773 ] = "InterColorProfile";
-    tiffDict  [ 0x00fe ] = "NewSubfileType";   
+    tiffDict  [ 0x00fe ] = "NewSubfileType";
     tiffDict  [ 0x0100 ] = "ImageWidth";
     tiffDict  [ 0x0101 ] = "ImageLength";
     tiffDict  [ 0x0102 ] = "BitsPerSample";
@@ -1402,44 +1464,6 @@ void init()
     makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcFilterEffect"    ,unsignedByte,55, 1));
     makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcFilterEffect"    ,unsignedByte,56, 1));
     makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcToningSaturation",unsignedByte,57, 1));
-}
-
-int main(int argc,const char* argv[])
-{
-    init();
-
-    int rc = 0;
-    if ( argc == 2 || argc == 3 ) {
-        const char* path = argv[argc-1];
-        TiffImage tiff(path);
-        JpegImage jpeg(path);
-        CrwImage  crw (path);
-
-        PSopt_e option = kpsBasic;
-        if ( argc == 3 ) {
-            std::string arg(argv[1]);
-            option = arg.find("R") != std::string::npos ? kpsRecursive
-                   : arg.find("X") != std::string::npos ? kpsXMP
-                   : arg.find("S") != std::string::npos ? kpsBasic
-                   : option
-                   ;
-        }
-        ReportVisitor visitor(std::cout,option);
-        if ( tiff.valid() ) {
-            tiff.accept(visitor);
-        } else if ( jpeg.valid() ) {
-            jpeg.accept(visitor);
-        } else if ( crw.valid() ) {
-            crw.accept(visitor);
-        } else {
-            std::cerr << "file type not recognised " << path << std::endl;
-            rc=2;
-        }
-    } else {
-        std::cout << "usage: " << argv[0] << " [ {S | R | X} ] path" << std::endl;
-        rc = 1;
-    }
-    return rc;
 }
 
 // That's all Folks!
