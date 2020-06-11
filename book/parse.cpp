@@ -27,7 +27,7 @@ typedef long long INT64;
    Display only the first DLEN bytes.
  */
 #ifndef DLEN
-#define DLEN 768
+#define DLEN 100
 #endif
 
 #define ushort UshORt
@@ -64,7 +64,7 @@ int sget4 (uchar *s)
 }
 #define sget4(s) sget4((uchar *)s)
 
-int get4()
+size_t get4()
 {
   uchar str[4] = { 0xff,0xff,0xff,0xff };
   fread (str, 1, 4, ifp);
@@ -89,16 +89,16 @@ double get_double()
   return u.d;
 }
 
-void tiff_dump(int base, int tag, int type, int count, int level)
+void tiff_dump(size_t base, int tag, int type, size_t count, int level)
 {
-  int save, j, num, den;
+  size_t save, j, num, den;
   uchar c;
   int size[] = { 1,1,1,2,4,8,1,1,2,4,8,4,8 };
 
   if (count * size[type < 13 ? type:0] > 4)
     fseek (ifp, get4()+base, SEEK_SET);
   save = ftell(ifp);
-  printf("%*stag=0x%x %d, type=%d, count=%d, offset=%06x, data=",
+  printf("%*stag=%#x %d, type=%d, count=%ld, offset=%08lx, data=",
 	level*2, "", tag, tag, type, count, save);
   if (tag == 34310) goto quit;
   if (type==2) putchar('\"');
@@ -115,12 +115,12 @@ void tiff_dump(int base, int tag, int type, int count, int level)
 	printf ("%c%04x",(j & 15) || count < 9 ? ' ':'\n', get2());
 	break;
       case 4: case 9:			/* dword values */
-	printf ("%c%08x",(j & 7) || count < 5 ? ' ':'\n', get4());
+	printf ("%c%08lx",(j & 7) || count < 5 ? ' ':'\n', get4());
 	break;
       case 5: case 10:			/* rationals */
 	num = get4();
 	den = get4();
-	printf (" %d/%d", num, den);
+	printf (" %ld/%ld", num, den);
 //	printf (" %lf", (double) num/den);
 	break;
     }
@@ -130,9 +130,9 @@ quit:
   fseek (ifp, save, SEEK_SET);
 }
 
-void parse_nikon_capture_note (int length)
+void parse_nikon_capture_note (size_t length)
 {
-  unsigned sorder, offset, tag, j, size;
+  size_t sorder, offset, j, size,tag;
 
   puts ("    Nikon Capture Note:");
   sorder = order;
@@ -142,7 +142,7 @@ void parse_nikon_capture_note (int length)
     tag = get4();
     fseek (ifp, 14, SEEK_CUR);
     size = get4()-4;
-    printf("      tag=0x%08x, size=%d", tag, size);
+    printf("      tag=%#08lx, size=%ld", tag, size);
     for (j=0; j < size; j++)
       printf ("%s%02x", j & 31 ? " ":"\n\t", fgetc(ifp));
     puts("");
@@ -196,11 +196,11 @@ void nikon_decrypt (uchar ci, uchar cj, int tag, int i, int size, uchar *buf)
   if (size & 31) puts("");
 }
 
-int parse_tiff_ifd (int base, int level);
+int parse_tiff_ifd (size_t base, int level);
 
-void parse_makernote (int base, int level)
+void parse_makernote (size_t base, int level)
 {
-  int offset=0, entries, tag, type, count, val, save;
+  size_t offset=0, entries, tag, type, count, val, save;
   unsigned serial=0, key=0;
   uchar buf91[630]="", buf97[608]="", buf98[31]="";
   short sorder;
@@ -283,7 +283,7 @@ void parse_makernote (int base, int level)
 
 void parse_exif (int base, int level)
 {
-  int entries, tag, type, count, save;
+  size_t entries, tag, type, count, save;
 
   puts("EXIF table:");
   entries = get2();
@@ -320,9 +320,9 @@ void sony_decrypt (unsigned *data, int len, int start, int key)
   }
 }
 
-int parse_tiff_ifd (int base, int level)
+int parse_tiff_ifd (size_t base, int level)
 {
-  int entries, tag, type, count, slen, save, save2, i;
+  size_t entries, tag, type, count, slen, save, save2, i;
   unsigned *buf, sony_offset=0, sony_length=0, sony_key=0;
   FILE *sfp;
 
@@ -349,7 +349,7 @@ int parse_tiff_ifd (int base, int level)
       case 0x14a:			/* SubIFD tag */
 	save2 = ftell(ifp);
 	for (i=0; i < count; i++) {
-	  printf ("SubIFD #%d:\n", i+1);
+	  printf ("SubIFD #%ld:\n", i+1);
 	  fseek (ifp, save2 + i*4, SEEK_SET);
 	  fseek (ifp, get4()+base, SEEK_SET);
 	  parse_tiff_ifd (base, level+1);
@@ -395,7 +395,7 @@ int parse_tiff_ifd (int base, int level)
     }
     fseek (ifp, save+12, SEEK_SET);
   }
-  if (sony_length && (buf = malloc(sony_length))) {
+  if (sony_length && (buf = (unsigned*) malloc(sony_length))) {
     fseek (ifp, sony_offset, SEEK_SET);
     fread (buf, sony_length, 1, ifp);
     sony_decrypt (buf, sony_length/4, 1, sony_key);
@@ -416,9 +416,9 @@ int parse_tiff_ifd (int base, int level)
 /*
    Parse a TIFF file looking for camera model and decompress offsets.
  */
-void parse_tiff (int base)
+void parse_tiff (size_t base)
 {
-  int doff, ifd=0;
+  size_t doff, ifd=0;
 
   fseek (ifp, base, SEEK_SET);
   order = get2();
@@ -426,7 +426,7 @@ void parse_tiff (int base)
   get2();
   while ((doff = get4())) {
     fseek (ifp, doff+base, SEEK_SET);
-    printf ("IFD #%d:\n", ifd++);
+    printf ("IFD #%ld:\n", ifd++);
     if (parse_tiff_ifd (base, 0)) break;
   }
 }
@@ -455,7 +455,7 @@ void parse_minolta()
  */
 void parse_ciff (int offset, int length, int level)
 {
-  int tboff, nrecs, i, j, type, len, dlen, roff, aoff=0, save;
+  size_t tboff, nrecs, i, j, type, len, dlen, roff, aoff=0, save;
   char c, name[256];
   ushort key[2];
 
@@ -464,11 +464,11 @@ void parse_ciff (int offset, int length, int level)
   fseek (ifp, tboff, SEEK_SET);
   nrecs = get2();
   if (nrecs > 100) return;
-  printf ("%*s%d records:\n", level*2, "", nrecs);
+  printf ("%*s%ld records (offset %d length %d offset+length-4=%d,tboff=%ld):  \n", level*2, "", nrecs,offset,length,offset+length-4,tboff);
   for (i = 0; i < nrecs; i++) {
     save = ftell(ifp);
     type = get2();
-    printf ("%*stype=0x%04x", level*2, "", type);
+    printf ("%*stype=0x%04lx", level*2, "", type);
     if (type & 0x4000) {
       len = 8;
       type &= 0x3fff;
@@ -476,7 +476,7 @@ void parse_ciff (int offset, int length, int level)
       len  = get4();
       roff = get4();
       aoff = offset + roff;
-      printf (", length=%d, reloff=%d, absoff=%d",
+      printf (", length=%ld, reloff=%ld, absoff=%ld",
 		len, roff, aoff);
       fseek (ifp, aoff, SEEK_SET);
     }
@@ -516,7 +516,7 @@ void parse_ciff (int offset, int length, int level)
 	break;
       case 0x18:			/* dword values */
 	for (j = 0; j < dlen; j+=4)
-	  printf ("%c%08x",(j & 31) || dlen < 16 ? ' ':'\n', get4());
+	  printf ("%c%08lx",(j & 31) || dlen < 16 ? ' ':'\n', get4());
     }
     putchar('\n');
     fseek (ifp, save+10, SEEK_SET);
@@ -686,16 +686,16 @@ void parse_foveon()
     switch (tag) {
       case 0x32414d49:			/* IMA2 */
       case 0x47414d49:			/* IMAG */
-	printf ("type %d, "	, get4());
-	printf ("format %2d, "	, get4());
-	printf ("columns %4d, "	, get4());
-	printf ("rows %4d, "	, get4());
-	printf ("rowsize %d\n"	, get4());
+	printf ("type %ld, "	, get4());
+	printf ("format %2ld, "	, get4());
+	printf ("columns %4ld, "	, get4());
+	printf ("rows %4ld, "	, get4());
+	printf ("rowsize %ld\n"	, get4());
 	parse_jpeg (off+28);
 	order = 0x4949;
 	break;
       case 0x464d4143:			/* CAMF */
-	printf ("type %d, ", get4());
+	printf ("type %ld, ", get4());
 	get4();
 	for (i=0; i < 4; i++)
 	  putchar(fgetc(ifp));
@@ -779,10 +779,10 @@ void parse_foveon()
 	}
 	break;
       case 0x504f5250:			/* PROP */
-	printf ("entries %d, ", pent=get4());
-	printf ("charset %d, ", get4());
+	printf ("entries %ud, ", pent=get4());
+	printf ("charset %ld, ", get4());
 	get4();
-	printf ("nchars %d\n", get4());
+	printf ("nchars %ld\n", get4());
 	off += pent*8 + 24;
 	if ((unsigned) pent > 256) pent=256;
 	for (i=0; i < pent*2; i++)
@@ -930,8 +930,8 @@ void parse_phase_one (int base)
   }
 }
 
-char *memmeM (char *haystack, size_t haystacklen,
-              char *needle, size_t needlelen)
+char *memmeM (      char *haystack, size_t haystacklen,
+              const char *needle, size_t needlelen)
 {
   char *c;
   for (c = haystack; c <= haystack + haystacklen - needlelen; c++)
@@ -994,7 +994,7 @@ int main(int argc, char **argv)
   if (argc == 1)
   {
     fprintf (stderr,
-    "\nRaw Photo Parser"
+    "Raw Photo Parser"
     "\nby Dave Coffin, dcoffin a cybercom o net"
     "\n\nUsage:  %s file1.crw file2.crw ...\n", argv[0]);
     return 1;
@@ -1007,7 +1007,7 @@ int main(int argc, char **argv)
       perror (fname);
       continue;
     }
-    printf ("\nParsing %s:\n", fname);
+    printf ("Parsing %s:\n", fname);
     identify();
     fclose (ifp);
   }

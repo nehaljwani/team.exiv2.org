@@ -59,11 +59,56 @@ const char* typeName(type_e tag)
     return result;
 }
 
-enum kCanonType //  bits 14-15 of type
-{   kStg_InHeapSpace   = 0
-,   kStg_InRecordEntry = 1
-,   kStg_InReserved1   = 2
-,   kStg_InReserved2   = 3
+// Canon magic
+#define kcAscii 0x0800
+#define kcWord  0x1000
+#define kcDword 0x1000
+#define kcHTP1  0x2800
+#define kcHTP2  0x3000
+enum kCanonHeap
+{   kStg_InHeapSpace    = 0
+,   kStg_InRecordEntry  = 0x4000
+};
+enum kCanonType
+{   kDT_BYTE            = 0x0000
+,   kDT_ASCII           = kcAscii
+,   kDT_WORD            = kcWord
+,   kDT_DWORD           = kcDword
+,   kDT_BYTE2           = 0x2000
+,   kDT_HeapTypeProp1   = kcHTP1
+,   kDT_HeapTypeProp2   = kcHTP1
+,   kTC_WildCard        = 0xffff
+,   kTC_Null            = 0x0000
+,   kTC_Free            = 0x0001
+,   kTC_ExUsed          = 0x0002
+,   kTC_Description     = 0x0005|kcAscii
+,   kTC_ModelName       = 0x000a|kcAscii
+,   kTC_FirmwareVersion = 0x000b|kcAscii
+,   kTC_ComponentVersion= 0x000c|kcAscii
+,   kTC_ROMOperationMode= 0x000d|kcAscii
+,   kTC_OwnerName       = 0x0010|kcAscii
+,   kTC_ImageFileName   = 0x0016|kcAscii
+,   kTC_ThumbnailFileName=0x001c|kcAscii
+,   kTC_TargetImageType = 0x000a|kcWord
+,   kTC_SR_ReleaseMethod= 0x0010|kcWord
+,   kTC_SR_ReleaseTiming= 0x0011|kcWord
+,   kTC_ReleaseSetting  = 0x0016|kcWord
+,   kTC_BodySensitivity = 0x001c|kcWord
+,   kTC_ImageFormat     = 0x0003|kcDword
+,   kTC_RecordID        = 0x0004|kcDword
+,   kTC_SelfTimerTime   = 0x0006|kcDword
+,   kTC_SR_TargetDistanceSetting = 0x0007|kcDword
+,   kTC_BodyID          = 0x000b|kcDword
+,   kTC_CapturedTime    = 0x000e|kcDword
+,   kTC_ImageSpec       = 0x0010|kcDword
+,   kTC_SR_EF           = 0x0013|kcDword
+,   kTC_MI_EV           = 0x0014|kcDword
+,   kTC_SerialNumber    = 0x0017|kcDword
+,   kTC_SR_Exposure     = 0x0018|kcDword
+,   kTC_CameraObject    = 0x0007|kcHTP1
+,   kTC_ShootingRecord  = 0x0002|kcHTP2
+,   kTC_MeasuredInfo    = 0x0003|kcHTP2
+,   kTC_CameraSpecificaiton= 0x0004|kcHTP2
 };
 
 enum endian_e
@@ -165,7 +210,66 @@ bool isPlatformBigEndian()
 }
 bool   isPlatformLittleEndian() { return !isPlatformBigEndian(); }
 endian_e platformEndian() { return isPlatformBigEndian() ? keBig : keLittle; }
+uint64_t byteSwap(uint64_t value,bool bSwap,uint16_t n)
+{
+    uint64_t result = 0;
+    byte* source_value      = reinterpret_cast<byte *>(&value);
+    byte* destination_value = reinterpret_cast<byte *>(&result);
 
+    for (int i = 0; i < n; i++)
+        destination_value[i] = source_value[n - i - 1];
+
+    return bSwap ? result : value;
+}
+
+uint16_t getShort(const byte b[],size_t offset,endian_e endian)
+{
+    bool bSwap = endian != ::platformEndian();
+    return (uint16_t) byteSwap((uint64_t)*(b+offset),bSwap,2);
+}
+uint32_t getLong(const byte b[],size_t offset,endian_e endian)
+{
+    bool bSwap = endian != ::platformEndian();
+    return (uint32_t) byteSwap((uint64_t)*(b+offset),bSwap,2);
+}
+uint16_t getShort(const DataBuf& buf,size_t offset,endian_e endian)
+{
+    uint16_t v;
+    char*    p = (char*) &v;
+    p[0] = buf.pData_[offset+0];
+    p[1] = buf.pData_[offset+1];
+    bool bSwap = endian != ::platformEndian();
+    return (uint16_t) byteSwap(v,bSwap,2);
+
+}
+uint32_t getLong(const DataBuf& buf,size_t offset,endian_e endian)
+{
+    uint32_t v;
+    char*    p = (char*) &v;
+    p[0] = buf.pData_[offset+0];
+    p[1] = buf.pData_[offset+1];
+    p[2] = buf.pData_[offset+2];
+    p[3] = buf.pData_[offset+3];
+    bool bSwap = endian != ::platformEndian();
+    return (uint32_t)byteSwap(v,bSwap,4);
+}
+uint64_t getLongLong(const DataBuf& buf,size_t offset,endian_e endian)
+{
+    uint64_t v;
+    byte*    p = reinterpret_cast<byte *>(&v);
+    p[0] = buf.pData_[offset+0];
+    p[1] = buf.pData_[offset+1];
+    p[2] = buf.pData_[offset+2];
+    p[3] = buf.pData_[offset+3];
+    p[4] = buf.pData_[offset+4];
+    p[5] = buf.pData_[offset+5];
+    p[6] = buf.pData_[offset+6];
+    p[7] = buf.pData_[offset+7];
+    bool bSwap = endian != ::platformEndian();
+    return byteSwap (v,bSwap,8);
+}
+
+// Tiff Data Functions
 bool isByteType(type_e type)
 {
     return type == asciiString
@@ -215,71 +319,16 @@ bool is8ByteType(type_e type)
 }
 uint16_t typeSize(type_e type)
 {
-    return isByteType(type) ? 1
+    return isByteType(type)   ? 1
         :  is2ByteType(type)  ? 2
         :  is4ByteType(type)  ? 4
         :  is8ByteType(type)  ? 8
         :  1 ;
 }
-uint64_t byteSwap(uint64_t value,bool bSwap,uint16_t n)
-{
-    uint64_t result = 0;
-    byte* source_value      = reinterpret_cast<byte *>(&value);
-    byte* destination_value = reinterpret_cast<byte *>(&result);
-
-    for (int i = 0; i < n; i++)
-        destination_value[i] = source_value[n - i - 1];
-
-    return bSwap ? result : value;
-}
-
-uint16_t getShort(const DataBuf& buf,size_t offset,endian_e endian)
-{
-    uint16_t v;
-    char*    p = (char*) &v;
-    p[0] = buf.pData_[offset+0];
-    p[1] = buf.pData_[offset+1];
-    bool bSwap = endian != ::platformEndian();
-    return (uint16_t) byteSwap(v,bSwap,2);
-}
 type_e getType(const DataBuf& buf,size_t offset,endian_e endian)
 {
     return (type_e) getShort(buf,offset,endian);
 }
-uint32_t getLong(const DataBuf& buf,size_t offset,endian_e endian)
-{
-    uint32_t v;
-    char*    p = (char*) &v;
-    p[0] = buf.pData_[offset+0];
-    p[1] = buf.pData_[offset+1];
-    p[2] = buf.pData_[offset+2];
-    p[3] = buf.pData_[offset+3];
-    bool bSwap = endian != ::platformEndian();
-    return (uint32_t)byteSwap(v,bSwap,4);
-}
-uint64_t getLongLong(const DataBuf& buf,size_t offset,endian_e endian)
-{
-    uint64_t v;
-    byte*    p = reinterpret_cast<byte *>(&v);
-    p[0] = buf.pData_[offset+0];
-    p[1] = buf.pData_[offset+1];
-    p[2] = buf.pData_[offset+2];
-    p[3] = buf.pData_[offset+3];
-    p[4] = buf.pData_[offset+4];
-    p[5] = buf.pData_[offset+5];
-    p[6] = buf.pData_[offset+6];
-    p[7] = buf.pData_[offset+7];
-    bool bSwap = endian != ::platformEndian();
-    return byteSwap (v,bSwap,8);
-}
-
-// Camera manufacturers
-enum maker_e
-{   kUnknown
-,   kCanon
-,   kNikon
-,   kSony
-};
 
 // string formatting functions
 std::string indent(size_t s)
@@ -394,6 +443,14 @@ std::string DataBuf::toString(size_t offset,type_e type,uint16_t count,endian_e 
 
     return chop(os.str(),max);
 } // DataBuf::toString
+
+// Camera manufacturers
+enum maker_e
+{   kUnknown
+,   kCanon
+,   kNikon
+,   kSony
+};
 
 // TagDict is use to map tag (uint16_t) to string (for printing)
 typedef std::map<uint16_t,std::string> TagDict;
@@ -511,6 +568,12 @@ public:
         read   (buf);
         return ::getLong(buf,0,endian);
     }
+    uint16_t getShort(endian_e endian)
+    {
+        byte b[2];
+        read(b,2);
+        return ::getShort(b,0,endian);
+    }
 
     virtual ~Io() { close(); }
     
@@ -543,13 +606,13 @@ private:
     size_t      restore_;
 };
 
-class IoRestorer // useful for ensuring we restore Io when function ends
+class IoRestorer // restore Io when function ends
 {
 public:
-    IoRestorer(Io& io)
+    IoRestorer(Io& io,size_t address)
     : io_(io)
     , restore_(io.tell())
-    {}
+    { io_.seek(address); }
     virtual ~IoRestorer() {io_.seek(restore_);}
 private:
     Io&    io_;
@@ -587,9 +650,9 @@ public:
     virtual void visitReport  (std::ostringstream& out) {} ;
     virtual void visitReport  (std::ostringstream& out,bool& bLF) {} ;
 
-    PSopt_e option()      { return option_ ; }
-    std::ostream& out()   { return out_    ; }
-    size_t        depth_ ;
+    PSopt_e       option() { return option_ ; }
+    std::ostream& out()    { return out_    ; }
+    int           depth_ ;
 private:
     PSopt_e       option_;
     std::ostream& out_   ;
@@ -606,15 +669,12 @@ public:
     , makerDict_(emptyDict)
     , bigtiff_(false)
     , endian_(keLittle)
-    {}
+    {};
     Image(Io io)
     : io_(io)
     , makerDict_(emptyDict)
-    {
-        good_ = io_.good();
-    }
+    {};
     virtual    ~Image()    { io_.close()      ; }
-    bool        good()     { return good_ && io_.good() ; }
     bool        valid()    { return false     ; }
     std::string path()     { return io_.path(); }
     endian_e    endian()   { return endian_   ; }
@@ -719,8 +779,7 @@ public:
         endian_e endian = image.endian();
         Io& io          = image.io();
 
-        IoRestorer restorer(io);
-        io.seek(address);
+        IoRestorer save(io,address);
         DataBuf tiffTag(12);
         io.read(tiffTag);
         uint16_t tag    = getShort(tiffTag,0,endian);
@@ -744,7 +803,7 @@ public:
 
         // format the output
         std::string name = tagName(tag,tagDict,28);
-        if ( name.find(".0x") == std::string::npos ) { // only print known tags
+        if ( name.find(".0x") == std::string::npos ) { // ignore unknown tags
             out() << indent(depth_)
                   << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
                         ,address,tag,name.c_str(),typeName(type),count,offsetString.c_str())
@@ -800,21 +859,13 @@ public:
     bool valid();
 
     int advanceToMarker()
-    {
+    {   // Search for 0xff
+        while ( !io_.eof() && io_.getb() != 0xff) {}
+        // Search for next byte which isn't 0xff
         int c = -1;
-        // Skips potential padding between markers
-        while ((c=io_.getb()) != 0xff) {
-            if (io_.eof() )
-                return -1;
-        }
-
-        // Markers can start with any number of 0xff
-        while ((c=io_.getb()) == 0xff) {
-            if (io_.eof() )
-                return -2;
-        }
-        return c;
-    }
+        while ( !io_.eof() && (c=io_.getb()) == 0xff) {}
+        return io_.eof() ? -1 : c;
+    };
 private:
     const byte     dht_      = 0xc4;
     const byte     dqt_      = 0xdb;
@@ -866,7 +917,7 @@ public:
     CrwImage(std::string path) : Image(path) {}
     CrwImage(Io& io) : Image(io) {} ;
     bool valid() {
-        IoRestorer restorer(io());
+        IoRestorer save(io(),0);
         bool result = false;
         DataBuf buf(2+4+8); //xxlongHEAPCCRD xx = II or MM
         if ( io().good() ) {
@@ -897,8 +948,7 @@ public:
     
     void dumpImageHeader(size_t start,endian_e endian,uint16_t depth)
     {
-        IoRestorer restorer(io());
-        io().seek(start);
+        IoRestorer save(io(),start);
         
         uint32_t imageWidth         = io().getLong(endian);
         uint32_t imageHeight        = io().getLong(endian);
@@ -907,21 +957,20 @@ public:
         uint32_t componentBitDepth  = io().getLong(endian);
         uint32_t colorBitDepth      = io().getLong(endian);
         uint32_t colorBW            = io().getLong(endian);
-        std::cout << indent(depth) << stringFormat("width,height                    = %d,%d  ", imageWidth,imageHeight)          << std::endl;
-        std::cout << indent(depth) << stringFormat("pixelAspectRatio,rotationAngle  = %#x,%f" , pixelAspectRatio,rotationAngle)  << std::endl;
-        std::cout << indent(depth) << stringFormat("componentBitDepth,colorBitDepth = %d,%d"  , componentBitDepth,colorBitDepth) << std::endl;
-        std::cout << indent(depth) << stringFormat("colorBW                         = %d"     , colorBW)                         << std::endl;
+        std::cout << indent(depth+3) << stringFormat("width,height                    = %d,%d  ", imageWidth,imageHeight)          << std::endl;
+        std::cout << indent(depth+3) << stringFormat("pixelAspectRatio,rotationAngle  = %#x,%f" , pixelAspectRatio,rotationAngle)  << std::endl;
+        std::cout << indent(depth+3) << stringFormat("componentBitDepth,colorBitDepth = %d,%d"  , componentBitDepth,colorBitDepth) << std::endl;
+        std::cout << indent(depth+3) << stringFormat("colorBW                         = %d"     , colorBW)                         << std::endl;
     }
-
     virtual void accept(class Visitor& visitor)
     {
-        IoRestorer restorer(io());
-        io().seek(start_);
+        IoRestorer save(io(),start_);
 
-        DataBuf u(2);
-        io().read(u);
+        byte      u[2];
+        io().read(u,2);
         uint16_t dirLength = getShort(u,0,endian_);
-        std::cout << stringFormat("CIFF Directory %s dirLength = %d",io().path().c_str(),dirLength) << std::endl;
+        
+        std::cout << stringFormat("CIFF Directory %s start_ = %d dirLength = %d",io().path().c_str(),start_,dirLength) << std::endl;
         std::cout <<              "    tag | name                           |  count | offset "       << std::endl;
         DataBuf buf(10); // It's a CIFF not an IFD!
         for ( int i = 0 ; i < dirLength ; i++ ) {
@@ -930,14 +979,39 @@ public:
             uint32_t count  = getLong (buf,2,endian_);
             uint32_t offset = getLong (buf,6,endian_);
             std::cout << stringFormat(" %6#x | %-30s | %6d | %d ",tag,tagName(tag,crwDict,28).c_str(),count,offset) << std::endl;
-            if ( tag == 0x300a        /* ImageProps      */ ) {
+            if ( tag & kStg_InRecordEntry ) {
+                std::cout << "data" << std::endl ;
+            } else if ( tag == 0x300a        /* ImageSpec      */ ) {
                 dumpImageHeader(offset,endian(),visitor.depth_+3) ;
+                // it's a CIFF
+                DataBuf block(count);
+                io().seek(offset);
+                io().read(block);
+                size_t    start  = getShort(block,count-4,endian_);
+                uint16_t  length = getShort(block,start,endian_);
+                std::cout << indent(visitor.depth_+1) << stringFormat("CIFF start, length = %d %d",start,length) << std::endl;
+                std::cout << "    tag | name                           |  count | offset | value " << std::endl;
+                for ( int i = 0 ; i < length ; i++ ) {
+                    tag    = getShort(block,start+2+i*10+0,endian_);
+                    count  = getLong (block,start+2+i*10+2,endian_);
+                    offset = getLong (block,start+2+i*10+6,endian_);
+                    std::string name = tagName(tag,crwDict,28);
+                    
+                    if ( name.find(".0x") == std::string::npos ) { // ignore unknown tags
+                        std::cout << indent(visitor.depth_+1) << stringFormat(" %6#x | %-30s | %6d | %-4d  ",tag,name.c_str(),count,offset);
+                        if ( tag & kcAscii || tag == 0x300b ) {
+                            std::cout << " | " << block.toString(offset,asciiString,count,endian_);
+                        }
+                        std::cout << std::endl;
+                        if ( tag == 0x300b /* ExifInformation */ ) {
+                            // TiffImage* t = (TiffImage*) this ;
+                            // t->visitIFD(visitor,offset,endian_,visitor.depth_,canonDict,false);
+                        }
+                    }
+                }
             } else if ( tag == 0x2008 /* ThumbnailImage  */ ) {
                 JpegImage jpeg(io(),offset,count) ;
                 jpeg.accept(visitor);
-            } else if ( tag == 0x300b /* ExifInformation */ ) { // TODO: not test yet!
-                TiffImage* t = (TiffImage*) this ;
-                t->visitIFD(visitor,offset,endian_);
             }
         }
     }
@@ -946,7 +1020,7 @@ public:
 void TiffImage::visitIFD(Visitor& visitor,size_t start,endian_e endian,
     int depth/*=0*/,TagDict& tagDict/*=tiffDict*/,bool bHasNext/*=true*/)
 {
-    IoRestorer restorer(io());
+    IoRestorer save(io(),start);
 
     if ( !depth++ ) visits_.clear();
     visitor.visitBegin(*this);
@@ -1035,11 +1109,9 @@ void TiffImage::visitIFD(Visitor& visitor,size_t start,endian_e endian,
 
 bool TiffImage::valid()
 {
-    IoRestorer restorer(io());
-    io_.seek(0);
+    IoRestorer save(io(),0);
     // read header
     DataBuf      header(20);
-    io_.seek(0);
     io_.read(header);
 
     char c   = (char) header.pData_[0] ;
@@ -1065,11 +1137,9 @@ void TiffImage::visitTiff(Visitor& visitor,TagDict& tagDict,int depth)
 
 bool JpegImage::valid()
 {
-    IoRestorer restorer(io());
-    io_.seek(0);
+    IoRestorer save(io(),0);
     byte   h[2];
     size_t n = io_.read(h,2);
-    io_.seek(0,ksStart);
     bool result = n == 2 && h[0] == 0xff && h[1] == 0xd8;
 //  std::cout << stringFormat("%ld %#x %#x result = %s\n",n,h[0],h[1],result?"true":"false");
     if ( result ) format_ = "JPEG";
@@ -1088,30 +1158,29 @@ void JpegImage::accept(Visitor& v)
             Error(kerFailedToReadImageData);
         Error(kerNotAJpeg);
     }
-    IoRestorer restorer(io());
+    IoRestorer save(io(),0);
     v.visitBegin((*this));
 
-    PSopt_e option = v.option();
-    bool bPrint = option == kpsBasic || option == kpsRecursive;
+    bool bPrint = v.option() == kpsBasic || v.option() == kpsRecursive;
 
     // navigate the JPEG chunks
     std::ostringstream os; // string buffer for output to v.visitReport()
 
     // Container for the signature
-    bool bExtXMP = false;
-    long bufRead = 0;
-    const long bufMinSize = 36;
+    bool   bExtXMP    = false;
+    size_t bufRead    = 0;
+    size_t bufMinSize = 36;
     DataBuf buf(bufMinSize);
 
     // Read section marker
     int marker = advanceToMarker();
-    if (marker < 0)
+    if (marker < 0) {
         Error(kerNotAJpeg);
+    }
 
     REPORT_MARKER;
 
-    bool done = false;
-    bool bFirst = true ;
+    bool    done = false;
     while (!done) {
         size_t current = io_.tell();
         bool   bLF     = true; // tell v.visitReport() to append a LF
@@ -1135,7 +1204,7 @@ void JpegImage::accept(Visitor& v)
             //       2 | 0xe1 APP1  |     911 | Exif..MM.*.......%.........#....
             //     915 | 0xe1 APP1  |     870 | http://ns.adobe.com/xap/1.0/.<x:
             //    1787 | 0xe1 APP1  |   65460 | http://ns.adobe.com/xmp/extensio
-            if (option == kpsXMP && signature.find("http://ns.adobe.com/x") == 0) {
+            if (v.option() == kpsXMP && signature.find("http://ns.adobe.com/x") == 0) {
                 // extract XMP
                 if (size > 0) {
                     io_.seek(-bufRead, ksCurrent);
@@ -1179,7 +1248,7 @@ void JpegImage::accept(Visitor& v)
             if (bLF && bPrint) v.visitReport(os,bLF);
 
             // std::cout << "app0_+1 = " << app0_+1 << " compare " << signature << " = " << signature.find("Exif") == 2 << std::endl;
-            bool bExif = option == kpsRecursive && marker == (app0_ + 1) && signature.find("Exif") == 0;
+            bool bExif = v.option() == kpsRecursive && marker == (app0_ + 1) && signature.find("Exif") == 0;
 
             // Pure beauty.  Create a TiffImage and ask him to entertain the visitor
             if ( bExif ) {
