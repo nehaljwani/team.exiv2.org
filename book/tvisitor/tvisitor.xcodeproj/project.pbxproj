@@ -24,7 +24,7 @@
 
 /* Begin PBXFileReference section */
 		A1BC13152493E457008781B8 /* tvisitor */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = tvisitor; sourceTree = BUILT_PRODUCTS_DIR; };
-		A1BC131F2493E470008781B8 /* tvisitor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = tvisitor.cpp; path = ../../tvisitor.cpp; sourceTree = "<group>"; };
+		A1BC131F2493E470008781B8 /* tvisitor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tvisitor.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,7 +41,7 @@
 		A1BC130C2493E457008781B8 = {
 			isa = PBXGroup;
 			children = (
-				A1BC13172493E457008781B8 /* tvisitor */,
+				A1BC131F2493E470008781B8 /* tvisitor.cpp */,
 				A1BC13162493E457008781B8 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -52,14 +52,6 @@
 				A1BC13152493E457008781B8 /* tvisitor */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		A1BC13172493E457008781B8 /* tvisitor */ = {
-			isa = PBXGroup;
-			children = (
-				A1BC131F2493E470008781B8 /* tvisitor.cpp */,
-			);
-			path = tvisitor;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

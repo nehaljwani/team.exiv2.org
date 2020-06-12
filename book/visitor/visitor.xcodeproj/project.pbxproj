@@ -24,7 +24,7 @@
 
 /* Begin PBXFileReference section */
 		A12A06E02493E0EF00471C7E /* visitor */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = visitor; sourceTree = BUILT_PRODUCTS_DIR; };
-		A12A06F02493E11500471C7E /* visitor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = visitor.cpp; path = ../../visitor.cpp; sourceTree = "<group>"; };
+		A12A06F02493E11500471C7E /* visitor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = visitor.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,7 +41,7 @@
 		A12A06D72493E0EF00471C7E = {
 			isa = PBXGroup;
 			children = (
-				A12A06E22493E0EF00471C7E /* visitor */,
+				A12A06F02493E11500471C7E /* visitor.cpp */,
 				A12A06E12493E0EF00471C7E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -52,14 +52,6 @@
 				A12A06E02493E0EF00471C7E /* visitor */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		A12A06E22493E0EF00471C7E /* visitor */ = {
-			isa = PBXGroup;
-			children = (
-				A12A06F02493E11500471C7E /* visitor.cpp */,
-			);
-			path = visitor;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
