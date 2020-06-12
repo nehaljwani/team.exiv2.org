@@ -203,6 +203,16 @@ public:
     }
     int  strcmp   (const char* str) { return ::strcmp((const char*)pData_,str);}
     bool strequals(const char* str) { return strcmp(str)==0                   ;}
+    bool is       (const char* str) {
+        size_t l      = ::strlen(str);
+        bool   result = l == size_;
+        size_t i = 0 ;
+        while ( result && i < l ) {
+            result = str[i]==pData_[i];
+            i++;
+        }
+        return result;
+    }
 
     std::string toString(size_t offset,type_e type,uint16_t count,endian_e endian);
     std::string binaryToString(size_t start,size_t size);
@@ -1209,12 +1219,25 @@ void TiffImage::visit(Visitor& visitor,TagDict& tagDict)
 
 bool JpegImage::valid()
 {
+    bool result = false;
     IoRestorer save(io(),0);
     byte   h[2];
-    size_t n = io_.read(h,2);
-    bool result = n == 2 && h[0] == 0xff && h[1] == 0xd8;
-//  std::cout << stringFormat("%ld %#x %#x result = %s\n",n,h[0],h[1],result?"true":"false");
-    if ( result ) format_ = "JPEG";
+    io_.read(h,2);
+    if ( h[0] == 0xff && h[1] == 0xd8 ) { // .JPEG
+        start_  = 0;
+        format_ = "JPEG";
+        endian_ = keLittle;
+        result  = true;
+    } else if  ( h[0] == 0xff && h[1]==0x01 ) { // .EXV
+        DataBuf buf(5);
+        io_.read(buf);
+        if ( buf.is("Exiv2") ) {
+            start_ = 7;
+            format_ = "EXV";
+            endian_ = keLittle;
+            result = true;
+        }
+    }
     return result;
 }
 

@@ -45,7 +45,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		A120A71D2493E55D001EFB12 /* xcode.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = xcode.bundle; path = /Users/rmills/gnu/exiv2/team/book/xcode/build/Debug/xcode.bundle; sourceTree = "<absolute>"; };
+		A120A72A2493E896001EFB12 /* xcode.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = xcode.bundle; path = /Users/rmills/gnu/exiv2/team/book/xcode/build/Debug/xcode.bundle; sourceTree = "<absolute>"; };
 		A1BC12F42493E3C2008781B8 /* args.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = args.xcodeproj; path = ../args/args.xcodeproj; sourceTree = "<group>"; };
 		A1BC12FA2493E3DE008781B8 /* visitor.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = visitor.xcodeproj; path = ../visitor/visitor.xcodeproj; sourceTree = "<group>"; };
 		A1BC13002493E411008781B8 /* dmpf.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = dmpf.xcodeproj; path = ../dmpf/dmpf.xcodeproj; sourceTree = "<group>"; };
@@ -132,7 +132,7 @@
 			);
 			name = xcode;
 			productName = xcode;
-			productReference = A120A71D2493E55D001EFB12 /* xcode.bundle */;
+			productReference = A120A72A2493E896001EFB12 /* xcode.bundle */;
 			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */

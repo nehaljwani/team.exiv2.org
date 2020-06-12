@@ -76,6 +76,7 @@ Incidentally, later in 2008, Dennis offered me a contract to port his company's 
 [https://clanmills.com/articles/gpsexiftags/](https://clanmills.com/articles/gpsexiftags/)
 
 I have never been employed to work on Metadata.  I was a Senior Computer Scientist at Adobe for more than 10 years, however I was never involved with XMP or Metadata.
+
 [TOC](#TOC) [Foreward](#foreword)
 
 
@@ -162,7 +163,7 @@ The following summaries of the file formats are provided to help the reader unde
 
 ![jpegs.png](jpegs.png)
 
-A Jpeg and a .exv are almost the same thing, however most graphics applications will reject a .exv because it has no graphics.  ExifTool supports .exv files.
+A Jpeg and a .exv are almost the same thing, however most graphics applications will reject a .exv because it not a valid JPEG.  ExifTool supports .exv files.  In tvisitor.cpp, class JpegImage handles both and the only difference is respected in JpegImage::valid();
 
 ```bash
 $ exiv2 -pS ~/Stonehenge.jpg
