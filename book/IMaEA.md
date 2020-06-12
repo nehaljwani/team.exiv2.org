@@ -16,7 +16,7 @@
   [8.2 Tag Names in Exiv2](#8-2)<br>
   [8.3 TagInfo](#8-3)<br>
   [8.4 Visitor Design Pattern](#8-4)<br>
-  [8.5 Navigating the file with visitIFD() and visitTiff() ](#8-5)<br>
+  [8.5 Navigating the file with IFD:visit() and TiffImage::visit() ](#8-5)<br>
   [8.6 Presenting the data with visitTag()](#8-6)<br>
   [8.7 The Exiv2 Metadata and Binary Tag Decoder](#8-7)<br>
 9. [Image Previews](#9)<br>
@@ -628,7 +628,7 @@ Exif.Image.Orientation                       Short       1  top, left
 $
 ```
 
-You may be interested to discover that option `-pS` which arrived with Exiv2 v0.25 was joined in Exiv2 v0.26 by `-pR`.  This is a "recursive" version of -pS.  It dumps the structure not only of the file, but also every subfiles (mostly tiff IFDs).  This is discussed in detail here: [8.5 Navigating the file with visitIFD() and visitTiff()](#8-5).
+You may be interested to discover that option `-pS` which arrived with Exiv2 v0.25 was joined in Exiv2 v0.26 by `-pR`.  This is a "recursive" version of -pS.  It dumps the structure not only of the file, but also every subfiles (mostly tiff IFDs).  This is discussed in detail here: [8.5 Navigating the file with IFD:visit() and TiffImage::visit()](#8-5).
 
 [TOC](#TOC)
 
@@ -963,7 +963,7 @@ I need to do more research into this complex design.
 
 [TOC](#TOC)
 <div id="8-5">
-### 8.5 Navigating the file with visitIFD() and visitTiff()
+### 8.5 Navigating the file with IFD::visit and TiffImage::visit()
 
 The TiffVisitor is ingenious.  It's also difficult to understand.  Exiv2 has two tiff parsers - TiffVisitor and Image::printIFDStructure().  TiffVisitor was written by Andreas Huggel.  It's very robust and has been almost 
 bug free for 15 years.  I wrote the parser in Image::printIFDStructure() to try to understand the structure of a tiff file.  The code in Image::printIFDStructure() is easier to understand.
@@ -981,48 +981,50 @@ The program tvisitor has several file handlers such as TiffImage, JpegImage and 
 The following code is possibly the most beautiful and elegant 100 lines I have ever written.  One day I will find the courage to make this a template to generate Tiff and BigTiff versions.
 
 ```cpp
-void TiffImage::visitIFD(Visitor& visitor,size_t start,endian_e endian,
-    int depth/*=0*/,TagDict& tagDict/*=tiffDict*/,bool bHasNext/*=true*/)
+void IFD::visit(Visitor& visitor,TagDict& tagDict/*=tiffDict*/)
 {
-    size_t   restore1 = io_.tell();
+    size_t start = start_;
+    IoRestorer save(io_,start_);
 
-    if ( !depth++ ) visits_.clear();
-    visitor.visitBegin(*this);
+    if ( !image_.depth() ) image_.visits().clear();
+    size_t   depth  = image_.depth_++;
+    visitor.visitBegin(image_);
+    if ( depth > 100 ) Error(kerCorruptedMetadata) ; // weird file
+    
+    endian_e endian = image_.endian();
 
     // buffer
     DataBuf  dir(12);
     do {
         // Read top of directory
-        io_.seek(start);
         io_.read(dir.pData_, 2);
 
-        uint16_t dirLength = getShort(dir,0,endian_);
+        uint16_t dirLength = getShort(dir,0,endian);
         if ( dirLength > 500 ) Error(kerTiffDirectoryTooLarge,dirLength);
-        visitor.visitDirBegin(*this,dirLength);
+        visitor.visitDirBegin(image_,dirLength);
 
         // Read the dictionary
         for ( int i = 0 ; i < dirLength ; i ++ ) {
             const size_t address = start + 2 + i*12 ;
-
-            if ( visits_.find(address) != visits_.end()  ) { // never visit the same place twice!
+            if ( visits().find(address) != visits().end()  ) { // never visit the same place twice!
                 Error(kerCorruptedMetadata);
             }
-            visits_.insert(address);
+            visits().insert(address);
             io_.seek(address);
 
             // read the tag
             io_.read(dir);
-            uint16_t tag    = getShort(dir,0,endian_);
-            type_e   type   = getType (dir,2,endian_);
-            uint32_t count  = getLong (dir,4,endian_);
-            uint32_t offset = getLong (dir,8,endian_);
+            uint16_t tag    = getShort(dir,0,endian);
+            type_e   type   = getType (dir,2,endian);
+            uint32_t count  = getLong (dir,4,endian);
+            uint32_t offset = getLong (dir,8,endian);
 
             // Break for unknown tag types else we may segfault.
             if ( !typeValid(type) ) {
                 Error(kerInvalidTypeValue);
             }
 
-            visitor.visitTag(*this,address,tagDict);  // Tell the visitor
+            visitor.visitTag(io_,image_,address,tagDict);  // Tell the visitor
 
             uint16_t pad   = isByteType(type)   ? 1 : 0;
             uint16_t size  = typeSize(type)     ;
@@ -1032,77 +1034,83 @@ void TiffImage::visitIFD(Visitor& visitor,size_t start,endian_e endian,
             io_.seek(offset);
             io_.read(buf);
             io_.seek(restore);
-            if ( depth == 1 && tag == 0x010f ) setMaker(buf);  /* Make      */
+
+            if ( image_.depth() == 1 && tag == 0x010f ) image_.setMaker(buf);  /* Make      */
 
             // recursion anybody?
             if ( tag  == 0x927c  ) {                           /* MakerNote */
-                if ( maker_ == kNikon ) {
+                if ( image_.maker_ == kNikon ) {
                     // Nikon MakerNote is emabeded tiff `II*_.....` 10 bytes into the data!
                     size_t punt = buf.strequals("Nikon") ? 10 : 0 ;
-                    Io io(io_,offset+punt,count-punt);
+                    Io     io(io_,offset+punt,count-punt);
                     TiffImage makerNote(io);
-                    makerNote.visitTiff(visitor,makerDict_,depth);
+                    makerNote.indent_ = image_.indent();
+                    makerNote.visit(visitor,makerDict());
                 } else {
-                    bool   bNext = maker_  != kSony;                                        // Sony no trailing next
-                    size_t punt  = maker_  == kSony && buf.strequals("SONY DSC ") ? 12 : 0; // Sony 12 byte punt
-                    visitIFD(visitor,offset+punt,endian_,depth,makerDict_,bNext);
+                    bool   bNext = maker()  != kSony;                                        // Sony no trailing next
+                    size_t punt  = maker()  == kSony && buf.strequals("SONY DSC ") ? 12 : 0; // Sony 12 byte punt
+                    IFD makerNote(image_,offset+punt,bNext);
+                    makerNote.visit(visitor,makerDict());
                 }
             } else if ( tag == 0x8825 ) {                      /* GPSTag    */
-                visitIFD(visitor,offset,endian_,depth,gpsDict );
+                IFD gps(image_,offset,false);
+                gps.visit(visitor,gpsDict);
             } else if ( tag  == 0x8769  ) {                    /* ExifTag   */
-                visitIFD(visitor,offset,endian_,depth,exifDict);
+                IFD exif(image_,offset,false);
+                exif.visit(visitor,exifDict);
             } else if ( type == tiffIfd || tag == 0x014a ) {   /* SubIFDs   */
                 for ( size_t i = 0 ; i < count ; i++ ) {
-                    uint32_t  off  = count == 1 ? offset : getLong(buf,i*4,endian_) ;
-                    visitIFD(visitor,   off,endian_,depth,tagDict );
+                    uint32_t  off  = count == 1 ? offset : getLong(buf,i*4,endian) ;
+                    IFD       ifd(image_,off);
+                    ifd.visit(visitor,tagDict );
                 }
             }
         } // for i < dirLength
 
         start = 0; // !stop
-        if ( bHasNext ) {
+        if ( hasNext_ ) {
             io_.read(dir.pData_, 4);
-            start = getLong(dir,0,endian_);
+            start = getLong(dir,0,endian);
         }
-    	visitor.visitDirEnd(*this,start);
+        visitor.visitDirEnd(image_,start);
     } while (start) ;
-    visitor.visitEnd(*this);
-    depth--;
-
-    io_.seek(restore1); // restore
-} // TiffImage::visitIFD
+    
+    visitor.visitEnd(image_);
+    image_.depth_--;
+} // IFD::visit
 ```
 
-To complete the story, here's valid() and readTiff():
+To complete the story, here's TiffImage::valid() and TiffImage::visit():
 
 ```cpp
 bool TiffImage::valid()
 {
-    bool   result  = false ;
-    size_t restore = io_.tell();
-    io_.seek(0);
+    IoRestorer save(io(),0);
     // read header
-    DataBuf  header(20);
+    DataBuf      header(20);
     io_.read(header);
 
-    char c  = (char) header.pData_[0] ;
-    char C  = (char) header.pData_[1] ;
-    endian_ = c == 'M' ? kEndianBig : kEndianLittle;
-    
-    start_  = getLong (header,4,endian_);
-    magic_  = getShort(header,2,endian_);
-    result  = magic_ == 42 && c == C && ( c == 'I' || c == 'M' ) && start_ < io_.size() ;
+    char c   = (char) header.pData_[0] ;
+    char C   = (char) header.pData_[1] ;
+    endian_  = c == 'M' ? keBig : keLittle;
+    magic_   = getShort(header,2,endian_);
+    start_   = getLong (header,4,endian_);
+    bool result = (magic_ == 42 && c == C) && ( c == 'I' || c == 'M' ) && start_ < io_.size() ;
 
-    io_.seek(restore);
+    bigtiff_ = magic_ == 43;
+    if ( bigtiff_ ) Error(kerBigtiffNotSupported);
+    if ( result ) format_ = "TIFF";
+
     return result;
-}
+} // TiffImage::valid
 
-void TiffImage::visitTiff(Visitor& visitor,TagDict& tagDict,int depth)
+void TiffImage::visit(Visitor& visitor,TagDict& tagDict)
 {
     if ( valid() ) {
-        visitIFD(visitor,start_,endian_,depth,tagDict);
+        IFD ifd(*this,start_,bHasNext_);
+        ifd.visit(visitor,tagDict);
     }
-} // TiffImage::readTiff
+} // TiffImage::visit
 ```
 
 JpegImage::accept() navigates the chain of segments.  When he finds the embedded TIFF in the APP1 segment, he does this:
@@ -1112,6 +1120,7 @@ JpegImage::accept() navigates the chain of segments.  When he finds the embedded
             if ( bExif ) {
                 Io io(io_,current+2+6,size-2-6);
                 TiffImage exif(io);
+                exif.indent_ = indent()+1;
                 exif.accept(v);
             }
 ```
