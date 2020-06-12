@@ -38,14 +38,14 @@
 <div id="foreword">
 ### Foreword
 
-Before I start to discuss the subject of this book, I want to say "Thank You" to a few folks who have made this possbile.  First, my wife Alison, who has been my loyal support since the day we met in High School in 1967.  Secondly, I'd like to thank many people who have contributed to Exiv2 over the years.  In particular to Andreas Huggel the founder of the project and Luis and Dan who have worked tirelessly with me since 2017.  And (in alphabet order): Abhinav, Alan, Andreas _(both of them)_, Ben, Gilles, Kevin, Mahesh, Nehal, Neils, Phil, Sridhar, Thomas, Tuan .... and others who have contributed to Exiv2.
+*Before I start to discuss the subject of this book, I want to say <b>Thank You</b> to a few folks who have made this possbile.  First, my wife Alison, who has been my loyal support since the day we met in High School in 1967.  Secondly, I'd like to thank many people who have contributed to Exiv2 over the years.  In particular to Andreas Huggel the founder of the project and Luis and Dan who have worked tirelessly with me since 2017.  And in alphabet order: Abhinav, Alan, Andreas (both of them), Ben, Gilles, Kevin, Mahesh, Nehal, Neils, Phil, Sridhar, Thomas, Tuan .... and others who have contributed to Exiv2.*
 
-| | | |
-|:-- |:-- |:-- |
+| _History of Exiv2_ | _Future of Exiv2_ |
+|:-- |:-- |
 | [About this book](#about)                           | [Current Development Priorities](#current)  |
 | [How did I get interested in this matter?](#begin)  | [Future Development Projects](#future)      |
 | [2012 - 2017](#2012)                                | [Scope of Book](#scope)                    |                
-| [2017 - Present](#2017)                             | |
+| [2017 - Present](#2017)                             |
 
 <div id="about">
 ### About this book
@@ -549,7 +549,7 @@ Exiv2 has an abstract RemoteIo object which can read/write on the internet.  For
 
 The MemIo class enables memory to be used as a stream.  This is fast and convenient for small temporary files.  When memory mapped files are available, FileIo uses that in preference to FILE*.  When the project started in 2004, memory-mapped files were not provided on some legacy platforms such as DOS.  Today, all operating systems provide memory mapped files.  I've never heard of Exiv2 being used in an embedded controller, however I'm confident that this is feasible.  I've worked on embedded controllers with no operating system and only a standard "C" io library.  Exiv2 can be built for such a device.
 
-Most camera manufacturers are large corporations.  I'm sure they have their own firmware to handle Exif metadata.  However, the world of photography has an every growing band of start-ups making amazing devices such as Go-Pro.  One day I'll hear the somebody is cycling around on top of Mt Everest with Exiv2 running on top of their head!  One of our users is an astronomer at NASA.  I've never heard that Exiv2 has flown in space, however one day it might.  I can say with pride that I think Exiv2 is out of this world!
+Most camera manufacturers are large corporations.  I'm sure they have their own firmware to handle Exif metadata.  However, the world of photography has an ever growing band of start-ups making amazing devices such as Go-Pro.  One day I'll hear the somebody is cycling around on top of Mt Everest with Exiv2 running on top of their head!  One of our users is an astronomer at NASA.  I've never heard that Exiv2 has flown in space, however one day it might.  I can say with pride that I think Exiv2 is out of this world!
 
 [TOC](#TOC)
 <div id="8">
@@ -978,7 +978,9 @@ There are actually two "flavours" of visitIFD.  visitTiff() starts with the tiff
 
 The program tvisitor has several file handlers such as TiffImage, JpegImage and CrwImage.  Exiv2 has handlers for about 20 different formats.  If you understand Tiff and Jpeg, the others are boring variations.  The program tvisitor.cpp does not handle BigTiff, although it needs very few changes to do so.  I invite you, the reader, to investigate and send me a patch.  Best submission wins a free copy of this book.
 
-The following code is possibly the most beautiful and elegant 100 lines I have ever written.  One day I will find the courage to make this a template to generate Tiff and BigTiff versions.
+The following code is possibly the most beautiful and elegant 100 lines I have ever written.  One day I will find the courage to make this a template to generate Tiff and BigTiff versions.  It's probably simpler and easier to duplicate the code.  All code such as uint16\_t tag = getShort() will be `uint32_t tag = getLong()` and so on.
+
+Or we could use a macro, or cut'n'paste it.
 
 ```cpp
 void IFD::visit(Visitor& visitor,TagDict& tagDict/*=tiffDict*/)
@@ -1127,6 +1129,8 @@ JpegImage::accept() navigates the chain of segments.  When he finds the embedded
 
 He discovers the TIFF file hidden in the data, he opens an Io stream which he attaches to a Tiff objects and calls "Tiff::accept(visitor)".  Software seldom gets simpler, as beautiful, or more elegant than this.
 
+The indent should probably be in class ReportVisitor and not in the class IFD.  The IFD has a variable depth which keeps track of the level of recursion.  It's essential that depth is zero to clear the visits structure required to avoid infinite loops in the tiff file.  So, when we call encounter the Tiff embedded in the JPEG, we want to descend from depth == 0, yet display data at greater depth.  For sure, that will be 1 for a JPEG file.   For an embedded thumbnail, it will be even more.  We could avoid that by leaving the reporter to increment/decrement the reporting level when his visitBegin()/visitEnd() is called. 
+
 Just to remind you, BasicIo supports http/ssh and other protocols.  This code will recursively descend into a remote file without copying it locally.  And he does it with great efficiency.  This is discussed in section [7 I/O in Exiv2](#7)
 
 <center>![Exiv2CloudVision](Exiv2CloudVision.png)</center><br>
@@ -1135,9 +1139,9 @@ The code `tvisitor.cpp` is a standalone version of the function Image::printStru
 
 | _tvisitor option_ | _exiv2 option_ | Description |
 |:--              |:-----        |:-- |
-| $ ./tvisitor path<br>$ ./tvisitor S path | $ exiv2 -pS path | Print the structure of the image |
-| $ ./tvisitor R path   | $ exiv2 -pR path | Recursively print the structure of the image |
-| $ ./tvisitor X path   | $ exiv2 -pX path | Print the XMP/xml in the image |
+| $ ./tvisitor -pS path<br>$ ./tvisitor S path | $ exiv2 -pS path | Print the structure of the image |
+| $ ./tvisitor -pR path   | $ exiv2 -pR path | Recursively print the structure of the image |
+| $ ./tvisitor -pX path   | $ exiv2 -pX path | Print the XMP/xml in the image |
 
 There's a deliberate bug in the code in tvisitor.cpp.  The class Tiff doesn't know how to recover the XMP/xml.  You the reader, can investigate a fix.  You will find the solution in the code in the Exiv2 library.
 
@@ -1190,7 +1194,7 @@ You can see that he identifies the file as follows:
 ...
 ```
 
-He is working on an embedded TIFF which is located at bytes 12..15289 which is the Tiff IFD.  While processing that, he encountered a MakerNote which occupies byte 924..3142 of that IFD.  As you can see, it four bytes `0211`.  You could locate that data with the command:
+He is working on an embedded TIFF which is located at bytes 12..15289 which is the Tiff IFD.  While processing that, he encountered a MakerNote which occupies bytes 924..3142 of that IFD.  As you can see, its four bytes `0211`.  You could locate that data with the command:
 
 ```bash
 $ dd if=~/Stonehenge.jpg bs=1 skip=$((12+924+10+8)) count=4 2>/dev/null ; echo 
@@ -1199,7 +1203,7 @@ $
 ```
 Using dd to extract metadata is discussed in more detail here: [8.1 Using dd to extract data from an image](#8-1).
 
-Please be aware that there are two ways in which IFDs can occur in the file.  They can be an embedded TIFF which is complete with the `II*_LengthOffset` or `MM_*LengthOffset` 12-byte header followed the IFD.   Or the IFD can be in the file without the header.  visitIFD() knows that the tags such as GpsTag and ExifTag are IFDs and calls visitIFD().  For the embedded TIFF (such as Nikon MakerNote), visitIFD() creates a TiffImage and calls TimeImage.readTiff() which validates the header and calls visitIFD().
+Please be aware that there are two ways in which IFDs can occur in the file.  They can be an embedded TIFF which is complete with the `II*_gneLtsfO` or `MM_*LengOfst` 12-byte header followed the IFD.   Or the IFD can be in the file without the header.  IFD::visit(visitor) knows that the tags such as GpsTag and ExifTag are IFDs and calls recursively calls IFD::visit(visitor).  For the embedded TIFF (such as Nikon MakerNote), IFD::visit(visitor) creates a TiffImage and calls TimeImage.accept(visitor) which validates the header and calls IFD::visit(visitor).
 
 One other important detail is that although the Tiff Specification expects the IFD to end with a uint32\_t offset == 0, Sony (and other) maker notes do not.  The IFD begins with a uint32\_t to define length, followed by 12 byte tags.  There is no trailing null uint32\_t.
 
@@ -2440,6 +2444,6 @@ Public License instead of this License.
 
 Robin Mills<br>
 robin@clanmills.com<br>
-Revised: 2020-06-09<br>
+Revised: 2020-06-12<br>
 
 [TOC](#TOC)<br>
