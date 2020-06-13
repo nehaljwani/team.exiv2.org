@@ -22,49 +22,49 @@ bool printTag(std::string& name)
 
 // types of data in Exif Specification
 enum type_e
-{   typeMin            = 0,
-    unsignedByte       = 1, //!< Exif BYTE type, 8-bit unsigned integer.
-    asciiString        = 2, //!< Exif ASCII type, 8-bit byte.
-    unsignedShort      = 3, //!< Exif SHORT type, 16-bit (2-byte) unsigned integer.
-    unsignedLong       = 4, //!< Exif LONG type, 32-bit (4-byte) unsigned integer.
-    unsignedRational   = 5, //!< Exif RATIONAL type, two LONGs: numerator and denumerator of a fraction.
-    signedByte         = 6, //!< Exif SBYTE type, an 8-bit signed (twos-complement) integer.
-    undefined          = 7, //!< Exif UNDEFINED type, an 8-bit byte that may contain anything.
-    signedShort        = 8, //!< Exif SSHORT type, a 16-bit (2-byte) signed (twos-complement) integer.
-    signedLong         = 9, //!< Exif SLONG type, a 32-bit (4-byte) signed (twos-complement) integer.
-    signedRational     =10, //!< Exif SRATIONAL type, two SLONGs: numerator and denumerator of a fraction.
-    tiffFloat          =11, //!< TIFF FLOAT type, single precision (4-byte) IEEE format.
-    tiffDouble         =12, //!< TIFF DOUBLE type, double precision (8-byte) IEEE format.
-    tiffIfd            =13, //!< TIFF IFD type, 32-bit (4-byte) unsigned integer.
-    typeNot1           =14,
-    typeNot2           =15,
-    unsignedLongLong   =16, //!< Exif LONG LONG type, 64-bit (8-byte) unsigned integer.
-    signedLongLong     =17, //!< Exif LONG LONG type, 64-bit (8-byte) signed integer.
-    tiffIfd8           =18, //!< TIFF IFD type, 64-bit (8-byte) unsigned integer.
-    typeMax            =19,
+{    kttMin             = 0
+,    kttUByte           = 1 //!< Exif BYTE type, 8-bit unsigned integer.
+,    kttAscii           = 2 //!< Exif ASCII type, 8-bit byte.
+,    kttUShort          = 3 //!< Exif SHORT type, 16-bit (2-byte) unsigned integer.
+,    kttULong           = 4 //!< Exif LONG type, 32-bit (4-byte) unsigned integer.
+,    kttURational       = 5 //!< Exif RATIONAL type, two LONGs: numerator and denumerator of a fraction.
+,    kttSByte           = 6 //!< Exif SBYTE type, an 8-bit signed (twos-complement) integer.
+,    kttUndefined       = 7 //!< Exif UNDEFINED type, an 8-bit byte that may contain anything.
+,    kttSShort          = 8 //!< Exif SSHORT type, a 16-bit (2-byte) signed (twos-complement) integer.
+,    kttSLong           = 9 //!< Exif SLONG type, a 32-bit (4-byte) signed (twos-complement) integer.
+,    kttSRational       =10 //!< Exif SRATIONAL type, two SLONGs: numerator and denumerator of a fraction.
+,    kttFloat           =11 //!< TIFF FLOAT type, single precision (4-byte) IEEE format.
+,    kttDouble          =12 //!< TIFF DOUBLE type, double precision (8-byte) IEEE format.
+,    kttIfd             =13 //!< TIFF IFD type, 32-bit (4-byte) unsigned integer.
+,    kttNot1            =14
+,    kttNot2            =15
+,    kttULongLong       =16 //!< Exif LONG LONG type, 64-bit (8-byte) unsigned integer.
+,    kttSLongLong       =17 //!< Exif LONG LONG type, 64-bit (8-byte) signed integer.
+,    kttIfd8            =18 //!< TIFF IFD type, 64-bit (8-byte) unsigned integer.
+,    kttMax             =19
 };
 const char* typeName(type_e tag)
 {
     //! List of TIFF image tags
     const char* result = NULL;
     switch (tag ) {
-        case unsignedByte     : result = "BYTE"      ; break;
-        case asciiString      : result = "ASCII"     ; break;
-        case unsignedShort    : result = "SHORT"     ; break;
-        case unsignedLong     : result = "LONG"      ; break;
-        case unsignedRational : result = "RATIONAL"  ; break;
-        case signedByte       : result = "SBYTE"     ; break;
-        case undefined        : result = "UNDEFINED" ; break;
-        case signedShort      : result = "SSHORT"    ; break;
-        case signedLong       : result = "SLONG"     ; break;
-        case signedRational   : result = "SRATIONAL" ; break;
-        case tiffFloat        : result = "FLOAT"     ; break;
-        case tiffDouble       : result = "DOUBLE"    ; break;
-        case tiffIfd          : result = "IFD"       ; break;
-        case unsignedLongLong : result = "LONGLONG"  ; break;
-        case signedLongLong   : result = "SLONGLONG" ; break;
-        case tiffIfd8         : result = "IFD8"      ; break;
-        default               : result = "unknown"   ; break;
+        case kttUByte      : result = "BYTE"      ; break;
+        case kttAscii      : result = "ASCII"     ; break;
+        case kttUShort     : result = "SHORT"     ; break;
+        case kttULong      : result = "LONG"      ; break;
+        case kttURational  : result = "RATIONAL"  ; break;
+        case kttSByte      : result = "SBYTE"     ; break;
+        case kttUndefined  : result = "UNDEFINED" ; break;
+        case kttSShort     : result = "SSHORT"    ; break;
+        case kttSLong      : result = "SLONG"     ; break;
+        case kttSRational  : result = "SRATIONAL" ; break;
+        case kttFloat      : result = "FLOAT"     ; break;
+        case kttDouble     : result = "DOUBLE"    ; break;
+        case kttIfd        : result = "IFD"       ; break;
+        case kttULongLong  : result = "LONGLONG"  ; break;
+        case kttSLongLong  : result = "SLONGLONG" ; break;
+        case kttIfd8       : result = "IFD8"      ; break;
+        default            : result = "unknown"   ; break;
     }
     return result;
 }
@@ -89,6 +89,7 @@ enum error_e
 ,   kerNoImageInInputData
 ,   kerBigtiffNotSupported
 ,   kerFileDidNotOpen
+,   kerUnknownFormat
 };
 
 void Error (error_e error, std::string msg)
@@ -105,6 +106,7 @@ void Error (error_e error, std::string msg)
         case   kerNoImageInInputData     : std::cerr << "not image in input data"  ; break;
         case   kerBigtiffNotSupported    : std::cerr << "bigtiff not supported"    ; break;
         case   kerFileDidNotOpen         : std::cerr << "file did not open"        ; break;
+        case   kerUnknownFormat          : std::cerr << "unknown format"           ; break;
         default                          : std::cerr << "unknown error"            ; break;
     }
     if ( msg.size() ) std::cerr << " " << msg ;
@@ -241,30 +243,30 @@ uint64_t getLongLong(const DataBuf& buf,size_t offset,endian_e endian)
 // Tiff Data Functions
 bool isByteType(type_e type)
 {
-    return type == asciiString
-        || type == unsignedByte
-        || type ==   signedByte
-        || type == undefined
+    return type == kttAscii
+        || type == kttUByte
+        || type == kttSByte
+        || type == kttUndefined
         ;
 }
 bool isShortType(type_e type) {
-     return type == unsignedShort
-         || type ==   signedShort
+     return type == kttUShort
+         || type == kttSShort
          ;
 }
 bool isLongType(type_e type) {
-     return type == unsignedLong
-         || type ==   signedLong
+     return type == kttULong
+         || type == kttSLong
          ;
 }
 bool isLongLongType(type_e type) {
-    return type == unsignedLongLong
-        || type ==   signedLongLong
+    return type == kttULongLong
+        || type == kttSLongLong
         ;
 }
 bool isRationalType(type_e type) {
-     return type == unsignedRational
-         || type == signedRational
+     return type == kttURational
+         || type == kttSRational
          ;
 }
 bool is2ByteType(type_e type)
@@ -274,16 +276,16 @@ bool is2ByteType(type_e type)
 bool is4ByteType(type_e type)
 {
     return isLongType(type)
-        || type == tiffFloat
-        || type == tiffIfd
+        || type == kttFloat
+        || type == kttIfd
         ;
 }
 bool is8ByteType(type_e type)
 {
     return  isRationalType(type)
          || isLongLongType(type)
-         || type == tiffIfd8
-         || type == tiffDouble
+         || type == kttIfd8
+         || type == kttDouble
          ;
 }
 uint16_t typeSize(type_e type)
@@ -301,8 +303,8 @@ type_e getType(const DataBuf& buf,size_t offset,endian_e endian)
 
 bool typeValid(type_e type)
 {
-    return type  > typeMin  && type <  typeMax
-        && type != typeNot1 && type != typeNot2
+    return type  > kttMin  && type <  kttMax
+        && type != kttNot1 && type != kttNot2
     ;
 }
 
@@ -403,9 +405,9 @@ std::string DataBuf::toString(size_t offset,type_e type,uint16_t count,endian_e 
             os << sp << a << "/" << b;
             sp = " ";
         }
-    } else if ( type == unsignedByte ) {
+    } else if ( type == kttUByte ) {
         os << binaryToString(offset, (size_t)count);
-    } else if ( type == asciiString ) {
+    } else if ( type == kttAscii ) {
         bool bNoNull = true ;
         for ( size_t k = 0 ; bNoNull && k < count ; k++ )
             bNoNull = pData_[offset+k];
@@ -492,33 +494,37 @@ TagDict sonyDict  ;
 TagDict gpsDict   ;
 TagDict crwDict   ;
 
+enum ktSpecial
+{   ktMakerNote = 0x927c
+,   ktGps       = 0x8825
+,   ktExif      = 0x8769
+,   ktSubIFD    = 0x014a
+,   ktMake      = 0x010f
+,   ktGroup     = 0xffff
+};
+
 bool tagKnown(uint16_t tag,const TagDict& tagDict)
 {
     return tagDict.find(tag) != tagDict.end();
 }
 
-std::string groupName(uint16_t tag,const TagDict& tagDict)
+std::string groupName(const TagDict& tagDict)
 {
-    std::string group = "Unknown";
-    tag = 0xffff;
-    if ( tagDict.find(tag) != tagDict.end() ) {
-        group =  tagDict.find(tag)->second;
-    }
+    std::string group = tagKnown(ktGroup,tagDict)
+                      ? tagDict.find(ktGroup)->second
+                      : "Unknown"
+                      ;
     return "Exif." + group ;
 }
 
 std::string tagName(uint16_t tag,const TagDict& tagDict,const size_t max=0)
 {
-    std::string name ;
-    if ( tag != 0xffff ) {
-        if ( tagDict.find(tag) != tagDict.end() ) {
-            name = tagDict.find(tag)->second;
-        } else {
-            name = stringFormat("%#x",tag);
-        }
-    }
+    std::string name = tagKnown(tag,tagDict)
+                     ? tagDict.find(tag)->second
+                     : stringFormat("%#x",tag)
+                     ;
     
-    name =  groupName(tag,tagDict) + "." + name;
+    name =  groupName(tagDict) + "." + name;
     if ( max && name.size() > max ){
         name = name.substr(0,max-2)+"..";
     }
@@ -845,7 +851,7 @@ public:
             ;
             if ( makerTags.find(name) != makerTags.end() ) {
                 for (Field field : makerTags[name] ) {
-                    std::string n = join(groupName(tag,tagDict),field.name(),28);
+                    std::string n = join(groupName(tagDict),field.name(),28);
                     out() << indent(image.indent())
                           << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
                                          ,offset+field.start(),tag,n.c_str(),typeName(field.type()),field.count(),"")
@@ -1064,7 +1070,7 @@ public:
                     if ( printTag(name)  ) { // ignore unknown tags
                         std::cout << ::indent(indent()) << stringFormat(" %6#x | %-30s | %6d | %-4d  ",tag,name.c_str(),count,offset);
                         if ( tag & kcAscii && tag != 0x2804 /*ImageDescription*/ ) {
-                            std::cout << " | " << chop(block.toString(offset,asciiString,count,endian_),60);
+                            std::cout << " | " << chop(block.toString(offset,kttAscii,count,endian_),60);
                         } else {
                             std::cout << " | " << chop(block.binaryToString(offset,count),60);
                         }
@@ -1094,7 +1100,6 @@ public:
 
 void IFD::visit(Visitor& visitor,TagDict& tagDict/*=tiffDict*/)
 {
-    size_t start = start_;
     IoSave save(io_,start_);
 
     if ( !image_.depth() ) image_.visits().clear();
@@ -1106,7 +1111,8 @@ void IFD::visit(Visitor& visitor,TagDict& tagDict/*=tiffDict*/)
 
     // buffer
     DataBuf  dir(12);
-    do {
+    size_t   start=start_;
+    while  ( start ) {
         // Read top of directory
         io_.read(dir.pData_, 2);
 
@@ -1146,10 +1152,15 @@ void IFD::visit(Visitor& visitor,TagDict& tagDict/*=tiffDict*/)
             io_.read(buf);
             io_.seek(restore);
 
-            if ( image_.depth() == 1 && tag == 0x010f ) image_.setMaker(buf);  /* Make      */
-
+            if ( tagDict == tiffDict && tag == ktMake ) image_.setMaker(buf);
+            if ( type    == kttIfd ) tag = ktSubIFD;
+            
             // recursion anybody?
-            if ( tag  == 0x927c  ) {                           /* MakerNote */
+            IFD ifd(image_,offset,false);
+            switch ( tag ) {
+                case ktGps  : ifd.visit(visitor,gpsDict) ;break;
+                case ktExif : ifd.visit(visitor,exifDict);break;
+                case ktMakerNote :
                 if ( image_.maker_ == kNikon ) {
                     // Nikon MakerNote is emabeded tiff `II*_.....` 10 bytes into the data!
                     size_t punt = buf.strequals("Nikon") ? 10 : 0 ;
@@ -1163,18 +1174,15 @@ void IFD::visit(Visitor& visitor,TagDict& tagDict/*=tiffDict*/)
                     IFD makerNote(image_,offset+punt,bNext);
                     makerNote.visit(visitor,makerDict());
                 }
-            } else if ( tag == 0x8825 ) {                      /* GPSTag    */
-                IFD gps(image_,offset,false);
-                gps.visit(visitor,gpsDict);
-            } else if ( tag  == 0x8769  ) {                    /* ExifTag   */
-                IFD exif(image_,offset,false);
-                exif.visit(visitor,exifDict);
-            } else if ( type == tiffIfd || tag == 0x014a ) {   /* SubIFDs   */
-                for ( size_t i = 0 ; i < count ; i++ ) {
-                    uint32_t  off  = count == 1 ? offset : getLong(buf,i*4,endian) ;
-                    IFD       ifd(image_,off);
-                    ifd.visit(visitor,tagDict );
-                }
+                break;
+                case ktSubIFD :
+                    for ( size_t i = 0 ; i < count ; i++ ) {
+                        uint32_t  off  = count == 1 ? offset : getLong(buf,i*4,endian) ;
+                        IFD       sub(image_,off);
+                        sub.visit(visitor,tagDict );
+                    }
+                break;
+                default: /* do nothing */ ; break;
             }
         } // for i < dirLength
 
@@ -1184,7 +1192,7 @@ void IFD::visit(Visitor& visitor,TagDict& tagDict/*=tiffDict*/)
             start = getLong(dir,0,endian);
         }
         visitor.visitDirEnd(image_,start);
-    } while (start) ;
+    } // while start != 0
     
     visitor.visitEnd(image_);
     image_.depth_--;
@@ -1407,16 +1415,10 @@ int main(int argc,const char* argv[])
                    ;
         }
         ReportVisitor visitor(std::cout,option);
-        if ( tiff.valid() ) {
-            tiff.accept(visitor);
-        } else if ( jpeg.valid() ) {
-            jpeg.accept(visitor);
-        } else if ( crw.valid() ) {
-            crw.accept(visitor);
-        } else {
-            std::cerr << "file type not recognised " << path << std::endl;
-            rc=2;
-        }
+        if      ( tiff.valid() ) tiff.accept(visitor);
+        else if ( jpeg.valid() ) jpeg.accept(visitor);
+        else if (  crw.valid() )  crw.accept(visitor);
+        else    { Error(kerUnknownFormat,path); }
     } else {
         std::cout << "usage: " << argv[0] << " [ {S | R | X} ] path" << std::endl;
         rc = 1;
@@ -1429,7 +1431,7 @@ void init()
 {
     if ( tiffDict.size() ) return; // don't do this twice!
     
-    tiffDict  [ 0xffff ] = "Image";
+    tiffDict  [ktGroup ] = "Image";
     tiffDict  [ 0x8769 ] = "ExifTag";
     tiffDict  [ 0x014a ] = "SubIFD";
     tiffDict  [ 0x83bb ] = "IPTCNAA";
@@ -1457,7 +1459,7 @@ void init()
     tiffDict  [ 0x0132 ] = "DateTime";
     tiffDict  [ 0x0213 ] = "YCbCrPositioning";
 
-    exifDict  [ 0xffff ] = "Photo";
+    exifDict  [ktGroup ] = "Photo";
     exifDict  [ 0x927c ] = "MakerNote";
     exifDict  [ 0x829a ] = "ExposureTime";
     exifDict  [ 0x829d ] = "FNumber";
@@ -1493,7 +1495,7 @@ void init()
     exifDict  [ 0xa40a ] = "Sharpness";
     exifDict  [ 0xc4a5 ] = "PrintImageMatching";
 
-    nikonDict [ 0xffff ] = "Nikon";
+    nikonDict [ktGroup ] = "Nikon";
     nikonDict [ 0x0001 ] = "Version";
     nikonDict [ 0x0002 ] = "ISOSpeed";
     nikonDict [ 0x0004 ] = "Quality";
@@ -1517,7 +1519,7 @@ void init()
     nikonDict [ 0x001e ] = "ColorSpace";
     nikonDict [ 0x0023 ] = "PictureControl";
 
-    canonDict [ 0xffff ] = "Canon";
+    canonDict [ktGroup ] = "Canon";
     canonDict [ 0x0001 ] = "Macro";
     canonDict [ 0x0002 ] = "Selftimer";
     canonDict [ 0x0003 ] = "Quality";
@@ -1534,7 +1536,7 @@ void init()
     canonDict [ 0x0011 ] = "MeteringMode";
     canonDict [ 0x0012 ] = "FocusType";
 
-    gpsDict   [ 0xffff ] = "GPSInfo";
+    gpsDict   [ktGroup ] = "GPSInfo";
     gpsDict   [ 0x0000 ] = "GPSVersionID";
     gpsDict   [ 0x0001 ] = "GPSLatitudeRef";
     gpsDict   [ 0x0002 ] = "GPSLatitude";
@@ -1547,7 +1549,7 @@ void init()
     gpsDict   [ 0x0012 ] = "GPSMapDatum";
     gpsDict   [ 0x001d ] = "GPSDateStamp";
 
-    sonyDict  [ 0xffff ] = "Sony";
+    sonyDict  [ktGroup ] = "Sony";
     sonyDict  [ 0x0001 ] = "Offset";
     sonyDict  [ 0x0002 ] = "ByteOrder";
     sonyDict  [ 0xb020 ] = "ColorReproduction";
@@ -1563,7 +1565,7 @@ void init()
     sonyDict  [ 0xb04b ] = "AntiBlur";
     sonyDict  [ 0xb04e ] = "LongExposureNoiseReduction";
     
-    crwDict   [ 0xffff ] = "CRW";
+    crwDict   [ktGroup ] = "CRW";
     crwDict   [ 0x0032 ] = "CanonColorInfo1";
     crwDict   [ 0x0805 ] = "CanonFileDescription";
     crwDict   [ 0x080a ] = "CanonRawMakeModel";
@@ -1618,19 +1620,19 @@ void init()
     crwDict   [ 0x300a ] = "ImageProps";
     crwDict   [ 0x300b ] = "ExifInformation";
 
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcVersion"         ,asciiString , 0, 4));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcName"            ,asciiString , 4,20));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcBase"            ,asciiString ,24,20));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcAdjust"          ,unsignedByte,48, 1));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcQuickAdjust"     ,unsignedByte,49, 1));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcSharpness"       ,unsignedByte,50, 1));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcContrast"        ,unsignedByte,51, 1));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcBrightness"      ,unsignedByte,52, 1));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcSaturation"      ,unsignedByte,53, 1));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcHueAdjustment"   ,unsignedByte,54, 1));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcFilterEffect"    ,unsignedByte,55, 1));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcFilterEffect"    ,unsignedByte,56, 1));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcToningSaturation",unsignedByte,57, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcVersion"         ,kttAscii , 0, 4));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcName"            ,kttAscii , 4,20));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcBase"            ,kttAscii ,24,20));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcAdjust"          ,kttUByte,48, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcQuickAdjust"     ,kttUByte,49, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcSharpness"       ,kttUByte,50, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcContrast"        ,kttUByte,51, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcBrightness"      ,kttUByte,52, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcSaturation"      ,kttUByte,53, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcHueAdjustment"   ,kttUByte,54, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcFilterEffect"    ,kttUByte,55, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcFilterEffect"    ,kttUByte,56, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcToningSaturation",kttUByte,57, 1));
 }
 
 // That's all Folks!

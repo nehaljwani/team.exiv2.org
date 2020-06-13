@@ -53,11 +53,15 @@
       <CommandLineArguments>
          <CommandLineArgument
             argument = "-pR /Users/rmills/Stonehenge.jpg"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-pR ${HOME}/Stonehenge.tif"
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-pS /Users/rmills/Stonehenge.jpg"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-pR /Users/rmills/Stonehenge.exv"

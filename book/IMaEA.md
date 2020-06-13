@@ -38,9 +38,9 @@
 <div id="foreword">
 ### Foreword
 
-*Before I start to discuss the subject of this book, I want to say <b>Thank You</b> to a few folks who have made this possbile.  First, my wife Alison, who has been my loyal support since the day we met in High School in 1967.  Secondly, I'd like to thank many people who have contributed to Exiv2 over the years.  In particular to Andreas Huggel the founder of the project and Luis and Dan who have worked tirelessly with me since 2017.  And in alphabet order: Abhinav, Alan, Andreas (both of them), Ben, Gilles, Kevin, Mahesh, Nehal, Neils, Phil, Sridhar, Thomas, Tuan .... and others who have contributed to Exiv2.*
+*Before I start to discuss the subject of this book, I want to say <b>Thank You</b> to a few folks who have made this possbile.  First, my wife Alison, who has been my loyal support since the day we met in High School in 1967.  Secondly, I'd like to thank many people who have contributed to Exiv2 over the years.  In particular to Andreas Huggel the founder of the project and Luis and Dan who have worked tirelessly with me since 2017.  And in alphabet order: Abhinav, Alan, Andreas (both of them), Ben, Gilles, Kevin, Mahesh, Nehal, Neils, Phil, Sridhar, Thomas, Tuan .... and others who have contributed to Exiv2.  And our cat Lizzie.
 
-| _History of Exiv2_ | _Future of Exiv2_ |
+| _History_      | _Future_ |
 |:-- |:-- |
 | [About this book](#about)                           | [Current Development Priorities](#current)  |
 | [How did I get interested in this matter?](#begin)  | [Future Development Projects](#future)      |
@@ -151,11 +151,11 @@ The following summaries of the file formats are provided to help the reader unde
 
 | _Common Formats_  | _Raw Formats_  | _Application Formats_ | _No MetaData Formats_
 |:-- |:-- |:-- |:-- |
-| [JPEG and EXV Format](#JPEG)          | [DNG Digital Negative](#DNG)       | [PSD PhotoShop Document](#PSD) | [PGF Portable Graphics Format](#PGF) |
-| [PNG Portable Network Graphics](#PNG) | [CRW Canon Raw](#CRW)              | [TGA](#TGA)                    | [MRW Minolta Raw](#MRW)              |
-| [JP2 Jpeg 2000](#JP2)                 | [CR2 Canon Raw Format 2](#CR2)     | [RW2](#RW2)                    | [ISOBMFF](#ISOBMFF)           |
-| [TIFF Tagged Image File](#TIFF)       | [RAF](#RAW)                        | [NEF Nikon Raw Format ](#NEF)  | | 
-| [WebP Web Photograph ](#WebP)         | [GIF Graphical Image Format](#GIF) | [ORF Olympus Raw Format](#ORF) | |
+| [JPEG and EXV Format](#JPEG)          | [DNG Digital Negative](#DNG)       | [PSD PhotoShop Document](#PSD)        | [BMP Windows Bitmpa](#BMP)             |
+| [PNG Portable Network Graphics](#PNG) | [CRW Canon Raw](#CRW)              | [TGA](#TGA)                           | [GIF Graphical Image Format](#GIF)     |
+| [JP2 Jpeg 2000](#JP2)                 | [CR2 Canon Raw Format 2](#CR2)     | [RW2](#RW2)                           | [PGF Portable Graphics Format](#PGF)   |
+| [TIFF Tagged Image File](#TIFF)       | [RAF](#RAW)                        | [ORF Olympus Raw Format](#ORF)        | [NEF Nikon Raw Format ](#NEF)          | 
+| [WebP Web Photograph ](#WebP)         | [ISOBMFF](#ISOBMFF)                | [PDF Portable Document Format](#PDF)  | [MRW Minolta Raw](#MRW)                |
 
 <div id="JPEG">
 ### JPEG and EXV Format
@@ -165,33 +165,63 @@ The following summaries of the file formats are provided to help the reader unde
 
 A Jpeg and exf are almost the same thing, however most graphics applications will reject a .exv because it is not a valid JPEG.  ExifTool supports .exv files.  In tvisitor.cpp, class JpegImage handles both and the only difference is respected in JpegImage::valid();
 
+```cpp
+bool JpegImage::valid()
+{
+    bool result = false;
+    IoSave save(io(),0);
+    byte   h[2];
+    io_.read(h,2);
+    if ( h[0] == 0xff && h[1] == 0xd8 ) { // .JPEG
+        start_  = 0;
+        format_ = "JPEG";
+        endian_ = keLittle;
+        result  = true;
+    } else if  ( h[0] == 0xff && h[1]==0x01 ) { // .EXV
+        DataBuf buf(5);
+        io_.read(buf);
+        if ( buf.is("Exiv2") ) {
+            start_ = 7;
+            format_ = "EXV";
+            endian_ = keLittle;
+            result = true;
+        }
+    }
+    return result;
+}
+```
+
+And here it is in action:
+
 ```bash
-$ exiv2 -pS ~/Stonehenge.jpg
-STRUCTURE OF JPEG FILE: /Users/rmills/Stonehenge.jpg
- address | marker       |  length | data
+.../book/build $ ./tvisitor -pS ~/Stonehenge.jpg 
+STRUCTURE OF JPEG FILE (II): /Users/rmills/Stonehenge.jpg
+ address |    tag type      count | value
        0 | 0xffd8 SOI  
-       2 | 0xffe1 APP1  |   15288 | Exif..II*......................
-   15292 | 0xffe1 APP1  |    2610 | http://ns.adobe.com/xap/1.0/.<?x
-   17904 | 0xffed APP13 |      96 | Photoshop 3.0.8BIM.............
-   18002 | 0xffe2 APP2  |    4094 | MPF.II*...............0100.....
+       2 | 0xffe1 APP1  |   15288 | Exif__II*_.___._..._.___.___..._.___ +++
+   15292 | 0xffe1 APP1  |    2610 | http://ns.adobe.com/xap/1.0/_<?xpack +++
+   17904 | 0xffed APP13 |      96 | Photoshop 3.0_8BIM.._____'..__._...Z +++
+   18002 | 0xffe2 APP2  |    4094 | MPF_II*_.___.__.._.___0100..._.___._ +++
    22098 | 0xffdb DQT   |     132 
    22232 | 0xffc0 SOF0  |      17 
    22251 | 0xffc4 DHT   |     418 
    22671 | 0xffda SOS  
-$ exiv2 -ea --verbose ~/Stonehenge.jpg 
+END: /Users/rmills/Stonehenge.jpg
+$ exiv2 -ea --verbose --force ~/Stonehenge.jpg 
 File 1/1: /Users/rmills/Stonehenge.jpg
 Writing Exif data from /Users/rmills/Stonehenge.jpg to /Users/rmills/Stonehenge.exv
 Writing IPTC data from /Users/rmills/Stonehenge.jpg to /Users/rmills/Stonehenge.exv
 Writing XMP data from /Users/rmills/Stonehenge.jpg to /Users/rmills/Stonehenge.exv
-$ exiv2 -pS ~/Stonehenge.exv
-STRUCTURE OF JPEG FILE: /Users/rmills/Stonehenge.exv
- address | marker       |  length | data
+.../book/build $ ./tvisitor -pS ~/Stonehenge.exv 
+STRUCTURE OF EXV FILE (II): /Users/rmills/Stonehenge.exv
+ address |    tag type      count | value
        0 | 0xff01      
-       7 | 0xffe1 APP1  |   15296 | Exif..II*......................
-   15305 | 0xffe1 APP1  |    2610 | http://ns.adobe.com/xap/1.0/.<?x
-   17917 | 0xffed APP13 |      68 | Photoshop 3.0.8BIM.......'.....
+       7 | 0xffe1 APP1  |   15296 | Exif__II*_.___._..._.___.___..._.___ +++
+   15305 | 0xffe1 APP1  |    2610 | http://ns.adobe.com/xap/1.0/_<?xpack +++
+   17917 | 0xffed APP13 |      68 | Photoshop 3.0_8BIM.._____...__._...Z +++
    17987 | 0xffd9 EOI  
-$ 
+END: /Users/rmills/Stonehenge.exv
+.../book/build $ 
 ```
 
 [Image File Formats](#1)<br>
@@ -214,16 +244,12 @@ $
 
 The architecture of BigTiff is identical to TIFF.  However it is 64 bit based.  So uint16\_t data types become uint32\_t and uint32\_t become uint64\_t.  BigTiff has three additional 8 byte types: longlong, slonglong and tiffifd8.
 
-| Element | TIFF | BigTiff |
-|:--       |:--  |:--    |
-| Marker | **\*** 0x2a = 42 | **\+** 0x2b = 43 | 
-| Tag    | uint16\_t | uint32\_t  |
-| Type    | uint16\_t | uint32\_t  |
-| Count   | uint32\_t | uint64\_t  |
-| Offset    | uint32\_t | uint64\_t  |
-| Field  | 12 bytes | 24 bytes |
-| Entries **#E** | uint16\_t | uint32\_t  |
-| Next | uint32\_t | uint64\_t  |
+| Element | TIFF | BigTiff | Element | TIFF | BigTiff |
+|:--       |:--  |:--    |:--       |:--  |:--    |
+| Marker | **\*** 0x2a = 42 | **\+** 0x2b = 43 | Offset    | uint32\_t | uint64\_t  |
+| Tag    | uint16\_t | uint32\_t  | Field  | 12 bytes | 24 bytes |
+| Type    | uint16\_t | uint32\_t  | Entries **#E** | uint16\_t | uint32\_t  |
+| Count   | uint32\_t | uint64\_t  | Next | uint32\_t | uint64\_t  | 
 
 BigTiff has 
 
@@ -331,6 +357,13 @@ To be written.
 [TOC](#TOC)
 <div id="NEF">
 ### NEF Nikon Image Format
+
+To be written.
+
+[Image File Formats](#1)<br>
+[TOC](#TOC)
+<div id="PDF">
+### PDF Portable Document Format
 
 To be written.
 
@@ -979,15 +1012,12 @@ There are actually two "flavours" of visitIFD.  visitTiff() starts with the tiff
 
 The program tvisitor has several file handlers such as TiffImage, JpegImage and CrwImage.  Exiv2 has handlers for about 20 different formats.  If you understand Tiff and Jpeg, the others are boring variations.  The program tvisitor.cpp does not handle BigTiff, although it needs very few changes to do so.  I invite you, the reader, to investigate and send me a patch.  Best submission wins a free copy of this book.
 
-The following code is possibly the most beautiful and elegant 100 lines I have ever written.  One day I will find the courage to make this a template to generate Tiff and BigTiff versions.  It's probably simpler and easier to duplicate the code.  All code such as uint16\_t tag = getShort() will be `uint32_t tag = getLong()` and so on.
-
-Or we could use a macro, or cut'n'paste it.
+The following code is possibly the most beautiful and elegant 100 lines I have ever written.  One day I will find the courage to make this a template to generate Tiff and BigTiff versions.  It's probably simpler and easier to duplicate the code.  All code such as uint16\_t tag = getShort() will be `uint32_t tag = getLong()` and so on.  Or we could use a macro, or cut'n'paste it.  Anybody know a beautiful way to do this?
 
 ```cpp
 void IFD::visit(Visitor& visitor,TagDict& tagDict/*=tiffDict*/)
 {
-    size_t start = start_;
-    IoRestorer save(io_,start_);
+    IoSave save(io_,start_);
 
     if ( !image_.depth() ) image_.visits().clear();
     size_t   depth  = image_.depth_++;
@@ -998,7 +1028,8 @@ void IFD::visit(Visitor& visitor,TagDict& tagDict/*=tiffDict*/)
 
     // buffer
     DataBuf  dir(12);
-    do {
+    size_t   start=start_;
+    while  ( start ) {
         // Read top of directory
         io_.read(dir.pData_, 2);
 
@@ -1038,10 +1069,15 @@ void IFD::visit(Visitor& visitor,TagDict& tagDict/*=tiffDict*/)
             io_.read(buf);
             io_.seek(restore);
 
-            if ( image_.depth() == 1 && tag == 0x010f ) image_.setMaker(buf);  /* Make      */
-
+            if ( tagDict == tiffDict && tag == ktMake ) image_.setMaker(buf);
+            if ( type    == tiffIfd ) tag = ktSubIFD;
+            
             // recursion anybody?
-            if ( tag  == 0x927c  ) {                           /* MakerNote */
+            IFD ifd(image_,offset,false);
+            switch ( tag ) {
+                case ktGps  : ifd.visit(visitor,gpsDict) ;break;
+                case ktExif : ifd.visit(visitor,exifDict);break;
+                case ktMakerNote :
                 if ( image_.maker_ == kNikon ) {
                     // Nikon MakerNote is emabeded tiff `II*_.....` 10 bytes into the data!
                     size_t punt = buf.strequals("Nikon") ? 10 : 0 ;
@@ -1055,18 +1091,15 @@ void IFD::visit(Visitor& visitor,TagDict& tagDict/*=tiffDict*/)
                     IFD makerNote(image_,offset+punt,bNext);
                     makerNote.visit(visitor,makerDict());
                 }
-            } else if ( tag == 0x8825 ) {                      /* GPSTag    */
-                IFD gps(image_,offset,false);
-                gps.visit(visitor,gpsDict);
-            } else if ( tag  == 0x8769  ) {                    /* ExifTag   */
-                IFD exif(image_,offset,false);
-                exif.visit(visitor,exifDict);
-            } else if ( type == tiffIfd || tag == 0x014a ) {   /* SubIFDs   */
-                for ( size_t i = 0 ; i < count ; i++ ) {
-                    uint32_t  off  = count == 1 ? offset : getLong(buf,i*4,endian) ;
-                    IFD       ifd(image_,off);
-                    ifd.visit(visitor,tagDict );
-                }
+                break;
+                case ktSubIFD :
+                    for ( size_t i = 0 ; i < count ; i++ ) {
+                        uint32_t  off  = count == 1 ? offset : getLong(buf,i*4,endian) ;
+                        IFD       sub(image_,off);
+                        sub.visit(visitor,tagDict );
+                    }
+                break;
+                default: /* do nothing */ ; break;
             }
         } // for i < dirLength
 
@@ -1076,7 +1109,7 @@ void IFD::visit(Visitor& visitor,TagDict& tagDict/*=tiffDict*/)
             start = getLong(dir,0,endian);
         }
         visitor.visitDirEnd(image_,start);
-    } while (start) ;
+    }
     
     visitor.visitEnd(image_);
     image_.depth_--;
@@ -1140,7 +1173,7 @@ The code `tvisitor.cpp` is a standalone version of the function Image::printStru
 
 | _tvisitor option_ | _exiv2 option_ | Description |
 |:--              |:-----        |:-- |
-| $ ./tvisitor -pS path<br>$ ./tvisitor S path | $ exiv2 -pS path | Print the structure of the image |
+| $ ./tvisitor -pS path<br>$ ./tvisitor path | $ exiv2 -pS path | Print the structure of the image |
 | $ ./tvisitor -pR path   | $ exiv2 -pR path | Recursively print the structure of the image |
 | $ ./tvisitor -pX path   | $ exiv2 -pX path | Print the XMP/xml in the image |
 
@@ -1301,53 +1334,56 @@ In the init() function, I've defined the tag:
 We modify `visitTag()` to report this.
 
 ```cpp
-void visitTag
-( Image&                image
-, int                   depth
+virtual void visitTag
+( Io&                   io
+, Image&                image
 , size_t                address
 , const TagDict&        tagDict
 ) {
-    endian_e endian = image.endian();
-    Io& io = image.io();
-    
-    size_t restore  = io.tell(); // save io position
-    io.seek(address);
+    IoSave save(io,address);
     DataBuf tiffTag(12);
     io.read(tiffTag);
+    endian_e endian = image.endian();
+    
     uint16_t tag    = getShort(tiffTag,0,endian);
-    type_e   type   = getType(tiffTag,2,endian);
-    uint32_t count  = getLong(tiffTag,4,endian);
-    size_t   offset = getLong(tiffTag,8,endian);
+    type_e   type   = getType (tiffTag,2,endian);
+    uint32_t count  = getLong (tiffTag,4,endian);
+    size_t   offset = getLong (tiffTag,8,endian);
     uint16_t size   = typeSize(type);
 
     // allocate a buffer and read the data
     DataBuf buf(count*size);
     std::string offsetString ;
+    std::string value ;
     if ( count*size > 4 ) {  // read into buffer
         io.seek(offset);     // position
         io.read(buf);        // read
+        value = buf.toString(0,type,count,endian);
         offsetString = stringFormat("%10u", offset);
+    } else {
+        value = tiffTag.toString(8,type,count,endian);
     }
-    io.seek(restore);                 // restore
-    
+
     // format the output
     std::string name  = tagName(tag,tagDict,28);
-    std::string value = buf.toString(0,type,count,image.endian(),40);
     
-    out_ << indent(depth)
-         << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
-                ,address,tag,name.c_str(),typeName(type),count,offsetString.c_str())
-         << value
-         << std::endl
-    ;
-    if ( makerTags.find(name) != makerTags.end() ) {
-        for (Field field : makerTags[name] ) {
-            std::string n = join(groupName(tag,tagDict),field.name(),28);
-            out_ << indent(depth)
-<< stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
-                ,offset+field.start(),tag,n.c_str(),typeName(field.type()),field.count(),"")
-<< buf.toString(field.start(),field.type(),field.count(),field.endian()==keImage?image.endian():field.endian(),40)
-<< std::endl ;
+    if ( printTag(name) ) {
+        out() << indent(image.indent())
+              << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
+                    ,address,tag,name.c_str(),typeName(type),count,offsetString.c_str())
+              << chop(value,40)
+              << std::endl
+        ;
+        if ( makerTags.find(name) != makerTags.end() ) {
+            for (Field field : makerTags[name] ) {
+                std::string n = join(groupName(tag,tagDict),field.name(),28);
+                out() << indent(image.indent())
+                      << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
+                                     ,offset+field.start(),tag,n.c_str(),typeName(field.type()),field.count(),"")
+                      << chop(buf.toString(field.start(),field.type(),field.count(),field.endian()==keImage?image.endian():field.endian()),40)
+                      << std::endl
+                ;
+            }
         }
     }
 } // visitTag
@@ -2448,3 +2484,4 @@ robin@clanmills.com<br>
 Revised: 2020-06-12<br>
 
 [TOC](#TOC)<br>
+gnu/gith
