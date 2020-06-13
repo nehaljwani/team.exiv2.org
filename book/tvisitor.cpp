@@ -69,57 +69,6 @@ const char* typeName(type_e tag)
     return result;
 }
 
-// Canon magic
-#define kcAscii 0x0800
-#define kcWord  0x1000
-#define kcDword 0x1000
-#define kcHTP1  0x2800
-#define kcHTP2  0x3000
-enum kCanonHeap
-{   kStg_InHeapSpace    = 0
-,   kStg_InRecordEntry  = 0x4000
-};
-enum kCanonType
-{   kDT_BYTE            = 0x0000
-,   kDT_ASCII           = kcAscii
-,   kDT_WORD            = kcWord
-,   kDT_DWORD           = kcDword
-,   kDT_BYTE2           = 0x2000
-,   kDT_HeapTypeProp1   = kcHTP1
-,   kDT_HeapTypeProp2   = kcHTP1
-,   kTC_WildCard        = 0xffff
-,   kTC_Null            = 0x0000
-,   kTC_Free            = 0x0001
-,   kTC_ExUsed          = 0x0002
-,   kTC_Description     = 0x0005|kcAscii
-,   kTC_ModelName       = 0x000a|kcAscii
-,   kTC_FirmwareVersion = 0x000b|kcAscii
-,   kTC_ComponentVersion= 0x000c|kcAscii
-,   kTC_ROMOperationMode= 0x000d|kcAscii
-,   kTC_OwnerName       = 0x0010|kcAscii
-,   kTC_ImageFileName   = 0x0016|kcAscii
-,   kTC_ThumbnailFileName=0x001c|kcAscii
-,   kTC_TargetImageType = 0x000a|kcWord
-,   kTC_SR_ReleaseMethod= 0x0010|kcWord
-,   kTC_SR_ReleaseTiming= 0x0011|kcWord
-,   kTC_ReleaseSetting  = 0x0016|kcWord
-,   kTC_BodySensitivity = 0x001c|kcWord
-,   kTC_ImageFormat     = 0x0003|kcDword
-,   kTC_RecordID        = 0x0004|kcDword
-,   kTC_SelfTimerTime   = 0x0006|kcDword
-,   kTC_SR_TargetDistanceSetting = 0x0007|kcDword
-,   kTC_BodyID          = 0x000b|kcDword
-,   kTC_CapturedTime    = 0x000e|kcDword
-,   kTC_ImageSpec       = 0x0010|kcDword
-,   kTC_SR_EF           = 0x0013|kcDword
-,   kTC_MI_EV           = 0x0014|kcDword
-,   kTC_SerialNumber    = 0x0017|kcDword
-,   kTC_SR_Exposure     = 0x0018|kcDword
-,   kTC_CameraObject    = 0x0007|kcHTP1
-,   kTC_ShootingRecord  = 0x0002|kcHTP2
-,   kTC_MeasuredInfo    = 0x0003|kcHTP2
-,   kTC_CameraSpecificaiton= 0x0004|kcHTP2
-};
 
 enum endian_e
 {   keLittle
@@ -479,7 +428,60 @@ enum maker_e
 ,   kSony
 };
 
-// TagDict is use to map tag (uint16_t) to string (for printing)
+// Canon magic
+enum kCanonHeap
+{   kStg_InHeapSpace    = 0
+,   kStg_InRecordEntry  = 0x4000
+};
+
+#define kcAscii 0x0800
+#define kcWord  0x1000
+#define kcDword 0x1000
+#define kcHTP1  0x2800
+#define kcHTP2  0x3000
+enum kCanonType
+{   kDT_BYTE            = 0x0000
+,   kDT_ASCII           = kcAscii
+,   kDT_WORD            = kcWord
+,   kDT_DWORD           = kcDword
+,   kDT_BYTE2           = 0x2000
+,   kDT_HeapTypeProp1   = kcHTP1
+,   kDT_HeapTypeProp2   = kcHTP1
+,   kTC_WildCard        = 0xffff
+,   kTC_Null            = 0x0000
+,   kTC_Free            = 0x0001
+,   kTC_ExUsed          = 0x0002
+,   kTC_Description     = 0x0005|kcAscii
+,   kTC_ModelName       = 0x000a|kcAscii
+,   kTC_FirmwareVersion = 0x000b|kcAscii
+,   kTC_ComponentVersion= 0x000c|kcAscii
+,   kTC_ROMOperationMode= 0x000d|kcAscii
+,   kTC_OwnerName       = 0x0010|kcAscii
+,   kTC_ImageFileName   = 0x0016|kcAscii
+,   kTC_ThumbnailFileName=0x001c|kcAscii
+,   kTC_TargetImageType = 0x000a|kcWord
+,   kTC_SR_ReleaseMethod= 0x0010|kcWord
+,   kTC_SR_ReleaseTiming= 0x0011|kcWord
+,   kTC_ReleaseSetting  = 0x0016|kcWord
+,   kTC_BodySensitivity = 0x001c|kcWord
+,   kTC_ImageFormat     = 0x0003|kcDword
+,   kTC_RecordID        = 0x0004|kcDword
+,   kTC_SelfTimerTime   = 0x0006|kcDword
+,   kTC_SR_TargetDistanceSetting = 0x0007|kcDword
+,   kTC_BodyID          = 0x000b|kcDword
+,   kTC_CapturedTime    = 0x000e|kcDword
+,   kTC_ImageSpec       = 0x0010|kcDword
+,   kTC_SR_EF           = 0x0013|kcDword
+,   kTC_MI_EV           = 0x0014|kcDword
+,   kTC_SerialNumber    = 0x0017|kcDword
+,   kTC_SR_Exposure     = 0x0018|kcDword
+,   kTC_CameraObject    = 0x0007|kcHTP1
+,   kTC_ShootingRecord  = 0x0002|kcHTP2
+,   kTC_MeasuredInfo    = 0x0003|kcHTP2
+,   kTC_CameraSpecificaiton= 0x0004|kcHTP2
+};
+
+// TagDict is use to map tag (uint16_t) to string
 typedef std::map<uint16_t,std::string> TagDict;
 TagDict emptyDict ;
 TagDict tiffDict  ;
@@ -633,14 +635,14 @@ private:
     size_t      restore_;
 };
 
-class IoRestorer // restore Io when function ends
+class IoSave // restore Io when function ends
 {
 public:
-    IoRestorer(Io& io,size_t address)
+    IoSave(Io& io,size_t address)
     : io_(io)
     , restore_(io.tell())
     { io_.seek(address); }
-    virtual ~IoRestorer() {io_.seek(restore_);}
+    virtual ~IoSave() {io_.seek(restore_);}
 private:
     Io&    io_;
     size_t restore_;
@@ -807,7 +809,7 @@ public:
     , size_t                address
     , const TagDict&        tagDict
     ) {
-        IoRestorer save(io,address);
+        IoSave save(io,address);
         DataBuf tiffTag(12);
         io.read(tiffTag);
         endian_e endian = image.endian();
@@ -979,7 +981,7 @@ public:
     CrwImage(std::string path) : Image(path) { start_ = 0 ;}
     CrwImage(Io& io) : Image(io) { start_ = 0 ; }
     bool valid() {
-        IoRestorer save(io(),0);
+        IoSave save(io(),0);
         bool result = false;
         DataBuf buf(2+4+8); //xxlongHEAPCCRD xx = II or MM
         if ( io().good() ) {
@@ -1010,7 +1012,7 @@ public:
     
     void dumpImageHeader(size_t start,endian_e endian,uint16_t depth)
     {
-        IoRestorer save(io(),start);
+        IoSave save(io(),start);
         
         uint32_t imageWidth         = io().getLong(endian);
         uint32_t imageHeight        = io().getLong(endian);
@@ -1026,7 +1028,7 @@ public:
     }
     virtual void accept(class Visitor& visitor)
     {
-        IoRestorer save(io(),start_);
+        IoSave save(io(),start_);
 
         byte      u[2];
         io().read(u,2);
@@ -1093,7 +1095,7 @@ public:
 void IFD::visit(Visitor& visitor,TagDict& tagDict/*=tiffDict*/)
 {
     size_t start = start_;
-    IoRestorer save(io_,start_);
+    IoSave save(io_,start_);
 
     if ( !image_.depth() ) image_.visits().clear();
     size_t   depth  = image_.depth_++;
@@ -1190,7 +1192,7 @@ void IFD::visit(Visitor& visitor,TagDict& tagDict/*=tiffDict*/)
 
 bool TiffImage::valid()
 {
-    IoRestorer save(io(),0);
+    IoSave save(io(),0);
     // read header
     DataBuf      header(20);
     io_.read(header);
@@ -1220,7 +1222,7 @@ void TiffImage::visit(Visitor& visitor,TagDict& tagDict)
 bool JpegImage::valid()
 {
     bool result = false;
-    IoRestorer save(io(),0);
+    IoSave save(io(),0);
     byte   h[2];
     io_.read(h,2);
     if ( h[0] == 0xff && h[1] == 0xd8 ) { // .JPEG
@@ -1253,7 +1255,7 @@ void JpegImage::accept(Visitor& v)
             Error(kerFailedToReadImageData);
         Error(kerNotAJpeg);
     }
-    IoRestorer save(io(),0);
+    IoSave save(io(),0);
     v.visitBegin((*this));
 
     bool bPrint = v.option() == kpsBasic || v.option() == kpsRecursive;
@@ -1264,7 +1266,7 @@ void JpegImage::accept(Visitor& v)
     // Container for the signature
     bool   bExtXMP    = false;
     size_t bufRead    = 0;
-    size_t bufMinSize = 36;
+    size_t bufMinSize = 48;
     DataBuf buf(bufMinSize);
 
     // Read section marker
@@ -1337,8 +1339,8 @@ void JpegImage::accept(Visitor& v)
                 }
             } else {
                 const size_t start = size > 0 ? 2 : 0;
-                const size_t end = start + (size > 32 ? 32 : size);
-                os << "| " << buf.binaryToString(start, end);
+                const size_t end = start + (size > bufMinSize-4 ? bufMinSize-4 : size);
+                os << "| " << chop(buf.binaryToString(start, end),40);
             }
             if (bLF && bPrint) v.visitReport(os,bLF);
 

@@ -69,7 +69,7 @@ I said "Oh, it can't be too difficult to do that!".  And here we are more than a
 
 The sample application samples/geotag.cpp provides a command line utility to geotag photos and I frequently use this on my own photographs.  Today, I have a Samsung Galaxy Watch which uploads runs to Strava.  I download the GPX from Strava.  The date/time information in the JPG is the key to search for the position data.  The GPS tags are created and saved in the image.
 
-Back in 2008, I chose to implement this in python as a good motivator to learn Python.  Having discovered exiv2 and the python wrapper pyexiv2, I set off with enthusiasm to build a cross-platform script to run on **Windows** _(XP, Visual Studio 2003)_, **Ubuntu Linux** _(Hardy Heron 2008.04 LTS)_ and **macOS** _(32 bit Tiger 10.4 on a big-endian PPC)_.  After I finished, I emailed Andreas.  He responded in less than an hour and invited me to join Team Exiv2.  Initialially, I provided support to build Exiv2 with Visual Studio.
+BI chose to implement this in python as a good motivator to learn Python.  Having discovered exiv2 and the python wrapper pyexiv2, I set off with enthusiasm to build a cross-platform script to run on **Windows** _(XP, Visual Studio 2003)_, **Ubuntu Linux** _(Hardy Heron 2008.04 LTS)_ and **macOS** _(32 bit Tiger 10.4 on a big-endian PPC)_.  After I finished, I emailed Andreas.  He responded in less than an hour and invited me to join Team Exiv2.  Initialially, I provided support to build Exiv2 with Visual Studio.
 
 Incidentally, later in 2008, Dennis offered me a contract to port his company's Linux code to Visual Studio to be used on a Windows CE Embedded Controller.  1 million lines of C++ were ported from Linux in 6 weeks.  I worked with Dennis for 4 years on all manner of GPS related software development.
 
@@ -149,12 +149,12 @@ This book is copyright and licensed under GPLv2 of which a copy is included at t
 
 The following summaries of the file formats are provided to help the reader understand both this book and the Exiv2 code.  The Standard Specifications should be consulted for more detail.
 
-| | | | |
+| _Common Formats_  | _Raw Formats_  | _Application Formats_ | _No MetaData Formats_
 |:-- |:-- |:-- |:-- |
 | [JPEG and EXV Format](#JPEG)          | [DNG Digital Negative](#DNG)       | [PSD PhotoShop Document](#PSD) | [PGF Portable Graphics Format](#PGF) |
 | [PNG Portable Network Graphics](#PNG) | [CRW Canon Raw](#CRW)              | [TGA](#TGA)                    | [MRW Minolta Raw](#MRW)              |
 | [JP2 Jpeg 2000](#JP2)                 | [CR2 Canon Raw Format 2](#CR2)     | [RW2](#RW2)                    | [ISOBMFF](#ISOBMFF)           |
-| [TIFF Tagged Image File](#TIFF)       | [BMP Windows Bitmap](#BMP)         | [RAF](#RAW)                    | [NEF Nikon Raw Format ](#NEF) | 
+| [TIFF Tagged Image File](#TIFF)       | [RAF](#RAW)                        | [NEF Nikon Raw Format ](#NEF)  | | 
 | [WebP Web Photograph ](#WebP)         | [GIF Graphical Image Format](#GIF) | [ORF Olympus Raw Format](#ORF) | |
 
 <div id="JPEG">
@@ -163,7 +163,7 @@ The following summaries of the file formats are provided to help the reader unde
 
 ![jpegs.png](jpegs.png)
 
-A Jpeg and a .exv are almost the same thing, however most graphics applications will reject a .exv because it not a valid JPEG.  ExifTool supports .exv files.  In tvisitor.cpp, class JpegImage handles both and the only difference is respected in JpegImage::valid();
+A Jpeg and exf are almost the same thing, however most graphics applications will reject a .exv because it is not a valid JPEG.  ExifTool supports .exv files.  In tvisitor.cpp, class JpegImage handles both and the only difference is respected in JpegImage::valid();
 
 ```bash
 $ exiv2 -pS ~/Stonehenge.jpg

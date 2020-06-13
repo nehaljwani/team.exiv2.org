@@ -34,14 +34,14 @@ int main(int argc, char* argv[])
 
 	if ( !error  )
 	{
-		char line[1000] ;
-		char buff[32]   ;
-		int  n          ;
-		int count = 0   ;
+		char    line[1000] ;
+		char    buff[32]   ;
+		size_t  n          ;
+		size_t  count = 0   ;
 		while ( (n = fread(buff,1,sizeof buff,f)) > 0 )
 		{
 			// line number
-			int l = sprintf(line,"%#8x %8d: ",count,count ) ;
+			int l = sprintf(line,"%#8lx %8ld: ",count,count ) ;
 			count += n ;
 
 			// ascii print
@@ -51,7 +51,7 @@ int main(int argc, char* argv[])
 		        l += sprintf(line+l,"%c", print(c)) ;
 			}
 			// blank pad the ascii
-			int save = n ;
+			size_t  save = n ;
 			while ( n++ < sizeof(buff) ) {
 			    l += sprintf(line+l," ") ;
 			}
