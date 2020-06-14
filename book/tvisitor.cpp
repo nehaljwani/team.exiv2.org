@@ -884,7 +884,7 @@ public:
     , hasNext_(hasNext)
     {};
 
-    void     visit(Visitor& visitor,TagDict& tagDict=tiffDict);
+    void     visit(Visitor& visitor,const TagDict& tagDict=tiffDict);
     Visits&  visits()    { return image_.visits()  ; }
     maker_e  maker()     { return image_.maker_    ; }
     TagDict& makerDict() { return image_.makerDict_; }
@@ -1101,16 +1101,13 @@ public:
     }
 };
 
-void IFD::visit(Visitor& visitor,TagDict& tagDict/*=tiffDict*/)
+void IFD::visit(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
 {
     IoSave save(io_,start_);
 
-    if ( !image_.depth() ) image_.visits().clear();
-    size_t   depth  = image_.depth_++;
+    if ( !image_.depth_++ ) image_.visits().clear();
     visitor.visitBegin(image_);
-    if ( depth > 100 ) Error(kerCorruptedMetadata) ; // weird file
-
-    endian_e endian = image_.endian();
+    if ( image_.depth_ > 100 ) Error(kerCorruptedMetadata) ; // weird file
 
     // buffer
     DataBuf  dir(12);
@@ -1118,12 +1115,12 @@ void IFD::visit(Visitor& visitor,TagDict& tagDict/*=tiffDict*/)
     while  ( start ) {
         // Read top of directory
         io_.read(dir.pData_, 2);
+        uint16_t dirLength = getShort(dir,0,image_.endian());
 
-        uint16_t dirLength = getShort(dir,0,endian);
         if ( dirLength > 500 ) Error(kerTiffDirectoryTooLarge,dirLength);
         visitor.visitDirBegin(image_,dirLength);
 
-        // Read the dictionary
+        // Run along the directory
         for ( int i = 0 ; i < dirLength ; i ++ ) {
             const size_t address = start + 2 + i*12 ;
             if ( visits().find(address) != visits().end()  ) { // never visit the same place twice!
@@ -1132,33 +1129,30 @@ void IFD::visit(Visitor& visitor,TagDict& tagDict/*=tiffDict*/)
             visits().insert(address);
             io_.seek(address);
 
-            // read the tag
             io_.read(dir);
-            uint16_t tag    = getShort(dir,0,endian);
-            type_e   type   = getType (dir,2,endian);
-            uint32_t count  = getLong (dir,4,endian);
-            uint32_t offset = getLong (dir,8,endian);
+            uint16_t tag    = getShort(dir,0,image_.endian());
+            type_e   type   = getType (dir,2,image_.endian());
+            uint32_t count  = getLong (dir,4,image_.endian());
+            uint32_t offset = getLong (dir,8,image_.endian());
 
-            // Break for unknown tag types else we may segfault.
             if ( !typeValid(type) ) {
                 Error(kerInvalidTypeValue);
             }
 
             visitor.visitTag(io_,image_,address,tagDict);  // Tell the visitor
 
-            uint16_t pad   = isByteType(type)   ? 1 : 0;
-            uint16_t size  = typeSize(type)     ;
-            size_t   alloc = size*count + pad+20;
+            uint16_t pad     = isByteType(type)  ? 1 : 0;
+            uint16_t size    = typeSize(type)    ;
+            size_t   alloc   = size*count + pad+6;
             DataBuf  buf(alloc,io_.size());
             size_t   restore = io_.tell();
             io_.seek(offset);
             io_.read(buf);
             io_.seek(restore);
 
+            // recursion anybody?
             if ( tagDict == tiffDict && tag == ktMake ) image_.setMaker(buf);
             if ( type    == kttIfd )    tag  = ktSubIFD;
-
-            // recursion anybody?
             switch ( tag ) {
                 case ktGps  : IFD(image_,offset,false).visit(visitor,gpsDict );break;
                 case ktExif : IFD(image_,offset,false).visit(visitor,exifDict);break;
@@ -1178,7 +1172,7 @@ void IFD::visit(Visitor& visitor,TagDict& tagDict/*=tiffDict*/)
                 break;
                 case ktSubIFD :
                     for ( size_t i = 0 ; i < count ; i++ ) {
-                        uint32_t  off  = count == 1 ? offset : getLong(buf,i*4,endian) ;
+                        uint32_t  off  = count == 1 ? offset : getLong(buf,i*4,image_.endian()) ;
                         IFD(image_,off).visit(visitor,tagDict );
                     }
                 break;
@@ -1189,7 +1183,7 @@ void IFD::visit(Visitor& visitor,TagDict& tagDict/*=tiffDict*/)
         start = 0; // !stop
         if ( hasNext_ ) {
             io_.read(dir.pData_, 4);
-            start = getLong(dir,0,endian);
+            start = getLong(dir,0,image_.endian());
         }
         visitor.visitDirEnd(image_,start);
     } // while start != 0
