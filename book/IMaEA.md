@@ -1,7 +1,8 @@
-<div id="TOC">
-![Exiv2](exiv2.png)
-# Image Metadata and Exiv2 Architecture
+![Exiv2](400dpiLogo.png)
+<h3 align=center style="font-size: 48px;">Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
+<h2></h2>
+<div id="TOC">
 ### TABLE OF CONTENTS
 
 1. [Image File Formats](#1)<br>
@@ -35,17 +36,18 @@
 
 [TOC](#TOC) [Foreward](#foreword)
 
-<div id="foreword">
-### Foreword
 
-*Before I start to discuss the subject of this book, I want to say <b>Thank You</b> to a few folks who have made this possbile.  First, my wife Alison, who has been my loyal support since the day we met in High School in 1967.  Secondly, I'd like to thank many people who have contributed to Exiv2 over the years.  In particular to Andreas Huggel the founder of the project and Luis and Dan who have worked tirelessly with me since 2017.  And in alphabet order: Abhinav, Alan, Andreas (both of them), Ben, Gilles, Kevin, Mahesh, Nehal, Neils, Phil, Sridhar, Thomas, Tuan .... and others who have contributed to Exiv2.  And our cat Lizzie.
+<div id="foreword">
+## Foreword
 
 | _History_      | _Future_ |
 |:-- |:-- |
 | [About this book](#about)                           | [Current Development Priorities](#current)  |
 | [How did I get interested in this matter?](#begin)  | [Future Development Projects](#future)      |
 | [2012 - 2017](#2012)                                | [Scope of Book](#scope)                    |                
-| [2017 - Present](#2017)                             |
+| [2017 - Present](#2017)                             | [Making this book](#making)   |
+
+_Before I start to discuss the subject of this book, I want to say <b>Thank You</b> to a few folks who have made this possbile.  First, my wife Alison, who has been my loyal support since the day we met in High School in 1967.  Secondly, I'd like to thank many people who have contributed to Exiv2 over the years.  In particular to Andreas Huggel the founder of the project and Luis and Dan who have worked tirelessly with me since 2017.  And in alphabet order: Abhinav, Alan, Andreas (both of them), Ben, Gilles, Kevin, Mahesh, Nehal, Neils, Phil, Sridhar, Thomas, Tuan .... and others who have contributed to Exiv2.  And our cat Lizzie._
 
 <div id="about">
 ### About this book
@@ -141,10 +143,30 @@ I wish you a happy adventure in the world of Image Metadata.  If you'd like to d
 
 This book is copyright and licensed under GPLv2 of which a copy is included at the end of the document.
 
+<div id="making">
+### Making this book
+
+I've had a lot of fun making this book.  Most of the time was spent on the code, however the getting the book into good shape on the web and print has been fun.  The book is written in markdown and displayed on my computer with the MacDown Application.  To get it into print, I export the HTML and edit the style in index.html with:
+
+```.css
+@media print {
+    h1,h2 { page-break-before: always; }
+    h3,h4 { page-break-after: never;   }
+}
+```
+
+MacDown support style sheets, however I don't know why my changes did not work.  When MacDown exports a PDF, he ignores page-break-before.  And MacDown does not support page numbering.
+
+I open index.html in Safari and print it into a PDF file with a page size of 275x389mm.  This preserves to aspect ratio of A4 pages.  Safari has an option to had page number and date to every page.  I then print the PDF into an A4 file PDF.  I have to manually update the page numbers in the table of contents.  If Exiv2 ever supports PDF, I'll probably be able to script that!
+
+The final step is to take the PDF to the local print shop to have it printed and bound.
+
+All the documentation for Exiv2 is written in markdown.  I find it quick and easy to use and produces very satisfying results.  The Graphics for the book were drawn using OmniGraffle 6.4 on my MacBook Pro.
+
 <center>![Robin](RobinEuphonium.jpg)</center>
 
 [TOC](#TOC) [Foreward](#foreword)
-<div id="1">
+<div id="1"">
 # 1 Image File Formats
 
 The following summaries of the file formats are provided to help the reader understand both this book and the Exiv2 code.  The Standard Specifications should be consulted for more detail.
@@ -227,19 +249,19 @@ END: /Users/rmills/Stonehenge.exv
 [Image File Formats](#1)<br>
 [TOC](#TOC)
 <div id="PNG">
-### PNG Portable Network Graphics
+## PNG Portable Network Graphics
 ![png](png.png)
 
 [Image File Formats](#1)<br>
 [TOC](#TOC)
 <div id="JP2">
-### JPEG 2000
+## JPEG 2000
 ![jp2](jp2.png)
 
 [Image File Formats](#1)<br>
 [TOC](#TOC)
 <div id="TIFF">
-### 1.4 TIFF and BigTiff
+## 1.4 TIFF and BigTiff
 ![tiff](tiff.png)
 
 The architecture of BigTiff is identical to TIFF.  However it is 64 bit based.  So uint16\_t data types become uint32\_t and uint32\_t become uint64\_t.  BigTiff has three additional 8 byte types: longlong, slonglong and tiffifd8.
@@ -251,13 +273,10 @@ The architecture of BigTiff is identical to TIFF.  However it is 64 bit based.  
 | Type    | uint16\_t | uint32\_t  | Entries **#E** | uint16\_t | uint32\_t  |
 | Count   | uint32\_t | uint64\_t  | Next | uint32\_t | uint64\_t  | 
 
-BigTiff has 
-
-
 [Image File Formats](#1)<br>
 [TOC](#TOC)
 <div id="WebP">
-### WEBP Web Photograph
+## WEBP Web Photograph
 ![webp](webp.png)
 
 [Image File Formats](#1)<br>
@@ -270,7 +289,7 @@ To be written.
 [Image File Formats](#1)<br>
 [TOC](#TOC)
 <div id="CRW">
-### CRW Canon Raw Format
+## CRW Canon Raw Format
 
 ![crw](crw.png)
 
@@ -279,21 +298,21 @@ The specification is here: [CIFFspecV1R04.pdf](https://web.archive.org/web/20081
 [Image File Formats](#1)<br>
 [TOC](#TOC)
 <div id="CR2">
-### CR2 Canon Raw Format 2
+## CR2 Canon Raw Format 2
 
 To be written.
 
 [Image File Formats](#1)<br>
 [TOC](#TOC)
 <div id="BMP">
-### BMP Windows Bitmap
+## BMP Windows Bitmap
 
 To be written.
 
 [Image File Formats](#1)<br>
 [TOC](#TOC)
 <div id="GIF">
-### GIF Graphics Image Format
+## GIF Graphics Image Format
 
 To be written.
 
@@ -307,63 +326,63 @@ To be written.
 [Image File Formats](#1)<br>
 [TOC](#TOC)
 <div id="RW2">
-### RW2
+## RW2
 
 To be written.
 
 [Image File Formats](#1)<br>
 [TOC](#TOC)
 <div id="RAF">
-### RAF
+## RAF
 
 To be written.
 
 [Image File Formats](#1)<br>
 [TOC](#TOC)
 <div id="ORF">
-### ORF Olympus Raw Format
+## ORF Olympus Raw Format
 
 To be written.
 
 [Image File Formats](#1)<br>
 [TOC](#TOC)
 <div id="1-16">
-### PSD PhotoShop
+## PSD PhotoShop
 
 To be written.
 
 [Image File Formats](#1)<br>
 [TOC](#TOC)
 <div id="PGF">
-### PGF Portable Graphics Format
+## PGF Portable Graphics Format
 
 To be written.
 
 [Image File Formats](#1)<br>
 [TOC](#TOC)
 <div id="MWR">
-### MRW Minolta Raw Format
+## MRW Minolta Raw Format
 
 To be written.
 
 [Image File Formats](#1)<br>
 [TOC](#TOC)
 <div id="ISOBMFF">
-### ISOBMFF
+## ISOBMFF
 
 To be written.
 
 [Image File Formats](#1)<br>
 [TOC](#TOC)
 <div id="NEF">
-### NEF Nikon Image Format
+## NEF Nikon Image Format
 
 To be written.
 
 [Image File Formats](#1)<br>
 [TOC](#TOC)
 <div id="PDF">
-### PDF Portable Document Format
+## PDF Portable Document Format
 
 To be written.
 
@@ -384,6 +403,7 @@ $ git clone https://github.com/Moustikitos/tyf
 $ cd tyf
 $ sudo python3 setup.py install
 ```
+
 This is a library and I've constructed a simple wrapper to reveal the Exif metadata.
 
 ```python
@@ -1083,7 +1103,6 @@ void IFD::visit(Visitor& visitor,TagDict& tagDict/*=tiffDict*/)
                     size_t punt = buf.strequals("Nikon") ? 10 : 0 ;
                     Io     io(io_,offset+punt,count-punt);
                     TiffImage makerNote(io);
-                    makerNote.indent_ = image_.indent();
                     makerNote.visit(visitor,makerDict());
                 } else {
                     bool   bNext = maker()  != kSony;                                        // Sony no trailing next
@@ -1156,14 +1175,11 @@ JpegImage::accept() navigates the chain of segments.  When he finds the embedded
             if ( bExif ) {
                 Io io(io_,current+2+6,size-2-6);
                 TiffImage exif(io);
-                exif.indent_ = indent()+1;
                 exif.accept(v);
             }
 ```
 
 He discovers the TIFF file hidden in the data, he opens an Io stream which he attaches to a Tiff objects and calls "Tiff::accept(visitor)".  Software seldom gets simpler, as beautiful, or more elegant than this.
-
-The indent should probably be in class ReportVisitor and not in the class IFD.  The IFD has a variable depth which keeps track of the level of recursion.  It's essential that depth is zero to clear the visits structure required to avoid infinite loops in the tiff file.  So, when we call encounter the Tiff embedded in the JPEG, we want to descend from depth == 0, yet display data at greater depth.  For sure, that will be 1 for a JPEG file.   For an embedded thumbnail, it will be even more.  We could avoid that by leaving the reporter to increment/decrement the reporting level when his visitBegin()/visitEnd() is called. 
 
 Just to remind you, BasicIo supports http/ssh and other protocols.  This code will recursively descend into a remote file without copying it locally.  And he does it with great efficiency.  This is discussed in section [7 I/O in Exiv2](#7)
 
@@ -1321,17 +1337,17 @@ typedef std::map<std::string,Fields>  MakerTags;
 MakerTags makerTags;
 ```
 
-In the init() function, I've defined the tag:
+In init function, I've defined the tag:
 
 ```cpp
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcVersion"         ,asciiString , 0, 4));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcName"            ,asciiString , 4,20));
-    ...
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcToningEffect"    ,unsignedByte,56, 1));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcToningSaturation",unsignedByte,57, 1));
+makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcVersion"         ,asciiString , 0, 4));
+makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcName"            ,asciiString , 4,20));
+...
+makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcToningEffect"    ,unsignedByte,56, 1));
+makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcToningSaturation",unsignedByte,57, 1));
 ```
 
-We modify `visitTag()` to report this.
+ReportVisitor()visitTag() does this:
 
 ```cpp
 virtual void visitTag
@@ -1344,7 +1360,7 @@ virtual void visitTag
     DataBuf tiffTag(12);
     io.read(tiffTag);
     endian_e endian = image.endian();
-    
+
     uint16_t tag    = getShort(tiffTag,0,endian);
     type_e   type   = getType (tiffTag,2,endian);
     uint32_t count  = getLong (tiffTag,4,endian);
@@ -1366,9 +1382,9 @@ virtual void visitTag
 
     // format the output
     std::string name  = tagName(tag,tagDict,28);
-    
+
     if ( printTag(name) ) {
-        out() << indent(image.indent())
+        out() << indent()
               << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
                     ,address,tag,name.c_str(),typeName(type),count,offsetString.c_str())
               << chop(value,40)
@@ -1377,7 +1393,7 @@ virtual void visitTag
         if ( makerTags.find(name) != makerTags.end() ) {
             for (Field field : makerTags[name] ) {
                 std::string n = join(groupName(tag,tagDict),field.name(),28);
-                out() << indent(image.indent())
+                out() << indent()
                       << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
                                      ,offset+field.start(),tag,n.c_str(),typeName(field.type()),field.count(),"")
                       << chop(buf.toString(field.start(),field.type(),field.count(),field.endian()==keImage?image.endian():field.endian()),40)
@@ -1387,7 +1403,7 @@ virtual void visitTag
         }
     }
 } // visitTag
-``` 
+```
 
 The code in visitTag() uses DataBuf.toString() to format the data:
 
@@ -2483,5 +2499,4 @@ Robin Mills<br>
 robin@clanmills.com<br>
 Revised: 2020-06-12<br>
 
-[TOC](#TOC)<br>
-gnu/gith
+[TOC](#TOC)  

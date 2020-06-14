@@ -5,7 +5,6 @@
 #include <sstream>
 #include <map>
 
-// crummy old c magic for fopen and gang
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -68,7 +67,6 @@ const char* typeName(type_e tag)
     }
     return result;
 }
-
 
 enum endian_e
 {   keLittle
@@ -290,10 +288,10 @@ bool is8ByteType(type_e type)
 }
 uint16_t typeSize(type_e type)
 {
-    return isByteType(type)   ? 1
-        :  is2ByteType(type)  ? 2
-        :  is4ByteType(type)  ? 4
-        :  is8ByteType(type)  ? 8
+    return isByteType (type) ? 1
+        :  is2ByteType(type) ? 2
+        :  is4ByteType(type) ? 4
+        :  is8ByteType(type) ? 8
         :  1 ;
 }
 type_e getType(const DataBuf& buf,size_t offset,endian_e endian)
@@ -483,7 +481,7 @@ enum kCanonType
 ,   kTC_CameraSpecificaiton= 0x0004|kcHTP2
 };
 
-// TagDict is use to map tag (uint16_t) to string
+// TagDict is used to map tag (uint16_t) to string
 typedef std::map<uint16_t,std::string> TagDict;
 TagDict emptyDict ;
 TagDict tiffDict  ;
@@ -500,6 +498,7 @@ enum ktSpecial
 ,   ktExif      = 0x8769
 ,   ktSubIFD    = 0x014a
 ,   ktMake      = 0x010f
+,   ktXMLPacket = 0x02bc
 ,   ktGroup     = 0xffff
 };
 
@@ -523,7 +522,7 @@ std::string tagName(uint16_t tag,const TagDict& tagDict,const size_t max=0)
                      ? tagDict.find(tag)->second
                      : stringFormat("%#x",tag)
                      ;
-    
+
     name =  groupName(tagDict) + "." + name;
     if ( max && name.size() > max ){
         name = name.substr(0,max-2)+"..";
@@ -583,7 +582,7 @@ public:
     , restore_(0)
     , f_      (NULL)
     { f_ = ::fopen(path.c_str(),open.c_str()); if ( !f_ ) Error(kerFileDidNotOpen,path); }
-    
+
     Io(Io& io,size_t start,size_t size=0) // Io object is a substream
     : path_   (io.path())
     , start_  (start+io.start_)
@@ -596,7 +595,7 @@ public:
         path_=os.str();
         seek(0);
     };
-    
+
     uint32_t getLong(endian_e endian)
     {
         DataBuf buf(4);
@@ -611,9 +610,9 @@ public:
     }
 
     virtual ~Io() { close(); }
-    
+
     std::string path() { return path_; }
-    
+
     size_t read(void* buff,size_t size)              { return fread(buff,1,size,f_);}
     size_t read(DataBuf& buff)                       { return read(buff.pData_,buff.size_); }
     byte   getb()                                    { byte b; if (read(&b,1)==1) return b ; else return -1; }
@@ -677,7 +676,7 @@ public:
     , option_(option)
     {};
     virtual ~Visitor() {};
-    
+
     virtual void visitBegin   (Image& image) = 0 ;
     virtual void visitEnd     (Image& image) = 0 ;
     virtual void visitDirBegin(Image& image,size_t dirLength) = 0 ;
@@ -705,13 +704,11 @@ public:
     , bigtiff_  (false)
     , endian_   (keLittle)
     , depth_    (0)
-    , indent_   (0)
     {};
     Image(Io io)
     : io_       (io)
     , makerDict_(emptyDict)
     , depth_    (0)
-    , indent_   (0)
     {};
     virtual    ~Image()        { io_.close()      ; }
     bool        valid()        { return false     ; }
@@ -721,17 +718,16 @@ public:
     std::string format()       { return format_   ; }
     Visits&     visits()       { return visits_   ; }
     size_t      depth()        { return depth_    ; }
-    size_t      indent()       { return depth_+indent_ ; }
 
     virtual void accept(class Visitor& v)=0;
-    
-    maker_e             maker_;
-    TagDict&            makerDict_;
+
+    maker_e     maker_;
+    TagDict&    makerDict_;
     void setMaker(DataBuf& buf)
     {
-        maker_ = buf.strequals("Canon"            )? kCanon
-               : buf.strequals("NIKON CORPORATION")? kNikon
-               : buf.strequals("SONY")             ? kSony
+        maker_ = buf.strequals("Canon"            ) ? kCanon
+               : buf.strequals("NIKON CORPORATION") ? kNikon
+               : buf.strequals("SONY")              ? kSony
                : maker_
                ;
         switch ( maker_ ) {
@@ -750,20 +746,19 @@ public:
     friend class CIFF     ;
 
 private:
-    Visits              visits_;
-    size_t              start_;
-    Io                  io_;
-    bool                good_;
-    uint16_t            magic_;
-    endian_e            endian_;
-    bool                bigtiff_;
-    size_t              depth_;
-    size_t              indent_;
-    std::string         format_; // "TIFF" or "JPEG" or "CRW"
-    
+    Visits      visits_;
+    size_t      start_;
+    Io          io_;
+    bool        good_;
+    uint16_t    magic_;
+    endian_e    endian_;
+    bool        bigtiff_;
+    size_t      depth_;
+    std::string format_; // "TIFF", "JPEG" etc...
+
     bool isPrintXMP(uint16_t type, PSopt_e option)
     {
-        return type == 700 && option == kpsXMP;
+        return type == ktXMLPacket && option == kpsXMP;
     }
 
 };
@@ -774,14 +769,18 @@ class ReportVisitor: public Visitor
 public:
     ReportVisitor(std::ostream& out, PSopt_e option)
     : Visitor(out,option)
+    , indent_(0)
     {}
+
+    std::string indent() { return ::indent(indent_); }
 
     virtual void visitBegin(Image& image)
     {
+        indent_++;
         if ( option() == kpsBasic || option() == kpsRecursive ) {
             char c = image.endian() == keBig ? 'M' : 'I';
-            out() << indent(image.indent()) << stringFormat("STRUCTURE OF %s FILE (%c%c): ",image.format().c_str(),c,c) <<  image.io().path() << std::endl;
-            out() << indent(image.indent()) << " address |    tag type      count | value" << std::endl;
+            out() << indent() << stringFormat("STRUCTURE OF %s FILE (%c%c): ",image.format().c_str(),c,c) <<  image.io().path() << std::endl;
+            out() << indent() << " address |    tag type      count | value" << std::endl;
         }
     }
     virtual void visitDirBegin(Image& image,size_t dirLength)
@@ -815,11 +814,11 @@ public:
     , size_t                address
     , const TagDict&        tagDict
     ) {
-        IoSave save(io,address);
+        IoSave  restore(io,address);
         DataBuf tiffTag(12);
         io.read(tiffTag);
         endian_e endian = image.endian();
-        
+
         uint16_t tag    = getShort(tiffTag,0,endian);
         type_e   type   = getType (tiffTag,2,endian);
         uint32_t count  = getLong (tiffTag,4,endian);
@@ -841,9 +840,9 @@ public:
 
         // format the output
         std::string name  = tagName(tag,tagDict,28);
-        
+
         if ( printTag(name) ) {
-            out() << indent(image.indent())
+            out() << indent()
                   << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
                         ,address,tag,name.c_str(),typeName(type),count,offsetString.c_str())
                   << chop(value,40)
@@ -852,7 +851,7 @@ public:
             if ( makerTags.find(name) != makerTags.end() ) {
                 for (Field field : makerTags[name] ) {
                     std::string n = join(groupName(tagDict),field.name(),28);
-                    out() << indent(image.indent())
+                    out() << indent()
                           << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
                                          ,offset+field.start(),tag,n.c_str(),typeName(field.type()),field.count(),"")
                           << chop(buf.toString(field.start(),field.type(),field.count(),field.endian()==keImage?image.endian():field.endian()),40)
@@ -862,13 +861,17 @@ public:
             }
         }
     } // visitTag
-    
+
     virtual void visitEnd(Image& image)
     {
         if ( option() == kpsBasic || option() == kpsRecursive ) {
-            out() << indent(image.indent()) << "END: " << image.path() << std::endl;
+            out() << indent() << "END: " << image.path() << std::endl;
         }
+        indent_--;
     } // visitEnd
+//
+private:
+    size_t indent_;
 };
 
 class IFD
@@ -906,7 +909,7 @@ public:
     : Image(io)
     , bHasNext_(false)
     {}
-    
+
     void visit(Visitor& visitor,TagDict& tagDict = tiffDict );
     bool valid();
 
@@ -987,8 +990,8 @@ public:
     CrwImage(std::string path) : Image(path) { start_ = 0 ;}
     CrwImage(Io& io) : Image(io) { start_ = 0 ; }
     bool valid() {
-        IoSave save(io(),0);
-        bool result = false;
+        IoSave  restore(io(),0);
+        bool    result = false;
         DataBuf buf(2+4+8); //xxlongHEAPCCRD xx = II or MM
         if ( io().good() ) {
             io().read(buf);
@@ -1015,11 +1018,11 @@ public:
         }
         return result ;
     }
-    
+
     void dumpImageHeader(size_t start,endian_e endian,uint16_t depth)
     {
-        IoSave save(io(),start);
-        
+        IoSave   restore(io(),start);
+
         uint32_t imageWidth         = io().getLong(endian);
         uint32_t imageHeight        = io().getLong(endian);
         int32_t  pixelAspectRatio   = (int32_t) io().getLong(endian);
@@ -1027,10 +1030,10 @@ public:
         uint32_t componentBitDepth  = io().getLong(endian);
         uint32_t colorBitDepth      = io().getLong(endian);
         uint32_t colorBW            = io().getLong(endian);
-        std::cout << ::indent(indent()) << stringFormat("width,height                    = %d,%d  ", imageWidth,imageHeight)          << std::endl;
-        std::cout << ::indent(indent()) << stringFormat("pixelAspectRatio,rotationAngle  = %#x,%f" , pixelAspectRatio,rotationAngle)  << std::endl;
-        std::cout << ::indent(indent()) << stringFormat("componentBitDepth,colorBitDepth = %d,%d"  , componentBitDepth,colorBitDepth) << std::endl;
-        std::cout << ::indent(indent()) << stringFormat("colorBW                         = %d"     , colorBW)                         << std::endl;
+        std::cout << ::indent(2) << stringFormat("width,height                    = %d,%d  ", imageWidth,imageHeight)          << std::endl;
+        std::cout << ::indent(2) << stringFormat("pixelAspectRatio,rotationAngle  = %#x,%f" , pixelAspectRatio,rotationAngle)  << std::endl;
+        std::cout << ::indent(2) << stringFormat("componentBitDepth,colorBitDepth = %d,%d"  , componentBitDepth,colorBitDepth) << std::endl;
+        std::cout << ::indent(2) << stringFormat("colorBW                         = %d"     , colorBW)                         << std::endl;
     }
     virtual void accept(class Visitor& visitor)
     {
@@ -1039,16 +1042,16 @@ public:
         byte      u[2];
         io().read(u,2);
         uint16_t dirLength = getShort(u,0,endian_);
-        
-        std::cout << ::indent(indent()) << stringFormat("CIFF Directory %s start_ = %d dirLength = %d",io().path().c_str(),start_,dirLength) << std::endl;
-        std::cout << ::indent(indent()) <<             "    tag | name                           |  count | offset "       << std::endl;
+
+        std::cout << ::indent(2) << stringFormat("CIFF Directory %s start_ = %d dirLength = %d",io().path().c_str(),start_,dirLength) << std::endl;
+        std::cout << ::indent(2) <<             "    tag | name                           |  count | offset "       << std::endl;
         DataBuf buf(10); // It's a CIFF not an IFD!
         for ( int i = 0 ; i < dirLength ; i++ ) {
             io().read(buf);
             uint16_t tag    = getShort(buf,0,endian_);
             uint32_t count  = getLong (buf,2,endian_);
             uint32_t offset = getLong (buf,6,endian_);
-            std::cout << ::indent(indent())<< stringFormat(" %6#x | %-30s | %6d | %d ",tag,tagName(tag,crwDict,28).c_str(),count,offset) << std::endl;
+            std::cout << ::indent(2)<< stringFormat(" %6#x | %-30s | %6d | %d ",tag,tagName(tag,crwDict,28).c_str(),count,offset) << std::endl;
             if ( tag & kStg_InRecordEntry ) {
                 std::cout << "data" << std::endl ;
             } else if ( tag == 0x300a        /* ImageSpec      */ ) {
@@ -1059,16 +1062,16 @@ public:
                 io().read(block);
                 size_t    start  = getShort(block,count-4,endian_);
                 uint16_t  length = getShort(block,start,endian_);
-                std::cout << ::indent(indent()) << stringFormat("CIFF start, length = %d %d",start,length) << std::endl;
+                std::cout << ::indent(2) << stringFormat("CIFF start, length = %d %d",start,length) << std::endl;
                 std::cout << "    tag | name                           |  count | offset | value " << std::endl;
                 for ( int i = 0 ; i < length ; i++ ) {
                     tag    = getShort(block,start+2+i*10+0,endian_);
                     count  = getLong (block,start+2+i*10+2,endian_);
                     offset = getLong (block,start+2+i*10+6,endian_);
                     std::string name = tagName(tag,crwDict,28);
-                    
+
                     if ( printTag(name)  ) { // ignore unknown tags
-                        std::cout << ::indent(indent()) << stringFormat(" %6#x | %-30s | %6d | %-4d  ",tag,name.c_str(),count,offset);
+                        std::cout << ::indent(2) << stringFormat(" %6#x | %-30s | %6d | %-4d  ",tag,name.c_str(),count,offset);
                         if ( tag & kcAscii && tag != 0x2804 /*ImageDescription*/ ) {
                             std::cout << " | " << chop(block.toString(offset,kttAscii,count,endian_),60);
                         } else {
@@ -1078,7 +1081,7 @@ public:
 #if 1
                         if ( tag == 0x300b /* ExifInformation */ ) {
                             // Io  exifStream(io(),offset,count);
-                            
+
                             //TiffImage tiff(exifStream);
                             //tiff.visitIFD(visitor,0,endian_,visitor.depth_,canonDict,false);
                             /*
@@ -1106,7 +1109,7 @@ void IFD::visit(Visitor& visitor,TagDict& tagDict/*=tiffDict*/)
     size_t   depth  = image_.depth_++;
     visitor.visitBegin(image_);
     if ( depth > 100 ) Error(kerCorruptedMetadata) ; // weird file
-    
+
     endian_e endian = image_.endian();
 
     // buffer
@@ -1153,20 +1156,18 @@ void IFD::visit(Visitor& visitor,TagDict& tagDict/*=tiffDict*/)
             io_.seek(restore);
 
             if ( tagDict == tiffDict && tag == ktMake ) image_.setMaker(buf);
-            if ( type    == kttIfd ) tag = ktSubIFD;
-            
+            if ( type    == kttIfd )    tag  = ktSubIFD;
+
             // recursion anybody?
-            IFD ifd(image_,offset,false);
             switch ( tag ) {
-                case ktGps  : ifd.visit(visitor,gpsDict) ;break;
-                case ktExif : ifd.visit(visitor,exifDict);break;
+                case ktGps  : IFD(image_,offset,false).visit(visitor,gpsDict );break;
+                case ktExif : IFD(image_,offset,false).visit(visitor,exifDict);break;
                 case ktMakerNote :
                 if ( image_.maker_ == kNikon ) {
                     // Nikon MakerNote is emabeded tiff `II*_.....` 10 bytes into the data!
                     size_t punt = buf.strequals("Nikon") ? 10 : 0 ;
                     Io     io(io_,offset+punt,count-punt);
                     TiffImage makerNote(io);
-                    makerNote.indent_ = image_.indent();
                     makerNote.visit(visitor,makerDict());
                 } else {
                     bool   bNext = maker()  != kSony;                                        // Sony no trailing next
@@ -1178,8 +1179,7 @@ void IFD::visit(Visitor& visitor,TagDict& tagDict/*=tiffDict*/)
                 case ktSubIFD :
                     for ( size_t i = 0 ; i < count ; i++ ) {
                         uint32_t  off  = count == 1 ? offset : getLong(buf,i*4,endian) ;
-                        IFD       sub(image_,off);
-                        sub.visit(visitor,tagDict );
+                        IFD(image_,off).visit(visitor,tagDict );
                     }
                 break;
                 default: /* do nothing */ ; break;
@@ -1193,14 +1193,15 @@ void IFD::visit(Visitor& visitor,TagDict& tagDict/*=tiffDict*/)
         }
         visitor.visitDirEnd(image_,start);
     } // while start != 0
-    
+
     visitor.visitEnd(image_);
     image_.depth_--;
 } // IFD::visit
 
 bool TiffImage::valid()
 {
-    IoSave save(io(),0);
+    IoSave restore(io(),0);
+
     // read header
     DataBuf      header(20);
     io_.read(header);
@@ -1229,9 +1230,9 @@ void TiffImage::visit(Visitor& visitor,TagDict& tagDict)
 
 bool JpegImage::valid()
 {
-    bool result = false;
-    IoSave save(io(),0);
-    byte   h[2];
+    IoSave   restore(io(),0);
+    bool     result = false;
+    byte     h[2];
     io_.read(h,2);
     if ( h[0] == 0xff && h[1] == 0xd8 ) { // .JPEG
         start_  = 0;
@@ -1359,7 +1360,6 @@ void JpegImage::accept(Visitor& v)
             if ( bExif ) {
                 Io io(io_,current+2+6,size-2-6);
                 TiffImage exif(io);
-                exif.indent_ = indent()+1;
                 exif.accept(v);
             }
         }
@@ -1430,7 +1430,7 @@ int main(int argc,const char* argv[])
 void init()
 {
     if ( tiffDict.size() ) return; // don't do this twice!
-    
+
     tiffDict  [ktGroup ] = "Image";
     tiffDict  [ 0x8769 ] = "ExifTag";
     tiffDict  [ 0x014a ] = "SubIFD";
@@ -1564,7 +1564,7 @@ void init()
     sonyDict  [ 0xb04a ] = "SequenceNumber";
     sonyDict  [ 0xb04b ] = "AntiBlur";
     sonyDict  [ 0xb04e ] = "LongExposureNoiseReduction";
-    
+
     crwDict   [ktGroup ] = "CRW";
     crwDict   [ 0x0032 ] = "CanonColorInfo1";
     crwDict   [ 0x0805 ] = "CanonFileDescription";
