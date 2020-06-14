@@ -1,9 +1,19 @@
 ![Exiv2](400dpiLogo.png)
+
+####
+####
+####
+####
+
 <h3 align=center style="font-size: 48px;">Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
+
+####
+####
+
+<h3 align=center style="font-size: 24px;">Robin Mills<br>Exiv2 v0.27.3<br>2020-06-14</h3>
 
 <h2></h2>
 <div id="TOC">
-### TABLE OF CONTENTS
 
 | Section                                             | Page | Image Formats                      | Page | Project Management         | Page | 
 |:--                                                   |  --:|:--                                   | --:|:--                           | --:|
@@ -65,7 +75,7 @@ I said "Oh, it can't be too difficult to do that!".  And here we are more than a
 
 The sample application samples/geotag.cpp provides a command line utility to geotag photos and I frequently use this on my own photographs.  Today, I have a Samsung Galaxy Watch which uploads runs to Strava.  I download the GPX from Strava.  The date/time information in the JPG is the key to search for the position data.  The GPS tags are created and saved in the image.
 
-BI chose to implement this in python as a good motivator to learn Python.  Having discovered exiv2 and the python wrapper pyexiv2, I set off with enthusiasm to build a cross-platform script to run on **Windows** _(XP, Visual Studio 2003)_, **Ubuntu Linux** _(Hardy Heron 2008.04 LTS)_ and **macOS** _(32 bit Tiger 10.4 on a big-endian PPC)_.  After I finished, I emailed Andreas.  He responded in less than an hour and invited me to join Team Exiv2.  Initialially, I provided support to build Exiv2 with Visual Studio.
+I chose to implement this in python as a good motivator to learn Python.  Having discovered exiv2 and the python wrapper pyexiv2, I set off with enthusiasm to build a cross-platform script to run on **Windows** _(XP, Visual Studio 2003)_, **Ubuntu Linux** _(Hardy Heron 2008.04 LTS)_ and **macOS** _(32 bit Tiger 10.4 on a big-endian PPC)_.  After I finished, I emailed Andreas.  He responded in less than an hour and invited me to join Team Exiv2.  Initialially, I provided support to build Exiv2 with Visual Studio.
 
 Incidentally, later in 2008, Dennis offered me a contract to port his company's Linux code to Visual Studio to be used on a Windows CE Embedded Controller.  1 million lines of C++ were ported from Linux in 6 weeks.  I worked with Dennis for 4 years on all manner of GPS related software development.
 
@@ -163,7 +173,7 @@ I open index.html in Safari and print it into a PDF file with a page size of 275
 
 The final step is to take the PDF to the local print shop to have it printed and bound.
 
-All the documentation for Exiv2 is written in markdown with the exception of the Unix man page exiv2.1  I find markdown easy to use and quickly produces very satisfying results.  The Graphics for the book were drawn using OmniGraffle 6.4 on my MacBook Pro.
+All the documentation for Exiv2 is written in markdown with the exception of the Unix man page exiv2.1  I find markdown easy to use and quickly produces very satisfying results.  The Graphics were drawn using OmniGraffle 6.6.2 on my MacBook Pro.
 
 <center>![Robin](RobinEuphonium.jpg)</center>
 
@@ -2120,7 +2130,7 @@ int main(int argc, char* argv[])
 
 <div id="license">
 
-<table><tr><td><pre style="font-size:5px;line-height:1.0;">
+<table><tr><td><pre style="font-size:6px;line-height:1.0;">
 		    GNU GENERAL PUBLIC LICENSE
 		       Version 2, June 1991
 
@@ -2234,7 +2244,6 @@ above, provided that you also meet all of these conditions:
     does not normally print such an announcement, your work based on
     the Program is not required to print an announcement.)
     
-</pre></td><td><pre style="font-size:5px;line-height:1.0;">
 These requirements apply to the modified work as a whole.  If
 identifiable sections of that work are not derived from the Program,
 and can be reasonably considered independent and separate works in
@@ -2293,6 +2302,7 @@ access to copy the source code from the same place counts as
 distribution of the source code, even though third parties are not
 compelled to copy the source along with the object code.
 
+</pre></td><td><pre style="font-size:6px;line-height:1.0;">
   4. You may not copy, modify, sublicense, or distribute the Program
 except as expressly provided under this License.  Any attempt
 otherwise to copy, modify, sublicense or distribute the Program is
@@ -2350,7 +2360,6 @@ impose that choice.
 This section is intended to make thoroughly clear what is believed to
 be a consequence of the rest of this License.
 
-</pre></td><td><pre style="font-size:5px;line-height:1.0;">
   8. If the distribution and/or use of the Program is restricted in
 certain countries either by patents or by copyrighted interfaces, the
 original copyright holder who places the Program under this License
@@ -2469,9 +2478,5 @@ Public License instead of this License.
 [TOC](#TOC)<br>
 
 <center>![MusicRoom](MusicRoom.jpg)</center>
-
-Robin Mills<br>
-robin@clanmills.com<br>
-Revised: 2020-06-12<br>
 
 [TOC](#TOC)  

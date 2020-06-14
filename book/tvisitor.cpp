@@ -1617,16 +1617,16 @@ void init()
     makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcVersion"         ,kttAscii , 0, 4));
     makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcName"            ,kttAscii , 4,20));
     makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcBase"            ,kttAscii ,24,20));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcAdjust"          ,kttUByte,48, 1));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcQuickAdjust"     ,kttUByte,49, 1));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcSharpness"       ,kttUByte,50, 1));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcContrast"        ,kttUByte,51, 1));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcBrightness"      ,kttUByte,52, 1));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcSaturation"      ,kttUByte,53, 1));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcHueAdjustment"   ,kttUByte,54, 1));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcFilterEffect"    ,kttUByte,55, 1));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcFilterEffect"    ,kttUByte,56, 1));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcToningSaturation",kttUByte,57, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcAdjust"          ,kttUByte, 48, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcQuickAdjust"     ,kttUByte, 49, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcSharpness"       ,kttUByte, 50, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcContrast"        ,kttUByte, 51, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcBrightness"      ,kttUByte, 52, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcSaturation"      ,kttUByte, 53, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcHueAdjustment"   ,kttUByte, 54, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcFilterEffect"    ,kttUByte, 55, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcFilterEffect"    ,kttUByte, 56, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcToningSaturation",kttUByte, 57, 1));
 }
 
 // That's all Folks!
