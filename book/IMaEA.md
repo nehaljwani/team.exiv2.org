@@ -1,12 +1,12 @@
+<br><br><br><br>
 <center>![Exiv2](exiv2-large.png)</center>
 
-<h3 align=center style="font-size: 48px;">Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
+<h3 align=center style="font-size: 48px;color:#FF4646;font-family: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size: 24px;">Robin Mills<br>Exiv2 v0.27.3<br>2020-06-14</h3>
+<h3 align=center style="font-size:36px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>Exiv2 v0.27.3<br>2020-06-15</h3>
 
-##
 <div id="TOC">
-### TABLE of CONTENTS
+## <center>TABLE of CONTENTS</center>
 
 | Section                                             | Page | Image Formats                       | Page | Project Management                    | Page | 
 |:--                                                   |  --:|:--                                    | --:|:--                                      | --:|
@@ -24,7 +24,7 @@
 | [8.4 Visitor Design Pattern](#8-4)                    | 36 | [PSD PhotoShop Document](#PSD)        | 14 | [13.11 Localisation](#13-11)            | 65 |
 | [8.5 IFD:visit() and TiffImage::visit() ](#8-5)       | 40 | [RAF](#RAF)                           | 14 | [13.12 Build Server](#13-12)            | 66 |
 | [8.6 Presenting data with visitTag()](#8-6)<br>       | 44 | [RW2](#RW2)                           | 14 | [13.13 Source Code Management](#13-13)  | 67 |
-| [8.7 The Exiv2 Metadata and Binary Tag Decoder](#8-7) | 47 | [TGA](#TGA)                           | 14 | [13.14 Project Web Site](#13-14)        | 68 |
+| [8.7 Metadata and Binary Tag Decoder](#8-7) | 47 | [TGA](#TGA)                           | 14 | [13.14 Project Web Site](#13-14)        | 68 |
 | [9. Image Previews](#9)                               | 50 | [GIF Graphical Image Format](#GIF)    | 14 | [13.15 Project Servers ](#13-15)        | 68 |
 | [10. Test Suite and Build](#10)                       | 51 | [BMP Windows Bitmpa](#BMP)            | 14 | [13.16 API Management](#13-16)          | 68 |
 | [10.1 Bash Tests](#10-1)                              | 53 | _**Other Sections**_                  | 14 | [13.17 Recruiting Contributors](#13-17) | 69 |
@@ -38,9 +38,8 @@
 | [14. Code discussed in this book](#13)                | 63 | [Scope of Book](#scope)               |  5 | | |
 | [15. License](#license)                               | 81 | [Making this book](#making)           |  7 | | |
 
-##
 <div id="foreword">
-### Foreword
+## Foreword
 
 _Before I start to discuss the subject of this book, I want to say <b>Thank You</b> to a few folks who have made this possbile.  First, my wife Alison, who has been my loyal support since the day we met in High School in 1967.  Secondly, I'd like to thank many people who have contributed to Exiv2 over the years.  In particular to Andreas Huggel the founder of the project and Luis and Dan who have worked tirelessly with me since 2017.  And in alphabet order: Abhinav, Alan, Andreas (both of them), Ben, Gilles, Kevin, Mahesh, Nehal, Neils, Phil, Sridhar, Thomas, Tuan .... and others who have contributed to Exiv2.  And our cat Lizzie._
 
@@ -141,11 +140,13 @@ This book is copyright and licensed under GPLv2 of which a copy is included at t
 <div id="making">
 ### Making this book
 
-I've had a lot of fun making this book.  Most of the time was spent on the code, however the getting the book into good shape for the web and print has been fun.
+I've had a lot of fun making this book.  Most of the time was spent on the code, however the getting the book into good shape for the web and print has been fun.  The Graphics were drawn using OmniGraffle 6.6.2 on my MacBook Pro.
 
-The book is written in markdown and displayed on my computer with the MacDown Application.  MacDown support style sheets, however I don't know why my changes did not work.  When MacDown exports a PDF, he ignores page-break-before.  MacDown does not support page numbering.  The links in the PDF created by MacDown are ineffective.
+All the documentation for Exiv2 is written in markdown with the exception of the Unix man page exiv2.1  I find markdown very easy to use and quickly produces satisfying results.  
 
-So to get it good print, I export the HTML and edit the style in index.html with:
+The book is written in markdown and displayed on my computer with the MacDown Application.  When MacDown exports a PDF, he ignores print directives in the style sheet, he does not support page numbering and the links are ineffective.  To my taste, the text size of pages is too large when printed on A4.
+
+I used a modified version of this style sheet: ~/Library/Application Support/MacDown/Styles/GitHub2.css. I changed the fonts to use Helvetica in the titles and Palatino in the body.  I thought about using Exiv2 logo font used which is Albertus Medium.  I decided to adopt the ubiquitous Palatino.  Code is set in Consolas in both the graphics and the in-line code snippets in the text.
 
 ```.css
 @media print {
@@ -154,17 +155,11 @@ So to get it good print, I export the HTML and edit the style in index.html with
 }
 ```
 
-Doing the edit is an easy bash one-liner!
+So, I get MacDown to export HTML to IMaEA.html.  I open IMaEA.html in Safari and print it into a PDF file with a page size of 275x389mm.  This preserves the aspect ratio &radic;2/1 of ISO-Standard pages.  Safari has an option to add page number and date to every page.  I get Safari to save the print in PDF (it's 275x388).  Finally when the print opens in Preview, I "Print/Scale/Save" to get a beautiful A4 PDF with the page breaks in the correct place and all the links are working.
 
-```bash
-$ sed -i -e 's/^@media print {$/@media print { h1,h2 { page-break-before: always; } h3,h4 { page-break-after: never;   }/' ~/temp/IMaEA.html
-```
+I have to manually update the page numbers in the table of contents.  If Exiv2 ever supports PDF, I'll probably be able to script that!  I only do that when I intend to publish the file as it's tedious.
 
-I open index.html in Safari and print it into a PDF file with a page size of 275x389mm.  This preserves the aspect ratio &radic;2/1 of ISO-Stadard pages.  Safari has an option to add page number and date to every page.  I then print the PDF into an A4 file PDF.  I have to manually update the page numbers in the table of contents.  If Exiv2 ever supports PDF, I'll probably be able to script that!
-
-The final step is to take the PDF to the local print shop to have it printed and bound.
-
-All the documentation for Exiv2 is written in markdown with the exception of the Unix man page exiv2.1  I find markdown easy to use and quickly produces very satisfying results.  The Graphics were drawn using OmniGraffle 6.6.2 on my MacBook Pro.
+The final step is to get the PDF to the local print shop to be printed and bound.
 
 <center>![Robin](RobinEuphonium.jpg)</center>
 
@@ -188,21 +183,25 @@ The good news however is that file formats come in families which are:
 | Canon   | Popular Canon "Raw" formats.<br>Dave Coffin parse.c decodes                        | CRW, CR2 |
 | IsoBMFF | Based on the .mp4 format                                           | MP4, CR3, AVI, HEIF, JP2 |
 | RIFF    | Google Promoted Format                                                                 | WEBP |
-| Legacy  | These legacy formats<br>usually have no metadata                                   | GIF, BMP | 
-| COS     | Adobe PDF Format<br>Very flexible container                                             | PDF |
+| Legacy  | These legacy formats<br>usually have no metadata                                   | GIF, BMP |
+| IPTC    | Interpress Trade Consortium | Many |
+| ICC     | Internation Colour Consortium | Many |
+| XMP     | Adobe XMP is written in XML | XMP, sidecar | 
+| COS     | Adobe PDF Format<br>Very flexible container                                             | PDF, JTF |
 | EPS     | Adobe Encapsulated PostScript<br>The code in Exiv2 to deal with this is deprecated  | EPS, AI |
 | PS      | Adobe PostScript<br>The most beautiful graphics language ever.                           | PS |
 
+
 I suspect the software mess is caused by the hardware engineers.  When hardware people start a new project, they copy the CAD files from the last project and proceed from there.  They don't worry about back-porting changes or compatibility.  They think firmware people are stupid and do a terrible job!  We have to live with this.
 
-There is also the issue of patents.  It's unclear if it's legal to read an IsoBMFF file which is used by Apple to store Heif files.  I believe it is legal to read IsoBMFF files.  It's illegal to reverse engineer the H-264 codec which is used to encrypt the image.  Metadata is occasionally compressed (PNG), encrypted (Nikon) or ciphered (Sony).  Mostly, the metadata is written in a format defined by a standard such as Exif (TIFF), Xmp (XML), ICC (binary block) or IPTC.
+There is also the issue of patents.  It's unclear if it's legal to read an IsoBMFF file which is used by Apple to store Heif files.  I believe it is legal to read IsoBMFF files.  It's illegal to reverse engineer the H-264 codec which is used to encrypt the image in a HEIF.  Metadata is occasionally compressed (PNG), encrypted (Nikon) or ciphered (Sony).
 
 [TOC](#TOC)
 <div id="TIFF">
 ## TIFF and BigTiff
 ![tiff](tiff.png)
 
-The architecture of BigTiff is identical to TIFF.  BigTiff is 64 bit based.  So most uint16\_t data types become uint32\_t and uint32\_t become uint64\_t.  BigTiff has three additional 8 byte types: longlong, slonglong and tiffifd8.  The tag and type fields are uint16\_t in both TIFF and BigTiff.  The "magic" header for both Tiff and BigTiff is 4 bytes, followed by the offset to the First IFD.  The  offset is 4 byte uint\_32t for Tiff and and 8 byte uint64_t for BigTiff.  For both TIFF and BigTiff the Endian Marker is MM for big-endian and II for little-endian.  M = Motorala, I = Intel.
+The architecture of TIFF and BigTiff are the same.  BigTiff is 64 bit based.  So most uint16\_t data types become uint32\_t and uint32\_t become uint64\_t.  BigTiff has three additional 8 byte types: longlong, slonglong and tiffifd8.  The tag and type fields are uint16\_t in both TIFF and BigTiff.  The "magic" header for both Tiff and BigTiff is 4 bytes, followed by the offset to the First IFD.  The  offset is 4 byte uint\_32t for Tiff and and 8 byte uint64_t for BigTiff.  For both TIFF and BigTiff the Endian Marker is MM for big-endian and II for little-endian.  M = Motorala, I = Intel.
 
 | Element | TIFF | BigTiff | Element | TIFF | BigTiff |
 |:--       |:--  |:--    |:--       |:--  |:--    |
@@ -217,7 +216,7 @@ As shall see the differences between TIFF and BigTiff are minor.  When the code 
 It's also important to understand that Endian can change as we descend into the file.  There could (and there are) files which contain sub-files whose endian setting is different from the container file.
 
 <div id="JPEG">
-### JPEG and EXV Format
+## JPEG and EXV Format
 ![jpeg](jpeg.png)
 
 ![jpegs.png](jpegs.png)
@@ -1463,7 +1462,7 @@ Could this be even better?  Of course.  As always reader, I leave you to send me
 
 [TOC](#TOC)
 <div id="8-7">
-### 8.7 The Exiv2 Metadata and Binary Tag Decoder
+### 8.7 Metadata and Binary Tag Decoder
 
 #### Metadata Decoder
 Please read: [#988](https://github.com/Exiv2/exiv2/pull/988)
@@ -1476,7 +1475,7 @@ This decoding function decodeCanonAFInfo() added to TiffMappingInfo manufactures
 
 We should support decoding AFInfo in 0.28, however we should NOT auto-port this PR. We can avoid having to explicitly delete tags from the metadata before writing by adding a "read-only" flag to TagInfo. This would break the Exiv2 v0.27 API and has been avoided. There is an array in decodeCanonAFInfo() which lists the "manufactured" tags such as Exif.Canon.AFNumPoints. In the Exiv2 v0.28 architecture, a way might be designed to generate that data at run-time.
 
-#### Metadata Binary Tag Decoder
+#### Binary Tag Decoder
 
 Please read: [#900](https://github.com/Exiv2/exiv2/pull/900)
 
@@ -1811,24 +1810,24 @@ To be written.
 <div id="13">
 # 13 Project Management, Release Engineering, User Support
 
-This topic deserves a book in its own right.  It's easy to think of an Open Source Project as some code.  That's all.  It's not.  The code is a major part of the project, however it's probably that only 50% of the effort invested goes into code.  We have many stakeholders in a project including: users, security, distros, and competitors.  The project needs documentation, build, test, bug reporting and many other elements.
+This topic deserves a book in its own right.  It's easy to think of an Open Source Project as some code.  It's not.  The code is a major part of the project, however probably only 50% of the effort goes into code.  We have many stakeholders in a project including: users, security, distros, and competitors.  The project needs documentation, build, test, bug reporting and many other elements.
 
-You may have seen the sketch in "The Life of Brian" called "What have the Romans Ever Done for Us?".  It begins with John Cleese asking the question and somebody replies "The Aquaduct".  With one minute they end up listing all manner of civilisation including Roads, Schools, Sanitation, Police, Laws and other matters.  It's much the same with Open Source.  Of course we have C++ code, however we have many other matters that require attention.
+You may have seen the sketch in "The Life of Brian" called "What have the Romans Ever Done for Us?".  It begins with John Cleese asking the question and somebody replies "What about the aqueduct?".  With one minute they end up listing all manner of civilisation brought to Palestine including Roads, Schools, Sanitation, Police, Laws and other matters.  It's much the same with Open Source.  Of course we have C++ code, however we have many other matters that require attention.
 
-You are probably not surprised to learn that most users and stakeholders consider their concern should be the top priority for the project.  The difficulty is that there are many stakeholders and therefore many top priorities.  When dealing with stakeholder's issue, they frequently say "All you have to do is bla bla bla".  In my head, I hear the words in a slightly different order.  I hear "You have to do it all".
+You are probably not surprised to learn that most users and stakeholders consider their concern should be the top priority for the project.  The challenge is that there are many stakeholders and therefore many top priorities.  When dealing with a stakeholder's issue, they frequently say "All you have to do is bla bla bla".  In my head, I hear the words in a slightly different order.  I hear "You have to do it all".
 
-For example, when somebody provides a patch, they seldom provide test code, updates to the documentation and build scripts.  The feature is often incomplete.  For example, in adding a new platform, they seldom platform specific code in src/version.cpp and src/futils.cpp.  They say "oh you can do that.".  Nobody every maintains or supports their patch.  Contributors seldom change their patch when asked to do so in a review.
+For example, when somebody provides a patch, they seldom provide test code or updates to the documentation or build scripts.  The feature is often incomplete.  For example, in adding a new platform, they seldom provide platform specific code in src/version.cpp and src/futils.cpp.  Sometimes they break all the sample applications.  When I ask them to do that they say: "oh you can do that.".  Nobody ever maintains or supports their patch.  Contributors seldom change their patch when asked to do so in a review.
 
-I have found recruiting contributors to be one of the most challenging and difficult aspects of maintaining Exiv2.  I appreciate the work done by everybody who has contributed.  How Exiv2 will survive in future is a matter for the community.  Or, perhaps this book will inspire somebody to write a replacement.
+I have found recruiting contributors to be one of the most challenging and difficult aspects of maintaining Exiv2.  I appreciate the work done by everybody who has contributed.  The future of Exiv2 is a matter for the community.  Perhaps this book will inspire somebody to write a replacement.
 
 <div id="13-1">
 ### 13.1) C++ Code
 
-Exiv2 is written in C++.  Prior to v0.28, the code was written to the C++ 1998 Standard and makes considerable use of STL containers such as vector, map, set, string and many others.  The code started life as a 32-bit library on Unix and today builds on 32 and 64 bit systems running Linux, Unix, macOS and Windows (Cygwin, MinGW, and Visual Studio).  The Exiv2 project has never supported Mobile Platforms or Embedded Systems, however it should be possible to build for other platforms with modest effort.
+Exiv2 is written in C++.  Prior to v0.28, the code was written to the C++ 1998 Standard and makes considerable use of STL containers such as vector, map, set, string and many others.  The code started life as a 32-bit library on Unix and today builds on 32 and 64 bit systems running Linux, Unix, macOS and Windows (Cygwin, MinGW, and Visual Studio).  Although the Exiv2 project has never supported Mobile Platforms or Embedded Systems, it should be possible to build for other platforms with modest effort.
 
 The code has taken a great deal of inspiration from the book [Design Patterns: Elements of Reusable Object=Oriented Software](https://www.oreilly.com/library/view/design-patterns-elements/0201633612/).
 
-Starting with Exiv2 v0.28, the code requires a C++11 Compiler.  Exiv2 v0.28 is a major refactoring of the code and provides a new API.  The project maintains a series of v0.27 "dot" releases for security updates.  These releases are intended to ease the transition of existing applications in adapting to the new APIs in v0.28.
+Starting with Exiv2 v0.28, the code requires a C++11 Compiler.  Exiv2 v0.28 is a major refactoring of the code and provides a new API.  The project maintains a series of v0.27 "dot" releases for security updates.  These releases are intended to ease the transition of existing applications in adapting to the new v0.28 API.
 
 [TOC](#TOC)
 <div id="13-2">
