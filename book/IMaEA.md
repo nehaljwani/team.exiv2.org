@@ -1,55 +1,46 @@
-![Exiv2](400dpiLogo.png)
-
-####
-####
-####
-####
+<center>![Exiv2](exiv2-large.png)</center>
 
 <h3 align=center style="font-size: 48px;">Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-####
-####
-
 <h3 align=center style="font-size: 24px;">Robin Mills<br>Exiv2 v0.27.3<br>2020-06-14</h3>
 
-<h2></h2>
+##
 <div id="TOC">
+### TABLE of CONTENTS
 
-| Section                                             | Page | Image Formats                      | Page | Project Management         | Page | 
-|:--                                                   |  --:|:--                                   | --:|:--                           | --:|
-| [1. Image File Formats](#1)                           |  7 | [JPEG and EXV](JPEG)                 |  7 | [13.1 C++ Code](#13-1)      | 55 |
-| [2. Tiff and Exif metadata](#2)                       | 22 | [TIFF and BigTiff](TIFF)             | 12 | [13.2 Build](#13-2)         | 56 |
-| [3. MakerNotes](#3)                                   | 23 | [PNG Portable Network Graphics](PNG) | 10 | [13.3 Security](#13-3)      | 57 |
-| [4. Other metadata containers](#4)                    | 24 | [DNG Digital Negative](#DNG)         | 10 | [13.4 Documentation](#13-4) | 58 |
-| [5. Lens Recognition](#5)                             | 25 | [PSD PhotoShop Document](#PSD)       | 10 | [13.5 Testing](#13-5)         | 59 |
-| [6. Sample Applications](#6)                          | 26 | [BMP Windows Bitmpa](#BMP)           | 15 | [13.6 Sample programs](#13-6) | 59 |
-| [7. I/O in Exiv2](#7)                                 | 27 | [CRW Canon Raw](#CRW)                | 16 | [13.7 User Support](#13-7)    | 60 |
-| [8. Exiv2 Architecture](#8)<br>                       | 28 | [CR2 Canon Raw Format 2](#CR2)       | 17 | [13.8 Bug Tracking](#13-8)    | 61 |
-| [8.1 Extracting metadata using dd](#8-1)              | 29 | [WebP Web Photograph ](#WebP)        | 18 | [13.9 Release Engineering](#13-9) | 62 |
-| [8.2 Tag Names in Exiv2](#8-2)                        | 31 | [TGA](#TGA)                          | 19 | [13.10 Platform Support](#13-10)  | 63 |
-| [8.3 TagInfo](#8-3)                                   | 34 | [GIF Graphical Image Format](#GIF)   | 20 | [13.11 Localisation](#13-11) | 64 |
-| [8.4 Visitor Design Pattern](#8-4)                    | 36 | [PGF Portable Graphics Format](#PGF) | 14 | [13.12 Build Server](#13-12) | 65 |
-| [8.5 IFD:visit() and TiffImage::visit() ](#8-5)       | 40 | [NEF Nikon Raw Format ](#NEF)        | 14 | [13.13 Source Code Management](#13-13) | 66 |
-| [8.6 Presenting data with visitTag()](#8-6)<br>       | 44 | [MRW Minolta Raw](#MRW)              | 14 | [13.14 Project Web Site](#13-14) |  67 |
-| [8.7 The Exiv2 Metadata and Binary Tag Decoder](#8-7) | 47 | [ORF Olympus Raw Format](#ORF)       | 14 | [13.15 Project Servers ](#13-15) | 68 |
-| [9. Image Previews](#9)                               | 50 | [RW2](#RW2)                          | 14 | [13.16 API Management](#13-16) | 68 |
-| [10. Test Suite and Build](#10)                       | 51 | [RAF](#RAF)                          | 14 | [13.17 Recruiting Contributors](#13-17) | 68 |
-| [10.1 Bash Tests](#10-1)                              | 53 | [ISOBMFF](#ISOBMFF)                  | 14 | [13.18 Project Management and Scheduling](#13-18) |  69 |
-| [10.2 Python Tests](#10-2)                            | 55 | [JPEG2000 Jpeg 2000](#JP2k)          | 11 | [13.19 Enhancement Requests](#13-19) | 70 |
-| [10.3 Unit Tests](#10-3)                              | 57 | _**Other Sections**_                 |    | [13.20 Tools](#13-20) | 71 |
-| [10.4 Version Test](#10-4)                            | 58 | [Foreword](foreword)                 |  3 | [13.21 Licensing](#13-21) | 72 |
-| [11. API/ABI Compatibility](#11)                      | 59 | [About this book](#about)            |  3 | [13.22 Back-porting fixes to earlier releases](#13-22) |  73 |
-| [12. Security](#12)                                   | 60 | [How did I get interested in this matter?](#begin) | 3 | [13.23 Other OSS projects](#13-23) | |
-| [12.1 The Fuzzing Police](#12)                        | 61 | [2012 - 2017](#2012)                 |  4 | | |
-| [12.2 How we deal with security issues](12-2)         | 62 | [2017 - Present](#2017)              |  4 | | |
-| [13. Project Management](#13)                         | 63 | [Current Priorities](#current)       |  5 | | |
-| [14. Code discussed in this book](#13)                | 81 | [Future Projects](#future)           |  6 | | |
-| [15. License](#license)                               | 81 | [Scope of Book](#scope)              |  5 | | |
-|                                                       |    | [Making this book](#making)          |  6 | | |
+| Section                                             | Page | Image Formats                       | Page | Project Management                    | Page | 
+|:--                                                   |  --:|:--                                    | --:|:--                                      | --:|
+| [1. Image File Formats](#1)                           |  7 | [TIFF and BigTiff](#TIFF)             |  7 | [13. Project Management](#13)           | 55 |
+| [2. Tiff and Exif metadata](#2)                       | 22 | [JPEG and EXV](#JPEG)                 | 12 | [13.1 C++ Code](#13-1)                  | 56 |
+| [3. MakerNotes](#3)                                   | 23 | [PNG Portable Network Graphics](#PNG) | 10 | [13.2 Build](#13-2)                     | 57 |
+| [4. Other metadata containers](#4)                    | 24 | [JP2 Jpeg 2000](#JP2)                 | 10 | [13.3 Security](#13-3)                  | 58 |
+| [5. Lens Recognition](#5)                             | 25 | [ISOBMFF](#ISOBMFF)                   | 10 | [13.4 Documentation](#13-4)             | 59 |
+| [6. Sample Applications](#6)                          | 26 | [CRW Canon Raw](#CRW)                 | 15 | [13.5 Testing](#13-5)                   | 59 |
+| [7. I/O in Exiv2](#7)                                 | 27 | [CR2 Canon Raw Format 2](#CR2)        | 16 | [13.6 Sample programs](#13-6)           | 60 |
+| [8. Exiv2 Architecture](#8)<br>                       | 28 | [WebP Web Photograph ](#WEBP)         | 17 | [13.7 User Support](#13-7)              | 61 |
+| [8.1 Extracting metadata using dd](#8-1)              | 29 | [PGF Portable Graphics Format](#PGF)  | 18 | [13.8 Bug Tracking](#13-8)              | 62 |
+| [8.2 Tag Names in Exiv2](#8-2)                        | 31 | [MRW Minolta Raw](#MRW)               | 19 | [13.9 Release Engineering](#13-9)       | 63 |
+| [8.3 TagInfo](#8-3)                                   | 34 | [ORF Olympus Raw Format](#ORF)        | 20 | [13.10 Platform Support](#13-10)        | 64 |
+| [8.4 Visitor Design Pattern](#8-4)                    | 36 | [PSD PhotoShop Document](#PSD)        | 14 | [13.11 Localisation](#13-11)            | 65 |
+| [8.5 IFD:visit() and TiffImage::visit() ](#8-5)       | 40 | [RAF](#RAF)                           | 14 | [13.12 Build Server](#13-12)            | 66 |
+| [8.6 Presenting data with visitTag()](#8-6)<br>       | 44 | [RW2](#RW2)                           | 14 | [13.13 Source Code Management](#13-13)  | 67 |
+| [8.7 The Exiv2 Metadata and Binary Tag Decoder](#8-7) | 47 | [TGA](#TGA)                           | 14 | [13.14 Project Web Site](#13-14)        | 68 |
+| [9. Image Previews](#9)                               | 50 | [GIF Graphical Image Format](#GIF)    | 14 | [13.15 Project Servers ](#13-15)        | 68 |
+| [10. Test Suite and Build](#10)                       | 51 | [BMP Windows Bitmpa](#BMP)            | 14 | [13.16 API Management](#13-16)          | 68 |
+| [10.1 Bash Tests](#10-1)                              | 53 | _**Other Sections**_                  | 14 | [13.17 Recruiting Contributors](#13-17) | 69 |
+| [10.2 Python Tests](#10-2)                            | 55 | [Foreword](#foreword)                 |  2 | [13.18 Project Scheduling](#13-18)      | 70 |
+| [10.3 Unit Tests](#10-3)                              | 57 | [About this book](#about)             |  2 | [13.19 Enhancement Requests](#13-19)    | 71 |
+| [10.4 Version Test](#10-4)                            | 58 | [How did I get interested ?](#begin)  |  3 | [13.20 Tools](#13-20)                   | 72 |
+| [11. API/ABI Compatibility](#11)                      | 59 | [2012 - 2017](#2012)                  |  3 | [13.21 Licensing](#13-21)               | 73 |
+| [12. Security](#12)                                   | 60 | [2017 - Present](#2017)               |  3 | [13.22 Back-porting](#13-22)            | 74 |
+| [12.1 The Fuzzing Police](#12)                        | 61 | [Current Priorities](#current)        |  4 | [13.23 Other OSS projects](#13-23)      |    |
+| [12.2 How we deal with security issues](12-2)         | 62 | [Future Projects](#future)            |  4 | | |
+| [14. Code discussed in this book](#13)                | 63 | [Scope of Book](#scope)               |  5 | | |
+| [15. License](#license)                               | 81 | [Making this book](#making)           |  7 | | |
 
-
+##
 <div id="foreword">
-## Foreword
+### Foreword
 
 _Before I start to discuss the subject of this book, I want to say <b>Thank You</b> to a few folks who have made this possbile.  First, my wife Alison, who has been my loyal support since the day we met in High School in 1967.  Secondly, I'd like to thank many people who have contributed to Exiv2 over the years.  In particular to Andreas Huggel the founder of the project and Luis and Dan who have worked tirelessly with me since 2017.  And in alphabet order: Abhinav, Alan, Andreas (both of them), Ben, Gilles, Kevin, Mahesh, Nehal, Neils, Phil, Sridhar, Thomas, Tuan .... and others who have contributed to Exiv2.  And our cat Lizzie._
 
@@ -183,13 +174,47 @@ All the documentation for Exiv2 is written in markdown with the exception of the
 
 The following summaries of the file formats are provided to help the reader understand both this book and the Exiv2 code.  The Standard Specifications should be consulted for more detail.
 
-| _Common Formats_  | _Raw Formats_  | _Application Formats_ | _No MetaData Formats_
-|:-- |:-- |:-- |:-- |
-| [JPEG and EXV Format](#JPEG)          | [DNG Digital Negative](#DNG)       | [PSD PhotoShop Document](#PSD)        | [BMP Windows Bitmpa](#BMP)             |
-| [PNG Portable Network Graphics](#PNG) | [CRW Canon Raw](#CRW)              | [TGA](#TGA)                           | [GIF Graphical Image Format](#GIF)     |
-| [JP2 Jpeg 2000](#JP2)                 | [CR2 Canon Raw Format 2](#CR2)     | [RW2](#RW2)                           | [PGF Portable Graphics Format](#PGF)   |
-| [TIFF Tagged Image File](#TIFF)       | [RAF](#RAW)                        | [ORF Olympus Raw Format](#ORF)        | [NEF Nikon Raw Format ](#NEF)          | 
-| [WebP Web Photograph ](#WebP)         | [ISOBMFF](#ISOBMFF)                | [PDF Portable Document Format](#PDF)  | [MRW Minolta Raw](#MRW)                |
+I've made a summary of every file format as I think you'll find that very useful.  There are an absurd number of Graphics File Formats.  I have a copy somewhere of the O'Reilly book.  I got it in 1992 and it is about 1000 pages.  Since then there have been many many more invented.  It's a software mess.  In the early days, many formats were local to a few users in a University and escaped to a wider audience.  However the never ending stream of new standards is horrible.  Canon have several different RAW formats such as CRW, CR2 and CR3.
+
+A good model for an image is to think of it as a container.  It's like a directory on the disk.   The directory can hold files with different formats and the directory is recursive as it can contain a directory of more files.  All "modern" graphics formats since TIFF in 1992 are containers.
+
+The good news however is that file formats come in families which are:
+
+| Family  | Description | Examples |
+|:--      |:---         |:--       |
+| TIFF    | You must learn Tiff thoroughly to understand metdata                     | TIFF, DNG, NEF,ICC |
+| JPG     | The most common format                                                                 | JPEG |
+| PNG     | Another popular format<br>Linked list of chunks                                         | PNG |
+| Canon   | Popular Canon "Raw" formats.<br>Dave Coffin parse.c decodes                        | CRW, CR2 |
+| IsoBMFF | Based on the .mp4 format                                           | MP4, CR3, AVI, HEIF, JP2 |
+| RIFF    | Google Promoted Format                                                                 | WEBP |
+| Legacy  | These legacy formats<br>usually have no metadata                                   | GIF, BMP | 
+| COS     | Adobe PDF Format<br>Very flexible container                                             | PDF |
+| EPS     | Adobe Encapsulated PostScript<br>The code in Exiv2 to deal with this is deprecated  | EPS, AI |
+| PS      | Adobe PostScript<br>The most beautiful graphics language ever.                           | PS |
+
+I suspect the software mess is caused by the hardware engineers.  When hardware people start a new project, they copy the CAD files from the last project and proceed from there.  They don't worry about back-porting changes or compatibility.  They think firmware people are stupid and do a terrible job!  We have to live with this.
+
+There is also the issue of patents.  It's unclear if it's legal to read an IsoBMFF file which is used by Apple to store Heif files.  I believe it is legal to read IsoBMFF files.  It's illegal to reverse engineer the H-264 codec which is used to encrypt the image.  Metadata is occasionally compressed (PNG), encrypted (Nikon) or ciphered (Sony).  Mostly, the metadata is written in a format defined by a standard such as Exif (TIFF), Xmp (XML), ICC (binary block) or IPTC.
+
+[TOC](#TOC)
+<div id="TIFF">
+## TIFF and BigTiff
+![tiff](tiff.png)
+
+The architecture of BigTiff is identical to TIFF.  BigTiff is 64 bit based.  So most uint16\_t data types become uint32\_t and uint32\_t become uint64\_t.  BigTiff has three additional 8 byte types: longlong, slonglong and tiffifd8.  The tag and type fields are uint16\_t in both TIFF and BigTiff.  The "magic" header for both Tiff and BigTiff is 4 bytes, followed by the offset to the First IFD.  The  offset is 4 byte uint\_32t for Tiff and and 8 byte uint64_t for BigTiff.  For both TIFF and BigTiff the Endian Marker is MM for big-endian and II for little-endian.  M = Motorala, I = Intel.
+
+| Element | TIFF | BigTiff | Element | TIFF | BigTiff |
+|:--       |:--  |:--    |:--       |:--  |:--    |
+| Header | EE42Offset | EE43Offset | Header | 8 bytes | 12 bytes |
+| Marker | **\*** 0x2a = 42 | **\+** 0x2b = 43 | Offset    | uint32\_t | uint64\_t |
+| Tag    | uint16\_t | uint16\_t  | Field  | 12 bytes | 20 bytes |
+| Type    | uint16\_t | uint16\_t  | Entries **#E** | uint16\_t | uint32\_t  |
+| Count   | uint32\_t | uint64\_t  | Next | uint32\_t | uint64\_t  | 
+
+As shall see the differences between TIFF and BigTiff are minor.  When the code is compiled on a 64 bit machine, size\_t is 64 bytes.  With the exception of IFD::visit(), the two formats can be treated as identical.
+
+It's also important to understand that Endian can change as we descend into the file.  There could (and there are) files which contain sub-files whose endian setting is different from the container file.
 
 <div id="JPEG">
 ### JPEG and EXV Format
@@ -197,7 +222,7 @@ The following summaries of the file formats are provided to help the reader unde
 
 ![jpegs.png](jpegs.png)
 
-A Jpeg and exf are almost the same thing, however most graphics applications will reject a .exv because it is not a valid JPEG.  ExifTool supports .exv files.  In tvisitor.cpp, class JpegImage handles both and the only difference is respected in JpegImage::valid();
+A Jpeg and exf are almost the same thing, however most graphics applications will reject a .exv because it is not a valid JPEG.  ExifTool supports .exv files.  In tvisitor.cpp, class JpegImage handles both and the only difference is respected in JpegImage::valid():
 
 ```cpp
 bool JpegImage::valid()
@@ -265,31 +290,12 @@ END: /Users/rmills/Stonehenge.exv
 
 [TOC](#TOC)
 <div id="JP2">
-## JPEG 2000
+## JP2 Jpeg 2000
 ![jp2](jp2.png)
 
 [TOC](#TOC)
-<div id="TIFF">
-## 1.4 TIFF and BigTiff
-![tiff](tiff.png)
-
-The architecture of BigTiff is identical to TIFF.  However it is 64 bit based.  So uint16\_t data types become uint32\_t and uint32\_t become uint64\_t.  BigTiff has three additional 8 byte types: longlong, slonglong and tiffifd8.
-
-| Element | TIFF | BigTiff | Element | TIFF | BigTiff |
-|:--       |:--  |:--    |:--       |:--  |:--    |
-| Marker | **\*** 0x2a = 42 | **\+** 0x2b = 43 | Offset    | uint32\_t | uint64\_t  |
-| Tag    | uint16\_t | uint32\_t  | Field  | 12 bytes | 24 bytes |
-| Type    | uint16\_t | uint32\_t  | Entries **#E** | uint16\_t | uint32\_t  |
-| Count   | uint32\_t | uint64\_t  | Next | uint32\_t | uint64\_t  | 
-
-[TOC](#TOC)
-<div id="WebP">
-## WEBP Web Photograph
-![webp](webp.png)
-
-[TOC](#TOC)
-<div id="DNG">
-### DNG Digital Negative
+<div id="ISOBMFF">
+## ISOBMFF
 
 To be written.
 
@@ -308,32 +314,13 @@ The specification is here: [CIFFspecV1R04.pdf](https://web.archive.org/web/20081
 To be written.
 
 [TOC](#TOC)
-<div id="BMP">
-## BMP Windows Bitmap
-
-To be written.
-
-[TOC](#TOC)
-<div id="GIF">
-## GIF Graphics Image Format
-
-To be written.
+<div id="WEBP">
+## WEBP Web Photograph
+![webp](webp.png)
 
 [TOC](#TOC)
-<div id="TGA">
-### TGA
-
-To be written.
-
-[TOC](#TOC)
-<div id="RW2">
-## RW2
-
-To be written.
-
-[TOC](#TOC)
-<div id="RAF">
-## RAF
+<div id="MWR">
+## MRW Minolta Raw Format
 
 To be written.
 
@@ -344,38 +331,43 @@ To be written.
 To be written.
 
 [TOC](#TOC)
-<div id="1-16">
-## PSD PhotoShop
-
-To be written.
-
-[TOC](#TOC)
 <div id="PGF">
 ## PGF Portable Graphics Format
 
 To be written.
 
 [TOC](#TOC)
-<div id="MWR">
-## MRW Minolta Raw Format
+<div id="1-16">
+## PSD PhotoShop
+
+To be written.
+
+<div id="RAF">
+## RAF
 
 To be written.
 
 [TOC](#TOC)
-<div id="ISOBMFF">
-## ISOBMFF
+<div id="RW2">
+## RW2
 
 To be written.
 
 [TOC](#TOC)
-<div id="NEF">
-## NEF Nikon Image Format
+<div id="TGA">
+### TGA
 
 To be written.
 
 [TOC](#TOC)
-<div id="PDF">
-## PDF Portable Document Format
+<div id="BMP">
+## BMP Windows Bitmap
+
+To be written.
+
+[TOC](#TOC)
+<div id="GIF">
+## GIF Graphics Image Format
 
 To be written.
 
@@ -396,7 +388,7 @@ $ cd tyf
 $ sudo python3 setup.py install
 ```
 
-This is a library and I've constructed a simple wrapper to reveal the Exif metadata.
+This is a library and I've constructed a program to reveal the Exif metadata.
 
 ```python
 #!/usr/bin/env python3
@@ -412,47 +404,47 @@ from PIL import Image
 ##
 #
 def dumpTags(ifd):
-	bDumpTags    = True
-	bGenerateMap = False
+    bDumpTags    = True
+    bGenerateMap = False
 
-	if bDumpTags:
-		for tag in ifd:
-			V=tag[1]
-			v=str(V)
-			if type(V)==type(''):
-				v='"'+v+'"'
-			if len(v) > 30:
-			   v = v[0:26] + '.. '
-			t=str(type(V))
-			t=t[8:len(t)-2]
-			if t == 'bytes':
-				t=str(len(V)) + ' ' + t
-			elif t == 'str':
-				t=str(len(V))
-			if len(t) > 30:
-				t = t[0:26]+'.. '
-				
-			t='('+t+')'
+    if bDumpTags:
+        for tag in ifd:
+            V=tag[1]
+            v=str(V)
+            if type(V)==type(''):
+                v='"'+v+'"'
+            if len(v) > 30:
+               v = v[0:26] + '.. '
+            t=str(type(V))
+            t=t[8:len(t)-2]
+            if t == 'bytes':
+                t=str(len(V)) + ' ' + t
+            elif t == 'str':
+                t=str(len(V))
+            if len(t) > 30:
+                t = t[0:26]+'.. '
+                
+            t='('+t+')'
 
-			print('%s -> %s %s' % ( tag[0], v , t)	)
+            print('%s -> %s %s' % ( tag[0], v , t)  )
 
 ##
 #
 def main(argv):
-	"""main - main program of course"""
+    """main - main program of course"""
 
-	image = Tyf.open(argv[1])
-	# help(jpg)
+    image = Tyf.open(argv[1])
+    # help(jpg)
 
-	if str(type(image)) == "<class 'Tyf.TiffFile'>":
-		dumpTags(image[0])
-	elif str(type(image)) == "<class 'Tyf.JpegFile'>":
-		dumpTags(image.ifd0)
-	else:
-		print("unknown image type " + str(type(image)))
+    if str(type(image)) == "<class 'Tyf.TiffFile'>":
+        dumpTags(image[0])
+    elif str(type(image)) == "<class 'Tyf.JpegFile'>":
+        dumpTags(image.ifd0)
+    else:
+        print("unknown image type " + str(type(image)))
 
 if __name__ == '__main__':
-	main(sys.argv)
+    main(sys.argv)
 
 # That's all Folks
 ##
@@ -1818,6 +1810,16 @@ To be written.
 [TOC](#TOC)
 <div id="13">
 # 13 Project Management, Release Engineering, User Support
+
+This topic deserves a book in its own right.  It's easy to think of an Open Source Project as some code.  That's all.  It's not.  The code is a major part of the project, however it's probably that only 50% of the effort invested goes into code.  We have many stakeholders in a project including: users, security, distros, and competitors.  The project needs documentation, build, test, bug reporting and many other elements.
+
+You may have seen the sketch in "The Life of Brian" called "What have the Romans Ever Done for Us?".  It begins with John Cleese asking the question and somebody replies "The Aquaduct".  With one minute they end up listing all manner of civilisation including Roads, Schools, Sanitation, Police, Laws and other matters.  It's much the same with Open Source.  Of course we have C++ code, however we have many other matters that require attention.
+
+You are probably not surprised to learn that most users and stakeholders consider their concern should be the top priority for the project.  The difficulty is that there are many stakeholders and therefore many top priorities.  When dealing with stakeholder's issue, they frequently say "All you have to do is bla bla bla".  In my head, I hear the words in a slightly different order.  I hear "You have to do it all".
+
+For example, when somebody provides a patch, they seldom provide test code, updates to the documentation and build scripts.  The feature is often incomplete.  For example, in adding a new platform, they seldom platform specific code in src/version.cpp and src/futils.cpp.  They say "oh you can do that.".  Nobody every maintains or supports their patch.  Contributors seldom change their patch when asked to do so in a review.
+
+I have found recruiting contributors to be one of the most challenging and difficult aspects of maintaining Exiv2.  I appreciate the work done by everybody who has contributed.  How Exiv2 will survive in future is a matter for the community.  Or, perhaps this book will inspire somebody to write a replacement.
 
 <div id="13-1">
 ### 13.1) C++ Code
