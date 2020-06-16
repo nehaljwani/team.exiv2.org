@@ -874,6 +874,31 @@ private:
     size_t indent_;
 };
 
+class CIFF
+{
+public:
+    CIFF(Image& image,size_t start)
+    : image_  (image)
+    , io_     (image.io())
+    , parent_ (image.io())
+    {
+        // IoSave save(parent_,start);
+        byte              u[2];
+        image_.io()  .read(u,2);
+        length_ = getShort(u,0,image.endian());
+        io_ = Io(parent_,start,2+10*length_);
+    };
+    virtual ~CIFF() {};
+public:
+    Image&   image_  ;
+    Io&      io_     ;
+    Io       parent_ ;
+    uint16_t length_ ;
+    Io&      parent() { return parent_ ;}
+public:
+    void accept(Visitor& visitor);
+};
+
 class IFD
 {
 public:
@@ -925,7 +950,7 @@ public:
     JpegImage(std::string path)
     : Image(path)
     { io_.seek(0); init() ; }
-    JpegImage(Io io,size_t start,size_t count)
+    JpegImage(Io& io,size_t start,size_t count)
     : Image(Io(io,start,count))
     { io_.seek(0); init() ; }
     virtual void accept(class Visitor& v);
@@ -939,6 +964,7 @@ public:
         while ( !io_.eof() && (c=io_.getb()) == 0xff) {}
         return io_.eof() ? -1 : c;
     };
+    
 private:
     const byte     dht_      = 0xc4;
     const byte     dqt_      = 0xdb;
@@ -983,6 +1009,30 @@ private:
     // nmonic for markers
     std::string nm[256];
 };
+
+void CIFF::accept(Visitor& visitor)
+{
+    std::cout << ::indent(2) << stringFormat("CIFF Directory %s length = %d parent = %s",io_.path().c_str(),length_,parent_.path().c_str()) << std::endl;
+    std::cout << ::indent(2) <<             "    tag | name                           |  count | offset "       << std::endl;
+    io_.seek(2);
+    DataBuf buf(10);
+    for ( int i = 0 ; i < length_ ; i++ ) {
+        io_.read(buf);
+        uint16_t tag    = getShort(buf,0,image_.endian());
+        size_t   count  = getLong (buf,2,image_.endian());
+        size_t   offset = getLong (buf,6,image_.endian());
+        std::cout << ::indent(2)<< stringFormat(" %6#x | %-30s | %6d | %d ",tag,tagName(tag,crwDict,28).c_str(),count,offset) << std::endl;
+        
+        if ( tag == 0x2008 ) {  // ThumbnailImage
+            JpegImage jpeg(parent_,offset,count);
+            jpeg.accept(visitor);
+        } else if ( tag == 0x300a        /* ImageSpec      */ ) {
+            // like dumpImageHeader();
+            // CIFF imageSpec(something);
+            // imageSpec.accept(visitor);
+        }
+    }
+}
 
 class CrwImage : public Image
 {
@@ -1038,7 +1088,9 @@ public:
     virtual void accept(class Visitor& visitor)
     {
         IoSave save(io(),start_);
-
+        CIFF ciff(*this,start_);
+        ciff.accept(visitor);
+#if 0
         byte      u[2];
         io().read(u,2);
         uint16_t dirLength = getShort(u,0,endian_);
@@ -1098,6 +1150,7 @@ public:
                 jpeg.accept(visitor);
             }
         }
+#endif
     }
 };
 
