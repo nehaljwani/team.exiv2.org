@@ -155,11 +155,35 @@ I used a modified version of this style sheet: ~/Library/Application Support/Mac
 }
 ```
 
-So, I get MacDown to export HTML to IMaEA.html.  I open IMaEA.html in Safari and print it into a PDF file with a page size of 275x389mm.  This preserves the aspect ratio &radic;2/1 of ISO-Standard pages.  Safari has an option to add page number and date to every page.  I get Safari to save the print in PDF (it's 275x388).  Finally when the print opens in Preview, I "Print/Scale/Save" to get a beautiful A4 PDF with the page breaks in the correct place and all the links are working.
+So, I get MacDown to export HTML to IMaEA.html.  I open IMaEA.html in Safari and print it into a PDF file with a page size of 275x389mm.  This preserves the aspect ratio &radic;2/1 of ISO-Standard pages.  Safari has an option to add page number and date to every page.  I get Safari to save the print in PDF (it's 275x388).  The printing system on macOS has a paper handling feature to scale to fit a page size and I set that to A4.  Save the PDF from the print system and the result is a beautiful A4 document with all the links working and scaled to fit A4.
 
 I have to manually update the page numbers in the table of contents.  If Exiv2 ever supports PDF, I'll probably be able to script that!  I only do that when I intend to publish the file as it's tedious.
 
 The final step is to get the PDF to the local print shop to be printed and bound.
+
+Incidentally, I investigated adding a clickable Exiv2 logo to every page of the PDF and found this very useful open-source program pdfstamp: url = [https://github.com/CrossRef/pdfstamp.git](https://github.com/CrossRef/pdfstamp.git)
+
+PDF documents work in point sizes (72/inch) so A4 pages 297x210mm = 842x596pt.  The origin is in the lower left.
+
+```bash
+$ java -jar pdfstamp.jar -v -i ~/gnu/exiv2/team/book/exiv2.png  -l 30,30 -u https://exiv2.org  -pp 2-74 ~/clanmills/exiv2/book/IMaEA.pdf -o .
+$ java -jar pdfstamp.jar -v -d 8000 -i ~/gnu/exiv2/team/book/exiv2-large.png  -l 550,30 -u https://exiv2.org  -pp 2-75 ~/clanmills/exiv2/book/IMaEA.pdf -o . 
+```
+
+We could use this to add page labels (date/time/title) to every page (except the cover).
+
+I also investigated doing this in the style-sheet.  I tried Safari, Chrome and Firefox with varying success.  Then I read this: [https://www.smashingmagazine.com/2015/01/designing-for-print-with-css/](https://www.smashingmagazine.com/2015/01/designing-for-print-with-css/).
+
+The prince product fully supports HTML->PDF with @media print in the style sheet and works really well.  They offer a free/unrestricted license for non-commercial use.
+
+[https://www.princexml.com](https://www.princexml.com)
+
+I tried prince and was very pleased with the result.  When you ask prince to create the PDF, you can specify page-size and style sheet.
+
+```
+$ prince --page-size=A3 --style ~/gnu/exiv2/team/book/pdf-styles.css IMaEA.html
+```
+The output is beautiful and not watermarked by prince.
 
 <center>![Robin](RobinEuphonium.jpg)</center>
 
