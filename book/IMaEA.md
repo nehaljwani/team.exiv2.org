@@ -5,8 +5,8 @@
 
 <h3 align=center style="font-size:36px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>Exiv2 v0.27.3<br>2020-06-15</h3>
 
-<div id="TOC">
 ## <center>TABLE of CONTENTS</center>
+<div id="TOC">
 
 | Section                                             | Page | Image Formats                       | Page | Project Management                    | Page | 
 |:--                                                   |  --:|:--                                    | --:|:--                                      | --:|
