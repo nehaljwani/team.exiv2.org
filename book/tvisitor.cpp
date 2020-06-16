@@ -81,8 +81,9 @@ enum error_e
 ,   kerInvalidTypeValue
 ,   kerInvalidMalloc
 ,   kerNotATiff
-,   kerFailedToReadImageData
 ,   kerNotAJpeg
+,   kerNotACrw
+,   kerFailedToReadImageData
 ,   kerDataSourceOpenFailed
 ,   kerNoImageInInputData
 ,   kerBigtiffNotSupported
@@ -98,8 +99,9 @@ void Error (error_e error, std::string msg)
         case   kerInvalidTypeValue       : std::cerr << "invalid type"             ; break;
         case   kerInvalidMalloc          : std::cerr << "invalid malloc"           ; break;
         case   kerNotATiff               : std::cerr << "Not a tiff"               ; break;
-        case   kerFailedToReadImageData  : std::cerr << "failed to read image data"; break;
         case   kerNotAJpeg               : std::cerr << "not a jpeg"               ; break;
+        case   kerNotACrw                : std::cerr << "not a crw"                ; break;
+        case   kerFailedToReadImageData  : std::cerr << "failed to read image data"; break;
         case   kerDataSourceOpenFailed   : std::cerr << "data source open failed"  ; break;
         case   kerNoImageInInputData     : std::cerr << "not image in input data"  ; break;
         case   kerBigtiffNotSupported    : std::cerr << "bigtiff not supported"    ; break;
@@ -879,24 +881,25 @@ class CIFF
 public:
     CIFF(Image& image,size_t start)
     : image_  (image)
-    , io_     (image.io())
     , parent_ (image.io())
+    , io_     (image.io())
     {
-        // IoSave save(parent_,start);
-        byte              u[2];
-        image_.io()  .read(u,2);
-        length_ = getShort(u,0,image.endian());
-        io_ = Io(parent_,start,2+10*length_);
+        IoSave save(parent_,start);
+        length_ = parent_.getShort(image_.endian());
+        io_     = Io(parent_,start+2,10*length_);
     };
     virtual ~CIFF() {};
-public:
+    void     accept(Visitor& visitor);
+    Io&      parent() { return parent_;}
+    Io&      io()         { return io_;}
+    void     setIo(Io io,Io parent) { io_ =  io ;length_=io.size()/10; parent_ = parent ; }
+private:
     Image&   image_  ;
-    Io&      io_     ;
-    Io       parent_ ;
+    Io       io_     ; // the CIFF directory
+    Io       parent_ ; // the parent io object
     uint16_t length_ ;
-    Io&      parent() { return parent_ ;}
-public:
-    void accept(Visitor& visitor);
+
+friend class CrwImage ;
 };
 
 class IFD
@@ -938,7 +941,14 @@ public:
     void visit(Visitor& visitor,TagDict& tagDict = tiffDict );
     bool valid();
 
-    virtual void accept(class Visitor& visitor) { visit(visitor); }
+    virtual void accept(class Visitor& visitor)
+    {
+        if ( valid() ) {
+            visit(visitor);
+        } else {
+            Error(kerNotATiff,io().path());
+        }
+    }
 
 private:
     bool bHasNext_;
@@ -956,6 +966,7 @@ public:
     virtual void accept(class Visitor& v);
     bool valid();
 
+private:
     int advanceToMarker()
     {   // Search for 0xff
         while ( !io_.eof() && io_.getb() != 0xff) {}
@@ -964,8 +975,6 @@ public:
         while ( !io_.eof() && (c=io_.getb()) == 0xff) {}
         return io_.eof() ? -1 : c;
     };
-    
-private:
     const byte     dht_      = 0xc4;
     const byte     dqt_      = 0xdb;
     const byte     dri_      = 0xdd;
@@ -1010,35 +1019,11 @@ private:
     std::string nm[256];
 };
 
-void CIFF::accept(Visitor& visitor)
-{
-    std::cout << ::indent(2) << stringFormat("CIFF Directory %s length = %d parent = %s",io_.path().c_str(),length_,parent_.path().c_str()) << std::endl;
-    std::cout << ::indent(2) <<             "    tag | name                           |  count | offset "       << std::endl;
-    io_.seek(2);
-    DataBuf buf(10);
-    for ( int i = 0 ; i < length_ ; i++ ) {
-        io_.read(buf);
-        uint16_t tag    = getShort(buf,0,image_.endian());
-        size_t   count  = getLong (buf,2,image_.endian());
-        size_t   offset = getLong (buf,6,image_.endian());
-        std::cout << ::indent(2)<< stringFormat(" %6#x | %-30s | %6d | %d ",tag,tagName(tag,crwDict,28).c_str(),count,offset) << std::endl;
-        
-        if ( tag == 0x2008 ) {  // ThumbnailImage
-            JpegImage jpeg(parent_,offset,count);
-            jpeg.accept(visitor);
-        } else if ( tag == 0x300a        /* ImageSpec      */ ) {
-            // like dumpImageHeader();
-            // CIFF imageSpec(something);
-            // imageSpec.accept(visitor);
-        }
-    }
-}
-
 class CrwImage : public Image
 {
 public:
-    CrwImage(std::string path) : Image(path) { start_ = 0 ;}
-    CrwImage(Io& io) : Image(io) { start_ = 0 ; }
+    CrwImage(std::string path): Image(path),ciff_(*this,0) { start_ = 0; }
+    CrwImage(Io& io)          : Image(io)  ,ciff_(*this,0) { start_ = 0; }
     bool valid() {
         IoSave  restore(io(),0);
         bool    result = false;
@@ -1057,18 +1042,18 @@ public:
                 endian_ = c == I ? keLittle : keBig ;
                 start_  = getLong(buf,2,endian_);
                 format_ = "CRW";
-                // change our IO to be the CRW "Heap" sub-file
-                io_ = Io(io_,start_,io_.size()-start_);
-                // and get the start from the end of the heap
                 io().seek(io().size()-4);
-                DataBuf start(4);
-                io().read(start);
-                start_ = ::getLong(start,0,endian_);
+                size_t     start = start_ + io().getLong(endian_);
+                io().seek (start);
+                uint16_t  length = io().getShort(endian_);
+                ciff_.setIo (   Io(io(),io().tell(),2+length*10)  // the CIFF directory
+                            ,   Io(io(),start_,io().size()-start_) // the parent stream
+                            );
             }
         }
         return result ;
     }
-
+    CIFF ciff_;
     void dumpImageHeader(size_t start,endian_e endian,uint16_t depth)
     {
         IoSave   restore(io(),start);
@@ -1087,72 +1072,39 @@ public:
     }
     virtual void accept(class Visitor& visitor)
     {
-        IoSave save(io(),start_);
-        CIFF ciff(*this,start_);
-        ciff.accept(visitor);
-#if 0
-        byte      u[2];
-        io().read(u,2);
-        uint16_t dirLength = getShort(u,0,endian_);
-
-        std::cout << ::indent(2) << stringFormat("CIFF Directory %s start_ = %d dirLength = %d",io().path().c_str(),start_,dirLength) << std::endl;
-        std::cout << ::indent(2) <<             "    tag | name                           |  count | offset "       << std::endl;
-        DataBuf buf(10); // It's a CIFF not an IFD!
-        for ( int i = 0 ; i < dirLength ; i++ ) {
-            io().read(buf);
-            uint16_t tag    = getShort(buf,0,endian_);
-            uint32_t count  = getLong (buf,2,endian_);
-            uint32_t offset = getLong (buf,6,endian_);
-            std::cout << ::indent(2)<< stringFormat(" %6#x | %-30s | %6d | %d ",tag,tagName(tag,crwDict,28).c_str(),count,offset) << std::endl;
-            if ( tag & kStg_InRecordEntry ) {
-                std::cout << "data" << std::endl ;
-            } else if ( tag == 0x300a        /* ImageSpec      */ ) {
-                dumpImageHeader(offset,endian(),depth_+3) ;
-                // it's a CIFF
-                DataBuf block(count);
-                io().seek(offset);
-                io().read(block);
-                size_t    start  = getShort(block,count-4,endian_);
-                uint16_t  length = getShort(block,start,endian_);
-                std::cout << ::indent(2) << stringFormat("CIFF start, length = %d %d",start,length) << std::endl;
-                std::cout << "    tag | name                           |  count | offset | value " << std::endl;
-                for ( int i = 0 ; i < length ; i++ ) {
-                    tag    = getShort(block,start+2+i*10+0,endian_);
-                    count  = getLong (block,start+2+i*10+2,endian_);
-                    offset = getLong (block,start+2+i*10+6,endian_);
-                    std::string name = tagName(tag,crwDict,28);
-
-                    if ( printTag(name)  ) { // ignore unknown tags
-                        std::cout << ::indent(2) << stringFormat(" %6#x | %-30s | %6d | %-4d  ",tag,name.c_str(),count,offset);
-                        if ( tag & kcAscii && tag != 0x2804 /*ImageDescription*/ ) {
-                            std::cout << " | " << chop(block.toString(offset,kttAscii,count,endian_),60);
-                        } else {
-                            std::cout << " | " << chop(block.binaryToString(offset,count),60);
-                        }
-                        std::cout << std::endl;
-#if 1
-                        if ( tag == 0x300b /* ExifInformation */ ) {
-                            // Io  exifStream(io(),offset,count);
-
-                            //TiffImage tiff(exifStream);
-                            //tiff.visitIFD(visitor,0,endian_,visitor.depth_,canonDict,false);
-                            /*
-                            CrwImage exif(exifStream);
-                            exif.start_ = exifStream.size()-4;
-                            exif.accept(visitor);
-                            */
-                        }
-#endif
-                    }
-                }
-            } else if ( tag == 0x2008 /* ThumbnailImage  */ ) {
-                JpegImage jpeg(io(),offset,count) ;
-                jpeg.accept(visitor);
-            }
+        if ( valid() ) {
+            IoSave save(io(),start_);
+            ciff_.accept(visitor);
+        } else {
+            Error(kerNotACrw,io().path());
         }
-#endif
     }
 };
+
+void CIFF::accept(Visitor& visitor)
+{
+    // std::cout << ::indent(2) << stringFormat("CIFF Directory %s length = %d parent = %s",io_.path().c_str(),length_,parent_.path().c_str()) << std::endl;
+    // std::cout << ::indent(2) <<             "    tag | name                           |  count | offset "       << std::endl;
+    io_.seek(0);
+    DataBuf buf(10);
+    for ( int i = 0 ; i < length_ ; i++ ) {
+        io_.read(buf);
+        uint16_t tag    = getShort(buf,0,image_.endian());
+        size_t   count  = getLong (buf,2,image_.endian());
+        size_t   offset = getLong (buf,6,image_.endian());
+        std::cout << ::indent(2)<< stringFormat(" %6#x | %-30s | %6d | %d ",tag,tagName(tag,crwDict,28).c_str(),count,offset) << std::endl;
+        
+        if ( tag == 0x2008 )        {  // ThumbnailImage
+            JpegImage jpeg(parent_,offset,count);
+            jpeg.accept(visitor);
+        } else if ( tag == 0x300a ) { // ImageSpec
+            // do the dumpImagerHeader dance
+            ((CrwImage&)image_).dumpImageHeader(offset+image_.start_,image_.endian(),2);
+            // CIFF imageSpec(this->image_,offset);
+            // imageSpec.accept(visitor);
+        }
+    }
+}
 
 void IFD::visit(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
 {
@@ -1303,13 +1255,9 @@ bool JpegImage::valid()
 
 void JpegImage::accept(Visitor& v)
 {
-    if (!io_.good())
-        Error(kerDataSourceOpenFailed, io_.path());
     // Ensure that this is the correct image type
     if (!valid()) {
-        if (!io_.good() || io_.eof())
-            Error(kerFailedToReadImageData);
-        Error(kerNotAJpeg);
+        Error(kerNotAJpeg,io().path());
     }
     IoSave save(io(),0);
     v.visitBegin((*this));
