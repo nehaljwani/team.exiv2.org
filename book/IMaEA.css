@@ -1,0 +1,104 @@
+/* this stylesheet is used when generating a PDF with PrinceXML or any other tool that understands the CSS used. */
+/* define a page */
+
+/* $ prince --style IMeEA.css IMaEA.html && open IMaEA.pdf */
+
+@page {
+   size:   275mm 389mm;  
+   margin: 21mm 15mm;
+}
+
+@page:first {
+   margin: 0;
+}
+
+img {
+  max-width: 100%;
+}
+
+div.frontcover { 
+  page: cover; 
+  content: url("exiv2-large.png");
+  width: 100%;
+  height: 100%; 
+}
+
+@page:right{ 
+   @bottom-left {
+       margin: 10pt 0 30pt 0;
+       border-top: .25pt solid #666;
+       content: "Image Metadata and Exiv2 Architecture" ;
+       font-size: 9pt;
+       color: #333;
+   }
+   @bottom-right { 
+       margin: 10pt 0 30pt 0;
+       border-top: .25pt solid #666;
+       content: counter(page);
+       font-size: 9pt;
+   }
+   @top-right {
+   /*    content: url(exiv2.png) ; */
+   	   margin: 50pt 0 20pt 10;
+   	   font-size: 9pt;
+   	   color: #333;
+   }
+}
+
+@page:left{ 
+   @bottom-right {
+       margin: 10pt 0 30pt 0;
+       border-top: .25pt solid #666;
+       content: "Image Metadata and Exiv2 Architecture" ;
+       font-size: 9pt;
+       color: #333;
+   }
+   @bottom-left { 
+       margin: 10pt 0 30pt 0;
+       border-top: .25pt solid #666;
+       content: counter(page);
+       font-size: 9pt;
+   }
+}
+
+@page {
+  @bottom-center {
+    margin: 10pt 0 30pt 0;
+    border-top: .25pt solid #666;
+    content: counter(page);
+    font-size: 9pt;
+    content: "2020-06-17" ; 
+  }
+}
+
+/* first page */
+@page:first {
+  @bottom-right {
+    content: normal;
+    margin: 0;
+  }
+
+  @bottom-center {
+    content: "" ; 
+   	 margin: 50pt 0 20pt 10;
+   	 font-size: 9pt;
+   	 color: #333;
+  }
+
+  @bottom-left {
+    content: normal;
+    margin: 0;
+  }
+}
+
+/* reset chapter and figure counters on the body */
+body {
+	counter-reset: chapternum figurenum;
+	font-family: Palatino serif;
+	line-height: 1.5;
+	font-size: 11pt;
+}
+
+a {
+	color: #000;
+}

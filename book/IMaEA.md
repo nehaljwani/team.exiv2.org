@@ -178,12 +178,18 @@ The prince product fully supports HTML->PDF with @media print in the style sheet
 
 [https://www.princexml.com](https://www.princexml.com)
 
-I tried prince and was very pleased with the result.  When you ask prince to create the PDF, you can specify page-size and style sheet.
+I tried prince and was very pleased with the result.  When you ask prince to create the PDF, you can specify page-size and style sheet.  I've set up IMaEA.css with the builtin page size of 278x398.
 
 ```
-$ prince --page-size=A3 --style ~/gnu/exiv2/team/book/pdf-styles.css IMaEA.html
+$ prince --page-size=--page-size='275mm 389mm  --style ~/gnu/exiv2/team/book/pdf-styles.css IMaEA.html
+$ prince --type IMaEA.css IMaEA.html
 ```
-The output is beautiful and not watermarked by prince.
+
+The date that appears at the center-bottom of every page (except the first) is in the style sheet. You could change that with sed of course.  Setting the date from the computer clock would be fine for automatic reporting.  Better to use static text as we might want to say "Exiv2 v0.27.3 2020-06-30" or the like.
+
+The resulting PDF is beautiful and not watermarked by prince, although the put a postit on the front page.  That's OK.  They deserve credit.  Of course you can use mutool to convert the PDF to "pretty ascii" and edit out the postit.
+
+[https://www.mankier.com/1/mutool#Pages](https://www.mankier.com/1/mutool#Pages)
 
 <center>![Robin](RobinEuphonium.jpg)</center>
 
@@ -2152,10 +2158,10 @@ int main(int argc, char* argv[])
 }
 ```
 [TOC](#TOC)<br>
-
+## License
 <div id="license">
 
-<table><tr><td><pre style="font-size:6px;line-height:1.0;">
+<table><tr><td><pre style="font-size:7px;line-height:1.0;">
 		    GNU GENERAL PUBLIC LICENSE
 		       Version 2, June 1991
 
@@ -2321,13 +2327,13 @@ form) with the major components (compiler, kernel, and so on) of the
 operating system on which the executable runs, unless that component
 itself accompanies the executable.
 
+</pre></td><td><pre style="font-size:6px;line-height:1.0;">
 If distribution of executable or object code is made by offering
 access to copy from a designated place, then offering equivalent
 access to copy the source code from the same place counts as
 distribution of the source code, even though third parties are not
 compelled to copy the source along with the object code.
 
-</pre></td><td><pre style="font-size:6px;line-height:1.0;">
   4. You may not copy, modify, sublicense, or distribute the Program
 except as expressly provided under this License.  Any attempt
 otherwise to copy, modify, sublicense or distribute the Program is
