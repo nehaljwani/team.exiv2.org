@@ -597,24 +597,8 @@ public:
         path_=os.str();
         seek(0);
     };
-
-    uint32_t getLong(endian_e endian)
-    {
-        DataBuf buf(4);
-        read   (buf);
-        return ::getLong(buf,0,endian);
-    }
-    uint16_t getShort(endian_e endian)
-    {
-        byte b[2];
-        read(b,2);
-        return ::getShort(b,0,endian);
-    }
-
     virtual ~Io() { close(); }
-
     std::string path() { return path_; }
-
     size_t read(void* buff,size_t size)              { return fread(buff,1,size,f_);}
     size_t read(DataBuf& buff)                       { return read(buff.pData_,buff.size_); }
     byte   getb()                                    { byte b; if (read(&b,1)==1) return b ; else return -1; }
@@ -634,6 +618,22 @@ public:
         f_ = NULL  ;
     }
 
+    uint32_t getLong(endian_e endian)
+    {
+        DataBuf buf(4);
+        read   (buf);
+        return ::getLong(buf,0,endian);
+    }
+    float getFloat(endian_e endian)
+    {
+        return (float) getLong(endian);
+    }
+    uint16_t getShort(endian_e endian)
+    {
+        byte b[2];
+        read(b,2);
+        return ::getShort(b,0,endian);
+    }
 private:
     FILE*       f_;
     std::string path_;
@@ -725,6 +725,15 @@ public:
 
     maker_e     maker_;
     TagDict&    makerDict_;
+    void setMaker(maker_e maker) {
+        maker_ = maker;
+        switch ( maker_ ) {
+            case kCanon : makerDict_ = canonDict ; break;
+            case kNikon : makerDict_ = nikonDict ; break;
+            case kSony  : makerDict_ = sonyDict  ; break;
+            default : /* do nothing */           ; break;
+        }
+    }
     void setMaker(DataBuf& buf)
     {
         maker_ = buf.strequals("Canon"            ) ? kCanon
@@ -732,12 +741,7 @@ public:
                : buf.strequals("SONY")              ? kSony
                : maker_
                ;
-        switch ( maker_ ) {
-            case kCanon : makerDict_ = canonDict ; break;
-            case kNikon : makerDict_ = nikonDict ; break;
-            case kSony  : makerDict_ = sonyDict  ; break;
-            default : /* do nothing */           ; break;
-        }
+        setMaker(maker_);
     } // setMaker
 
     friend class TiffImage;
@@ -879,25 +883,57 @@ private:
 class CIFF
 {
 public:
-    CIFF(Image& image,size_t start)
-    : image_  (image)
-    , parent_ (image.io())
-    , io_     (image.io())
+    CIFF(Image& image,Io& parent)
+    : image_ (image)
+    , parent_(parent)
+    , vector_(image.io())
     {
-        IoSave save(parent_,start);
-        length_ = parent_.getShort(image_.endian());
-        io_     = Io(parent_,start+2,10*length_);
+        setParent(parent);
     };
     virtual ~CIFF() {};
     void     accept(Visitor& visitor);
+    Image&   image () { return image_ ;}
     Io&      parent() { return parent_;}
-    Io&      io()         { return io_;}
-    void     setIo(Io io,Io parent) { io_ =  io ;length_=io.size()/10; parent_ = parent ; }
+    Io&      vector() { return vector_;}
+    void     setParent(Io& parent)
+    {
+        IoSave    save(parent,parent.size()-4);
+        parent_ = parent;
+        vector_ = Io(parent,parent.getLong(image().endian()));
+        vector_.seek(0);
+        std::cout << "vector length = " << vector_.getShort(image().endian()) << std::endl ;
+    }
+    
+    void dumpImageHeader(Visitor& visitor,size_t start,size_t count,uint16_t depth)
+    {
+        endian_e endian = image_.endian();
+        IoSave   restore(parent(),start);
+
+        uint32_t  imageWidth         = parent().getLong (endian);
+        uint32_t  imageHeight        = parent().getLong (endian);
+        uint32_t  pixelAspectRatio   = parent().getLong (endian);
+        float     rotationAngle      = parent().getFloat(endian);
+        uint32_t  componentBitDepth  = parent().getLong (endian);
+        uint32_t  colorBitDepth      = parent().getLong (endian);
+        uint32_t  colorBW            = parent().getLong (endian);
+        std::cout << ::indent(2) << stringFormat("width,height                    = %d,%d  ", imageWidth,imageHeight)          << std::endl;
+        std::cout << ::indent(2) << stringFormat("pixelAspectRatio,rotationAngle  = %#x,%f" , pixelAspectRatio,rotationAngle)  << std::endl;
+        std::cout << ::indent(2) << stringFormat("componentBitDepth,colorBitDepth = %d,%d"  , componentBitDepth,colorBitDepth) << std::endl;
+        std::cout << ::indent(2) << stringFormat("colorBW                         = %d"     , colorBW)                         << std::endl;
+
+        parent().seek(start+count-4);
+        Io ciffParent(parent(),0,start+count);
+        //parent().seek(start + parent().getLong(endian));
+        //uint16_t  ciff_length  = parent().getShort(endian);
+        //std::cout << "ciff_length = " << ciff_length << std::endl;
+        CIFF ciff(image(),ciffParent);
+        //ciff.accept(visitor);
+    }
+
 private:
     Image&   image_  ;
-    Io       io_     ; // the CIFF directory
+    Io       vector_ ; // the CIFF directory vector_.seek(0); length=victor_.getShort(image.endian()); size = 2 + length*10;
     Io       parent_ ; // the parent io object
-    uint16_t length_ ;
 
 friend class CrwImage ;
 };
@@ -1022,9 +1058,25 @@ private:
 class CrwImage : public Image
 {
 public:
-    CrwImage(std::string path): Image(path),ciff_(*this,0) { start_ = 0; }
-    CrwImage(Io& io)          : Image(io)  ,ciff_(*this,0) { start_ = 0; }
+    CrwImage(std::string path)
+    : Image (path)
+    , valid_(false)
+    , heap_ (*this,io_)
+    {
+        start_ = 0;
+        setMaker(kCanon);
+    }
+    CrwImage(Io& io)
+    : Image (io)
+    , valid_(false)
+    , heap_ (*this,io_)
+    {
+        start_ = 0;
+        setMaker(kCanon) ;
+    }
     bool valid() {
+        if ( valid_ ) return valid_;
+        
         IoSave  restore(io(),0);
         bool    result = false;
         DataBuf buf(2+4+8); //xxlongHEAPCCRD xx = II or MM
@@ -1042,39 +1094,25 @@ public:
                 endian_ = c == I ? keLittle : keBig ;
                 start_  = getLong(buf,2,endian_);
                 format_ = "CRW";
-                io().seek(io().size()-4);
-                size_t     start = start_ + io().getLong(endian_);
-                io().seek (start);
-                uint16_t  length = io().getShort(endian_);
-                ciff_.setIo (   Io(io(),io().tell(),2+length*10)  // the CIFF directory
-                            ,   Io(io(),start_,io().size()-start_) // the parent stream
-                            );
+                // io().seek(io().size()-4);
+                // size_t     start = start_ + io().getLong(endian_);
+                // io().seek (start);
+                // uint16_t  length = io().getShort(endian_);
+                Io parent(io_,start_);
+                heap_.setParent (parent); // the parent stream
             }
         }
+        valid_= result;
         return result ;
     }
-    CIFF ciff_;
-    void dumpImageHeader(size_t start,endian_e endian,uint16_t depth)
-    {
-        IoSave   restore(io(),start);
-
-        uint32_t imageWidth         = io().getLong(endian);
-        uint32_t imageHeight        = io().getLong(endian);
-        int32_t  pixelAspectRatio   = (int32_t) io().getLong(endian);
-        float    rotationAngle      = (float) io().getLong(endian);
-        uint32_t componentBitDepth  = io().getLong(endian);
-        uint32_t colorBitDepth      = io().getLong(endian);
-        uint32_t colorBW            = io().getLong(endian);
-        std::cout << ::indent(2) << stringFormat("width,height                    = %d,%d  ", imageWidth,imageHeight)          << std::endl;
-        std::cout << ::indent(2) << stringFormat("pixelAspectRatio,rotationAngle  = %#x,%f" , pixelAspectRatio,rotationAngle)  << std::endl;
-        std::cout << ::indent(2) << stringFormat("componentBitDepth,colorBitDepth = %d,%d"  , componentBitDepth,colorBitDepth) << std::endl;
-        std::cout << ::indent(2) << stringFormat("colorBW                         = %d"     , colorBW)                         << std::endl;
-    }
+    CIFF heap_;
+    bool valid_;
+    
     virtual void accept(class Visitor& visitor)
     {
         if ( valid() ) {
             IoSave save(io(),start_);
-            ciff_.accept(visitor);
+            heap_.accept(visitor);
         } else {
             Error(kerNotACrw,io().path());
         }
@@ -1085,24 +1123,31 @@ void CIFF::accept(Visitor& visitor)
 {
     // std::cout << ::indent(2) << stringFormat("CIFF Directory %s length = %d parent = %s",io_.path().c_str(),length_,parent_.path().c_str()) << std::endl;
     // std::cout << ::indent(2) <<             "    tag | name                           |  count | offset "       << std::endl;
-    io_.seek(0);
+    IoSave restore(vector_,0);
+    uint16_t length = vector_.getShort(image().endian());
     DataBuf buf(10);
-    for ( int i = 0 ; i < length_ ; i++ ) {
-        io_.read(buf);
+    for ( int i = 0 ; i < length ; i++ ) {
+        vector_.read(buf);
         uint16_t tag    = getShort(buf,0,image_.endian());
         size_t   count  = getLong (buf,2,image_.endian());
         size_t   offset = getLong (buf,6,image_.endian());
-        std::cout << ::indent(2)<< stringFormat(" %6#x | %-30s | %6d | %d ",tag,tagName(tag,crwDict,28).c_str(),count,offset) << std::endl;
+        std::cout << ::indent(2)<< stringFormat(" %6#x | %-30s | %6d | %d ",tag,tagName(tag,crwDict,28).c_str(),count,offset) ;
         
         if ( tag == 0x2008 )        {  // ThumbnailImage
             JpegImage jpeg(parent_,offset,count);
             jpeg.accept(visitor);
         } else if ( tag == 0x300a ) { // ImageSpec
-            // do the dumpImagerHeader dance
-            ((CrwImage&)image_).dumpImageHeader(offset+image_.start_,image_.endian(),2);
-            // CIFF imageSpec(this->image_,offset);
-            // imageSpec.accept(visitor);
+            dumpImageHeader(visitor,offset,count,2);
+        } else if ( tag == 0x300b ) { // ExifInformation
+            IFD ifd(image(),offset,count);
+            ifd.visit(visitor);
+        } else if ( count < 500 ){ // Some stuff
+            DataBuf buf(count);
+            IoSave  save(parent_,offset);
+            parent_.read(buf);
+            std::cout << chop(buf.binaryToString(),40) << std::endl;
         }
+        std::cout << std::endl ;
     }
 }
 
@@ -1141,7 +1186,10 @@ void IFD::visit(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
             uint32_t offset = getLong (dir,8,image_.endian());
 
             if ( !typeValid(type) ) {
-                Error(kerInvalidTypeValue);
+                if ( type == 0 && image_.maker_ == kCanon )
+                    return ; // CR2!
+                else
+                    Error(kerInvalidTypeValue,type);
             }
 
             visitor.visitTag(io_,image_,address,tagDict);  // Tell the visitor
@@ -1395,11 +1443,7 @@ int main(int argc,const char* argv[])
 
     int rc = 0;
     if ( argc == 2 || argc == 3 ) {
-        const char* path = argv[argc-1];
-        TiffImage tiff(path);
-        JpegImage jpeg(path);
-        CrwImage  crw (path);
-
+        // Create the visitor
         PSopt_e option = kpsBasic;
         if ( argc == 3 ) {
             std::string arg(argv[1]);
@@ -1410,6 +1454,14 @@ int main(int argc,const char* argv[])
                    ;
         }
         ReportVisitor visitor(std::cout,option);
+        
+        // Open the image
+        const char* path = argv[argc-1];
+        TiffImage tiff(path);
+        JpegImage jpeg(path);
+        CrwImage  crw (path);
+
+        // Visit the image
         if      ( tiff.valid() ) tiff.accept(visitor);
         else if ( jpeg.valid() ) jpeg.accept(visitor);
         else if (  crw.valid() )  crw.accept(visitor);
