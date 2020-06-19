@@ -875,7 +875,6 @@ public:
         }
         indent_--;
     } // visitEnd
-//
 private:
     size_t indent_;
 };
@@ -899,11 +898,10 @@ public:
     {
         IoSave    save(parent,parent.size()-4);
         parent_ = parent;
-        vector_ = Io(parent,parent.getLong(image().endian()));
-        vector_.seek(0);
-        std::cout << "vector length = " << vector_.getShort(image().endian()) << std::endl ;
+        size_t    start = parent.getLong(image().endian());
+        vector_ = Io(parent,start,parent.size()-start);
     }
-    
+
     void dumpImageHeader(Visitor& visitor,size_t start,size_t count,uint16_t depth)
     {
         endian_e endian = image_.endian();
@@ -916,18 +914,14 @@ public:
         uint32_t  componentBitDepth  = parent().getLong (endian);
         uint32_t  colorBitDepth      = parent().getLong (endian);
         uint32_t  colorBW            = parent().getLong (endian);
-        std::cout << ::indent(2) << stringFormat("width,height                    = %d,%d  ", imageWidth,imageHeight)          << std::endl;
-        std::cout << ::indent(2) << stringFormat("pixelAspectRatio,rotationAngle  = %#x,%f" , pixelAspectRatio,rotationAngle)  << std::endl;
-        std::cout << ::indent(2) << stringFormat("componentBitDepth,colorBitDepth = %d,%d"  , componentBitDepth,colorBitDepth) << std::endl;
-        std::cout << ::indent(2) << stringFormat("colorBW                         = %d"     , colorBW)                         << std::endl;
+        std::cout << ::indent(depth) << stringFormat("width,height                    = %d,%d  ", imageWidth,imageHeight)          << std::endl;
+        std::cout << ::indent(depth) << stringFormat("pixelAspectRatio,rotationAngle  = %#x,%f" , pixelAspectRatio,rotationAngle)  << std::endl;
+        std::cout << ::indent(depth) << stringFormat("componentBitDepth,colorBitDepth = %d,%d"  , componentBitDepth,colorBitDepth) << std::endl;
+        std::cout << ::indent(depth) << stringFormat("colorBW                         = %d"     , colorBW)                         << std::endl;
 
-        parent().seek(start+count-4);
-        Io ciffParent(parent(),0,start+count);
-        //parent().seek(start + parent().getLong(endian));
-        //uint16_t  ciff_length  = parent().getShort(endian);
-        //std::cout << "ciff_length = " << ciff_length << std::endl;
+        Io   ciffParent(parent(),start,count);
         CIFF ciff(image(),ciffParent);
-        //ciff.accept(visitor);
+        ciff.accept(visitor);
     }
 
 private:
@@ -935,7 +929,7 @@ private:
     Io       vector_ ; // the CIFF directory vector_.seek(0); length=victor_.getShort(image.endian()); size = 2 + length*10;
     Io       parent_ ; // the parent io object
 
-friend class CrwImage ;
+    friend class CrwImage ;
 };
 
 class IFD
@@ -1121,34 +1115,50 @@ public:
 
 void CIFF::accept(Visitor& visitor)
 {
-    // std::cout << ::indent(2) << stringFormat("CIFF Directory %s length = %d parent = %s",io_.path().c_str(),length_,parent_.path().c_str()) << std::endl;
-    // std::cout << ::indent(2) <<             "    tag | name                           |  count | offset "       << std::endl;
     IoSave restore(vector_,0);
     uint16_t length = vector_.getShort(image().endian());
+
+    static size_t   depth = 1 ;
+    depth++  ;
+    
+    char c = image().endian() == keBig ? 'M' : 'I';
+    std::cout << ::indent(depth)
+    << stringFormat("STRUCTURE of %s FILE (%c%c): ",image().format().c_str(),c,c)
+    << stringFormat(" CIFF length: %d at: %s", length,parent().path().c_str())
+    << std::endl
+    ;
+
     DataBuf buf(10);
+    std::cout << ::indent(depth) << "    tag | name                           |            count |           offset | value " << std::endl;
     for ( int i = 0 ; i < length ; i++ ) {
         vector_.read(buf);
         uint16_t tag    = getShort(buf,0,image_.endian());
         size_t   count  = getLong (buf,2,image_.endian());
         size_t   offset = getLong (buf,6,image_.endian());
-        std::cout << ::indent(2)<< stringFormat(" %6#x | %-30s | %6d | %d ",tag,tagName(tag,crwDict,28).c_str(),count,offset) ;
-        
+        bool     bLF    = true ;
+        std::cout << ::indent(depth)<< stringFormat(" %6#x | %-30s | %16d | %16d | ",tag,tagName(tag,crwDict,28).c_str(),count,offset) ;
+
         if ( tag == 0x2008 )        {  // ThumbnailImage
+            std::cout << std::endl;
+            bLF = false ;
             JpegImage jpeg(parent_,offset,count);
             jpeg.accept(visitor);
         } else if ( tag == 0x300a ) { // ImageSpec
-            dumpImageHeader(visitor,offset,count,2);
+            std::cout << std::endl;
+            bLF = false ;
+            dumpImageHeader(visitor,offset,count,depth+5);
         } else if ( tag == 0x300b ) { // ExifInformation
             IFD ifd(image(),offset,count);
-            ifd.visit(visitor);
+            // ifd.visit(visitor);
         } else if ( count < 500 ){ // Some stuff
             DataBuf buf(count);
             IoSave  save(parent_,offset);
             parent_.read(buf);
-            std::cout << chop(buf.binaryToString(),40) << std::endl;
+            std::cout << chop(buf.binaryToString(),40);
         }
-        std::cout << std::endl ;
+        if ( bLF ) std::cout << std::endl ;
     }
+    depth--;
 }
 
 void IFD::visit(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
