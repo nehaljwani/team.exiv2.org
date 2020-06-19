@@ -440,13 +440,14 @@ enum kCanonHeap
 {   kStg_InHeapSpace    = 0
 ,   kStg_InRecordEntry  = 0x4000
 };
-
+// Canon tag masks
 #define kcAscii        0x0800
 #define kcWord         0x1000
 #define kcDword        0x1000
 #define kcHTP1         0x2800
 #define kcHTP2         0x3000
 #define kcIDCodeMask   0x07ff
+#define kcDataTypeMask 0x3800
 enum kCanonType
 {   kDT_BYTE            = 0x0000
 ,   kDT_ASCII           = kcAscii
@@ -623,6 +624,7 @@ public:
         }
         f_ = NULL  ;
     }
+    size_t start() { return start_ ; }
 
     uint32_t getLong(endian_e endian)
     {
@@ -908,26 +910,27 @@ public:
         vector_ = Io(parent,start,parent.size()-start);
     }
 
-    void dumpImageHeader(Visitor& visitor,size_t start,size_t count,uint16_t depth)
+    void dumpImageSpec(Visitor& visitor,uint16_t tag,size_t start,size_t count,uint16_t depth)
     {
         endian_e endian = image_.endian();
         IoSave   restore(parent(),start);
-
-        uint32_t  imageWidth         = parent().getLong (endian);
-        uint32_t  imageHeight        = parent().getLong (endian);
-        uint32_t  pixelAspectRatio   = parent().getLong (endian);
-        float     rotationAngle      = parent().getFloat(endian);
-        uint32_t  componentBitDepth  = parent().getLong (endian);
-        uint32_t  colorBitDepth      = parent().getLong (endian);
-        uint32_t  colorBW            = parent().getLong (endian);
-        std::cout << ::indent(depth) << stringFormat("width              %d"  , imageWidth)        << std::endl;
-        std::cout << ::indent(depth) << stringFormat("height             %d"  , imageHeight)       << std::endl;
-        std::cout << ::indent(depth) << stringFormat("pixelAspectRatio   %#x" , pixelAspectRatio)  << std::endl;
-        std::cout << ::indent(depth) << stringFormat("rotationAngle      %f"  , rotationAngle)     << std::endl;
-        std::cout << ::indent(depth) << stringFormat("componentBitDepth  %d"  , componentBitDepth) << std::endl;
-        std::cout << ::indent(depth) << stringFormat("colorBitDepth      %d"  , colorBitDepth)     << std::endl;
-        std::cout << ::indent(depth) << stringFormat("colorBW            %d"  , colorBW)           << std::endl;
-
+        
+        if ( tag == 0x300a ) { // ImageSpect
+            uint32_t  imageWidth         = parent().getLong (endian);
+            uint32_t  imageHeight        = parent().getLong (endian);
+            uint32_t  pixelAspectRatio   = parent().getLong (endian);
+            float     rotationAngle      = parent().getFloat(endian);
+            uint32_t  componentBitDepth  = parent().getLong (endian);
+            uint32_t  colorBitDepth      = parent().getLong (endian);
+            uint32_t  colorBW            = parent().getLong (endian);
+            std::cout << ::indent(depth) << stringFormat("width              %d"  , imageWidth)        << std::endl;
+            std::cout << ::indent(depth) << stringFormat("height             %d"  , imageHeight)       << std::endl;
+            std::cout << ::indent(depth) << stringFormat("pixelAspectRatio   %#x" , pixelAspectRatio)  << std::endl;
+            std::cout << ::indent(depth) << stringFormat("rotationAngle      %f"  , rotationAngle)     << std::endl;
+            std::cout << ::indent(depth) << stringFormat("componentBitDepth  %d"  , componentBitDepth) << std::endl;
+            std::cout << ::indent(depth) << stringFormat("colorBitDepth      %d"  , colorBitDepth)     << std::endl;
+            std::cout << ::indent(depth) << stringFormat("colorBW            %d"  , colorBW)           << std::endl;
+        }
         Io   ciffParent(parent(),start,count);
         CIFF ciff(image(),ciffParent);
         ciff.accept(visitor);
@@ -944,11 +947,11 @@ private:
 class IFD
 {
 public:
-    IFD(Image& image,size_t start,bool hasNext=true)
+    IFD(Image& image,size_t start,bool next=true)
     : image_  (image)
     , start_  (start)
     , io_     (image.io())
-    , hasNext_(hasNext)
+    , next_(next)
     {};
 
     void     visit(Visitor& visitor,const TagDict& tagDict=tiffDict);
@@ -956,9 +959,10 @@ public:
     maker_e  maker()     { return image_.maker_    ; }
     TagDict& makerDict() { return image_.makerDict_; }
     endian_e endian()    { return image_.endian()  ; }
+    void     setNext(bool next)     { next_ = next ; }
 
 private:
-    bool     hasNext_;
+    bool     next_   ;
     Image&   image_  ;
     size_t   start_  ;
     Io&      io_     ;
@@ -970,11 +974,11 @@ class TiffImage : public Image
 public:
     TiffImage(std::string path)
     : Image(path)
-    , bHasNext_(true)
+    , next_(true)
     {}
     TiffImage(Io& io)
     : Image(io)
-    , bHasNext_(false)
+    , next_(false)
     {}
 
     void visit(Visitor& visitor,TagDict& tagDict = tiffDict );
@@ -990,7 +994,7 @@ public:
     }
 
 private:
-    bool bHasNext_;
+    bool next_;
 };
 
 class JpegImage : public Image
@@ -1132,51 +1136,41 @@ void CIFF::accept(Visitor& visitor)
     
     char c = image().endian() == keBig ? 'M' : 'I';
     std::cout << ::indent(depth)
-    << stringFormat("STRUCTURE of %s FILE (%c%c): ",image().format().c_str(),c,c)
+    << stringFormat("STRUCTURE of %s FILE (%c%c): ",image().format().c_str(),c,c) << image().path()
     << stringFormat(" CIFF length: %d at: %s", length,parent().path().c_str())
     << std::endl
     ;
 
     DataBuf buf(10);
-    std::cout << ::indent(depth) << "    tag | name                           |  attrib  |   code |  kount |      Offset | value " << std::endl;
+    std::cout << ::indent(depth) << "    tag | mask | code | name                           |  kount | offset | value " << std::endl;
     for ( int i = 0 ; i < length ; i++ ) {
         vector_.read(buf);
         uint16_t    tag    = getShort(buf,0,image_.endian());
         uint32_t    count  = getLong (buf,2,image_.endian());
         uint32_t    offset = getLong (buf,6,image_.endian());
-        std::string attrib = tag & kStg_InRecordEntry ? "-I" : "-H";
-        if ( tag & kDT_ASCII ) attrib += 'a';
-        if ( tag & kDT_BYTE  ) attrib += 'b';
-        if ( tag & kDT_WORD  ) attrib += 'W';
-        if ( tag & kDT_BYTE2 ) attrib += 'B';
-        if ( tag & kDT_HeapTypeProp1 ) attrib += '1';
-        if ( tag & kDT_HeapTypeProp2 ) attrib += '2';
-        attrib += "-";
+        std::string mask   = tag & kStg_InRecordEntry ? "I" : "H";
+        uint16_t    data   = tag & kcDataTypeMask;
+        mask   +=   data == kcAscii ? 'A'
+                :   data == kcWord  ? 'W'
+                :   data == kcDword ? 'D'
+                :   data == kcHTP1  ? '1'
+                :   data == kcHTP2  ? '2'
+                :   ' '
+                ;
         
-        if ( attrib.size() < 8 ) attrib += std::string("        ").substr(attrib.size()); // blank pad attrib
-
         uint32_t    kount = tag & kStg_InRecordEntry ? 8 : count ;
         uint32_t    code  = tag & kcIDCodeMask                 ;
         uint32_t    Offset= tag&kStg_InRecordEntry && kount <= 8 ? 12345678 : offset;
-
+        std::string offst = kount > 8 ? stringFormat("%6d",offset) : stringFormat("%6s","");
         bool        bLF   = true ; // line ending needed
-        std::cout << ::indent(depth)<< stringFormat(" %6#x | %-30s | %s | %6d | %6d | %11d | ",tag,tagName(tag,crwDict,28).c_str(),attrib.c_str(),code,kount,Offset) ;
+        std::cout << ::indent(depth)<< stringFormat(" %6#x | %-4s | %4d | %-30s | %6d | %s | ",tag,mask.c_str(),code,tagName(tag,crwDict,28).c_str(),kount,offst.c_str()) ;
 
         if ( tag == 0x2008 )        {  // ThumbnailImage
             std::cout << std::endl;
             bLF = false ;
             JpegImage jpeg(parent_,offset,count);
             jpeg.accept(visitor);
-        } else if ( tag == 0x300a ) { // ImageSpec
-            std::cout << std::endl;
-            bLF = false ;
-            dumpImageHeader(visitor,offset,count,depth+5);
-        } else if ( tag == 0x300b ) { // ExifInformation
-            IFD ifd(image(),offset,count);
-            // ifd.visit(visitor);
-        } else if ( tag&kDT_ASCII           // Ascii
-                ||( Offset == 12345678 )  // little binary record
-                ) {
+        } else if ( Offset == 12345678 || tag&kDT_ASCII ) { // little binary record or ascii
             DataBuf buf(kount);
             if ( count > 8 ) {
                 IoSave  save(parent_,offset);
@@ -1185,7 +1179,11 @@ void CIFF::accept(Visitor& visitor)
                 buf.copy(count);
                 buf.copy(offset,4);
             }
-            std::cout << chop(buf.binaryToString(),40);
+            std::cout << chop(tag&kDT_ASCII ? buf.toString(0,kttAscii, count,image().endian()) : buf.binaryToString(),40);
+        } else if ( tag == 0x300a || tag == 0x300b ) { // ImageSpec || ExifInformation
+            std::cout << std::endl;
+            bLF = false ;
+            dumpImageSpec(visitor,tag,offset,count,depth+5);
         } else if ( count < 500 ){ // Some stuff
             DataBuf buf(count);
             IoSave  save(parent_,offset);
@@ -1280,7 +1278,7 @@ void IFD::visit(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
         } // for i < dirLength
 
         start = 0; // !stop
-        if ( hasNext_ ) {
+        if ( next_ ) {
             io_.read(dir.pData_, 4);
             start = getLong(dir,0,image_.endian());
         }
@@ -1316,7 +1314,7 @@ bool TiffImage::valid()
 void TiffImage::visit(Visitor& visitor,TagDict& tagDict)
 {
     if ( valid() ) {
-        IFD ifd(*this,start_,bHasNext_);
+        IFD ifd(*this,start_,next_);
         ifd.visit(visitor,tagDict);
     }
 } // TiffImage::visit
