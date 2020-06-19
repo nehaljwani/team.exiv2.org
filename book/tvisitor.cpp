@@ -164,6 +164,11 @@ public:
         }
         return result;
     }
+    void copy(void* src,size_t size,size_t offset=0)
+    {
+        memcpy(pData_+offset,src,size);
+    }
+    void copy(uint32_t v,size_t offset=0) { copy(&v,4,offset); }
 
     std::string toString(size_t offset,type_e type,uint16_t count,endian_e endian);
     std::string binaryToString(size_t start,size_t size);
@@ -436,11 +441,12 @@ enum kCanonHeap
 ,   kStg_InRecordEntry  = 0x4000
 };
 
-#define kcAscii 0x0800
-#define kcWord  0x1000
-#define kcDword 0x1000
-#define kcHTP1  0x2800
-#define kcHTP2  0x3000
+#define kcAscii        0x0800
+#define kcWord         0x1000
+#define kcDword        0x1000
+#define kcHTP1         0x2800
+#define kcHTP2         0x3000
+#define kcIDCodeMask   0x07ff
 enum kCanonType
 {   kDT_BYTE            = 0x0000
 ,   kDT_ASCII           = kcAscii
@@ -914,10 +920,13 @@ public:
         uint32_t  componentBitDepth  = parent().getLong (endian);
         uint32_t  colorBitDepth      = parent().getLong (endian);
         uint32_t  colorBW            = parent().getLong (endian);
-        std::cout << ::indent(depth) << stringFormat("width,height                    = %d,%d  ", imageWidth,imageHeight)          << std::endl;
-        std::cout << ::indent(depth) << stringFormat("pixelAspectRatio,rotationAngle  = %#x,%f" , pixelAspectRatio,rotationAngle)  << std::endl;
-        std::cout << ::indent(depth) << stringFormat("componentBitDepth,colorBitDepth = %d,%d"  , componentBitDepth,colorBitDepth) << std::endl;
-        std::cout << ::indent(depth) << stringFormat("colorBW                         = %d"     , colorBW)                         << std::endl;
+        std::cout << ::indent(depth) << stringFormat("width              %d"  , imageWidth)        << std::endl;
+        std::cout << ::indent(depth) << stringFormat("height             %d"  , imageHeight)       << std::endl;
+        std::cout << ::indent(depth) << stringFormat("pixelAspectRatio   %#x" , pixelAspectRatio)  << std::endl;
+        std::cout << ::indent(depth) << stringFormat("rotationAngle      %f"  , rotationAngle)     << std::endl;
+        std::cout << ::indent(depth) << stringFormat("componentBitDepth  %d"  , componentBitDepth) << std::endl;
+        std::cout << ::indent(depth) << stringFormat("colorBitDepth      %d"  , colorBitDepth)     << std::endl;
+        std::cout << ::indent(depth) << stringFormat("colorBW            %d"  , colorBW)           << std::endl;
 
         Io   ciffParent(parent(),start,count);
         CIFF ciff(image(),ciffParent);
@@ -1129,14 +1138,29 @@ void CIFF::accept(Visitor& visitor)
     ;
 
     DataBuf buf(10);
-    std::cout << ::indent(depth) << "    tag | name                           |            count |           offset | value " << std::endl;
+    std::cout << ::indent(depth) << "    tag | name                           |  attrib  |   code |  kount |      Offset | value " << std::endl;
     for ( int i = 0 ; i < length ; i++ ) {
         vector_.read(buf);
-        uint16_t tag    = getShort(buf,0,image_.endian());
-        size_t   count  = getLong (buf,2,image_.endian());
-        size_t   offset = getLong (buf,6,image_.endian());
-        bool     bLF    = true ;
-        std::cout << ::indent(depth)<< stringFormat(" %6#x | %-30s | %16d | %16d | ",tag,tagName(tag,crwDict,28).c_str(),count,offset) ;
+        uint16_t    tag    = getShort(buf,0,image_.endian());
+        uint32_t    count  = getLong (buf,2,image_.endian());
+        uint32_t    offset = getLong (buf,6,image_.endian());
+        std::string attrib = tag & kStg_InRecordEntry ? "-I" : "-H";
+        if ( tag & kDT_ASCII ) attrib += 'a';
+        if ( tag & kDT_BYTE  ) attrib += 'b';
+        if ( tag & kDT_WORD  ) attrib += 'W';
+        if ( tag & kDT_BYTE2 ) attrib += 'B';
+        if ( tag & kDT_HeapTypeProp1 ) attrib += '1';
+        if ( tag & kDT_HeapTypeProp2 ) attrib += '2';
+        attrib += "-";
+        
+        if ( attrib.size() < 8 ) attrib += std::string("        ").substr(attrib.size()); // blank pad attrib
+
+        uint32_t    kount = tag & kStg_InRecordEntry ? 8 : count ;
+        uint32_t    code  = tag & kcIDCodeMask                 ;
+        uint32_t    Offset= tag&kStg_InRecordEntry && kount <= 8 ? 12345678 : offset;
+
+        bool        bLF   = true ; // line ending needed
+        std::cout << ::indent(depth)<< stringFormat(" %6#x | %-30s | %s | %6d | %6d | %11d | ",tag,tagName(tag,crwDict,28).c_str(),attrib.c_str(),code,kount,Offset) ;
 
         if ( tag == 0x2008 )        {  // ThumbnailImage
             std::cout << std::endl;
@@ -1150,6 +1174,18 @@ void CIFF::accept(Visitor& visitor)
         } else if ( tag == 0x300b ) { // ExifInformation
             IFD ifd(image(),offset,count);
             // ifd.visit(visitor);
+        } else if ( tag&kDT_ASCII           // Ascii
+                ||( Offset == 12345678 )  // little binary record
+                ) {
+            DataBuf buf(kount);
+            if ( count > 8 ) {
+                IoSave  save(parent_,offset);
+                parent_.read(buf);
+            } else {
+                buf.copy(count);
+                buf.copy(offset,4);
+            }
+            std::cout << chop(buf.binaryToString(),40);
         } else if ( count < 500 ){ // Some stuff
             DataBuf buf(count);
             IoSave  save(parent_,offset);
