@@ -1848,11 +1848,13 @@ To be written.
 <div id="13">
 # 13 Project Management, Release Engineering, User Support
 
+<center>![open-source-cartoon.png](open-source-cartoon.png)</center>
+
 This topic deserves a book in its own right.  It's easy to think of an Open Source Project as some code.  It's not.  The code is a major part of the project, however probably only 50% of the effort goes into code.  We have many stakeholders in a project including: users, security, distros, and competitors.  The project needs documentation, build, test, bug reporting and many other elements.
 
 You may have seen the sketch in "The Life of Brian" called "What have the Romans Ever Done for Us?".  It begins with John Cleese asking the question and somebody replies "What about the aqueduct?".  Within one minute they list all manner of civilisation brought to Palestine including Roads, Schools, Sanitation, Police, Laws and other matters.  It's much the same with Open Source.  Of course we have C++ code, however we have many other matters that require attention.
 
-You are probably not surprised to learn that most users and stakeholders consider their concern should be the top priority for the project.  The challenge is that there are many stakeholders and therefore many top priorities.  When dealing with a stakeholder's issue, they frequently say "All you have to do is bla bla bla".  In my head, I hear the words in a slightly different order.  I hear "You have to do it all".
+You are probably not surprised to learn that most stakeholders consider their concern should be the top priority for the project.  The challenge is that there are many stakeholders and therefore many top priorities.  When dealing with a stakeholder's issue, they frequently say "All you have to do is bla bla bla".  In my head, I hear the words in a slightly different order.  I hear "You have to do it all".
 
 For example, when somebody provides a patch, they seldom provide test code or updates to the documentation or build scripts.  The feature is often incomplete.  For example, in adding a new platform, they seldom provide platform specific code in src/version.cpp and src/futils.cpp.  Sometimes they break all the sample applications.  When I ask them to finish the job, they say: "oh you can do that.".  Nobody ever maintains or supports their patch.  Contributors seldom change their patch when asked to do so in a review.
 
