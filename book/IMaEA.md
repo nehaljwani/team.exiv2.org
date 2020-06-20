@@ -44,7 +44,7 @@ _I want to say <b>Thank You</b> to a few folks who have made this possbile.  Fir
 | [12. Security](#12)                                   | 60 | [Current Priorities](#current)        |  3 | [13.22 Back-porting](#13-22)            | 74 |
 | [12.1 The Fuzzing Police](#12)                        | 61 | [Future Projects](#future)            |  4 | [13.23 Other OSS projects](#13-23)      |    |
 | [12.2 How we deal with security issues](12-2)         | 62 | [Scope of Book](#scope)               |  4 | | |
-| [14. Code discussed in this book](#13)                | 63 | [Making this book](#making)           |  5 | [The Final Word](#finally)              | 76 |
+| [14. Code discussed in this book](#13)                | 63 | [Making this book](#making)           |  5 | [The Last Word](#finally)               | 99 |
 
 
 <div id="about">
@@ -65,7 +65,7 @@ At the moment, the book is "work in progress" and expected to be finished by the
 
 I first became interested in metadata because of a trail conversation with Dennis Connor in 2008.  Dennis and I ran frequently together in Silicon Valley and Dennis was a Software Development Manager in a company that made GPS systems for Precision Agriculture.  I had a Garmin Forerunner 201 Watch.  We realised that we could extract the GPS data from the watch in GPX format, then merge the position into photos.  Today this is called "GeoTagging" and is supported by many applications.
 
-<center>![gpsexiftags](gpsexiftags.jpg)</center>
+<center><img src="gpsexiftags.jpg" style="border:2px solid #23668F;"/></center>
 
 I said "Oh, it can't be too difficult to do that!".  And here we are more than a decade later still working on the project.  The program geotag.py was completed in about 6 weeks.  Most of the effort went into porting Exiv2 and pyexiv2 to Visual Studio and macOS.  Both Exiv2 and pyexiv2 were Linux only at that time.
 
@@ -80,7 +80,6 @@ Incidentally, later in 2008, Dennis offered me a contract to port his company's 
 I have never been employed to work on Metadata.  I was a Senior Computer Scientist at Adobe for more than 10 years, however I was never involved with XMP or Metadata.
 
 [TOC](#TOC)
-
 
 <div id="2012">
 ### 2012 - 2017
@@ -184,8 +183,7 @@ The prince product fully supports HTML->PDF with @media print in the style sheet
 
 [https://www.princexml.com](https://www.princexml.com)
 
-I tried prince and was very pleased with the result.  When you ask prince to create the PDF, you can specify page-size and style sheet.  I've set up IMaEA.css with the builtin page size of 278x398.  Sadly, prince rendered in the inline code snippets with a large font and ignored the beautiful "Coy" style injected by MacDown.
-
+I tried prince and was very pleased with the result.  When you ask prince to create the PDF, you can specify page-size and style sheet.  I've set up IMaEA.css with the builtin page size of 278x398.
 
 ```
 $ prince --page-size=--page-size='275mm 389mm  --style ~/gnu/exiv2/team/book/pdf-styles.css IMaEA.html
@@ -194,13 +192,11 @@ $ prince --type IMaEA.css IMaEA.html
 
 The date that appears at the center-bottom of every page (except the first) is in the style sheet. You could change that with sed of course.  Setting the date from the computer clock would be fine for automatic reporting.  Better to use static text as we might want to say "Exiv2 v0.27.3 2020-06-30" or the like.
 
-The resulting PDF is beautiful and not watermarked by prince, although they put a PostIt on the front page.  That's OK.  They deserve credit.  Of course you can use a PDF Editor to remove the PostIt.
+The resulting PDF is beautiful and not watermarked by prince, although the put a postit on the front page.  That's OK.  They deserve credit.  Of course you can use mutool to convert the PDF to "pretty ascii" and edit out the postit.
 
 [https://www.mankier.com/1/mutool#Pages](https://www.mankier.com/1/mutool#Pages)
 
 <center>![Robin](RobinEuphonium.jpg)</center>
-
-So, I used the Safari Printer PDF and did the final editing in SodaPDF.  The tweaks were to fix the page headers, repair page links and add a PDF Table of Contents.  I'm delighted by the result.  Many would say that it's impossible to write a book in MarkDown.  Well, I have!
 
 Thank You for reading my book.  If you find errors, please let me know.  If you'd like to discuss any of the technology involved in Image Metadata, please contact me by opening an issue on GitHub.
 
@@ -228,9 +224,9 @@ The good news however is that file formats come in families which are:
 | IPTC    | Interpress Trade Consortium | Many |
 | ICC     | Internation Colour Consortium | Many |
 | XMP     | Adobe XMP is written in XML | XMP, sidecar | 
-| COS     | Adobe PDF Format<br>Very flexible container                                             | PDF, JTF |
+| COS     | Adobe PDF Format<br>Very flexible container                                             | PDF, JDF |
 | EPS     | Adobe Encapsulated PostScript<br>The code in Exiv2 to deal with this is deprecated  | EPS, AI |
-| PS      | Adobe PostScript<br>The most beautiful graphics language ever.                           | PS |
+| PS      | Adobe PostScript<br>The most beautiful graphics language ever invented.                           | PS |
 
 
 I suspect the software mess is caused by the hardware engineers.  When hardware people start a new project, they copy the CAD files from the last project and proceed from there.  They don't worry about back-porting changes or compatibility.  They think firmware people are stupid and do a terrible job!  We have to live with this.
@@ -2087,7 +2083,11 @@ I strongly encourage you to download, build and install Exiv2.  The current (and
 
 There is substantial documentation provided with the Exiv2 project.  This book does not duplicate the project documentation, but compliments it by explaining how and why the code works. 
 
+The following two programs args.cpp and dmpf.cpp are based on similar utility programs on the Apollo Workstatation on which I worked during the 1980s.
+
 #### args.cpp
+
+I wrote this program in 1991.  It's great for figuring how the shell will see a command.  Another purpose is to analyse commands generated by CMake.
 
 ```cpp
 #include <stdio.h>
@@ -2104,19 +2104,21 @@ int main(int argc, char* argv[])
 
 #### dmpf.cpp
 
+The purpose of this program is to quickly inspect files.  It could have lots more features to inspect byte-ranges, dump as big/little endian, 16/32/64 ints, or floats/doubles.  I haven't added these options because I find this is mostly sufficient.  As always, send me a patch if you have good ideas.
+
 ```cpp
 #include <stdio.h>
 #include <string.h>
 
 static enum
-{	errorOK = 0
-, 	errorSyntax
+{   errorOK = 0
+,   errorSyntax
 ,   errorProcessing
 } error = errorOK ;
 
 void syntax()
 {
-	printf("syntax: dmpf [-option]+ filename\n") ;
+    printf("syntax: dmpf [-option]+ filename\n") ;
 }
 
 unsigned char print(unsigned char c) {
@@ -2125,66 +2127,66 @@ unsigned char print(unsigned char c) {
 
 int main(int argc, char* argv[])
 {
-	char* filename = argv[1] ;
-	FILE* f = NULL ;
+    char* filename = argv[1] ;
+    FILE* f = NULL ;
 
-	if ( argc < 2 ) {
-		syntax() ;
-		error = errorSyntax ;
-	}
+    if ( argc < 2 ) {
+        syntax() ;
+        error = errorSyntax ;
+    }
 
-	if ( !error ) {
-		f = strcmp(filename,"-") ? fopen(filename,"rb") : stdin ;
-		if ( !f ) {
-			printf("unable to open file %s\n",filename) ;
-			error = errorProcessing ;
-		}
-	}
+    if ( !error ) {
+        f = strcmp(filename,"-") ? fopen(filename,"rb") : stdin ;
+        if ( !f ) {
+            printf("unable to open file %s\n",filename) ;
+            error = errorProcessing ;
+        }
+    }
 
-	if ( !error  )
-	{
-		char line[1000] ;
-		char buff[32]   ;
-		int  n          ;
-		int count = 0   ;
-		while ( (n = fread(buff,1,sizeof buff,f)) > 0 )
-		{
-			// line number
-			int l = sprintf(line,"%#8x %8d: ",count,count ) ;
-			count += n ;
+    if ( !error  )
+    {
+        char line[1000] ;
+        char buff[32]   ;
+        int  n          ;
+        int count = 0   ;
+        while ( (n = fread(buff,1,sizeof buff,f)) > 0 )
+        {
+            // line number
+            int l = sprintf(line,"%#8x %8d: ",count,count ) ;
+            count += n ;
 
-			// ascii print
-			for ( int i = 0 ; i < n ; i++ )
-			{
-				char c = buff[i] ;
-		        l += sprintf(line+l,"%c", print(c)) ;
-			}
-			// blank pad the ascii
-			int save = n ;
-			while ( n++ < sizeof(buff) ) {
-			    l += sprintf(line+l," ") ;
-			}
-			n = save     ;
+            // ascii print
+            for ( int i = 0 ; i < n ; i++ )
+            {
+                char c = buff[i] ;
+                l += sprintf(line+l,"%c", print(c)) ;
+            }
+            // blank pad the ascii
+            int save = n ;
+            while ( n++ < sizeof(buff) ) {
+                l += sprintf(line+l," ") ;
+            }
+            n = save     ;
 
-		    // hex code
-		    l += sprintf(line+l,"  -> ") ;
-			for ( int i = 0 ; i < n ; i++ )
-			{
-				unsigned char c = buff[i] ;
-				l += sprintf(line+l," %02x" ,c) ;
-			}
+            // hex code
+            l += sprintf(line+l,"  -> ") ;
+            for ( int i = 0 ; i < n ; i++ )
+            {
+                unsigned char c = buff[i] ;
+                l += sprintf(line+l," %02x" ,c) ;
+            }
 
-			line[l] = 0 ;
-			printf("%s\n",line) ;
-		}
+            line[l] = 0 ;
+            printf("%s\n",line) ;
+        }
 
         if ( f != stdin ) {
             fclose(f);
             f = NULL;
         }
-	}
+    }
 
-	return error ;
+    return error ;
 }
 ```
 
@@ -2192,11 +2194,14 @@ int main(int argc, char* argv[])
 # The Last Word
 <div id="finally">
 
-I hope found this book interesting.  More to the point, I hope you've found it useful.  I hope Exiv2 will live into the future, or this book inspires somebody to write a new library.  
+I hope found this book interesting.  More to the point, I hope you've found it useful.  I hope Exiv2 will live into the future, or this book inspires somebody to write a new library.
+
 
 <center><img src="back-page.jpg" style="border:2px solid #23668F"/></center>
 
-I'm going off to cut the grass, run in the beautiful countryside around my home in Camberley, England.  If you have interesting and positive thoughts you are welcome to share them by email.
+
+I'm going off to cut the grass and to run in the beautiful countryside around my home in Camberley, England.  And I'm going to play the Euphonium and the Piano.  If you have interesting and positive thoughts you are welcome to open an issue on GitHub and I will respond.
+
 
 <center>![Exiv2](exiv2.png)</center>
 
