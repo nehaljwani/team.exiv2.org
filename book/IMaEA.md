@@ -23,9 +23,9 @@ _I want to say <b>Thank You</b> to a few folks who have made this possbile.  Fir
 | [2. Tiff and Exif metadata](#2)                       | 22 | [JPEG and EXV](#JPEG)                 | 12 | [13.1 C++ Code](#13-1)                  | 56 |
 | [3. MakerNotes](#3)                                   | 23 | [PNG Portable Network Graphics](#PNG) | 10 | [13.2 Build](#13-2)                     | 57 |
 | [4. Other metadata containers](#4)                    | 24 | [JP2 Jpeg 2000](#JP2)                 | 10 | [13.3 Security](#13-3)                  | 58 |
-| [5. Lens Recognition](#5)                             | 25 | [ISOBMFF](#ISOBMFF)                   | 10 | [13.4 Documentation](#13-4)             | 59 |
-| [6. Sample Applications](#6)                          | 26 | [CRW Canon Raw](#CRW)                 | 15 | [13.5 Testing](#13-5)                   | 59 |
-| [7. I/O in Exiv2](#7)                                 | 27 | [CR2 Canon Raw Format 2](#CR2)        | 16 | [13.6 Sample programs](#13-6)           | 60 |
+| [5. Lens Recognition](#5)                             | 25 | [CRW Canon Raw](#CRW)                 | 10 | [13.4 Documentation](#13-4)             | 59 |
+| [6. Sample Applications](#6)                          | 26 | [CR2 Canon Raw Format 2](#CR2)        | 15 | [13.5 Testing](#13-5)                   | 59 |
+| [7. I/O in Exiv2](#7)                                 | 27 | [ISOBMFF, CR3, HEIF, AVI](#ISOBMFF)   | 16 | [13.6 Sample programs](#13-6)           | 60 |
 | [8. Exiv2 Architecture](#8)<br>                       | 28 | [WebP Web Photograph ](#WEBP)         | 17 | [13.7 User Support](#13-7)              | 61 |
 | [8.1 Extracting metadata using dd](#8-1)              | 29 | [PGF Portable Graphics Format](#PGF)  | 18 | [13.8 Bug Tracking](#13-8)              | 62 |
 | [8.2 Tag Names in Exiv2](#8-2)                        | 31 | [MRW Minolta Raw](#MRW)               | 19 | [13.9 Release Engineering](#13-9)       | 63 |
@@ -33,7 +33,7 @@ _I want to say <b>Thank You</b> to a few folks who have made this possbile.  Fir
 | [8.4 Visitor Design Pattern](#8-4)                    | 36 | [PSD PhotoShop Document](#PSD)        | 14 | [13.11 Localisation](#13-11)            | 65 |
 | [8.5 IFD:visit() and TiffImage::visit() ](#8-5)       | 40 | [RAF](#RAF)                           | 14 | [13.12 Build Server](#13-12)            | 66 |
 | [8.6 Presenting data with visitTag()](#8-6)<br>       | 44 | [RW2](#RW2)                           | 14 | [13.13 Source Code Management](#13-13)  | 67 |
-| [8.7 Metadata and Binary Tag Decoder](#8-7) | 47 | [TGA](#TGA)                           | 14 | [13.14 Project Web Site](#13-14)        | 68 |
+| [8.7 Metadata and Binary Tag Decoder](#8-7)           | 47 | [TGA](#TGA)                           | 14 | [13.14 Project Web Site](#13-14)        | 68 |
 | [9. Image Previews](#9)                               | 50 | [GIF Graphical Image Format](#GIF)    | 14 | [13.15 Project Servers ](#13-15)        | 68 |
 | [10. Test Suite and Build](#10)                       | 51 | [BMP Windows Bitmap](#BMP)            | 14 | [13.16 API Management](#13-16)          | 68 |
 | [10.1 Bash Tests](#10-1)                              | 53 | _**Other Sections**_                  | 14 | [13.17 Recruiting Contributors](#13-17) | 69 |
@@ -239,13 +239,13 @@ There is also the issue of patents.  It's unclear if it's legal to read an IsoBM
 ## TIFF and BigTiff
 ![tiff](tiff.png)
 
-The architecture of TIFF and BigTiff are the same.  BigTiff is 64 bit based.  So most uint16\_t data types become uint32\_t and uint32\_t become uint64\_t.  BigTiff has three additional 8 byte types: longlong, slonglong and tiffifd8.  The tag and type fields are uint16\_t in both TIFF and BigTiff.  The "magic" header for both Tiff and BigTiff is 4 bytes, followed by the offset to the First IFD.  The  offset is 4 byte uint\_32t for Tiff and and 8 byte uint64_t for BigTiff.  For both TIFF and BigTiff the Endian Marker is MM for big-endian and II for little-endian.  M = Motorala, I = Intel.
+The architecture of TIFF and BigTiff are the same.  BigTiff is 64 bit based.  So most uint16\_t data types become uint32\_t and uint32\_t become uint64\_t.  BigTiff has three additional 8 byte types: longlong, slonglong and tiffifd8.  Both tag and type are uint16\_t in TIFF and BigTiff.  The "magic" header for both Tiff and BigTiff is 4 bytes, followed by the offset to the First IFD.  The  offset is 4 byte uint\_32t for Tiff and and 8 byte uint64_t for BigTiff.  For both TIFF and BigTiff the Endian Marker is MM for big-endian and II for little-endian.  M = Motorala, I = Intel.
 
 | Element | TIFF | BigTiff | Element | TIFF | BigTiff |
 |:--       |:--  |:--    |:--       |:--  |:--    |
 | Header | EE42Offset | EE43Offset | Header | 8 bytes | 12 bytes |
 | Marker | **\*** 0x2a = 42 | **\+** 0x2b = 43 | Offset    | uint32\_t | uint64\_t |
-| Tag    | uint16\_t | uint16\_t  | Field  | 12 bytes | 20 bytes |
+| Tag    | uint16\_t | uint16\_t  | Entry  | 12 bytes | 20 bytes |
 | Type    | uint16\_t | uint16\_t  | Entries **#E** | uint16\_t | uint32\_t  |
 | Count   | uint32\_t | uint64\_t  | Next | uint32\_t | uint64\_t  | 
 
@@ -331,12 +331,6 @@ END: /Users/rmills/Stonehenge.exv
 ![jp2](jp2.png)
 
 [TOC](#TOC)
-<div id="ISOBMFF">
-## ISOBMFF
-
-To be written.
-
-[TOC](#TOC)
 <div id="CRW">
 ## CRW Canon Raw Format
 
@@ -347,6 +341,12 @@ The specification is here: [CIFFspecV1R04.pdf](https://web.archive.org/web/20081
 [TOC](#TOC)
 <div id="CR2">
 ## CR2 Canon Raw Format 2
+
+To be written.
+
+[TOC](#TOC)
+<div id="ISOBMFF">
+## ISOBMFF, CR3, HEIF, AVI
 
 To be written.
 
@@ -1850,14 +1850,29 @@ To be written.
 
 This topic deserves a book in its own right.  It's easy to think of an Open Source Project as some code.  It's not.  The code is a major part of the project, however probably only 50% of the effort goes into code.  We have many stakeholders in a project including: users, security, distros, and competitors.  The project needs documentation, build, test, bug reporting and many other elements.
 
-You may have seen the sketch in "The Life of Brian" called "What have the Romans Ever Done for Us?".  It begins with John Cleese asking the question and somebody replies "What about the aqueduct?".  With one minute they end up listing all manner of civilisation brought to Palestine including Roads, Schools, Sanitation, Police, Laws and other matters.  It's much the same with Open Source.  Of course we have C++ code, however we have many other matters that require attention.
+You may have seen the sketch in "The Life of Brian" called "What have the Romans Ever Done for Us?".  It begins with John Cleese asking the question and somebody replies "What about the aqueduct?".  Within one minute they list all manner of civilisation brought to Palestine including Roads, Schools, Sanitation, Police, Laws and other matters.  It's much the same with Open Source.  Of course we have C++ code, however we have many other matters that require attention.
 
 You are probably not surprised to learn that most users and stakeholders consider their concern should be the top priority for the project.  The challenge is that there are many stakeholders and therefore many top priorities.  When dealing with a stakeholder's issue, they frequently say "All you have to do is bla bla bla".  In my head, I hear the words in a slightly different order.  I hear "You have to do it all".
 
-For example, when somebody provides a patch, they seldom provide test code or updates to the documentation or build scripts.  The feature is often incomplete.  For example, in adding a new platform, they seldom provide platform specific code in src/version.cpp and src/futils.cpp.  Sometimes they break all the sample applications.  When I ask them to do that they say: "oh you can do that.".  Nobody ever maintains or supports their patch.  Contributors seldom change their patch when asked to do so in a review.
+For example, when somebody provides a patch, they seldom provide test code or updates to the documentation or build scripts.  The feature is often incomplete.  For example, in adding a new platform, they seldom provide platform specific code in src/version.cpp and src/futils.cpp.  Sometimes they break all the sample applications.  When I ask them to finish the job, they say: "oh you can do that.".  Nobody ever maintains or supports their patch.  Contributors seldom change their patch when asked to do so in a review.
 
-I have found recruiting contributors to be one of the most challenging and difficult aspects of maintaining Exiv2.  I appreciate the work done by everybody who has contributed.  The future of Exiv2 is a matter for the community.  Perhaps this book will inspire somebody to write a replacement.
+I have found recruiting contributors to be the most challenging and difficult aspect of maintaining Exiv2.  I appreciate the work done by everybody who has contributed.  The future of Exiv2 is a matter for the community.  Perhaps this book will inspire somebody to write a replacement.
 
+The difficulties of maintaining an open-source project are well documented in this article: [https://steemit.com/opensource/@crell/open-source-is-awful](https://steemit.com/opensource/@crell/open-source-is-awful) from which I have copied this cartoon:
+
+<center>![open-source-today.jpg](open-source-today.jpg)</center>
+
+I will quote the following as it seems totally true.
+
+_But if most businesses are using Open Source code for free, how are the developers compensated for that real time and effort? In the majority of cases the answer is "with verbal abuse and emotional blackmail."_
+
+_They very largest projects (the Linux kernel, the Firefox web browser, etc.) often end up with a few smart companies realizing it's in their self-interest to fund full time development, and most of their work ends up being non-volunteer. They're not the problem. The problem is the mid-range to small projects, maintained by volunteers, that get short-shrifted. People don't value free._
+
+_Not a month goes by in the last several years without some maintainer of an Open Source project throwing up their hands in frustration and walking away because of burnout; burnout caused, invariably, by the demands that people make of their free time. The code was free, so why isn't free support and personalized help available for life???_
+
+And while I am aware that I can be difficult at times, I am astonished at the verbal abuse I have received.  About every three years I receive an email from somebody I have never met thanking me for my efforts.  I get daily emails of criticism and complaint.  I will not mention by name a French Engineer on whose behalf I have spent hundreds of hours.  Not once has he expressed respect or appreciation.
+
+[TOC](#TOC)
 <div id="13-1">
 ### 13.1) C++ Code
 
@@ -1889,7 +1904,7 @@ Exiv2 has dependencies on the following libraries.  All are optional, however it
 
 Starting with Exiv2 v0.27, we can use conan to build dependencies.  I very much appreciate Luis bringing this technology to Exiv2 as it has hugely simplified building with Visual Studio.  In the CI builders on GitHub, conan is also used to build on Linux and macOS.  At this time (June 2020), I haven't been able to get conan to work on Cygwin and/or MinGW/msys2.  I expect that will soon be rectified.
 
-Prior to using conan, the build environment for Visual Studio were hand built for Visual Studio 2005 and relied on Visual Studio to convert them to the edition in use.  Additionally, source trees for dependencies were required in specify locations on storage.  We did support CMake on Visual Studio, however it was buried in a 500 line cmd file `cmakeBuild.cmd`.  The effort to construct and maintain that apparatus was considerable.
+Prior to using conan, the build environment for Visual Studio were hand built for Visual Studio 2005 and relied on Visual Studio to convert them to the edition in use.  Additionally, source trees for dependencies were required in specific locations on storage.  We did support CMake on Visual Studio, however it required in a 500 line cmd file `cmakeBuild.cmd` to download and build the dependencies.  The effort to create and maintain that apparatus was considerable.
 
 Conan brings a fresh approach to building dependencies.  Every dependancy has a "recipe" which tells conan how to build.  We have a file conanfile.py (written in python) which tells conan which dependencies we need.  Conan follows the recipe to obtain and build the dependency which is cached or future use.  When dealing with very large libraries such as openssl, the recipe might pull prebuilt binaries for your requested configuration.  For more modest libraries (such as expat and zlib), the recipe will pull the source and build.  Conan caches the dependencies on your ~/.conan directory.  This arrangement means that you seldom have to build dependencies as they are usually in the cache.
 
