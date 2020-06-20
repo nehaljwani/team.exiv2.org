@@ -44,7 +44,7 @@ _I want to say <b>Thank You</b> to a few folks who have made this possbile.  Fir
 | [12. Security](#12)                                   | 60 | [Current Priorities](#current)        |  3 | [13.22 Back-porting](#13-22)            | 74 |
 | [12.1 The Fuzzing Police](#12)                        | 61 | [Future Projects](#future)            |  4 | [13.23 Other OSS projects](#13-23)      |    |
 | [12.2 How we deal with security issues](12-2)         | 62 | [Scope of Book](#scope)               |  4 | | |
-| [14. Code discussed in this book](#13)                | 63 | [Making this book](#making)           |  5 | | |
+| [14. Code discussed in this book](#13)                | 63 | [Making this book](#making)           |  5 | [The Final Word](#finally)              | 76 |
 
 
 <div id="about">
@@ -184,7 +184,8 @@ The prince product fully supports HTML->PDF with @media print in the style sheet
 
 [https://www.princexml.com](https://www.princexml.com)
 
-I tried prince and was very pleased with the result.  When you ask prince to create the PDF, you can specify page-size and style sheet.  I've set up IMaEA.css with the builtin page size of 278x398.
+I tried prince and was very pleased with the result.  When you ask prince to create the PDF, you can specify page-size and style sheet.  I've set up IMaEA.css with the builtin page size of 278x398.  Sadly, prince rendered in the inline code snippets with a large font and ignored the beautiful "Coy" style injected by MacDown.
+
 
 ```
 $ prince --page-size=--page-size='275mm 389mm  --style ~/gnu/exiv2/team/book/pdf-styles.css IMaEA.html
@@ -193,11 +194,13 @@ $ prince --type IMaEA.css IMaEA.html
 
 The date that appears at the center-bottom of every page (except the first) is in the style sheet. You could change that with sed of course.  Setting the date from the computer clock would be fine for automatic reporting.  Better to use static text as we might want to say "Exiv2 v0.27.3 2020-06-30" or the like.
 
-The resulting PDF is beautiful and not watermarked by prince, although the put a postit on the front page.  That's OK.  They deserve credit.  Of course you can use mutool to convert the PDF to "pretty ascii" and edit out the postit.
+The resulting PDF is beautiful and not watermarked by prince, although they put a PostIt on the front page.  That's OK.  They deserve credit.  Of course you can use a PDF Editor to remove the PostIt.
 
 [https://www.mankier.com/1/mutool#Pages](https://www.mankier.com/1/mutool#Pages)
 
 <center>![Robin](RobinEuphonium.jpg)</center>
+
+So, I used the Safari Printer PDF and did the final editing in SodaPDF.  The tweaks were to fix the page headers, repair page links and add a PDF Table of Contents.  I'm delighted by the result.  Many would say that it's impossible to write a book in MarkDown.  Well, I have!
 
 Thank You for reading my book.  If you find errors, please let me know.  If you'd like to discuss any of the technology involved in Image Metadata, please contact me by opening an issue on GitHub.
 
@@ -2184,6 +2187,19 @@ int main(int argc, char* argv[])
 	return error ;
 }
 ```
+
+[TOC](#TOC)
+# The Last Word
+<div id="finally">
+
+I hope found this book interesting.  More to the point, I hope you've found it useful.  I hope Exiv2 will live into the future, or this book inspires somebody to write a new library.  
+
+<center><img src="back-page.jpg" style="border:2px solid #23668F"/></center>
+
+I'm going off to cut the grass, run in the beautiful countryside around my home in Camberley, England.  If you have interesting and positive thoughts you are welcome to share them by email.
+
+<center>![Exiv2](exiv2.png)</center>
+
 [TOC](#TOC)<br>
 
 ##
