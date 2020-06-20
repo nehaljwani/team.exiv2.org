@@ -1852,27 +1852,27 @@ To be written.
 
 This topic deserves a book in its own right.  It's easy to think of an Open Source Project as some code.  It's not.  The code is a major part of the project, however probably only 50% of the effort goes into code.  We have many stakeholders in a project including: users, security, distros, and competitors.  The project needs documentation, build, test, bug reporting and many other elements.
 
-You may have seen the sketch in "The Life of Brian" called "What have the Romans Ever Done for Us?".  It begins with John Cleese asking the question and somebody replies "What about the aqueduct?".  Within one minute they list all manner of civilisation brought to Palestine including Roads, Schools, Sanitation, Police, Laws and other matters.  It's much the same with Open Source.  Of course we have C++ code, however we have many other matters that require attention.
+You may have seen the sketch in "The Life of Brian" called "What have the Romans Ever Done for Us?".  It begins with John Cleese asking the question and somebody replies "The aqueduct?".  Within one minute they list all manner of civilisation brought to Palestine including Roads, Schools, Sanitation, Police, Laws, Medicine, Wine and Public Health.  It's much the same with Open Source.  Of course we have C++ code, however we also have Build, Test, Platform Support, Documentation, User Support, Security, Release Engineering , Localisation and other matters that require time and attention.
 
 You are probably not surprised to learn that most stakeholders consider their concern should be the top priority for the project.  The challenge is that there are many stakeholders and therefore many top priorities.  When dealing with a stakeholder's issue, they frequently say "All you have to do is bla bla bla".  In my head, I hear the words in a slightly different order.  I hear "You have to do it all".
 
-For example, when somebody provides a patch, they seldom provide test code or updates to the documentation or build scripts.  The feature is often incomplete.  For example, in adding a new platform, they seldom provide platform specific code in src/version.cpp and src/futils.cpp.  Sometimes they break all the sample applications.  When I ask them to finish the job, they say: "oh you can do that.".  Nobody ever maintains or supports their patch.  Contributors seldom change their patch when asked to do so in a review.
-
-I have found recruiting contributors to be the most challenging and difficult aspect of maintaining Exiv2.  I appreciate the work done by everybody who has contributed.  The future of Exiv2 is a matter for the community.  Perhaps this book will inspire somebody to write a replacement.
-
 The difficulties of maintaining an open-source project are well documented in this article: [https://steemit.com/opensource/@crell/open-source-is-awful](https://steemit.com/opensource/@crell/open-source-is-awful) from which I have copied this cartoon:
 
-<center>![open-source-today.jpg](open-source-today.jpg)</center>
+<center><img src="open-source-today.jpg" width="300" style="border:2px solid #23668F"/></center>
 
 I will quote the following as it seems totally true.
 
 _But if most businesses are using Open Source code for free, how are the developers compensated for that real time and effort? In the majority of cases the answer is "with verbal abuse and emotional blackmail."_
 
-_They very largest projects (the Linux kernel, the Firefox web browser, etc.) often end up with a few smart companies realizing it's in their self-interest to fund full time development, and most of their work ends up being non-volunteer. They're not the problem. The problem is the mid-range to small projects, maintained by volunteers, that get short-shrifted. People don't value free._
+_The very largest projects (the Linux kernel, the Firefox web browser, etc.) often end up with a few smart companies realizing it's in their self-interest to fund full time development, and most of their work ends up being non-volunteer. They're not the problem. The problem is the mid-range to small projects, maintained by volunteers, that get short-shrifted. People don't value free._
 
 _Not a month goes by in the last several years without some maintainer of an Open Source project throwing up their hands in frustration and walking away because of burnout; burnout caused, invariably, by the demands that people make of their free time. The code was free, so why isn't free support and personalized help available for life???_
 
-And while I am aware that I can be difficult at times, I am astonished at the verbal abuse I have received.  About every three years I receive an email from somebody I have never met thanking me for my efforts.  I get daily emails of criticism and complaint.  I will not mention by name a French Engineer on whose behalf I have spent hundreds of hours.  Not once has he expressed respect or appreciation.
+I am astonished at the verbal abuse I have received.  About every three years I receive an email from somebody I have never met thanking me for my efforts.  I get daily emails of criticism and complaint.  I will not mention by name a French Engineer on whose behalf I have spent hundreds of hours.  Not once has he expressed respect or appreciation.
+
+When somebody provides a patch, they seldom provide test code or updates to the documentation or build scripts.  The feature is often incomplete.  For example, in adding a new platform, they seldom provide platform specific code in src/version.cpp and src/futils.cpp.  Sometimes they break all the sample applications.  When I ask them to finish the job, they say: "oh you can do that.".  Nobody ever maintains or supports their patch.  Contributors seldom change their patch when asked to do so in a review.
+
+I have found recruiting contributors to be the most challenging and difficult aspect of maintaining Exiv2.  I appreciate the work done by everybody who has contributed.  The future of Exiv2 is a matter for the community.  Perhaps this book will inspire somebody to write a replacement.
 
 [TOC](#TOC)
 <div id="13-1">
