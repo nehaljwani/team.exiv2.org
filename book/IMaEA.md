@@ -596,6 +596,36 @@ Exif is the most important of the metadata containers.  However others exist and
 <div id="6">
 # 6 Sample Applications
 
+Exiv2 has about sample applications which have their own documentation: [README-SAMPLES.md](README-SAMPLES.html).  In Exiv2 v0.27.3, there are 17 samples applications and 19 test programs.  The test programs are intended for use by the test suite and are not installed on the user's computer.
+
+The following programs are built and installed in /usr/local/bin.
+
+| Name | Purpose |
+|:---  |:---     |
+| _**addmoddel**_   | Demonstrates Exiv2 library APIs to add, modify or delete metadata          |
+| _**exifcomment**_ | Set Exif.Photo.UserComment in an image                                     |
+| _**exifdata**_    | Prints _**Exif**_ metadata in different formats in an image                |
+| _**exifprint**_   | Print _**Exif**_ metadata in images<br>Miscelleous other features          |
+| _**exifvalue**_   | Prints the value of a single _**Exif**_ tag in a file                      |
+| _**exiv2**_       | Command line utility to read, write, delete and modify Exif, IPTC, XMP and ICC image metadata.<br>This is the primary test tool used by Team Exiv2 and can exercise almost all code in the library.  Due to the extensive capability of this utility, the APIs used are usually less obvious for casual code inspection. | 
+| _**exiv2json**_   | Extracts data from image in JSON format.<br>This program also contains a parser to recursively parse Xmp metadata into vectors and objects. | 
+| _**geotag**_      | Reads GPX data and updates images with GPS Tags                            |
+| _**iptceasy**_    | Demonstrates read, set or modify IPTC metadata                             |
+| _**iptcprint**_   | Demonstrates Exiv2 library APIs to print Iptc data                         |
+| _**metacopy**_    | Demonstrates copying metadata from one image to another                    |
+| _**mrwthumb**_    | Sample program to extract a Minolta thumbnail from the makernote           |
+| _**taglist**_     | Print a simple comma separated list of tags defined in Exiv2               |
+| _**xmpdump**_     | Sample program to dump the XMP packet of an image                          |
+| _**xmpparse**_    | Read an XMP packet from a file, parse it and print all (known) properties. |
+| _**xmpprint**_    | Read an XMP from a file, parse it and print all (known) properties..       |
+| _**xmpsample**_   | Demonstrates Exiv2 library high level XMP classes                          |
+
+Most of the programs are about 100 lines of C++ and do simple tasks to demonstrate how to use the library API.  Three of the programs are substantial. They are: _**exiv2**_, _**geotag**_ and _**exiv2json**_
+
+The Exiv2 command-line program _**exiv2**_ is a substantial utility that enables users to manipulate metadata in images using most of the features of the library.  Being a general utility, it has about 4000 lines of code. The length of the program proves the point that it is full featured, however the quantity of code rather obscures the use of the library APIs.
+
+Exiv2 has always resisted the temptation of provide a GUI version of the program as that would involve considerable cross-platform development and user interface skills.  As Andreas Huggel summarised: _Exiv2 does depth, not breadth_.  Providing a GUI would lead the project away from metadata into the world of the _User Experience_.
+
 [TOC](#TOC)
 <div id="7">
 # 7 I/O in Exiv2
@@ -1618,7 +1648,7 @@ Exiv2 has several different elements in the test suite. They are:
 3. Unit Test
 4. Version Test
 
-In writing this book, I want to avoid duplicating information between Exiv2 documentation and this book.  This book is intended to provide an engineering explanation of how the code works and why various design decisions were chosen.  However, you will find that this book doesn't explain how to use Exiv2. How to use execute the test suite is documented in README.md.
+In writing this book, I want to avoid duplicating information between Exiv2 documentation and this book.  This book is intended to provide an engineering explanation of how the code works and why various design decisions were chosen.  However, you will find that this book doesn't explain how to use Exiv2. How to use execute the test suite is documented in [README.md](README.html).
 
 [TOC](#TOC)
 <div id="10-1">
@@ -1917,11 +1947,11 @@ The final element of CMake which we have not yet deployed is CTest.  Perhaps one
 
 Thank You to Luis for introducing Conan to Exiv2 and all your outstanding work with CMake.
 
-The documentation about using Conan with Exiv2 is in [README-CONAN.md](README-CONAN.md)
+The documentation about using Conan with Exiv2 is in [README-CONAN.md](README-CONAN.html)
 
 #### Build Options
 
-There are numerous build options provided for Exiv2.  The documentation for this is in [README.md](README.md).  Most of the options concern dependencies, the configuration { debug | release }, kind { static | shared }, configuration { 32 | 64 }, run-time { shared | static }, compiler { GCC | Clang | 2008 | ... | 2019 } and the language standard { 98 | 11 | 14 | 17 }.  As you will appreciate the build matrix is huge.
+There are numerous build options provided for Exiv2.  The documentation for this is in [README.md](README.html).  Most of the options concern dependencies, the configuration { debug | release }, kind { static | shared }, configuration { 32 | 64 }, run-time { shared | static }, compiler { GCC | Clang | 2008 | ... | 2019 } and the language standard { 98 | 11 | 14 | 17 }.  As you will appreciate the build matrix is huge.
 
 There are a number of convenience options to build packages for release, on-line documentation, unit_tests and ASAN support.  ASAN is the "Address Sanitiser".  When this option is selected, the code is built and instrumented with address checking.  Every memory access is tested before use.  This has a considerable performance penalty and is only intended for test and development purposes.  It shouldn't be used in production.
 
