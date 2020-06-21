@@ -692,6 +692,7 @@ public:
     virtual void visitDirBegin(Image& image,size_t dirLength) = 0 ;
     virtual void visitDirEnd  (Image& image,size_t start    ) = 0 ;
     virtual void visitTag     (Io& io,Image& image,size_t address,const TagDict& tagDict)=0;
+    virtual void visitCiff    (Io& io,Image& image,size_t address)=0;
     virtual void visitReport  (std::ostringstream& out) {} ;
     virtual void visitReport  (std::ostringstream& out,bool& bLF) {} ;
 
@@ -777,116 +778,7 @@ private:
 
 };
 
-// 4. Create concrete "visitors"
-class ReportVisitor: public Visitor
-{
-public:
-    ReportVisitor(std::ostream& out, PSopt_e option)
-    : Visitor(out,option)
-    , indent_(0)
-    {}
-
-    std::string indent() { return ::indent(indent_); }
-
-    virtual void visitBegin(Image& image)
-    {
-        indent_++;
-        if ( option() == kpsBasic || option() == kpsRecursive ) {
-            char c = image.endian() == keBig ? 'M' : 'I';
-            out() << indent() << stringFormat("STRUCTURE OF %s FILE (%c%c): ",image.format().c_str(),c,c) <<  image.io().path() << std::endl;
-            out() << indent() << " address |    tag type      count | value" << std::endl;
-        }
-    }
-    virtual void visitDirBegin(Image& image,size_t dirLength)
-    {
-        //size_t depth = image.depth();
-        //out() << indent(depth) << stringFormat("+%d",dirLength) << std::endl;
-    };
-    virtual void visitDirEnd(Image& image,size_t start)
-    {
-        // if ( start ) out() << std::endl;
-    };
-
-    virtual void visitReport(std::ostringstream& os)
-    {
-        out() << os.str();
-        os.str("");// reset the string
-        os.clear();// reset the good/bad/ugly flags
-    }
-    virtual void visitReport(std::ostringstream& os,bool& bLF)
-    {
-        if ( bLF ) {
-            os << std::endl;
-            visitReport(os);
-        }
-        bLF = false ;
-    }
-
-    virtual void visitTag
-    ( Io&                   io
-    , Image&                image
-    , size_t                address
-    , const TagDict&        tagDict
-    ) {
-        IoSave  restore(io,address);
-        DataBuf tiffTag(12);
-        io.read(tiffTag);
-        endian_e endian = image.endian();
-
-        uint16_t tag    = getShort(tiffTag,0,endian);
-        type_e   type   = getType (tiffTag,2,endian);
-        uint32_t count  = getLong (tiffTag,4,endian);
-        size_t   offset = getLong (tiffTag,8,endian);
-        uint16_t size   = typeSize(type);
-
-        // allocate a buffer and read the data
-        DataBuf buf(count*size);
-        std::string offsetString ;
-        std::string value ;
-        if ( count*size > 4 ) {  // read into buffer
-            io.seek(offset);     // position
-            io.read(buf);        // read
-            value = buf.toString(0,type,count,endian);
-            offsetString = stringFormat("%10u", offset);
-        } else {
-            value = tiffTag.toString(8,type,count,endian);
-        }
-
-        // format the output
-        std::string name  = tagName(tag,tagDict,28);
-
-        if ( printTag(name) ) {
-            out() << indent()
-                  << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
-                        ,address,tag,name.c_str(),typeName(type),count,offsetString.c_str())
-                  << chop(value,40)
-                  << std::endl
-            ;
-            if ( makerTags.find(name) != makerTags.end() ) {
-                for (Field field : makerTags[name] ) {
-                    std::string n = join(groupName(tagDict),field.name(),28);
-                    out() << indent()
-                          << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
-                                         ,offset+field.start(),tag,n.c_str(),typeName(field.type()),field.count(),"")
-                          << chop(buf.toString(field.start(),field.type(),field.count(),field.endian()==keImage?image.endian():field.endian()),40)
-                          << std::endl
-                    ;
-                }
-            }
-        }
-    } // visitTag
-
-    virtual void visitEnd(Image& image)
-    {
-        if ( option() == kpsBasic || option() == kpsRecursive ) {
-            out() << indent() << "END: " << image.path() << std::endl;
-        }
-        indent_--;
-    } // visitEnd
-private:
-    size_t indent_;
-};
-
+// CIFF and IFD are magic we find inside images
 class CIFF
 {
 public:
@@ -912,10 +804,13 @@ public:
 
     void dumpImageSpec(Visitor& visitor,uint16_t tag,size_t start,size_t count,uint16_t depth)
     {
+        image().depth_++;
+        
+        depth += image().depth_ ;
         endian_e endian = image_.endian();
         IoSave   restore(parent(),start);
         
-        if ( tag == 0x300a ) { // ImageSpect
+        if ( tag == 0x300a ) { // ImageSpec
             uint32_t  imageWidth         = parent().getLong (endian);
             uint32_t  imageHeight        = parent().getLong (endian);
             uint32_t  pixelAspectRatio   = parent().getLong (endian);
@@ -934,6 +829,7 @@ public:
         Io   ciffParent(parent(),start,count);
         CIFF ciff(image(),ciffParent);
         ciff.accept(visitor);
+        image().depth_--;
     }
 
 private:
@@ -943,7 +839,6 @@ private:
 
     friend class CrwImage ;
 };
-
 class IFD
 {
 public:
@@ -995,6 +890,70 @@ public:
 
 private:
     bool next_;
+};
+
+class CrwImage : public Image
+{
+public:
+    CrwImage(std::string path)
+    : Image (path)
+    , valid_(false)
+    , heap_ (*this,io_)
+    {
+        start_ = 0;
+        setMaker(kCanon);
+    }
+    CrwImage(Io& io)
+    : Image (io)
+    , valid_(false)
+    , heap_ (*this,io_)
+    {
+        start_ = 0;
+        setMaker(kCanon) ;
+    }
+    bool valid() {
+        if ( valid_ ) return valid_;
+        
+        IoSave  restore(io(),0);
+        bool    result = false;
+        DataBuf buf(2+4+8); //xxlongHEAPCCRD xx = II or MM
+        if ( io().good() ) {
+            io().read(buf);
+
+            char I = 'I';
+            char M = 'M';
+            char c = buf.pData_[0];
+            char C = buf.pData_[1];
+            result = ::memcmp(buf.pData_+6,"HEAPCCDR",8) == 0
+                    && c==C && (c == I || c == M)
+            ;
+            if ( result ) {
+                endian_ = c == I ? keLittle : keBig ;
+                start_  = getLong(buf,2,endian_);
+                format_ = "CRW";
+                // io().seek(io().size()-4);
+                // size_t     start = start_ + io().getLong(endian_);
+                // io().seek (start);
+                // uint16_t  length = io().getShort(endian_);
+                Io parent(io_,start_);
+                heap_.setParent (parent); // the parent stream
+            }
+        }
+        valid_= result;
+        return result ;
+    }
+    CIFF heap_;
+    bool valid_;
+    
+    virtual void accept(class Visitor& visitor)
+    {
+        if ( valid() ) {
+            IoSave save(io(),start_);
+            heap_.accept(visitor);
+        } else {
+            Error(kerNotACrw,io().path());
+        }
+    }
 };
 
 class JpegImage : public Image
@@ -1062,68 +1021,126 @@ private:
     std::string nm[256];
 };
 
-class CrwImage : public Image
+// 4. Create concrete "visitors"
+class ReportVisitor: public Visitor
 {
 public:
-    CrwImage(std::string path)
-    : Image (path)
-    , valid_(false)
-    , heap_ (*this,io_)
-    {
-        start_ = 0;
-        setMaker(kCanon);
-    }
-    CrwImage(Io& io)
-    : Image (io)
-    , valid_(false)
-    , heap_ (*this,io_)
-    {
-        start_ = 0;
-        setMaker(kCanon) ;
-    }
-    bool valid() {
-        if ( valid_ ) return valid_;
-        
-        IoSave  restore(io(),0);
-        bool    result = false;
-        DataBuf buf(2+4+8); //xxlongHEAPCCRD xx = II or MM
-        if ( io().good() ) {
-            io().read(buf);
+    ReportVisitor(std::ostream& out, PSopt_e option)
+    : Visitor(out,option)
+    , indent_(0)
+    {}
 
-            char I = 'I';
-            char M = 'M';
-            char c = buf.pData_[0];
-            char C = buf.pData_[1];
-            result = ::memcmp(buf.pData_+6,"HEAPCCDR",8) == 0
-                    && c==C && (c == I || c == M)
-            ;
-            if ( result ) {
-                endian_ = c == I ? keLittle : keBig ;
-                start_  = getLong(buf,2,endian_);
-                format_ = "CRW";
-                // io().seek(io().size()-4);
-                // size_t     start = start_ + io().getLong(endian_);
-                // io().seek (start);
-                // uint16_t  length = io().getShort(endian_);
-                Io parent(io_,start_);
-                heap_.setParent (parent); // the parent stream
+    std::string indent() { return ::indent(indent_); }
+
+    virtual void visitBegin(Image& image)
+    {
+        indent_++;
+        if ( option() == kpsBasic || option() == kpsRecursive ) {
+            char c = image.endian() == keBig ? 'M' : 'I';
+            out() << indent() << stringFormat("STRUCTURE OF %s FILE (%c%c): ",image.format().c_str(),c,c) <<  image.io().path() << std::endl;
+            if ( image.format() == "CRW" ) {
+                out() << indent() << "    tag | mask | code | name                           |  kount | offset | value " << std::endl;
+            } else {
+                out() << indent() << " address |    tag type      count | value" << std::endl;
             }
         }
-        valid_= result;
-        return result ;
     }
-    CIFF heap_;
-    bool valid_;
-    
-    virtual void accept(class Visitor& visitor)
+    virtual void visitDirBegin(Image& image,size_t dirLength)
     {
-        if ( valid() ) {
-            IoSave save(io(),start_);
-            heap_.accept(visitor);
-        } else {
-            Error(kerNotACrw,io().path());
-        }
+        //size_t depth = image.depth();
+        //out() << indent(depth) << stringFormat("+%d",dirLength) << std::endl;
+    };
+    virtual void visitDirEnd(Image& image,size_t start)
+    {
+        // if ( start ) out() << std::endl;
+    };
+
+    virtual void visitReport(std::ostringstream& os)
+    {
+        out() << os.str();
+        os.str("");// reset the string
+        os.clear();// reset the good/bad/ugly flags
     }
+    virtual void visitReport(std::ostringstream& os,bool& bLF)
+    {
+        if ( bLF ) {
+            os << std::endl;
+            visitReport(os);
+        }
+        bLF = false ;
+    }
+
+    virtual void visitCiff
+    ( Io&                   io
+    , Image&                image
+    , size_t                address
+    ) {
+        IoSave  restore(io,address);
+    }
+    
+    virtual void visitTag
+    ( Io&                   io
+    , Image&                image
+    , size_t                address
+    , const TagDict&        tagDict
+    ) {
+        IoSave  restore(io,address);
+        DataBuf tiffTag(12);
+        io.read(tiffTag);
+        endian_e endian = image.endian();
+
+        uint16_t tag    = getShort(tiffTag,0,endian);
+        type_e   type   = getType (tiffTag,2,endian);
+        uint32_t count  = getLong (tiffTag,4,endian);
+        size_t   offset = getLong (tiffTag,8,endian);
+        uint16_t size   = typeSize(type);
+
+        // allocate a buffer and read the data
+        DataBuf buf(count*size);
+        std::string offsetString ;
+        std::string value ;
+        if ( count*size > 4 ) {  // read into buffer
+            io.seek(offset);     // position
+            io.read(buf);        // read
+            value = buf.toString(0,type,count,endian);
+            offsetString = stringFormat("%10u", offset);
+        } else {
+            value = tiffTag.toString(8,type,count,endian);
+        }
+
+        // format the output
+        std::string name  = tagName(tag,tagDict,28);
+
+        if ( printTag(name) ) {
+            out() << indent()
+                  << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
+                        ,address,tag,name.c_str(),typeName(type),count,offsetString.c_str())
+                  << chop(value,40)
+                  << std::endl
+            ;
+            if ( makerTags.find(name) != makerTags.end() ) {
+                for (Field field : makerTags[name] ) {
+                    std::string n = join(groupName(tagDict),field.name(),28);
+                    out() << indent()
+                          << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
+                                         ,offset+field.start(),tag,n.c_str(),typeName(field.type()),field.count(),"")
+                          << chop(buf.toString(field.start(),field.type(),field.count(),field.endian()==keImage?image.endian():field.endian()),40)
+                          << std::endl
+                    ;
+                }
+            }
+        }
+    } // visitTag
+
+    virtual void visitEnd(Image& image)
+    {
+        if ( option() == kpsBasic || option() == kpsRecursive ) {
+            out() << indent() << "END: " << image.path() << std::endl;
+        }
+        indent_--;
+    } // visitEnd
+private:
+    size_t indent_;
 };
 
 void CIFF::accept(Visitor& visitor)
@@ -1131,18 +1148,10 @@ void CIFF::accept(Visitor& visitor)
     IoSave restore(vector_,0);
     uint16_t length = vector_.getShort(image().endian());
 
-    static size_t   depth = 1 ;
-    depth++  ;
-    
-    char c = image().endian() == keBig ? 'M' : 'I';
-    std::cout << ::indent(depth)
-    << stringFormat("STRUCTURE of %s FILE (%c%c): ",image().format().c_str(),c,c) << image().path()
-    << stringFormat(" CIFF length: %d at: %s", length,parent().path().c_str())
-    << std::endl
-    ;
+    size_t   depth = image().depth();
+    visitor.visitBegin(image());
 
     DataBuf buf(10);
-    std::cout << ::indent(depth) << "    tag | mask | code | name                           |  kount | offset | value " << std::endl;
     for ( int i = 0 ; i < length ; i++ ) {
         vector_.read(buf);
         uint16_t    tag    = getShort(buf,0,image_.endian());
@@ -1192,7 +1201,7 @@ void CIFF::accept(Visitor& visitor)
         }
         if ( bLF ) std::cout << std::endl ;
     }
-    depth--;
+    visitor.visitEnd(image());
 }
 
 void IFD::visit(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
@@ -1230,10 +1239,7 @@ void IFD::visit(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
             uint32_t offset = getLong (dir,8,image_.endian());
 
             if ( !typeValid(type) ) {
-                if ( type == 0 && image_.maker_ == kCanon )
-                    return ; // CR2!
-                else
-                    Error(kerInvalidTypeValue,type);
+                Error(kerInvalidTypeValue,type);
             }
 
             visitor.visitTag(io_,image_,address,tagDict);  // Tell the visitor
