@@ -319,6 +319,70 @@ END: /Users/rmills/Stonehenge.exv
 .../book/build $ 
 ```
 
+### Extended JPEG
+
+The JPEG standard restricts a single segment of a JPEG to 64k bytes because the length field is a 16 bit uint16_t.  There are three types of metadata which frequently exceed 64 and they are __*Exif, XMP and ICC*__.  Regrettably three different schemes are used to enable multiple consecutive segments to be coalesced into a larger block.
+
+#### Adobe Exif data > 64k in JPEG
+
+Adobe have created an _**ad-hoc**_ standard by placing consecutive APP1 segments with the signature "Exif\0\0".  This _**ad-hoc**_ standard is defined in Adobe's XMP Specification Part 3 2016+. 
+
+Exiv2 has no code to deal with this.  It can neither read nor write these files.  In fact, JpegImage::writeMetadata() currently throws when asked to write more than 64k into a JPEG.
+
+Theis discussed here: [https://dev.exiv2.org/issues/1232](https://dev.exiv2.org/issues/1232) and here is the output of the test files which were contributed by Phil.
+
+```
+$ ./tvisitor ~/cs4_extended_exif.jpg 
+STRUCTURE OF JPEG FILE (II): /Users/rmills/cs4_extended_exif.jpg
+ address |    tag type      count | value
+       0 | 0xffd8 SOI  
+       2 | 0xffe0 APP0  |      16 | JFIF_..._._.__....
+      20 | 0xffe1 APP1  |   65498 | Exif__MM_*___._..._.___.___n.._.___. +++
+   65520 | 0xffe1 APP1  |   65498 | Exif__g keys we require'd            +++
+  131020 | 0xffe1 APP1  |   52820 | Exif__)            if ($$segDataPt = +++
+  183842 | 0xffed APP13 |    4440 | Photoshop 3.0_8BIM..____....__.__..x +++
+  188284 | 0xffe1 APP1  |    4323 | http://ns.adobe.com/xap/1.0/_<?xpack +++
+  192609 | 0xffe1 APP1  |   65477 | http://ns.adobe.com/xmp/extension/_C +++
+  258088 | 0xffe1 APP1  |   65477 | http://ns.adobe.com/xmp/extension/_C +++
+  323567 | 0xffe1 APP1  |   56466 | http://ns.adobe.com/xmp/extension/_C +++
+  380035 | 0xffe2 APP2  |    3160 | ICC_PROFILE_..__.HLino..__mntrRGB XY +++
+  383197 | 0xffee APP14 |      14 | Adobe_d.___..._.
+  383213 | 0xffdb DQT   |     132 
+  383347 | 0xffc0 SOF0  |      17 
+  383366 | 0xffdd DRI   |       4 
+  383372 | 0xffc4 DHT   |     319 
+  383693 | 0xffda SOS  
+END: /Users/rmills/cs4_extended_exif.jpg
+$ ./tvisitor ~/multi-segment_exif.jpg 
+STRUCTURE OF JPEG FILE (II): /Users/rmills/multi-segment_exif.jpg
+ address |    tag type      count | value
+       0 | 0xffd8 SOI  
+       2 | 0xffe1 APP1  |   65535 | Exif__II*_.___._..._.___.___..._.___ +++
+   65539 | 0xffe1 APP1  |    5603 | Exif__.............................. +++
+   71144 | 0xffdb DQT   |     132 
+   71278 | 0xffc4 DHT   |     418 
+   71698 | 0xffc0 SOF0  |      17 
+   71717 | 0xffda SOS  
+END: /Users/rmills/multi-segment_exif.jpg
+$ 
+```
+
+#### AGFA Exif data > 64k in JPEG
+
+The is discussed in [https://dev.exiv2.org/issues/1232](https://dev.exiv2.org/issues/1232)  I think it is desirable to support reading this data.  Exiv2 should write using Adobe's JPEG > 64k _**ad-hoc**_ standard.
+
+#### ICC Profile data > 64k in JPEG
+
+This is well documented by ICC and implemented in Exiv2 for both reading and writing.
+
+#### XMP data > 64k in JPEG
+
+This is well documented by Adobe in the XMP Specification 2013+ and implemented in Exiv2 for in the API _**JpegBase::printStructure::(kpsXMP)*__.  It is not implemented in _**JpegBase::readMetadata()*__.
+
+### Other Unusual Adobe JPEG Features
+
+Adobe have implemented transparency in JPEG by storing a PostScript clippath in the APP13 Photoshop 3.0_8BIM segment.  Exiv2 has no code to deal with this. There is an Exif tag ClipPath which Exiv2 does support.  I have encountered PhotoShop APP13 transparency.  I've never encountered Exif.Image.ClipPath.
+
 [TOC](#TOC)
 <div id="PNG">
 ## PNG Portable Network Graphics
@@ -566,7 +630,7 @@ GPSDateStamp -> 2015-07-16 00:00:00 (dat     ImageUniqueID -> "090caaf..."
                                              GPSDateStamp -> 2015-07-16 00:
 ```
 
-Data's similar.  The order is different.  Good news is that the commands `$ exiv2 -pe ~/Stonehenge.jpg` and `$ exiv2 -pe ~/Stonehenge.tif` produce similar data in the same order.  We'd hope so as both commands are reading the same embedded Exif metadata.  The way in which the Exif is embedded in the a Tiff or JPG is different, however the Exif metadata is effectively the same.
+Data's similar.  The order is different.  Good news is that the commands _**$ exiv2 -pe ~/Stonehenge.jpg**_ and __*$ exiv2 -pe ~/Stonehenge.tif*__ produce similar data in the same order.  We'd hope so as both commands are reading the same embedded Exif metadata.  The way in which the Exif is embedded in the a Tiff or JPG is different, however the Exif metadata is effectively the same.
 
 [TOC](#TOC)
 <div id="3">
@@ -645,7 +709,7 @@ I/O in Exiv2 is achieved using the class BasicIo and derived classes which are:
 | StdinIo    | - | Read from std-in |
 | Base64Io   | data:..... | Decodes ascii encoded binary |
 
-You will find a simplified version of BasicIo in tvisitor.cpp in the code that accompanies this book.  Io has two constructors.  The obvious one is Io(std::string) which calls `fopen()`.  More subtle is Io(io,from,size) which creates a sub-file on an existing stream.  This design deals with embedded files.  Most metadata is written in a format designated by the standards body and embedded in the file.  For example, Exif metadata data is written in Tiff Format and embedded in the file.
+You will find a simplified version of BasicIo in tvisitor.cpp in the code that accompanies this book.  Io has two constructors.  The obvious one is Io(std::string) which calls _**fopen()**_.  More subtle is Io(io,from,size) which creates a sub-file on an existing stream.  This design deals with embedded files.  Most metadata is written in a format designated by the standards body and embedded in the file.  For example, Exif metadata data is written in Tiff Format and embedded in the file.
 
 Other metadata standards use a similar design.  XMP is embedded XML, an Icc Profile is a major block of technology.  Exiv2 knows how to extract, insert, delete and replace an Icc Profile.  It knows nothing about the contents of the Icc Profile.  With Xmp, Exiv2 using Adobe's XMPsdk to enable the the Xmp data to be modified.
 
@@ -662,7 +726,7 @@ Most camera manufacturers are large corporations.  I'm sure they have their own 
 <div id="8-1">
 ### 8.1 Extracting metadata using dd
 
-The exiv2 option `-pS` prints the structure of an image.
+The exiv2 option _**-pS**_ prints the structure of an image.
 
 ```bash
 $ exiv2 -pS ~/Stonehenge.jpg 
@@ -702,7 +766,7 @@ Exif.Image.YResolution                       Rational    1  300
 ...
 ```
 
-Internally, this is exactly how exiv2 works.  It doesn't use `dd` of course.  However it identifies the Exif IFD and parses it into memory.
+Internally, this is exactly how exiv2 works.  It doesn't use _**dd**_ of course.  However it identifies the Exif IFD and parses it into memory.
 
 Using dd is a useful trick to recover data which be easily seen in the file.  For example, if you wished to extract the pixels from an image, dd can extract them.  Of course you have to determine the offset and length to extract and exiv2 has excellent tools to provide that data.
 
@@ -716,7 +780,7 @@ Exif.Image.Orientation                       Short       1  top, left
 $
 ```
 
-The exiv2 command `exiv2 -pS image` reveals the structure of a file with `|` separated fields.  The data is presented to look nice.  However it's also very convenient for parsing in bash with the utility `cut`:
+The exiv2 command _**exiv2 -pS image**_ reveals the structure of a file with **|** separated fields.  The data is presented to look nice.  However it's also very convenient for parsing in bash with the utility __*cut**_:
 
 ```bash
 $ image=~/Stonehenge.jpg
@@ -732,7 +796,7 @@ Exif.Image.Orientation                       Short       1  top, left
 $
 ```
 
-You may be interested to discover that option `-pS` which arrived with Exiv2 v0.25 was joined in Exiv2 v0.26 by `-pR`.  This is a "recursive" version of -pS.  It dumps the structure not only of the file, but also every subfiles (mostly tiff IFDs).  This is discussed in detail here: [8.5 IFD:visit() and TiffImage::visit()](#8-5).
+You may be interested to discover that option _**-pS**_ which arrived with Exiv2 v0.25 was joined in Exiv2 v0.26 by _**-pR**_.  This is a "recursive" version of -pS.  It dumps the structure not only of the file, but also every subfiles (mostly tiff IFDs).  This is discussed in detail here: [8.5 IFD:visit() and TiffImage::visit()](#8-5).
 
 [TOC](#TOC)
 
@@ -857,7 +921,7 @@ $
 
 So, Minolta have 6 "sub-records".  Other manufacturers have more.  Let's say 10 manufacturers have an average of 10 "sub-records".  That's 100 groups.
 
-Now to address your concern about `Exif.MinoltaCsNew.ISOSpeed`.  It will throw an exception in Exiv2 v0.27.2.  Was it defined in an earlier version of Exiv2 such as 0.21?  I don't know.
+Now to address your concern about _**Exif.MinoltaCsNew.ISOSpeed**_.  It will throw an exception in Exiv2 v0.27.2.  Was it defined in an earlier version of Exiv2 such as 0.21?  I don't know.
 
 Your application code has to use exception handlers to catch these matters and determine what to do.  Without getting involved with your application code, I can't comment on your best approach to manage this.  There is a macro EXIV2\_TEST\_VERSION which enables you to have version specific code in your application.
 
@@ -1080,13 +1144,13 @@ I need to do more research into this complex design.
 The TiffVisitor is ingenious.  It's also difficult to understand.  Exiv2 has two tiff parsers - TiffVisitor and Image::printIFDStructure().  TiffVisitor was written by Andreas Huggel.  It's very robust and has been almost 
 bug free for 15 years.  I wrote the parser in Image::printIFDStructure() to try to understand the structure of a tiff file.  The code in Image::printIFDStructure() is easier to understand.
 
-The code which accompanies this book has a simplified version of Image::printIFDStructure() called Tiff::visitIFD() and that's what will be discussed here.  The code that accompanies this book is explained here: [Code discussed in this book](#13)
+The code which accompanies this book has a simplified version of Image::printIFDStructure() called TiffImage::visitIFD() and that's what will be discussed here.  The code that accompanies this book is explained here: [Code discussed in this book](#13)
 
 It's important to realise that metadata is defined recursively.  In a Tiff File, there will be a Tiff Record containing the Exif data (written in Tiff Format).  Within, that record, there will be a MakerNote which is usually written in Tiff Format.  Tiff Format is referred to as an IFD - an Image File Directory.
 
-Tiff::visitIFD() uses a simple direct approach to parsing the tiff file.  When another IFD is located, visitIFD() is called recursively.  As a TIFF file is an 8 byte header which provides the offset to the first IFD.  We can descend into the tiff file from the beginning.  For other files types, the file handler has to find the Exif IFD and then call visitIFD().
+TiffImage::visitIFD() uses a simple direct approach to parsing the tiff file.  When another IFD is located, visitIFD() is called recursively.  As a TIFF file is an 8 byte header which provides the offset to the first IFD.  We can descend into the tiff file from the beginning.  For other files types, the file handler has to find the Exif IFD and then call visitIFD().
 
-There are actually two "flavours" of visitIFD.  visitTiff() starts with the tiff header `II*_tsfo` or `MM_*ofst` and then calls t`visitIFD()`.  Makernotes are almost always an IFD.  Some manufactures (Nikon) embed a Tiff.  Some (Canon and Sony) embed an IFD.  It's quite common (Sony) to embed a single IFD which is not terminated with a four byte null uint32\_t.
+There are actually two "flavours" of visitIFD.  visitTiff() starts with the tiff header **II*\_tsfo** or **MM\_*ofst*_ and then calls _**visitIFD()**_.  Makernotes are usually an IFD.  Some manufactures (Nikon) embed a Tiff.  Some (Canon and Sony) embed an IFD.  It's quite common (Sony) to embed a single IFD which is not terminated with a four byte null uint32\_t.
 
 The program tvisitor has several file handlers such as TiffImage, JpegImage and CrwImage.  Exiv2 has handlers for about 20 different formats.  If you understand Tiff and Jpeg, the others are boring variations.  The program tvisitor.cpp does not handle BigTiff, although it needs very few changes to do so.  I invite you to send me a patch.  Best submission wins a free copy of this book.
 
@@ -1227,13 +1291,13 @@ JpegImage::accept() navigates the chain of segments.  When he finds the embedded
             }
 ```
 
-He discovers the TIFF file hidden in the data, he opens an Io stream which he attaches to a Tiff objects and calls "Tiff::accept(visitor)".  Software seldom gets simpler, as beautiful, or more elegant than this.
+He discovers the TIFF file hidden in the data, he opens an Io stream which he attaches to a Tiff objects and calls "TiffImage::accept(visitor)".  Software seldom gets simpler, as beautiful, or more elegant than this.
 
 Just to remind you, BasicIo supports http/ssh and other protocols.  This code will recursively descend into a remote file without copying it locally.  And he does it with great efficiency.  This is discussed in section [7 I/O in Exiv2](#7)
 
 <center>![Exiv2CloudVision](Exiv2CloudVision.png)</center><br>
 
-The code `tvisitor.cpp` is a standalone version of the function Image::printStructure() in the Exiv2 library.  It can be executed with options which are equivalent to exiv2 options:
+The code in _**tvisitor.cpp**_ implements the visitor pattern and three visitors are implemented.
 
 | _tvisitor option_ | _exiv2 option_ | Description |
 |:--              |:-----        |:-- |
@@ -1241,7 +1305,7 @@ The code `tvisitor.cpp` is a standalone version of the function Image::printStru
 | $ ./tvisitor -pR path   | $ exiv2 -pR path | Recursively print the structure of the image |
 | $ ./tvisitor -pX path   | $ exiv2 -pX path | Print the XMP/xml in the image |
 
-There's a deliberate bug in the code in tvisitor.cpp.  The class Tiff doesn't know how to recover the XMP/xml.  You the reader, can investigate a fix.  You will find the solution in the code in the Exiv2 library.
+There's a deliberate bug in the code in tvisitor.cpp.  The class Tiff does not know how to recover the XMP/xml.  You the reader, can investigate a fix.  You will find the solution in the code in the Exiv2 library.
 
 Let's see the recursive version in action:
 
@@ -1292,16 +1356,17 @@ You can see that he identifies the file as follows:
 ...
 ```
 
-He is working on an embedded TIFF which is located at bytes 12..15289 which is the Tiff IFD.  While processing that, he encountered a MakerNote which occupies bytes 924..3142 of that IFD.  As you can see, its four bytes `0211`.  You could locate that data with the command:
+He is working on an embedded TIFF which is located at bytes 12..15289 which is the Tiff IFD.  While processing that, he encountered a MakerNote which occupies bytes 924..3142 of that IFD.  As you can see, its four bytes _**0211**_.  You could locate that data with the command:
 
 ```bash
 $ dd if=~/Stonehenge.jpg bs=1 skip=$((12+924+10+8)) count=4 2>/dev/null ; echo 
 0211
 $ 
 ```
+
 Using dd to extract metadata is discussed in more detail here: [8.1 Extracting metadata using dd](#8-1).
 
-Please be aware that there are two ways in which IFDs can occur in the file.  They can be an embedded TIFF which is complete with the `II*_gneLtsfO` or `MM_*LengOfst` 12-byte header followed the IFD.   Or the IFD can be in the file without the header.  IFD::visit(visitor) knows that the tags such as GpsTag and ExifTag are IFDs and calls recursively calls IFD::visit(visitor).  For the embedded TIFF (such as Nikon MakerNote), IFD::visit(visitor) creates a TiffImage and calls TimeImage.accept(visitor) which validates the header and calls IFD::visit(visitor).
+Please be aware that there are two ways in which IFDs can occur in the file.  They can be an embedded TIFF which is complete with the **II*\_tsfO** or **MM\_*Ofst** 8-byte header and the offset leads to the IFD.   Or the IFD can be in the file without the header.  IFD::visit(visitor) knows that the tags such as GpsTag and ExifTag are IFDs and recursively calls recursively calls IFD::visit(visitor).  For the embedded TIFF (such as Nikon MakerNote), IFD::visit(visitor) creates a TiffImage and calls TiffI.accept(visitor) which validates the header and calls IFD::visit(visitor).
 
 One other important detail is that although the Tiff Specification expects the IFD to end with a uint32\_t offset == 0, Sony (and other) maker notes do not.  The IFD begins with a uint32\_t to define length, followed by 12 byte tags.  There is no trailing null uint32\_t.
 
@@ -1881,33 +1946,33 @@ To be written.
 
 This topic deserves a book in its own right.  It's easy to think of an Open Source Project as some code.  It's not.  The code is a major part of the project, however probably only 50% of the effort goes into code.  We have many stakeholders in a project including: users, security, distros, and competitors.  The project needs documentation, build, test, bug reporting and many other elements.
 
-You may have seen the sketch in "The Life of Brian" called "What have the Romans Ever Done for Us?".  It begins with John Cleese asking the question and somebody replies "The aqueduct?".  Within one minute they list all manner of civilisation brought to Palestine including Roads, Schools, Sanitation, Police, Laws, Medicine, Wine and Public Health.  It's much the same with Open Source.  Of course we have C++ code, however we also have Build, Test, Platform Support, Documentation, User Support, Security, Release Engineering , Localisation and other matters that require time and attention.
+You may have seen the sketch in "The Life of Brian" called "What have the Romans Ever Done for Us?".  It begins with John Cleese asking the question and somebody replies "The aqueduct?".  Within one minute they list lots of stuff including Water Supply, Roads, Schools, Sanitation, Police, Laws, Medicine, Wine and Public Health.  It's much the same with Open Source.  Of course we have C++ code, however we also have Build, Test, Platform Support, Documentation, User Support, Security, Release Engineering, Localisation and other matters that require time and attention.
 
 You are probably not surprised to learn that most stakeholders consider their concern should be the top priority for the project.  The challenge is that there are many stakeholders and therefore many top priorities.  When dealing with a stakeholder's issue, they frequently say "All you have to do is bla bla bla".  In my head, I hear the words in a slightly different order.  I hear "You have to do it all".
 
-The difficulties of maintaining an open-source project are well documented in this article: [https://steemit.com/opensource/@crell/open-source-is-awful](https://steemit.com/opensource/@crell/open-source-is-awful) from which I have copied this cartoon:
+The difficulties of maintaining an open-source project are well explained in this article: [https://steemit.com/opensource/@crell/open-source-is-awful](https://steemit.com/opensource/@crell/open-source-is-awful) from which I have copied this cartoon:
 
 <center><img src="open-source-today.jpg" width="300" style="border:2px solid #23668F"/></center>
 
 I will quote the following as it seems totally true.
 
-_But if most businesses are using Open Source code for free, how are the developers compensated for that real time and effort? In the majority of cases the answer is "with verbal abuse and emotional blackmail."_
+_If most businesses are using Open Source code for free, how are the developers compensated for that real time and effort? In the majority of cases the answer is _**"with verbal abuse and emotional blackmail"**_.
 
 _The very largest projects (the Linux kernel, the Firefox web browser, etc.) often end up with a few smart companies realizing it's in their self-interest to fund full time development, and most of their work ends up being non-volunteer. They're not the problem. The problem is the mid-range to small projects, maintained by volunteers, that get short-shrifted. People don't value free._
 
 _Not a month goes by in the last several years without some maintainer of an Open Source project throwing up their hands in frustration and walking away because of burnout; burnout caused, invariably, by the demands that people make of their free time. The code was free, so why isn't free support and personalized help available for life???_
 
-I am astonished at the verbal abuse I have received.  About every three years I receive an email from somebody I have never met thanking me for my efforts.  I get daily emails of criticism and complaint.  I will not mention by name a French Engineer on whose behalf I have spent hundreds of hours.  Not once has he expressed respect or appreciation.
+I am astonished at the verbal abuse I have received.  About every three years I receive an email from somebody I have never met thanking me for my efforts.  I get daily emails of criticism and complaint.  I will not name a French Engineer on whose behalf I have spent hundreds of hours.  Not once has he expressed appreciation.  His emails of criticism are brutal.
 
-When somebody provides a patch, they seldom provide test code or updates to the documentation or build scripts.  The feature is often incomplete.  For example, in adding a new platform, they seldom provide platform specific code in src/version.cpp and src/futils.cpp.  Sometimes they break all the sample applications.  When I ask them to finish the job, they say: "oh you can do that.".  Nobody ever maintains or supports their patch.  Contributors seldom change their patch when asked to do so in a review.
+When somebody provides a patch, they seldom provide test code or updates to the documentation or build scripts.  The feature is often incomplete.  For example, in adding a new platform, nobody has ever provided platform specific code in src/version.cpp and src/futils.cpp.  Sometimes they break all the sample applications.  When I ask them to finish the job, they say: "oh you can do that.".  Nobody ever maintains or supports their patch.  Contributors seldom modify a patch when asked to do so in a review.
 
-I have found recruiting contributors to be the most challenging and difficult aspect of maintaining Exiv2.  I appreciate the work done by everybody who has contributed.  The future of Exiv2 is a matter for the community.  Perhaps this book will inspire somebody to write a replacement.
+I have found recruiting contributors to be a very challenging and difficult aspect of maintaining Exiv2.  I appreciate the work done by everybody who has contributed.  The future of Exiv2 is a matter for the community.  Perhaps this book will inspire somebody to write a replacement.
 
 [TOC](#TOC)
 <div id="13-1">
 ### 13.1) C++ Code
 
-Exiv2 is written in C++.  Prior to v0.28, the code was written to the C++ 1998 Standard and makes considerable use of STL containers such as vector, map, set, string and many others.  The code started life as a 32-bit library on Unix and today builds on 32 and 64 bit systems running Linux, Unix, macOS and Windows (Cygwin, MinGW, and Visual Studio).  Although the Exiv2 project has never supported Mobile Platforms or Embedded Systems, it should be possible to build for other platforms with modest effort.
+Exiv2 is written in C++.  Prior to v0.28, the code was written to the C++ 1998 Standard and makes considerable use of STL containers such as vector, map, set, string and many others.  The code started life as a 32-bit library on Unix and today builds on 32 and 64 bit systems running Linux, Unix, macOS and Windows (Cygwin, MinGW, and several editions of Visual Studio).  Although the Exiv2 project has never supported Mobile Platforms or Embedded Systems, it should be possible to build for other platforms with modest effort.
 
 The code has taken a great deal of inspiration from the book [Design Patterns: Elements of Reusable Object=Oriented Software](https://www.oreilly.com/library/view/design-patterns-elements/0201633612/).
 
@@ -1917,7 +1982,7 @@ Starting with Exiv2 v0.28, the code requires a C++11 Compiler.  Exiv2 v0.28 is a
 <div id="13-2">
 ### 13.2) Build
 
-The build code in Exiv2 is implemented using CMake: cross platform make.  This system enables the code to be built on many different platforms in a consistant manner.  CMake recursively reads the files CMakeLists.txt in the source tree and generates build environments for different build systems.  For Exiv2, we actively support using CMake to build on Unix type plaforms (Linux, macOS, Cygwin and MinGW, NetBSD, Solaris and FreeBSD), and several editions of Visual Studio.  CMake can generate project files for Xcode and other popular IDEs.
+The build code in Exiv2 is implemented using CMake: cross platform make.  This system enables the code to be built on many different platforms in a consistant manner.  CMake recursively reads the files CMakeLists.txt in the source tree and generates build environments for different build systems.  For Exiv2, we actively support using CMake to build on Unix type plaforms (Linux, macOS, Cygwin, MinGW, NetBSD, Solaris and FreeBSD), and several editions of Visual Studio.  CMake can generate project files for Xcode and other popular IDEs.
 
 Exiv2 has dependencies on the following libraries.  All are optional, however it's unusual to build without zlib and libexpat.
 
