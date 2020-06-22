@@ -192,9 +192,9 @@ $ prince --type IMaEA.css IMaEA.html
 
 The date that appears at the center-bottom of every page (except the first) is in the style sheet. You could change that with sed of course.  Setting the date from the computer clock would be fine for automatic reporting.  Better to use static text as we might want to say "Exiv2 v0.27.3 2020-06-30" or the like.
 
-The resulting PDF is beautiful and not watermarked by prince, although the put a postit on the front page.  That's OK.  They deserve credit.  Of course you can use mutool to convert the PDF to "pretty ascii" and edit out the postit.
+The resulting PDF is beautiful and not watermarked by prince, although the put a postit on the front page.  That's OK.  They deserve credit.
 
-[https://www.mankier.com/1/mutool#Pages](https://www.mankier.com/1/mutool#Pages)
+In my case, I tweaked the PDF in three ways using SodaPDF.  I fixed the title and dates on every page.  I fixed the "goto page #" PDF links which were mysteriously off by one page, and I aded a PDF Table of Contents.  The result is a beautiful document which looks great on the tablet (in HTML or PDF), great on the computer and beautiful when printed.
 
 <center>![Robin](RobinEuphonium.jpg)</center>
 
@@ -248,7 +248,7 @@ The architecture of TIFF and BigTiff are the same.  BigTiff is 64 bit based.  So
 | Type    | uint16\_t | uint16\_t  | Entries **#E** | uint16\_t | uint32\_t  |
 | Count   | uint32\_t | uint64\_t  | Next | uint32\_t | uint64\_t  | 
 
-As shall see the differences between TIFF and BigTiff are minor.  When the code is compiled on a 64 bit machine, size\_t is 64 bytes.  With the exception of IFD::visit(), the two formats can be treated as identical.
+As we shall see, the differences between TIFF and BigTiff are minor.  When the code is compiled on a 64 bit machine, size\_t is 64 bytes.  With the exception of IFD::visit(), the two formats can be treated as identical.
 
 It's also important to understand that Endian can change as we descend into the file.  There could (and there are) files which contain sub-files whose endian setting is different from the container file.
 
@@ -278,7 +278,7 @@ I will have to conduct more research concerning this matter.
  enum WriteMethod { wmIntrusive, wmNonIntrusive };
 ```
 
-
+[TOC](#TOC)
 <div id="JPEG">
 ## JPEG and EXV Format
 ![jpeg](jpeg.png)
@@ -738,7 +738,9 @@ I/O in Exiv2 is achieved using the class BasicIo and derived classes which are:
 | StdinIo    | - | Read from std-in |
 | Base64Io   | data:..... | Decodes ascii encoded binary |
 
-You will find a simplified version of BasicIo in tvisitor.cpp in the code that accompanies this book.  Io has two constructors.  The obvious one is Io(std::string) which calls _**fopen()**_.  More subtle is Io(io,from,size) which creates a sub-file on an existing stream.  This design deals with embedded files.  Most metadata is written in a format designated by the standards body and embedded in the file.  For example, Exif metadata data is written in Tiff Format and embedded in the file.
+You will find a simplified version of BasicIo in tvisitor.cpp in the code that accompanies this book.  Io has several constructors.  The obvious one is Io(std::string) which calls _**fopen()**_.  More subtle is Io(io,from,size) which creates a sub-file on an existing stream.  This design deals with embedded files.  Most metadata is written in a format designated by the standards body and embedded in the file.  For example, Exif metadata data is written in Tiff Format and embedded in the file.
+
+The constructor Io(DataBuf&) is used to create an in-memory I/O stream.  DataBuf has a read() method to binary copy from a stream into memory.  As we will see, some subfiles are not contiguous in the image and "chunked" by the image format.  For example, JPEG is always chunked into segments of 64k or less.  When a subfile has been chunked it is convenient to copy bytes into a buffer from which we can create an Io source.
 
 Other metadata standards use a similar design.  XMP is embedded XML, an Icc Profile is a major block of technology.  Exiv2 knows how to extract, insert, delete and replace an Icc Profile.  It knows nothing about the contents of the Icc Profile.  With Xmp, Exiv2 using Adobe's XMPsdk to enable the the Xmp data to be modified.
 
@@ -1981,7 +1983,7 @@ You are probably not surprised to learn that most stakeholders consider their co
 
 The difficulties of maintaining an open-source project are well explained in this article: [https://steemit.com/opensource/@crell/open-source-is-awful](https://steemit.com/opensource/@crell/open-source-is-awful) from which I have copied this cartoon:
 
-<center><img src="open-source-today.jpg" width="300" style="border:2px solid #23668F"/></center>
+<center><img src="open-source-today.jpg" width="400" style="border:2px solid #23668F"/></center>
 
 I will quote the following as it seems totally true.
 

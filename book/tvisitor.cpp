@@ -13,13 +13,6 @@
 
 typedef std::set<size_t> Visits;
 
-// this prevents unknown tags being reported!
-// return true if you want to see unknown tags
-bool printTag(std::string& name)
-{
-    return name.find(".0x") == std::string::npos;
-}
-
 // types of data in Exif Specification
 enum type_e
 {    kttMin             = 0
@@ -618,7 +611,12 @@ public:
     , size_   (buf.size_)
     , restore_(0)
     , f_      (NULL)
-    { f_ = fmemopen(buf.pData_,buf.size_, "r"); if ( !f_ ) Error(kerFileDidNotOpen,path_); }
+    {   f_ = fmemopen(buf.pData_,buf.size_, "r");
+        if ( !f_ ) Error(kerFileDidNotOpen,path_);
+        std::ostringstream os;
+        os << path_ << ":" << size_;
+        path_=os.str();
+    }
 
     virtual ~Io() { close(); }
     std::string path() { return path_; }
@@ -690,11 +688,11 @@ void DataBuf::read(Io& io,size_t offset,size_t size)
 }
 
 // Options for ReportVisitor
-enum PSopt_e
-{   kpsBasic
-,   kpsXMP
-,   kpsRecursive
-};
+typedef uint32_t PSopt_e;
+#define kpsBasic     1
+#define kpsRecursive 2
+#define kpsXMP       4
+#define kpsUnknown   8
 
 // 1.  declare types
 class   Image; // forward
@@ -773,6 +771,7 @@ public:
     {
         maker_ = buf.strequals("Canon"            ) ? kCanon
                : buf.strequals("NIKON CORPORATION") ? kNikon
+               : buf.strequals("NIKON"            ) ? kNikon
                : buf.strequals("SONY")              ? kSony
                : maker_
                ;
@@ -799,7 +798,7 @@ private:
 
     bool isPrintXMP(uint16_t type, PSopt_e option)
     {
-        return type == ktXMLPacket && option == kpsXMP;
+        return type == ktXMLPacket && option & kpsXMP;
     }
 
 };
@@ -1061,7 +1060,7 @@ public:
     virtual void visitBegin(Image& image)
     {
         indent_++;
-        if ( option() == kpsBasic || option() == kpsRecursive ) {
+        if ( option() & kpsBasic || option() & kpsRecursive ) {
             char c = image.endian() == keBig ? 'M' : 'I';
             out() << indent() << stringFormat("STRUCTURE OF %s FILE (%c%c): ",image.format().c_str(),c,c) <<  image.io().path() << std::endl;
             if ( image.format() == "CRW" ) {
@@ -1102,6 +1101,13 @@ public:
     , size_t                address
     ) {
         IoSave  restore(io,address);
+    }
+    
+    bool printTag(std::string& name)
+    {
+        return name.find(".0x") == std::string::npos
+               ||      option()  & kpsUnknown
+               ;
     }
     
     virtual void visitTag
@@ -1160,7 +1166,7 @@ public:
 
     virtual void visitEnd(Image& image)
     {
-        if ( option() == kpsBasic || option() == kpsRecursive ) {
+        if ( option() & kpsBasic || option() & kpsRecursive ) {
             out() << indent() << "END: " << image.path() << std::endl;
         }
         indent_--;
@@ -1386,7 +1392,7 @@ void JpegImage::accept(Visitor& v)
     IoSave save(io(),0);
     v.visitBegin((*this));
 
-    bool bPrint = v.option() == kpsBasic || v.option() == kpsRecursive;
+    bool bPrint = v.option() & kpsBasic || v.option() & kpsRecursive;
 
     // navigate the JPEG chunks
     std::ostringstream os; // string buffer for output to v.visitReport()
@@ -1432,7 +1438,7 @@ void JpegImage::accept(Visitor& v)
             //       2 | 0xe1 APP1  |     911 | Exif..MM.*.......%.........#....
             //     915 | 0xe1 APP1  |     870 | http://ns.adobe.com/xap/1.0/.<x:
             //    1787 | 0xe1 APP1  |   65460 | http://ns.adobe.com/xmp/extensio
-            if (v.option() == kpsXMP && signature.find("http://ns.adobe.com/x") == 0) {
+            if (v.option() & kpsXMP && signature.find("http://ns.adobe.com/x") == 0) {
                 // extract XMP
                 if (size > 0) {
                     io_.seek(-bufRead, ksCurrent);
@@ -1476,11 +1482,13 @@ void JpegImage::accept(Visitor& v)
             if (bLF && bPrint) v.visitReport(os,bLF);
 
             // std::cout << "app0_+1 = " << app0_+1 << " compare " << signature << " = " << signature.find("Exif") == 2 << std::endl;
-            bExif = v.option() == kpsRecursive && marker == (app0_ + 1) && signature.find("Exif") == 0;
+            bExif = v.option() & kpsRecursive && marker == (app0_ + 1) && signature.find("Exif") == 0;
             if ( bExif ) { // suck up the Exif data
                 exif.read(io_,current+2+6,size-2-6); // read the exif data into memory (there may be multiple APP1/exif__ segments
             }
-        } // if it's an APPn
+        } else {
+            bExif = false;  //
+        }
 
         // deal with deferred Exif metadata
         if ( !exif.empty() && !bExif ) {
@@ -1531,12 +1539,14 @@ int main(int argc,const char* argv[])
         PSopt_e option = kpsBasic;
         if ( argc == 3 ) {
             std::string arg(argv[1]);
-            option = arg.find("R") != std::string::npos ? kpsRecursive
-                   : arg.find("X") != std::string::npos ? kpsXMP
-                   : arg.find("S") != std::string::npos ? kpsBasic
-                   : option
-                   ;
+            option  = arg.find("R") != std::string::npos ? kpsRecursive
+                    : arg.find("X") != std::string::npos ? kpsXMP
+                    : arg.find("S") != std::string::npos ? kpsBasic
+                    : option
+                    ;
+            if ( arg.find("U") != std::string::npos ) option |= kpsUnknown;
         }
+        
         ReportVisitor visitor(std::cout,option);
         
         // Open the image
