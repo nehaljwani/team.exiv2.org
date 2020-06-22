@@ -252,6 +252,33 @@ As shall see the differences between TIFF and BigTiff are minor.  When the code 
 
 It's also important to understand that Endian can change as we descend into the file.  There could (and there are) files which contain sub-files whose endian setting is different from the container file.
 
+### Garbage Collecting Tiff Files
+
+There is a significant problem with the Tiff format.  It's possible for binary records to hold offsets to significant data elsewhere in the file.  This results in two problems.  Firstly, we don't know that the data is an offset if it is buried in a MakerNote.  So, when all the blocks move in a rewrite of the file, we can neither relocate the referenced data, nor the offset.  My conclusion is that is almost impossible to garbage collect a tiff file.  However, the situation isn't hopeless.  The offset in the Tiff Header defines the location of IFD0.  It's very common that IFD0 is at the end of the file and the reason is obvious.  When a Tiff is rewritten by an application, they write IFD0 in memory, then copy it to the end of the file and update the offset in the header.  If we are creating IFD0, we can over right the pre-existing IFD0.
+
+Imperial College have medical imaging Tiff files which are of the order of 100 GigaBytes in length.  Clearly we do not want to rewrite such a file to modify a couple of bytes on metadata.
+
+When we update a Makernote, we should "edit in place" and avoid relocating the data.  Regrettably for a JPEG, that's almost impossible which have a 64k limit in the APP1/Exif\0\0 segment and that usually includes the thumbnail.  As camera have night resolutions and larger displays for review, the camera manufacturers want to have larger thumbnails and are happy to store the preview somewhere in the JPEG and have a hidden offset in the makernote.  This works fine until the image is edited when the preview is lost.
+
+In principle, a Tiff can be garbage collected with a block-map.  If we set up a block-map with one bit for every thousand bytes, we can run the IFDs and mark all the blocks in use.  When we rewrite the TIFF (well IFD0 actually), we can inspect the block map to determine a "hole" in the file at which to write.  I would not do this.  It's unsafe to over-write anything in a Tiff with the exception of IFD0 and the header offset.  The situation with JPEG is more serious.  It's impossible to rewrite the JPEG in place.
+
+The concept of using a block-map to maintain track known data is used in RemoteIo.  We use a block-map to avoid excessive remote I/O by reading data into a cache.  We never read data twice.  We do not need contiguous memory for the file. This is discussed in [7. I/O in Exiv2](#7)
+
+I would like to express my dismay with the design of all image containers.  There is a much simpler design used by macOS and that is a bundle.  A bundle is a directory of files which includes the file Info.plist.  It appears in the Finder to be a simple entity like a file.  The command _**ditto**_  is provided to copy them from the terminal.  All programming languages can manipulte files.  The metadata in an image should be a little Tiff or sidecar in a bundle.  In principle, a container such as Tiff is a collection of streams that are both relocatable and never reference external data.  Sadly, Tiff and Jpeg make it very easy to break both rules.  The design of Jpeg makes it almost impossible to edit anything without relocating all the data.  The situation with video is even more serious as the files are huge.  In the PDF format, the file maintains a directory of objects.  The objects can be safely relocated because objects reference each other by name and not the file offset.
+
+### Metadata that cannot be edited
+
+There are tags in Tiff such as ImageWidth which cannot be modified without rewriting the pixels in the image.  Exif protects those tags in the functions _**TiffHeader::isImageTag()**_ and _**Cr2Header::isImageTag()**_.
+
+### Intrusive and NonIntrusive Editing
+
+I will have to conduct more research concerning this matter.
+
+```cpp
+ enum WriteMethod { wmIntrusive, wmNonIntrusive };
+```
+
+
 <div id="JPEG">
 ## JPEG and EXV Format
 ![jpeg](jpeg.png)
@@ -321,15 +348,15 @@ END: /Users/rmills/Stonehenge.exv
 
 ### Extended JPEG
 
-The JPEG standard restricts a single segment of a JPEG to 64k bytes because the length field is a 16 bit uint16_t.  There are three types of metadata which frequently exceed 64 and they are __*Exif, XMP and ICC*__.  Regrettably three different schemes are used to enable multiple consecutive segments to be coalesced into a larger block.
+The JPEG standard restricts a single segment of a JPEG to 64k bytes because the length field is a 16 bit uint16_t.  Exif, XMP and ICC frequently exceed 64k.  Regrettably three different schemes are used to enable multiple consecutive segments to be coalesced into a larger block.
 
 #### Adobe Exif data > 64k in JPEG
 
-Adobe have created an _**ad-hoc**_ standard by placing consecutive APP1 segments with the signature "Exif\0\0".  This _**ad-hoc**_ standard is defined in Adobe's XMP Specification Part 3 2016+. 
+Adobe have created an _**ad-hoc**_ standard by placing consecutive APP1 segments with the signature _**Exif\0\0**_.  This _**ad-hoc**_ standard is defined in Adobe's XMP Specification Part 3 2016+. 
 
 Exiv2 has no code to deal with this.  It can neither read nor write these files.  In fact, JpegImage::writeMetadata() currently throws when asked to write more than 64k into a JPEG.
 
-Theis discussed here: [https://dev.exiv2.org/issues/1232](https://dev.exiv2.org/issues/1232) and here is the output of the test files which were contributed by Phil.
+This is discussed here: [https://dev.exiv2.org/issues/1232](https://dev.exiv2.org/issues/1232) and here is the output of the test files which were contributed by Phil.
 
 ```
 $ ./tvisitor ~/cs4_extended_exif.jpg 
@@ -377,7 +404,7 @@ This is well documented by ICC and implemented in Exiv2 for both reading and wri
 
 #### XMP data > 64k in JPEG
 
-This is well documented by Adobe in the XMP Specification 2013+ and implemented in Exiv2 for in the API _**JpegBase::printStructure::(kpsXMP)*__.  It is not implemented in _**JpegBase::readMetadata()*__.
+This is well documented by Adobe in the XMP Specification 2013+ and implemented in Exiv2 foin the API _**JpegBase::printStructure::(kpsXMP)**_.  It is not implemented in _**JpegBase::readMetadata()**_.
 
 ### Other Unusual Adobe JPEG Features
 
@@ -1944,7 +1971,7 @@ To be written.
 
 <center>![open-source-cartoon.png](open-source-cartoon.png)</center>
 
-This topic deserves a book in its own right.  It's easy to think of an Open Source Project as some code.  It's not.  The code is a major part of the project, however probably only 50% of the effort goes into code.  We have many stakeholders in a project including: users, security, distros, and competitors.  The project needs documentation, build, test, bug reporting and many other elements.
+This topic deserves a book in its own right.  It's easy to think of an Open Source Project as some code.  It's not.  The code is a major part of the project, however probably only 50% of the effort goes into code.  We have many stakeholders in a project including: contributors, users, security, distros, and competitors.  The project needs documentation, build, test, bug reporting and many other elements.
 
 You may have seen the sketch in "The Life of Brian" called "What have the Romans Ever Done for Us?".  It begins with John Cleese asking the question and somebody replies "The aqueduct?".  Within one minute they list lots of stuff including Water Supply, Roads, Schools, Sanitation, Police, Laws, Medicine, Wine and Public Health.  It's much the same with Open Source.  Of course we have C++ code, however we also have Build, Test, Platform Support, Documentation, User Support, Security, Release Engineering, Localisation and other matters that require time and attention.
 
@@ -1956,21 +1983,21 @@ The difficulties of maintaining an open-source project are well explained in thi
 
 I will quote the following as it seems totally true.
 
-_If most businesses are using Open Source code for free, how are the developers compensated for that real time and effort? In the majority of cases the answer is _**"with verbal abuse and emotional blackmail"**_.
+_If most businesses are using Open Source code for free, how are the developers compensated for that real time and effort? In the majority of cases the answer is **with verbal abuse and emotional blackmail**_.
 
-_The very largest projects (the Linux kernel, the Firefox web browser, etc.) often end up with a few smart companies realizing it's in their self-interest to fund full time development, and most of their work ends up being non-volunteer. They're not the problem. The problem is the mid-range to small projects, maintained by volunteers, that get short-shrifted. People don't value free._
+_The very large projects (the Linux kernel, the Firefox web browser, etc.) end up with a few smart companies realizing it's in their self-interest to fund full time development, and most of their work ends up being non-volunteer. They're not the problem. The problem is the mid-range to small projects, maintained by volunteers, that get short-shrifted. People don't value free._
 
-_Not a month goes by in the last several years without some maintainer of an Open Source project throwing up their hands in frustration and walking away because of burnout; burnout caused, invariably, by the demands that people make of their free time. The code was free, so why isn't free support and personalized help available for life???_
+_Not a month goes by in without some maintainer of an Open Source project throwing up their hands in frustration and walking away because of burnout.  Burnout caused invariably, by the demands that people make of their free time. The code was free, so why isn't free support and personalized help available for life???_
 
-I am astonished at the verbal abuse I have received.  About every three years I receive an email from somebody I have never met thanking me for my efforts.  I get daily emails of criticism and complaint.  I will not name a French Engineer on whose behalf I have spent hundreds of hours.  Not once has he expressed appreciation.  His emails of criticism are brutal.
+I am astonished at the verbal abuse I have received.  About every three years I receive an email from somebody I have never met thanking me for my efforts.  I get daily emails of criticism and complaint.  I will not name a French Engineer on whose behalf I have spent hundreds of hours.  Not once has he expressed appreciation.  His emails and public posts of criticism are brutal.
 
 When somebody provides a patch, they seldom provide test code or updates to the documentation or build scripts.  The feature is often incomplete.  For example, in adding a new platform, nobody has ever provided platform specific code in src/version.cpp and src/futils.cpp.  Sometimes they break all the sample applications.  When I ask them to finish the job, they say: "oh you can do that.".  Nobody ever maintains or supports their patch.  Contributors seldom modify a patch when asked to do so in a review.
 
-I have found recruiting contributors to be a very challenging and difficult aspect of maintaining Exiv2.  I appreciate the work done by everybody who has contributed.  The future of Exiv2 is a matter for the community.  Perhaps this book will inspire somebody to write a replacement.
+I have found recruiting contributors is a very challenging and difficult aspect of maintaining Exiv2.  I appreciate the work done by everybody who has contributed.  The future of Exiv2 is a matter for the community.  Perhaps this book will inspire somebody to maintain Exiv2 or write a replacement.
 
 [TOC](#TOC)
 <div id="13-1">
-### 13.1) C++ Code
+### 13.1 C++ Code
 
 Exiv2 is written in C++.  Prior to v0.28, the code was written to the C++ 1998 Standard and makes considerable use of STL containers such as vector, map, set, string and many others.  The code started life as a 32-bit library on Unix and today builds on 32 and 64 bit systems running Linux, Unix, macOS and Windows (Cygwin, MinGW, and several editions of Visual Studio).  Although the Exiv2 project has never supported Mobile Platforms or Embedded Systems, it should be possible to build for other platforms with modest effort.
 
@@ -1980,7 +2007,7 @@ Starting with Exiv2 v0.28, the code requires a C++11 Compiler.  Exiv2 v0.28 is a
 
 [TOC](#TOC)
 <div id="13-2">
-### 13.2) Build
+### 13.2 Build
 
 The build code in Exiv2 is implemented using CMake: cross platform make.  This system enables the code to be built on many different platforms in a consistant manner.  CMake recursively reads the files CMakeLists.txt in the source tree and generates build environments for different build systems.  For Exiv2, we actively support using CMake to build on Unix type plaforms (Linux, macOS, Cygwin, MinGW, NetBSD, Solaris and FreeBSD), and several editions of Visual Studio.  CMake can generate project files for Xcode and other popular IDEs.
 
@@ -2028,109 +2055,109 @@ Regrettably there are users who look to Team Exiv2 to support every possible con
 
 [TOC](#TOC)
 <div id="13-3">
-### 13.3) Security
+### 13.3 Security
 
 This is discussed in detail here: [11 Security](#11).
 
 [TOC](#TOC)
 <div id="13-4">
-### 13.4) Documentation
+### 13.4 Documentation
 
 To be written.
 
 [TOC](#TOC)
 <div id="13-5">
-### 13.5) Testing
+### 13.5 Testing
 
 This is discussed in detail here: [10 Testing](#10).
 
 [TOC](#TOC)
 <div id="13-6">
-### 13.6) Sample programs
+### 13.6 Sample programs
 
 This is discussed in detail here: [6 Sample Applications](#6).
 
 [TOC](#TOC)
 <div id="13-7">
-### 13.7) User Support
+### 13.7 User Support
 
 To be written.
 
 [TOC](#TOC)
 <div id="13-8">
-### 13.8) Bug Tracking
+### 13.8 Bug Tracking
 
 To be written.
 
 [TOC](#TOC)
 <div id="13-9">
-### 13.9) Release Engineering
+### 13.9 Release Engineering
 
 To be written.
 
 [TOC](#TOC)
 <div id="13-10">
-### 13.10) Platform Support
+### 13.10 Platform Support
 
 To be written.
 
 [TOC](#TOC)
 <div id="13-11">
-### 13.11) Localisation
+### 13.11 Localisation
 
 To be written.
 
 [TOC](#TOC)
 <div id="13-12">
-### 13.12) Build Server
+### 13.12 Build Server
 
 To be written.
 
 [TOC](#TOC)
 <div id="13-13">
-### 13.13) Source Code Management
+### 13.13 Source Code Management
 
 To be written.
 
 [TOC](#TOC)
 <div id="13-14">
-### 13.14) Project Web Site
+### 13.14 Project Web Site
 
 To be written.
 
 [TOC](#TOC)
 <div id="13-15">
-### 13.15) Project Servers (apache, SVN, GitHub, Redmine)
+### 13.15 Project Servers (apache, SVN, GitHub, Redmine)
 
 To be written.
 
 [TOC](#TOC)
 <div id="13-16">
-### 13.16) API Management
+### 13.16 API Management
 
 To be written.
 
 [TOC](#TOC)
 <div id="13-17">
-### 13.17) Recruiting Contributors
+### 13.17 Recruiting Contributors
 
 To be written.
 
 [TOC](#TOC)
 <div id="13-18">
-### 13.18) Project Management and Scheduling
+### 13.18 Project Management and Scheduling
 
 To be written.
 
 [TOC](#TOC)
 <div id="13-19">
-### 13.19) Enhancement Requests
+### 13.19 Enhancement Requests
 
 To be written.
 
 [TOC](#TOC)
 <div id="13-2">
-### 13.20) Tools
+### 13.20 Tools
 
 Every year brings new/different tools (cmake, git, MarkDown, C++11)
 
@@ -2138,19 +2165,19 @@ To be written.
 
 [TOC](#TOC)
 <div id="13-21">
-### 13.21) Licensing
+### 13.21 Licensing
 
 To be written.
 
 [TOC](#TOC)
 <div id="13-22">
-### 13.22) Back-porting fixes to earlier releases
+### 13.22 Back-porting fixes to earlier releases
 
 To be written.
 
 [TOC](#TOC)
 <div id="13-23">
-### 13.23) Other projects demanding support and changes
+### 13.23 Other projects demanding support and changes
 
 To be written.
 
