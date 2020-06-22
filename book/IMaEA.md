@@ -18,7 +18,7 @@ _I want to say <b>Thank You</b> to a few folks who have made this possbile.  Fir
 <div id="TOC">
 
 | Section                                             | Page | Image Formats                       | Page | Project Management                    | Page | 
-|:--                                                   |  --:|:--                                    | --:|:--                                      | --:|
+|:--                                                    | --:|:--                                    | --:|:--                                      | --:|
 | [1. Image File Formats](#1)                           |  7 | [TIFF and BigTiff](#TIFF)             |  7 | [13. Project Management](#13)           | 55 |
 | [2. Tiff and Exif metadata](#2)                       | 22 | [JPEG and EXV](#JPEG)                 | 12 | [13.1 C++ Code](#13-1)                  | 56 |
 | [3. MakerNotes](#3)                                   | 23 | [PNG Portable Network Graphics](#PNG) | 10 | [13.2 Build](#13-2)                     | 57 |
@@ -1971,7 +1971,7 @@ To be written.
 
 [TOC](#TOC)
 <div id="13">
-# 13 Project Management, Release Engineering, User Support
+# 13 Project Management
 
 <center>![open-source-cartoon.png](open-source-cartoon.png)</center>
 
@@ -2320,7 +2320,7 @@ int main(int argc, char* argv[])
 # The Last Word
 <div id="finally">
 
-I hope found this book interesting.  More to the point, I hope you've found it useful.  I hope Exiv2 will live into the future, or this book inspires somebody to write a new library.
+I hope found this book interesting.  More to the point, I hope you found the book useful.  I hope Exiv2 will live into the future, or this book inspires somebody to write a new library.
 
 
 <center><img src="back-page.jpg" style="border:2px solid #23668F"/></center>
