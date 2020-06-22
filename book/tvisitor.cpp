@@ -4,6 +4,7 @@
 #include <string>
 #include <sstream>
 #include <map>
+#include <cstdlib>
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -125,7 +126,7 @@ void Error (error_e error)
 {
     Error(error,"");
 }
-
+class Io;
 typedef unsigned char byte ;
 class DataBuf
 {
@@ -136,22 +137,29 @@ public:
     : pData_(NULL)
     , size_(size)
     {
-        if ( size_max && size > size_max ) {
-            Error(kerInvalidMalloc);
-        }
-        pData_ = new byte[size_];
-        if ( pData_) {
-            std::memset(pData_, 0,size_);
+        if ( size ) {
+            if ( size_max && size > size_max ) {
+                Error(kerInvalidMalloc);
+            }
+            pData_ = (byte*) std::calloc(size_,1);
         }
     }
     virtual ~DataBuf()
     {
-        if ( pData_ ) {
-            delete pData_ ;
-            pData_ = NULL ;
-        }
+        empty(true);
         size_ = 0 ;
     }
+    bool empty(bool bForce=false) {
+        bool result = size_ == 0;
+        if ( bForce && pData_ && size_ ) {
+            std::free(pData_) ;
+            pData_ = NULL ;
+        }
+        if ( bForce ) size_ = 0;
+        return result;
+    }
+
+    void read (Io& io,size_t offset,size_t size) ;
     int  strcmp   (const char* str) { return ::strcmp((const char*)pData_,str);}
     bool strequals(const char* str) { return strcmp(str)==0                   ;}
     bool is       (const char* str) {
@@ -604,6 +612,14 @@ public:
         path_=os.str();
         seek(0);
     };
+    Io(DataBuf& buf)
+    : path_ ("DataBuf")
+    , start_  (0)
+    , size_   (buf.size_)
+    , restore_(0)
+    , f_      (NULL)
+    { f_ = fmemopen(buf.pData_,buf.size_, "r"); if ( !f_ ) Error(kerFileDidNotOpen,path_); }
+
     virtual ~Io() { close(); }
     std::string path() { return path_; }
     size_t read(void* buff,size_t size)              { return fread(buff,1,size,f_);}
@@ -662,6 +678,16 @@ private:
     Io&    io_;
     size_t restore_;
 };
+
+void DataBuf::read(Io& io,size_t offset,size_t size)
+{
+    if ( size ) {
+        IoSave restore(io,offset);
+        pData_ = (byte*) (pData_ ? std::realloc(pData_,size_+size) : std::malloc(size));
+        io.read (pData_+size_,size);
+        size_ += size ;
+    }
+}
 
 // Options for ReportVisitor
 enum PSopt_e
@@ -1371,6 +1397,9 @@ void JpegImage::accept(Visitor& v)
     size_t bufMinSize = 48;
     DataBuf buf(bufMinSize);
 
+    DataBuf exif(0);
+    bool    bExif = false ;
+
     // Read section marker
     int marker = advanceToMarker();
     if (marker < 0) {
@@ -1379,7 +1408,7 @@ void JpegImage::accept(Visitor& v)
 
     REPORT_MARKER;
 
-    bool    done = false;
+    bool    done  = false; // create a buffer to "suck up" exif data
     while (!done) {
         size_t current = io_.tell();
         bool   bLF     = true; // tell v.visitReport() to append a LF
@@ -1447,14 +1476,19 @@ void JpegImage::accept(Visitor& v)
             if (bLF && bPrint) v.visitReport(os,bLF);
 
             // std::cout << "app0_+1 = " << app0_+1 << " compare " << signature << " = " << signature.find("Exif") == 2 << std::endl;
-            bool bExif = v.option() == kpsRecursive && marker == (app0_ + 1) && signature.find("Exif") == 0;
-
-            // Pure beauty.  Create a TiffImage and ask him to entertain the visitor
-            if ( bExif ) {
-                Io io(io_,current+2+6,size-2-6);
-                TiffImage exif(io);
-                exif.accept(v);
+            bExif = v.option() == kpsRecursive && marker == (app0_ + 1) && signature.find("Exif") == 0;
+            if ( bExif ) { // suck up the Exif data
+                exif.read(io_,current+2+6,size-2-6); // read the exif data into memory (there may be multiple APP1/exif__ segments
             }
+        } // if it's an APPn
+
+        // deal with deferred Exif metadata
+        if ( !exif.empty() && !bExif ) {
+            // Beautiful.  exif buffer is a tiff file, wrap with Io and call TiffImage::accept(visitor)
+            Io             tiffIo(exif);
+            TiffImage tiff(tiffIo);
+            tiff.accept(v);
+            exif.empty(true); // empty the exif buffer
         }
 
         // print COM marker

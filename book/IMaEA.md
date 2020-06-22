@@ -400,11 +400,13 @@ The is discussed in [https://dev.exiv2.org/issues/1232](https://dev.exiv2.org/is
 
 #### ICC Profile data > 64k in JPEG
 
-This is well documented by ICC and implemented in Exiv2 for both reading and writing.
+This is documented by ICC and implemented in Exiv2 for both reading and writing.
 
 #### XMP data > 64k in JPEG
 
-This is well documented by Adobe in the XMP Specification 2013+ and implemented in Exiv2 foin the API _**JpegBase::printStructure::(kpsXMP)**_.  It is not implemented in _**JpegBase::readMetadata()**_.
+This is documented by Adobe in the XMP Specification 2016+ and implemented in Exiv2 in the API _**JpegBase::printStructure::(kpsXMP)**_.  It is not implemented in _**JpegBase::readMetadata()**_.
+
+![XmpPart3-2016-page13.png](XmpPart3-2016-page13.png)
 
 ### Other Unusual Adobe JPEG Features
 
