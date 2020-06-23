@@ -183,7 +183,7 @@ The prince product fully supports HTML->PDF with @media print in the style sheet
 
 [https://www.princexml.com](https://www.princexml.com)
 
-I tried prince and was very pleased with the result.  When you ask prince to create the PDF, you can specify page-size and style sheet.  I've set up IMaEA.css with the builtin page size of 278x398.
+I tried prince and was very pleased with the result.  When you ask prince to create the PDF, you can specify page-size and style sheet.  I've set up IMaEA.css with the builtin page size of 275x389.
 
 ```
 $ prince --page-size=--page-size='275mm 389mm  --style ~/gnu/exiv2/team/book/pdf-styles.css IMaEA.html
@@ -192,9 +192,9 @@ $ prince --type IMaEA.css IMaEA.html
 
 The date that appears at the center-bottom of every page (except the first) is in the style sheet. You could change that with sed of course.  Setting the date from the computer clock would be fine for automatic reporting.  Better to use static text as we might want to say "Exiv2 v0.27.3 2020-06-30" or the like.
 
-The resulting PDF is beautiful and not watermarked by prince, although the put a postit on the front page.  That's OK.  They deserve credit.
+The resulting PDF is beautiful and not watermarked by prince, although they put a postit on the front page.  That's OK.  They deserve credit.
 
-In my case, I tweaked the PDF in three ways using SodaPDF.  I fixed the title and dates on every page.  I fixed the "goto page #" PDF links which were mysteriously off by one page, and I aded a PDF Table of Contents.  The result is a beautiful document which looks great on the tablet (in HTML or PDF), great on the computer and beautiful when printed.
+In my case, I tweaked the PDF in three ways using SodaPDF.  I fixed the title and dates on every page.  I fixed the "goto page#" PDF links which were mysteriously off by one page, and I added a PDF Table of Contents.  The result is a beautiful document which looks great on the tablet (in HTML or PDF), great on the computer and beautiful when printed.
 
 <center>![Robin](RobinEuphonium.jpg)</center>
 
@@ -350,7 +350,7 @@ END: /Users/rmills/Stonehenge.exv
 
 The JPEG standard restricts a single segment of a JPEG to 64k bytes because the length field is a 16 bit uint16_t.  Exif, XMP and ICC frequently exceed 64k.  Regrettably three different schemes are used to enable multiple consecutive segments to be coalesced into a larger block.
 
-#### Adobe Exif data > 64k in JPEG
+#### Adobe Exif >64k in JPEG
 
 Adobe have created an _**ad-hoc**_ standard by placing consecutive APP1 segments with the signature _**Exif\0\0**_.  This _**ad-hoc**_ standard is defined in Adobe's XMP Specification Part 3 2016+. 
 
@@ -394,9 +394,13 @@ END: /Users/rmills/multi-segment_exif.jpg
 $ 
 ```
 
-#### AGFA Exif data > 64k in JPEG
+#### AGFA Exif >64k in JPEG
 
-The is discussed in [https://dev.exiv2.org/issues/1232](https://dev.exiv2.org/issues/1232)  I think it is desirable to support reading this data.  Exiv2 should write using Adobe's JPEG > 64k _**ad-hoc**_ standard.
+This is discussed in [https://dev.exiv2.org/issues/1232](https://dev.exiv2.org/issues/1232)  I think it is desirable to support reading this data.  Exiv2 should write using Adobe's JPEG > 64k _**ad-hoc**_ standard.
+
+tvisitor.cpp supports AGFA's extended JPEG.
+
+The Agfa MakerNote contains an IFD which is preceded by **ABC_IIdL** where dL is the directory length.  This is discussed in [3 MakerNotes](#3)
 
 #### ICC Profile data > 64k in JPEG
 
@@ -666,6 +670,8 @@ Data's similar.  The order is different.  Good news is that the commands _**$ ex
 # 3 MakerNotes
 
 https://exiv2.org/makernote.html
+
+MakerNotes are usually written as an IFD, however most manufacturers have a few bytes the precede the IFD.  I suspect this is to store version information.
 
 [TOC](#TOC)
 <div id="4">
@@ -1221,7 +1227,7 @@ void IFD::visit(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
             uint32_t offset = getLong (dir,8,image_.endian());
 
             if ( !typeValid(type) ) {
-                Error(kerInvalidTypeValue);
+                Error(kerInvalidTypeValue,type);
             }
 
             visitor.visitTag(io_,image_,address,tagDict);  // Tell the visitor
@@ -1243,10 +1249,17 @@ void IFD::visit(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
                 case ktExif : IFD(image_,offset,false).visit(visitor,exifDict);break;
                 case ktMakerNote :
                 if ( image_.maker_ == kNikon ) {
-                    // Nikon MakerNote is emabeded tiff `II*_.....` 10 bytes into the data!
-                    size_t punt = buf.strequals("Nikon") ? 10 : 0 ;
+                    // Nikon MakerNote is embeded tiff `II*_....` 10 bytes into the data!
+                    size_t punt = buf.strequals("Nikon") ? 10
+                                : 0
+                                ;
                     Io     io(io_,offset+punt,count-punt);
-                    TiffImage makerNote(io);
+                    TiffImage makerNote(io,image_.maker_);
+                    makerNote.visit(visitor,makerDict());
+                } else if ( image_.maker_ == kAgfa && buf.strequals("ABC") ) {
+                    // Agfa  MakerNote is an IFD `ABC_IIdL...`  6 bytes into the data!
+                    ImageEndianSaver save(image_,keLittle);
+                    IFD makerNote(image_,offset+6,false);
                     makerNote.visit(visitor,makerDict());
                 } else {
                     bool   bNext = maker()  != kSony;                                        // Sony no trailing next
@@ -1266,7 +1279,7 @@ void IFD::visit(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
         } // for i < dirLength
 
         start = 0; // !stop
-        if ( hasNext_ ) {
+        if ( next_ ) {
             io_.read(dir.pData_, 4);
             start = getLong(dir,0,image_.endian());
         }
@@ -1278,14 +1291,17 @@ void IFD::visit(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
 } // IFD::visit
 ```
 
-These could be the most beautiful and elegant 90 line function I have every written.  It's amazing.  To complete the story, here's TiffImage::valid() and TiffImage::visit():
+These could be the most beautiful and elegant 100 line function I have ever written.  I'm sure there an easy way to simplify or hide the makernote dance in a function.
+
+To complete the story, here's TiffImage::valid() and TiffImage::visit():
 
 ```cpp
 bool TiffImage::valid()
 {
-    IoRestorer save(io(),0);
+    IoSave restore(io(),0);
+
     // read header
-    DataBuf      header(20);
+    DataBuf  header(12);
     io_.read(header);
 
     char c   = (char) header.pData_[0] ;
@@ -1293,19 +1309,16 @@ bool TiffImage::valid()
     endian_  = c == 'M' ? keBig : keLittle;
     magic_   = getShort(header,2,endian_);
     start_   = getLong (header,4,endian_);
-    bool result = (magic_ == 42 && c == C) && ( c == 'I' || c == 'M' ) && start_ < io_.size() ;
-
+    format_  = "TIFF";
     bigtiff_ = magic_ == 43;
-    if ( bigtiff_ ) Error(kerBigtiffNotSupported);
-    if ( result ) format_ = "TIFF";
 
-    return result;
+    return (magic_ == 42) && (c == C) && ( c == 'I' || c == 'M' ) && (start_ < io_.size()) ;
 } // TiffImage::valid
 
 void TiffImage::visit(Visitor& visitor,TagDict& tagDict)
 {
     if ( valid() ) {
-        IFD ifd(*this,start_,bHasNext_);
+        IFD ifd(*this,start_,next_);
         ifd.visit(visitor,tagDict);
     }
 } // TiffImage::visit

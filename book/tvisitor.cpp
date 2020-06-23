@@ -434,6 +434,7 @@ enum maker_e
 ,   kCanon
 ,   kNikon
 ,   kSony
+,   kAgfa
 };
 
 // Canon magic
@@ -499,6 +500,7 @@ TagDict exifDict  ;
 TagDict canonDict ;
 TagDict nikonDict ;
 TagDict sonyDict  ;
+TagDict agfaDict  ;
 TagDict gpsDict   ;
 TagDict crwDict   ;
 
@@ -742,7 +744,11 @@ public:
     {};
     Image(Io io)
     : io_       (io)
+    , start_    (0)
+    , maker_    (kUnknown)
     , makerDict_(emptyDict)
+    , bigtiff_  (false)
+    , endian_   (keLittle)
     , depth_    (0)
     {};
     virtual    ~Image()        { io_.close()      ; }
@@ -764,6 +770,7 @@ public:
             case kCanon : makerDict_ = canonDict ; break;
             case kNikon : makerDict_ = nikonDict ; break;
             case kSony  : makerDict_ = sonyDict  ; break;
+            case kAgfa  : makerDict_ = agfaDict  ; break;
             default : /* do nothing */           ; break;
         }
     }
@@ -773,6 +780,7 @@ public:
                : buf.strequals("NIKON CORPORATION") ? kNikon
                : buf.strequals("NIKON"            ) ? kNikon
                : buf.strequals("SONY")              ? kSony
+               : buf.strequals("AGFAPHOTO")         ? kAgfa
                : maker_
                ;
         setMaker(maker_);
@@ -800,7 +808,20 @@ private:
     {
         return type == ktXMLPacket && option & kpsXMP;
     }
+    friend class ImageEndianSaver;
+};
 
+class ImageEndianSaver
+{
+public:
+    ImageEndianSaver(Image& image,endian_e endian)
+    : image_ (image)
+    , endian_(endian)
+    {}
+    virtual ~ImageEndianSaver() { image_.endian_ = endian_ ; }
+private:
+    Image&   image_;
+    endian_e endian_;
 };
 
 // CIFF and IFD are magic we find inside images
@@ -896,10 +917,10 @@ public:
     : Image(path)
     , next_(true)
     {}
-    TiffImage(Io& io)
+    TiffImage(Io& io,maker_e maker=kUnknown)
     : Image(io)
     , next_(false)
-    {}
+    { setMaker(maker);}
 
     void visit(Visitor& visitor,TagDict& tagDict = tiffDict );
     bool valid();
@@ -1293,10 +1314,17 @@ void IFD::visit(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
                 case ktExif : IFD(image_,offset,false).visit(visitor,exifDict);break;
                 case ktMakerNote :
                 if ( image_.maker_ == kNikon ) {
-                    // Nikon MakerNote is emabeded tiff `II*_.....` 10 bytes into the data!
-                    size_t punt = buf.strequals("Nikon") ? 10 : 0 ;
+                    // Nikon MakerNote is embeded tiff `II*_....` 10 bytes into the data!
+                    size_t punt = buf.strequals("Nikon") ? 10
+                                : 0
+                                ;
                     Io     io(io_,offset+punt,count-punt);
-                    TiffImage makerNote(io);
+                    TiffImage makerNote(io,image_.maker_);
+                    makerNote.visit(visitor,makerDict());
+                } else if ( image_.maker_ == kAgfa && buf.strequals("ABC") ) {
+                    // Agfa  MakerNote is an IFD `ABC_IIdL...`  6 bytes into the data!
+                    ImageEndianSaver save(image_,keLittle);
+                    IFD makerNote(image_,offset+6,false);
                     makerNote.visit(visitor,makerDict());
                 } else {
                     bool   bNext = maker()  != kSony;                                        // Sony no trailing next
@@ -1332,7 +1360,7 @@ bool TiffImage::valid()
     IoSave restore(io(),0);
 
     // read header
-    DataBuf      header(20);
+    DataBuf  header(12);
     io_.read(header);
 
     char c   = (char) header.pData_[0] ;
@@ -1340,13 +1368,10 @@ bool TiffImage::valid()
     endian_  = c == 'M' ? keBig : keLittle;
     magic_   = getShort(header,2,endian_);
     start_   = getLong (header,4,endian_);
-    bool result = (magic_ == 42 && c == C) && ( c == 'I' || c == 'M' ) && start_ < io_.size() ;
-
+    format_  = "TIFF";
     bigtiff_ = magic_ == 43;
-    if ( bigtiff_ ) Error(kerBigtiffNotSupported);
-    if ( result ) format_ = "TIFF";
 
-    return result;
+    return (magic_ == 42) && (c == C) && ( c == 'I' || c == 'M' ) && (start_ < io_.size()) ;
 } // TiffImage::valid
 
 void TiffImage::visit(Visitor& visitor,TagDict& tagDict)
@@ -1405,6 +1430,7 @@ void JpegImage::accept(Visitor& v)
 
     DataBuf exif(0);
     bool    bExif = false ;
+    bool    bExifContinuation = false;
 
     // Read section marker
     int marker = advanceToMarker();
@@ -1481,22 +1507,15 @@ void JpegImage::accept(Visitor& v)
             }
             if (bLF && bPrint) v.visitReport(os,bLF);
 
-            // std::cout << "app0_+1 = " << app0_+1 << " compare " << signature << " = " << signature.find("Exif") == 2 << std::endl;
+            bExifContinuation = bExifContinuation || (bExif && size == 65535); // Agfa do this.  https://dev.exiv2.org/issues/1232
             bExif = v.option() & kpsRecursive && marker == (app0_ + 1) && signature.find("Exif") == 0;
-            if ( bExif ) { // suck up the Exif data
-                exif.read(io_,current+2+6,size-2-6); // read the exif data into memory (there may be multiple APP1/exif__ segments
+            if ( bExif || bExifContinuation ) { // suck up the Exif data
+                size_t chop = size == 65535 ? 0 : 6;
+                exif.read(io_,current+2+chop,size-2-chop); // read the exif data into memory (there may be multiple APP1/exif__ segments)
+                bExif = true;
             }
         } else {
             bExif = false;  //
-        }
-
-        // deal with deferred Exif metadata
-        if ( !exif.empty() && !bExif ) {
-            // Beautiful.  exif buffer is a tiff file, wrap with Io and call TiffImage::accept(visitor)
-            Io             tiffIo(exif);
-            TiffImage tiff(tiffIo);
-            tiff.accept(v);
-            exif.empty(true); // empty the exif buffer
         }
 
         // print COM marker
@@ -1511,6 +1530,16 @@ void JpegImage::accept(Visitor& v)
         io_.seek(current+size);
         if (bLF && bPrint) v.visitReport(os,bLF);
 
+        // deal with deferred Exif metadata
+        if ( !exif.empty() && !bExif ) {
+            // Beautiful.  exif buffer is a tiff file, wrap with Io and call TiffImage::accept(visitor)
+            Io             tiffIo(exif);
+            TiffImage tiff(tiffIo);
+            tiff.accept(v);
+            exif.empty(true); // empty the exif buffer
+            bExifContinuation = false ;
+        }
+
         if (marker != sos_) {
             // Read the beginning of the next segment
             marker = advanceToMarker();
@@ -1519,6 +1548,7 @@ void JpegImage::accept(Visitor& v)
         }
         done |= marker == eoi_ || marker == sos_;
         bLF  |= done;
+
         if (done) {
             if ( bPrint) v.visitReport(os,bLF);
         }
@@ -1705,6 +1735,13 @@ void init()
     sonyDict  [ 0xb04a ] = "SequenceNumber";
     sonyDict  [ 0xb04b ] = "AntiBlur";
     sonyDict  [ 0xb04e ] = "LongExposureNoiseReduction";
+
+    agfaDict [ktGroup ] = "Agfa";
+    agfaDict [ 0x0001 ] = "One";
+    agfaDict [ 0x0002 ] = "Size";
+    agfaDict [ 0x0003 ] = "Three";
+    agfaDict [ 0x0004 ] = "Four";
+    agfaDict [ 0x0005 ] = "Thumbnail";
 
     crwDict   [ktGroup ] = "CRW";
     crwDict   [ 0x0032 ] = "CanonColorInfo1";
