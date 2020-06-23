@@ -11,7 +11,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-typedef std::set<size_t> Visits;
+typedef std::set<uint64_t> Visits;
 
 // types of data in Exif Specification
 enum type_e
@@ -21,18 +21,18 @@ enum type_e
 ,    kttUShort          = 3 //!< Exif SHORT type, 16-bit (2-byte) unsigned integer.
 ,    kttULong           = 4 //!< Exif LONG type, 32-bit (4-byte) unsigned integer.
 ,    kttURational       = 5 //!< Exif RATIONAL type, two LONGs: numerator and denumerator of a fraction.
-,    kttSByte           = 6 //!< Exif SBYTE type, an 8-bit signed (twos-complement) integer.
+,    kttByte           = 6 //!< Exif SBYTE type, an 8-bit signed (twos-complement) integer.
 ,    kttUndefined       = 7 //!< Exif UNDEFINED type, an 8-bit byte that may contain anything.
-,    kttSShort          = 8 //!< Exif SSHORT type, a 16-bit (2-byte) signed (twos-complement) integer.
-,    kttSLong           = 9 //!< Exif SLONG type, a 32-bit (4-byte) signed (twos-complement) integer.
+,    kttShort          = 8 //!< Exif SSHORT type, a 16-bit (2-byte) signed (twos-complement) integer.
+,    kttLong           = 9 //!< Exif SLONG type, a 32-bit (4-byte) signed (twos-complement) integer.
 ,    kttSRational       =10 //!< Exif SRATIONAL type, two SLONGs: numerator and denumerator of a fraction.
 ,    kttFloat           =11 //!< TIFF FLOAT type, single precision (4-byte) IEEE format.
 ,    kttDouble          =12 //!< TIFF DOUBLE type, double precision (8-byte) IEEE format.
 ,    kttIfd             =13 //!< TIFF IFD type, 32-bit (4-byte) unsigned integer.
 ,    kttNot1            =14
 ,    kttNot2            =15
-,    kttULongLong       =16 //!< Exif LONG LONG type, 64-bit (8-byte) unsigned integer.
-,    kttSLongLong       =17 //!< Exif LONG LONG type, 64-bit (8-byte) signed integer.
+,    kttULong8          =16 //!< Exif LONG LONG type, 64-bit (8-byte) unsigned integer.
+,    kttLong8          =17 //!< Exif LONG LONG type, 64-bit (8-byte) signed integer.
 ,    kttIfd8            =18 //!< TIFF IFD type, 64-bit (8-byte) unsigned integer.
 ,    kttMax             =19
 };
@@ -41,21 +41,21 @@ const char* typeName(type_e tag)
     //! List of TIFF image tags
     const char* result = NULL;
     switch (tag ) {
-        case kttUByte      : result = "BYTE"      ; break;
+        case kttUByte      : result = "UBYTE"     ; break;
         case kttAscii      : result = "ASCII"     ; break;
         case kttUShort     : result = "SHORT"     ; break;
         case kttULong      : result = "LONG"      ; break;
         case kttURational  : result = "RATIONAL"  ; break;
-        case kttSByte      : result = "SBYTE"     ; break;
+        case kttByte       : result = "BYTE"      ; break;
         case kttUndefined  : result = "UNDEFINED" ; break;
-        case kttSShort     : result = "SSHORT"    ; break;
-        case kttSLong      : result = "SLONG"     ; break;
+        case kttShort      : result = "SSHORT"    ; break;
+        case kttLong       : result = "SLONG"     ; break;
         case kttSRational  : result = "SRATIONAL" ; break;
         case kttFloat      : result = "FLOAT"     ; break;
         case kttDouble     : result = "DOUBLE"    ; break;
         case kttIfd        : result = "IFD"       ; break;
-        case kttULongLong  : result = "LONGLONG"  ; break;
-        case kttSLongLong  : result = "SLONGLONG" ; break;
+        case kttULong8     : result = "LONG8"     ; break;
+        case kttLong8      : result = "LONG8"     ; break;
         case kttIfd8       : result = "IFD8"      ; break;
         default            : result = "unknown"   ; break;
     }
@@ -80,7 +80,6 @@ enum error_e
 ,   kerFailedToReadImageData
 ,   kerDataSourceOpenFailed
 ,   kerNoImageInInputData
-,   kerBigtiffNotSupported
 ,   kerFileDidNotOpen
 ,   kerUnknownFormat
 };
@@ -98,7 +97,6 @@ void Error (error_e error, std::string msg)
         case   kerFailedToReadImageData  : std::cerr << "failed to read image data"; break;
         case   kerDataSourceOpenFailed   : std::cerr << "data source open failed"  ; break;
         case   kerNoImageInInputData     : std::cerr << "not image in input data"  ; break;
-        case   kerBigtiffNotSupported    : std::cerr << "bigtiff not supported"    ; break;
         case   kerFileDidNotOpen         : std::cerr << "file did not open"        ; break;
         case   kerUnknownFormat          : std::cerr << "unknown format"           ; break;
         default                          : std::cerr << "unknown error"            ; break;
@@ -124,9 +122,9 @@ typedef unsigned char byte ;
 class DataBuf
 {
 public:
-    byte*   pData_;
-    size_t  size_ ;
-    DataBuf(size_t size,size_t size_max=0)
+    byte*     pData_;
+    uint64_t  size_ ;
+    DataBuf(uint64_t size,uint64_t size_max=0)
     : pData_(NULL)
     , size_(size)
     {
@@ -156,8 +154,8 @@ public:
     int  strcmp   (const char* str) { return ::strcmp((const char*)pData_,str);}
     bool strequals(const char* str) { return strcmp(str)==0                   ;}
     bool is       (const char* str) {
-        size_t l      = ::strlen(str);
-        bool   result = l == size_;
+        uint64_t l      = ::strlen(str);
+        bool     result = l == size_;
         size_t i = 0 ;
         while ( result && i < l ) {
             result = str[i]==pData_[i];
@@ -230,7 +228,7 @@ uint32_t getLong(const DataBuf& buf,size_t offset,endian_e endian)
     bool bSwap = endian != ::platformEndian();
     return (uint32_t)byteSwap(v,bSwap,4);
 }
-uint64_t getLongLong(const DataBuf& buf,size_t offset,endian_e endian)
+uint64_t getLong8(const DataBuf& buf,size_t offset,endian_e endian)
 {
     uint64_t v;
     byte*    p = reinterpret_cast<byte *>(&v);
@@ -251,23 +249,27 @@ bool isByteType(type_e type)
 {
     return type == kttAscii
         || type == kttUByte
-        || type == kttSByte
+        || type == kttByte
         || type == kttUndefined
         ;
 }
 bool isShortType(type_e type) {
      return type == kttUShort
-         || type == kttSShort
+         || type == kttShort
          ;
 }
 bool isLongType(type_e type) {
      return type == kttULong
-         || type == kttSLong
+         || type == kttLong
+         || type == kttIfd
+         || type == kttFloat
          ;
 }
-bool isLongLongType(type_e type) {
-    return type == kttULongLong
-        || type == kttSLongLong
+bool isLong8Type(type_e type) {
+    return type == kttULong8
+        || type == kttLong8
+        || type == kttIfd8
+        || type == kttDouble
         ;
 }
 bool isRationalType(type_e type) {
@@ -281,17 +283,12 @@ bool is2ByteType(type_e type)
 }
 bool is4ByteType(type_e type)
 {
-    return isLongType(type)
-        || type == kttFloat
-        || type == kttIfd
-        ;
+    return isLongType(type) ;
 }
 bool is8ByteType(type_e type)
 {
     return  isRationalType(type)
-         || isLongLongType(type)
-         || type == kttIfd8
-         || type == kttDouble
+         || isLong8Type(type)
          ;
 }
 uint16_t typeSize(type_e type)
@@ -307,10 +304,10 @@ type_e getType(const DataBuf& buf,size_t offset,endian_e endian)
     return (type_e) getShort(buf,offset,endian);
 }
 
-bool typeValid(type_e type)
+bool typeValid(type_e type,bool bigtiff)
 {
-    return type  > kttMin  && type <  kttMax
-        && type != kttNot1 && type != kttNot2
+    return  bigtiff ? type > kttMin && type < kttMax && type != kttNot1 && type != kttNot2
+                    : type >= 1 && type <= 13
     ;
 }
 
@@ -622,15 +619,15 @@ public:
 
     virtual ~Io() { close(); }
     std::string path() { return path_; }
-    size_t read(void* buff,size_t size)              { return fread(buff,1,size,f_);}
-    size_t read(DataBuf& buff)                       { return read(buff.pData_,buff.size_); }
-    byte   getb()                                    { byte b; if (read(&b,1)==1) return b ; else return -1; }
-    int    eof()                                     { return feof(f_) ; }
-    size_t tell()                                    { return ftell(f_)-start_ ; }
-    void   seek(size_t offset,seek_e whence=ksStart) { fseek(f_,offset+start_,whence) ; }
-    size_t size()                                    { if ( size_ ) return size_ ; struct stat st ; fstat(fileno(f_),&st) ; return st.st_size-start_ ; }
-    bool   good()                                    { return f_ ? true : false ; }
-    void   close()
+    uint64_t read(void* buff,uint64_t size)              { return fread(buff,1,size,f_);}
+    uint64_t read(DataBuf& buff)                         { return read(buff.pData_,buff.size_); }
+    byte     getb()                                      { byte b; if (read(&b,1)==1) return b ; else return -1; }
+    int      eof()                                       { return feof(f_) ; }
+    uint64_t tell()                                      { return ftell(f_)-start_ ; }
+    void     seek(uint64_t offset,seek_e whence=ksStart) { fseek(f_,offset+start_,whence) ; }
+    uint64_t size()                                      { if ( size_ ) return size_ ; struct stat st ; fstat(fileno(f_),&st) ; return st.st_size-start_ ; }
+    bool     good()                                      { return f_ ? true : false ; }
+    void     close()
     {
         if ( !f_ ) return ;
         if ( start_ == 0 && size_ == 0 && restore_ == 0 ) {
@@ -640,7 +637,7 @@ public:
         }
         f_ = NULL  ;
     }
-    size_t start() { return start_ ; }
+    uint64_t start() { return start_ ; }
 
     uint32_t getLong(endian_e endian)
     {
@@ -661,22 +658,22 @@ public:
 private:
     FILE*       f_;
     std::string path_;
-    size_t      start_;
-    size_t      size_;
-    size_t      restore_;
+    uint64_t    start_;
+    uint64_t    size_;
+    uint64_t    restore_;
 };
 
 class IoSave // restore Io when function ends
 {
 public:
-    IoSave(Io& io,size_t address)
-    : io_(io)
+    IoSave(Io& io,uint64_t address)
+    : io_     (io)
     , restore_(io.tell())
     { io_.seek(address); }
     virtual ~IoSave() {io_.seek(restore_);}
 private:
-    Io&    io_;
-    size_t restore_;
+    Io&      io_;
+    uint64_t restore_;
 };
 
 void DataBuf::read(Io& io,size_t offset,size_t size)
@@ -715,10 +712,10 @@ public:
 
     virtual void visitBegin   (Image& image) = 0 ;
     virtual void visitEnd     (Image& image) = 0 ;
-    virtual void visitDirBegin(Image& image,size_t dirLength) = 0 ;
-    virtual void visitDirEnd  (Image& image,size_t start    ) = 0 ;
-    virtual void visitTag     (Io& io,Image& image,size_t address,const TagDict& tagDict)=0;
-    virtual void visitCiff    (Io& io,Image& image,size_t address)=0;
+    virtual void visitDirBegin(Image& image,uint64_t dirLength) = 0 ;
+    virtual void visitDirEnd  (Image& image,uint64_t start    ) = 0 ;
+    virtual void visitTag     (Io& io,Image& image,uint64_t address,const TagDict& tagDict)=0;
+    virtual void visitCiff    (Io& io,Image& image,uint64_t address)=0;
     virtual void visitReport  (std::ostringstream& out) {} ;
     virtual void visitReport  (std::ostringstream& out,bool& bLF) {} ;
 
@@ -759,6 +756,7 @@ public:
     std::string format()       { return format_   ; }
     Visits&     visits()       { return visits_   ; }
     size_t      depth()        { return depth_    ; }
+    bool        bigtiff()      { return bigtiff_  ; }
 
     virtual void accept(class Visitor& v)=0;
 
@@ -795,7 +793,7 @@ public:
 
 private:
     Visits      visits_;
-    size_t      start_;
+    uint64_t    start_;
     Io          io_;
     bool        good_;
     uint16_t    magic_;
@@ -896,7 +894,7 @@ public:
     {};
 
     void     visit         (Visitor& visitor,const TagDict& tagDict=tiffDict);
-    void     visitMakerNote(Visitor& visitor,DataBuf& buf,uint16_t count,uint32_t offset);
+    void     visitMakerNote(Visitor& visitor,DataBuf& buf,uint64_t count,uint64_t offset);
 
     Visits&  visits()    { return image_.visits()  ; }
     maker_e  maker()     { return image_.maker_    ; }
@@ -926,6 +924,7 @@ public:
 
     void visit(Visitor& visitor,TagDict& tagDict = tiffDict );
     bool valid();
+    bool bigtiff()  { return bigtiff_ ; }
 
     virtual void accept(class Visitor& visitor)
     {
@@ -1093,12 +1092,12 @@ public:
             }
         }
     }
-    virtual void visitDirBegin(Image& image,size_t dirLength)
+    virtual void visitDirBegin(Image& image,uint64_t dirLength)
     {
         //size_t depth = image.depth();
         //out() << indent(depth) << stringFormat("+%d",dirLength) << std::endl;
     };
-    virtual void visitDirEnd(Image& image,size_t start)
+    virtual void visitDirEnd(Image& image,uint64_t start)
     {
         // if ( start ) out() << std::endl;
     };
@@ -1121,7 +1120,7 @@ public:
     virtual void visitCiff
     ( Io&                   io
     , Image&                image
-    , size_t                address
+    , uint64_t              address
     ) {
         IoSave  restore(io,address);
     }
@@ -1136,31 +1135,32 @@ public:
     virtual void visitTag
     ( Io&                   io
     , Image&                image
-    , size_t                address
+    , uint64_t              address
     , const TagDict&        tagDict
     ) {
         IoSave  restore(io,address);
-        DataBuf tiffTag(12);
+        DataBuf tiffTag(image.bigtiff() ? 20 : 12);
         io.read(tiffTag);
         endian_e endian = image.endian();
+        bool     bigtiff = image.bigtiff();
 
-        uint16_t tag    = getShort(tiffTag,0,endian);
-        type_e   type   = getType (tiffTag,2,endian);
-        uint32_t count  = getLong (tiffTag,4,endian);
-        size_t   offset = getLong (tiffTag,8,endian);
+        uint16_t tag    =                                         getShort(tiffTag,0,endian);
+        type_e   type   =                                         getType (tiffTag,2,endian);
+        uint64_t count  = bigtiff ? getLong8(tiffTag,4,endian)  : getLong (tiffTag,4,endian);
+        uint64_t offset = bigtiff ? getLong8(tiffTag,12,endian) : getLong (tiffTag,8,endian);
         uint16_t size   = typeSize(type);
 
         // allocate a buffer and read the data
         DataBuf buf(count*size);
         std::string offsetString ;
         std::string value ;
-        if ( count*size > 4 ) {  // read into buffer
+        if ( count*size > (bigtiff ? 8 : 4) ) {  // read into buffer
             io.seek(offset);     // position
             io.read(buf);        // read
             value = buf.toString(0,type,count,endian);
             offsetString = stringFormat("%10u", offset);
         } else {
-            value = tiffTag.toString(8,type,count,endian);
+            value = tiffTag.toString(bigtiff?12:8,type,count,endian);
         }
 
         // format the output
@@ -1259,7 +1259,7 @@ void CIFF::accept(Visitor& visitor)
     visitor.visitEnd(image());
 }
 
-void IFD::visitMakerNote(Visitor& visitor,DataBuf& buf,uint16_t count,uint32_t offset)
+void IFD::visitMakerNote(Visitor& visitor,DataBuf& buf,uint64_t count,uint64_t offset)
 {
     if ( image_.maker_ == kNikon ) {
         // Nikon MakerNote is embeded tiff `II*_....` 10 bytes into the data!
@@ -1285,25 +1285,28 @@ void IFD::visitMakerNote(Visitor& visitor,DataBuf& buf,uint16_t count,uint32_t o
 void IFD::visit(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
 {
     IoSave save(io_,start_);
+    bool bigtiff    = image_.bigtiff();
+    endian_e endian = image_.endian();
 
     if ( !image_.depth_++ ) image_.visits().clear();
     visitor.visitBegin(image_);
     if ( image_.depth_ > 100 ) Error(kerCorruptedMetadata) ; // weird file
 
     // buffer
-    DataBuf  dir(12);
-    size_t   start=start_;
+    DataBuf  dir(bigtiff ? 20 : 12);
+    uint64_t start=start_;
     while  ( start ) {
         // Read top of directory
-        io_.read(dir.pData_, 2);
-        uint16_t dirLength = getShort(dir,0,image_.endian());
+        io_.read(dir.pData_, bigtiff ? 8 : 2);
+        uint64_t dirLength = bigtiff ? getLong8(dir,0,endian) : getShort(dir,0,endian);
 
         if ( dirLength > 500 ) Error(kerTiffDirectoryTooLarge,dirLength);
         visitor.visitDirBegin(image_,dirLength);
+        uint64_t a0 = start + (bigtiff?8:2) + dirLength * dir.size_; // addresss to read next
 
         // Run along the directory
-        for ( int i = 0 ; i < dirLength ; i ++ ) {
-            const size_t address = start + 2 + i*12 ;
+        for ( uint64_t i = 0 ; i < dirLength ; i ++ ) {
+            const uint64_t address = start + (bigtiff?8:2) + i* dir.size_ ;
             if ( visits().find(address) != visits().end()  ) { // never visit the same place twice!
                 Error(kerCorruptedMetadata);
             }
@@ -1311,23 +1314,27 @@ void IFD::visit(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
             io_.seek(address);
 
             io_.read(dir);
-            uint16_t tag    = getShort(dir,0,image_.endian());
-            type_e   type   = getType (dir,2,image_.endian());
-            uint32_t count  = getLong (dir,4,image_.endian());
-            uint32_t offset = getLong (dir,8,image_.endian());
+            uint16_t tag    =                                     getShort(dir,0,endian);
+            type_e   type   =                                     getType (dir,2,endian);
+            uint64_t count  = bigtiff ? getLong8(dir, 4,endian) : getLong (dir,4,endian);
+            uint64_t offset = bigtiff ? getLong8(dir,12,endian) : getLong (dir,8,endian);
 
-            if ( !typeValid(type) ) {
+            if ( !typeValid(type,bigtiff) ) {
                 Error(kerInvalidTypeValue,type);
             }
 
             visitor.visitTag(io_,image_,address,tagDict);  // Tell the visitor
 
-            uint16_t pad     = isByteType(type)  ? 1 : 0;
-            uint16_t size    = typeSize(type)    ;
-            size_t   alloc   = size*count + pad+6;
-            DataBuf  buf(alloc,io_.size());
-            io_.seek(offset);
-            io_.read(buf);
+            uint64_t     size  = typeSize(type) ;
+            size_t       alloc = size*count     ;
+            DataBuf  buf(alloc,io_.size()-io_.tell());
+            if ( alloc < (bigtiff?8:4) ) {
+                buf.copy(&offset,(bigtiff?8:4));
+            } else {
+                IoSave save(io_,offset);
+                io_.read(buf);
+            }
+            
             // recursion anybody?
             if ( tagDict == tiffDict && tag == ktMake ) image_.setMaker(buf);
             if ( type    == kttIfd )    tag  = ktSubIFD;
@@ -1335,20 +1342,23 @@ void IFD::visit(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
                 case ktGps       : IFD(image_,offset,false).visit(visitor,gpsDict );break;
                 case ktExif      : IFD(image_,offset,false).visit(visitor,exifDict);break;
                 case ktMakerNote :         visitMakerNote(visitor,buf,count,offset);break;
+                /*
                 case ktSubIFD    :
                      for ( size_t i = 0 ; i < count ; i++ ) {
-                         uint32_t  off  = count == 1 ? offset : getLong(buf,i*4,image_.endian()) ;
+                         uint64_t   off  = bigtiff?getLong8(buf,i*size,endian):getLong(buf,i*size,endian) ;
                          IFD(image_,off).visit(visitor,tagDict );
                      }
                 break;
+                */
                 default: /* do nothing */ ; break;
             }
         } // for i < dirLength
 
         start = 0; // !stop
         if ( next_ ) {
-            io_.read(dir.pData_, 4);
-            start = getLong(dir,0,image_.endian());
+            io_.seek(a0);
+            io_.read(dir.pData_, bigtiff?8:4);
+            start = bigtiff?getLong8(dir,0,endian):getLong(dir,0,endian);
         }
         visitor.visitDirEnd(image_,start);
     } // while start != 0
@@ -1362,18 +1372,18 @@ bool TiffImage::valid()
     IoSave restore(io(),0);
 
     // read header
-    DataBuf  header(12);
+    DataBuf  header(16);
     io_.read(header);
 
     char c   = (char) header.pData_[0] ;
     char C   = (char) header.pData_[1] ;
     endian_  = c == 'M' ? keBig : keLittle;
     magic_   = getShort(header,2,endian_);
-    start_   = getLong (header,4,endian_);
-    format_  = "TIFF";
     bigtiff_ = magic_ == 43;
+    start_   = bigtiff_ ? getLong8(header,8,endian_) : getLong (header,4,endian_);
+    format_  = bigtiff_ ? "BIGTIFF"                     : "TIFF"                    ;
 
-    return (magic_ == 42) && (c == C) && ( c == 'I' || c == 'M' ) && (start_ < io_.size()) ;
+    return (magic_ == 42||magic_ == 43) && (c == C) && ( c == 'I' || c == 'M' ) && (start_ < io_.size()) ;
 } // TiffImage::valid
 
 void TiffImage::visit(Visitor& visitor,TagDict& tagDict)
