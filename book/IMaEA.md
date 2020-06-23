@@ -1245,34 +1245,14 @@ void IFD::visit(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
             if ( tagDict == tiffDict && tag == ktMake ) image_.setMaker(buf);
             if ( type    == kttIfd )    tag  = ktSubIFD;
             switch ( tag ) {
-                case ktGps  : IFD(image_,offset,false).visit(visitor,gpsDict );break;
-                case ktExif : IFD(image_,offset,false).visit(visitor,exifDict);break;
-                case ktMakerNote :
-                if ( image_.maker_ == kNikon ) {
-                    // Nikon MakerNote is embeded tiff `II*_....` 10 bytes into the data!
-                    size_t punt = buf.strequals("Nikon") ? 10
-                                : 0
-                                ;
-                    Io     io(io_,offset+punt,count-punt);
-                    TiffImage makerNote(io,image_.maker_);
-                    makerNote.visit(visitor,makerDict());
-                } else if ( image_.maker_ == kAgfa && buf.strequals("ABC") ) {
-                    // Agfa  MakerNote is an IFD `ABC_IIdL...`  6 bytes into the data!
-                    ImageEndianSaver save(image_,keLittle);
-                    IFD makerNote(image_,offset+6,false);
-                    makerNote.visit(visitor,makerDict());
-                } else {
-                    bool   bNext = maker()  != kSony;                                        // Sony no trailing next
-                    size_t punt  = maker()  == kSony && buf.strequals("SONY DSC ") ? 12 : 0; // Sony 12 byte punt
-                    IFD makerNote(image_,offset+punt,bNext);
-                    makerNote.visit(visitor,makerDict());
-                }
-                break;
-                case ktSubIFD :
-                    for ( size_t i = 0 ; i < count ; i++ ) {
-                        uint32_t  off  = count == 1 ? offset : getLong(buf,i*4,image_.endian()) ;
-                        IFD(image_,off).visit(visitor,tagDict );
-                    }
+                case ktGps       : IFD(image_,offset,false).visit(visitor,gpsDict );break;
+                case ktExif      : IFD(image_,offset,false).visit(visitor,exifDict);break;
+                case ktMakerNote :         visitMakerNote(visitor,buf,count,offset);break;
+                case ktSubIFD    :
+                     for ( size_t i = 0 ; i < count ; i++ ) {
+                         uint32_t  off  = count == 1 ? offset : getLong(buf,i*4,image_.endian()) ;
+                         IFD(image_,off).visit(visitor,tagDict );
+                     }
                 break;
                 default: /* do nothing */ ; break;
             }
@@ -1291,7 +1271,32 @@ void IFD::visit(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
 } // IFD::visit
 ```
 
-These could be the most beautiful and elegant 100 line function I have ever written.  I'm sure there an easy way to simplify or hide the makernote dance in a function.
+The MakerNote is thorny. Every manufacturer has similar ideas with different details.
+
+```cpp
+void IFD::visitMakerNote(Visitor& visitor,DataBuf& buf,uint16_t count,uint32_t offset)
+{
+    if ( image_.maker_ == kNikon ) {
+        // Nikon MakerNote is embeded tiff `II*_....` 10 bytes into the data!
+        size_t punt = buf.strequals("Nikon") ? 10
+                    : 0
+                    ;
+        Io     io(io_,offset+punt,count-punt);
+        TiffImage makerNote(io,image_.maker_);
+        makerNote.visit(visitor,makerDict());
+    } else if ( image_.maker_ == kAgfa && buf.strequals("ABC") ) {
+        // Agfa  MakerNote is an IFD `ABC_IIdL...`  6 bytes into the data!
+        ImageEndianSaver save(image_,keLittle);
+        IFD makerNote(image_,offset+6,false);
+        makerNote.visit(visitor,makerDict());
+    } else {
+        bool   bNext = maker()  != kSony;                                        // Sony no trailing next
+        size_t punt  = maker()  == kSony && buf.strequals("SONY DSC ") ? 12 : 0; // Sony 12 byte punt
+        IFD makerNote(image_,offset+punt,bNext);
+        makerNote.visit(visitor,makerDict());
+    }
+} // visitMakerNote
+```
 
 To complete the story, here's TiffImage::valid() and TiffImage::visit():
 
@@ -1988,11 +1993,11 @@ To be written.
 
 <center>![open-source-cartoon.png](open-source-cartoon.png)</center>
 
-This topic deserves a book in its own right.  It's easy to think of an Open Source Project as some code.  It's not.  The code is a major part of the project, however probably only 50% of the effort goes into code.  We have many stakeholders in a project including: contributors, users, security, distros, and competitors.  The project needs documentation, build, test, bug reporting and many other elements.
+This topic deserves a book in its own right.  It's easy to think of an Open Source Project as source code.  It's not.  The source code is a major part of the project, however probably only 50% of the effort goes into the code.  We have many stakeholders in a project including: contributors, users, security, distros, and competitors.  The project needs documentation, build, test, bug reporting and many other elements.
 
-You may have seen the sketch in "The Life of Brian" called "What have the Romans Ever Done for Us?".  It begins with John Cleese asking the question and somebody replies "The aqueduct?".  Within one minute they list lots of stuff including Water Supply, Roads, Schools, Sanitation, Police, Laws, Medicine, Wine and Public Health.  It's much the same with Open Source.  Of course we have C++ code, however we also have Build, Test, Platform Support, Documentation, User Support, Security, Release Engineering, Localisation and other matters that require time and attention.
+You may have seen the sketch in _**The Life of Brian**_ which begins with John Cleese asking the question _**"What have the Romans Ever Done for Us?"**_ and somebody replies _**The Aqueduct**_.  Within one minute they list Water Supply, Roads, Schools, Sanitation, Police, Laws, Medicine, Wine and Public Health.  It's much the same with Open Source.  Of course we have source code, however we also have Build, Test, Platform Support, Documentation, User Support, Security, Release Engineering, Localisation and other matters that require time and attention.
 
-You are probably not surprised to learn that most stakeholders consider their concern should be the top priority for the project.  The challenge is that there are many stakeholders and therefore many top priorities.  When dealing with a stakeholder's issue, they frequently say "All you have to do is bla bla bla".  In my head, I hear the words in a slightly different order.  I hear "You have to do it all".
+You are probably not surprised to learn that most stakeholders consider their concern should be the top priority for the project.  The challenge is that there are many stakeholders and therefore many top priorities.  When dealing with a stakeholder's issue, they frequently say _**All you have to do is bla bla bla**_.  In my head, I hear the words in a slightly different order.  I hear _**You have to do it all**_.
 
 The difficulties of maintaining an open-source project are well explained in this article: [https://steemit.com/opensource/@crell/open-source-is-awful](https://steemit.com/opensource/@crell/open-source-is-awful) from which I have copied this cartoon:
 

@@ -892,10 +892,12 @@ public:
     : image_  (image)
     , start_  (start)
     , io_     (image.io())
-    , next_(next)
+    , next_   (next)
     {};
 
-    void     visit(Visitor& visitor,const TagDict& tagDict=tiffDict);
+    void     visit         (Visitor& visitor,const TagDict& tagDict=tiffDict);
+    void     visitMakerNote(Visitor& visitor,DataBuf& buf,uint16_t count,uint32_t offset);
+
     Visits&  visits()    { return image_.visits()  ; }
     maker_e  maker()     { return image_.maker_    ; }
     TagDict& makerDict() { return image_.makerDict_; }
@@ -1257,6 +1259,29 @@ void CIFF::accept(Visitor& visitor)
     visitor.visitEnd(image());
 }
 
+void IFD::visitMakerNote(Visitor& visitor,DataBuf& buf,uint16_t count,uint32_t offset)
+{
+    if ( image_.maker_ == kNikon ) {
+        // Nikon MakerNote is embeded tiff `II*_....` 10 bytes into the data!
+        size_t punt = buf.strequals("Nikon") ? 10
+                    : 0
+                    ;
+        Io     io(io_,offset+punt,count-punt);
+        TiffImage makerNote(io,image_.maker_);
+        makerNote.visit(visitor,makerDict());
+    } else if ( image_.maker_ == kAgfa && buf.strequals("ABC") ) {
+        // Agfa  MakerNote is an IFD `ABC_IIdL...`  6 bytes into the data!
+        ImageEndianSaver save(image_,keLittle);
+        IFD makerNote(image_,offset+6,false);
+        makerNote.visit(visitor,makerDict());
+    } else {
+        bool   bNext = maker()  != kSony;                                        // Sony no trailing next
+        size_t punt  = maker()  == kSony && buf.strequals("SONY DSC ") ? 12 : 0; // Sony 12 byte punt
+        IFD makerNote(image_,offset+punt,bNext);
+        makerNote.visit(visitor,makerDict());
+    }
+} // visitMakerNote
+
 void IFD::visit(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
 {
     IoSave save(io_,start_);
@@ -1301,43 +1326,20 @@ void IFD::visit(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
             uint16_t size    = typeSize(type)    ;
             size_t   alloc   = size*count + pad+6;
             DataBuf  buf(alloc,io_.size());
-            size_t   restore = io_.tell();
             io_.seek(offset);
             io_.read(buf);
-            io_.seek(restore);
-
             // recursion anybody?
             if ( tagDict == tiffDict && tag == ktMake ) image_.setMaker(buf);
             if ( type    == kttIfd )    tag  = ktSubIFD;
             switch ( tag ) {
-                case ktGps  : IFD(image_,offset,false).visit(visitor,gpsDict );break;
-                case ktExif : IFD(image_,offset,false).visit(visitor,exifDict);break;
-                case ktMakerNote :
-                if ( image_.maker_ == kNikon ) {
-                    // Nikon MakerNote is embeded tiff `II*_....` 10 bytes into the data!
-                    size_t punt = buf.strequals("Nikon") ? 10
-                                : 0
-                                ;
-                    Io     io(io_,offset+punt,count-punt);
-                    TiffImage makerNote(io,image_.maker_);
-                    makerNote.visit(visitor,makerDict());
-                } else if ( image_.maker_ == kAgfa && buf.strequals("ABC") ) {
-                    // Agfa  MakerNote is an IFD `ABC_IIdL...`  6 bytes into the data!
-                    ImageEndianSaver save(image_,keLittle);
-                    IFD makerNote(image_,offset+6,false);
-                    makerNote.visit(visitor,makerDict());
-                } else {
-                    bool   bNext = maker()  != kSony;                                        // Sony no trailing next
-                    size_t punt  = maker()  == kSony && buf.strequals("SONY DSC ") ? 12 : 0; // Sony 12 byte punt
-                    IFD makerNote(image_,offset+punt,bNext);
-                    makerNote.visit(visitor,makerDict());
-                }
-                break;
-                case ktSubIFD :
-                    for ( size_t i = 0 ; i < count ; i++ ) {
-                        uint32_t  off  = count == 1 ? offset : getLong(buf,i*4,image_.endian()) ;
-                        IFD(image_,off).visit(visitor,tagDict );
-                    }
+                case ktGps       : IFD(image_,offset,false).visit(visitor,gpsDict );break;
+                case ktExif      : IFD(image_,offset,false).visit(visitor,exifDict);break;
+                case ktMakerNote :         visitMakerNote(visitor,buf,count,offset);break;
+                case ktSubIFD    :
+                     for ( size_t i = 0 ; i < count ; i++ ) {
+                         uint32_t  off  = count == 1 ? offset : getLong(buf,i*4,image_.endian()) ;
+                         IFD(image_,off).visit(visitor,tagDict );
+                     }
                 break;
                 default: /* do nothing */ ; break;
             }
