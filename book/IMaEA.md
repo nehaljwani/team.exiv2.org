@@ -41,7 +41,7 @@ _And our cat Lizzie._
 | [8.2 Tag Names in Exiv2](#8-2)                        | 31 | [MRW Minolta Raw](#MRW)               | 19 | [13.9 Release Engineering](#13-9)       | 63 |
 | [8.3 TagInfo](#8-3)                                   | 34 | [ORF Olympus Raw Format](#ORF)        | 20 | [13.10 Platform Support](#13-10)        | 64 |
 | [8.4 Visitor Design Pattern](#8-4)                    | 36 | [PSD PhotoShop Document](#PSD)        | 14 | [13.11 Localisation](#13-11)            | 65 |
-| [8.5 IFD:visit() and TiffImage::visit() ](#8-5)       | 40 | [RAF](#RAF)                           | 14 | [13.12 Build Server](#13-12)            | 66 |
+| [8.5 IFD:accept() and TiffImage::accept() ](#8-5)     | 40 | [RAF](#RAF)                           | 14 | [13.12 Build Server](#13-12)            | 66 |
 | [8.6 Presenting data with visitTag()](#8-6)<br>       | 44 | [RW2](#RW2)                           | 14 | [13.13 Source Code Management](#13-13)  | 67 |
 | [8.7 Metadata and Binary Tag Decoder](#8-7)           | 47 | [TGA](#TGA)                           | 14 | [13.14 Project Web Site](#13-14)        | 68 |
 | [9. Image Previews](#9)                               | 50 | [GIF Graphical Image Format](#GIF)    | 14 | [13.15 Project Servers ](#13-15)        | 68 |
@@ -248,19 +248,25 @@ There is also the issue of patents.  It's unclear if it's legal to read an IsoBM
 ## TIFF and BigTiff.  Tagged Image File Format.
 ![tiff](tiff.png)
 
-The architecture of TIFF and BigTiff are the same.  BigTiff is 64 bit based.  So most uint16\_t data types become uint32\_t and uint32\_t become uint64\_t.  BigTiff has three additional 8 byte types: Long8, SLong8 and Ifd8.  Both tag and type are uint16\_t in TIFF and BigTiff.  The "magic" header for both Tiff and BigTiff is 4 bytes, followed by the offset to the First IFD.  The  offset is 4 byte uint\_32t for Tiff and and 8 byte uint64_t for BigTiff.  For both TIFF and BigTiff the Endian Marker is MM for big-endian and II for little-endian.  M = Motorala, I = Intel.
+The architecture of TIFF and BigTiff are the same.  BigTiff is 64 bit based.  So most uint16\_t data types become uint32\_t and uint32\_t become uint64\_t.  BigTiff has three additional 8 byte types: Long8, SLong8 and Ifd8.
 
-| Element | TIFF | BigTiff | Element | TIFF | BigTiff |
-|:--       |:--  |:--    |:--       |:--  |:--    |
-| Header | XX42Offset | EE4380Offset | Header | 8 bytes | 16 bytes |
-| Marker | **\*** 0x2a = 42 | **\+** 0x2b = 43 | Offset    | uint32\_t | uint64\_t |
-| Tag    | uint16\_t | uint16\_t  | Entry  | 12 bytes | 20 bytes |
-| Type    | uint16\_t | uint16\_t  | Entries **#E** | uint16\_t | uint64\_t  |
-| Count   | uint32\_t | uint64\_t  | Next | uint32\_t | uint64\_t  | 
+For both TIFF and BigTiff, the _**magic**_ header is MM (Motorola) for big-endian and II (Intel) for little-endian, followed by a 2-byte integer which must be 42 (ascii \*) for Tiff and 43 (ascii +) for BigTiff.  These markers are very obvious **MM\_+** or **II*\_** when formatted by dmpf.cpp
 
-As we shall see, the differences between TIFF and BigTiff are minor.
+Both tag and type are uint16\_t in TIFF and BigTiff.
 
-It's also important to understand that Endian can change as we descend into the file.  There could (and there are) files which contain sub-files whose endian setting is different from the container file.
+The header for Tiff is 8 bytes.  It is the _**magic**_  header followed by a 32bit offset to the first IFD.   The header for BigTiff is 16 bytes.  It is the _**magic**_  header followed by 2 short integers (which must be 8,0) and a 64 bit offset to the first IFD.
+
+
+
+| Element  | TIFF             | BigTiff              | Element        | TIFF      | BigTiff    |
+|:--       |:--               |:--                   |:--             |:--        |:--         |
+| Header   | XX*_Offset       | XX+_ 8 0 64bitOffset | Header         | 8 bytes   | 16 bytes   |
+| Marker   | **\*** 0x2a = 42 | **\+** 0x2b = 43     | Offset         | uint32\_t | uint64\_t  |
+| Tag      | uint16\_t        | uint16\_t            | Entry          | 12 bytes  | 20 bytes   |
+| Type     | uint16\_t        | uint16\_t            | Entries **#E** | uint16\_t | uint64\_t  |
+| Count    | uint32\_t        | uint64\_t            | Next           | uint32\_t | uint64\_t  | 
+
+It's also important to understand that Endian can change as we descend into the file.  There are files which contain sub-files whose endian setting is different from the container file.
 
 ### Garbage Collecting Tiff Files
 
@@ -841,7 +847,7 @@ Exif.Image.Orientation                       Short       1  top, left
 $
 ```
 
-You may be interested to discover that option _**-pS**_ which arrived with Exiv2 v0.25 was joined in Exiv2 v0.26 by _**-pR**_.  This is a "recursive" version of _**-pS**_.  It dumps the structure not only of the file, but also every subfiles (mostly IFDs).  This is discussed in detail here: [8.5 IFD:visit() and TiffImage::visit()](#8-5).
+You may be interested to discover that option _**-pS**_ which arrived with Exiv2 v0.25 was joined in Exiv2 v0.26 by _**-pR**_.  This is a "recursive" version of _**-pS**_.  It dumps the structure not only of the file, but also every subfiles (mostly IFDs).  This is discussed in detail here: [8.5 IFD:accept() and TiffImage::accept()](#8-5).
 
 [TOC](#TOC)
 
@@ -1200,7 +1206,7 @@ There are several ways in which visitIFD is called.  visitTiff() starts with the
 The program tvisitor has several file handlers such as TiffImage, JpegImage and CrwImage.  Exiv2 has handlers for about 20 different formats.  If you understand Tiff and Jpeg, the others are boring variations.
 
 ```cpp
-void IFD::visit(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
+void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
 {
     IoSave   save(io_,start_);
     bool     bigtiff = image_.bigtiff();
@@ -1281,7 +1287,7 @@ void IFD::visit(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
 
     visitor.visitEnd(image_);
     image_.depth_--;
-} // IFD::visit
+} // IFD::accept
 ```
 
 The MakerNote is thorny. Every manufacturer has similar ideas with different details.
@@ -1311,7 +1317,7 @@ void IFD::visitMakerNote(Visitor& visitor,DataBuf& buf,uint16_t count,uint32_t o
 } // visitMakerNote
 ```
 
-To complete the story, here's TiffImage::valid() and TiffImage::visit():
+To complete the story, here's TiffImage::valid() and TiffImage::accept().  We need two flavours of accept.  The default assumes tiffDict.  The makernote handlers pass their TagDict to accept().
 
 ```cpp
 bool TiffImage::valid()
@@ -1336,11 +1342,19 @@ bool TiffImage::valid()
     return (magic_ == 42||magic_ == 43) && (c == C) && ( c == 'I' || c == 'M' ) && bytesize == 8 && version == 0;
 } // TiffImage::valid
 
-void TiffImage::visit(Visitor& visitor,TagDict& tagDict)
+void TiffImage::accept(class Visitor& visitor)
+{
+    accept(visitor,tiffDict);
+}
+
+void TiffImage::accept(Visitor& visitor,TagDict& tagDict)
 {
     if ( valid() ) {
         IFD ifd(*this,start_,next_);
         ifd.visit(visitor,tagDict);
+    } else {
+        std::ostringstream os ; os << "expected " << format_ ;
+        Error(kerInvalidFileFormat,io().path(), os.str());
     }
 } // TiffImage::visit
 ```
@@ -1356,7 +1370,7 @@ JpegImage::accept() navigates the chain of segments.  When he finds the embedded
             }
 ```
 
-He discovers the TIFF file hidden in the data, he opens an Io stream which he attaches to a Tiff objects and calls "TiffImage::accept(visitor)".  Software seldom gets simpler, as beautiful, or more elegant than this.
+He discovers the TIFF file hidden in the data, he opens an Io stream which he attaches to a Tiff object and calls "TiffImage::accept(visitor)".  Software seldom gets simpler, as beautiful, or more elegant than this.
 
 Just to remind you, BasicIo supports http/ssh and other protocols.  This code will recursively descend into a remote file without copying it locally.  And he does it with great efficiency.  This is discussed in section [7 I/O in Exiv2](#7)
 

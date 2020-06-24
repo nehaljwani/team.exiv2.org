@@ -74,9 +74,7 @@ enum error_e
 ,   kerTiffDirectoryTooLarge
 ,   kerInvalidTypeValue
 ,   kerInvalidMalloc
-,   kerNotATiff
-,   kerNotAJpeg
-,   kerNotACrw
+,   kerInvalidFileFormat
 ,   kerFailedToReadImageData
 ,   kerDataSourceOpenFailed
 ,   kerNoImageInInputData
@@ -84,16 +82,14 @@ enum error_e
 ,   kerUnknownFormat
 };
 
-void Error (error_e error, std::string msg)
+void Error (error_e error, std::string msg,std::string m2="")
 {
     switch ( error ) {
         case   kerCorruptedMetadata      : std::cerr << "corrupted metadata"       ; break;
         case   kerTiffDirectoryTooLarge  : std::cerr << "tiff directory too large" ; break;
         case   kerInvalidTypeValue       : std::cerr << "invalid type"             ; break;
         case   kerInvalidMalloc          : std::cerr << "invalid malloc"           ; break;
-        case   kerNotATiff               : std::cerr << "Not a tiff"               ; break;
-        case   kerNotAJpeg               : std::cerr << "not a jpeg"               ; break;
-        case   kerNotACrw                : std::cerr << "not a crw"                ; break;
+        case   kerInvalidFileFormat      : std::cerr << "invalid file format"      ; break;
         case   kerFailedToReadImageData  : std::cerr << "failed to read image data"; break;
         case   kerDataSourceOpenFailed   : std::cerr << "data source open failed"  ; break;
         case   kerNoImageInInputData     : std::cerr << "not image in input data"  ; break;
@@ -713,7 +709,7 @@ class   CrwImage ;
 class   IFD;
 class   CIFF;
 
-// 2. Create abstract "visitor" base class with various Image visit() methods
+// 2. Create abstract "visitor" base class with virtual methods
 class Visitor
 {
 public:
@@ -911,7 +907,7 @@ public:
     , next_   (next)
     {};
 
-    void     visit         (Visitor& visitor,const TagDict& tagDict=tiffDict);
+    void     accept         (Visitor& visitor,const TagDict& tagDict=tiffDict);
     void     visitMakerNote(Visitor& visitor,DataBuf& buf,uint64_t count,uint64_t offset);
 
     Visits&  visits()    { return image_.visits()  ; }
@@ -934,7 +930,7 @@ private:
     Io&      io_     ;
 };
 
-// Concrete Images
+// Concrete Images with an accept() method which calles the Vistor virtual functions (visitBegin/End, visitTag etc.)
 class TiffImage : public Image
 {
 public:
@@ -947,19 +943,11 @@ public:
     , next_(false)
     { setMaker(maker);}
 
-    void visit(Visitor& visitor,TagDict& tagDict = tiffDict );
+    void accept(class Visitor& visitor);
+    void accept(Visitor& visitor,TagDict& tagDict);
+
     bool valid();
     bool bigtiff()  { return bigtiff_ ; }
-
-    virtual void accept(class Visitor& visitor)
-    {
-        if ( valid() ) {
-            visit(visitor);
-        } else {
-            Error(kerNotATiff,io().path());
-        }
-    }
-
 private:
     bool next_;
 };
@@ -1023,7 +1011,8 @@ public:
             IoSave save(io(),start_);
             heap_.accept(visitor);
         } else {
-            Error(kerNotACrw,io().path());
+            std::ostringstream os ; os << "expected " << format_ ;
+            Error(kerInvalidFileFormat,io().path(), os.str());
         }
     }
 };
@@ -1275,21 +1264,21 @@ void IFD::visitMakerNote(Visitor& visitor,DataBuf& buf,uint64_t count,uint64_t o
         size_t punt = buf.strequals("Nikon") ? 10 : 0 ;
         Io     io(io_,offset+punt,count-punt);
         TiffImage makerNote(io,image_.maker_);
-        makerNote.visit(visitor,makerDict());
+        makerNote.accept(visitor,makerDict());
     } else if ( image_.maker_ == kAgfa && buf.strequals("ABC") ) {
         // Agfa  MakerNote is an IFD `ABC_IIdL...`  6 bytes into the data!
         ImageEndianSaver save(image_,keLittle);
         IFD makerNote(image_,offset+6,false);
-        makerNote.visit(visitor,makerDict());
+        makerNote.accept(visitor,makerDict());
     } else {
         bool   bNext = maker()  != kSony;                                        // Sony no trailing next
         size_t punt  = maker()  == kSony && buf.strequals("SONY DSC ") ? 12 : 0; // Sony 12 byte punt
         IFD makerNote(image_,offset+punt,bNext);
-        makerNote.visit(visitor,makerDict());
+        makerNote.accept(visitor,makerDict());
     }
 } // visitMakerNote
 
-void IFD::visit(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
+void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
 {
     IoSave   save(io_,start_);
     bool     bigtiff = image_.bigtiff();
@@ -1346,13 +1335,13 @@ void IFD::visit(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
             // recursion anybody?
             if ( isTypeIFD(type) ) tag  = ktSubIFD;
             switch ( tag ) {
-                case ktGps       : IFD(image_,offset,false).visit(visitor,gpsDict );break;
-                case ktExif      : IFD(image_,offset,false).visit(visitor,exifDict);break;
+                case ktGps       : IFD(image_,offset,false).accept(visitor,gpsDict );break;
+                case ktExif      : IFD(image_,offset,false).accept(visitor,exifDict);break;
                 case ktMakerNote :         visitMakerNote(visitor,buf,count,offset);break;
                 case ktSubIFD    :
                      for ( uint64_t i = 0 ; i < count ; i++ ) {
                          offset = get4or8 (buf,0,i,endian);
-                         IFD(image_,offset,false).visit(visitor,tagDict);
+                         IFD(image_,offset,false).accept(visitor,tagDict);
                      }
                 break;
                 default: /* do nothing */ ; break;
@@ -1394,11 +1383,19 @@ bool TiffImage::valid()
     return (magic_ == 42||magic_ == 43) && (c == C) && ( c == 'I' || c == 'M' ) && bytesize == 8 && version == 0;
 } // TiffImage::valid
 
-void TiffImage::visit(Visitor& visitor,TagDict& tagDict)
+void TiffImage::accept(class Visitor& visitor)
+{
+    accept(visitor,tiffDict);
+}
+
+void TiffImage::accept(Visitor& visitor,TagDict& tagDict)
 {
     if ( valid() ) {
         IFD ifd(*this,start_,next_);
-        ifd.visit(visitor,tagDict);
+        ifd.accept(visitor,tagDict);
+    } else {
+        std::ostringstream os ; os << "expected " << format_ ;
+        Error(kerInvalidFileFormat,io().path(), os.str());
     }
 } // TiffImage::visit
 
@@ -1432,7 +1429,8 @@ void JpegImage::accept(Visitor& v)
 {
     // Ensure that this is the correct image type
     if (!valid()) {
-        Error(kerNotAJpeg,io().path());
+        std::ostringstream os ; os << "expected " << format_ ;
+        Error(kerInvalidFileFormat,io().path(),os.str());
     }
     IoSave save(io(),0);
     v.visitBegin((*this));
@@ -1455,7 +1453,7 @@ void JpegImage::accept(Visitor& v)
     // Read section marker
     int marker = advanceToMarker();
     if (marker < 0) {
-        Error(kerNotAJpeg);
+        Error(kerInvalidFileFormat,io().path());
     }
 
     REPORT_MARKER;
