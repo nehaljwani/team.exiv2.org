@@ -14,7 +14,7 @@ _First, my wife Alison, who has been my loyal support since the day we met in Hi
 
 _Secondly, Andreas Huggel the founder of the project and Luis and Dan who have worked tirelessly with me since 2017._
 
-_Exiv2 contributors (in alphabet order): Abhinav, Alan, Andreas (both of them), Ben, Gilles, Kevin, Mahesh, Nehal, Neils, Phil, Sridhar, Thomas, Tuan .... and others who have contributed to Exiv2._
+_Exiv2 contributors (in alphabetical order): Abhinav, Alan, Andreas (both of them), Ben, Gilles, Kevin, Mahesh, Michal, Nehal, Neils, Phil, Sridhar, Thomas, Tuan .... and others who have contributed to Exiv2._
 
 _File Detectives:  Phil, Dave Coffin, Laurent Clevy._
 
@@ -245,10 +245,10 @@ There is also the issue of patents.  It's unclear if it's legal to read an IsoBM
 
 [TOC](#TOC)
 <div id="TIFF">
-## TIFF and BigTiff
+## TIFF and BigTiff.  Tagged Image File Format.
 ![tiff](tiff.png)
 
-The architecture of TIFF and BigTiff are the same.  BigTiff is 64 bit based.  So most uint16\_t data types become uint32\_t and uint32\_t become uint64\_t.  BigTiff has three additional 8 byte types: longlong, slonglong and tiffifd8.  Both tag and type are uint16\_t in TIFF and BigTiff.  The "magic" header for both Tiff and BigTiff is 4 bytes, followed by the offset to the First IFD.  The  offset is 4 byte uint\_32t for Tiff and and 8 byte uint64_t for BigTiff.  For both TIFF and BigTiff the Endian Marker is MM for big-endian and II for little-endian.  M = Motorala, I = Intel.
+The architecture of TIFF and BigTiff are the same.  BigTiff is 64 bit based.  So most uint16\_t data types become uint32\_t and uint32\_t become uint64\_t.  BigTiff has three additional 8 byte types: Long8, SLong8 and Ifd8.  Both tag and type are uint16\_t in TIFF and BigTiff.  The "magic" header for both Tiff and BigTiff is 4 bytes, followed by the offset to the First IFD.  The  offset is 4 byte uint\_32t for Tiff and and 8 byte uint64_t for BigTiff.  For both TIFF and BigTiff the Endian Marker is MM for big-endian and II for little-endian.  M = Motorala, I = Intel.
 
 | Element | TIFF | BigTiff | Element | TIFF | BigTiff |
 |:--       |:--  |:--    |:--       |:--  |:--    |
@@ -841,7 +841,7 @@ Exif.Image.Orientation                       Short       1  top, left
 $
 ```
 
-You may be interested to discover that option _**-pS**_ which arrived with Exiv2 v0.25 was joined in Exiv2 v0.26 by _**-pR**_.  This is a "recursive" version of -pS.  It dumps the structure not only of the file, but also every subfiles (mostly tiff IFDs).  This is discussed in detail here: [8.5 IFD:visit() and TiffImage::visit()](#8-5).
+You may be interested to discover that option _**-pS**_ which arrived with Exiv2 v0.25 was joined in Exiv2 v0.26 by _**-pR**_.  This is a "recursive" version of _**-pS**_.  It dumps the structure not only of the file, but also every subfiles (mostly IFDs).  This is discussed in detail here: [8.5 IFD:visit() and TiffImage::visit()](#8-5).
 
 [TOC](#TOC)
 
@@ -1195,56 +1195,56 @@ It's important to realise that metadata is defined recursively.  In a Tiff File,
 
 TiffImage::visitIFD() uses a simple direct approach to parsing the tiff file.  When another IFD is located, visitIFD() is called recursively.  As a TIFF file is an 8 byte header which provides the offset to the first IFD.  We can descend into the tiff file from the beginning.  For other files types, the file handler has to find the Exif IFD and then call visitIFD().
 
-There are actually two "flavours" of visitIFD.  visitTiff() starts with the tiff header **II*\_tsfo** or **MM\_*ofst*_ and then calls _**visitIFD()**_.  Makernotes are usually an IFD.  Some manufactures (Nikon) embed a Tiff.  Some (Canon and Sony) embed an IFD.  It's quite common (Sony) to embed a single IFD which is not terminated with a four byte null uint32\_t.
+There are several ways in which visitIFD is called.  visitTiff() starts with the tiff header **II*\_tsfo** or **MM\_*ofst*_ and then calls _**visitIFD()**_.  Makernotes are usually an IFD.  Some manufactures (Nikon) embed a Tiff.  Some (Canon and Sony) embed an IFD.  It's quite common (Sony) to embed a single IFD which is not terminated with a four byte null uint32\_t.
 
 The program tvisitor has several file handlers such as TiffImage, JpegImage and CrwImage.  Exiv2 has handlers for about 20 different formats.  If you understand Tiff and Jpeg, the others are boring variations.
 
 ```cpp
 void IFD::visit(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
 {
-    IoSave save(io_,start_);
-    bool bigtiff    = image_.bigtiff();
-    endian_e endian = image_.endian();
+    IoSave   save(io_,start_);
+    bool     bigtiff = image_.bigtiff();
+    endian_e endian  = image_.endian();
 
     if ( !image_.depth_++ ) image_.visits().clear();
     visitor.visitBegin(image_);
     if ( image_.depth_ > 100 ) Error(kerCorruptedMetadata) ; // weird file
 
     // buffer
-    DataBuf  dir(bigtiff ? 20 : 12);
+    DataBuf  entry(bigtiff ? 20 : 12);
     uint64_t start=start_;
     while  ( start ) {
         // Read top of directory
         io_.seek(start);
-        io_.read(dir.pData_, bigtiff ? 8 : 2);
-        uint64_t dirLength = bigtiff ? getLong8(dir,0,endian) : getShort(dir,0,endian);
+        io_.read(entry.pData_, bigtiff ? 8 : 2);
+        uint64_t nEntries = bigtiff ? getLong8(entry,0,endian) : getShort(entry,0,endian);
 
-        if ( dirLength > 500 ) Error(kerTiffDirectoryTooLarge,dirLength);
-        visitor.visitDirBegin(image_,dirLength);
-        uint64_t a0 = start + (bigtiff?8:2) + dirLength * dir.size_; // addresss to read next
+        if ( nEntries > 500 ) Error(kerTiffDirectoryTooLarge,nEntries);
+        visitor.visitDirBegin(image_,nEntries);
+        uint64_t a0 = start + (bigtiff?8:2) + nEntries * entry.size_; // addresss to read next
 
         // Run along the directory
-        for ( uint64_t i = 0 ; i < dirLength ; i ++ ) {
-            const uint64_t address = start + (bigtiff?8:2) + i* dir.size_ ;
+        for ( uint64_t i = 0 ; i < nEntries ; i ++ ) {
+            const uint64_t address = start + (bigtiff?8:2) + i* entry.size_ ;
             if ( visits().find(address) != visits().end()  ) { // never visit the same place twice!
                 Error(kerCorruptedMetadata);
             }
             visits().insert(address);
             io_.seek(address);
 
-            io_.read(dir);
-            uint16_t tag    = getShort(dir,  0,endian);
-            type_e   type   = getType (dir,  2,endian);
-            uint64_t count  = get4or8 (dir,4,0,endian);
-            uint64_t offset = get4or8 (dir,4,1,endian);
-            
+            io_.read(entry);
+            uint16_t tag    = getShort(entry,  0,endian);
+            type_e   type   = getType (entry,  2,endian);
+            uint64_t count  = get4or8 (entry,4,0,endian);
+            uint64_t offset = get4or8 (entry,4,1,endian);
+
             if ( !typeValid(type,bigtiff) ) {
                 Error(kerInvalidTypeValue,type);
             }
 
             uint64_t size   = typeSize(type) ;
             size_t   alloc  = size*count     ;
-            DataBuf  buf(alloc,io_.size()-io_.tell());
+            DataBuf  buf(alloc);
             if ( alloc < (bigtiff?8:4) ) {
                 buf.copy(&offset,size);
             } else {
@@ -1255,26 +1255,26 @@ void IFD::visit(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
             visitor.visitTag(io_,image_,address,tag,type,count,offset,buf,tagDict);  // Tell the visitor
 
             // recursion anybody?
-            if ( type    == kttIfd )    tag  = ktSubIFD;
+            if ( isTypeIFD(type) ) tag  = ktSubIFD;
             switch ( tag ) {
                 case ktGps       : IFD(image_,offset,false).visit(visitor,gpsDict );break;
                 case ktExif      : IFD(image_,offset,false).visit(visitor,exifDict);break;
                 case ktMakerNote :         visitMakerNote(visitor,buf,count,offset);break;
                 case ktSubIFD    :
                      for ( uint64_t i = 0 ; i < count ; i++ ) {
-                         offset  = get4or8 (buf,0,i,endian);
+                         offset = get4or8 (buf,0,i,endian);
                          IFD(image_,offset,false).visit(visitor,tagDict);
                      }
                 break;
                 default: /* do nothing */ ; break;
             }
-        } // for i < dirLength
+        } // for i < nEntries
 
         start = 0; // !stop
         if ( next_ ) {
             io_.seek(a0);
-            io_.read(dir.pData_, bigtiff?8:4);
-            start = bigtiff?getLong8(dir,0,endian):getLong(dir,0,endian);
+            io_.read(entry.pData_, bigtiff?8:4);
+            start = bigtiff?getLong8(entry,0,endian):getLong(entry,0,endian);
         }
         visitor.visitDirEnd(image_,start);
     } // while start != 0
@@ -1319,18 +1319,21 @@ bool TiffImage::valid()
     IoSave restore(io(),0);
 
     // read header
-    DataBuf  header(12);
+    DataBuf  header(16);
     io_.read(header);
 
     char c   = (char) header.pData_[0] ;
     char C   = (char) header.pData_[1] ;
     endian_  = c == 'M' ? keBig : keLittle;
     magic_   = getShort(header,2,endian_);
-    start_   = getLong (header,4,endian_);
-    format_  = "TIFF";
     bigtiff_ = magic_ == 43;
+    start_   = bigtiff_ ? getLong8(header,8,endian_) : getLong (header,4,endian_);
+    format_  = bigtiff_ ? "BIGTIFF"                  : "TIFF"                    ;
 
-    return (magic_ == 42) && (c == C) && ( c == 'I' || c == 'M' ) && (start_ < io_.size()) ;
+    uint16_t bytesize = bigtiff_ ? getShort(header,4,endian_) : 8;
+    uint16_t version  = bigtiff_ ? getShort(header,6,endian_) : 0;
+
+    return (magic_ == 42||magic_ == 43) && (c == C) && ( c == 'I' || c == 'M' ) && bytesize == 8 && version == 0;
 } // TiffImage::valid
 
 void TiffImage::visit(Visitor& visitor,TagDict& tagDict)
@@ -1342,7 +1345,7 @@ void TiffImage::visit(Visitor& visitor,TagDict& tagDict)
 } // TiffImage::visit
 ```
 
-JpegImage::accept() navigates the chain of segments.  When he finds the embedded TIFF in the APP1 segment, he does this.  This is very similar to how the TimeImage for the Nikon makernote is created and navigated.
+JpegImage::accept() navigates the chain of segments.  When he finds the embedded TIFF in the APP1 segment, he does this.  This is very similar to how the TiffImage for the Nikon makernote is created and navigated.
 
 ```cpp
             // Pure beauty.  Create a TiffImage and ask him to entertain the visitor
@@ -1526,92 +1529,79 @@ void init()
 ## ReportVisitor()visitTag()
 
 ```cpp
-virtual void visitTag
-( Io&                   io
-, Image&                image
-, size_t                address
-, const TagDict&        tagDict
-) {
-    IoSave save(io,address);
-    DataBuf tiffTag(12);
-    io.read(tiffTag);
-    endian_e endian = image.endian();
+    virtual void visitTag
+    ( Io&            io
+    , Image&         image
+    , uint64_t       address
+    , uint16_t       tag
+    , type_e         type
+    , uint64_t       count
+    , uint64_t       offset
+    , DataBuf&       buf
+    , const TagDict& tagDict
+    ) {
+        // format the output
+        std::ostringstream    os ; os << offset;
+        std::string offsetS = typeSize(type)*count > (image.bigtiff_?8:4) ? os.str() :"";
+        std::string    name = tagName(tag,tagDict,28);
+        std::string   value = buf.toString(type,count,image.endian_);
 
-    uint16_t tag    = getShort(tiffTag,0,endian);
-    type_e   type   = getType (tiffTag,2,endian);
-    uint32_t count  = getLong (tiffTag,4,endian);
-    size_t   offset = getLong (tiffTag,8,endian);
-    uint16_t size   = typeSize(type);
-
-    // allocate a buffer and read the data
-    DataBuf buf(count*size);
-    std::string offsetString ;
-    std::string value ;
-    if ( count*size > 4 ) {  // read into buffer
-        io.seek(offset);     // position
-        io.read(buf);        // read
-        value = buf.toString(0,type,count,endian);
-        offsetString = stringFormat("%10u", offset);
-    } else {
-        value = tiffTag.toString(8,type,count,endian);
-    }
-
-    // format the output
-    std::string name  = tagName(tag,tagDict,28);
-
-    if ( printTag(name) ) {
-        out() << indent()
-              << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
-                    ,address,tag,name.c_str(),typeName(type),count,offsetString.c_str())
-              << chop(value,40)
-              << std::endl
-        ;
-        if ( makerTags.find(name) != makerTags.end() ) {
-            for (Field field : makerTags[name] ) {
-                std::string n = join(groupName(tag,tagDict),field.name(),28);
-                out() << indent()
-                      << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
-                                     ,offset+field.start(),tag,n.c_str(),typeName(field.type()),field.count(),"")
-                      << chop(buf.toString(field.start(),field.type(),field.count(),field.endian()==keImage?image.endian():field.endian()),40)
-                      << std::endl
-                ;
+        if ( printTag(name) ) {
+            out() << indent()
+                  << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
+                        ,address,tag,name.c_str(),::typeName(type),count,offsetS.c_str())
+                  << chop(value,40)
+                  << std::endl
+            ;
+            if ( makerTags.find(name) != makerTags.end() ) {
+                for (Field field : makerTags[name] ) {
+                    std::string n      = join(groupName(tagDict),field.name(),28);
+                    endian_e    endian = field.endian() == keImage ? image.endian() : field.endian();
+                    out() << indent()
+                          << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
+                                         ,offset+field.start(),tag,n.c_str(),typeName(field.type()),field.count(),"")
+                          << chop(buf.toString(field.type(),field.count(),endian,field.start()),40)
+                          << std::endl
+                    ;
+                }
             }
         }
-    }
-} // visitTag
+    } // visitTag
 ```
 
 The code in visitTag() uses DataBuf.toString() to format the data:
 
 ```cpp
-std::string DataBuf::toString(size_t offset,type_e type,uint16_t count,endian_e endian,size_t max)
+std::string DataBuf::toString(type_e type,uint64_t count,endian_e endian,uint64_t offset/*=0*/)
 {
     std::ostringstream os;
     std::string        sp;
     uint16_t           size = typeSize(type);
-    if ( isShortType(type) ){
-        for ( size_t k = 0 ; k < count ; k++ ) {
+    if ( isTypeShort(type) ){
+        for ( uint64_t k = 0 ; k < count ; k++ ) {
             os << sp << ::getShort(*this,offset+k*size,endian);
             sp = " ";
         }
-    } else if ( isLongType(type) ){
-        for ( size_t k = 0 ; k < count ; k++ ) {
+    } else if ( isTypeLong(type) ){
+        for ( uint64_t k = 0 ; k < count ; k++ ) {
             os << sp << ::getLong(*this,offset+k*size,endian);
             sp = " ";
         }
-    } else if ( isRationalType(type) ){
-        for ( size_t k = 0 ; k < count ; k++ ) {
+    } else if ( isTypeRational(type) ){
+        for ( uint64_t k = 0 ; k < count ; k++ ) {
             uint32_t a = ::getLong(*this,offset+k*size+0,endian);
             uint32_t b = ::getLong(*this,offset+k*size+4,endian);
             os << sp << a << "/" << b;
             sp = " ";
         }
-    } else if ( type == unsignedByte ) {
-        for ( size_t k = 0 ; k < count ; k++ ) {
-            os << sp << (int) pData_[offset+k];
+    } else if ( isType8Byte(type) ) {
+        for ( uint64_t k = 0 ; k < count ; k++ ) {
+            os << sp << ::getLong8(*this,offset+k*size,endian);
             sp = " ";
         }
-    } else if ( type == asciiString ) {
+    } else if ( type == kttUByte ) {
+        os << binaryToString(offset, (size_t)count);
+    } else if ( type == kttAscii ) {
         bool bNoNull = true ;
         for ( size_t k = 0 ; bNoNull && k < count ; k++ )
             bNoNull = pData_[offset+k];
@@ -1623,7 +1613,7 @@ std::string DataBuf::toString(size_t offset,type_e type,uint16_t count,endian_e 
         os << sp << binaryToString(offset, (size_t)count);
     }
 
-    return chop(os.str(),max);
+    return os.str();
 } // DataBuf::toString
 ```
 
