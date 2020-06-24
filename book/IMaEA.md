@@ -6,9 +6,19 @@
 <h3 align=center style="font-size:36px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-06-30</h3>
 
 <div id="dedication">
-## _Dedication_
+## _Dedication and Acknowledgment_
 
-_I want to say <b>Thank You</b> to a few folks who have made this possbile.  First, my wife Alison, who has been my loyal support since the day we met in High School in 1967.  Secondly, I'd like to thank many people who have contributed to Exiv2 over the years.  In particular to Andreas Huggel the founder of the project and Luis and Dan who have worked tirelessly with me since 2017.  And in alphabet order: Abhinav, Alan, Andreas (both of them), Ben, Gilles, Kevin, Mahesh, Nehal, Neils, Phil, Sridhar, Thomas, Tuan .... and others who have contributed to Exiv2.  And our cat Lizzie._
+_I want to say <b>Thank You</b> to a few folks who have made this possbile._
+
+_First, my wife Alison, who has been my loyal support since the day we met in High School in 1967._
+
+_Secondly, Andreas Huggel the founder of the project and Luis and Dan who have worked tirelessly with me since 2017._
+
+_Exiv2 contributors (in alphabet order): Abhinav, Alan, Andreas (both of them), Ben, Gilles, Kevin, Mahesh, Nehal, Neils, Phil, Sridhar, Thomas, Tuan .... and others who have contributed to Exiv2._
+
+_File Detectives:  Phil, Dave Coffin, Laurent Clevy._
+
+_And our cat Lizzie._
 
 <center><img src="MusicRoom.jpg" width="500"/></center>
 
@@ -242,25 +252,25 @@ The architecture of TIFF and BigTiff are the same.  BigTiff is 64 bit based.  So
 
 | Element | TIFF | BigTiff | Element | TIFF | BigTiff |
 |:--       |:--  |:--    |:--       |:--  |:--    |
-| Header | EE42Offset | EE43Offset | Header | 8 bytes | 12 bytes |
+| Header | XX42Offset | EE4380Offset | Header | 8 bytes | 16 bytes |
 | Marker | **\*** 0x2a = 42 | **\+** 0x2b = 43 | Offset    | uint32\_t | uint64\_t |
 | Tag    | uint16\_t | uint16\_t  | Entry  | 12 bytes | 20 bytes |
-| Type    | uint16\_t | uint16\_t  | Entries **#E** | uint16\_t | uint32\_t  |
+| Type    | uint16\_t | uint16\_t  | Entries **#E** | uint16\_t | uint64\_t  |
 | Count   | uint32\_t | uint64\_t  | Next | uint32\_t | uint64\_t  | 
 
-As we shall see, the differences between TIFF and BigTiff are minor.  When the code is compiled on a 64 bit machine, size\_t is 64 bytes.  With the exception of IFD::visit(), the two formats can be treated as identical.
+As we shall see, the differences between TIFF and BigTiff are minor.
 
 It's also important to understand that Endian can change as we descend into the file.  There could (and there are) files which contain sub-files whose endian setting is different from the container file.
 
 ### Garbage Collecting Tiff Files
 
-There is a significant problem with the Tiff format.  It's possible for binary records to hold offsets to significant data elsewhere in the file.  This results in two problems.  Firstly, we don't know that the data is an offset if it is buried in a MakerNote.  So, when all the blocks move in a rewrite of the file, we can neither relocate the referenced data, nor the offset.  My conclusion is that is almost impossible to garbage collect a tiff file.  However, the situation isn't hopeless.  The offset in the Tiff Header defines the location of IFD0.  It's very common that IFD0 is at the end of the file and the reason is obvious.  When a Tiff is rewritten by an application, they write IFD0 in memory, then copy it to the end of the file and update the offset in the header.  If we are creating IFD0, we can over right the pre-existing IFD0.
+There is a significant problem with the Tiff format.  It's possible for binary records to hold offsets to significant data elsewhere in the file.  This creates two problems.  Firstly, when buried in a MakerNote, we don't know that the data is an offset.  So, when all the blocks move in a rewrite of the file, we can neither relocate the referenced data, nor the offset.  My conclusion is that is almost impossible to garbage collect a tiff file.  However, the situation isn't hopeless.  The offset in the Tiff Header defines the location of IFD0.  It's very common that IFD0 is at the end of the file and the reason is obvious.  When a Tiff is rewritten by an application, they create IFD0 in memory, then copy it to the end of the file and update the offset in the header.  If we are creating IFD0, we can safely reuse the spaced occuped by IFD0.
 
-Imperial College have medical imaging Tiff files which are of the order of 100 GigaBytes in length.  Clearly we do not want to rewrite such a file to modify a couple of bytes on metadata.
+Imperial College have medical imaging Tiff files which are of the order of 100 GigaBytes in length.  Clearly we do not want to rewrite such a file to modify a couple of bytes of metadata.  We determine the new IFD0 and write it at end of the file.  If the existing IFD0 is already there, it's safe to overright it.
 
-When we update a Makernote, we should "edit in place" and avoid relocating the data.  Regrettably for a JPEG, that's almost impossible which have a 64k limit in the APP1/Exif\0\0 segment and that usually includes the thumbnail.  As camera have night resolutions and larger displays for review, the camera manufacturers want to have larger thumbnails and are happy to store the preview somewhere in the JPEG and have a hidden offset in the makernote.  This works fine until the image is edited when the preview is lost.
+When we update a Makernote, we should "edit in place" and always avoid relocating the data.  Regrettably for a JPEG, that's almost impossible.  As camera manufacturers have higher resolutions and larger displays for review, the manufacturers want to have larger thumbnails and are happy to store the preview somewhere in the JPEG and have a hidden offset in the makernote.  This works fine until the image is edited when the preview is lost.
 
-In principle, a Tiff can be garbage collected with a block-map.  If we set up a block-map with one bit for every thousand bytes, we can run the IFDs and mark all the blocks in use.  When we rewrite the TIFF (well IFD0 actually), we can inspect the block map to determine a "hole" in the file at which to write.  I would not do this.  It's unsafe to over-write anything in a Tiff with the exception of IFD0 and the header offset.  The situation with JPEG is more serious.  It's impossible to rewrite the JPEG in place.
+In principle, a Tiff can be garbage collected with a block-map.  If we set up a block-map with one bit for every thousand bytes, we can run the IFDs and mark all the blocks in use.  When we rewrite the TIFF (well IFD0 actually), we can inspect the block-map to determine a "hole" in the file at which to write.  I would not do this.  It's unsafe to over-write anything in a Tiff with the exception of IFD0 and the header offset.  The situation with JPEG is more serious.  It's impossible to rewrite the JPEG in place.
 
 The concept of using a block-map to maintain track known data is used in RemoteIo.  We use a block-map to avoid excessive remote I/O by reading data into a cache.  We never read data twice.  We do not need contiguous memory for the file. This is discussed in [7. I/O in Exiv2](#7)
 
@@ -288,29 +298,27 @@ I will have to conduct more research concerning this matter.
 A Jpeg and exf are almost the same thing, however most graphics applications will reject a .exv because it is not a valid JPEG.  ExifTool supports .exv files.  In tvisitor.cpp, class JpegImage handles both and the only difference is respected in JpegImage::valid():
 
 ```cpp
-bool JpegImage::valid()
+bool TiffImage::valid()
 {
-    bool result = false;
-    IoSave save(io(),0);
-    byte   h[2];
-    io_.read(h,2);
-    if ( h[0] == 0xff && h[1] == 0xd8 ) { // .JPEG
-        start_  = 0;
-        format_ = "JPEG";
-        endian_ = keLittle;
-        result  = true;
-    } else if  ( h[0] == 0xff && h[1]==0x01 ) { // .EXV
-        DataBuf buf(5);
-        io_.read(buf);
-        if ( buf.is("Exiv2") ) {
-            start_ = 7;
-            format_ = "EXV";
-            endian_ = keLittle;
-            result = true;
-        }
-    }
-    return result;
-}
+    IoSave restore(io(),0);
+
+    // read header
+    DataBuf  header(16);
+    io_.read(header);
+
+    char c   = (char) header.pData_[0] ;
+    char C   = (char) header.pData_[1] ;
+    endian_  = c == 'M' ? keBig : keLittle;
+    magic_   = getShort(header,2,endian_);
+    bigtiff_ = magic_ == 43;
+    start_   = bigtiff_ ? getLong8(header,8,endian_) : getLong (header,4,endian_);
+    format_  = bigtiff_ ? "BIGTIFF"                  : "TIFF"                    ;
+
+    uint16_t bytesize = bigtiff_ ? getShort(header,4,endian_) : 8;
+    uint16_t version  = bigtiff_ ? getShort(header,6,endian_) : 0;
+
+    return (magic_ == 42||magic_ == 43) && (c == C) && ( c == 'I' || c == 'M' ) && (start_ < io_.size()) && bytesize == 8 && version == 0;
+} // TiffImage::valid
 ```
 
 And here it is in action:
@@ -1189,31 +1197,35 @@ TiffImage::visitIFD() uses a simple direct approach to parsing the tiff file.  W
 
 There are actually two "flavours" of visitIFD.  visitTiff() starts with the tiff header **II*\_tsfo** or **MM\_*ofst*_ and then calls _**visitIFD()**_.  Makernotes are usually an IFD.  Some manufactures (Nikon) embed a Tiff.  Some (Canon and Sony) embed an IFD.  It's quite common (Sony) to embed a single IFD which is not terminated with a four byte null uint32\_t.
 
-The program tvisitor has several file handlers such as TiffImage, JpegImage and CrwImage.  Exiv2 has handlers for about 20 different formats.  If you understand Tiff and Jpeg, the others are boring variations.  The program tvisitor.cpp does not handle BigTiff, although it needs very few changes to do so.  I invite you to send me a patch.  Best submission wins a free copy of this book.
+The program tvisitor has several file handlers such as TiffImage, JpegImage and CrwImage.  Exiv2 has handlers for about 20 different formats.  If you understand Tiff and Jpeg, the others are boring variations.
 
 ```cpp
 void IFD::visit(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
 {
     IoSave save(io_,start_);
+    bool bigtiff    = image_.bigtiff();
+    endian_e endian = image_.endian();
 
     if ( !image_.depth_++ ) image_.visits().clear();
     visitor.visitBegin(image_);
     if ( image_.depth_ > 100 ) Error(kerCorruptedMetadata) ; // weird file
 
     // buffer
-    DataBuf  dir(12);
-    size_t   start=start_;
+    DataBuf  dir(bigtiff ? 20 : 12);
+    uint64_t start=start_;
     while  ( start ) {
         // Read top of directory
-        io_.read(dir.pData_, 2);
-        uint16_t dirLength = getShort(dir,0,image_.endian());
+        io_.seek(start);
+        io_.read(dir.pData_, bigtiff ? 8 : 2);
+        uint64_t dirLength = bigtiff ? getLong8(dir,0,endian) : getShort(dir,0,endian);
 
         if ( dirLength > 500 ) Error(kerTiffDirectoryTooLarge,dirLength);
         visitor.visitDirBegin(image_,dirLength);
+        uint64_t a0 = start + (bigtiff?8:2) + dirLength * dir.size_; // addresss to read next
 
         // Run along the directory
-        for ( int i = 0 ; i < dirLength ; i ++ ) {
-            const size_t address = start + 2 + i*12 ;
+        for ( uint64_t i = 0 ; i < dirLength ; i ++ ) {
+            const uint64_t address = start + (bigtiff?8:2) + i* dir.size_ ;
             if ( visits().find(address) != visits().end()  ) { // never visit the same place twice!
                 Error(kerCorruptedMetadata);
             }
@@ -1221,37 +1233,37 @@ void IFD::visit(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
             io_.seek(address);
 
             io_.read(dir);
-            uint16_t tag    = getShort(dir,0,image_.endian());
-            type_e   type   = getType (dir,2,image_.endian());
-            uint32_t count  = getLong (dir,4,image_.endian());
-            uint32_t offset = getLong (dir,8,image_.endian());
-
-            if ( !typeValid(type) ) {
+            uint16_t tag    = getShort(dir,  0,endian);
+            type_e   type   = getType (dir,  2,endian);
+            uint64_t count  = get4or8 (dir,4,0,endian);
+            uint64_t offset = get4or8 (dir,4,1,endian);
+            
+            if ( !typeValid(type,bigtiff) ) {
                 Error(kerInvalidTypeValue,type);
             }
 
-            visitor.visitTag(io_,image_,address,tagDict);  // Tell the visitor
-
-            uint16_t pad     = isByteType(type)  ? 1 : 0;
-            uint16_t size    = typeSize(type)    ;
-            size_t   alloc   = size*count + pad+6;
-            DataBuf  buf(alloc,io_.size());
-            size_t   restore = io_.tell();
-            io_.seek(offset);
-            io_.read(buf);
-            io_.seek(restore);
+            uint64_t size   = typeSize(type) ;
+            size_t   alloc  = size*count     ;
+            DataBuf  buf(alloc,io_.size()-io_.tell());
+            if ( alloc < (bigtiff?8:4) ) {
+                buf.copy(&offset,size);
+            } else {
+                IoSave save(io_,offset);
+                io_.read(buf);
+            }
+            if ( tagDict == tiffDict && tag == ktMake ) image_.setMaker(buf);
+            visitor.visitTag(io_,image_,address,tag,type,count,offset,buf,tagDict);  // Tell the visitor
 
             // recursion anybody?
-            if ( tagDict == tiffDict && tag == ktMake ) image_.setMaker(buf);
             if ( type    == kttIfd )    tag  = ktSubIFD;
             switch ( tag ) {
                 case ktGps       : IFD(image_,offset,false).visit(visitor,gpsDict );break;
                 case ktExif      : IFD(image_,offset,false).visit(visitor,exifDict);break;
                 case ktMakerNote :         visitMakerNote(visitor,buf,count,offset);break;
                 case ktSubIFD    :
-                     for ( size_t i = 0 ; i < count ; i++ ) {
-                         uint32_t  off  = count == 1 ? offset : getLong(buf,i*4,image_.endian()) ;
-                         IFD(image_,off).visit(visitor,tagDict );
+                     for ( uint64_t i = 0 ; i < count ; i++ ) {
+                         offset  = get4or8 (buf,0,i,endian);
+                         IFD(image_,offset,false).visit(visitor,tagDict);
                      }
                 break;
                 default: /* do nothing */ ; break;
@@ -1260,8 +1272,9 @@ void IFD::visit(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
 
         start = 0; // !stop
         if ( next_ ) {
-            io_.read(dir.pData_, 4);
-            start = getLong(dir,0,image_.endian());
+            io_.seek(a0);
+            io_.read(dir.pData_, bigtiff?8:4);
+            start = bigtiff?getLong8(dir,0,endian):getLong(dir,0,endian);
         }
         visitor.visitDirEnd(image_,start);
     } // while start != 0
