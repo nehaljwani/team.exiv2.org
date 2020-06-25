@@ -21,10 +21,10 @@ enum type_e
 ,    kttUShort          = 3 //!< Exif SHORT type, 16-bit (2-byte) unsigned integer.
 ,    kttULong           = 4 //!< Exif LONG type, 32-bit (4-byte) unsigned integer.
 ,    kttURational       = 5 //!< Exif RATIONAL type, two LONGs: numerator and denumerator of a fraction.
-,    kttByte           = 6 //!< Exif SBYTE type, an 8-bit signed (twos-complement) integer.
+,    kttByte            = 6 //!< Exif SBYTE type, an 8-bit signed (twos-complement) integer.
 ,    kttUndefined       = 7 //!< Exif UNDEFINED type, an 8-bit byte that may contain anything.
-,    kttShort          = 8 //!< Exif SSHORT type, a 16-bit (2-byte) signed (twos-complement) integer.
-,    kttLong           = 9 //!< Exif SLONG type, a 32-bit (4-byte) signed (twos-complement) integer.
+,    kttShort           = 8 //!< Exif SSHORT type, a 16-bit (2-byte) signed (twos-complement) integer.
+,    kttLong            = 9 //!< Exif SLONG type, a 32-bit (4-byte) signed (twos-complement) integer.
 ,    kttSRational       =10 //!< Exif SRATIONAL type, two SLONGs: numerator and denumerator of a fraction.
 ,    kttFloat           =11 //!< TIFF FLOAT type, single precision (4-byte) IEEE format.
 ,    kttDouble          =12 //!< TIFF DOUBLE type, double precision (8-byte) IEEE format.
@@ -32,7 +32,7 @@ enum type_e
 ,    kttNot1            =14
 ,    kttNot2            =15
 ,    kttULong8          =16 //!< Exif LONG LONG type, 64-bit (8-byte) unsigned integer.
-,    kttLong8          =17 //!< Exif LONG LONG type, 64-bit (8-byte) signed integer.
+,    kttLong8           =17 //!< Exif LONG LONG type, 64-bit (8-byte) signed integer.
 ,    kttIfd8            =18 //!< TIFF IFD type, 64-bit (8-byte) unsigned integer.
 ,    kttMax             =19
 };
@@ -120,7 +120,7 @@ class DataBuf
 public:
     byte*     pData_;
     uint64_t  size_ ;
-    DataBuf(uint64_t size,uint64_t size_max=0)
+    DataBuf(uint64_t size=0,uint64_t size_max=0)
     : pData_(NULL)
     , size_(size)
     {
@@ -146,7 +146,7 @@ public:
         return result;
     }
 
-    void read (Io& io,size_t offset,size_t size) ;
+    void read (Io& io,uint64_t offset,uint64_t size) ;
     int  strcmp   (const char* str) { return ::strcmp((const char*)pData_,str);}
     bool strequals(const char* str) { return strcmp(str)==0                   ;}
     bool is       (const char* str) {
@@ -159,14 +159,14 @@ public:
         }
         return result;
     }
-    void copy(void* src,size_t size,size_t offset=0)
+    void copy(void* src,uint64_t size,uint64_t offset=0)
     {
         memcpy(pData_+offset,src,size);
     }
-    void copy(uint32_t v,size_t offset=0) { copy(&v,4,offset); }
+    void copy(uint32_t v,uint64_t offset=0) { copy(&v,4,offset); }
 
     std::string toString(type_e type,uint64_t count,endian_e endian,uint64_t offset=0);
-    std::string binaryToString(size_t start,size_t size);
+    std::string binaryToString(uint64_t start,uint64_t size);
 };
 
 // endian and byte swappers
@@ -371,7 +371,7 @@ std::string stringFormat(const char* format, ...)
     return result;
 }
 
-std::string binaryToString(const byte* b,size_t start,size_t size)
+std::string binaryToString(const byte* b,uint64_t start,uint64_t size)
 {
     std::string result;
     size_t i    = start;
@@ -385,7 +385,7 @@ std::string binaryToString(const byte* b,size_t start,size_t size)
     return result;
 }
 
-std::string DataBuf::binaryToString(size_t start=0,size_t size=0)
+std::string DataBuf::binaryToString(uint64_t start=0,uint64_t size=0)
 {
     return ::binaryToString(pData_,start,size?size:size_);
 }
@@ -685,7 +685,7 @@ private:
     uint64_t restore_;
 };
 
-void DataBuf::read(Io& io,size_t offset,size_t size)
+void DataBuf::read(Io& io,uint64_t offset,uint64_t size)
 {
     if ( size ) {
         IoSave restore(io,offset);
@@ -726,11 +726,12 @@ public:
     virtual void visitTag     (Io& io,Image& image
                         ,uint64_t address, uint16_t tag, type_e type
                         ,uint64_t count,   uint64_t offset
-                        ,DataBuf& buf,     const TagDict& tagDict  ) =0 ;
-    virtual void visitCiff    (Io& io,Image& image,uint64_t address) =0 ;
-
-    virtual void visitReport  (std::ostringstream& out) {} ;
-    virtual void visitReport  (std::ostringstream& out,bool& bLF) {} ;
+                        ,DataBuf& buf,     const TagDict& tagDict  ) = 0 ;
+    virtual void visitCiff    (Io& io,Image& image,uint64_t address) = 0 ;
+    virtual void visitSegment (Io& io,Image& image,uint64_t address
+             ,uint8_t marker,uint16_t length,std::string& signature) = 0 ;
+    virtual void visitXMP  (DataBuf& xmp)                            = 0 ;
+    virtual void visitExif (DataBuf& exif)                           = 0 ;
 
     PSopt_e       option() { return option_ ; }
     std::ostream& out()    { return out_    ; }
@@ -1051,35 +1052,14 @@ private:
     const byte     sof15_    = 0xcf;        // start of frame 15, differential lossless, arithmetic coding
 
     // which markers have a length field?
-    bool bHasLength[256];
+    bool bHasLength_[256];
 
     void init()
     {
-        nm[0xd8] = "SOI";
-        nm[0xd9] = "EOI";
-        nm[0xda] = "SOS";
-        nm[0xdb] = "DQT";
-        nm[0xdd] = "DRI";
-        nm[0xfe] = "COM";
-
-        // 0xe0 .. 0xef are APPn
-        // 0xc0 .. 0xcf are SOFn (except 4)
-        nm[0xc4] = "DHT";
-        for (int i = 0; i <= 15; i++) {
-            char MN[16];
-            sprintf(MN, "APP%d", i);
-            nm[0xe0 + i] = MN;
-            if (i != 4) {
-                sprintf(MN, "SOF%d", i);
-                nm[0xc0 + i] = MN;
-            }
-        }
         for (int i = 0; i < 256; i++)
-            bHasLength[i] = (i >= sof0_ && i <= sof15_) || (i >= app0_ && i <= (app0_ | 0x0F)) ||
+            bHasLength_[i] = (i >= sof0_ && i <= sof15_) || (i >= app0_ && i <= (app0_ | 0x0F)) ||
                             (i == dht_  || i == dqt_    || i == dri_   || i == com_  ||i == sos_);
     }
-    // nmonic for markers
-    std::string nm[256];
 };
 
 // 4. Create concrete "visitors"
@@ -1089,49 +1069,62 @@ public:
     ReportVisitor(std::ostream& out, PSopt_e option)
     : Visitor(out,option)
     , indent_(0)
-    {}
+    {
+        nm_[0xd8] = "SOI";
+        nm_[0xd9] = "EOI";
+        nm_[0xda] = "SOS";
+        nm_[0xdb] = "DQT";
+        nm_[0xdd] = "DRI";
+        nm_[0xfe] = "COM";
+        nm_[0xc4] = "DHT";
+
+        // 0xe0 .. 0xef are APPn
+        // 0xc0 .. 0xcf are SOFn (except 4)
+        for (int i = 0; i <= 15; i++) {
+            nm_[0xe0 + i] = stringFormat("APP%d",i);
+            if (i != 4) {
+                nm_[0xc0 + i] = stringFormat("SOF%d", i);
+            }
+        }
+
+        for (int i = 0; i < 256; i++) {
+            hasLength_[i] = (i >= sof0_ && i <= sof15_) || (i >= app0_ && i <= (app0_ | 0x0F)) ||
+                            (i == dht_  || i == dqt_    || i == dri_   || i == com_  ||i == sos_);
+        }
+    }
 
     std::string indent() { return ::indent(indent_); }
 
-    virtual void visitBegin(Image& image)
-    {
-        indent_++;
-        if ( option() & kpsBasic || option() & kpsRecursive ) {
-            char c = image.endian() == keBig ? 'M' : 'I';
-            out() << indent() << stringFormat("STRUCTURE OF %s FILE (%c%c): ",image.format().c_str(),c,c) <<  image.io().path() << std::endl;
-            if ( image.format() == "CRW" ) {
-                out() << indent() << "    tag | mask | code | name                           |  kount | offset | value " << std::endl;
-            } else {
-                out() << indent() << " address |    tag                              |      type |    count |    offset | value" << std::endl;
-            }
-        }
-    }
-    virtual void visitDirBegin(Image& image,uint64_t nEntries)
+    void visitSegment (Io& io,Image& image,uint64_t address
+             ,uint8_t marker,uint16_t length,std::string& signature);
+
+    void visitBegin(Image& image);
+    void visitDirBegin(Image& image,uint64_t nEntries)
     {
         //size_t depth = image.depth();
         //out() << indent(depth) << stringFormat("+%d",nEntries) << std::endl;
-    };
-    virtual void visitDirEnd(Image& image,uint64_t start)
+    }
+    void visitDirEnd(Image& image,uint64_t start)
     {
         // if ( start ) out() << std::endl;
-    };
-
-    virtual void visitReport(std::ostringstream& os)
-    {
-        out() << os.str();
-        os.str("");// reset the string
-        os.clear();// reset the good/bad/ugly flags
     }
-    virtual void visitReport(std::ostringstream& os,bool& bLF)
+    void visitXMP(DataBuf& xmp)
     {
-        if ( bLF ) {
-            os << std::endl;
-            visitReport(os);
+        if ( option() & kpsXMP ) {
+            out() << xmp.pData_;
+            xmp.empty(true);
         }
-        bLF = false ;
     }
-
-    virtual void visitCiff
+    void visitExif(DataBuf& exif)
+    {
+        if ( option() & kpsRecursive ) {
+            // Beautiful.  exif buffer is a tiff file, wrap with Io and call TiffImage::accept(visitor)
+            Io             tiffIo(exif);
+            TiffImage tiff(tiffIo);
+            tiff.accept(*this);
+        }
+    }
+    void visitCiff
     ( Io&                   io
     , Image&                image
     , uint64_t              address
@@ -1146,54 +1139,35 @@ public:
                ;
     }
 
-    virtual void visitTag
-    ( Io&            io
-    , Image&         image
-    , uint64_t       address
-    , uint16_t       tag
-    , type_e         type
-    , uint64_t       count
-    , uint64_t       offset
-    , DataBuf&       buf
-    , const TagDict& tagDict
-    ) {
-        // format the output
-        std::ostringstream    os ; os << offset;
-        std::string offsetS = typeSize(type)*count > (image.bigtiff_?8:4) ? os.str() :"";
-        std::string    name = tagName(tag,tagDict,28);
-        std::string   value = buf.toString(type,count,image.endian_);
+    void visitTag( Io&  io,Image& image, uint64_t  address
+                         , uint16_t         tag, type_e       type,uint64_t count, uint64_t offset
+                         , DataBuf&         buf,const TagDict& tagDict);
 
-        if ( printTag(name) ) {
-            out() << indent()
-                  << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
-                        ,address,tag,name.c_str(),::typeName(type),count,offsetS.c_str())
-                  << chop(value,40)
-                  << std::endl
-            ;
-            if ( makerTags.find(name) != makerTags.end() ) {
-                for (Field field : makerTags[name] ) {
-                    std::string n      = join(groupName(tagDict),field.name(),28);
-                    endian_e    endian = field.endian() == keImage ? image.endian() : field.endian();
-                    out() << indent()
-                          << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
-                                         ,offset+field.start(),tag,n.c_str(),typeName(field.type()),field.count(),"")
-                          << chop(buf.toString(field.type(),field.count(),endian,field.start()),40)
-                          << std::endl
-                    ;
-                }
-            }
-        }
-    } // visitTag
-
-    virtual void visitEnd(Image& image)
+    void visitEnd(Image& image)
     {
         if ( option() & kpsBasic || option() & kpsRecursive ) {
             out() << indent() << "END: " << image.path() << std::endl;
         }
         indent_--;
     } // visitEnd
+
 private:
-    size_t indent_;
+    size_t         indent_;
+    std::string    nm_       [256];
+    bool           hasLength_[256];
+
+    const byte     dht_      = 0xc4;
+    const byte     dqt_      = 0xdb;
+    const byte     dri_      = 0xdd;
+    const byte     sos_      = 0xda;
+    const byte     eoi_      = 0xd9;
+    const byte     app0_     = 0xe0;
+    const byte     com_      = 0xfe;
+
+    // Start of Frame markers
+    const byte     sof0_     = 0xc0;        // start of frame 0, baseline DCT
+    const byte     sof15_    = 0xcf;        // start of frame 15, differential lossless, arithmetic coding
+
 };
 
 void CIFF::accept(Visitor& visitor)
@@ -1423,9 +1397,76 @@ bool JpegImage::valid()
     return result;
 }
 
-#define REPORT_MARKER os << stringFormat("%8ld | 0xff%02x %-5s", io_.tell()-2,marker,nm[marker].c_str());
+void ReportVisitor::visitSegment(Io& io,Image& image,uint64_t address
+         ,uint8_t marker,uint16_t length,std::string& signature)
+{
+    if ( option() & kpsBasic || option() & kpsRecursive ) {
+        out() <<           stringFormat("%8ld | 0xff%02x %-5s", address,marker,nm_[marker].c_str())
+              << (length ? stringFormat(" | %7d | %s", length,signature.c_str()) : "")
+              << std::endl;
+    }
+}
 
-void JpegImage::accept(Visitor& v)
+void ReportVisitor::visitBegin(Image& image)
+{
+    indent_++;
+    if ( option() & kpsBasic || option() & kpsRecursive ) {
+        char c = image.endian() == keBig ? 'M' : 'I';
+        out() << indent() << stringFormat("STRUCTURE OF %s FILE (%c%c): ",image.format().c_str(),c,c) <<  image.io().path() << std::endl;
+        if ( image.format() == "CRW" ) {
+            out() << indent() << "    tag | mask | code | name                           |  kount | offset | value " << std::endl;
+        } else if ( image.format() == "JPEG" ) {
+            out() << indent() << " address | marker       |  length | signature" << std::endl;
+        } else {
+            out() << indent() << " address |    tag                              |      type |    count |    offset | value" << std::endl;
+        }
+    }
+}
+
+void ReportVisitor::visitTag
+( Io&            io
+, Image&         image
+, uint64_t       address
+, uint16_t       tag
+, type_e         type
+, uint64_t       count
+, uint64_t       offset
+, DataBuf&       buf
+, const TagDict& tagDict
+) {
+    std::string offsetS ;
+    if ( typeSize(type)*count > (image.bigtiff_?8:4) ) {
+        std::ostringstream os ;
+        os  <<  offset;
+        offsetS         = os.str();
+    }
+
+    std::string    name = tagName(tag,tagDict,28);
+    std::string   value = buf.toString(type,count,image.endian_);
+
+    if ( printTag(name) ) {
+        out() << indent()
+              << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
+                    ,address,tag,name.c_str(),::typeName(type),count,offsetS.c_str())
+              << chop(value,40)
+              << std::endl
+        ;
+        if ( makerTags.find(name) != makerTags.end() ) {
+            for (Field field : makerTags[name] ) {
+                std::string n      = join(groupName(tagDict),field.name(),28);
+                endian_e    endian = field.endian() == keImage ? image.endian() : field.endian();
+                out() << indent()
+                      << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
+                                     ,offset+field.start(),tag,n.c_str(),typeName(field.type()),field.count(),"")
+                      << chop(buf.toString(field.type(),field.count(),endian,field.start()),40)
+                      << std::endl
+                ;
+            }
+        }
+    }
+} // visitTag
+
+void JpegImage::accept(Visitor& visitor)
 {
     // Ensure that this is the correct image type
     if (!valid()) {
@@ -1433,48 +1474,53 @@ void JpegImage::accept(Visitor& v)
         Error(kerInvalidFileFormat,io().path(),os.str());
     }
     IoSave save(io(),0);
-    v.visitBegin((*this));
+    visitor.visitBegin((*this)); // tell the visitor
 
-    bool bPrint = v.option() & kpsBasic || v.option() & kpsRecursive;
+    DataBuf exif             ; // buffer to suck up exif data
+    bool    bExif     = false; // Adobe ad-hoc Exif > 64k
+    bool    bExifMore = false; // Agfa         Exif > 64k  See https://dev.exiv2.org/issues/1232
 
-    // navigate the JPEG chunks
-    std::ostringstream os; // string buffer for output to v.visitReport()
+    DataBuf XMP              ; // buffer to suck up XML
+    bool    bExtXMP   = false;
 
-    // Container for the signature
-    bool   bExtXMP    = false;
-    size_t bufRead    = 0;
-    size_t bufMinSize = 48;
-    DataBuf buf(bufMinSize);
+    // Step along linked list of segments
+    bool     done = false;
+    while ( !done ) {
+        // step to next marker
+        int  marker = advanceToMarker();
+        if ( marker < 0 ) {
+            Error(kerInvalidFileFormat,io().path());
+        }
 
-    DataBuf exif(0);
-    bool    bExif = false ;
-    bool    bExifContinuation = false;
-
-    // Read section marker
-    int marker = advanceToMarker();
-    if (marker < 0) {
-        Error(kerInvalidFileFormat,io().path());
-    }
-
-    REPORT_MARKER;
-
-    bool    done  = false; // create a buffer to "suck up" exif data
-    while (!done) {
-        size_t current = io_.tell();
-        bool   bLF     = true; // tell v.visitReport() to append a LF
+        size_t      address       = io_.tell()-2;
+        DataBuf     buf(48);
 
         // Read size and signature
-        bufRead = io_.read(buf.pData_, bufMinSize);
-        const uint16_t size = bHasLength[marker] ? getShort(buf,0,keBig):0;
+        uint64_t    bufRead       = io_.read(buf);
+        uint16_t    length        = bHasLength_[marker] ? getShort(buf,0,keBig):0;
+        bool        bAppn         = marker >= app0_ && marker <= (app0_ | 0x0F);
+        bool        bHasSignature = marker == com_ || bAppn ;
+        std::string signature     = bHasSignature ? buf.binaryToString(2, buf.size_ - 2): "";
 
-        if (bHasLength[marker])
-            os << stringFormat(" | %7d ", size);
+        bExif                     = bAppn && signature.size() > 6 && signature.find("Exif") == 0;
+        if ( bExif || bExifMore ) { // suck up the Exif data
+            size_t chop = signature.find("Exif") == 0 ? 6 : 0 ;
+            exif.read(io_,(address+2)+2+chop,length-2-chop); // read the exif data into memory (there may be multiple APP1/Exif__ segments)
+            bExifMore = bExif || length == 65535 ;
+            bExif     = true;
+        }
 
-        // print signature for APPn
-        if (marker >= app0_ && marker <= (app0_ | 0x0F)) {
+        // deal with deferred Exif metadata
+        if ( !exif.empty() && !bExif )
+        {
+            visitor.visitExif(exif); // tell the visitor
+            exif.empty(true); // empty the exif buffer
+            bExifMore = false ;
+        }
+        visitor.visitSegment(io_,*this,address,marker,length,signature); // tell the visitor
+
+        if ( bAppn ) {
             // http://www.adobe.com/content/dam/Adobe/en/devnet/xmp/pdfs/XMPSpecificationPart3.pdf p75
-            const std::string signature = buf.binaryToString(2, buf.size_ - 2);
-
             // $ exiv2 -pS test/data/exiv2-bug922.jpg
             // STRUCTURE OF JPEG FILE: test/data/exiv2-bug922.jpg
             // address | marker     | length  | data
@@ -1482,12 +1528,12 @@ void JpegImage::accept(Visitor& v)
             //       2 | 0xe1 APP1  |     911 | Exif..MM.*.......%.........#....
             //     915 | 0xe1 APP1  |     870 | http://ns.adobe.com/xap/1.0/.<x:
             //    1787 | 0xe1 APP1  |   65460 | http://ns.adobe.com/xmp/extensio
-            if (v.option() & kpsXMP && signature.find("http://ns.adobe.com/x") == 0) {
+            if ( signature.find("http://ns.adobe.com/x") == 0 ) {
                 // extract XMP
-                if (size > 0) {
+                if (length > 0) {
                     io_.seek(-bufRead, ksCurrent);
-                    std::vector<byte> xmp(size + 1);
-                    io_.read(&xmp[0], size);
+                    std::vector<byte> xmp(length + 1);
+                    io_.read(&xmp[0], length);
                     int start = 0;
 
                     // http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/xmp/pdfs/XMPSpecificationPart3.pdf
@@ -1503,76 +1549,30 @@ void JpegImage::accept(Visitor& v)
                         }
                         start++;
                         const std::string xmp_from_start = binaryToString(
-                            reinterpret_cast<byte*>(&xmp.at(0)),start, size - start);
+                            reinterpret_cast<byte*>(&xmp.at(0)),start, length - start);
                         if (xmp_from_start.find("HasExtendedXMP", start) != xmp_from_start.npos) {
-                            start = size;  // ignore this packet, we'll get on the next time around
+                            start = length;  // ignore this segment, we'll get extended packet in following segments
                             bExtXMP = true;
                         }
                     } else {
                         start = 2 + 35 + 32 + 4 + 4;  // Adobe Spec, p19
                     }
-                    os.str(""); // clear the buffer
-                    os.write(reinterpret_cast<const char*>(&xmp.at(start)), size - start);// write the xmp
-                    v.visitReport(os); // and tell the visitor
-
-                    bufRead = size;
-                    done = !bExtXMP;
+                    XMP.read(io_,address+2+start,length - start); // read the XMP from the stream
                 }
-            } else {
-                const size_t start = size > 0 ? 2 : 0;
-                const size_t end = start + (size > bufMinSize-4 ? bufMinSize-4 : size);
-                os << "| " << chop(buf.binaryToString(start, end),40);
             }
-            if (bLF && bPrint) v.visitReport(os,bLF);
-
-            bExifContinuation = bExifContinuation || (bExif && size == 65535); // Agfa do this.  https://dev.exiv2.org/issues/1232
-            bExif = v.option() & kpsRecursive && marker == (app0_ + 1) && signature.find("Exif") == 0;
-            if ( bExif || bExifContinuation ) { // suck up the Exif data
-                size_t chop = signature.find("Exif") == 0 ? 6 : 0 ;
-                exif.read(io_,current+2+chop,size-2-chop); // read the exif data into memory (there may be multiple APP1/exif__ segments)
-                bExif = true;
-            }
-        } else {
-            bExif = false;  //
         }
 
-        // print COM marker
-        if (marker == com_) {
-            // size includes 2 for the two bytes for size!
-            const int n = (size - 2) > 32 ? 32 : size - 2;
-            // start after the two bytes
-            os << "| " << buf.binaryToString(2, n + 2);
+        if ( !XMP.empty() && !bAppn ) {
+            visitor.visitXMP(XMP); // tell the visitor
+            bExtXMP = false;
         }
 
-        // Skip over the segment
-        io_.seek(current+size);
-        if (bLF && bPrint) v.visitReport(os,bLF);
+        // Jump past the segment
+        io_.seek(address+2+length); // address is previous marker
+        done = marker == eoi_ || marker == sos_ || io().eof();
+    } // while !done
 
-        // deal with deferred Exif metadata
-        if ( !exif.empty() && !bExif ) {
-            // Beautiful.  exif buffer is a tiff file, wrap with Io and call TiffImage::accept(visitor)
-            Io             tiffIo(exif);
-            TiffImage tiff(tiffIo);
-            tiff.accept(v);
-            exif.empty(true); // empty the exif buffer
-            bExifContinuation = false ;
-        }
-
-        if (marker != sos_) {
-            // Read the beginning of the next segment
-            marker = advanceToMarker();
-            REPORT_MARKER;
-            if ( bPrint ) v.visitReport(os);
-        }
-        done |= marker == eoi_ || marker == sos_;
-        bLF  |= done;
-
-        if (done) {
-            if ( bPrint) v.visitReport(os,bLF);
-        }
-    }
-
-    v.visitEnd((*this));
+    visitor.visitEnd((*this)); // tell the visitor
 }  // JpegImage::visitTiff
 
 void init(); // prototype
