@@ -5,11 +5,14 @@
 #include <sstream>
 #include <map>
 #include <cstdlib>
+#include <cassert>
 
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <string.h>
+#include <stdarg.h>
 
 typedef std::set<uint64_t> Visits;
 
@@ -347,7 +350,7 @@ std::string stringFormat(const char* format, ...)
 {
     std::string result;
     std::vector<char> buffer;
-    size_t need = std::strlen(format)*8;  // initial guess
+    size_t need = ::strlen(format)*8;  // initial guess
     int rc = -1;
 
     // vsnprintf writes at most size (2nd parameter) bytes (including \0)
@@ -915,7 +918,7 @@ public:
     maker_e  maker()     { return image_.maker_    ; }
     TagDict& makerDict() { return image_.makerDict_; }
     endian_e endian()    { return image_.endian()  ; }
-    void     setNext(bool next)     { next_ = next ; }
+    void     next(bool next)     { next_ = next ; }
 
     uint64_t get4or8(DataBuf& dir,uint64_t jump,uint64_t offset,endian_e endian)
     {
@@ -992,10 +995,6 @@ public:
                 endian_ = c == I ? keLittle : keBig ;
                 start_  = getLong(buf,2,endian_);
                 format_ = "CRW";
-                // io().seek(io().size()-4);
-                // size_t     start = start_ + io().getLong(endian_);
-                // io().seek (start);
-                // uint16_t  length = io().getShort(endian_);
                 Io parent(io_,start_);
                 heap_.setParent (parent); // the parent stream
             }

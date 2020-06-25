@@ -1196,9 +1196,9 @@ average age = 12
 
 We could of course add other classes to this program.  We could have _**class Building**_ and add buildings to the college.  This visitor could visit all the buildings.  We could have rooms in every building.  I am sure you get the idea.
 
-It a JPEG, we have a linked list of segments.  So we Visitor has a visitSegment() method.  And we have an embedded Exif Tiff, so we have visitExif(), visitIFD(), visitTag(), visitXML().  The visitor knows nothing about how to navigate the file.
+In a JPEG, we have a linked list of segments.  So we visitor has a visitSegment() method.  As JPEG has an embedded Exif Tiff, so we have visitExif(), visitIFD(), visitTag(), visitXML().  The visitor knows nothing about how to navigate the file.
 
-In tvisitor.cpp, we only have a single Visitor called ReportVisitor.  When you create him, you specify options which are Basic, Recursive, XML.  The ReportVisitor effectively performs the same options as _** $ exiv2 -pS **_, or _** $ exiv2 -pR **_, or _** $ exiv2 -pX **_.  We could easily create a new class Exiv2Visitor which would create Exiv2::ExifData.  It's also possible to create a class Exiv2Writer which would output a new file with modified metadata.
+In tvisitor.cpp, we only have a single Visitor called ReportVisitor.  When you create him, you specify options which are Basic, Recursive, XML.  The ReportVisitor effectively performs the same options as _**$ exiv2 -pS**_, or _**$ exiv2 -pR**_, or _**$ exiv2 -pX**_.  We could easily create a new class Exiv2Visitor which would create Exiv2::ExifData.  It's also possible to create a class Exiv2Writer which would output a new file with modified metadata.
 
 Exiv2 has an abstract TiffVisitor class, and the following concrete visitors:
 
