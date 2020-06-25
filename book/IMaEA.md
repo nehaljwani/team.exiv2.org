@@ -1790,15 +1790,7 @@ This function understands how to decode byte-by-byte from `const ArrayDef` into 
 
 [TOC](#TOC)
 <div id="8-8">
-### 8.8 JpegImage::accept()
-
-![jpeg](jpeg.png)
-
-This function is a less easy that TiffImage::accept().  It navigates the chain of segments and calls the visitor appropriately.  The function is complicated to deal with Extended JPEG. There are two schemes for dealing with Exif metadata that span more than a single segment.
-
-For the benefit of clarity, I haven't shown the code here which handles Extended XMP.  In Exiv2, there is also code to handle ICC profiles which can also span multiple segments.
-
-The way in which extended JPEG is managed is quite simple.  A DataBuf is used and as more data is discovered we read from the image source into the DataBuf.  After reading consecutive blocks onto memory, we tell the visitor and clear the buffer.
+## 8.8 JpegImage::accept()
 
 ```cpp
 void JpegImage::accept(Visitor& visitor)
@@ -1871,6 +1863,14 @@ void JpegImage::accept(Visitor& visitor)
     visitor.visitEnd((*this)); // tell the visitor
 }  // JpegImage::accept
 ```
+
+This function is a less easy that TiffImage::accept().  It navigates the chain of segments and calls the visitor appropriately.  The function is complicated to deal with Extended JPEG. There are two schemes for dealing with Exif metadata that span more than a single segment.
+
+For the benefit of clarity, I haven't shown the code here which handles Extended XMP.  In Exiv2, there is also code to handle ICC profiles which can also span multiple segments.
+
+The way in which extended JPEG is managed is quite simple.  A DataBuf is used and as more data is discovered we read from the image source into the DataBuf.  After reading consecutive blocks onto memory, we tell the visitor and clear the buffer.
+
+![jpeg](jpeg.png)
 
 [TOC](#TOC)
 <div id="9">
