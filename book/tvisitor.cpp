@@ -1108,22 +1108,8 @@ public:
     {
         // if ( start ) out() << std::endl;
     }
-    void visitXMP(DataBuf& xmp)
-    {
-        if ( option() & kpsXMP ) {
-            out() << xmp.pData_;
-            xmp.empty(true);
-        }
-    }
-    void visitExif(DataBuf& exif)
-    {
-        if ( option() & kpsRecursive ) {
-            // Beautiful.  exif buffer is a tiff file, wrap with Io and call TiffImage::accept(visitor)
-            Io             tiffIo(exif);
-            TiffImage tiff(tiffIo);
-            tiff.accept(*this);
-        }
-    }
+    void visitXMP (DataBuf& xmp );
+    void visitExif(DataBuf& exif);
     void visitCiff
     ( Io&                   io
     , Image&                image
@@ -1333,7 +1319,7 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
 
     visitor.visitEnd(image_);
     image_.depth_--;
-} // IFD::visit
+} // IFD::accept
 
 bool TiffImage::valid()
 {
@@ -1371,7 +1357,7 @@ void TiffImage::accept(Visitor& visitor,TagDict& tagDict)
         std::ostringstream os ; os << "expected " << format_ ;
         Error(kerInvalidFileFormat,io().path(), os.str());
     }
-} // TiffImage::visit
+} // TiffImage::accept
 
 bool JpegImage::valid()
 {
@@ -1466,6 +1452,23 @@ void ReportVisitor::visitTag
     }
 } // visitTag
 
+void ReportVisitor::visitXMP(DataBuf& xmp)
+{
+    if ( option() & kpsXMP ) {
+        out() << xmp.pData_;
+        xmp.empty(true);
+    }
+}
+void ReportVisitor::visitExif(DataBuf& exif)
+{
+    if ( option() & kpsRecursive ) {
+        // Beautiful.  exif buffer is a tiff file, wrap with Io and call TiffImage::accept(visitor)
+        Io             tiffIo(exif);
+        TiffImage tiff(tiffIo);
+        tiff.accept(*this);
+    }
+}
+
 void JpegImage::accept(Visitor& visitor)
 {
     // Ensure that this is the correct image type
@@ -1505,9 +1508,9 @@ void JpegImage::accept(Visitor& visitor)
         bExif                     = bAppn && signature.size() > 6 && signature.find("Exif") == 0;
         if ( bExif || bExifMore ) { // suck up the Exif data
             size_t chop = signature.find("Exif") == 0 ? 6 : 0 ;
-            exif.read(io_,(address+2)+2+chop,length-2-chop); // read the exif data into memory (there may be multiple APP1/Exif__ segments)
-            bExifMore = bExif || length == 65535 ;
-            bExif     = true;
+            exif.read(io_,(address+2)+2+chop,length-2-chop); // read into memory
+            bExifMore = bExif || length == 65535 ;           // Agfa  multiple APPn binary segments
+            bExif     = true;                                // Adobe multiple APP1/Exif__
         }
 
         // deal with deferred Exif metadata

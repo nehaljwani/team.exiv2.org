@@ -44,9 +44,10 @@ _And our cat Lizzie._
 | [8.5 IFD:accept() and TiffImage::accept() ](#8-5)     | 40 | [RAF](#RAF)                           | 14 | [13.12 Build Server](#13-12)            | 66 |
 | [8.6 Presenting data with visitTag()](#8-6)<br>       | 44 | [RW2](#RW2)                           | 14 | [13.13 Source Code Management](#13-13)  | 67 |
 | [8.7 Metadata and Binary Tag Decoder](#8-7)           | 47 | [TGA](#TGA)                           | 14 | [13.14 Project Web Site](#13-14)        | 68 |
-| [9. Image Previews](#9)                               | 50 | [GIF Graphical Image Format](#GIF)    | 14 | [13.15 Project Servers ](#13-15)        | 68 |
-| [10. Test Suite and Build](#10)                       | 51 | [BMP Windows Bitmap](#BMP)            | 14 | [13.16 API Management](#13-16)          | 68 |
-| [10.1 Bash Tests](#10-1)                              | 53 | _**Other Sections**_                  | 14 | [13.17 Recruiting Contributors](#13-17) | 69 |
+| [8.8 Jpeg::Image accept()](#8-8)                      | 47 | [GIF Graphical Image Format](#GIF)    | 14 | [13.14 Project Web Site](#13-14)        | 68 |
+| [9. Image Previews](#9)                               | 50 | [BMP Windows Bitmap](#BMP)            | 14 | [13.15 Project Servers ](#13-15)        | 68 |
+| [10. Test Suite and Build](#10)                       | 51 | _**Other Sections**_                  | 14 | [13.16 API Management](#13-16)          | 68 |
+| [10.1 Bash Tests](#10-1)                              | 53 | [Dedication](#dedication)             | 14 | [13.17 Recruiting Contributors](#13-17) | 69 |
 | [10.2 Python Tests](#10-2)                            | 55 | [About this book](#about)             |  2 | [13.18 Project Scheduling](#13-18)      | 70 |
 | [10.3 Unit Tests](#10-3)                              | 57 | [How did I get interested ?](#begin)  |  2 | [13.19 Enhancement Requests](#13-19)    | 71 |
 | [10.4 Version Test](#10-4)                            | 58 | [2012 - 2017](#2012)                  |  3 | [13.20 Tools](#13-20)                   | 72 |
@@ -323,7 +324,7 @@ bool TiffImage::valid()
     uint16_t bytesize = bigtiff_ ? getShort(header,4,endian_) : 8;
     uint16_t version  = bigtiff_ ? getShort(header,6,endian_) : 0;
 
-    return (magic_ == 42||magic_ == 43) && (c == C) && ( c == 'I' || c == 'M' ) && (start_ < io_.size()) && bytesize == 8 && version == 0;
+    return (magic_ == 42||magic_ == 43) && (c == C) && ( c == 'I' || c == 'M' ) && bytesize == 8 && version == 0;
 } // TiffImage::valid
 ```
 
@@ -363,6 +364,8 @@ END: /Users/rmills/Stonehenge.exv
 ### Extended JPEG
 
 The JPEG standard restricts a single segment of a JPEG to 64k bytes because the length field is a 16 bit uint16_t.  Exif, XMP and ICC frequently exceed 64k.  Regrettably three different schemes are used to enable multiple consecutive segments to be coalesced into a larger block.
+
+tvisitor.cpp supports Adboe and AGFA extended JPEG.
 
 #### Adobe Exif >64k in JPEG
 
@@ -412,13 +415,28 @@ $
 
 This is discussed in [https://dev.exiv2.org/issues/1232](https://dev.exiv2.org/issues/1232)  I think it is desirable to support reading this data.  Exiv2 should write using Adobe's JPEG > 64k _**ad-hoc**_ standard.
 
-tvisitor.cpp supports AGFA's extended JPEG.
+```bash
+.../book/build $ ./tvisitor -pS ~/Agfa.jpg 
+STRUCTURE OF JPEG FILE (II): /Users/rmills/Agfa.jpg
+ address | marker       |  length | signature
+       0 | 0xffd8 SOI  
+       2 | 0xffe1 APP1  |   46459 | Exif__II*_.___._..._.___.___..._.___.___..._._
+   46463 | 0xffe3 APP3  |   65535 | ...._._.......................................
+  112000 | 0xffe4 APP4  |   65535 | ..Hc..w .8<...z..M.77.h...{......C.y1...... .k
+  177537 | 0xffe5 APP5  |    7243 | .U......K..u=).pl.W.F...B.$.3....mg}q.....Hb.m
+  184782 | 0xffdb DQT   |     132 | 
+  184916 | 0xffc0 SOF0  |      17 | 
+  184935 | 0xffc4 DHT   |      75 | 
+  185012 | 0xffda SOS   |      12 | 
+END: /Users/rmills/Agfa.jpg
+.../book/build $ 
+```
 
-The Agfa MakerNote contains an IFD which is preceded by **ABC_IIdL** where dL is the directory length.  This is discussed in [3 MakerNotes](#3)
+The Agfa MakerNote contains an IFD which is preceded by **ABC_II#E** where #E is number of entreis in the IFD.  This is discussed in [3 MakerNotes](#3)
 
 #### ICC Profile data > 64k in JPEG
 
-This is documented by ICC and implemented in Exiv2 for both reading and writing.
+This is documented by ICC and implemented in Exiv2 for both reading and writing.  tvisitor.cpp does not support ICC Profiles in any special way.
 
 #### XMP data > 64k in JPEG
 
@@ -760,7 +778,7 @@ I/O in Exiv2 is achieved using the class BasicIo and derived classes which are:
 
 You will find a simplified version of BasicIo in tvisitor.cpp in the code that accompanies this book.  Io has several constructors.  The obvious one is Io(std::string) which calls _**fopen()**_.  More subtle is Io(io,from,size) which creates a sub-file on an existing stream.  This design deals with embedded files.  Most metadata is written in a format designated by the standards body and embedded in the file.  For example, Exif metadata data is written in Tiff Format and embedded in the file.
 
-The constructor Io(DataBuf&) is used to create an in-memory I/O stream.  DataBuf has a read() method to binary copy from a stream into memory.  As we will see, some subfiles are not contiguous in the image and "chunked" by the image format.  For example, JPEG is always chunked into segments of 64k or less.  When a subfile has been chunked it is convenient to copy bytes into a buffer from which we can create an Io source.
+The constructor _**Io(DataBuf&)**_ is used to create an in-memory I/O stream.  DataBuf has a read() method to binary copy from a stream into memory.  As we will see, some subfiles are not contiguous in the image and "chunked" by the image format.  For example, JPEG is always chunked into segments of 64k or less.  When a subfile has been chunked it is convenient to copy bytes into a buffer from which we can create an Io source.
 
 Other metadata standards use a similar design.  XMP is embedded XML, an Icc Profile is a major block of technology.  Exiv2 knows how to extract, insert, delete and replace an Icc Profile.  It knows nothing about the contents of the Icc Profile.  With Xmp, Exiv2 using Adobe's XMPsdk to enable the the Xmp data to be modified.
 
@@ -1176,6 +1194,12 @@ average age = 12
 .../book/build $ 
 ```
 
+We could of course add other classes to this program.  We could have _**class Building**_ and add buildings to the college.  This visitor could visit all the buildings.  We could have rooms in every building.  I am sure you get the idea.
+
+It a JPEG, we have a linked list of segments.  So we Visitor has a visitSegment() method.  And we have an embedded Exif Tiff, so we have visitExif(), visitIFD(), visitTag(), visitXML().  The visitor knows nothing about how to navigate the file.
+
+In tvisitor.cpp, we only have a single Visitor called ReportVisitor.  When you create him, you specify options which are Basic, Recursive, XML.  The ReportVisitor effectively performs the same options as _** $ exiv2 -pS **_, or _** $ exiv2 -pR **_, or _** $ exiv2 -pX **_.  We could easily create a new class Exiv2Visitor which would create Exiv2::ExifData.  It's also possible to create a class Exiv2Writer which would output a new file with modified metadata.
+
 Exiv2 has an abstract TiffVisitor class, and the following concrete visitors:
 
 | _Class_ | _Derived from_ | Purpose |
@@ -1195,9 +1219,9 @@ I need to do more research into this complex design.
 The TiffVisitor is ingenious.  It's also difficult to understand.  Exiv2 has two tiff parsers - TiffVisitor and Image::printIFDStructure().  TiffVisitor was written by Andreas Huggel.  It's very robust and has been almost 
 bug free for 15 years.  I wrote the parser in Image::printIFDStructure() to try to understand the structure of a tiff file.  The code in Image::printIFDStructure() is easier to understand.
 
-The code which accompanies this book has a simplified version of Image::printIFDStructure() called TiffImage::visitIFD() and that's what will be discussed here.  The code that accompanies this book is explained here: [Code discussed in this book](#13)
+The code which accompanies this book has a simplified version of Image::printIFDStructure() called IFD::accept() and that's what will be discussed here.  The code that accompanies this book is explained here: [Code discussed in this book](#14)
 
-It's important to realise that metadata is defined recursively.  In a Tiff File, there will be a Tiff Record containing the Exif data (written in Tiff Format).  Within, that record, there will be a MakerNote which is usually written in Tiff Format.  Tiff Format is referred to as an IFD - an Image File Directory.
+It is important to realise that metadata is defined recursively.  In a Tiff File, there will be a Tiff Record containing the Exif data (written in Tiff Format).  Within, that record, there will be a MakerNote which is usually written in Tiff Format.  Tiff Format is referred to as an IFD - an Image File Directory.
 
 TiffImage::visitIFD() uses a simple direct approach to parsing the tiff file.  When another IFD is located, visitIFD() is called recursively.  As a TIFF file is an 8 byte header which provides the offset to the first IFD.  We can descend into the tiff file from the beginning.  For other files types, the file handler has to find the Exif IFD and then call visitIFD().
 
@@ -1263,13 +1287,13 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
             // recursion anybody?
             if ( isTypeIFD(type) ) tag  = ktSubIFD;
             switch ( tag ) {
-                case ktGps       : IFD(image_,offset,false).visit(visitor,gpsDict );break;
-                case ktExif      : IFD(image_,offset,false).visit(visitor,exifDict);break;
+                case ktGps       : IFD(image_,offset,false).accept(visitor,gpsDict );break;
+                case ktExif      : IFD(image_,offset,false).accept(visitor,exifDict);break;
                 case ktMakerNote :         visitMakerNote(visitor,buf,count,offset);break;
                 case ktSubIFD    :
                      for ( uint64_t i = 0 ; i < count ; i++ ) {
                          offset = get4or8 (buf,0,i,endian);
-                         IFD(image_,offset,false).visit(visitor,tagDict);
+                         IFD(image_,offset,false).accept(visitor,tagDict);
                      }
                 break;
                 default: /* do nothing */ ; break;
@@ -1362,12 +1386,15 @@ void TiffImage::accept(Visitor& visitor,TagDict& tagDict)
 JpegImage::accept() navigates the chain of segments.  When he finds the embedded TIFF in the APP1 segment, he does this.  This is very similar to how the TiffImage for the Nikon makernote is created and navigated.
 
 ```cpp
-            // Pure beauty.  Create a TiffImage and ask him to entertain the visitor
-            if ( bExif ) {
-                Io io(io_,current+2+6,size-2-6);
-                TiffImage exif(io);
-                exif.accept(v);
-            }
+void ReportVisitor::visitExif(DataBuf& exif)
+{
+    if ( option() & kpsRecursive ) {
+        // Beautiful.  exif buffer is a tiff file, wrap with Io and call TiffImage::accept(visitor)
+        Io             tiffIo(exif);
+        TiffImage tiff(tiffIo);
+        tiff.accept(*this);
+    }
+}
 ```
 
 He discovers the TIFF file hidden in the data, he opens an Io stream which he attaches to a Tiff object and calls "TiffImage::accept(visitor)".  Software seldom gets simpler, as beautiful, or more elegant than this.
@@ -1760,7 +1787,90 @@ EXV_CALL_MEMBER_FN(*this, decoderFct)(object);
 
 This function understands how to decode byte-by-byte from `const ArrayDef` into the Exiv2 tag/values such as Exif.NikonAF22.AFAreaYPosition which it stores in the ExifData vector.
 
-This is ingenious magic.  I'll revisit/edit this explanation in the next few days when I have more time to explain this with more clarity.
+
+[TOC](#TOC)
+<div id="8-8">
+### 8.8 JpegImage::accept()
+
+![jpeg](jpeg.png)
+
+This function is a less easy that TiffImage::accept().  It navigates the chain of segments and calls the visitor appropriately.  The function is complicated to deal with Extended JPEG. There are two schemes for dealing with Exif metadata that span more than a single segment.
+
+For the benefit of clarity, I haven't shown the code here which handles Extended XMP.  In Exiv2, there is also code to handle ICC profiles which can also span multiple segments.
+
+The way in which extended JPEG is managed is quite simple.  A DataBuf is used and as more data is discovered we read from the image source into the DataBuf.  After reading consecutive blocks onto memory, we tell the visitor and clear the buffer.
+
+```cpp
+void JpegImage::accept(Visitor& visitor)
+{
+    // Ensure that this is the correct image type
+    if (!valid()) {
+        std::ostringstream os ; os << "expected " << format_ ;
+        Error(kerInvalidFileFormat,io().path(),os.str());
+    }
+    IoSave save(io(),0);
+    visitor.visitBegin((*this)); // tell the visitor
+
+    DataBuf exif             ; // buffer to suck up exif data
+    bool    bExif     = false; // Adobe ad-hoc Exif > 64k
+    bool    bExifMore = false; // Agfa         Exif > 64k  See https://dev.exiv2.org/issues/1232
+
+    DataBuf XMP              ; // buffer to suck up XML
+    bool    bExtXMP   = false;
+
+    // Step along linked list of segments
+    bool     done = false;
+    while ( !done ) {
+        // step to next marker
+        int  marker = advanceToMarker();
+        if ( marker < 0 ) {
+            Error(kerInvalidFileFormat,io().path());
+        }
+
+        size_t      address       = io_.tell()-2;
+        DataBuf     buf(48);
+
+        // Read size and signature
+        uint64_t    bufRead       = io_.read(buf);
+        uint16_t    length        = bHasLength_[marker] ? getShort(buf,0,keBig):0;
+        bool        bAppn         = marker >= app0_ && marker <= (app0_ | 0x0F);
+        bool        bHasSignature = marker == com_ || bAppn ;
+        std::string signature     = bHasSignature ? buf.binaryToString(2, buf.size_ - 2): "";
+
+        bExif                     = bAppn && signature.size() > 6 && signature.find("Exif") == 0;
+        if ( bExif || bExifMore ) { // suck up the Exif data
+            size_t chop = signature.find("Exif") == 0 ? 6 : 0 ;
+            exif.read(io_,(address+2)+2+chop,length-2-chop); // read into memory
+            bExifMore = bExif || length == 65535 ;           // Agfa  multiple APPn binary segments
+            bExif     = true;                                // Adobe multiple APP1/Exif__
+        }
+
+        // deal with deferred Exif metadata
+        if ( !exif.empty() && !bExif )
+        {
+            visitor.visitExif(exif); // tell the visitor
+            exif.empty(true); // empty the exif buffer
+            bExifMore = false ;
+        }
+        visitor.visitSegment(io_,*this,address,marker,length,signature); // tell the visitor
+
+        if ( bAppn ) {
+            ... delete code to handle Extended XMP ...
+        }
+
+        if ( !XMP.empty() && !bAppn ) {
+            visitor.visitXMP(XMP); // tell the visitor
+            bExtXMP = false;
+        }
+
+        // Jump past the segment
+        io_.seek(address+2+length); // address is previous marker
+        done = marker == eoi_ || marker == sos_ || io().eof();
+    } // while !done
+
+    visitor.visitEnd((*this)); // tell the visitor
+}  // JpegImage::accept
+```
 
 [TOC](#TOC)
 <div id="9">
