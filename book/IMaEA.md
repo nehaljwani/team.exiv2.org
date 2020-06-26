@@ -16,7 +16,7 @@ _Secondly, Andreas Huggel the founder of the project and Luis and Dan who have w
 
 _Exiv2 contributors (in alphabetical order): Abhinav, Alan, Andreas (both of them), Ben, Gilles, Kevin, Mahesh, Michal, Nehal, Neils, Phil, Sridhar, Thomas, Tuan .... and others who have contributed to Exiv2._
 
-_File Detectives:  Phil, Dave Coffin, Laurent Clevy._
+_File Detectives:  Phil Harvey, Dave Coffin, Laurent Cl&eacute;vy._
 
 _And our cat Lizzie._
 
@@ -365,7 +365,7 @@ END: /Users/rmills/Stonehenge.exv
 
 The JPEG standard restricts a single segment of a JPEG to 64k bytes because the length field is a 16 bit uint16_t.  Exif, XMP and ICC frequently exceed 64k.  Regrettably three different schemes are used to enable multiple consecutive segments to be coalesced into a larger block.
 
-tvisitor.cpp supports Adboe and AGFA extended JPEG.
+tvisitor.cpp supports Adobe and AGFA extended JPEG.
 
 #### Adobe Exif >64k in JPEG
 
@@ -703,7 +703,34 @@ Data's similar.  The order is different.  Good news is that the commands _**$ ex
 
 https://exiv2.org/makernote.html
 
-MakerNotes are usually written as an IFD, however most manufacturers have a few bytes the precede the IFD.  I suspect this is to store version information.
+MakerNotes are usually written as an IFD, however most manufacturers have a few bytes the precede the IFD.  I suspect this is to store version information.  The code in tvisitor.cpp to handle the makernotes is:
+
+```cpp
+void IFD::visitMakerNote(Visitor& visitor,DataBuf& buf,uint16_t count,uint32_t offset)
+{
+    if ( image_.maker_ == kNikon ) {
+        // Nikon MakerNote is embeded tiff `II*_....` 10 bytes into the data!
+        size_t punt = buf.strequals("Nikon") ? 10
+                    : 0
+                    ;
+        Io     io(io_,offset+punt,count-punt);
+        TiffImage makerNote(io,image_.maker_);
+        makerNote.visit(visitor,makerDict());
+    } else if ( image_.maker_ == kAgfa && buf.strequals("ABC") ) {
+        // Agfa  MakerNote is an IFD `ABC_IIdL...`  6 bytes into the data!
+        ImageEndianSaver save(image_,keLittle);
+        IFD makerNote(image_,offset+6,false);
+        makerNote.visit(visitor,makerDict());
+    } else {
+        bool   bNext = maker()  != kSony;                                        // Sony no trailing next
+        size_t punt  = maker()  == kSony && buf.strequals("SONY DSC ") ? 12 : 0; // Sony 12 byte punt
+        IFD makerNote(image_,offset+punt,bNext);
+        makerNote.visit(visitor,makerDict());
+    }
+} // visitMakerNote
+```
+
+I will write more about this subject later.
 
 [TOC](#TOC)
 <div id="4">
@@ -776,17 +803,27 @@ I/O in Exiv2 is achieved using the class BasicIo and derived classes which are:
 | StdinIo    | - | Read from std-in |
 | Base64Io   | data:..... | Decodes ascii encoded binary |
 
-You will find a simplified version of BasicIo in tvisitor.cpp in the code that accompanies this book.  Io has several constructors.  The obvious one is Io(std::string) which calls _**fopen()**_.  More subtle is Io(io,from,size) which creates a sub-file on an existing stream.  This design deals with embedded files.  Most metadata is written in a format designated by the standards body and embedded in the file.  For example, Exif metadata data is written in Tiff Format and embedded in the file.
+You will find a simplified version of BasicIo in tvisitor.cpp in the code that accompanies this book.  Io has several constructors.  The obvious one is _**Io(std::string)**_ which calls _**fopen()**_.  More subtle is _**Io(io,from,size)**_ which creates a sub-file on an existing stream.  This design deals with embedded files.  Most metadata is written in a format designated by the standards body and embedded in the file.  For example, Exif metadata data is written in Tiff Format and embedded in the file.
 
 The constructor _**Io(DataBuf&)**_ is used to create an in-memory I/O stream.  DataBuf has a read() method to binary copy from a stream into memory.  As we will see, some subfiles are not contiguous in the image and "chunked" by the image format.  For example, JPEG is always chunked into segments of 64k or less.  When a subfile has been chunked it is convenient to copy bytes into a buffer from which we can create an Io source.
 
-Other metadata standards use a similar design.  XMP is embedded XML, an Icc Profile is a major block of technology.  Exiv2 knows how to extract, insert, delete and replace an Icc Profile.  It knows nothing about the contents of the Icc Profile.  With Xmp, Exiv2 using Adobe's XMPsdk to enable the the Xmp data to be modified.
+Other metadata standards use a similar design.  XMP is embedded XML, an Icc Profile is a major block of technology.  Exiv2 knows how to extract, insert, delete and replace an Icc Profile.  It knows nothing about the contents of the Icc Profile.  With Xmp, Exiv2 uses Adobe's XMPsdk to enable the the Xmp data to be modified.
 
 Exiv2 has an abstract RemoteIo object which can read/write on the internet.  For http, there is a basic implementation of the http protocol in src/http.cpp.  For production use, Exiv2 should be linked with libcurl.  The reason for providing a "no thrills" implementation of http was two fold.  Firstly, it enabled the project to proceed rapidly without learning the curl API.  Secondly, I wanted all versions of the exiv2 command-line to have http support as I thought it would be useful for testing as we could store video and other large files remotely.
 
 The MemIo class enables memory to be used as a stream.  This is fast and convenient for small temporary files.  When memory mapped files are available, FileIo uses that in preference to FILE*.  When the project started in 2004, memory-mapped files were not provided on some legacy platforms such as DOS.  Today, all operating systems provide memory mapped files.  I've never heard of Exiv2 being used in an embedded controller, however I'm confident that this is feasible.  I've worked on embedded controllers with no operating system and only a standard "C" io library.  Exiv2 can be built for such a device.
 
 Most camera manufacturers are large corporations.  I'm sure they have their own firmware to handle Exif metadata.  However, the world of photography has an ever growing band of start-ups making amazing devices such as Go-Pro.  One day I'll hear the somebody is cycling around on top of Mt Everest with Exiv2 running on top of their head!  One of our users is an astronomer at NASA.  I've never heard that Exiv2 has flown in space, however one day it might.  I can say with pride that I think Exiv2 is out of this world!
+
+### Using memory mapped files
+
+When available, Exiv2 uses memory mapped files.  This is not a good idea for several reasons.  Firstly, applications can sit for days with a file open. For example, a GIMP user may open a file on Monday and it may be still be open several days later.  In the meanwhile things have changed on the network.  Secondly, memory mapped files on Windows are locked by the operating system.  This causes problems with the virus checker.  Thirdly, it's possible for another application to modify a file which is memory mapped.  Exiv2 has copied the metadata into memory and can have stale/obsolete data.
+
+The reason for using memory mapped files was for the convenience of converting offsets into memory addresses.  Imperial College have 90GByte Tiffs from medical imaging products.  We have to map 90GBytes.  And it gets worse, some file handlers allocate and copy the file before processing.  As we can see in tvisitor.cpp, it's possible to navigate the metadata in huge files with very little I/O.  Memory Mapped files for metadata processing have turned out to be easy with sad consequences.
+
+### Writing Files
+
+Exiv2 is very reliable at writing files which conform to standards.  Andreas has done a wonderful job to ensure that we never damage or corrupt a file.  I believe he uses a "double blind" technique to write the file in memory which is verified before updating the file in storage.  More research is required into this important subject.
 
 [TOC](#TOC)
 <div id="8">
@@ -1214,7 +1251,7 @@ I need to do more research into this complex design.
 
 [TOC](#TOC)
 <div id="8-5">
-### 8.5 IFD:visit() and TiffImage::visit()
+### 8.5 IFD::accept() and TiffImage::accept()
 
 The TiffVisitor is ingenious.  It's also difficult to understand.  Exiv2 has two tiff parsers - TiffVisitor and Image::printIFDStructure().  TiffVisitor was written by Andreas Huggel.  It's very robust and has been almost 
 bug free for 15 years.  I wrote the parser in Image::printIFDStructure() to try to understand the structure of a tiff file.  The code in Image::printIFDStructure() is easier to understand.
@@ -1314,32 +1351,7 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
 } // IFD::accept
 ```
 
-The MakerNote is thorny. Every manufacturer has similar ideas with different details.
-
-```cpp
-void IFD::visitMakerNote(Visitor& visitor,DataBuf& buf,uint16_t count,uint32_t offset)
-{
-    if ( image_.maker_ == kNikon ) {
-        // Nikon MakerNote is embeded tiff `II*_....` 10 bytes into the data!
-        size_t punt = buf.strequals("Nikon") ? 10
-                    : 0
-                    ;
-        Io     io(io_,offset+punt,count-punt);
-        TiffImage makerNote(io,image_.maker_);
-        makerNote.visit(visitor,makerDict());
-    } else if ( image_.maker_ == kAgfa && buf.strequals("ABC") ) {
-        // Agfa  MakerNote is an IFD `ABC_IIdL...`  6 bytes into the data!
-        ImageEndianSaver save(image_,keLittle);
-        IFD makerNote(image_,offset+6,false);
-        makerNote.visit(visitor,makerDict());
-    } else {
-        bool   bNext = maker()  != kSony;                                        // Sony no trailing next
-        size_t punt  = maker()  == kSony && buf.strequals("SONY DSC ") ? 12 : 0; // Sony 12 byte punt
-        IFD makerNote(image_,offset+punt,bNext);
-        makerNote.visit(visitor,makerDict());
-    }
-} // visitMakerNote
-```
+The MakerNote is thorny. Every manufacturer has similar ideas with different details.  This is discussed in detail: [3. MakerNotes](#3)
 
 To complete the story, here's TiffImage::valid() and TiffImage::accept().  We need two flavours of accept.  The default assumes tiffDict.  The makernote handlers pass their TagDict to accept().
 
@@ -1383,21 +1395,21 @@ void TiffImage::accept(Visitor& visitor,TagDict& tagDict)
 } // TiffImage::visit
 ```
 
-JpegImage::accept() navigates the chain of segments.  When he finds the embedded TIFF in the APP1 segment, he does this.  This is very similar to how the TiffImage for the Nikon makernote is created and navigated.
+JpegImage::accept() navigates the chain of segments.  It is discussed in detail: [8.8 Jpeg::Image accept()](#8-8)
+
+When JpegImage::accept() finds the embedded TIFF in the APP1 segment, he does this.  This is very similar to how the TiffImage for the Nikon makernote is created and navigated.
 
 ```cpp
-void ReportVisitor::visitExif(DataBuf& exif)
+void ReportVisitor::visitExif(Io& io)
 {
     if ( option() & kpsRecursive ) {
-        // Beautiful.  exif buffer is a tiff file, wrap with Io and call TiffImage::accept(visitor)
-        Io             tiffIo(exif);
-        TiffImage tiff(tiffIo);
-        tiff.accept(*this);
+        // Beautiful.  io is a tiff file, call TiffImage::accept(visitor)
+        TiffImage(io).accept(*this);
     }
 }
 ```
 
-He discovers the TIFF file hidden in the data, he opens an Io stream which he attaches to a Tiff object and calls "TiffImage::accept(visitor)".  Software seldom gets simpler, as beautiful, or more elegant than this.
+He creates a TiffImage with the stream and calls TiffImage::accept(visitor).  Software seldom gets simpler, as beautiful, or more elegant than this.
 
 Just to remind you, BasicIo supports http/ssh and other protocols.  This code will recursively descend into a remote file without copying it locally.  And he does it with great efficiency.  This is discussed in section [7 I/O in Exiv2](#7)
 
@@ -1793,8 +1805,6 @@ This function understands how to decode byte-by-byte from `const ArrayDef` into 
 ## 8.8 JpegImage::accept()
 
 ```cpp
-void JpegImage::accept(Visitor& visitor)
-{
     // Ensure that this is the correct image type
     if (!valid()) {
         std::ostringstream os ; os << "expected " << format_ ;
@@ -1803,12 +1813,14 @@ void JpegImage::accept(Visitor& visitor)
     IoSave save(io(),0);
     visitor.visitBegin((*this)); // tell the visitor
 
-    DataBuf exif             ; // buffer to suck up exif data
-    bool    bExif     = false; // Adobe ad-hoc Exif > 64k
-    bool    bExifMore = false; // Agfa         Exif > 64k  See https://dev.exiv2.org/issues/1232
+    DataBuf  exif             ; // buffer to suck up exif data
+    bool     bExif     = false; // Adobe ad-hoc Exif > 64k
+    bool     bExifAgfa = false; // Agfa         Exif > 64k  See https://dev.exiv2.org/issues/1232
+    uint64_t nExif     = 0    ; // Count the segments in Exif
+    uint64_t aExif     = 0    ; // Remember address of block0
 
-    DataBuf XMP              ; // buffer to suck up XML
-    bool    bExtXMP   = false;
+    DataBuf  XMP              ; // buffer to suck up XMP
+    bool     bExtXMP   = false;
 
     // Step along linked list of segments
     bool     done = false;
@@ -1828,31 +1840,45 @@ void JpegImage::accept(Visitor& visitor)
         bool        bAppn         = marker >= app0_ && marker <= (app0_ | 0x0F);
         bool        bHasSignature = marker == com_ || bAppn ;
         std::string signature     = bHasSignature ? buf.binaryToString(2, buf.size_ - 2): "";
-
+        
         bExif                     = bAppn && signature.size() > 6 && signature.find("Exif") == 0;
-        if ( bExif || bExifMore ) { // suck up the Exif data
-            size_t chop = signature.find("Exif") == 0 ? 6 : 0 ;
+        bExifAgfa                 = bExifAgfa || (!exif.empty() && !bExif);
+        
+        if ( bExif || bExifAgfa ) { // suck up the Exif data
+            size_t chop = bExif ? 6 : 0 ;
             exif.read(io_,(address+2)+2+chop,length-2-chop); // read into memory
-            bExifMore = bExif || length == 65535 ;           // Agfa  multiple APPn binary segments
-            bExif     = true;                                // Adobe multiple APP1/Exif__
+            if ( !nExif  ++ ) { // we do this to call visitExif with a subfile of io_ when only one block
+                aExif  = (address+2)+2+chop ;
+            } else {
+                bExifAgfa = length == 65535;
+            }
         }
 
         // deal with deferred Exif metadata
-        if ( !exif.empty() && !bExif )
+        if ( !exif.empty() && !bExif && !bExifAgfa )
         {
-            visitor.visitExif(exif); // tell the visitor
-            exif.empty(true); // empty the exif buffer
-            bExifMore = false ;
+            IoSave save(io_,aExif);
+            if ( nExif == 1 ) { // if the whole Exif data is in a single segment
+                Io                io(io_,aExif,exif.size_);
+                visitor.visitExif(io);
+            } else {
+                Io                io(exif);
+                visitor.visitExif(io);
+            }
+            exif.empty(true)  ; // empty the exif buffer
+            bExifAgfa = false ;
+            nExif     = 0     ;
+        }
+        // deal with deferred XMP
+        if ( !XMP.empty() && !bAppn ) {
+            visitor.visitXMP(XMP); // tell the visitor
+            bExtXMP = false ;
+            XMP.empty(true) ; // empty the exif buffer
         }
         visitor.visitSegment(io_,*this,address,marker,length,signature); // tell the visitor
 
         if ( bAppn ) {
-            ... delete code to handle Extended XMP ...
-        }
-
-        if ( !XMP.empty() && !bAppn ) {
-            visitor.visitXMP(XMP); // tell the visitor
-            bExtXMP = false;
+...
         }
 
         // Jump past the segment
@@ -1861,10 +1887,10 @@ void JpegImage::accept(Visitor& visitor)
     } // while !done
 
     visitor.visitEnd((*this)); // tell the visitor
-}  // JpegImage::accept
+}  // JpegImage::visitTiff
 ```
 
-This function is a less easy that TiffImage::accept().  It navigates the chain of segments and calls the visitor appropriately.  The function is complicated to deal with Extended JPEG. There are two schemes for dealing with Exif metadata that span more than a single segment.
+This function is more complex than TiffImage::accept().  It navigates the chain of segments and calls the visitor appropriately.  The function is complicated to deal with Extended JPEG. There are two schemes for dealing with Exif metadata that span more than a single segment.
 
 For the benefit of clarity, I haven't shown the code here which handles Extended XMP.  In Exiv2, there is also code to handle ICC profiles which can also span multiple segments.
 
@@ -1876,7 +1902,86 @@ The way in which extended JPEG is managed is quite simple.  A DataBuf is used an
 <div id="9">
 # 9 Image Previews
 
-To be written.
+I don't know much about the image previews.  Like most of Andreas' code, it works well and has seldom required attention.  There are significant challenges in finding the previews as manufacturers use a variety of techniques.  In particular, they often store an offset to a preview in a makernote, or some other devious location.  In consequence, it's almost impossible to re-write the file without the risk of loosing the preview.  This problem is compounded by the JPEG 64k limit in a single segment.  Digital Cameras and Smart Phones are now a huge business and JPEG is the most popular image format.  Regrettably, JPEG is a 30 year old standard which was conceived while dinosaurs roamed the earth.  A global agreement to support Adobe's _**ad-hoc**_ JPEG extension could easily address this issue.  The inertia of the industry is colossal.
+
+I find it incredible, yet unsurprising, that in an industry which talks about inovation and development can be so resistant to change.  Small changes that would serve their industry.  A friend of mine in Silicon Valley sat on a standards committee for video encoding.  He told me about a meeting in which something absurd was proposed and he decided to speak about it.  My friend seldom spoke that those meetings, but he couldn't let the issue pass.  And he said to me with a stupid war-comic German accent.  _"So, I took zee lugar and I aimed carefully and I squeezed zee trigger.  The bullet flew fast and straight and hit me in the shoulder."_.  The opposition he encountered was breathtaking.  Craziness ends up in standards because of the politics of the Standards Committee.
+
+Exiv2 has no code to edit previews in images.  About all that I know about previews is that the library finds them and creates a vector of thumbnails.
+
+Previews are usually JPEG encoded and have no metadata.
+
+```
+786 rmills@rmillsmm-local:~/temp/foo $ cp ~/Stonehenge.jpg .
+787 rmills@rmillsmm-local:~/temp/foo $ exiv2 -ep --verbose Stonehenge.jpg 
+File 1/1: Stonehenge.jpg
+Writing preview 1 (image/jpeg, 160x120 pixels, 10837 bytes) to file ./Stonehenge-preview1.jpg
+788 rmills@rmillsmm-local:~/temp/foo $ exiv2 -pS ./Stonehenge-preview1.jpg 
+STRUCTURE OF JPEG FILE: ./Stonehenge-preview1.jpg
+ address | marker       |  length | data
+       0 | 0xffd8 SOI  
+       2 | 0xffdb DQT   |     132 
+     136 | 0xffc0 SOF0  |      17 
+     155 | 0xffc4 DHT   |     418 
+     575 | 0xffda SOS  
+789 rmills@rmillsmm-local:~/temp/foo $ 
+```
+
+So, there's a 10837 byte JPEG hiding in the file.  But where:
+
+```bash
+STRUCTURE OF JPEG FILE (II): /Users/rmills/Stonehenge.jpg
+ address | marker       |  length | signature
+       0 | 0xffd8 SOI  
+       2 | 0xffe1 APP1  |   15288 | Exif__II*_.___._..._.___.___..._.___.___..._._
+  STRUCTURE OF TIFF FILE (II): /Users/rmills/Stonehenge.jpg:12->15280
+   address |    tag                              |      type |    count |    offset | value
+        10 | 0x010f Exif.Image.Make              |     ASCII |       18 |       146 | NIKON CORPORATION
+        22 | 0x0110 Exif.Image.Model             |     ASCII |       12 |       164 | NIKON D5300
+        34 | 0x0112 Exif.Image.Orientation       |     SHORT |        1 |           | 1
+...
+       118 | 0x8769 Exif.Image.ExifTag           |      LONG |        1 |           | 2191130666
+    STRUCTURE OF TIFF FILE (II): /Users/rmills/Stonehenge.jpg:12->15280
+     address |    tag                              |      type |    count |    offset | value
+         224 | 0x829a Exif.Photo.ExposureTime      |  RATIONAL |        1 |       732 | 10/4000
+         236 | 0x829d Exif.Photo.FNumber           |  RATIONAL |        1 |       740 | 100/10
+...
+         416 | 0x927c Exif.Photo.MakerNote         | UNDEFINED |     3152 |       914 | Nikon_..__II*_.___9_._._.___0211._._ +++
+      STRUCTURE OF TIFF FILE (II): /Users/rmills/Stonehenge.jpg:12->15280:924->3142
+       address |    tag                              |      type |    count |    offset | value
+            10 | 0x0001 Exif.Nikon.Version           | UNDEFINED |        4 |           | ____
+...
+           894 | 0x0023 Exif.Nikon.PcToningSaturat.. |     UBYTE |        1 |           | .
+      END: /Users/rmills/Stonehenge.jpg:12->15280:924->3142
+         476 | 0xa000 Exif.Photo.FlashpixVersion   | UNDEFINED |        4 |           | ____
+...
+    END: /Users/rmills/Stonehenge.jpg:12->15280
+    STRUCTURE OF TIFF FILE (II): /Users/rmills/Stonehenge.jpg:12->15280
+     address |    tag                              |      type |    count |    offset | value
+        4062 | 000000 Exif.GPSInfo.GPSVersionID    |     UBYTE |        4 |           | 15:0
+...
+    END: /Users/rmills/Stonehenge.jpg:12->15280
+  END: /Users/rmills/Stonehenge.jpg:12->15280
+   15292 | 0xffe1 APP1  |    2610 | http://ns.adobe.com/xap/1.0/_<?xpacket begin="
+   17904 | 0xffed APP13 |      96 | Photoshop 3.0_8BIM.._____'..__._...Z_..%G..__.
+   18002 | 0xffe2 APP2  |    4094 | MPF_II*_.___.__.._.___0100..._.___.___..._0___
+   22098 | 0xffdb DQT   |     132 | 
+   22232 | 0xffc0 SOF0  |      17 | 
+   22251 | 0xffc4 DHT   |     418 | 
+   22671 | 0xffda SOS   |      12 | 
+END: /Users/rmills/Stonehenge.jpg
+```
+
+Our friend dmpf finds it:
+
+```bash
+.../book/build $ ./dmpf ~/temp/foo/Stonehenge-preview1.jpg | head -1
+       0        0: ...._._.........................  ->  ff d8 ff db 00 84 00 ...
+.../book/build $ ./dmpf ~/temp/foo/Stonehenge.jpg | grep 'ff d8 ff db 00 84'
+  0x1160     4448: __.___...._._...................  ->  00 00 01 00 00 00 ff d8 ff db 00 ..
+.../book/build $ 
+```
+
+So, we know it is 4448 bytes into the file and the Exif Tiff is 15288 bytes and begins at 12.  So it's in there, but where?  I don't know.  More research necessary.
 
 [TOC](#TOC)
 <div id="10">

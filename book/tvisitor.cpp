@@ -733,8 +733,8 @@ public:
     virtual void visitCiff    (Io& io,Image& image,uint64_t address) = 0 ;
     virtual void visitSegment (Io& io,Image& image,uint64_t address
              ,uint8_t marker,uint16_t length,std::string& signature) = 0 ;
-    virtual void visitXMP  (DataBuf& xmp)                            = 0 ;
-    virtual void visitExif (DataBuf& exif)                           = 0 ;
+    virtual void visitXMP     (DataBuf& xmp)                         = 0 ;
+    virtual void visitExif    (Io& io)                               = 0 ;
 
     PSopt_e       option() { return option_ ; }
     std::ostream& out()    { return out_    ; }
@@ -1107,8 +1107,8 @@ public:
     {
         // if ( start ) out() << std::endl;
     }
-    void visitXMP (DataBuf& xmp );
-    void visitExif(DataBuf& exif);
+    void visitXMP (DataBuf& xmp);
+    void visitExif(Io&      io );
     void visitCiff
     ( Io&                   io
     , Image&                image
@@ -1453,18 +1453,13 @@ void ReportVisitor::visitTag
 
 void ReportVisitor::visitXMP(DataBuf& xmp)
 {
-    if ( option() & kpsXMP ) {
-        out() << xmp.pData_;
-        xmp.empty(true);
-    }
+    if ( option() & kpsXMP ) out() << xmp.pData_;
 }
-void ReportVisitor::visitExif(DataBuf& exif)
+void ReportVisitor::visitExif(Io& io)
 {
     if ( option() & kpsRecursive ) {
-        // Beautiful.  exif buffer is a tiff file, wrap with Io and call TiffImage::accept(visitor)
-        Io             tiffIo(exif);
-        TiffImage tiff(tiffIo);
-        tiff.accept(*this);
+        // Beautiful.  io is a tiff file, call TiffImage::accept(visitor)
+        TiffImage(io).accept(*this);
     }
 }
 
@@ -1478,12 +1473,14 @@ void JpegImage::accept(Visitor& visitor)
     IoSave save(io(),0);
     visitor.visitBegin((*this)); // tell the visitor
 
-    DataBuf exif             ; // buffer to suck up exif data
-    bool    bExif     = false; // Adobe ad-hoc Exif > 64k
-    bool    bExifMore = false; // Agfa         Exif > 64k  See https://dev.exiv2.org/issues/1232
+    DataBuf  exif             ; // buffer to suck up exif data
+    bool     bExif     = false; // Adobe ad-hoc Exif > 64k
+    bool     bExifAgfa = false; // Agfa         Exif > 64k  See https://dev.exiv2.org/issues/1232
+    uint64_t nExif     = 0    ; // Count the segments in Exif
+    uint64_t aExif     = 0    ; // Remember address of block0
 
-    DataBuf XMP              ; // buffer to suck up XML
-    bool    bExtXMP   = false;
+    DataBuf  XMP              ; // buffer to suck up XMP
+    bool     bExtXMP   = false;
 
     // Step along linked list of segments
     bool     done = false;
@@ -1503,21 +1500,40 @@ void JpegImage::accept(Visitor& visitor)
         bool        bAppn         = marker >= app0_ && marker <= (app0_ | 0x0F);
         bool        bHasSignature = marker == com_ || bAppn ;
         std::string signature     = bHasSignature ? buf.binaryToString(2, buf.size_ - 2): "";
-
+        
         bExif                     = bAppn && signature.size() > 6 && signature.find("Exif") == 0;
-        if ( bExif || bExifMore ) { // suck up the Exif data
-            size_t chop = signature.find("Exif") == 0 ? 6 : 0 ;
+        bExifAgfa                 = bExifAgfa || (!exif.empty() && !bExif);
+        
+        if ( bExif || bExifAgfa ) { // suck up the Exif data
+            size_t chop = bExif ? 6 : 0 ;
             exif.read(io_,(address+2)+2+chop,length-2-chop); // read into memory
-            bExifMore = bExif || length == 65535 ;           // Agfa  multiple APPn binary segments
-            bExif     = true;                                // Adobe multiple APP1/Exif__
+            if ( !nExif  ++ ) { // we do this to call visitExif with a subfile of io_ when only one block
+                aExif  = (address+2)+2+chop ;
+            } else {
+                bExifAgfa = length == 65535;
+            }
         }
 
         // deal with deferred Exif metadata
-        if ( !exif.empty() && !bExif )
+        if ( !exif.empty() && !bExif && !bExifAgfa )
         {
-            visitor.visitExif(exif); // tell the visitor
-            exif.empty(true); // empty the exif buffer
-            bExifMore = false ;
+            IoSave save(io_,aExif);
+            if ( nExif == 1 ) { // if the whole Exif data is in a single segment
+                Io                io(io_,aExif,exif.size_);
+                visitor.visitExif(io);
+            } else {
+                Io                io(exif);
+                visitor.visitExif(io);
+            }
+            exif.empty(true)  ; // empty the exif buffer
+            bExifAgfa = false ;
+            nExif     = 0     ;
+        }
+        // deal with deferred XMP
+        if ( !XMP.empty() && !bAppn ) {
+            visitor.visitXMP(XMP); // tell the visitor
+            bExtXMP = false ;
+            XMP.empty(true) ; // empty the exif buffer
         }
         visitor.visitSegment(io_,*this,address,marker,length,signature); // tell the visitor
 
@@ -1562,11 +1578,6 @@ void JpegImage::accept(Visitor& visitor)
                     XMP.read(io_,address+2+start,length - start); // read the XMP from the stream
                 }
             }
-        }
-
-        if ( !XMP.empty() && !bAppn ) {
-            visitor.visitXMP(XMP); // tell the visitor
-            bExtXMP = false;
         }
 
         // Jump past the segment
