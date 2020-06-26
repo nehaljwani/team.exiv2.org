@@ -167,9 +167,13 @@ public:
         memcpy(pData_+offset,src,size);
     }
     void copy(uint32_t v,uint64_t offset=0) { copy(&v,4,offset); }
+    std::string path() { return path_; }
 
     std::string toString(type_e type,uint64_t count,endian_e endian,uint64_t offset=0);
     std::string binaryToString(uint64_t start,uint64_t size);
+
+private:
+    std::string path_;
 };
 
 // endian and byte swappers
@@ -617,16 +621,13 @@ public:
         seek(0);
     };
     Io(DataBuf& buf)
-    : path_ ("DataBuf")
+    : path_   (buf.path())
     , start_  (0)
     , size_   (buf.size_)
     , restore_(0)
     , f_      (NULL)
     {   f_ = fmemopen(buf.pData_,buf.size_, "r");
         if ( !f_ ) Error(kerFileDidNotOpen,path_);
-        std::ostringstream os;
-        os << path_ << ":" << size_;
-        path_=os.str();
     }
 
     virtual ~Io() { close(); }
@@ -693,6 +694,10 @@ void DataBuf::read(Io& io,uint64_t offset,uint64_t size)
     if ( size ) {
         IoSave restore(io,offset);
         pData_ = (byte*) (pData_ ? std::realloc(pData_,size_+size) : std::malloc(size));
+        if ( !path_.size() ) path_=io.path();
+        std::ostringstream os ;
+        os <<"+"<<io.tell()<<"->"<<size;
+        path_ += os.str();
         io.read (pData_+size_,size);
         size_ += size ;
     }
