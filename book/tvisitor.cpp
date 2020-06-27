@@ -1478,14 +1478,17 @@ void JpegImage::accept(Visitor& visitor)
     IoSave save(io(),0);
     visitor.visitBegin((*this)); // tell the visitor
 
-    DataBuf  exif             ; // buffer to suck up exif data
-    bool     bExif     = false; // Adobe ad-hoc Exif > 64k
-    bool     bExifAgfa = false; // Agfa         Exif > 64k  See https://dev.exiv2.org/issues/1232
-    uint64_t nExif     = 0    ; // Count the segments in Exif
-    uint64_t aExif     = 0    ; // Remember address of block0
+    enum                             // kes = Exif State
+    { kesNone = 0                    // not reading exif
+    , kesAdobe                       // in a chain of APP1/Exif__ segments
+    , kesAgfa                        // in AGFA segments of 65535
+    }          exifState = kesNone ;
+    DataBuf    exif                ; // buffer to suck up exif data
+    uint64_t   nExif     = 0       ; // Count the segments in Exif
+    uint64_t   aExif     = 0       ; // Remember address of block0
 
-    DataBuf  XMP              ; // buffer to suck up XMP
-    bool     bExtXMP   = false;
+    DataBuf    XMP                 ; // buffer to suck up XMP
+    bool       bExtXMP   = false   ;
 
     // Step along linked list of segments
     bool     done = false;
@@ -1505,34 +1508,28 @@ void JpegImage::accept(Visitor& visitor)
         bool        bAppn         = marker >= app0_ && marker <= (app0_ | 0x0F);
         bool        bHasSignature = marker == com_ || bAppn ;
         std::string signature     = bHasSignature ? buf.binaryToString(2, buf.size_ - 2): "";
-        
-        bExif                     = bAppn && signature.size() > 6 && signature.find("Exif") == 0;
-        bExifAgfa                 = bExifAgfa || (!exif.empty() && !bExif);
-        
-        if ( bExif || bExifAgfa ) { // suck up the Exif data
+
+        bool        bExif         = bAppn && signature.size() > 6 && signature.find("Exif") == 0  ;
+        exifState                 = bExif       ? kesAdobe
+                                  : (exifState == kesAdobe && length == 65535) ? kesAgfa
+                                  : kesNone ;
+
+        if ( exifState ) { // suck up the Exif data
             size_t chop = bExif ? 6 : 0 ;
             exif.read(io_,(address+2)+2+chop,length-2-chop); // read into memory
-            if ( !nExif  ++ ) { // we do this to call visitExif with a subfile of io_ when only one block
-                aExif  = (address+2)+2+chop ;
-            } else {
-                bExifAgfa = length == 65535;
-            }
+            if ( !nExif ++ ) aExif = (address+2)+2+chop ;
+            if ( length == 65535 && !bExif ) exifState = kesAgfa;
         }
 
         // deal with deferred Exif metadata
-        if ( !exif.empty() && !bExif && !bExifAgfa )
+        if ( !exif.empty() && !exifState )
         {
             IoSave save(io_,aExif);
-            if ( nExif == 1 ) { // if the whole Exif data is in a single segment
-                Io                io(io_,aExif,exif.size_);
-                visitor.visitExif(io);
-            } else {
-                Io                io(exif);
-                visitor.visitExif(io);
-            }
+            Io     file(io_,aExif,exif.size_); // stream on the file
+            Io     memory(exif);               // stream on memory buffer
+            visitor.visitExif(nExif == 1 ? file :memory ); // tell the visitor
             exif.empty(true)  ; // empty the exif buffer
-            bExifAgfa = false ;
-            nExif     = 0     ;
+            nExif     = 0     ; // reset the block counter
         }
         // deal with deferred XMP
         if ( !XMP.empty() && !bAppn ) {
