@@ -305,27 +305,29 @@ I will have to conduct more research concerning this matter.
 A Jpeg and exf are almost the same thing, however most graphics applications will reject a .exv because it is not a valid JPEG.  ExifTool supports .exv files.  In tvisitor.cpp, class JpegImage handles both and the only difference is respected in JpegImage::valid():
 
 ```cpp
-bool TiffImage::valid()
+bool JpegImage::valid()
 {
-    IoSave restore(io(),0);
-
-    // read header
-    DataBuf  header(16);
-    io_.read(header);
-
-    char c   = (char) header.pData_[0] ;
-    char C   = (char) header.pData_[1] ;
-    endian_  = c == 'M' ? keBig : keLittle;
-    magic_   = getShort(header,2,endian_);
-    bigtiff_ = magic_ == 43;
-    start_   = bigtiff_ ? getLong8(header,8,endian_) : getLong (header,4,endian_);
-    format_  = bigtiff_ ? "BIGTIFF"                  : "TIFF"                    ;
-
-    uint16_t bytesize = bigtiff_ ? getShort(header,4,endian_) : 8;
-    uint16_t version  = bigtiff_ ? getShort(header,6,endian_) : 0;
-
-    return (magic_ == 42||magic_ == 43) && (c == C) && ( c == 'I' || c == 'M' ) && bytesize == 8 && version == 0;
-} // TiffImage::valid
+    IoSave   restore(io(),0);
+    bool     result = false;
+    byte     h[2];
+    io_.read(h,2);
+    if ( h[0] == 0xff && h[1] == 0xd8 ) { // .JPEG
+        start_  = 0;
+        format_ = "JPEG";
+        endian_ = keLittle;
+        result  = true;
+    } else if  ( h[0] == 0xff && h[1]==0x01 ) { // .EXV
+        DataBuf buf(5);
+        io_.read(buf);
+        if ( buf.is("Exiv2") ) {
+            start_ = 7;
+            format_ = "EXV";
+            endian_ = keLittle;
+            result = true;
+        }
+    }
+    return result;
+} // JpegImage::valid()
 ```
 
 And here it is in action:
@@ -344,7 +346,7 @@ STRUCTURE OF JPEG FILE (II): /Users/rmills/Stonehenge.jpg
    22251 | 0xffc4 DHT   |     418 
    22671 | 0xffda SOS  
 END: /Users/rmills/Stonehenge.jpg
-$ exiv2 -ea --verbose --force ~/Stonehenge.jpg 
+.../book/build $ exiv2 -ea --verbose --force ~/Stonehenge.jpg 
 File 1/1: /Users/rmills/Stonehenge.jpg
 Writing Exif data from /Users/rmills/Stonehenge.jpg to /Users/rmills/Stonehenge.exv
 Writing IPTC data from /Users/rmills/Stonehenge.jpg to /Users/rmills/Stonehenge.exv
@@ -375,40 +377,40 @@ Exiv2 has no code to deal with this.  It can neither read nor write these files.
 
 This is discussed here: [https://dev.exiv2.org/issues/1232](https://dev.exiv2.org/issues/1232) and here is the output of the test files which were contributed by Phil.
 
-```
-$ ./tvisitor ~/cs4_extended_exif.jpg 
+```bash
+.../book/build $ ./tvisitor -pS ~/cs4_extended_exif.jpg 
 STRUCTURE OF JPEG FILE (II): /Users/rmills/cs4_extended_exif.jpg
- address |    tag type      count | value
+ address | marker       |  length | signature
        0 | 0xffd8 SOI  
-       2 | 0xffe0 APP0  |      16 | JFIF_..._._.__....
-      20 | 0xffe1 APP1  |   65498 | Exif__MM_*___._..._.___.___n.._.___. +++
-   65520 | 0xffe1 APP1  |   65498 | Exif__g keys we require'd            +++
-  131020 | 0xffe1 APP1  |   52820 | Exif__)            if ($$segDataPt = +++
-  183842 | 0xffed APP13 |    4440 | Photoshop 3.0_8BIM..____....__.__..x +++
-  188284 | 0xffe1 APP1  |    4323 | http://ns.adobe.com/xap/1.0/_<?xpack +++
-  192609 | 0xffe1 APP1  |   65477 | http://ns.adobe.com/xmp/extension/_C +++
-  258088 | 0xffe1 APP1  |   65477 | http://ns.adobe.com/xmp/extension/_C +++
-  323567 | 0xffe1 APP1  |   56466 | http://ns.adobe.com/xmp/extension/_C +++
-  380035 | 0xffe2 APP2  |    3160 | ICC_PROFILE_..__.HLino..__mntrRGB XY +++
-  383197 | 0xffee APP14 |      14 | Adobe_d.___..._.
-  383213 | 0xffdb DQT   |     132 
-  383347 | 0xffc0 SOF0  |      17 
-  383366 | 0xffdd DRI   |       4 
-  383372 | 0xffc4 DHT   |     319 
-  383693 | 0xffda SOS  
+       2 | 0xffe0 APP0  |      16 | JFIF_..._._.__..
+      20 | 0xffe1 APP1  |   65498 | Exif__MM_*___._..._.___.___n.._.___._.__
+   65520 | 0xffe1 APP1  |   65498 | Exif__g keys we require'd            nex
+  131020 | 0xffe1 APP1  |   52820 | Exif__)            if ($$segDataPt =~ /^
+  183842 | 0xffed APP13 |    4440 | Photoshop 3.0_8BIM..____....__.__..x..#-
+  188284 | 0xffe1 APP1  |    4323 | http://ns.adobe.com/xap/1.0/_<?xpacket b
+  192609 | 0xffe1 APP1  |   65477 | http://ns.adobe.com/xmp/extension/_C8400
+  258088 | 0xffe1 APP1  |   65477 | http://ns.adobe.com/xmp/extension/_C8400
+  323567 | 0xffe1 APP1  |   56466 | http://ns.adobe.com/xmp/extension/_C8400
+  380035 | 0xffe2 APP2  |    3160 | ICC_PROFILE_..__.HLino..__mntrRGB XYZ ..
+  383197 | 0xffee APP14 |      14 | Adobe_d.___...
+  383213 | 0xffdb DQT   |     132 | _.......................................
+  383347 | 0xffc0 SOF0  |      17 | ..T...."_........
+  383366 | 0xffdd DRI   |       4 | _...
+  383372 | 0xffc4 DHT   |     319 | __........_______._..........._........_
+  383693 | 0xffda SOS   |      12 | .._...._?_.T
 END: /Users/rmills/cs4_extended_exif.jpg
-$ ./tvisitor ~/multi-segment_exif.jpg 
+.../book/build $ ./tvisitor -pS ~/multi-segment_exif.jpg 
 STRUCTURE OF JPEG FILE (II): /Users/rmills/multi-segment_exif.jpg
- address |    tag type      count | value
+ address | marker       |  length | signature
        0 | 0xffd8 SOI  
-       2 | 0xffe1 APP1  |   65535 | Exif__II*_.___._..._.___.___..._.___ +++
-   65539 | 0xffe1 APP1  |    5603 | Exif__.............................. +++
-   71144 | 0xffdb DQT   |     132 
-   71278 | 0xffc4 DHT   |     418 
-   71698 | 0xffc0 SOF0  |      17 
-   71717 | 0xffda SOS  
+       2 | 0xffe1 APP1  |   65535 | Exif__II*_.___._..._.___.___..._.___.___
+   65539 | 0xffe1 APP1  |    5603 | Exif__..................................
+   71144 | 0xffdb DQT   |     132 | _.......................................
+   71278 | 0xffc4 DHT   |     418 | __........________............_.........
+   71698 | 0xffc0 SOF0  |      17 | ..0.@..!_........
+   71717 | 0xffda SOS   |      12 | .._...._?_..
 END: /Users/rmills/multi-segment_exif.jpg
-$ 
+.../book/build $ 
 ```
 
 #### AGFA Exif >64k in JPEG
@@ -695,7 +697,7 @@ GPSDateStamp -> 2015-07-16 00:00:00 (dat     ImageUniqueID -> "090caaf..."
                                              GPSDateStamp -> 2015-07-16 00:
 ```
 
-Data's similar.  The order is different.  Good news is that the commands _**$ exiv2 -pe ~/Stonehenge.jpg**_ and __*$ exiv2 -pe ~/Stonehenge.tif*__ produce similar data in the same order.  We'd hope so as both commands are reading the same embedded Exif metadata.  The way in which the Exif is embedded in the a Tiff or JPG is different, however the Exif metadata is effectively the same.
+Data's similar.  The order is different.  Good news is that the commands _**$ exiv2 -pe ~/Stonehenge.jpg**_ and __*$ exiv2 -pe ~/Stonehenge.tif*__ produce similar data in the same order.  We'd hope so as both commands are reading the same embedded Exif metadata.  The way in which the Exif is embedded in Tiff and JPG is different, however the Exif metadata is effectively the same.
 
 [TOC](#TOC)
 <div id="3">
@@ -754,7 +756,7 @@ Exif is the most important of the metadata containers.  However others exist and
 <div id="6">
 # 6 Sample Applications
 
-Exiv2 has about sample applications which have their own documentation: [README-SAMPLES.md](README-SAMPLES.html).  In Exiv2 v0.27.3, there are 17 samples applications and 19 test programs.  The test programs are intended for use by the test suite and are not installed on the user's computer.
+Exiv2 has sample applications which have their own documentation: [README-SAMPLES.md](README-SAMPLES.html).  In Exiv2 v0.27.3, there are 17 samples applications and 19 test programs.  The test programs are intended for use by the test suite and are not installed on the user's computer.
 
 The following programs are built and installed in /usr/local/bin.
 
@@ -780,7 +782,7 @@ The following programs are built and installed in /usr/local/bin.
 
 Most of the programs are about 100 lines of C++ and do simple tasks to demonstrate how to use the library API.  Three of the programs are substantial. They are: _**exiv2**_, _**geotag**_ and _**exiv2json**_
 
-The Exiv2 command-line program _**exiv2**_ is a substantial utility that enables users to manipulate metadata in images using most of the features of the library.  Being a general utility, it has about 4000 lines of code. The length of the program proves the point that it is full featured, however the quantity of code rather obscures the use of the library APIs.
+The Exiv2 command-line program _**exiv2**_ enables users to manipulate metadata in images using most of the features of the library.  Being a general utility, it has about 4000 lines of code. The length of the program proves the point that it is full featured, however the quantity of code rather obscures the use of the library APIs.
 
 Exiv2 has always resisted the temptation of provide a GUI version of the program as that would involve considerable cross-platform development and user interface skills.  As Andreas Huggel summarised: _Exiv2 does depth, not breadth_.  Providing a GUI would lead the project away from metadata into the world of the _User Experience_.
 
@@ -805,7 +807,7 @@ I/O in Exiv2 is achieved using the class BasicIo and derived classes which are:
 
 You will find a simplified version of BasicIo in tvisitor.cpp in the code that accompanies this book.  Io has several constructors.  The obvious one is _**Io(std::string)**_ which calls _**fopen()**_.  More subtle is _**Io(io,from,size)**_ which creates a sub-file on an existing stream.  This design deals with embedded files.  Most metadata is written in a format designated by the standards body and embedded in the file.  For example, Exif metadata data is written in Tiff Format and embedded in the file.
 
-The constructor _**Io(DataBuf&)**_ is used to create an in-memory I/O stream.  DataBuf has a read() method to binary copy from a stream into memory.  As we will see, some subfiles are not contiguous in the image and "chunked" by the image format.  For example, JPEG is always chunked into segments of 64k or less.  When a subfile has been chunked it is convenient to copy bytes into a buffer from which we can create an Io source.
+The constructor _**Io(DataBuf&)**_ is used to create an in-memory I/O stream.  _**DataBuf**_ has a _**read()**_ method to binary copy from a stream into memory.  As we will see, some subfiles are not contiguous in the image and "chunked" by the image format.  For example, JPEG is always chunked into segments of 64k or less.  When a subfile has been chunked it is convenient to copy bytes into a buffer from which we can create an Io source.
 
 Other metadata standards use a similar design.  XMP is embedded XML, an Icc Profile is a major block of technology.  Exiv2 knows how to extract, insert, delete and replace an Icc Profile.  It knows nothing about the contents of the Icc Profile.  With Xmp, Exiv2 uses Adobe's XMPsdk to enable the the Xmp data to be modified.
 
@@ -813,13 +815,13 @@ Exiv2 has an abstract RemoteIo object which can read/write on the internet.  For
 
 The MemIo class enables memory to be used as a stream.  This is fast and convenient for small temporary files.  When memory mapped files are available, FileIo uses that in preference to FILE*.  When the project started in 2004, memory-mapped files were not provided on some legacy platforms such as DOS.  Today, all operating systems provide memory mapped files.  I've never heard of Exiv2 being used in an embedded controller, however I'm confident that this is feasible.  I've worked on embedded controllers with no operating system and only a standard "C" io library.  Exiv2 can be built for such a device.
 
-Most camera manufacturers are large corporations.  I'm sure they have their own firmware to handle Exif metadata.  However, the world of photography has an ever growing band of start-ups making amazing devices such as Go-Pro.  One day I'll hear the somebody is cycling around on top of Mt Everest with Exiv2 running on top of their head!  One of our users is an astronomer at NASA.  I've never heard that Exiv2 has flown in space, however one day it might.  I can say with pride that I think Exiv2 is out of this world!
+Most camera manufacturers are large corporations.  I'm sure they have their own firmware to handle Exif metadata.  However, the world of photography has an ever growing band of start-ups making amazing devices such as Go-Pro.  One day I'll hear that somebody is cycling around on top of Mt Everest with Exiv2 running on top of their head!  One of our users is an astronomer at NASA.  I've never heard that Exiv2 has flown in space, however one day it might.  I will say with pride that Exiv2 is out of this world!
 
 ### Using memory mapped files
 
-When available, Exiv2 uses memory mapped files.  This is not a good idea for several reasons.  Firstly, applications can sit for days with a file open. For example, a GIMP user may open a file on Monday and it may be still be open several days later.  In the meanwhile things have changed on the network.  Secondly, memory mapped files on Windows are locked by the operating system.  This causes problems with the virus checker.  Thirdly, it's possible for another application to modify a file which is memory mapped.  Exiv2 has copied the metadata into memory and can have stale/obsolete data.
+When available, Exiv2 uses memory mapped files.  This is not a good idea for several reasons.  Firstly, image editing applications can sit for days with a file open. For example, a GIMP user may open a file on Monday and it may be still be open several days later.  In the meanwhile things have changed on the network.  Secondly, memory mapped files on Windows are locked by the operating system.  This causes problems with the virus checker.  Thirdly, it's possible for another application to modify a file which is memory mapped.  Exiv2 has copied the metadata into memory and can have stale/obsolete data.
 
-The reason for using memory mapped files was for the convenience of converting offsets into memory addresses.  Imperial College have 90GByte Tiffs from medical imaging products.  We have to map 90GBytes.  And it gets worse, some file handlers allocate and copy the file before processing.  As we can see in tvisitor.cpp, it's possible to navigate the metadata in huge files with very little I/O.  Memory Mapped files for metadata processing have turned out to be easy with sad consequences.
+The reason for using memory mapped files was for the convenience of converting offsets into memory addresses.  Imperial College have 90GByte Tiffs from medical imaging products.  We have to map 90GBytes.  And it gets worse, some file handlers allocate and copy the file before processing.  As we can see in tvisitor.cpp, it's possible to navigate the metadata in huge files with very little I/O.  Memory Mapped files for metadata processing have turned out to have sad consequences.
 
 ### Writing Files
 
@@ -902,7 +904,7 @@ Exif.Image.Orientation                       Short       1  top, left
 $
 ```
 
-You may be interested to discover that option _**-pS**_ which arrived with Exiv2 v0.25 was joined in Exiv2 v0.26 by _**-pR**_.  This is a "recursive" version of _**-pS**_.  It dumps the structure not only of the file, but also every subfiles (mostly IFDs).  This is discussed in detail here: [8.5 IFD:accept() and TiffImage::accept()](#8-5).
+You may be interested to discover that option _**-pS**_ which arrived with Exiv2 v0.25 was joined in Exiv2 v0.26 by _**-pR**_.  This is a "recursive" version of _**-pS**_.  It dumps the structure not only of the file, but also subfiles (such as IFDs and JPEG/thumbnails).  This is discussed in detail here: [8.5 IFD:accept() and TiffImage::accept()](#8-5).
 
 [TOC](#TOC)
 
@@ -1814,14 +1816,17 @@ void JpegImage::accept(Visitor& visitor)
     IoSave save(io(),0);
     visitor.visitBegin((*this)); // tell the visitor
 
-    DataBuf  exif             ; // buffer to suck up exif data
-    bool     bExif     = false; // Adobe ad-hoc Exif > 64k
-    bool     bExifAgfa = false; // Agfa         Exif > 64k  See https://dev.exiv2.org/issues/1232
-    uint64_t nExif     = 0    ; // Count the segments in Exif
-    uint64_t aExif     = 0    ; // Remember address of block0
+    enum                             // kes = Exif State
+    { kesNone = 0                    // not reading exif
+    , kesAdobe                       // in a chain of APP1/Exif__ segments
+    , kesAgfa                        // in AGFA segments of 65535
+    }          exifState = kesNone ;
+    DataBuf    exif                ; // buffer to suck up exif data
+    uint64_t   nExif     = 0       ; // Count the segments in Exif
+    uint64_t   aExif     = 0       ; // Remember address of block0
 
-    DataBuf  XMP              ; // buffer to suck up XMP
-    bool     bExtXMP   = false;
+    DataBuf    XMP                 ; // buffer to suck up XMP
+    bool       bExtXMP   = false   ;
 
     // Step along linked list of segments
     bool     done = false;
@@ -1841,34 +1846,28 @@ void JpegImage::accept(Visitor& visitor)
         bool        bAppn         = marker >= app0_ && marker <= (app0_ | 0x0F);
         bool        bHasSignature = marker == com_ || bAppn ;
         std::string signature     = bHasSignature ? buf.binaryToString(2, buf.size_ - 2): "";
-        
-        bExif                     = bAppn && signature.size() > 6 && signature.find("Exif") == 0;
-        bExifAgfa                 = bExifAgfa || (!exif.empty() && !bExif);
-        
-        if ( bExif || bExifAgfa ) { // suck up the Exif data
+
+        bool        bExif         = bAppn && signature.size() > 6 && signature.find("Exif") == 0  ;
+        exifState                 = bExif       ? kesAdobe
+                                  : (exifState == kesAdobe && length == 65535) ? kesAgfa
+                                  : kesNone ;
+
+        if ( exifState ) { // suck up the Exif data
             size_t chop = bExif ? 6 : 0 ;
             exif.read(io_,(address+2)+2+chop,length-2-chop); // read into memory
-            if ( !nExif  ++ ) { // we do this to call visitExif with a subfile of io_ when only one block
-                aExif  = (address+2)+2+chop ;
-            } else {
-                bExifAgfa = length == 65535;
-            }
+            if ( !nExif ++ ) aExif = (address+2)+2+chop ;
+            if ( length == 65535 && !bExif ) exifState = kesAgfa;
         }
 
         // deal with deferred Exif metadata
-        if ( !exif.empty() && !bExif && !bExifAgfa )
+        if ( !exif.empty() && !exifState )
         {
             IoSave save(io_,aExif);
-            if ( nExif == 1 ) { // if the whole Exif data is in a single segment
-                Io                io(io_,aExif,exif.size_);
-                visitor.visitExif(io);
-            } else {
-                Io                io(exif);
-                visitor.visitExif(io);
-            }
+            Io     file(io_,aExif,exif.size_); // stream on the file
+            Io     memory(exif);               // stream on memory buffer
+            visitor.visitExif(nExif == 1 ? file :memory ); // tell the visitor
             exif.empty(true)  ; // empty the exif buffer
-            bExifAgfa = false ;
-            nExif     = 0     ;
+            nExif     = 0     ; // reset the block counter
         }
         // deal with deferred XMP
         if ( !XMP.empty() && !bAppn ) {
