@@ -1390,9 +1390,13 @@ bool JpegImage::valid()
 void ReportVisitor::visitSegment(Io& io,Image& image,uint64_t address
          ,uint8_t marker,uint16_t length,std::string& signature)
 {
+    DataBuf buf( length < 40 ? length : 40 );
+    IoSave  save(io,address+4);
+    io.read(buf);
+    std::string value = buf.toString(kttUndefined,buf.size_,image.endian());
     if ( option() & kpsBasic || option() & kpsRecursive ) {
         out() <<           stringFormat("%8ld | 0xff%02x %-5s", address,marker,nm_[marker].c_str())
-              << (length ? stringFormat(" | %7d | %s", length,signature.c_str()) : "")
+              << (length ? stringFormat(" | %7d | %s", length,value.c_str()) : "")
               << std::endl;
     }
 }
@@ -1518,7 +1522,7 @@ void JpegImage::accept(Visitor& visitor)
             size_t chop = bExif ? 6 : 0 ;
             exif.read(io_,(address+2)+2+chop,length-2-chop); // read into memory
             if ( !nExif ++ ) aExif = (address+2)+2+chop ;
-            if ( length == 65535 && !bExif ) exifState = kesAgfa;
+            if ( exifState == kesAgfa && length != 65535 && !bExif ) exifState = kesNone;
         }
 
         // deal with deferred Exif metadata
