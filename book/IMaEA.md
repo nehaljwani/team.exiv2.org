@@ -1233,9 +1233,9 @@ average age = 12
 
 We could of course add other classes to this program.  We could have _**class Building**_ and add buildings to the college.  This visitor could visit all the buildings.  We could have rooms in every building.  I am sure you get the idea.
 
-In a JPEG, we have a linked list of segments.  So we visitor has a visitSegment() method.  As JPEG has an embedded Exif Tiff, so we have visitExif(), visitIFD(), visitTag(), visitXML().  The visitor knows nothing about how to navigate the file.
+In a JPEG, we have a linked list of segments.  So we visitor has a visitSegment() method.  As JPEG has an embedded Exif Tiff, so we have visitExif(), visitIFD(), visitTag(), visitXMP().  The visitor knows nothing about how to navigate the file.
 
-In tvisitor.cpp, we only have a single Visitor called ReportVisitor.  When you create him, you specify options which are Basic, Recursive, XML.  The ReportVisitor effectively performs the same options as _**$ exiv2 -pS**_, or _**$ exiv2 -pR**_, or _**$ exiv2 -pX**_.  We could easily create a new class Exiv2Visitor which would create Exiv2::ExifData.  It's also possible to create a class Exiv2Writer which would output a new file with modified metadata.
+In tvisitor.cpp, we only have a single Visitor called ReportVisitor.  When you create him, you specify options which are Basic, Recursive, XMP.  The ReportVisitor effectively performs the same options as _**$ exiv2 -pS**_, or _**$ exiv2 -pR**_, or _**$ exiv2 -pX**_.  We could easily create a new class Exiv2Visitor which would create Exiv2::ExifData.  It's also possible to create a class Exiv2Writer which would output a new file with modified metadata.
 
 Exiv2 has an abstract TiffVisitor class, and the following concrete visitors:
 
@@ -1253,16 +1253,15 @@ I need to do more research into this complex design.
 <div id="8-5">
 ### 8.5 IFD::accept() and TiffImage::accept()
 
-The TiffVisitor is ingenious.  It's also difficult to understand.  Exiv2 has two tiff parsers - TiffVisitor and Image::printIFDStructure().  TiffVisitor was written by Andreas Huggel.  It's very robust and has been almost 
-bug free for 15 years.  I wrote the parser in Image::printIFDStructure() to try to understand the structure of a tiff file.  The code in Image::printIFDStructure() is easier to understand.
+The TiffVisitor is ingenious.  It's also difficult to understand.  Exiv2 has two tiff parsers - TiffVisitor and Image::printIFDStructure().  TiffVisitor was written by Andreas Huggel.  It's very robust and has been almost bug free for 15 years.  I wrote the parser in Image::printIFDStructure() to try to understand the structure of a tiff file.  The code in Image::printIFDStructure() is easier to understand.
 
 The code which accompanies this book has a simplified version of Image::printIFDStructure() called IFD::accept() and that's what will be discussed here.  The code that accompanies this book is explained here: [Code discussed in this book](#14)
 
 It is important to realise that metadata is defined recursively.  In a Tiff File, there will be a Tiff Record containing the Exif data (written in Tiff Format).  Within, that record, there will be a MakerNote which is usually written in Tiff Format.  Tiff Format is referred to as an IFD - an Image File Directory.
 
-TiffImage::visitIFD() uses a simple direct approach to parsing the tiff file.  When another IFD is located, visitIFD() is called recursively.  As a TIFF file is an 8 byte header which provides the offset to the first IFD.  We can descend into the tiff file from the beginning.  For other files types, the file handler has to find the Exif IFD and then call visitIFD().
+TiffImage::accept() uses a simple direct approach to parsing the tiff file.  When another IFD is located, IFD::accept() is called recursively.  As a TIFF file has an 8 byte header which provides the offset to the first IFD.  We can descend into the tiff file from the beginning.  For other files types, the file handler has to find the Exif IFD and then call IFD::accept().
 
-There are several ways in which visitIFD is called.  visitTiff() starts with the tiff header **II*\_tsfo** or **MM\_*ofst*_ and then calls _**visitIFD()**_.  Makernotes are usually an IFD.  Some manufactures (Nikon) embed a Tiff.  Some (Canon and Sony) embed an IFD.  It's quite common (Sony) to embed a single IFD which is not terminated with a four byte null uint32\_t.
+There are several ways in which IFD::accept() is called.  TiffImage::accept() starts with the tiff header **II*\_tsfo** or **MM\_*ofst*_ and then calls _**IFD::accept()**_.  Makernotes are usually an IFD.  Some manufactures (Nikon) embed a Tiff.  Some (Canon and Sony) embed an IFD.  It's quite common (Sony) to embed a single IFD which is not terminated with a four byte null uint32\_t.
 
 The program tvisitor has several file handlers such as TiffImage, JpegImage and CrwImage.  Exiv2 has handlers for about 20 different formats.  If you understand Tiff and Jpeg, the others are boring variations.
 
@@ -1805,6 +1804,8 @@ This function understands how to decode byte-by-byte from `const ArrayDef` into 
 ## 8.8 JpegImage::accept()
 
 ```cpp
+void JpegImage::accept(Visitor& visitor)
+{
     // Ensure that this is the correct image type
     if (!valid()) {
         std::ostringstream os ; os << "expected " << format_ ;
@@ -1878,7 +1879,7 @@ This function understands how to decode byte-by-byte from `const ArrayDef` into 
         visitor.visitSegment(io_,*this,address,marker,length,signature); // tell the visitor
 
         if ( bAppn ) {
-...
+           ... code to deal with multiple segments for XMP and ICC ...
         }
 
         // Jump past the segment
@@ -1902,13 +1903,11 @@ The way in which extended JPEG is managed is quite simple.  A DataBuf is used an
 <div id="9">
 # 9 Image Previews
 
-I don't know much about the image previews.  Like most of Andreas' code, it works well and has seldom required attention.  There are significant challenges in finding the previews as manufacturers use a variety of techniques.  In particular, they often store an offset to a preview in a makernote, or some other devious location.  In consequence, it's almost impossible to re-write the file without the risk of loosing the preview.  This problem is compounded by the JPEG 64k limit in a single segment.  Digital Cameras and Smart Phones are now a huge business and JPEG is the most popular image format.  Regrettably, JPEG is a 30 year old standard which was conceived while dinosaurs roamed the earth.  A global agreement to support Adobe's _**ad-hoc**_ JPEG extension could easily address this issue.  The inertia of the industry is colossal.
+I don't know much about the image previews.  Previews are usually JPEG encoded and have no metadata.  Exiv2 has no code to edit previews in images.  About all that I know about previews is that the library finds them and creates a vector of thumbnails.  Like most of Andreas' code, the Preview code works well and has seldom required attention.
 
-I find it incredible, yet unsurprising, that in an industry which talks about inovation and development can be so resistant to change.  Small changes that would serve their industry.  A friend of mine in Silicon Valley sat on a standards committee for video encoding.  He told me about a meeting in which something absurd was proposed and he decided to speak about it.  My friend seldom spoke that those meetings, but he couldn't let the issue pass.  And he said to me with a stupid war-comic German accent.  _"So, I took zee lugar and I aimed carefully and I squeezed zee trigger.  The bullet flew fast and straight and hit me in the shoulder."_.  The opposition he encountered was breathtaking.  Craziness ends up in standards because of the politics of the Standards Committee.
+There are significant challenges in finding the previews as manufacturers use a variety of techniques.  In particular, they often store an offset to a preview in a makernote, or some other devious location.  In consequence, it's almost impossible to re-write the file without the risk of loosing the preview.  This problem is compounded by the JPEG 64k limit in a single segment.  Digital Cameras and Smart Phones are now a huge business and JPEG is the most popular image format.  Regrettably, JPEG is a 30 year old standard which was conceived when dinosaurs roamed the earth.  A global agreement to support Adobe's _**ad-hoc**_ JPEG extension could easily address this issue.  The inertia of the industry is colossal.
 
-Exiv2 has no code to edit previews in images.  About all that I know about previews is that the library finds them and creates a vector of thumbnails.
-
-Previews are usually JPEG encoded and have no metadata.
+I find it incredible, yet unsurprising, that in an industry which talks about inovation and development can be so resistant to change.  Small changes that would serve their industry.  A friend of mine in Silicon Valley sat on a standards committee for video encoding.  He told me about a meeting in which something absurd was proposed and he decided, although he seldom spoke, to speak against it.  He couldn't let the issue pass.  He said to me with a war-comic German accent.  _"So, I took zee lugar and I aimed carefully and I squeezed zee trigger.  The bullet flew fast and straight and hit me between the eyes."_.  The opposition he encountered was breathtaking.  Craziness ends up in standards because of the politics of the Standards Committee.  So that's how we end up with several different designs to enable Exif, ICC and XMP data to be chunked in a JPEG.  And the mess with Lens Recognition.  And the mess with hundreds of similar yet different image formats.
 
 ```
 786 rmills@rmillsmm-local:~/temp/foo $ cp ~/Stonehenge.jpg .
@@ -2584,3 +2583,4 @@ I'm going off to cut the grass and to run in the beautiful countryside around my
 [TOC](#TOC)<br>
 
 ##
+
