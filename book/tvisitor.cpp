@@ -425,7 +425,8 @@ std::string DataBuf::toString(type_e type,uint64_t count,endian_e endian,uint64_
             sp = " ";
         }
     } else if ( type == kttUByte ) {
-        os << binaryToString(offset, (size_t)count);
+        for ( size_t k = 0 ; k < count ; k++ )
+            os << stringFormat("%s%d",k?" ":"",pData_[offset+k]);
     } else if ( type == kttAscii ) {
         bool bNoNull = true ;
         for ( size_t k = 0 ; bNoNull && k < count ; k++ )

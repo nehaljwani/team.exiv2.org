@@ -29,45 +29,45 @@ _And our cat Lizzie._
 
 | Section                                             | Page | Image Formats                       | Page | Project Management                    | Page | 
 |:--                                                    | --:|:--                                    | --:|:--                                      | --:|
-| [1. Image File Formats](#1)                           |  7 | [TIFF and BigTiff](#TIFF)             |  7 | [13. Project Management](#13)           | 55 |
-| [2. Tiff and Exif metadata](#2)                       | 22 | [JPEG and EXV](#JPEG)                 | 12 | [13.1 C++ Code](#13-1)                  | 56 |
-| [3. MakerNotes](#3)                                   | 23 | [PNG Portable Network Graphics](#PNG) | 10 | [13.2 Build](#13-2)                     | 57 |
-| [4. Other metadata containers](#4)                    | 24 | [JP2 Jpeg 2000](#JP2)                 | 10 | [13.3 Security](#13-3)                  | 58 |
-| [5. Lens Recognition](#5)                             | 25 | [CRW Canon Raw](#CRW)                 | 10 | [13.4 Documentation](#13-4)             | 59 |
-| [6. Sample Applications](#6)                          | 26 | [CR2 Canon Raw Format 2](#CR2)        | 15 | [13.5 Testing](#13-5)                   | 59 |
-| [7. I/O in Exiv2](#7)                                 | 27 | [ISOBMFF, CR3, HEIF, AVI](#ISOBMFF)   | 16 | [13.6 Sample programs](#13-6)           | 60 |
-| [8. Exiv2 Architecture](#8)<br>                       | 28 | [WebP Web Photograph ](#WEBP)         | 17 | [13.7 User Support](#13-7)              | 61 |
-| [8.1 Extracting metadata using dd](#8-1)              | 29 | [PGF Portable Graphics Format](#PGF)  | 18 | [13.8 Bug Tracking](#13-8)              | 62 |
-| [8.2 Tag Names in Exiv2](#8-2)                        | 31 | [MRW Minolta Raw](#MRW)               | 19 | [13.9 Release Engineering](#13-9)       | 63 |
-| [8.3 TagInfo](#8-3)                                   | 34 | [ORF Olympus Raw Format](#ORF)        | 20 | [13.10 Platform Support](#13-10)        | 64 |
-| [8.4 Visitor Design Pattern](#8-4)                    | 36 | [PSD PhotoShop Document](#PSD)        | 14 | [13.11 Localisation](#13-11)            | 65 |
-| [8.5 IFD:accept() and TiffImage::accept() ](#8-5)     | 40 | [RAF](#RAF)                           | 14 | [13.12 Build Server](#13-12)            | 66 |
-| [8.6 Presenting data with visitTag()](#8-6)<br>       | 44 | [RW2](#RW2)                           | 14 | [13.13 Source Code Management](#13-13)  | 67 |
-| [8.7 Metadata and Binary Tag Decoder](#8-7)           | 47 | [TGA](#TGA)                           | 14 | [13.14 Project Web Site](#13-14)        | 68 |
-| [8.8 Jpeg::Image accept()](#8-8)                      | 47 | [GIF Graphical Image Format](#GIF)    | 14 | [13.14 Project Web Site](#13-14)        | 68 |
-| [9. Image Previews](#9)                               | 50 | [BMP Windows Bitmap](#BMP)            | 14 | [13.15 Project Servers ](#13-15)        | 68 |
-| [10. Test Suite and Build](#10)                       | 51 | _**Other Sections**_                  | 14 | [13.16 API Management](#13-16)          | 68 |
-| [10.1 Bash Tests](#10-1)                              | 53 | [Dedication](#dedication)             | 14 | [13.17 Recruiting Contributors](#13-17) | 69 |
-| [10.2 Python Tests](#10-2)                            | 55 | [About this book](#about)             |  2 | [13.18 Project Scheduling](#13-18)      | 70 |
-| [10.3 Unit Tests](#10-3)                              | 57 | [How did I get interested ?](#begin)  |  2 | [13.19 Enhancement Requests](#13-19)    | 71 |
-| [10.4 Version Test](#10-4)                            | 58 | [2012 - 2017](#2012)                  |  3 | [13.20 Tools](#13-20)                   | 72 |
-| [11. API/ABI Compatibility](#11)                      | 59 | [2017 - Present](#2017)               |  3 | [13.21 Licensing](#13-21)               | 73 |
-| [12. Security](#12)                                   | 60 | [Current Priorities](#current)        |  3 | [13.22 Back-porting](#13-22)            | 74 |
-| [12.1 The Fuzzing Police](#12)                        | 61 | [Future Projects](#future)            |  4 | [13.23 Other OSS projects](#13-23)      |    |
-| [12.2 How we deal with security issues](12-2)         | 62 | [Scope of Book](#scope)               |  4 | | |
-| [14. Code discussed in this book](#13)                | 63 | [Making this book](#making)           |  5 | [The Last Word](#finally)               | 99 |
+| [1. Image File Formats](#1)                           |  9 | [TIFF and BigTiff](#TIFF)             | 10 | [13. Project Management](#13)           | 77 |
+| [2. Tiff and Exif metadata](#2)                       | 32 | [JPEG and EXV](#JPEG)                 | 12 | [13.1 C++ Code](#13-1)                  | 78 |
+| [3. MakerNotes](#3)                                   | 35 | [PNG Portable Network Graphics](#PNG) | 17 | [13.2 Build](#13-2)                     | 79 |
+| [4. Other metadata containers](#4)                    | 36 | [JP2 Jpeg 2000](#JP2)                 | 18 | [13.3 Security](#13-3)                  | 80 |
+| [5. Lens Recognition](#5)                             | 37 | [CRW Canon Raw](#CRW)                 | 19 | [13.4 Documentation](#13-4)             | 80 |
+| [6. Sample Applications](#6)                          | 38 | [CR2 Canon Raw Format 2](#CR2)        | 20 | [13.5 Testing](#13-5)                   | 80 |
+| [7. I/O in Exiv2](#7)                                 | 39 | [ISOBMFF, CR3, HEIF, AVI](#ISOBMFF)   | 21 | [13.6 Sample programs](#13-6)           | 80 |
+| [8. Exiv2 Architecture](#8)                           | 41 | [WebP Web Photograph ](#WEBP)         | 22 | [13.7 User Support](#13-7)              | 80 |
+| [8.1 Extracting metadata using dd](#8-1)              | 41 | [MRW Minolta Raw](#MRW)               | 23 | [13.8 Bug Tracking](#13-8)              | 81 |
+| [8.2 Tag Names in Exiv2](#8-2)                        | 42 | [ORF Olympus Raw Format](#ORF)        | 24 | [13.9 Release Engineering](#13-9)       | 81 |
+| [8.3 TagInfo](#8-3)                                   | 44 | [PGF Portable Graphics Format](#PGF)  | 25 | [13.10 Platform Support](#13-10)        | 81 |
+| [8.4 Visitor Design Pattern](#8-4)                    | 44 | [PSD PhotoShop Document](#PSD)        | 26 | [13.11 Localisation](#13-11)            | 81 |
+| [8.5 IFD:accept() and TiffImage::accept() ](#8-5)     | 48 | [RAF](#RAF)                           | 27 | [13.12 Build Server](#13-12)            | 81 |
+| [8.6 Presenting data with visitTag()](#8-6)<br>       | 53 | [RW2](#RW2)                           | 28 | [13.13 Source Code Management](#13-13)  | 81 |
+| [8.7 Tag Decoder](#8-7)                               | 57 | [TGA](#TGA)                           | 29 | [13.14 Project Web Site](#13-14)        | 81 |
+| [8.8 Jpeg::Image accept()](#8-8)                      | 59 | [GIF Graphical Image Format](#GIF)    | 30 | [13.15 Project Servers ](#13-15)        | 81 |
+| [9. Image Previews](#9)                               | 61 | [BMP Windows Bitmap](#BMP)            | 31 | [13.16 API Management](#13-16)          | 81 |
+| [10. Test Suite and Build](#10)                       | 63 | _**Other Sections**_                  |    | [13.17 Recruiting Contributors](#13-17) | 81 |
+| [10.1 Bash Tests](#10-1)                              | 63 | [Dedication](#dedication)             |  2 | [13.18 Project Scheduling](#13-18)      | 82 |
+| [10.2 Python Tests](#10-2)                            | 68 | [About this book](#about)             |  4 | [13.19 Enhancement Requests](#13-19)    | 82 |
+| [10.3 Unit Tests](#10-3)                              | 69 | [How did I get interested ?](#begin)  |  4 | [13.20 Tools](#13-20)                   | 82 |
+| [10.4 Version Test](#10-4)                            | 70 | [2012 - 2017](#2012)                  |  5 | [13.21 Licensing](#13-21)               | 82 |
+| [11. API/ABI Compatibility](#11)                      | 71 | [2017 - Present](#2017)               |  5 | [13.22 Back-porting](#13-22)            | 82 |
+| [12. Security](#12)                                   | 73 | [Current Priorities](#current)        |  6 | [13.23 Other OSS projects](#13-23)      | 82 |
+| [12.1 The Fuzzing Police](#12)                        | 74 | [Future Projects](#future)            |  6 |                                         |    |
+| [12.2 How we deal with security issues](12-2)         | 75 | [Scope of Book](#scope)               |  7 |                                         |    |
+| [14. Code discussed in this book](#14)                | 80 | [Making this book](#making)           |  8 | [The Last Word](#finally)               | 84 |
 
 
 <div id="about">
 ## About this book
 
-This book is about Image Metadata and Exiv2 Architecture.
+This book is about **Image Metadata _and_ Exiv2 Architecture**.
 
-Image Metadata is the information stored in a digital image in addition to the image itself.  Data such as the camera model, date, time, location and camera settings are stored.  To my knowledge, no book has been written about this important technology.
+**Image Metadata** is the information stored in a digital image in addition to the image itself.  Data such as the camera model, date, time, location and camera settings are stored.  To my knowledge, no book has been written about this important technology.
 
-Exiv2 Architecture is about the Exiv2 library and command-line application which implements cross-platform code in C++ to read, modify, insert and delete items of metadata.  I've been working on this code since 2008 and, as I approach my 70th birthday, would like to document my knowledge in the hope that the code will be maintained and developed by others in future.
+**Exiv2 Architecture** is about the Exiv2 library and command-line application which implements cross-platform code in C++ to read, modify, insert and delete items of metadata.  I've been working on this code since 2008 and, as I approach my 70th birthday, would like to document my knowledge in the hope that the code will be maintained and developed by others in future.
 
-At the moment, the book is "work in progress" and expected to be finished by the end of 2020.  However as Exiv2 v0.27.3 is released on schedule on 2020-06-30, I feel the text and the code discussed in this book are good enough to be released in their current state.
+At the moment, the book is _**work in progress**_ and expected to be finished by the end of 2020.  Exiv2 v0.27.3 shipped on schedule on 2020-06-30 and I feel the text and the code discussed in this book are good enough to be released in its current state.
 
 [TOC](#TOC)
 
@@ -82,7 +82,7 @@ I said "Oh, it can't be too difficult to do that!".  And here we are more than a
 
 The sample application samples/geotag.cpp provides a command line utility to geotag photos and I frequently use this on my own photographs.  Today, I have a Samsung Galaxy Watch which uploads runs to Strava.  I download the GPX from Strava.  The date/time information in the JPG is the key to search for the position data.  The GPS tags are created and saved in the image.
 
-I chose to implement this in python as a good motivator to learn Python.  Having discovered exiv2 and the python wrapper pyexiv2, I set off with enthusiasm to build a cross-platform script to run on **Windows** _(XP, Visual Studio 2003)_, **Ubuntu Linux** _(Hardy Heron 2008.04 LTS)_ and **macOS** _(32 bit Tiger 10.4 on a big-endian PPC)_.  After I finished, I emailed Andreas.  He responded in less than an hour and invited me to join Team Exiv2.  Initialially, I provided support to build Exiv2 with Visual Studio.
+In 2008, I chose to implement this in python to motivate me to learn Python.  Having discovered exiv2 and the python wrapper pyexiv2, I set off with enthusiasm to build a cross-platform script to run on **Windows** _(XP, Visual Studio 2003)_, **Ubuntu Linux** _(Hardy Heron 2008.04 LTS)_ and **macOS** _(32 bit Tiger 10.4 on a big-endian PPC)_.  After I finished, I emailed Andreas.  He responded in less than an hour and invited me to join Team Exiv2.  Initialially, I provided support to build Exiv2 with Visual Studio.
 
 Incidentally, later in 2008, Dennis offered me a contract to port his company's Linux code to Visual Studio to be used on a Windows CE Embedded Controller.  1 million lines of C++ were ported from Linux in 6 weeks.  I worked with Dennis for 4 years on all manner of GPS related software development.
 
@@ -95,9 +95,9 @@ I have never been employed to work on Metadata.  I was a Senior Computer Scienti
 <div id="2012">
 ### 2012 - 2017
 
-By 2012, Andreas was loosing interest in Exiv2.  Like all folks, he has many matters which deserve his time.  A family, a business, biking and other pursuits.  From 2012 until 2017, I supported Exiv2 mostly alone.  I had lots of encouragement from Alan and other occasional contributors.  Neils did great work on lens recognition and compatibility with ExifTool.  Ben helped greatly with WebP support and managed the transition of the code from SVN to GitHub.  Phil (of ExifTool fame) has been very supportive and helpful.
+By 2012, Andreas was loosing interest in Exiv2.  Like all folks, he has many matters which deserve his time.  A family, a business, biking and other pursuits.  From 2012 until 2017, I supported Exiv2 mostly alone.  I had lots of encouragement from Alan and other occasional contributors.  Neils did great work on lens recognition and compatibility with ExifTool.  Ben helped greatly with WebP support and managed the transition of the code from SVN to GitHub.  Phil _(of ExifTool fame)_ has always been very supportive and helpful.
 
-I must also mention our adventures with Google Summer of Cocde and our students Abhinav, Tuan and Mahesh.  GSoC is a program at Google to sponsor students to contribute to open source projects. 1200 Students from around the world are given a bounty of $5000 to contribute 500 hours to a project over summer recess.  The projects are supervised by a mentor.  Exiv2 is considered to be part of the KDE family of projects.  Within KDE, there a sub-group of Graphics applications and Technology.  We advertised our projects, the students wrote proposals and some were accepted by Google on the Recommendation of the KDE/Graphics group.
+I must also mention our adventures with Google Summer of Cocde and our students Abhinav, Tuan and Mahesh.  GSoC is a program at Google to sponsor students to contribute to open source projects. 1200 Students from around the world are given a bounty of $5000 to contribute 500 hours to a project during summer recess.  The projects are supervised by a mentor.  Exiv2 is considered to be part of the KDE family of projects.  Within KDE, there a sub-group of Graphics Applications and Technology.  We advertised our projects, the students wrote proposals and some were accepted by Google on the Recommendation of the KDE/Graphics group.
 
 In 2012, Abhinav joined us and contributed the Video read code and was mentored by Andreas.  In 2013, Tuan joined us and contributed the WebReady code and was mentored by me.  Mahesh also joined us to contribute the Video write code and was mentored by Abhinav.
 
@@ -111,9 +111,9 @@ I started working on Exiv2 to implement GeoTagging.  As the years have passed, I
 
 After v0.26 was released in 2017, Luis and Dan started making contributions.  They have made many important contributions in the areas of security, test and build.  In 2019, Kevin joined us.  He discovered and fixed some security issues.
 
-The current release of Exiv2 is v0.27.3 and was released on 2020-06-30.  I hope to release v0.28 in Fall 2020.  Further "dot" releases of v0.27 may be published for security fixes in future.
+The current release of Exiv2 is v0.27.3 and was released on 2020-06-30.  I hope v0.28 will ship in 2020.  Further "dot" releases of v0.27 may be published for security fixes in future.
 
-The Libre Graphics Meeting is scheduled to take place in May 2021 in Rennes, France.  I intend to lead a workshop on Image Metadata and Exiv2 Architecture.  This book is being written to be used in that presentation.
+The Libre Graphics Meeting is scheduled to take place in May 2021 in Rennes, France.  I intend to conduct a workshop on **Image Metadata _and_ Exiv2 Architecture**.  This book is being written to be used in that presentation.
 
 [TOC](#TOC)
 <div id="current">
@@ -129,40 +129,41 @@ I'm delighted by the work done by Dan, Luis and Kevin to deal with the assault o
 <div id="future">
 ### Future Development Projects
 
-The code is in good shape, our release process is solid and we have comprehensive user documentation.  As photography develops, there will be many new cameras and more image formats such as CR3, HEIF and BigTiff.   Video support is weak, deprecated in v0.27 and will be removed in 0.28.
+The code is in good shape, our release process is solid and we have comprehensive user documentation.  As photography develops, there will be many new cameras and more image formats such as CR3, HEIF and BigTiff.   Exiv2 Video support is weak and has deprecated in v0.27.  It will be removed in 0.28.
 
-A long standing project for Exiv2 is a "unified metadata container".  There is an implementation of this in the SVN repository.  Currently we have three containers for Exif, Iptc and Xmp.  This is clumsy.  We also have a restriction of one image per file.  Perhaps both projects can be combined and have a common solution.
+A long standing project for Exiv2 is a _**unified metadata container**_.  There is an implementation of this in the SVN repository.  Currently we have three containers for Exif, Iptc and Xmp.  This is clumsy.  We also have a restriction of one image per file.  Perhaps both projects can be combined and have a common solution.
 
 The toolset used in Software Engineering evolves with time.  C++ has been around for about 35 years and, while many complain about it, I expect it will out-live most of us.  None-the-less, languages which are less vulnerable to security issues may lead the project to a re-write in a new language such as Rust.  I hope this book provides the necessary understanding of metadata to support such an undertaking.
 
-The most common issue raised on GitHub concerns lens recognition.  For v0.26, I added the "Configuration File" feature to enable users to modify lens recognition on their computer.  While this is helpful, many users would like Exiv2 to deal with this perfectly, both now and in the future.
+The most common issue raised on GitHub concerns lens recognition.  For v0.26, I added the _**Configuration File**_ feature to enable users to modify lens recognition on their computer.  While this is helpful, many users would like Exiv2 to deal with this perfectly, both now and in the future.
 
-I intend to make a proposal at LGM in Rennes in May 2021 concerning this matter. Both exiv2 and ExifTool can format the metadata in .exv format. I will propose to implement a program to read the .exv and return the Lens. That program will have an embedded programming language with the rules to identify the lens. The scripts will be ascii files which can be updated. It will be called M2Lscript (MetaData to Lens Script), pronounced _**"MillsScript"**_. The M2Lscript interpreter will be available as a command-line program, a perl module (for ExifTool), a C++ library (for linking into exiv2) and perhaps a python module.
+I intend to make a proposal at LGM in Rennes in May 2021 concerning this matter. Both exiv2 and ExifTool can extract metadata from an image into a .EXV file. I will propose to implement a program to read the .exv and return the Lens. That program will have an embedded programming language with the rules to identify the lens. The scripts will be ascii files which can be updated. It will be called M2Lscript (MetaData to Lens Script), pronounced _**"MillsScript"**_. The M2Lscript interpreter will be available as a command-line program, a perl module (for ExifTool), a C++ library (for linking into exiv2) and perhaps a python module.
 
 In this way, new lens definitions can be written in M2Lscript without touching anything in Exiv2 or ExifTool.
 
-I don't have enough time to work on both Exiv2 and M2Lscript.  When a new maintainer takes responsibility for Exiv2, I will retire.  M2Lscript will be my swansong technology project.
+I will be unable to work on both Exiv2 and M2Lscript simulateously.  When a new maintainer takes responsibility for Exiv2, I will retire.  M2Lscript will be my swansong technology project.
 
 [TOC](#TOC)
 <div id="scope">
 ### Purpose and Scope of this book
 
-This book is my legacy to Exiv2.  I hope Exiv2 will continue to exist long into the future and this book is being written to document my discoveries about Image Metadata and Exiv2 Architecture.  However, I want to avoid a "cut'n'paste" of information already in the project documentation.  This book is an effort to collect my knowledge of this code into a single location.  Many topics in this book are discussed in more detail in the issue history stored in Redmine and GitHub.  I hope this book helps future maintainers to understand Exiv2, solve issues and develop the code for years to come.
+This book is my gift and legacy to Exiv2.  I hope Exiv2 will continue to exist long into the future.  This book is being written to document my discoveries about **Image Metadata _and_ Exiv2 Architecture**.  However, I want to avoid a _**cut'n'paste**_ of information already in the project documentation.  This book is an effort to collect my knowledge of this code into a single location.  Many topics in this book are discussed in more detail in the issue history stored in Redmine and GitHub.  I hope this book helps future maintainers to understand Exiv2, solve issues and develop the code for years to come.
 
 I wish you a happy adventure in the world of Image Metadata.  If you'd like to discuss matters concerning this book, please open an issue on GitHub and share your thoughts with Team Exiv2.
 
 This book is copyright and licensed under GNU GPLv2. [https://www.gnu.org/licenses/old-licenses/gpl-2.0.html](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
 
+[TOC](#TOC)
 <div id="making">
 ### Making this book
 
-I've had a lot of fun making this book.  Most of the time was spent on the code, however the getting the book into good shape for the web and print has been fun.  The Graphics were drawn using OmniGraffle 6.6.2 on my MacBook Pro.
+I've had a lot of fun making this book.  Most of the time was spent on the code, however getting the book into good shape for the web and print has been fun.  The Graphics were drawn using OmniGraffle 6.6.2 on my MacBook Pro.
 
-All the documentation for Exiv2 is written in markdown with the exception of the Unix man page exiv2.1  I find markdown very easy to use and quickly produces satisfying results.  
+All the documentation for Exiv2 is written in markdown with the exception of the Unix man page exiv2.1  I find markdown easy to use and quickly produces satisfying results.  
 
 The book is written in markdown and displayed on my computer with the MacDown Application.  When MacDown exports a PDF, he ignores print directives in the style sheet, he does not support page numbering and the links are ineffective.  To my taste, the text size of pages is too large when printed on A4.
 
-I used a modified version of this style sheet: ~/Library/Application Support/MacDown/Styles/GitHub2.css. I changed the fonts to use Helvetica in the titles and Palatino in the body.  I thought about using Exiv2 logo font used which is Albertus Medium.  I decided to adopt the ubiquitous Palatino.  Code is set in Consolas in both the graphics and the in-line code snippets in the text.
+I used a modified version of this style sheet: ~/Library/Application Support/MacDown/Styles/GitHub2.css. I changed the fonts to be Helvetica in the titles and Palatino in the body.  I thought about using Exiv2 logo font used which is Albertus Medium.  I decided to adopt the ubiquitous Palatino.  Code is set in Consolas in both the graphics and the in-line code snippets in the text.
 
 ```.css
 @media print {
@@ -171,11 +172,11 @@ I used a modified version of this style sheet: ~/Library/Application Support/Mac
 }
 ```
 
-So, I get MacDown to export HTML to IMaEA.html.  I open IMaEA.html in Safari and print it into a PDF file with a page size of 275x389mm.  This preserves the aspect ratio &radic;2/1 of ISO-Standard pages.  Safari has an option to add page number and date to every page.  I get Safari to save the print in PDF (it's 275x388).  The printing system on macOS has a paper handling feature to scale to fit a page size and I set that to A4.  Save the PDF from the print system and the result is a beautiful A4 document with all the links working and scaled to fit A4.
+I get MacDown to export HTML to IMaEA.html.  I open IMaEA.html in Safari and print it into a PDF file with a page size of 275x389mm.  This preserves the aspect ratio &radic;2/1 of ISO-Standard pages.  Safari has a option to add page number and date to every page.  I get Safari to save the print in PDF (it's 275x388).  The printing system on macOS has a Paper Handling feature to scale the print to fit a page size and I set that to A4.  I save the PDF from the print system and the result is a beautiful A4 document with all the links working and scaled to fit A4.
 
 I have to manually update the page numbers in the table of contents.  If Exiv2 ever supports PDF, I'll probably be able to script that!  I only do that when I intend to publish the file as it's tedious.
 
-The final step is to get the PDF to the local print shop to be printed and bound.
+The final step is to take the PDF to the local print shop to be printed and bound.
 
 Incidentally, I investigated adding a clickable Exiv2 logo to every page of the PDF and found this very useful open-source program pdfstamp: url = [https://github.com/CrossRef/pdfstamp.git](https://github.com/CrossRef/pdfstamp.git)
 
@@ -203,23 +204,25 @@ $ prince --type IMaEA.css IMaEA.html
 
 The date that appears at the center-bottom of every page (except the first) is in the style sheet. You could change that with sed of course.  Setting the date from the computer clock would be fine for automatic reporting.  Better to use static text as we might want to say "Exiv2 v0.27.3 2020-06-30" or the like.
 
-The resulting PDF is beautiful and not watermarked by prince, although they put a postit on the front page.  That's OK.  They deserve credit.
+The resulting PDF is beautiful and not watermarked by prince, although they put a postit on the front page.  That's OK.  They deserve credit for their outstanding work and free license.
 
-In my case, I tweaked the PDF in three ways using SodaPDF.  I fixed the title and dates on every page.  I fixed the "goto page#" PDF links which were mysteriously off by one page, and I added a PDF Table of Contents.  The result is a beautiful document which looks great on the tablet (in HTML or PDF), great on the computer and beautiful when printed.
+However, prince rendered the code snippets as plain pre-formatted text and didn't provide the beautiful formatting and syntax colouring provide by MacDown and which is printed in the PDF generated by Safari.
+
+So, I decided that the Safari/PDF was really good and I tweaked the PDF in three ways using SodaPDF.  I fixed the title and dates on every page.  I fixed the "goto page#" PDF links which were mysteriously off by one page, and I added a PDF Table of Contents.  The result is a beautiful document which looks great on the tablet (in HTML or PDF), great on the computer and beautiful when printed.
 
 <center>![Robin](RobinEuphonium.jpg)</center>
 
-Thank You for reading my book.  If you find errors, please let me know.  If you'd like to discuss any of the technology involved in Image Metadata, please contact me by opening an issue on GitHub.
+Thank You for reading my book.  If you find errors, please let me know.  If you'd like to discuss any of the technology involved in Image Metadata, please contact me by opening an issue on GitHub. [https://github.com/exiv2/exiv2](https://github.com/exiv2/exiv2)
 
 [TOC](#TOC)
 <div id="1"">
 # 1 Image File Formats
 
-The following summaries of the file formats are provided to help the reader understand both this book and the Exiv2 code.  The Standard Specifications should be consulted for more detail.
+The following summaries of the file formats are provided to help you to understand both this book and the Exiv2 code.  The Standard Specifications should be consulted for more detail.
 
-I've made a summary of every file format as I think you'll find that very useful.  There are an absurd number of Graphics File Formats.  I have a copy somewhere of the O'Reilly book.  I got it in 1992 and it is about 1000 pages.  Since then there have been many many more invented.  It's a software mess.  In the early days, many formats were local to a few users in a University and escaped to a wider audience.  However the never ending stream of new standards is horrible.  Canon have several different RAW formats such as CRW, CR2 and CR3.
+I've made a summary of every file format as I think you'll find that useful.  There are an absurd number of Graphics File Formats.  I have a copy somewhere of the O'Reilly book.  I got it in 1996 and it is 1000+ pages.  Since then there have been many many more invented.  It's a software mess.  In the early days, many formats were local to a few users in a University and escaped to a wider audience.  However the never ending stream of new standards is horrible.  Canon have several different RAW formats such as CRW, CR2 and CR3.
 
-A good model for an image is to think of it as a container.  It's like a directory on the disk.   The directory can hold files with different formats and the directory is recursive as it can contain a directory of more files.  All "modern" graphics formats since TIFF in 1992 are containers.
+A good model for an image is to think of it as a container.  It's like a directory on the disk.   The directory can hold files with different formats and the directory is recursive as it can contain a directory of more files.  Almost every graphics format since TIFF in 1992 is a containers.
 
 The good news however is that file formats come in families which are:
 
@@ -239,14 +242,13 @@ The good news however is that file formats come in families which are:
 | EPS     | Adobe Encapsulated PostScript<br>The code in Exiv2 to deal with this is deprecated  | EPS, AI |
 | PS      | Adobe PostScript<br>The most beautiful graphics language ever invented.                           | PS |
 
-
 I suspect the software mess is caused by the hardware engineers.  When hardware people start a new project, they copy the CAD files from the last project and proceed from there.  They don't worry about back-porting changes or compatibility.  They think firmware people are stupid and do a terrible job!  We have to live with this.
 
-There is also the issue of patents.  It's unclear if it's legal to read an IsoBMFF file which is used by Apple to store Heif files.  I believe it is legal to read IsoBMFF files.  It's illegal to reverse engineer the H-264 codec which is used to encrypt the image in a HEIF.  Metadata is occasionally compressed (PNG), encrypted (Nikon) or ciphered (Sony).
+There is also the issue of patents.  It's unclear if it's legal to read an IsoBMFF file which is used by Apple to store Heif files.  I believe it is legal to read IsoBMFF files.  It's illegal to reverse engineer the H.264 codec which is used to encrypt the image in a HEIF.  Metadata is occasionally compressed (PNG), encrypted (Nikon) or ciphered (Sony).
 
 [TOC](#TOC)
 <div id="TIFF">
-## TIFF and BigTiff.  Tagged Image File Format.
+## Tagged Image File Format
 ![tiff](tiff.png)
 
 The architecture of TIFF and BigTiff are the same.  BigTiff is 64 bit based.  So most uint16\_t data types become uint32\_t and uint32\_t become uint64\_t.  BigTiff has three additional 8 byte types: Long8, SLong8 and Ifd8.
@@ -255,9 +257,7 @@ For both TIFF and BigTiff, the _**magic**_ header is MM (Motorola) for big-endia
 
 Both tag and type are uint16\_t in TIFF and BigTiff.
 
-The header for Tiff is 8 bytes.  It is the _**magic**_  header followed by a 32bit offset to the first IFD.   The header for BigTiff is 16 bytes.  It is the _**magic**_  header followed by 2 short integers (which must be 8,0) and a 64 bit offset to the first IFD.
-
-
+The header for Tiff is 8 bytes.  It is the _**magic**_  header followed by a long offset to the first IFD.   The header for BigTiff is 16 bytes.  It is the _**magic**_  header followed by 2 shorts (which must be 8,0) and a long8 offset to the first IFD.
 
 | Element  | TIFF             | BigTiff              | Element        | TIFF      | BigTiff    |
 |:--       |:--               |:--                   |:--             |:--        |:--         |
@@ -267,42 +267,37 @@ The header for Tiff is 8 bytes.  It is the _**magic**_  header followed by a 32b
 | Type     | uint16\_t        | uint16\_t            | Entries **#E** | uint16\_t | uint64\_t  |
 | Count    | uint32\_t        | uint64\_t            | Next           | uint32\_t | uint64\_t  | 
 
-It's also important to understand that Endian can change as we descend into the file.  There are files which contain sub-files whose endian setting is different from the container file.
+It's also important to understand that Endian can change as we descend into the file.  There are images in which there are sub-files whose endian setting is different from the container.
 
 ### Garbage Collecting Tiff Files
 
-There is a significant problem with the Tiff format.  It's possible for binary records to hold offsets to significant data elsewhere in the file.  This creates two problems.  Firstly, when buried in a MakerNote, we don't know that the data is an offset.  So, when all the blocks move in a rewrite of the file, we can neither relocate the referenced data, nor the offset.  My conclusion is that is almost impossible to garbage collect a tiff file.  However, the situation isn't hopeless.  The offset in the Tiff Header defines the location of IFD0.  It's very common that IFD0 is at the end of the file and the reason is obvious.  When a Tiff is rewritten by an application, they create IFD0 in memory, then copy it to the end of the file and update the offset in the header.  If we are creating IFD0, we can safely reuse the spaced occuped by IFD0.
+There is a significant problem with the Tiff format.  It's possible for binary records to hold offsets to significant data elsewhere in the file.  This creates two problems.  Firstly, when buried in an undocumented MakerNote, we don't know that the data is an offset.  So, when all the blocks move in a rewrite of the file, we can neither relocate the referenced data, nor update the offset.  My conclusion is that is almost impossible to garbage collect a tiff file.  However, the situation isn't hopeless.  The offset in the Tiff Header defines the location of IFD0.  It's very common that IFD0 is at the end of the file and the reason is obvious.  When a Tiff is rewritten by an application, they create IFD0 in memory, then copy it to the end of the file and update the offset in the header.  If we are creating IFD0, we can safely reuse the spaced occuped by previous IFD0.
 
-Imperial College have medical imaging Tiff files which are of the order of 100 GigaBytes in length.  Clearly we do not want to rewrite such a file to modify a couple of bytes of metadata.  We determine the new IFD0 and write it at end of the file.  If the existing IFD0 is already there, it's safe to overright it.
+Imperial College have medical imaging Tiff files which are of the order of 100 GigaBytes in length.  Clearly we do not want to rewrite such a file to modify a few bytes of metadata.  We determine the new IFD0 and write it at end of the file. 
 
 When we update a Makernote, we should "edit in place" and always avoid relocating the data.  Regrettably for a JPEG, that's almost impossible.  As camera manufacturers have higher resolutions and larger displays for review, the manufacturers want to have larger thumbnails and are happy to store the preview somewhere in the JPEG and have a hidden offset in the makernote.  This works fine until the image is edited when the preview is lost.
 
 In principle, a Tiff can be garbage collected with a block-map.  If we set up a block-map with one bit for every thousand bytes, we can run the IFDs and mark all the blocks in use.  When we rewrite the TIFF (well IFD0 actually), we can inspect the block-map to determine a "hole" in the file at which to write.  I would not do this.  It's unsafe to over-write anything in a Tiff with the exception of IFD0 and the header offset.  The situation with JPEG is more serious.  It's impossible to rewrite the JPEG in place.
 
-The concept of using a block-map to maintain track known data is used in RemoteIo.  We use a block-map to avoid excessive remote I/O by reading data into a cache.  We never read data twice.  We do not need contiguous memory for the file. This is discussed in [7. I/O in Exiv2](#7)
+The concept of using a block-map to track known data is used in RemoteIo.  We use a block-map to avoid excessive remote I/O by reading data into a cache.  We never read data twice.  We do not need contiguous memory for the file. This is discussed in [7. I/O in Exiv2](#7)
 
-I would like to express my dismay with the design of all image containers.  There is a much simpler design used by macOS and that is a bundle.  A bundle is a directory of files which includes the file Info.plist.  It appears in the Finder to be a simple entity like a file.  The command _**ditto**_  is provided to copy them from the terminal.  All programming languages can manipulte files.  The metadata in an image should be a little Tiff or sidecar in a bundle.  In principle, a container such as Tiff is a collection of streams that are both relocatable and never reference external data.  Sadly, Tiff and Jpeg make it very easy to break both rules.  The design of Jpeg makes it almost impossible to edit anything without relocating all the data.  The situation with video is even more serious as the files are huge.  In the PDF format, the file maintains a directory of objects.  The objects can be safely relocated because objects reference each other by name and not the file offset.
+I would like to express my dismay with the design of most image containers.  There is a much simpler design used by macOS and that is a bundle.  A bundle is a directory of files which includes the file Info.plist.  It appears in the Finder to be a simple entity like a file.  The terminal command _**ditto**_  is provided to copy them.  All programming languages can manipulte files.  The metadata in an image should be a little Tiff or sidecar in a bundle.  In principle, a container such as Tiff is a collection of streams that are both relocatable and never reference external data.  Sadly, TIFF and JPEG make it very easy to break both rules.  The design of JPEG makes it almost impossible to edit anything without relocating all the data.  The situation with video is even more serious as the files are huge.  In the PDF format, the file maintains a directory of objects.  The objects can be safely relocated because objects reference each other by name and not the file offset.
 
 ### Metadata that cannot be edited
 
-There are tags in Tiff such as ImageWidth which cannot be modified without rewriting the pixels in the image.  Exif protects those tags in the functions _**TiffHeader::isImageTag()**_ and _**Cr2Header::isImageTag()**_.
+There are tags in Tiff such as _**ImageWidth**_ which cannot be modified without rewriting the pixels in the image.  Exif protects those tags in the functions _**TiffHeader::isImageTag()**_ and _**Cr2Header::isImageTag()**_.
 
 ### Intrusive and NonIntrusive Editing
 
-I will have to conduct more research concerning this matter.
-
-```cpp
- enum WriteMethod { wmIntrusive, wmNonIntrusive };
-```
+Exiv2 has a write method to determine how to rewrite TIFF.  I will have to conduct more research concerning this matter.
 
 [TOC](#TOC)
 <div id="JPEG">
 ## JPEG and EXV Format
-![jpeg](jpeg.png)
-
+![jpeg](jpeg.png)<br>
 ![jpegs.png](jpegs.png)
 
-A Jpeg and exf are almost the same thing, however most graphics applications will reject a .exv because it is not a valid JPEG.  ExifTool supports .exv files.  In tvisitor.cpp, class JpegImage handles both and the only difference is respected in JpegImage::valid():
+JPEG and EXF are almost the same thing, however most graphics applications will reject EXF because it is not a valid JPEG.  ExifTool also supports EXF.  In tvisitor.cpp, class JpegImage handles both and the only difference is respected in JpegImage::valid():
 
 ```cpp
 bool JpegImage::valid()
@@ -457,7 +452,7 @@ Adobe have implemented transparency in JPEG by storing a PostScript clippath in 
 
 [TOC](#TOC)
 <div id="JP2">
-## JP2 Jpeg 2000
+## JP2 JPEG 2000
 ![jp2](jp2.png)
 
 [TOC](#TOC)
@@ -522,7 +517,7 @@ To be written.
 
 [TOC](#TOC)
 <div id="TGA">
-### TGA
+## TGA
 
 To be written.
 
@@ -631,22 +626,7 @@ Software -> "Ver.1.00 " (9)                  Make -> "NIKON CORPORATION" (1
 DateTime -> 2015-07-16 20:25:28 (datetim     Model -> "NIKON D5300" (11)
 YCbCrPositioning -> 1 (int)                  StripOffsets -> 901 (int)
 Exif IFD -> 222 (int)                        Orientation -> 1 (int)
-GPS IFD -> 4060 (int)                        SamplesPerPixel -> 4 (int)
-ExposureTime -> 0.0025 (float)               RowsPerStrip -> 1 (int)
-FNumber -> 10.0 (float)                      StripByteCounts -> 4 (int)
-ExposureProgram -> 0 (int)                   XResolution -> 100.0 (float)
-ISOSpeedRatings -> 200 (int)                 YResolution -> 100.0 (float)
-ExifVersion -> b'0230' (4 bytes)             PlanarConfiguration -> 1 (int)
-DateTimeOriginal -> 2015-07-16 15:38:54      ResolutionUnit -> 2 (int)
-DateTimeDigitized -> 2015-07-16 15:38:54     Software -> "Ver.1.00 " (9)
-ComponentsConfiguration -> b\x01\x02\x0      DateTime -> 2015-07-16 20:25:2
-CompressedBitsPerPixel -> 2.0 (float)        ExtraSamples -> 1 (int)
-ExposureBiasValue -> (0, 6) (tuple)          SampleFormat -> (1, 1, 1, 1) (
-MaxApertureValue -> 4.3 (float)              XMP -> (60, 120, 58, 120, 109,
-MeteringMode -> 5 (int)                      IPTC -> b'\x1c\x01Z\x00\x03\x1'
-LightSource -> 0 (int)                       Exif IFD -> 8 (int)
-Flash -> 16 (int)                            ICC Profile -> b'\x00\x00\x0cH'
-FocalLength -> 44.0 (float)                  GPS IFD -> 655 (int)
+...
 MakerNote -> b'Nikon\x00\x02\x11\x00\x00'    ExposureTime -> 0.0025 (float)
 UserComment ->                               FNumber -> 10.0 (float)
 SubsecTime -> "00" (2)                       ExposureProgram -> 0 (int)
@@ -663,18 +643,7 @@ SceneType -> b'\x01' (1 bytes)               LightSource -> 0 (int)
 CFAPattern -> b'\x02\x00\x02\x00\x00\x01'     Flash -> 16 (int)
 CustomRendered -> 0 (int)                    FocalLength -> 44.0 (float)
 ExposureMode -> 0 (int)                      UserComment -> 
-WhiteBalance -> 0 (int)                      SubsecTime -> "00" (2)
-DigitalZoomRatio -> 1.0 (float)              SubsecTimeOriginal -> "00" (2)
-FocalLengthIn35mmFilm -> 66 (int)            SubsecTimeDigitized -> "00" (2
-SceneCaptureType -> 0 (int)                  FlashpixVersion -> b'0100' (4 
-GainControl -> 0 (int)                       ColorSpace -> 1 (int)
-Contrast -> 0 (int)                          PixelXDimension -> 1 (int)
-Saturation -> 0 (int)                        PixelYDimension -> 1 (int)
-Sharpness -> 0 (int)                         SensingMethod -> 2 (int)
-SubjectDistanceRange -> 0 (int)              FileSource -> b'\x03' (1 bytes
-ImageUniqueID -> "090caaf2c085f3e102513b"    SceneType -> b'\x01' (1 bytes)
-InteropIndex -> "R98" (3)                    CustomRendered -> 0 (int)
-InteropVersion -> b'0100' (4 bytes)          ExposureMode -> 0 (int)
+...
 GPSLatitudeRef -> 1 (int)                    WhiteBalance -> 0 (int)
 GPSLatitude -> 51.17828166666666 (float)     DigitalZoomRatio -> 1.0 (float
 GPSLongitudeRef -> -1 (int)                  FocalLengthIn35mmFilm -> 66 (i
@@ -686,15 +655,7 @@ GPSSatellites -> "09" (2)                    Sharpness -> 0 (int)
 GPSMapDatum -> "WGS-84          " (16)       SubjectDistanceRange -> 0 (int
 GPSDateStamp -> 2015-07-16 00:00:00 (dat     ImageUniqueID -> "090caaf..."
                                              GPSLatitudeRef -> 1 (int)
-                                             GPSLatitude -> 51.178280555555
-                                             GPSLongitudeRef -> -1 (int)
-                                             GPSLongitude -> 1.826638888888
-                                             GPSAltitudeRef -> -1 (int)
-                                             GPSAltitude -> 97.0 (float)
-                                             GPSTimeStamp -> 14:38:55 (date
-                                             GPSSatellites -> "09" (2)
-                                             GPSMapDatum -> "WGS-84"        
-                                             GPSDateStamp -> 2015-07-16 00:
+...                                             GPSLatitude -> 51.178280555555
 ```
 
 Data's similar.  The order is different.  Good news is that the commands _**$ exiv2 -pe ~/Stonehenge.jpg**_ and __*$ exiv2 -pe ~/Stonehenge.tif*__ produce similar data in the same order.  We'd hope so as both commands are reading the same embedded Exif metadata.  The way in which the Exif is embedded in Tiff and JPG is different, however the Exif metadata is effectively the same.
@@ -719,7 +680,7 @@ void IFD::visitMakerNote(Visitor& visitor,DataBuf& buf,uint16_t count,uint32_t o
         TiffImage makerNote(io,image_.maker_);
         makerNote.visit(visitor,makerDict());
     } else if ( image_.maker_ == kAgfa && buf.strequals("ABC") ) {
-        // Agfa  MakerNote is an IFD `ABC_IIdL...`  6 bytes into the data!
+        // Agfa  MakerNote is an IFD `ABC_II#E...`  6 bytes into the data!
         ImageEndianSaver save(image_,keLittle);
         IFD makerNote(image_,offset+6,false);
         makerNote.visit(visitor,makerDict());
@@ -1259,11 +1220,11 @@ The TiffVisitor is ingenious.  It's also difficult to understand.  Exiv2 has two
 
 The code which accompanies this book has a simplified version of Image::printIFDStructure() called IFD::accept() and that's what will be discussed here.  The code that accompanies this book is explained here: [Code discussed in this book](#14)
 
-It is important to realise that metadata is defined recursively.  In a Tiff File, there will be a Tiff Record containing the Exif data (written in Tiff Format).  Within, that record, there will be a MakerNote which is usually written in Tiff Format.  Tiff Format is referred to as an IFD - an Image File Directory.
+It is important to realise that metadata is defined recursively.  In a Tiff File, there will be a Tiff Record containing the Exif data (written in Tiff Format).  Within, that record, there will be a MakerNote which is usually written in TIFF Format.  TIFF Format is referred to as an IFD - an Image File Directory.
 
 TiffImage::accept() uses a simple direct approach to parsing the tiff file.  When another IFD is located, IFD::accept() is called recursively.  As a TIFF file has an 8 byte header which provides the offset to the first IFD.  We can descend into the tiff file from the beginning.  For other files types, the file handler has to find the Exif IFD and then call IFD::accept().
 
-There are several ways in which IFD::accept() is called.  TiffImage::accept() starts with the tiff header **II*\_tsfo** or **MM\_*ofst*_ and then calls _**IFD::accept()**_.  Makernotes are usually an IFD.  Some manufactures (Nikon) embed a Tiff.  Some (Canon and Sony) embed an IFD.  It's quite common (Sony) to embed a single IFD which is not terminated with a four byte null uint32\_t.
+There are several ways in which IFD::accept() is called.  TiffImage::accept() starts with the tiff header **II*\_long** or **MM\_*long*_ and then calls _**IFD::accept()**_.  Makernotes are usually an IFD.  Some manufactures (Nikon) embed a Tiff.  Some (Canon and Sony) embed an IFD.  It's quite common (Sony) to embed a single IFD which is not terminated with a four byte null uint32\_t.
 
 The program tvisitor has several file handlers such as TiffImage, JpegImage and CrwImage.  Exiv2 has handlers for about 20 different formats.  If you understand Tiff and Jpeg, the others are boring variations.
 
@@ -1485,15 +1446,13 @@ $
 
 Using dd to extract metadata is discussed in more detail here: [8.1 Extracting metadata using dd](#8-1).
 
-Please be aware that there are two ways in which IFDs can occur in the file.  They can be an embedded TIFF which is complete with the **II*\_tsfO** or **MM\_*Ofst** 8-byte header and the offset leads to the IFD.   Or the IFD can be in the file without the header.  IFD::visit(visitor) knows that the tags such as GpsTag and ExifTag are IFDs and recursively calls recursively calls IFD::visit(visitor).  For the embedded TIFF (such as Nikon MakerNote), IFD::visit(visitor) creates a TiffImage and calls TiffI.accept(visitor) which validates the header and calls IFD::visit(visitor).
+Please be aware that there are two ways in which IFDs can occur in the file.  They can be an embedded TIFF which is complete with the **II*\_long** or **MM\_*long** 8-byte header and the offset leads to the IFD.   Or the IFD can be in the file without the header.  IFD::visit(visitor) knows that the tags such as GpsTag and ExifTag are IFDs and recursively calls recursively calls IFD::visit(visitor).  For the embedded TIFF (such as Nikon MakerNote), IFD::visit(visitor) creates a TiffImage and calls TiffI.accept(visitor) which validates the header and calls IFD::visit(visitor).
 
-One other important detail is that although the Tiff Specification expects the IFD to end with a uint32\_t offset == 0, Sony (and other) maker notes do not.  The IFD begins with a uint32\_t to define length, followed by 12 byte tags.  There is no trailing null uint32\_t.
+Another important detail is that although the Tiff Specification expects the IFD to end with a uint32\_t offset == 0, Sony (and other) maker notes do not.  The IFD begins with a uint32\_t to define length, followed by 12 byte tags.  There is no trailing null uint32\_t.
 
 [TOC](#TOC)
 <div id="8-6">
 ### 8.6 Presenting the data with visitTag()
-
-I want to discuss how to decode binary tags and present the data.
 
 I added support in tvisitor.cpp for one binary tag which is Nikon Picture Control tag = 0x0023.  You'll see from the output of tvisit that it's 58 bytes.
 
@@ -1570,6 +1529,9 @@ MakerTags makerTags;
 ...
 void init()
 {
+    nikonDict [ktGroup ] = "Nikon";
+...
+    nikonDict [ 0x0023 ] = "PictureControl";
 ...
     makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcVersion"         ,asciiString , 0, 4));
     makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcName"            ,asciiString , 4,20));
@@ -1580,7 +1542,7 @@ void init()
 }
 ```
 
-## ReportVisitor()visitTag()
+## ReportVisitor::visitTag()
 
 ```cpp
     virtual void visitTag
@@ -1700,7 +1662,9 @@ Could this be even better?  Of course.  As always reader, I leave you to send me
 
 [TOC](#TOC)
 <div id="8-7">
-### 8.7 Metadata and Binary Tag Decoder
+### 8.7 Tag Decoder
+
+This is a story in two parts.  Firstly, we have to find metadata which is formatted as a Tiff Entry and I call that the _**Metadata Decoder**_.  Some tags are encoded in binary which must be decoded.  I call that the _**Binary Tag Decoder**_.
 
 #### Metadata Decoder
 Please read: [#988](https://github.com/Exiv2/exiv2/pull/988)
@@ -1908,7 +1872,7 @@ There are significant challenges in finding the previews as manufacturers use a 
 
 I find it incredible, yet unsurprising, that in an industry which talks about inovation and development can be so resistant to change.  Small changes that would serve their industry.  A friend of mine in Silicon Valley sat on a standards committee for video encoding.  He told me about a meeting in which something absurd was proposed and he decided, although he seldom spoke, to speak against it.  He couldn't let the issue pass.  He said to me with a war-comic German accent.  _"So, I took zee lugar and I aimed carefully and I squeezed zee trigger.  The bullet flew fast and straight and hit me between the eyes."_.  The opposition he encountered was breathtaking.  Craziness ends up in standards because of the politics of the Standards Committee.  So that's how we end up with several different designs to enable Exif, ICC and XMP data to be chunked in a JPEG.  And the mess with Lens Recognition.  And the mess with hundreds of similar yet different image formats.
 
-```
+```bash
 786 rmills@rmillsmm-local:~/temp/foo $ cp ~/Stonehenge.jpg .
 787 rmills@rmillsmm-local:~/temp/foo $ exiv2 -ep --verbose Stonehenge.jpg 
 File 1/1: Stonehenge.jpg
@@ -1924,52 +1888,8 @@ STRUCTURE OF JPEG FILE: ./Stonehenge-preview1.jpg
 789 rmills@rmillsmm-local:~/temp/foo $ 
 ```
 
-So, there's a 10837 byte JPEG hiding in the file.  But where:
 
-```bash
-STRUCTURE OF JPEG FILE (II): /Users/rmills/Stonehenge.jpg
- address | marker       |  length | signature
-       0 | 0xffd8 SOI  
-       2 | 0xffe1 APP1  |   15288 | Exif__II*_.___._..._.___.___..._.___.___..._._
-  STRUCTURE OF TIFF FILE (II): /Users/rmills/Stonehenge.jpg:12->15280
-   address |    tag                              |      type |    count |    offset | value
-        10 | 0x010f Exif.Image.Make              |     ASCII |       18 |       146 | NIKON CORPORATION
-        22 | 0x0110 Exif.Image.Model             |     ASCII |       12 |       164 | NIKON D5300
-        34 | 0x0112 Exif.Image.Orientation       |     SHORT |        1 |           | 1
-...
-       118 | 0x8769 Exif.Image.ExifTag           |      LONG |        1 |           | 2191130666
-    STRUCTURE OF TIFF FILE (II): /Users/rmills/Stonehenge.jpg:12->15280
-     address |    tag                              |      type |    count |    offset | value
-         224 | 0x829a Exif.Photo.ExposureTime      |  RATIONAL |        1 |       732 | 10/4000
-         236 | 0x829d Exif.Photo.FNumber           |  RATIONAL |        1 |       740 | 100/10
-...
-         416 | 0x927c Exif.Photo.MakerNote         | UNDEFINED |     3152 |       914 | Nikon_..__II*_.___9_._._.___0211._._ +++
-      STRUCTURE OF TIFF FILE (II): /Users/rmills/Stonehenge.jpg:12->15280:924->3142
-       address |    tag                              |      type |    count |    offset | value
-            10 | 0x0001 Exif.Nikon.Version           | UNDEFINED |        4 |           | ____
-...
-           894 | 0x0023 Exif.Nikon.PcToningSaturat.. |     UBYTE |        1 |           | .
-      END: /Users/rmills/Stonehenge.jpg:12->15280:924->3142
-         476 | 0xa000 Exif.Photo.FlashpixVersion   | UNDEFINED |        4 |           | ____
-...
-    END: /Users/rmills/Stonehenge.jpg:12->15280
-    STRUCTURE OF TIFF FILE (II): /Users/rmills/Stonehenge.jpg:12->15280
-     address |    tag                              |      type |    count |    offset | value
-        4062 | 000000 Exif.GPSInfo.GPSVersionID    |     UBYTE |        4 |           | 15:0
-...
-    END: /Users/rmills/Stonehenge.jpg:12->15280
-  END: /Users/rmills/Stonehenge.jpg:12->15280
-   15292 | 0xffe1 APP1  |    2610 | http://ns.adobe.com/xap/1.0/_<?xpacket begin="
-   17904 | 0xffed APP13 |      96 | Photoshop 3.0_8BIM.._____'..__._...Z_..%G..__.
-   18002 | 0xffe2 APP2  |    4094 | MPF_II*_.___.__.._.___0100..._.___.___..._0___
-   22098 | 0xffdb DQT   |     132 | 
-   22232 | 0xffc0 SOF0  |      17 | 
-   22251 | 0xffc4 DHT   |     418 | 
-   22671 | 0xffda SOS   |      12 | 
-END: /Users/rmills/Stonehenge.jpg
-```
-
-Our friend dmpf finds it:
+dmpf.cpp finds it.  So, we know it is 4448 bytes into the file and the Exif Tiff is 15288 bytes and begins at 12.  So it's in there, but where?  I don't know.  More research necessary.
 
 ```bash
 .../book/build $ ./dmpf ~/temp/foo/Stonehenge-preview1.jpg | head -1
@@ -1978,8 +1898,6 @@ Our friend dmpf finds it:
   0x1160     4448: __.___...._._...................  ->  00 00 01 00 00 00 ff d8 ff db 00 ..
 .../book/build $ 
 ```
-
-So, we know it is 4448 bytes into the file and the Exif Tiff is 15288 bytes and begins at 12.  So it's in there, but where?  I don't know.  More research necessary.
 
 [TOC](#TOC)
 <div id="10">
@@ -2461,7 +2379,7 @@ The following two programs args.cpp and dmpf.cpp are based on similar utility pr
 
 #### args.cpp
 
-I wrote this program in 1991.  It's great for figuring how the shell will see a command.  Another purpose is to analyse commands generated by CMake.
+The purpose of this program is to analyse command-line arguments.
 
 ```cpp
 #include <stdio.h>
@@ -2478,104 +2396,236 @@ int main(int argc, char* argv[])
 
 #### dmpf.cpp
 
-The purpose of this program is to quickly inspect files.  It could have lots more features to inspect byte-ranges, dump as big/little endian, 16/32/64 ints, or floats/doubles.  I haven't added these options because I find this is mostly sufficient.  As always, send me a patch if you have good ideas.
+The purpose of this program is to inspect files.  It's od on steroids.
 
 ```cpp
+// g++ --std=c++11 dmpf.cpp
 #include <stdio.h>
 #include <string.h>
+#include <vector>
+#include <string>
+#include <map>
+#include <iostream>
+#include <cstring>
 
-static enum
-{   errorOK = 0
-,   errorSyntax
+std::vector      <const char*> paths;
+std::map<std::string,uint32_t> options;
+
+static enum error_e
+{	errorOK = 0
+, 	errorSyntax
 ,   errorProcessing
-} error = errorOK ;
+}   error = errorOK ;
 
-void syntax()
+uint8_t print(uint8_t c) { return c >= 32 && c < 127 ? c : c==0 ? '_' : '.' ; }
+
+void printOptions(error_e e)
 {
-    printf("syntax: dmpf [-option]+ filename\n") ;
+    if ( options["verbose"] || e == errorSyntax ) {
+        for ( auto option : options ) {
+            std::cout << option.first << " = " << option.second << std::endl;
+        }
+    }
+    error = e;
 }
 
-unsigned char print(unsigned char c) {
-   return c >= 32 && c < 127 ? c : c==0 ? '_' : '.' ;
+void syntax(int argc, char* argv[],error_e e)
+{
+    std::cout << "syntax: " << argv[0] << " [key=value]+ path+" << std::endl;
+    printOptions(errorSyntax) ;
 }
+
+bool split(const char* arg,std::string& key,uint32_t& value)
+{
+    while ( *arg == '-' ) arg++;
+    const char* chop = std::strchr(arg,'=');
+    if ( chop ) {
+        key   = std::string(arg,chop-arg);
+        value = atoi(chop+1);
+    }
+    return chop != NULL;
+}
+
+// endian and byte swappers
+bool isPlatformBigEndian()
+{
+    union { uint32_t i; char c[4]; } e = { 0x01000000 };
+    return e.c[0]?true:false;
+}
+bool     platformEndian() { return isPlatformBigEndian() ? true : false; }
+void swap(void* from,void* to,size_t n)
+{
+    uint8_t*     v = reinterpret_cast<uint8_t *>(from);
+    uint8_t*  swap = reinterpret_cast<uint8_t *>(to  );
+    for (size_t i = 0; i < n; i++) {
+        swap[i] = v[n - i - 1];
+    }
+}
+uint64_t swap(uint64_t* value,bool bSwap)
+{
+    uint64_t result = *value ;
+    if ( bSwap ) swap(value,&result,sizeof result);
+    return result;
+}
+uint32_t swap(uint32_t* value,bool bSwap)
+{
+    uint32_t result = *value ;
+    if ( bSwap ) swap(value,&result,sizeof result);
+    return result;
+}
+uint16_t swap(uint16_t* value,bool bSwap)
+{
+    uint16_t result = *value ;
+    if ( bSwap ) swap(value,&result,sizeof result);
+    return result;
+}
+
+bool file(const char* arg)
+{
+    if ( std::string("-") == std::string(arg) ) return true ;
+    FILE*  f      = ::fopen(arg,"rb");
+    bool   result = f != NULL ;
+    if     (f) fclose(f);
+    return result;
+} //file
 
 int main(int argc, char* argv[])
 {
-    char* filename = argv[1] ;
-    FILE* f = NULL ;
+    options["bs"     ] =  1;
+    options["width"  ] = 32;
+    options["count"  ] =  0;
+    options["endian" ] =  isPlatformBigEndian();
+    options["hex"    ] =  1;
+    options["skip"   ] =  0;
+    options["verbose"] =  0;
 
     if ( argc < 2 ) {
-        syntax() ;
-        error = errorSyntax ;
-    }
-
-    if ( !error ) {
-        f = strcmp(filename,"-") ? fopen(filename,"rb") : stdin ;
-        if ( !f ) {
-            printf("unable to open file %s\n",filename) ;
-            error = errorProcessing ;
+		syntax(argc,argv,errorSyntax) ;
+	}
+    for ( int i = 1 ; i < argc ; i++ ) {
+        const char* arg = argv[i];
+        std::string key;
+        uint32_t    value ;
+        if ( split(argv[i],key,value) ) {
+            if ( options.find(key) != options.end() ) {
+                options[key]=value;
+            }
+        } else if ( file(arg) ) {
+            paths.push_back(arg);
+        } else {
+            std::cerr << "argument not understood: " << arg << std::endl;
+            error = errorProcessing;
         }
     }
+            
+    if ( options["verbose"] ) printOptions(error) ;
+	if ( !error  ) for ( auto path : paths ) {
+        FILE* f = NULL  ;
+        size_t  size   = 1;
+        size_t  skip   = options["skip" ];
+        size_t  count  = options["count"];
+        size_t  width  = options["width"];
+        
+        if ( path != std::string("-") ) {
+            f     = fopen(path,"rb");
+            fseek(f,0,SEEK_END);
+            size  = ftell(f);
+        } else {
+            f      = stdin   ;
+            size   = 256*1024;
+        }
+        if ( !count ) count = size - skip;
+        if ( !f || (skip+count) > size ) {
+            std::cerr << path << " insufficient data" << std::endl;
+            error = errorProcessing;
+        }
+        
+        char    line[1000]  ;
+        char    buff[64]    ;
+        size_t  counter = 0 ; // count the reads
+        size_t  nRead   = 0 ; // bytes actually read
+        size_t  remains = count ; // how many bytes still to read
+        if ( width > sizeof buff ) width = sizeof(buff);
+        fseek(f,skip,SEEK_SET);
+        
+        if ( !error ) while
+        (     count > (counter*width)
+        &&   (nRead = fread(buff,1,remains>width?width:remains,f)) > 0
+        ) {
+			// line number
+			int l = sprintf(line,"%#8lx %8ld: ",skip+counter*width,skip+counter*width ) ;
 
-    if ( !error  )
-    {
-        char line[1000] ;
-        char buff[32]   ;
-        int  n          ;
-        int count = 0   ;
-        while ( (n = fread(buff,1,sizeof buff,f)) > 0 )
-        {
-            // line number
-            int l = sprintf(line,"%#8x %8d: ",count,count ) ;
-            count += n ;
+			// ascii print
+			for ( int i = 0 ; i < nRead ; i++ ) {
+		        l += sprintf(line+l,"%c", print(buff[i])) ;
+			}
 
-            // ascii print
-            for ( int i = 0 ; i < n ; i++ )
-            {
-                char c = buff[i] ;
-                l += sprintf(line+l,"%c", print(c)) ;
-            }
             // blank pad the ascii
-            int save = n ;
-            while ( n++ < sizeof(buff) ) {
-                l += sprintf(line+l," ") ;
-            }
-            n = save     ;
-
-            // hex code
+			size_t  n   = nRead ;
+			while ( n++ <  width ) {
+			    l += sprintf(line+l," ") ;
+			}
             l += sprintf(line+l,"  -> ") ;
-            for ( int i = 0 ; i < n ; i++ )
-            {
-                unsigned char c = buff[i] ;
-                l += sprintf(line+l," %02x" ,c) ;
+            size_t bs = options["bs"];
+            if ( bs == 8 ) {
+                for ( size_t i = 0 ; i < nRead; i += bs ) {
+                    uint64_t* p = (uint64_t*) &buff[i] ;
+                    uint64_t  v = swap(p,  options["endian"]!=platformEndian());
+                    l += options["hex"] ? sprintf(line+l," %16llx" ,v )
+                                        : sprintf(line+l," %20lld" ,v )
+                    ;
+                }
+            } else if ( bs == 4 ) {
+                for ( size_t i = 0 ; i < nRead ; i += bs ) {
+                    uint32_t* p = (uint32_t*) &buff[i] ;
+                    uint32_t  v = swap(p,  options["endian"]!=platformEndian());
+                    l += options["hex"] ? sprintf(line+l,"  %8x" ,v )
+                                        : sprintf(line+l," %10d" ,v )
+                    ;
+                }
+            } else if ( options["bs"] == 2 ) {
+                for ( size_t i = 0 ; i < nRead ; i += bs ) {
+                    uint16_t* p = (uint16_t*) &buff[i] ;
+                    uint16_t  v = swap(p,  options["endian"]!=platformEndian());
+                    l += options["hex"] ? sprintf(line+l," %4x" ,v )
+                                        : sprintf(line+l," %5d" ,v )
+                    ;
+                }
+            } else for ( int i = 0 ; i < nRead ; i++ ) { // bs == 1
+                uint8_t v = buff[i];
+                l += options["hex"] ? sprintf(line+l," %2x" ,v )
+                                    : sprintf(line+l," %3d" ,v )
+                ;
             }
 
-            line[l] = 0 ;
-            printf("%s\n",line) ;
-        }
+			line[l] = 0 ;
+            std::cout << line << std::endl;
+            counter++;
+            remains -= width;
+            if ( f == stdin ) {
+                size += nRead;
+            }
+		}
 
         if ( f != stdin ) {
             fclose(f);
             f = NULL;
         }
-    }
+	}
 
-    return error ;
-}
+	return error ;
+} // main
 ```
 
 [TOC](#TOC)
 # The Last Word
 <div id="finally">
 
-I hope found this book interesting.  More to the point, I hope you found the book useful.  I hope Exiv2 will live into the future, or this book inspires somebody to write a new library.
-
+I hope you found this book interesting.  More to the point, I hope you found the book useful.  I hope Exiv2 will live into the future, or this book inspires somebody to write a new library.
 
 <center><img src="back-page.jpg" style="border:2px solid #23668F"/></center>
 
-
-I'm going off to cut the grass and to run in the beautiful countryside around my home in Camberley, England.  And I'm going to play the Euphonium and the Piano.  If you have interesting and positive thoughts you are welcome to open an issue on GitHub and I will respond.
-
+I'm going off to cut the grass and to run in the beautiful countryside around my home in Camberley, England.  And I'm going to play the Euphonium and the Piano.  If you have interesting and positive thoughts you are welcome to open an issue on GitHub and I will respond.  [https://github.com/exiv2/exiv2](https://github.com/exiv2/exiv2)
 
 <center>![Exiv2](exiv2.png)</center>
 

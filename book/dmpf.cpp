@@ -1,79 +1,216 @@
+// g++ --std=c++11 dmpf.cpp
 #include <stdio.h>
 #include <string.h>
+#include <vector>
+#include <string>
+#include <map>
+#include <iostream>
+#include <cstring>
 
-static enum
-{	errorOK = 0
-, 	errorSyntax
+std::vector      <const char*> paths;
+std::map<std::string,uint32_t> options;
+
+static enum error_e
+{    errorOK = 0
+,     errorSyntax
 ,   errorProcessing
-} error = errorOK ;
+}   error = errorOK ;
 
-void syntax()
+uint8_t print(uint8_t c) { return c >= 32 && c < 127 ? c : c==0 ? '_' : '.' ; }
+
+void printOptions(error_e e)
 {
-	printf("syntax: dmpf [-option]+ filename\n") ;
+    if ( options["verbose"] || e == errorSyntax ) {
+        for ( auto option : options ) {
+            std::cout << option.first << " = " << option.second << std::endl;
+        }
+    }
+    error = e;
 }
 
-unsigned char print(unsigned char c) { return c >= 32 && c < 127 ? c : c==0 ? '_' : '.' ; }
+void syntax(int argc, char* argv[],error_e e)
+{
+    std::cout << "syntax: " << argv[0] << " [key=value]+ path+" << std::endl;
+    printOptions(errorSyntax) ;
+}
+
+bool split(const char* arg,std::string& key,uint32_t& value)
+{
+    while ( *arg == '-' ) arg++;
+    const char* chop = std::strchr(arg,'=');
+    if ( chop ) {
+        key   = std::string(arg,chop-arg);
+        value = atoi(chop+1);
+    }
+    return chop != NULL;
+}
+
+// endian and byte swappers
+bool isPlatformBigEndian()
+{
+    union { uint32_t i; char c[4]; } e = { 0x01000000 };
+    return e.c[0]?true:false;
+}
+bool     platformEndian() { return isPlatformBigEndian() ? true : false; }
+void swap(void* from,void* to,size_t n)
+{
+    uint8_t*     v = reinterpret_cast<uint8_t *>(from);
+    uint8_t*  swap = reinterpret_cast<uint8_t *>(to  );
+    for (size_t i = 0; i < n; i++) {
+        swap[i] = v[n - i - 1];
+    }
+}
+uint64_t swap(uint64_t* value,bool bSwap)
+{
+    uint64_t result = *value ;
+    if ( bSwap ) swap(value,&result,sizeof result);
+    return result;
+}
+uint32_t swap(uint32_t* value,bool bSwap)
+{
+    uint32_t result = *value ;
+    if ( bSwap ) swap(value,&result,sizeof result);
+    return result;
+}
+uint16_t swap(uint16_t* value,bool bSwap)
+{
+    uint16_t result = *value ;
+    if ( bSwap ) swap(value,&result,sizeof result);
+    return result;
+}
+
+bool file(const char* arg)
+{
+    if ( std::string("-") == std::string(arg) ) return true ;
+    FILE*  f      = ::fopen(arg,"rb");
+    bool   result = f != NULL ;
+    if     (f) fclose(f);
+    return result;
+} //file
 
 int main(int argc, char* argv[])
 {
-	char* filename = argv[1] ;
-	FILE* f = NULL ;
+    options["bs"     ] =  1;
+    options["width"  ] = 32;
+    options["count"  ] =  0;
+    options["endian" ] =  isPlatformBigEndian();
+    options["hex"    ] =  1;
+    options["skip"   ] =  0;
+    options["verbose"] =  0;
 
-	if ( argc < 2 ) {
-		syntax() ;
-		error = errorSyntax ;
-	}
+    if ( argc < 2 ) {
+        syntax(argc,argv,errorSyntax) ;
+    }
+    for ( int i = 1 ; i < argc ; i++ ) {
+        const char* arg = argv[i];
+        std::string key;
+        uint32_t    value ;
+        if ( split(argv[i],key,value) ) {
+            if ( options.find(key) != options.end() ) {
+                options[key]=value;
+            }
+        } else if ( file(arg) ) {
+            paths.push_back(arg);
+        } else {
+            std::cerr << "argument not understood: " << arg << std::endl;
+            error = errorProcessing;
+        }
+    }
+            
+    if ( options["verbose"] ) printOptions(error) ;
+    if ( !error  ) for ( auto path : paths ) {
+        FILE* f = NULL  ;
+        size_t  size   = 1;
+        size_t  skip   = options["skip" ];
+        size_t  count  = options["count"];
+        size_t  width  = options["width"];
+        
+        if ( path != std::string("-") ) {
+            f     = fopen(path,"rb");
+            fseek(f,0,SEEK_END);
+            size  = ftell(f);
+        } else {
+            f      = stdin   ;
+            size   = 256*1024;
+        }
+        if ( !count ) count = size - skip;
+        if ( !f || (skip+count) > size ) {
+            std::cerr << path << " insufficient data" << std::endl;
+            error = errorProcessing;
+        }
+        
+        char    line[1000]  ;
+        char    buff[64]    ;
+        size_t  counter = 0 ; // count the reads
+        size_t  nRead   = 0 ; // bytes actually read
+        size_t  remains = count ; // how many bytes still to read
+        if ( width > sizeof buff ) width = sizeof(buff);
+        fseek(f,skip,SEEK_SET);
+        
+        if ( !error ) while
+        (     count > (counter*width)
+        &&   (nRead = fread(buff,1,remains>width?width:remains,f)) > 0
+        ) {
+            // line number
+            int l = sprintf(line,"%#8lx %8ld: ",skip+counter*width,skip+counter*width ) ;
 
-	if ( !error ) {
-		f = strcmp(filename,"-") ? fopen(filename,"rb") : stdin ;
-		if ( !f ) {
-			printf("unable to open file %s\n",filename) ;
-			error = errorProcessing ;
-		}
-	}
+            // ascii print
+            for ( int i = 0 ; i < nRead ; i++ ) {
+                l += sprintf(line+l,"%c", print(buff[i])) ;
+            }
 
-	if ( !error  )
-	{
-		char    line[1000] ;
-		char    buff[32]   ;
-		size_t  n          ;
-		size_t  count = 0   ;
-		while ( (n = fread(buff,1,sizeof buff,f)) > 0 )
-		{
-			// line number
-			int l = sprintf(line,"%#8lx %8ld: ",count,count ) ;
-			count += n ;
+            // blank pad the ascii
+            size_t  n   = nRead ;
+            while ( n++ <  width ) {
+                l += sprintf(line+l," ") ;
+            }
+            l += sprintf(line+l,"  -> ") ;
+            size_t bs = options["bs"];
+            if ( bs == 8 ) {
+                for ( size_t i = 0 ; i < nRead; i += bs ) {
+                    uint64_t* p = (uint64_t*) &buff[i] ;
+                    uint64_t  v = swap(p,  options["endian"]!=platformEndian());
+                    l += options["hex"] ? sprintf(line+l," %16llx" ,v )
+                                        : sprintf(line+l," %20lld" ,v )
+                    ;
+                }
+            } else if ( bs == 4 ) {
+                for ( size_t i = 0 ; i < nRead ; i += bs ) {
+                    uint32_t* p = (uint32_t*) &buff[i] ;
+                    uint32_t  v = swap(p,  options["endian"]!=platformEndian());
+                    l += options["hex"] ? sprintf(line+l,"  %8x" ,v )
+                                        : sprintf(line+l," %10d" ,v )
+                    ;
+                }
+            } else if ( options["bs"] == 2 ) {
+                for ( size_t i = 0 ; i < nRead ; i += bs ) {
+                    uint16_t* p = (uint16_t*) &buff[i] ;
+                    uint16_t  v = swap(p,  options["endian"]!=platformEndian());
+                    l += options["hex"] ? sprintf(line+l," %4x" ,v )
+                                        : sprintf(line+l," %5d" ,v )
+                    ;
+                }
+            } else for ( int i = 0 ; i < nRead ; i++ ) { // bs == 1
+                uint8_t v = buff[i];
+                l += options["hex"] ? sprintf(line+l," %2x" ,v )
+                                    : sprintf(line+l," %3d" ,v )
+                ;
+            }
 
-			// ascii print
-			for ( int i = 0 ; i < n ; i++ )
-			{
-				char c = buff[i] ;
-		        l += sprintf(line+l,"%c", print(c)) ;
-			}
-			// blank pad the ascii
-			size_t  save = n ;
-			while ( n++ < sizeof(buff) ) {
-			    l += sprintf(line+l," ") ;
-			}
-			n = save     ;
-
-		    // hex code
-		    l += sprintf(line+l,"  -> ") ;
-			for ( int i = 0 ; i < n ; i++ )
-			{
-				unsigned char c = buff[i] ;
-				l += sprintf(line+l," %02x" ,c) ;
-			}
-
-			line[l] = 0 ;
-			printf("%s\n",line) ;
-		}
+            line[l] = 0 ;
+            std::cout << line << std::endl;
+            counter++;
+            remains -= width;
+            if ( f == stdin ) {
+                size += nRead;
+            }
+        }
 
         if ( f != stdin ) {
             fclose(f);
             f = NULL;
         }
-	}
+    }
 
-	return error ;
-}
+    return error ;
+} // main
