@@ -83,7 +83,6 @@ Rebuilding the website
     Facebook fan page update
     https://discuss.pixls.us
 
-
 Patching doxygen/Doxyfile
 -------------------------
 Caution: Makefile uses doxygen/Doxyfile.v27 with Doxygen as the HTML made by

@@ -230,4 +230,4 @@ get-latest:
 	@./bin/getLatest.sh
 
 publish:
-	cp -r  html ~/Jenkins/website/html
+	ditto  html ~/Jenkins/website/html

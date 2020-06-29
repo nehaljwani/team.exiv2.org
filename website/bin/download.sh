@@ -32,7 +32,8 @@ do
 	echo p = $p
 
     cp    -p  $P  $basedir/html/builds/$p
-	size=$(ls -la        html/builds/$p | cut -d' ' -f 5)
+	size=$(ls -la        html/builds/$p | sed -e 's#  # #g' | cut -d' ' -f 5)
+	echo size = $size
 	# Why is stat platform depenendent?
 	date=$(~/gnu/coreutils/coreutils-8.25/src/stat -c "%y"  html/builds/$p | cut -d' ' -f 1-2 | cut -d: -f 1-2)
 	checkSum=$(sha256sum html/builds/$p | cut -d' ' -f 1)

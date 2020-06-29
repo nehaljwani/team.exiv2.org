@@ -2,13 +2,20 @@
 <news>
 
  <newsitem>
-  <date>2020-05-31</date>
-  <title>Exiv2 v0.27.3 RC2</title>
-  <abstract>Exiv2 v0.27.3 RC2</abstract>
+  <date>2020-06-30</date>
+  <title>Exiv2 v0.27.3</title>
+  <abstract>Exiv2 v0.27.3</abstract>
   <desc>
    <p>Thank you to Phil, Sridhar, Luis, Kevin, and Andreas S for working with me on the release.<br></br>
       As always, thanks to my wife Alison and our cat Lizzie for their support.
    </p>
+   <p>I am writing a book called <b>Image Metadata <i>and</i> Exiv2 Architecture.</b><br/>
+   Current Draft:<br/>
+   <a href="https://clanmills.com/exiv2/book/">https://clanmills.com/exiv2/book/</a><br/>
+   and/or<br/>
+   <a href= "https://clanmills.com/exiv2/book/IMaEA.pdf">https://clanmills.com/exiv2/book/IMaEA.pdf</a>
+   </p>
+   <p>Highlights of Exiv2 v0.27.3</p>
    <ol>
     <li>Bug and security fixes</li>
     <li>UNIX suppport</li>
@@ -23,6 +30,17 @@
  </newsitem>
 
  <newsitem>
+  <date>2020-05-31</date>
+  <title>Exiv2 v0.27.3 RC2</title>
+  <abstract>Exiv2 v0.27.3 RC2</abstract>
+  <desc>
+   <p>Thank you to Phil, Sridhar, Luis, Kevin, and Andreas S for working with me on the release.<br></br>
+      As always, thanks to my wife Alison and our cat Lizzie for their support.
+   </p>
+  </desc>
+ </newsitem>
+
+ <newsitem>
   <date>2020-04-28</date>
   <title>Exiv2 v0.27.3 RC1</title>
   <abstract>Exiv2 v0.27.3 RC1</abstract>
@@ -30,7 +48,6 @@
    <p>Thank you to Phil, Sridhar, Luis, Kevin, and Andreas S for working with me on the release.<br></br>
       As always, thanks to my wife Alison and our cat Lizzie for their support.
    </p>
-   <p>More details: <a href="https://github.com/Exiv2/exiv2/issues/1018#issuecomment-604539346" _target="_blank">Change List</a></p>
   </desc>
  </newsitem>
 
