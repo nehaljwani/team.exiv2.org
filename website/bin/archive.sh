@@ -30,7 +30,7 @@ releases=$(ls -1 $basedir/html/releases/* | sort -t- -k 2 -V | perl -e 'print re
 # echo +++++++++++++++++++++++++++++
 
 for p in $releases; do
-	size=$(ls -la        $p | cut -d' ' -f 5)
+	size=$(ls -la        $p | sed -e 's#  # #g' | cut -d' ' -f 5)
 	# date=unknown
 	checkSum=$(sha256sum $p | cut -d' ' -f 1)
 

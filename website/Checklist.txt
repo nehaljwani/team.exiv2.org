@@ -203,7 +203,8 @@ drwxr-xr-x 9 ubuntu www-data  4096 Mar 29 17:13 pre-release
 
 $ cd $EXIV2WEB
 $ cd html
-$ rsync -varz . ubuntu@exiv2.org:/var/www/websites/pre-release
+$ rsync -varz . ubuntu@exiv2.org:/var/www/websites/pre-release   <--- RC Release
+$ rsync -varz . ubuntu@exiv2.org:/var/www/websites/exiv2         <--- GM Release
 // Takes about 10 minutes from the MacMini
 
 Manually

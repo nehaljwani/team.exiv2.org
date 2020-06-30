@@ -20,6 +20,7 @@
         <li><a href="../makernote.html">Makernote</a></li>
         <li><a href="../doc/examples.html">Examples</a></li>
         <li><a href="../manpage.html">Manual</a></li>
+        <li><a href="../book/index.html">Book</a></li>
         <li class="dropdown active">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">API <span class="caret"></span></a>
           <ul class="dropdown-menu">
