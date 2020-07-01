@@ -98,26 +98,33 @@ int main(int argc, char* argv[])
     options["skip"   ] =  0;
     options["verbose"] =  0;
 
+    // parse arguments
     if ( argc < 2 ) {
         syntax(argc,argv,errorSyntax) ;
-    }
-    for ( int i = 1 ; i < argc ; i++ ) {
+    } else for ( int i = 1 ; i < argc ; i++ ) {
         const char* arg = argv[i];
         std::string key;
         uint32_t    value ;
+        bool        bClaimed = false;
         if ( split(argv[i],key,value) ) {
             if ( options.find(key) != options.end() ) {
                 options[key]=value;
+                bClaimed = true ;
             }
         } else if ( file(arg) ) {
             paths.push_back(arg);
-        } else {
+            bClaimed = true;
+        }
+        if ( !bClaimed ) {
             std::cerr << "argument not understood: " << arg << std::endl;
             error = errorProcessing;
         }
     }
             
+    // report arguments
     if ( options["verbose"] ) printOptions(error) ;
+    
+    // process
     if ( !error  ) for ( auto path : paths ) {
         FILE* f = NULL  ;
         size_t  size   = 1;
@@ -141,18 +148,15 @@ int main(int argc, char* argv[])
         
         char    line[1000]  ;
         char    buff[64]    ;
-        size_t  counter = 0 ; // count the reads
-        size_t  nRead   = 0 ; // bytes actually read
-        size_t  remains = count ; // how many bytes still to read
+        size_t  reads  = 0 ; // count the reads
+        size_t  nRead  = 0 ; // bytes actually read
+        size_t  remain = count ; // how many bytes still to read
         if ( width > sizeof buff ) width = sizeof(buff);
         fseek(f,skip,SEEK_SET);
         
-        if ( !error ) while
-        (     count > (counter*width)
-        &&   (nRead = fread(buff,1,remains>width?width:remains,f)) > 0
-        ) {
+        if ( !error ) while ( remain && (nRead = fread(buff,1,remain>width?width:remain,f)) > 0 ) {
             // line number
-            int l = sprintf(line,"%#8lx %8ld: ",skip+counter*width,skip+counter*width ) ;
+            int l = sprintf(line,"%#8lx %8ld: ",skip+reads*width,skip+reads*width ) ;
 
             // ascii print
             for ( int i = 0 ; i < nRead ; i++ ) {
@@ -165,8 +169,10 @@ int main(int argc, char* argv[])
                 l += sprintf(line+l," ") ;
             }
             l += sprintf(line+l,"  -> ") ;
-            size_t bs = options["bs"];
-            if ( bs == 8 ) {
+            
+            size_t   bs = options["bs"];
+            switch ( bs ) {
+            case 8 :
                 for ( size_t i = 0 ; i < nRead; i += bs ) {
                     uint64_t* p = (uint64_t*) &buff[i] ;
                     uint64_t  v = swap(p,  options["endian"]!=platformEndian());
@@ -174,7 +180,8 @@ int main(int argc, char* argv[])
                                         : sprintf(line+l," %20lld" ,v )
                     ;
                 }
-            } else if ( bs == 4 ) {
+            break;
+            case 4 :
                 for ( size_t i = 0 ; i < nRead ; i += bs ) {
                     uint32_t* p = (uint32_t*) &buff[i] ;
                     uint32_t  v = swap(p,  options["endian"]!=platformEndian());
@@ -182,7 +189,8 @@ int main(int argc, char* argv[])
                                         : sprintf(line+l," %10d" ,v )
                     ;
                 }
-            } else if ( options["bs"] == 2 ) {
+            break;
+            case 2:
                 for ( size_t i = 0 ; i < nRead ; i += bs ) {
                     uint16_t* p = (uint16_t*) &buff[i] ;
                     uint16_t  v = swap(p,  options["endian"]!=platformEndian());
@@ -190,26 +198,27 @@ int main(int argc, char* argv[])
                                         : sprintf(line+l," %5d" ,v )
                     ;
                 }
-            } else for ( int i = 0 ; i < nRead ; i++ ) { // bs == 1
-                uint8_t v = buff[i];
-                l += options["hex"] ? sprintf(line+l," %2x" ,v )
+            break;
+            default:
+                for ( int i = 0 ; i < nRead ; i++ ) { // bs == 1
+                    uint8_t v = buff[i];
+                    l += options["hex"] ? sprintf(line+l," %2x" ,v )
                                     : sprintf(line+l," %3d" ,v )
-                ;
+                    ;
+                }
             }
 
             line[l] = 0 ;
             std::cout << line << std::endl;
-            counter++;
-            remains -= width;
-            if ( f == stdin ) {
-                size += nRead;
-            }
-        }
+            reads++;
+            remain -= nRead;
+            if ( f == stdin ) size += nRead;
+        } // while remains && nRead
 
         if ( f != stdin ) {
             fclose(f);
-            f = NULL;
         }
+        f = NULL;
     }
 
     return error ;

@@ -157,13 +157,13 @@ This book is copyright and licensed under GNU GPLv2. [https://www.gnu.org/licens
 <div id="making">
 ### Making this book
 
-I've had a lot of fun making this book.  Most of the time was spent on the code, however getting the book into good shape for the web and print has been fun.  The Graphics were drawn using OmniGraffle 6.6.2 on my MacBook Pro.
+I've had a lot of fun making this book.  Most of the time was spent on the code, however getting the book into good shape for the web and print has been fun.  The graphics were drawn using OmniGraffle 6.6.2 on my MacBook Pro.
 
 All the documentation for Exiv2 is written in markdown with the exception of the Unix man page exiv2.1  I find markdown easy to use and quickly produces satisfying results.  
 
 The book is written in markdown and displayed on my computer with the MacDown Application.  When MacDown exports a PDF, he ignores print directives in the style sheet, he does not support page numbering and the links are ineffective.  To my taste, the text size of pages is too large when printed on A4.
 
-I used a modified version of this style sheet: ~/Library/Application Support/MacDown/Styles/GitHub2.css. I changed the fonts to be Helvetica in the titles and Palatino in the body.  I thought about using Exiv2 logo font used which is Albertus Medium.  I decided to adopt the ubiquitous Palatino.  Code is set in Consolas in both the graphics and the in-line code snippets in the text.
+I used a modified version of this style sheet: ~/Library/Application Support/MacDown/Styles/GitHub2.css. I changed the fonts to be Helvetica in the titles and Palatino in the body.  I thought about using the Exiv2 logo font used which is Albertus Medium.  I decided to adopt the ubiquitous Palatino.  Code is set in Consolas in both the graphics and the in-line code snippets in the text.
 
 ```.css
 @media print {
@@ -1224,7 +1224,7 @@ It is important to realise that metadata is defined recursively.  In a Tiff File
 
 TiffImage::accept() uses a simple direct approach to parsing the tiff file.  When another IFD is located, IFD::accept() is called recursively.  As a TIFF file has an 8 byte header which provides the offset to the first IFD.  We can descend into the tiff file from the beginning.  For other files types, the file handler has to find the Exif IFD and then call IFD::accept().
 
-There are several ways in which IFD::accept() is called.  TiffImage::accept() starts with the tiff header **II*\_long** or **MM\_*long*_ and then calls _**IFD::accept()**_.  Makernotes are usually an IFD.  Some manufactures (Nikon) embed a Tiff.  Some (Canon and Sony) embed an IFD.  It's quite common (Sony) to embed a single IFD which is not terminated with a four byte null uint32\_t.
+There are several ways in which IFD::accept() is called.  TiffImage::accept() starts with the tiff header _**II\*\_long**_ or _**MM\_\*long**_ and then calls _**IFD::accept()**_.  Makernotes are usually an IFD.  Some manufactures (Nikon) embed a Tiff.  Some (Canon and Sony) embed an IFD.  It's quite common (Sony) to embed a single IFD which is not terminated with a four byte null uint32\_t.
 
 The program tvisitor has several file handlers such as TiffImage, JpegImage and CrwImage.  Exiv2 has handlers for about 20 different formats.  If you understand Tiff and Jpeg, the others are boring variations.
 
@@ -1446,7 +1446,7 @@ $
 
 Using dd to extract metadata is discussed in more detail here: [8.1 Extracting metadata using dd](#8-1).
 
-Please be aware that there are two ways in which IFDs can occur in the file.  They can be an embedded TIFF which is complete with the **II*\_long** or **MM\_*long** 8-byte header and the offset leads to the IFD.   Or the IFD can be in the file without the header.  IFD::visit(visitor) knows that the tags such as GpsTag and ExifTag are IFDs and recursively calls recursively calls IFD::visit(visitor).  For the embedded TIFF (such as Nikon MakerNote), IFD::visit(visitor) creates a TiffImage and calls TiffI.accept(visitor) which validates the header and calls IFD::visit(visitor).
+Please be aware that there are two ways in which IFDs can occur in the file.  They can be an embedded TIFF which is complete with the **II*\_long** or **MM\_*long** 8-byte header and the offset leads to the IFD.   Or the IFD can be in the file without the header.  IFD::visit(visitor) knows that the tags such as GpsTag and ExifTag are IFDs and recursively calls recursively calls IFD::visit(visitor).  For the embedded TIFF (such as Nikon MakerNote), IFD::visit(visitor) creates a TiffImage and calls TiffImages.accept(visitor) which validates the header and calls IFD::visit(visitor).
 
 Another important detail is that although the Tiff Specification expects the IFD to end with a uint32\_t offset == 0, Sony (and other) maker notes do not.  The IFD begins with a uint32\_t to define length, followed by 12 byte tags.  There is no trailing null uint32\_t.
 
@@ -1454,10 +1454,10 @@ Another important detail is that although the Tiff Specification expects the IFD
 <div id="8-6">
 ### 8.6 Presenting the data with visitTag()
 
-I added support in tvisitor.cpp for one binary tag which is Nikon Picture Control tag = 0x0023.  You'll see from the output of tvisit that it's 58 bytes.
+I added support in tvisitor.cpp for one binary tag which is Nikon Picture Control tag = 0x0023.  You'll see from the output of tvisitor that it's 58 bytes.
 
 ```bash
-.../book/build $ ./tvisitor R ~/Stonehenge.jpg | grep -i picture
+.../book/build $ ./tvisitor -pR ~/Stonehenge.jpg | grep -i picture
    286 | 0x0023 Exif.Nikon.PictureControl  | UNDEFINED |   58 |    | 0100STANDARD____________STANDARD____ +++
 .../book/build $ 
 ```
@@ -1616,7 +1616,8 @@ std::string DataBuf::toString(type_e type,uint64_t count,endian_e endian,uint64_
             sp = " ";
         }
     } else if ( type == kttUByte ) {
-        os << binaryToString(offset, (size_t)count);
+        for ( size_t k = 0 ; k < count ; k++ )
+            os << stringFormat("%s%d",k?" ":"",pData_[offset+k]);
     } else if ( type == kttAscii ) {
         bool bNoNull = true ;
         for ( size_t k = 0 ; bNoNull && k < count ; k++ )
@@ -2412,8 +2413,8 @@ std::vector      <const char*> paths;
 std::map<std::string,uint32_t> options;
 
 static enum error_e
-{	errorOK = 0
-, 	errorSyntax
+{    errorOK = 0
+,     errorSyntax
 ,   errorProcessing
 }   error = errorOK ;
 
@@ -2499,27 +2500,34 @@ int main(int argc, char* argv[])
     options["skip"   ] =  0;
     options["verbose"] =  0;
 
+    // parse arguments
     if ( argc < 2 ) {
-		syntax(argc,argv,errorSyntax) ;
-	}
-    for ( int i = 1 ; i < argc ; i++ ) {
+        syntax(argc,argv,errorSyntax) ;
+    } else for ( int i = 1 ; i < argc ; i++ ) {
         const char* arg = argv[i];
         std::string key;
         uint32_t    value ;
+        bool        bClaimed = false;
         if ( split(argv[i],key,value) ) {
             if ( options.find(key) != options.end() ) {
                 options[key]=value;
+                bClaimed = true ;
             }
         } else if ( file(arg) ) {
             paths.push_back(arg);
-        } else {
+            bClaimed = true;
+        }
+        if ( !bClaimed ) {
             std::cerr << "argument not understood: " << arg << std::endl;
             error = errorProcessing;
         }
     }
             
+    // report arguments
     if ( options["verbose"] ) printOptions(error) ;
-	if ( !error  ) for ( auto path : paths ) {
+    
+    // process
+    if ( !error  ) for ( auto path : paths ) {
         FILE* f = NULL  ;
         size_t  size   = 1;
         size_t  skip   = options["skip" ];
@@ -2542,32 +2550,31 @@ int main(int argc, char* argv[])
         
         char    line[1000]  ;
         char    buff[64]    ;
-        size_t  counter = 0 ; // count the reads
-        size_t  nRead   = 0 ; // bytes actually read
-        size_t  remains = count ; // how many bytes still to read
+        size_t  reads  = 0 ; // count the reads
+        size_t  nRead  = 0 ; // bytes actually read
+        size_t  remain = count ; // how many bytes still to read
         if ( width > sizeof buff ) width = sizeof(buff);
         fseek(f,skip,SEEK_SET);
         
-        if ( !error ) while
-        (     count > (counter*width)
-        &&   (nRead = fread(buff,1,remains>width?width:remains,f)) > 0
-        ) {
-			// line number
-			int l = sprintf(line,"%#8lx %8ld: ",skip+counter*width,skip+counter*width ) ;
+        if ( !error ) while ( remain && (nRead = fread(buff,1,remain>width?width:remain,f)) > 0 ) {
+            // line number
+            int l = sprintf(line,"%#8lx %8ld: ",skip+reads*width,skip+reads*width ) ;
 
-			// ascii print
-			for ( int i = 0 ; i < nRead ; i++ ) {
-		        l += sprintf(line+l,"%c", print(buff[i])) ;
-			}
+            // ascii print
+            for ( int i = 0 ; i < nRead ; i++ ) {
+                l += sprintf(line+l,"%c", print(buff[i])) ;
+            }
 
             // blank pad the ascii
-			size_t  n   = nRead ;
-			while ( n++ <  width ) {
-			    l += sprintf(line+l," ") ;
-			}
+            size_t  n   = nRead ;
+            while ( n++ <  width ) {
+                l += sprintf(line+l," ") ;
+            }
             l += sprintf(line+l,"  -> ") ;
-            size_t bs = options["bs"];
-            if ( bs == 8 ) {
+            
+            size_t   bs = options["bs"];
+            switch ( bs ) {
+            case 8 :
                 for ( size_t i = 0 ; i < nRead; i += bs ) {
                     uint64_t* p = (uint64_t*) &buff[i] ;
                     uint64_t  v = swap(p,  options["endian"]!=platformEndian());
@@ -2575,7 +2582,8 @@ int main(int argc, char* argv[])
                                         : sprintf(line+l," %20lld" ,v )
                     ;
                 }
-            } else if ( bs == 4 ) {
+            break;
+            case 4 :
                 for ( size_t i = 0 ; i < nRead ; i += bs ) {
                     uint32_t* p = (uint32_t*) &buff[i] ;
                     uint32_t  v = swap(p,  options["endian"]!=platformEndian());
@@ -2583,7 +2591,8 @@ int main(int argc, char* argv[])
                                         : sprintf(line+l," %10d" ,v )
                     ;
                 }
-            } else if ( options["bs"] == 2 ) {
+            break;
+            case 2:
                 for ( size_t i = 0 ; i < nRead ; i += bs ) {
                     uint16_t* p = (uint16_t*) &buff[i] ;
                     uint16_t  v = swap(p,  options["endian"]!=platformEndian());
@@ -2591,29 +2600,30 @@ int main(int argc, char* argv[])
                                         : sprintf(line+l," %5d" ,v )
                     ;
                 }
-            } else for ( int i = 0 ; i < nRead ; i++ ) { // bs == 1
-                uint8_t v = buff[i];
-                l += options["hex"] ? sprintf(line+l," %2x" ,v )
+            break;
+            default:
+                for ( int i = 0 ; i < nRead ; i++ ) { // bs == 1
+                    uint8_t v = buff[i];
+                    l += options["hex"] ? sprintf(line+l," %2x" ,v )
                                     : sprintf(line+l," %3d" ,v )
-                ;
+                    ;
+                }
             }
 
-			line[l] = 0 ;
+            line[l] = 0 ;
             std::cout << line << std::endl;
-            counter++;
-            remains -= width;
-            if ( f == stdin ) {
-                size += nRead;
-            }
-		}
+            reads++;
+            remain -= nRead;
+            if ( f == stdin ) size += nRead;
+        } // while remains && nRead
 
         if ( f != stdin ) {
             fclose(f);
-            f = NULL;
         }
-	}
+        f = NULL;
+    }
 
-	return error ;
+    return error ;
 } // main
 ```
 
