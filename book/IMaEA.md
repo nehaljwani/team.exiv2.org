@@ -123,15 +123,15 @@ In July 2017 we received our first security CVE.  Not a pleasant experience.  Th
 
 In parallel with "the dots", major work is being carried to prepare Exiv2 for the future. Dan and Luis are working on v0.28 which will be released in 2020. This is a considerable reworking of the code into C++11.
 
-I'm delighted by the work done by Dan, Luis and Kevin to deal with the assault of the security people. I believe we are responding effectively to security issues. None-the-less, they have dominated the development of Exiv2 for at least two years and many ideas could not be pursued because security has consumed our engineering resources.
+I'm delighted by the work done by Dan, Luis and Kevin to deal with the assault of the security people. I believe we are responding effectively to security issues. None-the-less, they have dominated the development of Exiv2 for at least two years and many ideas could not be pursued because security consumed our engineering resources.
 
 [TOC](#TOC)
 <div id="future">
 ### Future Development Projects
 
-The code is in good shape, our release process is solid and we have comprehensive user documentation.  As photography develops, there will be many new cameras and more image formats such as CR3, HEIF and BigTiff.   Exiv2 Video support is weak and has deprecated in v0.27.  It will be removed in 0.28.
+The code is in good shape, our release process is solid and we have comprehensive user documentation.  As photography develops, there will be many new cameras and more image formats such as CR3, HEIF and BigTiff.   Exiv2 Video support is weak and was deprecated in v0.27.  It will be removed in 0.28.
 
-A long standing project for Exiv2 is a _**unified metadata container**_.  There is an implementation of this in the SVN repository.  Currently we have three containers for Exif, Iptc and Xmp.  This is clumsy.  We also have a restriction of one image per file.  Perhaps both projects can be combined and have a common solution.
+A long standing project for Exiv2 is a **unified metadata container**.  There is an implementation of this in the SVN repository.  Currently we have three containers for Exif, Iptc and Xmp.  This is clumsy.  We also have a restriction of one image per file.  Perhaps both restrictions have a common solution.
 
 The toolset used in Software Engineering evolves with time.  C++ has been around for about 35 years and, while many complain about it, I expect it will out-live most of us.  None-the-less, languages which are less vulnerable to security issues may lead the project to a re-write in a new language such as Rust.  I hope this book provides the necessary understanding of metadata to support such an undertaking.
 
@@ -163,9 +163,9 @@ All the documentation for Exiv2 is written in markdown with the exception of the
 
 The book is written in markdown and displayed on my computer with the MacDown Application.  When MacDown exports a PDF, he ignores print directives in the style sheet, he does not support page numbering and the links are ineffective.  To my taste, the text size of pages is too large when printed on A4.
 
-I used a modified version of this style sheet: ~/Library/Application Support/MacDown/Styles/GitHub2.css. I changed the fonts to be Helvetica in the titles and Palatino in the body.  I thought about using the Exiv2 logo font used which is Albertus Medium.  I decided to adopt the ubiquitous Palatino.  Code is set in Consolas in both the graphics and the in-line code snippets in the text.
+I used a modified version of this style sheet: ~/Library/Application Support/MacDown/Styles/GitHub2.css. I changed the fonts to be Helvetica in the titles and Palatino in the body.  I thought about using the Exiv2 logo font which is Albertus Medium.  I decided to adopt the ubiquitous Palatino.  Code is set in Consolas in both the graphics and the in-line code snippets in the text.
 
-```.css
+```bash
 @media print {
     h1,h2 { page-break-before: always; }
     h3,h4 { page-break-after: never;   }
@@ -187,7 +187,7 @@ $ java -jar pdfstamp.jar -v -i ~/gnu/exiv2/team/book/exiv2.png  -l 30,30 -u http
 $ java -jar pdfstamp.jar -v -d 8000 -i ~/gnu/exiv2/team/book/exiv2-large.png  -l 550,30 -u https://exiv2.org  -pp 2-75 ~/clanmills/exiv2/book/IMaEA.pdf -o . 
 ```
 
-We could use this to add page labels (date/time/title) to every page (except the cover).
+We AAAA could use this to add page labels (date/time/title) to every page (except the cover).
 
 I also investigated doing this in the style-sheet.  I tried Safari, Chrome and Firefox with varying success.  Then I read this: [https://www.smashingmagazine.com/2015/01/designing-for-print-with-css/](https://www.smashingmagazine.com/2015/01/designing-for-print-with-css/).
 
@@ -197,7 +197,7 @@ The prince product fully supports HTML->PDF with @media print in the style sheet
 
 I tried prince and was very pleased with the result.  When you ask prince to create the PDF, you can specify page-size and style sheet.  I've set up IMaEA.css with the builtin page size of 275x389.
 
-```
+```bash
 $ prince --page-size=--page-size='275mm 389mm  --style ~/gnu/exiv2/team/book/pdf-styles.css IMaEA.html
 $ prince --type IMaEA.css IMaEA.html
 ```
@@ -222,7 +222,7 @@ The following summaries of the file formats are provided to help you to understa
 
 I've made a summary of every file format as I think you'll find that useful.  There are an absurd number of Graphics File Formats.  I have a copy somewhere of the O'Reilly book.  I got it in 1996 and it is 1000+ pages.  Since then there have been many many more invented.  It's a software mess.  In the early days, many formats were local to a few users in a University and escaped to a wider audience.  However the never ending stream of new standards is horrible.  Canon have several different RAW formats such as CRW, CR2 and CR3.
 
-A good model for an image is to think of it as a container.  It's like a directory on the disk.   The directory can hold files with different formats and the directory is recursive as it can contain a directory of more files.  Almost every graphics format since TIFF in 1992 is a containers.
+A good model for an image is to think of it as a container.  It's like a directory on the disk.   The directory can hold files with different formats and the directory is recursive as it can contain a directory of more files.  Almost every graphics format since TIFF in 1992 is a container.
 
 The good news however is that file formats come in families which are:
 
@@ -257,7 +257,7 @@ For both TIFF and BigTiff, the _**magic**_ header is MM (Motorola) for big-endia
 
 Both tag and type are uint16\_t in TIFF and BigTiff.
 
-The header for Tiff is 8 bytes.  It is the _**magic**_  header followed by a long offset to the first IFD.   The header for BigTiff is 16 bytes.  It is the _**magic**_  header followed by 2 shorts (which must be 8,0) and a long8 offset to the first IFD.
+The header for TIFF is 8 bytes.  It is the _**magic**_  header followed by a long offset to the first IFD.   The header for BigTiff is 16 bytes.  It is the _**magic**_  header followed by 2 shorts (which must be 8,0) and a long8 offset to the first IFD.
 
 | Element  | TIFF             | BigTiff              | Element        | TIFF      | BigTiff    |
 |:--       |:--               |:--                   |:--             |:--        |:--         |
@@ -285,7 +285,7 @@ I would like to express my dismay with the design of most image containers.  The
 
 ### Metadata that cannot be edited
 
-There are tags in Tiff such as _**ImageWidth**_ which cannot be modified without rewriting the pixels in the image.  Exif protects those tags in the functions _**TiffHeader::isImageTag()**_ and _**Cr2Header::isImageTag()**_.
+There are tags in Tiff such as _**ImageWidth**_ which cannot be modified without rewriting the pixels in the image.  Exif protects those tags in the functions **TiffHeader::isImageTag()** and **Cr2Header::isImageTag()**.
 
 ### Intrusive and NonIntrusive Editing
 
@@ -366,7 +366,7 @@ tvisitor.cpp supports Adobe and AGFA extended JPEG.
 
 #### Adobe Exif >64k in JPEG
 
-Adobe have created an _**ad-hoc**_ standard by placing consecutive APP1 segments with the signature _**Exif\0\0**_.  This _**ad-hoc**_ standard is defined in Adobe's XMP Specification Part 3 2016+. 
+Adobe have created an _**ad-hoc**_ standard by placing consecutive APP1 segments with the signature **Exif\0\0**.  This _**ad-hoc**_ standard is defined in Adobe's XMP Specification Part 3 2016+. 
 
 Exiv2 has no code to deal with this.  It can neither read nor write these files.  In fact, JpegImage::writeMetadata() currently throws when asked to write more than 64k into a JPEG.
 
@@ -429,21 +429,21 @@ END: /Users/rmills/Agfa.jpg
 .../book/build $ 
 ```
 
-The Agfa MakerNote contains an IFD which is preceded by **ABC_II#E** where #E is number of entreis in the IFD.  This is discussed in [3 MakerNotes](#3)
+The Agfa MakerNote contains an IFD which is preceded by **ABC_II#E** where #E is number of entries in the IFD.  This is discussed in [3 MakerNotes](#3)
 
 #### ICC Profile data > 64k in JPEG
 
-This is documented by ICC and implemented in Exiv2 for both reading and writing.  tvisitor.cpp does not support ICC Profiles in any special way.
+This is documented by ICC and implemented in Exiv2 for both reading and writing.  tvisitor.cpp does not support ICC Profiles.
 
 #### XMP data > 64k in JPEG
 
-This is documented by Adobe in the XMP Specification 2016+ and implemented in Exiv2 in the API _**JpegBase::printStructure::(kpsXMP)**_.  It is not implemented in _**JpegBase::readMetadata()**_.
+This is documented by Adobe in the XMP Specification 2016+ and implemented in Exiv2 in the API **JpegBase::printStructure::(kpsXMP)**.  It is not implemented in **JpegBase::readMetadata()**.
 
 ![XmpPart3-2016-page13.png](XmpPart3-2016-page13.png)
 
 ### Other Unusual Adobe JPEG Features
 
-Adobe have implemented transparency in JPEG by storing a PostScript clippath in the APP13 Photoshop 3.0_8BIM segment.  Exiv2 has no code to deal with this. There is an Exif tag ClipPath which Exiv2 does support.  I have encountered PhotoShop APP13 transparency.  I've never encountered Exif.Image.ClipPath.
+Adobe have implemented transparency in JPEG by storing a PostScript clippath in the APP13 Photoshop 3.0 segment.  Exiv2 has no code to deal with this. There is an Exif tag ClipPath which Exiv2 does support.  I have encountered PhotoShop APP13 transparency.  I've never encountered Exif.Image.ClipPath.
 
 [TOC](#TOC)
 <div id="PNG">
@@ -745,7 +745,7 @@ Most of the programs are about 100 lines of C++ and do simple tasks to demonstra
 
 The Exiv2 command-line program _**exiv2**_ enables users to manipulate metadata in images using most of the features of the library.  Being a general utility, it has about 4000 lines of code. The length of the program proves the point that it is full featured, however the quantity of code rather obscures the use of the library APIs.
 
-Exiv2 has always resisted the temptation of provide a GUI version of the program as that would involve considerable cross-platform development and user interface skills.  As Andreas Huggel summarised: _Exiv2 does depth, not breadth_.  Providing a GUI would lead the project away from metadata into the world of the _User Experience_.
+Exiv2 has always resisted the temptation to provide a GUI version of the program as that would involve considerable cross-platform development and user interface skills.  As Andreas Huggel summarised: _Exiv2 does depth, not breadth_.  Providing a GUI would lead the project away from metadata into the world of the _User Experience_.
 
 [TOC](#TOC)
 <div id="7">
@@ -766,9 +766,9 @@ I/O in Exiv2 is achieved using the class BasicIo and derived classes which are:
 | StdinIo    | - | Read from std-in |
 | Base64Io   | data:..... | Decodes ascii encoded binary |
 
-You will find a simplified version of BasicIo in tvisitor.cpp in the code that accompanies this book.  Io has several constructors.  The obvious one is _**Io(std::string)**_ which calls _**fopen()**_.  More subtle is _**Io(io,from,size)**_ which creates a sub-file on an existing stream.  This design deals with embedded files.  Most metadata is written in a format designated by the standards body and embedded in the file.  For example, Exif metadata data is written in Tiff Format and embedded in the file.
+You will find a simplified version of BasicIo in tvisitor.cpp in the code that accompanies this book.  Io has several constructors.  The obvious one is **Io(std::string)** which calls **fopen()**.  More subtle is **Io(io,from,size)** which creates a sub-file on an existing stream.  This design deals with embedded files.  Most metadata is written in a format designated by the standards body and embedded in the file.  For example, Exif metadata data is written in Tiff Format and embedded in the file.
 
-The constructor _**Io(DataBuf&)**_ is used to create an in-memory I/O stream.  _**DataBuf**_ has a _**read()**_ method to binary copy from a stream into memory.  As we will see, some subfiles are not contiguous in the image and "chunked" by the image format.  For example, JPEG is always chunked into segments of 64k or less.  When a subfile has been chunked it is convenient to copy bytes into a buffer from which we can create an Io source.
+The constructor **Io(DataBuf&)** is used to create an in-memory I/O stream.  _**DataBuf**_ has a **read()** method to binary copy from a stream into memory.  As we will see, some subfiles are not contiguous in the image and "chunked" by the image format.  For example, JPEG is always chunked into segments of 64k or less.  When a subfile has been chunked it is convenient to copy bytes into a buffer from which we can create an Io source.
 
 Other metadata standards use a similar design.  XMP is embedded XML, an Icc Profile is a major block of technology.  Exiv2 knows how to extract, insert, delete and replace an Icc Profile.  It knows nothing about the contents of the Icc Profile.  With Xmp, Exiv2 uses Adobe's XMPsdk to enable the the Xmp data to be modified.
 
@@ -786,7 +786,7 @@ The reason for using memory mapped files was for the convenience of converting o
 
 ### Writing Files
 
-Exiv2 is very reliable at writing files which conform to standards.  Andreas has done a wonderful job to ensure that we never damage or corrupt a file.  I believe he uses a "double blind" technique to write the file in memory which is verified before updating the file in storage.  More research is required into this important subject.
+Exiv2 is very reliable at writing files which conform to standards.  Andreas has done a wonderful job to ensure that we never damage or corrupt a file.  I believe he uses a "double blind" technique to write the file in memory and verify it before updating the file on disk.  More research is required into this important subject.
 
 [TOC](#TOC)
 <div id="8">
@@ -849,7 +849,7 @@ Exif.Image.Orientation                       Short       1  top, left
 $
 ```
 
-The exiv2 command _**exiv2 -pS image**_ reveals the structure of a file with **|** separated fields.  The data is presented to look nice.  However it's also very convenient for parsing in bash with the utility __*cut**_:
+The exiv2 command _**exiv2 -pS image**_ reveals the structure of a file with **|** separated fields.  The data is presented to look nice.  However it's also very convenient for parsing in bash with the utility _**cut**_:
 
 ```bash
 $ image=~/Stonehenge.jpg
@@ -990,7 +990,7 @@ $
 
 So, Minolta have 6 "sub-records".  Other manufacturers have more.  Let's say 10 manufacturers have an average of 10 "sub-records".  That's 100 groups.
 
-Now to address your concern about _**Exif.MinoltaCsNew.ISOSpeed**_.  It will throw an exception in Exiv2 v0.27.2.  Was it defined in an earlier version of Exiv2 such as 0.21?  I don't know.
+Now to address your concern about **Exif.MinoltaCsNew.ISOSpeed**.  It will throw an exception in Exiv2 v0.27.2.  Was it defined in an earlier version of Exiv2 such as 0.21?  I don't know.
 
 Your application code has to use exception handlers to catch these matters and determine what to do.  Without getting involved with your application code, I can't comment on your best approach to manage this.  There is a macro EXIV2\_TEST\_VERSION which enables you to have version specific code in your application.
 
@@ -1194,7 +1194,7 @@ average age = 12
 .../book/build $ 
 ```
 
-We could of course add other classes to this program.  We could have _**class Building**_ and add buildings to the college.  This visitor could visit all the buildings.  We could have rooms in every building.  I am sure you get the idea.
+We could of course add other classes to this program.  We could have **class Building** and add buildings to the college.  The visitor could visit all the buildings.  We could have rooms in every building.  I am sure you get the idea.
 
 In a JPEG, we have a linked list of segments.  So we visitor has a visitSegment() method.  As JPEG has an embedded Exif Tiff, so we have visitExif(), visitIFD(), visitTag(), visitXMP().  The visitor knows nothing about how to navigate the file.
 
@@ -1436,7 +1436,7 @@ You can see that he identifies the file as follows:
 ...
 ```
 
-He is working on an embedded TIFF which is located at bytes 12..15289 which is the Tiff IFD.  While processing that, he encountered a MakerNote which occupies bytes 924..3142 of that IFD.  As you can see, its four bytes _**0211**_.  You could locate that data with the command:
+He is working on an embedded TIFF which is located at bytes 12..15289 which is the Tiff IFD.  While processing that, he encountered a MakerNote which occupies bytes 924..3142 of that IFD.  As you can see, its four bytes **0211**.  You could locate that data with the command:
 
 ```bash
 $ dd if=~/Stonehenge.jpg bs=1 skip=$((12+924+10+8)) count=4 2>/dev/null ; echo 
