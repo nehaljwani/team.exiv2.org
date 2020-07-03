@@ -741,6 +741,7 @@ public:
              ,uint8_t marker,uint16_t length,std::string& signature) = 0 ;
     virtual void visitXMP     (DataBuf& xmp)                         = 0 ;
     virtual void visitExif    (Io& io)                               = 0 ;
+    void         visitChunk   (Io& io,Image& image,uint64_t address,char* chunk,uint32_t length,uint32_t checksum);
 
     PSopt_e       option() { return option_ ; }
     std::ostream& out()    { return out_    ; }
@@ -807,14 +808,11 @@ public:
         setMaker(maker_);
     } // setMaker
 
-    friend class TiffImage;
-    friend class JpegImage;
-    friend class CrwImage ;
     friend class ReportVisitor;
     friend class IFD      ;
     friend class CIFF     ;
 
-private:
+protected:
     Visits      visits_;
     uint64_t    start_;
     Io          io_;
@@ -1065,6 +1063,21 @@ private:
             bHasLength_[i] = (i >= sof0_ && i <= sof15_) || (i >= app0_ && i <= (app0_ | 0x0F)) ||
                             (i == dht_  || i == dqt_    || i == dri_   || i == com_  ||i == sos_);
     }
+};
+
+class PngImage : public Image
+{
+public:
+    PngImage(std::string path)
+    : Image(path)
+    {}
+    PngImage(Io& io,size_t start,size_t count)
+    : Image(Io(io,start,count))
+    {}
+    virtual void accept(class Visitor& v);
+    bool valid();
+
+private:
 };
 
 // 4. Create concrete "visitors"
@@ -1388,6 +1401,45 @@ bool JpegImage::valid()
     return result;
 }
 
+bool PngImage::valid()
+{
+    IoSave   restore(io(),0);
+    bool     result  = true ;
+    const byte pngHeader[] = { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A };
+    for ( size_t i = 0 ; result && i < sizeof (pngHeader ); i ++) {
+        result = io().getb() == pngHeader[i];
+    }
+    if ( result ) {
+        start_  = 8       ;
+        endian_ = keBig   ;
+        format_ = "PNG"   ;
+    }
+    return result;
+}
+
+void PngImage::accept(class Visitor& v)
+{
+    if ( valid() ) {
+        v.visitBegin(*this);
+        IoSave restore(io(),start_);
+        uint64_t address = start_ ;
+        while (  address < io().size() ) {
+            io().seek(address );
+            uint32_t  length  = io().getLong(endian_);
+            uint64_t  next    = address + length + 12;
+            char      chunk  [5] ;
+            io().read(chunk  ,4) ;
+            chunk[4]        = 0  ; // nul byte
+
+            io().seek(next-4);                            // jump over data to checksum
+            uint32_t  chksum  = io().getLong(endian_);
+            v.visitChunk(io(),*this,address,chunk,length,chksum); // tell the visitor
+            address = next ;
+        }
+        v.visitEnd(*this);
+    }
+}
+
 void ReportVisitor::visitSegment(Io& io,Image& image,uint64_t address
          ,uint8_t marker,uint16_t length,std::string& signature)
 {
@@ -1408,13 +1460,17 @@ void ReportVisitor::visitBegin(Image& image)
     if ( option() & kpsBasic || option() & kpsRecursive ) {
         char c = image.endian() == keBig ? 'M' : 'I';
         out() << indent() << stringFormat("STRUCTURE OF %s FILE (%c%c): ",image.format().c_str(),c,c) <<  image.io().path() << std::endl;
+
         if ( image.format() == "CRW" ) {
-            out() << indent() << "    tag | mask | code | name                           |  kount | offset | value " << std::endl;
+            out() << indent() << "    tag | mask | code | name                           |  kount | offset | value ";
         } else if ( image.format() == "JPEG" ) {
-            out() << indent() << " address | marker       |  length | signature" << std::endl;
+            out() << indent() << " address | marker       |  length | signature";
+        } else if ( image.format() == "PNG") {
+            out() << indent() << "  address | chunk |  length |   checksum | data " ;
         } else {
-            out() << indent() << " address |    tag                              |      type |    count |    offset | value" << std::endl;
+            out() << indent() << " address |    tag                              |      type |    count |    offset | value" ;
         }
+        out() << std::endl;
     }
 }
 
@@ -1595,6 +1651,31 @@ void JpegImage::accept(Visitor& visitor)
     visitor.visitEnd((*this)); // tell the visitor
 }  // JpegImage::visitTiff
 
+void Visitor::visitChunk(Io& io,Image& image,uint64_t address
+                        ,char* chunk,uint32_t length,uint32_t chksum)
+{
+    IoSave save(io,address+8);
+    DataBuf   data(length);
+    io.read(data);
+
+    if ( option() & (kpsBasic | kpsRecursive) ) {
+        out() << stringFormat(" %8d |  %s | %7d | %#10x | ",address,chunk,length,chksum);
+        if ( length > 40 ) length = 40;
+        out() << data.toString(kttUndefined,length,image.endian()) << std::endl;
+    }
+
+    if ( option() & kpsRecursive && std::strcmp(chunk,"eXIf") == 0 ) {
+        Io        tiff(io,address+8,length);
+        TiffImage(tiff).accept(*this);
+    }
+
+    if ( option() & kpsXMP && std::strcmp(chunk,"iTXt")==0 ) {
+        if ( data.strcmp("XML:com.adobe.xmp")==0 ) {
+            out() << data.pData_+22 ;
+        }
+    }
+}
+
 void init(); // prototype
 
 int main(int argc,const char* argv[])
@@ -1622,14 +1703,16 @@ int main(int argc,const char* argv[])
         TiffImage tiff(path);
         JpegImage jpeg(path);
         CrwImage  crw (path);
+        PngImage  png (path);
 
         // Visit the image
         if      ( tiff.valid() ) tiff.accept(visitor);
         else if ( jpeg.valid() ) jpeg.accept(visitor);
         else if (  crw.valid() )  crw.accept(visitor);
+        else if (  png.valid() )  png.accept(visitor);
         else    { Error(kerUnknownFormat,path); }
     } else {
-        std::cout << "usage: " << argv[0] << " [ {S | R | X} ] path" << std::endl;
+        std::cout << "usage: " << argv[0] << " [ { U | S | R | X} ] path" << std::endl;
         rc = 1;
     }
     return rc;

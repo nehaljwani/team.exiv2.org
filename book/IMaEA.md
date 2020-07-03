@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 48px;color:#FF4646;font-family: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:36px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-06-30</h3>
+<h3 align=center style="font-size:36px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-07-03</h3>
 
 <div id="dedication">
 ## _Dedication and Acknowledgment_
@@ -449,6 +449,90 @@ Adobe have implemented transparency in JPEG by storing a PostScript clippath in 
 <div id="PNG">
 ## PNG Portable Network Graphics
 ![png](png.png)
+
+PNG is always bigEndian encoded.   PNG has an 8 byte fixed header followed by a linked list of chunks.  A chunk is 12 or more bytes and has a uint32\_t length, char[4] chunk identifier, followed by binary data. The chunk data is trailed by a uint32\_t checksum calculated by the zlib compression library.
+
+We validate a PNG with the following code:
+
+```cpp
+bool PngImage::valid()
+{
+    IoSave   restore(io(),0);
+    bool     result  = true ;
+    const byte pngHeader[] = { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A };
+    for ( size_t i = 0 ; result && i < sizeof (pngHeader ); i ++) {
+        result = io().getb() == pngHeader[i];
+    }
+    if ( result ) {
+        start_  = 8       ;
+        endian_ = keBig   ;
+        format_ = "PNG"   ;
+    }
+    return result;
+}
+```
+
+Navigating a PNG is straightforward:
+
+```cpp
+void PngImage::accept(class Visitor& v)
+{
+    if ( valid() ) {
+        v.visitBegin(*this);
+        IoSave restore(io(),start_);
+        uint64_t address = start_ ;
+        while (  address < io().size() ) {
+            io().seek(address );
+            uint32_t  length  = io().getLong(endian_);
+            uint64_t  next    = address + length + 12;
+            char      chunk  [5] ;
+            io().read(chunk  ,4) ;
+            chunk[4]        = 0  ; // nul byte
+           
+            io().seek(next-4);                            // jump over data to checksum
+            uint32_t  chksum  = io().getLong(endian_);
+            v.visitChunk(io(),*this,address,chunk,length,chksum); // tell the visitor
+            address = next ;
+        }
+        v.visitEnd(*this);
+    }
+}
+```
+
+Reporting Exif and XMP is also easy.
+
+```cpp
+void Visitor::visitChunk(Io& io,Image& image
+                        ,uint64_t address,char* chunk,uint32_t length,uint32_t chksum)
+{
+    IoSave save(io,address+8);
+    DataBuf   data(length);
+    io.read(data);
+
+    if ( option() & (kpsBasic | kpsRecursive) ) {
+        out() << stringFormat(" %8d |  %s | %7d | %#10x | ",address,chunk,length,chksum);
+        if ( length > 40 ) length = 40;
+        out() << data.toString(kttUndefined,length,image.endian()) << std::endl;
+    }
+
+    if ( option() & kpsRecursive && std::strcmp(chunk,"eXIf") == 0 ) {
+        Io        tiff(io,address+8,length);
+        TiffImage(tiff).accept(*this);
+    }
+
+    if ( option() & kpsXMP && std::strcmp(chunk,"iTXt")==0 ) {
+        if ( data.strcmp("XML:com.adobe.xmp")==0 ) {
+            out() << data.pData_+22 ;
+        }
+    }
+}
+```
+
+### PNG and the Zlib compression library
+
+PNG usually compresses chunked data using Flate (lossless) compression.  For simplicity tvisitor.cpp does does not link zlib and therefore cannot decompress these chunks.  tvisitor.cpp is unable to verify that the checksums are correct.  Exiv2 is normally linked by with zlib and can perform those tasks.  I recommend that you read the Exiv2 library code if you want to learn about using zlib and metadata.
+
+I'm very pleased to say that neither the Exiv2 or XMP metdata in the image book/png.png have been compressed and can be easily reported by tvisitor.cpp.  It's very satisfying to  use images from this book as test data for the code in this book.
 
 [TOC](#TOC)
 <div id="JP2">
