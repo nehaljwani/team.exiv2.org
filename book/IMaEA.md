@@ -472,7 +472,7 @@ bool PngImage::valid()
 }
 ```
 
-Navigating a PNG is straightforward:
+Navigating a PNG is straight forward:
 
 ```cpp
 void PngImage::accept(class Visitor& v)
@@ -538,6 +538,130 @@ I'm very pleased to say that neither the Exiv2 or XMP metdata in the image book/
 <div id="JP2">
 ## JP2 JPEG 2000
 ![jp2](jp2.png)
+
+JP2 is always big-endian encoded.
+
+The JPEG 2000 file is an ISOBMFF Container.  It consists of a linked lists of "boxes" which have a uint32\_t length, char[4] box-type and length-8 bytes of data.  A box may be a "super-box" and be a container for other boxes.
+
+I believe the "box" idea in ISOBMFF is to address the issue I discussed about TIFF files.  In order to rewrite an image, it's necessary for the data to be self contained and relocatable.  Every "box" should be self contained with not offset outside the box.  My study of JP2 is restricted to finding the Exiv2, ICC, IPTC and XMP data.  For sure these are self-contained blocks of binary data.  These metadata boxes are of type uuid and begin with a 128bit/16 byte UUID to identify the data.
+
+The first box, must be box-type == "jP__" and have a length of 12.  The chain is terminated with a box-type = "jpcl".  Often the terminal block with bring you to the end-of-file, however this should not be assumed as there can be garbage following the box chain.  The box chain of a super-box is normally terminated by reaching the end of its data.
+
+Validating a JP2 file is straight forward:
+
+```cpp
+bool Jp2Image::valid()
+{
+    if ( !valid_ ) {
+        start_ = 0;
+        IoSave     restore (io(),start_);
+        uint32_t   length = io().getLong(endian_);
+        uint32_t   box    ;
+        io().read(&box,4);
+        valid_ = length == 12 && boxName(box) == kJp2Box_jP;
+    }
+    return valid_ ;
+}
+```
+
+The accept function is also straight forward:
+
+```cpp
+void Jp2Image::accept(class Visitor& v)
+{
+    if ( valid() ) {
+        v.visitBegin(*this);
+        IoSave restore(io(),start_);
+        uint64_t address = start_ ;
+        while (  address < io().size() ) {
+            io().seek(address );
+            uint32_t  length  = io().getLong(endian_);
+            uint32_t  box     ;
+            io().read(&box,4);
+            v.visitBox(io(),*this,address,box,length); // tell the visitor
+            // recursion if superbox
+            if ( superBox(box) ) {
+                uint64_t  subA = io().tell() ;
+                Jp2Image jp2(io(),subA,length-8);
+                jp2.valid_ = true ;
+                jp2.accept(v);
+            }
+            address = boxName(box) == kJp2Box_jp2c ? io().size() : address + length ;
+        }
+        v.visitEnd(*this);
+    }
+}
+```
+
+There is a little complication which you open the recursive Jp2Image.  We do not wish to validate this because it never starts with box-type "jP\_\_".  We know the file is valid, so we set the valid_ flag before the recursion.
+
+The function ReportVisitor::visitBox() is also straight forward:
+
+```cpp
+void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
+                            ,uint32_t box,uint32_t length)
+{
+    IoSave save(io,address+8);
+    length -= 8              ;
+    DataBuf   data(length);
+    io.read(data);
+    
+    std::string name = image.boxName (box);
+    std::string uuid = image.uuidName(data);
+
+    if ( option() & (kpsBasic | kpsRecursive) ) {
+        out() << indent() << stringFormat("%8d |  %7d | %#10x %4s | %s | ",address,length,box,name.c_str(),uuid.c_str() );
+        if ( length > 40 ) length = 40;
+        out() << data.toString(kttUndefined,length,image.endian()) << std::endl;
+    }
+    if ( option() & kpsRecursive && uuid == "exif" ) {
+        Io        tiff(io,address+8+16,data.size_-16); // uuid is 16 bytes (128 bits)
+        TiffImage(tiff).accept(*this);
+    }
+    if ( option() & kpsXMP && uuid == "xmp " ) {
+        out() << data.pData_+17 ;
+    }
+}
+```
+
+Although the JP2 file is big endian, the embedded Exif metadata may be be little-endian encoded.  That's the case with test file Reagan.jp2.
+
+```bash
+907 rmills@rmillsmm-local:~/gnu/exiv2/team/book/build $ ./tvisitor -pR ../test/data/Reagan.jp2 
+STRUCTURE OF JP2 FILE (MM): ../test/data/Reagan.jp2
+ address |   length | box             | uuid | data
+       0 |        4 | 0x2020506a jP   |      | ....
+      12 |       12 | 0x70797466 ftyp |      | jp2 ____jp2 
+      32 |       37 | 0x6832706a jp2h |      | ___.ihdr___.___._..._____.colr._____.
+  STRUCTURE OF JP2 FILE (MM): ../test/data/Reagan.jp2:40->37
+   address |   length | box             | uuid | data
+         0 |       14 | 0x72646869 ihdr |      | ___.___._...__
+        22 |        7 | 0x726c6f63 colr |      | ._____.
+  END: ../test/data/Reagan.jp2:40->37
+      77 |     1334 | 0x64697575 uuid | exif | JpgTiffExif->JP2II*_.___._..._..__.___..
+  STRUCTURE OF TIFF FILE (II): ../test/data/Reagan.jp2:101->1318
+   address |    tag                              |      type |    count |    offset | value
+        10 | 0x010e Exif.Image.ImageDescription  |     ASCII |      403 |       170 | 040621-N-6536T-062
+        22 | 0x010f Exif.Image.Make              |     ASCII |       18 |       574 | NIKON CORPORATION
+...
+       142 | 0x8769 Exif.Image.ExifTag           |      LONG |        1 |           | 2191130661
+    STRUCTURE OF TIFF FILE (II): ../test/data/Reagan.jp2:101->1318
+     address |    tag                              |      type |    count |    offset | value
+         714 | 0x829a Exif.Photo.ExposureTime      |  RATIONAL |        1 |      1162 | 1/125
+...
+        1122 | 0xa40a Exif.Photo.Sharpness         |     SHORT |        1 |           | 0
+    END: ../test/data/Reagan.jp2:101->1318
+    STRUCTURE OF TIFF FILE (II): ../test/data/Reagan.jp2:101->1318
+     address |    tag                              |      type |    count |    offset | value
+        1302 | 000000 Exif.GPSInfo.GPSVersionID    |     UBYTE |        4 |           | 122 97 98 101
+    END: ../test/data/Reagan.jp2:101->1318
+  END: ../test/data/Reagan.jp2:101->1318
+    1419 |      934 | 0x64697575 uuid | iptc | 3.....G#.......8..__._...._.040621-N-653
+    2361 |     5582 | 0x64697575 uuid | xmp  | .z....B..q......<?xpacket begin="..." id
+    7951 |    32650 | 0x6332706a jp2c |      | .O.Q_/_____.___.___________.___.________
+END: ../test/data/Reagan.jp2
+908 rmills@rmillsmm-local:~/gnu/exiv2/team/book/build $ 
+```
 
 [TOC](#TOC)
 <div id="CRW">

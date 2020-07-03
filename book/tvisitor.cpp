@@ -167,6 +167,7 @@ public:
         memcpy(pData_+offset,src,size);
     }
     void copy(uint32_t v,uint64_t offset=0) { copy(&v,4,offset); }
+    void copy(DataBuf& src,uint64_t size) { if (size <= src.size_ && size <= size_) copy(src.pData_,size);}
     std::string path() { return path_; }
 
     std::string toString(type_e type,uint64_t count,endian_e endian,uint64_t offset=0);
@@ -198,6 +199,10 @@ uint64_t byteSwap(uint64_t value,bool bSwap,uint16_t n)
         destination_value[i] = source_value[n - i - 1];
 
     return bSwap ? result : value;
+}
+uint32_t byteSwap(uint32_t value,bool bSwap)
+{
+    return (uint32_t) byteSwap((uint64_t)value,bSwap,4);
 }
 
 uint16_t getShort(const byte b[],size_t offset,endian_e endian)
@@ -741,7 +746,8 @@ public:
              ,uint8_t marker,uint16_t length,std::string& signature) = 0 ;
     virtual void visitXMP     (DataBuf& xmp)                         = 0 ;
     virtual void visitExif    (Io& io)                               = 0 ;
-    void         visitChunk   (Io& io,Image& image,uint64_t address,char* chunk,uint32_t length,uint32_t checksum);
+    virtual void visitChunk   (Io& io,Image& image,uint64_t address,char* chunk,uint32_t length,uint32_t checksum) = 0;
+    virtual void visitBox     (Io& io,Image& image,uint64_t address,uint32_t box,uint32_t length) = 0 ;
 
     PSopt_e       option() { return option_ ; }
     std::ostream& out()    { return out_    ; }
@@ -762,6 +768,7 @@ public:
     , bigtiff_  (false)
     , endian_   (keLittle)
     , depth_    (0)
+    , valid_    (false)
     {};
     Image(Io io)
     : io_       (io)
@@ -771,6 +778,7 @@ public:
     , bigtiff_  (false)
     , endian_   (keLittle)
     , depth_    (0)
+    , valid_    (false)
     {};
     virtual    ~Image()        { io_.close()      ; }
     bool        valid()        { return false     ; }
@@ -781,6 +789,8 @@ public:
     Visits&     visits()       { return visits_   ; }
     size_t      depth()        { return depth_    ; }
     bool        bigtiff()      { return bigtiff_  ; }
+    virtual std::string boxName (uint32_t  box) { return ""; }
+    virtual std::string uuidName(DataBuf& uuid) { return ""; }
 
     virtual void accept(class Visitor& v)=0;
 
@@ -813,6 +823,7 @@ public:
     friend class CIFF     ;
 
 protected:
+    bool        valid_ ;
     Visits      visits_;
     uint64_t    start_;
     Io          io_;
@@ -965,7 +976,6 @@ class CrwImage : public Image
 public:
     CrwImage(std::string path)
     : Image (path)
-    , valid_(false)
     , heap_ (*this,io_)
     {
         start_ = 0;
@@ -973,7 +983,6 @@ public:
     }
     CrwImage(Io& io)
     : Image (io)
-    , valid_(false)
     , heap_ (*this,io_)
     {
         start_ = 0;
@@ -1007,7 +1016,6 @@ public:
         return result ;
     }
     CIFF heap_;
-    bool valid_;
 
     virtual void accept(class Visitor& visitor)
     {
@@ -1025,11 +1033,12 @@ class JpegImage : public Image
 {
 public:
     JpegImage(std::string path)
-    : Image(path)
-    { io_.seek(0); init() ; }
+    : Image  (path)
+    { init(); }
     JpegImage(Io& io,size_t start,size_t count)
     : Image(Io(io,start,count))
-    { io_.seek(0); init() ; }
+    { init(); }
+    
     virtual void accept(class Visitor& v);
     bool valid();
 
@@ -1059,9 +1068,13 @@ private:
 
     void init()
     {
-        for (int i = 0; i < 256; i++)
-            bHasLength_[i] = (i >= sof0_ && i <= sof15_) || (i >= app0_ && i <= (app0_ | 0x0F)) ||
-                            (i == dht_  || i == dqt_    || i == dri_   || i == com_  ||i == sos_);
+        endian_ = keLittle;
+        start_  = 0       ;
+        for (int i = 0; i < 256; i++) {
+            bHasLength_[i] = (i >= sof0_ && i <= sof15_) || (i >= app0_ && i <= (app0_ | 0x0F))
+            ||               (i == dht_  || i == dqt_    ||  i == dri_  || i == com_  || i == sos_)
+            ;
+        }
     }
 };
 
@@ -1078,6 +1091,48 @@ public:
     bool valid();
 
 private:
+};
+
+class Jp2Image : public Image
+{
+public:
+    Jp2Image(std::string path)
+    : Image(path)
+    { endian_ = keBig ; format_ = "JP2"; }
+    Jp2Image(Io& io,size_t start,size_t count)
+    : Image(Io(io,start,count))
+    { endian_ = keBig ; format_ = "JP2"; }
+    virtual void accept(class Visitor& v);
+    bool valid();
+
+    std::string boxName(uint32_t box)
+    {
+        char           name[5];
+        std::memcpy   (name,&box,4);
+        name[4] = 0   ;
+        return std::string(name) ;
+    }
+    std::string uuidName(DataBuf& data)
+    {
+        DataBuf   uuid(17);
+        uuid.copy(data,16);
+        std::string result  = uuid.strcmp(kJp2UuidExif)== 0 ? "exif"
+                            : uuid.strcmp(kJp2UuidIptc)== 0 ? "iptc"
+                            : uuid.strcmp(kJp2UuidXmp )== 0 ? "xmp "
+                            : "    " ;
+        return result;
+    }
+    bool superBox(uint32_t box)
+    {
+        return boxName(box) == "jp2h";
+    }
+private:
+    const char*  kJp2Box_jP    = "jP  ";
+    const char*  kJp2Box_jp2h  = "jp2h";
+    const char*  kJp2Box_jp2c  = "jp2c";
+    const char*  kJp2UuidExif  = "JpgTiffExif->JP2";
+    const char*  kJp2UuidIptc  = "\x33\xc7\xa4\xd2\xb8\x1d\x47\x23\xa0\xba\xf1\xa3\xe0\x97\xad\x38";
+    const char*  kJp2UuidXmp   = "\xbe\x7a\xcf\xcb\x97\xa9\x42\xe8\x9c\x71\x99\x94\x91\xe3\xaf\xac";
 };
 
 // 4. Create concrete "visitors"
@@ -1110,6 +1165,9 @@ public:
                             (i == dht_  || i == dqt_    || i == dri_   || i == com_  ||i == sos_);
         }
     }
+    void visitChunk   (Io& io,Image& image,uint64_t address,char* chunk,uint32_t length,uint32_t checksum);
+    void visitBox     (Io& io,Image& image,uint64_t address,uint32_t box,uint32_t length);
+
 
     std::string indent() { return ::indent(indent_); }
 
@@ -1341,24 +1399,27 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
 
 bool TiffImage::valid()
 {
-    IoSave restore(io(),0);
+    if ( !valid_ ) {
+        IoSave restore(io(),0);
 
-    // read header
-    DataBuf  header(16);
-    io_.read(header);
+        // read header
+        DataBuf  header(16);
+        io_.read(header);
 
-    char c   = (char) header.pData_[0] ;
-    char C   = (char) header.pData_[1] ;
-    endian_  = c == 'M' ? keBig : keLittle;
-    magic_   = getShort(header,2,endian_);
-    bigtiff_ = magic_ == 43;
-    start_   = bigtiff_ ? getLong8(header,8,endian_) : getLong (header,4,endian_);
-    format_  = bigtiff_ ? "BIGTIFF"                  : "TIFF"                    ;
+        char c   = (char) header.pData_[0] ;
+        char C   = (char) header.pData_[1] ;
+        endian_  = c == 'M' ? keBig : keLittle;
+        magic_   = getShort(header,2,endian_);
+        bigtiff_ = magic_ == 43;
+        start_   = bigtiff_ ? getLong8(header,8,endian_) : getLong (header,4,endian_);
+        format_  = bigtiff_ ? "BIGTIFF"                  : "TIFF"                    ;
 
-    uint16_t bytesize = bigtiff_ ? getShort(header,4,endian_) : 8;
-    uint16_t version  = bigtiff_ ? getShort(header,6,endian_) : 0;
+        uint16_t bytesize = bigtiff_ ? getShort(header,4,endian_) : 8;
+        uint16_t version  = bigtiff_ ? getShort(header,6,endian_) : 0;
 
-    return (magic_ == 42||magic_ == 43) && (c == C) && ( c == 'I' || c == 'M' ) && bytesize == 8 && version == 0;
+        valid_ =  (magic_ == 42||magic_ == 43) && (c == C) && ( c == 'I' || c == 'M' ) && bytesize == 8 && version == 0;
+    }
+    return valid_ ;
 } // TiffImage::valid
 
 void TiffImage::accept(class Visitor& visitor)
@@ -1379,42 +1440,43 @@ void TiffImage::accept(Visitor& visitor,TagDict& tagDict)
 
 bool JpegImage::valid()
 {
-    IoSave   restore(io(),0);
-    bool     result = false;
-    byte     h[2];
-    io_.read(h,2);
-    if ( h[0] == 0xff && h[1] == 0xd8 ) { // .JPEG
-        start_  = 0;
-        format_ = "JPEG";
-        endian_ = keLittle;
-        result  = true;
-    } else if  ( h[0] == 0xff && h[1]==0x01 ) { // .EXV
-        DataBuf buf(5);
-        io_.read(buf);
-        if ( buf.is("Exiv2") ) {
-            start_ = 7;
-            format_ = "EXV";
-            endian_ = keLittle;
-            result = true;
+    if ( !valid_ ) {
+        IoSave   restore(io(),0);
+        byte     h[2];
+        io_.read(h,2);
+        if ( h[0] == 0xff && h[1] == 0xd8 ) { // .JPEG
+            start_  = 0;
+            format_ = "JPEG";
+            valid_  = true;
+        } else if  ( h[0] == 0xff && h[1]==0x01 ) { // .EXV
+            DataBuf buf(5);
+            io_.read(buf);
+            if ( buf.is("Exiv2") ) {
+                start_  = 7;
+                format_ = "EXV";
+                valid_  = true;
+            }
         }
     }
-    return result;
+    return valid_ ;
 }
 
 bool PngImage::valid()
 {
-    IoSave   restore(io(),0);
-    bool     result  = true ;
-    const byte pngHeader[] = { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A };
-    for ( size_t i = 0 ; result && i < sizeof (pngHeader ); i ++) {
-        result = io().getb() == pngHeader[i];
+    if ( !valid_ ) {
+        IoSave   restore(io(),0);
+        bool     result  = true ;
+        const byte pngHeader[] = { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A };
+        for ( size_t i = 0 ; result && i < sizeof (pngHeader ); i ++) {
+            result = io().getb() == pngHeader[i];
+        }
+        if ( result ) {
+            start_  = 8       ;
+            endian_ = keBig   ;
+            format_ = "PNG"   ;
+        }
     }
-    if ( result ) {
-        start_  = 8       ;
-        endian_ = keBig   ;
-        format_ = "PNG"   ;
-    }
-    return result;
+    return valid_ ;
 }
 
 void PngImage::accept(class Visitor& v)
@@ -1435,6 +1497,44 @@ void PngImage::accept(class Visitor& v)
             uint32_t  chksum  = io().getLong(endian_);
             v.visitChunk(io(),*this,address,chunk,length,chksum); // tell the visitor
             address = next ;
+        }
+        v.visitEnd(*this);
+    }
+}
+
+bool Jp2Image::valid()
+{
+    if ( !valid_ ) {
+        start_ = 0;
+        IoSave     restore (io(),start_);
+        uint32_t   length = io().getLong(endian_);
+        uint32_t   box    ;
+        io().read(&box,4);
+        valid_ = length == 12 && boxName(box) == kJp2Box_jP;
+    }
+    return valid_ ;
+}
+
+void Jp2Image::accept(class Visitor& v)
+{
+    if ( valid() ) {
+        v.visitBegin(*this);
+        IoSave restore(io(),start_);
+        uint64_t address = start_ ;
+        while (  address < io().size() ) {
+            io().seek(address );
+            uint32_t  length  = io().getLong(endian_);
+            uint32_t  box     ;
+            io().read(&box,4);
+            v.visitBox(io(),*this,address,box,length); // tell the visitor
+            // recursion if superbox
+            if ( superBox(box) ) {
+                uint64_t  subA = io().tell() ;
+                Jp2Image jp2(io(),subA,length-8);
+                jp2.valid_ = true ;
+                jp2.accept(v);
+            }
+            address = boxName(box) == kJp2Box_jp2c ? io().size() : address + length ;
         }
         v.visitEnd(*this);
     }
@@ -1465,6 +1565,8 @@ void ReportVisitor::visitBegin(Image& image)
             out() << indent() << "    tag | mask | code | name                           |  kount | offset | value ";
         } else if ( image.format() == "JPEG" ) {
             out() << indent() << " address | marker       |  length | signature";
+        } else if ( image.format() == "JP2" ) {
+            out() << indent() << " address |   length | box             | uuid | data";
         } else if ( image.format() == "PNG") {
             out() << indent() << "  address | chunk |  length |   checksum | data " ;
         } else {
@@ -1651,7 +1753,7 @@ void JpegImage::accept(Visitor& visitor)
     visitor.visitEnd((*this)); // tell the visitor
 }  // JpegImage::visitTiff
 
-void Visitor::visitChunk(Io& io,Image& image,uint64_t address
+void ReportVisitor::visitChunk(Io& io,Image& image,uint64_t address
                         ,char* chunk,uint32_t length,uint32_t chksum)
 {
     IoSave save(io,address+8);
@@ -1659,7 +1761,7 @@ void Visitor::visitChunk(Io& io,Image& image,uint64_t address
     io.read(data);
 
     if ( option() & (kpsBasic | kpsRecursive) ) {
-        out() << stringFormat(" %8d |  %s | %7d | %#10x | ",address,chunk,length,chksum);
+        out() << indent() << stringFormat(" %8d |  %s | %7d | %#10x | ",address,chunk,length,chksum);
         if ( length > 40 ) length = 40;
         out() << data.toString(kttUndefined,length,image.endian()) << std::endl;
     }
@@ -1673,6 +1775,31 @@ void Visitor::visitChunk(Io& io,Image& image,uint64_t address
         if ( data.strcmp("XML:com.adobe.xmp")==0 ) {
             out() << data.pData_+22 ;
         }
+    }
+}
+
+void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
+                            ,uint32_t box,uint32_t length)
+{
+    IoSave save(io,address+8);
+    length -= 8              ;
+    DataBuf   data(length);
+    io.read(data);
+    
+    std::string name = image.boxName (box);
+    std::string uuid = image.uuidName(data);
+
+    if ( option() & (kpsBasic | kpsRecursive) ) {
+        out() << indent() << stringFormat("%8d |  %7d | %#10x %4s | %s | ",address,length,box,name.c_str(),uuid.c_str() );
+        if ( length > 40 ) length = 40;
+        out() << data.toString(kttUndefined,length,image.endian()) << std::endl;
+    }
+    if ( option() & kpsRecursive && uuid == "exif" ) {
+        Io        tiff(io,address+8+16,data.size_-16); // uuid is 16 bytes (128 bits)
+        TiffImage(tiff).accept(*this);
+    }
+    if ( option() & kpsXMP && uuid == "xmp " ) {
+        out() << data.pData_+17 ;
     }
 }
 
@@ -1704,12 +1831,14 @@ int main(int argc,const char* argv[])
         JpegImage jpeg(path);
         CrwImage  crw (path);
         PngImage  png (path);
+        Jp2Image  jp2 (path);
 
         // Visit the image
         if      ( tiff.valid() ) tiff.accept(visitor);
         else if ( jpeg.valid() ) jpeg.accept(visitor);
         else if (  crw.valid() )  crw.accept(visitor);
         else if (  png.valid() )  png.accept(visitor);
+        else if (  jp2.valid() )  jp2.accept(visitor);
         else    { Error(kerUnknownFormat,path); }
     } else {
         std::cout << "usage: " << argv[0] << " [ { U | S | R | X} ] path" << std::endl;
