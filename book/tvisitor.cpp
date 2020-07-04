@@ -83,6 +83,7 @@ enum error_e
 ,   kerNoImageInInputData
 ,   kerFileDidNotOpen
 ,   kerUnknownFormat
+,   kerAlreadyVisited
 };
 
 void Error (error_e error, std::string msg,std::string m2="")
@@ -98,6 +99,7 @@ void Error (error_e error, std::string msg,std::string m2="")
         case   kerNoImageInInputData     : std::cerr << "not image in input data"  ; break;
         case   kerFileDidNotOpen         : std::cerr << "file did not open"        ; break;
         case   kerUnknownFormat          : std::cerr << "unknown format"           ; break;
+        case   kerAlreadyVisited         : std::cerr << "already visited"          ; break;
         default                          : std::cerr << "unknown error"            ; break;
     }
     if ( msg.size() ) std::cerr << " " << msg ;
@@ -172,6 +174,7 @@ public:
 
     std::string toString(type_e type,uint64_t count,endian_e endian,uint64_t offset=0);
     std::string binaryToString(uint64_t start,uint64_t size);
+    std::string toUuidString() ;
 
 private:
     std::string path_;
@@ -402,7 +405,7 @@ std::string DataBuf::binaryToString(uint64_t start=0,uint64_t size=0)
     return ::binaryToString(pData_,start,size?size:size_);
 }
 
-std::string DataBuf::toString(type_e type,uint64_t count,endian_e endian,uint64_t offset/*=0*/)
+std::string DataBuf::toString(type_e type,uint64_t count,endian_e endian=keLittle,uint64_t offset/*=0*/)
 {
     std::ostringstream os;
     std::string        sp;
@@ -446,6 +449,23 @@ std::string DataBuf::toString(type_e type,uint64_t count,endian_e endian,uint64_
 
     return os.str();
 } // DataBuf::toString
+
+std::string DataBuf::toUuidString()
+{
+    // 123e4567-e89b-12d3-a456-426614174000
+    std::string result ;
+    if ( size_ >= 16 ) {
+        uint32_t* a = (uint32_t*) pData_ +0;
+        uint16_t* b = (uint16_t*) pData_ +4;
+        uint16_t* c = (uint16_t*) pData_ +6;
+        uint16_t* d = (uint16_t*) pData_ +8;
+        uint32_t* e = (uint32_t*) pData_+10;
+        uint16_t* f = (uint16_t*) pData_+14;
+        result = ::stringFormat("%08x-%04x-%04x-%04x-%08x%04x",*a,*b,*c,*d,*e,*f);
+    }
+    return result ;
+} // DataBuf::toString
+
 
 // Camera manufacturers
 enum maker_e
@@ -792,6 +812,13 @@ public:
     virtual std::string boxName (uint32_t  box) { return ""; }
     virtual std::string uuidName(DataBuf& uuid) { return ""; }
 
+    void visit(uint64_t address) { // never visit an address twice!
+        if ( visits_.find(address) != visits_.end() ) {
+            Error(kerAlreadyVisited,address);
+        }
+        visits_.insert(address);
+    }
+
     virtual void accept(class Visitor& v)=0;
 
     maker_e     maker_;
@@ -1098,10 +1125,10 @@ class Jp2Image : public Image
 public:
     Jp2Image(std::string path)
     : Image(path)
-    { endian_ = keBig ; format_ = "JP2"; }
+    { init() ; }
     Jp2Image(Io& io,size_t start,size_t count)
     : Image(Io(io,start,count))
-    { endian_ = keBig ; format_ = "JP2"; }
+    { init(); }
     virtual void accept(class Visitor& v);
     bool valid();
 
@@ -1114,25 +1141,52 @@ public:
     }
     std::string uuidName(DataBuf& data)
     {
-        DataBuf   uuid(17);
-        uuid.copy(data,16);
-        std::string result  = uuid.strcmp(kJp2UuidExif)== 0 ? "exif"
-                            : uuid.strcmp(kJp2UuidIptc)== 0 ? "iptc"
-                            : uuid.strcmp(kJp2UuidXmp )== 0 ? "xmp "
-                            : "    " ;
-        return result;
+        std::string uuid = data.toUuidString();
+        return uuids_.find(uuid) != uuids_.end() ? uuids_[uuid]  : "";
     }
     bool superBox(uint32_t box)
     {
-        return boxName(box) == "jp2h";
+        std::string name = boxName(box);
+        return      name == kJp2Box_jp2h
+                ||  name == kJp2Box_moov
+                ||  name == kJp2Box_dinf
+                ||  name == kJp2Box_iprp
+                ||  name == kJp2Box_ipco
+                ;
     }
+                          
+    void init()
+    {
+        endian_ = keBig ;
+        format_ = "JP2" ;
+
+        const char*  kJp2UuidExif  = "5467704a-6978-4a3e-4949-001200020002" ; // "JpgTiffExif->JP2";
+        const char*  kJp2UuidIptc  = "d2a4c733-baa0-97e0-021c-302d54363430" ; // "\x33\xc7\xa4\xd2\xb8\x1d\x47\x23\xa0\xba\xf1\xa3\xe0\x97\xad\x38";
+        const char*  kJp2UuidXmp   = "cbcf7abe-719c-e391-3f3c-3557223d6967" ; // "\xbe\x7a\xcf\xcb\x97\xa9\x42\xe8\x9c\x71\x99\x94\x91\xe3\xaf\xac";
+        const char*  kJp2UuidXmp2  = "cbcf7abe-719c-e391-3f3c-3557273d6967" ;
+        const char*  kJp2UuidCan1  = "87b6c085-1181-2b46-0000-302e3930436e" ;
+        const char*  kJp2UuidCan2  = "5e2bf4ea-fbb9-6e40-0000-010038045250" ;
+
+        uuids_[kJp2UuidExif] = "exif" ;
+        uuids_[kJp2UuidIptc] = "iptc" ;
+        uuids_[kJp2UuidXmp ] = "xmp"  ;
+        uuids_[kJp2UuidXmp2] = "xmp"  ;
+        uuids_[kJp2UuidCan1] = "can1" ;
+        uuids_[kJp2UuidCan2] = "can2" ;
+    }
+    
 private:
+    std::map<std::string,std::string> uuids_;
+
     const char*  kJp2Box_jP    = "jP  ";
     const char*  kJp2Box_jp2h  = "jp2h";
     const char*  kJp2Box_jp2c  = "jp2c";
-    const char*  kJp2UuidExif  = "JpgTiffExif->JP2";
-    const char*  kJp2UuidIptc  = "\x33\xc7\xa4\xd2\xb8\x1d\x47\x23\xa0\xba\xf1\xa3\xe0\x97\xad\x38";
-    const char*  kJp2UuidXmp   = "\xbe\x7a\xcf\xcb\x97\xa9\x42\xe8\x9c\x71\x99\x94\x91\xe3\xaf\xac";
+    const char*  kJp2Box_mdat  = "mdat";
+    const char*  kJp2Box_ftyp  = "ftyp";
+    const char*  kJp2Box_moov  = "moov";
+    const char*  kJp2Box_dinf  = "dinf";
+    const char*  kJp2Box_iprp  = "iprp";
+    const char*  kJp2Box_ipco  = "ipco";
 };
 
 // 4. Create concrete "visitors"
@@ -1340,10 +1394,7 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
         // Run along the directory
         for ( uint64_t i = 0 ; i < nEntries ; i ++ ) {
             const uint64_t address = start + (bigtiff?8:2) + i* entry.size_ ;
-            if ( visits().find(address) != visits().end()  ) { // never visit the same place twice!
-                Error(kerCorruptedMetadata);
-            }
-            visits().insert(address);
+            image_.visit(address); // never visit the same place twice!
             io_.seek(address);
 
             io_.read(entry);
@@ -1509,8 +1560,19 @@ bool Jp2Image::valid()
         IoSave     restore (io(),start_);
         uint32_t   length = io().getLong(endian_);
         uint32_t   box    ;
-        io().read(&box,4);
-        valid_ = length == 12 && boxName(box) == kJp2Box_jP;
+        io().read(&box,4) ;
+        valid_  = length == 12 && boxName(box) == kJp2Box_jP  ;
+        if ( length == 24 && boxName(box) == kJp2Box_ftyp ) {
+            io().read(&box,4);
+            if ( boxName(box) == "crx " ) {
+                format_ = "CR3 ";
+                valid_  = true ;
+            }
+            if ( boxName(box) == "heic" ) {
+                format_ = "HEIC";
+                valid_  = true ;
+            }
+        }
     }
     return valid_ ;
 }
@@ -1518,14 +1580,20 @@ bool Jp2Image::valid()
 void Jp2Image::accept(class Visitor& v)
 {
     if ( valid() ) {
+        if ( !depth_++ ) visits_.clear() ;
         v.visitBegin(*this);
         IoSave restore(io(),start_);
         uint64_t address = start_ ;
         while (  address < io().size() ) {
+            // visit(address); // TODO we need to get the absolute address
             io().seek(address );
             uint32_t  length  = io().getLong(endian_);
             uint32_t  box     ;
-            io().read(&box,4);
+            io().read(&box,4) ;
+            
+            if ( length > io().size() ) {
+                // Error(kerCorruptedMetadata);
+            }
             v.visitBox(io(),*this,address,box,length); // tell the visitor
             // recursion if superbox
             if ( superBox(box) ) {
@@ -1534,9 +1602,12 @@ void Jp2Image::accept(class Visitor& v)
                 jp2.valid_ = true ;
                 jp2.accept(v);
             }
-            address = boxName(box) == kJp2Box_jp2c ? io().size() : address + length ;
+            address = (boxName(box) == kJp2Box_jp2c
+                   ||  boxName(box) == kJp2Box_mdat) ? io().size()
+                    : address + length ;
         }
         v.visitEnd(*this);
+        depth_--;
     }
 }
 
@@ -1565,7 +1636,7 @@ void ReportVisitor::visitBegin(Image& image)
             out() << indent() << "    tag | mask | code | name                           |  kount | offset | value ";
         } else if ( image.format() == "JPEG" ) {
             out() << indent() << " address | marker       |  length | signature";
-        } else if ( image.format() == "JP2" ) {
+        } else if ( image.format() == "JP2" || image.format() == "HEIC" || image.format() == "CR3" ) {
             out() << indent() << " address |   length | box             | uuid | data";
         } else if ( image.format() == "PNG") {
             out() << indent() << "  address | chunk |  length |   checksum | data " ;
@@ -1787,12 +1858,16 @@ void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
     io.read(data);
     
     std::string name = image.boxName (box);
-    std::string uuid = image.uuidName(data);
+    std::string uuid = name == "uuid" ? image.uuidName(data) : "";
+    if ( name == "uuid" && !uuid.size() ) {
+        std::cout << "unrecognised uuid = " << data.toUuidString() << std::endl;
+    }
 
     if ( option() & (kpsBasic | kpsRecursive) ) {
-        out() << indent() << stringFormat("%8d |  %7d | %#10x %4s | %s | ",address,length,box,name.c_str(),uuid.c_str() );
-        if ( length > 40 ) length = 40;
-        out() << data.toString(kttUndefined,length,image.endian()) << std::endl;
+        out() << indent() << stringFormat("%8d |  %7d | %#10x %4s | %4s | ",address,length,box,name.c_str(),uuid.c_str() );
+        uint64_t start = uuid.size() ? 16 : 0;
+        if ( length > 40+start ) length = 40;
+        out() << data.toString(kttUndefined,length,image.endian(),start) << std::endl;
     }
     if ( option() & kpsRecursive && uuid == "exif" ) {
         Io        tiff(io,address+8+16,data.size_-16); // uuid is 16 bytes (128 bits)

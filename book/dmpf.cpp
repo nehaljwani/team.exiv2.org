@@ -202,7 +202,7 @@ int main(int argc, char* argv[])
             default:
                 for ( int i = 0 ; i < nRead ; i++ ) { // bs == 1
                     uint8_t v = buff[i];
-                    l += options["hex"] ? sprintf(line+l," %2x" ,v )
+                    l += options["hex"] ? sprintf(line+l," %02x" ,v )
                                     : sprintf(line+l," %3d" ,v )
                     ;
                 }
