@@ -474,6 +474,7 @@ enum maker_e
 ,   kNikon
 ,   kSony
 ,   kAgfa
+,   kApple
 };
 
 // Canon magic
@@ -540,6 +541,7 @@ TagDict canonDict ;
 TagDict nikonDict ;
 TagDict sonyDict  ;
 TagDict agfaDict  ;
+TagDict appleDict ;
 TagDict gpsDict   ;
 TagDict crwDict   ;
 
@@ -830,6 +832,7 @@ public:
             case kNikon : makerDict_ = nikonDict ; break;
             case kSony  : makerDict_ = sonyDict  ; break;
             case kAgfa  : makerDict_ = agfaDict  ; break;
+            case kApple : makerDict_ = appleDict ; break;
             default : /* do nothing */           ; break;
         }
     }
@@ -840,6 +843,7 @@ public:
                : buf.strequals("NIKON"            ) ? kNikon
                : buf.strequals("SONY")              ? kSony
                : buf.strequals("AGFAPHOTO")         ? kAgfa
+               : buf.strequals("Apple")             ? kApple
                : maker_
                ;
         setMaker(maker_);
@@ -1360,6 +1364,11 @@ void IFD::visitMakerNote(Visitor& visitor,DataBuf& buf,uint64_t count,uint64_t o
         ImageEndianSaver save(image_,keLittle);
         IFD makerNote(image_,offset+6,false);
         makerNote.accept(visitor,makerDict());
+    } else if ( image_.maker_ == kApple && buf.strequals("Apple iOS")) {
+        // Apple  MakerNote is an IFD `Apple iOS__.MM_._._.___.___._._.__..`  26 bytes into the data!
+        ImageEndianSaver save(image_,keBig);
+        IFD makerNote(image_,offset+26,false);
+        makerNote.accept(visitor,makerDict());
     } else {
         bool   bNext = maker()  != kSony;                                        // Sony no trailing next
         size_t punt  = maker()  == kSony && buf.strequals("SONY DSC ") ? 12 : 0; // Sony 12 byte punt
@@ -1582,6 +1591,25 @@ void Jp2Image::accept(class Visitor& v)
     if ( valid() ) {
         if ( !depth_++ ) visits_.clear() ;
         v.visitBegin(*this);
+        if ( format_ == "HEIC" ) {
+            Io& io = this->io();
+            uint64_t size = io.size();
+            while ( !io.eof() ) {
+                while ( size-- && io.getb() != 'M' ) {};
+                uint64_t address = io.tell();
+                int count = 1 ;
+                if ( io.getb() == 'M' ) count++;
+                if ( io.getb() ==  0  ) count++;
+                if ( io.getb() == '*' ) count++;
+                if ( count == 4 ) {
+                    Io tiff(io,address-1);
+                    TiffImage(tiff).accept(v);
+                    break;
+                } else {
+                    io.seek(address);
+                }
+            }
+        } else {
         IoSave restore(io(),start_);
         uint64_t address = start_ ;
         while (  address < io().size() ) {
@@ -1608,7 +1636,7 @@ void Jp2Image::accept(class Visitor& v)
         }
         v.visitEnd(*this);
         depth_--;
-    }
+    } }
 }
 
 void ReportVisitor::visitSegment(Io& io,Image& image,uint64_t address
@@ -2061,12 +2089,27 @@ void init()
     sonyDict  [ 0xb04b ] = "AntiBlur";
     sonyDict  [ 0xb04e ] = "LongExposureNoiseReduction";
 
-    agfaDict [ktGroup ] = "Agfa";
-    agfaDict [ 0x0001 ] = "One";
-    agfaDict [ 0x0002 ] = "Size";
-    agfaDict [ 0x0003 ] = "Three";
-    agfaDict [ 0x0004 ] = "Four";
-    agfaDict [ 0x0005 ] = "Thumbnail";
+    agfaDict  [ktGroup ] = "Agfa";
+    agfaDict  [ 0x0001 ] = "One";
+    agfaDict  [ 0x0002 ] = "Size";
+    agfaDict  [ 0x0003 ] = "Three";
+    agfaDict  [ 0x0004 ] = "Four";
+    agfaDict  [ 0x0005 ] = "Thumbnail";
+
+    appleDict [ktGroup ] = "Apple"   ;
+    appleDict [ 0x0001 ] = "One"     ;
+    appleDict [ 0x0002 ] = "Two"     ;
+    appleDict [ 0x0003 ] = "Three"   ;
+    appleDict [ 0x0004 ] = "Four"    ;
+    appleDict [ 0x0005 ] = "Five"    ;
+    appleDict [ 0x0006 ] = "Six"     ;
+    appleDict [ 0x0007 ] = "Seven"   ;
+    appleDict [ 0x0008 ] = "Eight"   ;
+    appleDict [ 0x0009 ] = "Nine"    ;
+    appleDict [ 0x000a ] = "Ten"     ;
+    appleDict [ 0x000b ] = "Eleven"  ;
+    appleDict [ 0x000c ] = "Twelve"  ;
+    appleDict [ 0x000d ] = "Thirteen";
 
     crwDict   [ktGroup ] = "CRW";
     crwDict   [ 0x0032 ] = "CanonColorInfo1";
