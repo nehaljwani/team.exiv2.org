@@ -1588,28 +1588,32 @@ bool Jp2Image::valid()
 
 void Jp2Image::accept(class Visitor& v)
 {
-    if ( valid() ) {
+    if ( !valid() ) return ;
+    
+    // search for MM_*
+    if ( format_ == "HEIC" ) {
+        v.visitBegin(*this);
+        Io& io = this->io();
+        uint64_t size = io.size();
+        while ( !io.eof() ) {
+            while ( size-- && io.getb() != 'M' ) {};
+            uint64_t address = io.tell();
+            int count = 1 ;
+            if ( io.getb() == 'M' ) count++;
+            if ( io.getb() ==  0  ) count++;
+            if ( io.getb() == '*' ) count++;
+            if ( count == 4 ) {
+                Io tiff(io,address-1);
+                TiffImage(tiff).accept(v);
+                break;
+            } else {
+                io.seek(address);
+            }
+        }
+        v.visitEnd(*this);
+    } else {
         if ( !depth_++ ) visits_.clear() ;
         v.visitBegin(*this);
-        if ( format_ == "HEIC" ) {
-            Io& io = this->io();
-            uint64_t size = io.size();
-            while ( !io.eof() ) {
-                while ( size-- && io.getb() != 'M' ) {};
-                uint64_t address = io.tell();
-                int count = 1 ;
-                if ( io.getb() == 'M' ) count++;
-                if ( io.getb() ==  0  ) count++;
-                if ( io.getb() == '*' ) count++;
-                if ( count == 4 ) {
-                    Io tiff(io,address-1);
-                    TiffImage(tiff).accept(v);
-                    break;
-                } else {
-                    io.seek(address);
-                }
-            }
-        } else {
         IoSave restore(io(),start_);
         uint64_t address = start_ ;
         while (  address < io().size() ) {
@@ -1636,8 +1640,8 @@ void Jp2Image::accept(class Visitor& v)
         }
         v.visitEnd(*this);
         depth_--;
-    } }
-}
+    }
+} // Jp2Image::accept()
 
 void ReportVisitor::visitSegment(Io& io,Image& image,uint64_t address
          ,uint8_t marker,uint16_t length,std::string& signature)
