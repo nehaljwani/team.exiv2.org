@@ -20,7 +20,7 @@ _File Detectives:  Phil Harvey, Dave Coffin, Laurent Cl&eacute;vy._
 
 _And our cat Lizzie._
 
-<center><img src="MusicRoom.jpg" width="500"/></center>
+<center><img src="MusicRoom.jpg" width="500" style="border:2px solid #23668F;"/></center>
 
 [TOC](#TOC)  
 
@@ -80,9 +80,9 @@ I first became interested in metadata because of a trail conversation with Denni
 
 I said "Oh, it can't be too difficult to do that!".  And here we are more than a decade later still working on the project.  The program geotag.py was completed in about 6 weeks.  Most of the effort went into porting Exiv2 and pyexiv2 to Visual Studio and macOS.  Both Exiv2 and pyexiv2 were Linux only at that time.
 
-The sample application samples/geotag.cpp provides a command line utility to geotag photos and I frequently use this on my own photographs.  Today, I have a Samsung Galaxy Watch which uploads runs to Strava.  I download the GPX from Strava.  The date/time information in the JPG is the key to search for the position data.  The GPS tags are created and saved in the image.
+The program samples/geotag.cpp is a command line utility to geotag photos and I frequently use this on my own photographs.  Today, I have a Samsung Galaxy Watch which uploads runs to Strava.  I download the GPX from Strava.  The date/time information in the JPG is the key to search for the position data.  The GPS tags are created and saved in the image.
 
-In 2008, I chose to implement this in python to motivate me to learn Python.  Having discovered exiv2 and the python wrapper pyexiv2, I set off with enthusiasm to build a cross-platform script to run on **Windows** _(XP, Visual Studio 2003)_, **Ubuntu Linux** _(Hardy Heron 2008.04 LTS)_ and **macOS** _(32 bit Tiger 10.4 on a big-endian PPC)_.  After I finished, I emailed Andreas.  He responded in less than an hour and invited me to join Team Exiv2.  Initialially, I provided support to build Exiv2 with Visual Studio.
+In 2008, I chose to implement this in python because I wanted to learn Python.  Having discovered exiv2 and the python wrapper pyexiv2, I set off with enthusiasm to build a cross-platform script to run on **Windows** _(XP, Visual Studio 2003)_, **Ubuntu Linux** _(Hardy Heron 2008.04 LTS)_ and **macOS** _(32 bit Tiger 10.4 on a big-endian PPC)_.  After I finished, I emailed Andreas.  He responded in less than an hour and invited me to join Team Exiv2.  Initialially, I provided support to build Exiv2 with Visual Studio.
 
 Incidentally, later in 2008, Dennis offered me a contract to port his company's Linux code to Visual Studio to be used on a Windows CE Embedded Controller.  1 million lines of C++ were ported from Linux in 6 weeks.  I worked with Dennis for 4 years on all manner of GPS related software development.
 
@@ -210,7 +210,7 @@ However, prince rendered the code snippets as plain pre-formatted text and didn'
 
 So, I decided that the Safari/PDF was the best PDF and I tweaked the PDF in three ways using SodaPDF.  I fixed the title and dates on every page.  I fixed the "goto page#" PDF links which were mysteriously off by one page, and I added a PDF Table of Contents.  The result is a beautiful document which looks great on the tablet (in HTML or PDF), great on the computer and beautiful when printed.
 
-<center>![Robin](RobinEuphonium.jpg)</center>
+<center><img src="RobinEuphonium.jpg" width="600" style="border:2px solid #23668F;"/></center>
 
 Thank You for reading my book.  If you find errors, please let me know.  If you'd like to discuss any of the technology involved in Image Metadata, please contact me by opening an issue on GitHub. [https://github.com/exiv2/exiv2](https://github.com/exiv2/exiv2)
 
@@ -228,7 +228,7 @@ The good news however is that file formats come in families which are:
 
 | Family  | Description | Examples |
 |:--      |:---         |:--       |
-| TIFF    | You must learn Tiff thoroughly to understand metdata                     | TIFF, DNG, NEF,ICC |
+| TIFF    | You must learn Tiff thoroughly to understand metadata                   | TIFF, DNG, NEF, ICC |
 | JPG     | The most common format                                                                 | JPEG |
 | PNG     | Another popular format<br>Linked list of chunks                                         | PNG |
 | Canon   | Popular Canon "Raw" formats.<br>Dave Coffin parse.c decodes                        | CRW, CR2 |
@@ -532,7 +532,7 @@ void Visitor::visitChunk(Io& io,Image& image
 
 PNG usually compresses chunked data using Flate (lossless) compression.  For simplicity tvisitor.cpp does does not link zlib and therefore cannot decompress these chunks.  tvisitor.cpp is unable to verify that the checksums are correct.  Exiv2 is normally linked by with zlib and can perform those tasks.  I recommend that you read the Exiv2 library code if you want to learn about using zlib and metadata.
 
-I'm very pleased to say that neither the Exiv2 or XMP metdata in the image book/png.png have been compressed and can be easily reported by tvisitor.cpp.  It's very satisfying to  use images from this book as test data for the code in this book.
+I'm very pleased to say that neither the Exiv2 or XMP metadata in the image book/png.png have been compressed and can be easily reported by tvisitor.cpp.  It's very satisfying to  use images from this book as test data for the code in this book.
 
 [TOC](#TOC)
 <div id="JP2">
@@ -1586,7 +1586,7 @@ He creates a TiffImage with the stream and calls TiffImage::accept(visitor).  So
 
 Just to remind you, BasicIo supports http/ssh and other protocols.  This code will recursively descend into a remote file without copying it locally.  And he does it with great efficiency.  This is discussed in section [7 I/O in Exiv2](#7)
 
-<center>![Exiv2CloudVision](Exiv2CloudVision.png)</center><br>
+<center><img src="Exiv2CloudVision.png" width="600" style="border:2px solid #23668F;"/></center>
 
 The code in _**tvisitor.cpp**_ implements the visitor pattern and three visitors are implemented.
 

@@ -455,16 +455,16 @@ std::string DataBuf::toUuidString()
     // 123e4567-e89b-12d3-a456-426614174000
     std::string result ;
     if ( size_ >= 16 ) {
-        uint32_t* a = (uint32_t*) pData_ +0;
-        uint16_t* b = (uint16_t*) pData_ +4;
-        uint16_t* c = (uint16_t*) pData_ +6;
-        uint16_t* d = (uint16_t*) pData_ +8;
-        uint32_t* e = (uint32_t*) pData_+10;
-        uint16_t* f = (uint16_t*) pData_+14;
-        result = ::stringFormat("%08x-%04x-%04x-%04x-%08x%04x",*a,*b,*c,*d,*e,*f);
+        result = ::stringFormat("%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x"
+                               ,pData_[ 0],pData_[ 1],pData_[ 2],pData_[ 3]
+                               ,pData_[ 4],pData_[ 5]
+                               ,pData_[ 6],pData_[ 7]
+                               ,pData_[ 8],pData_[ 9]
+                               ,pData_[10],pData_[11],pData_[12],pData_[13],pData_[14],pData_[15]
+                               );
     }
     return result ;
-} // DataBuf::toString
+} // DataBuf::toUuidString
 
 
 // Camera manufacturers
@@ -1167,9 +1167,9 @@ public:
         const char*  kJp2UuidExif  = "5467704a-6978-4a3e-4949-001200020002" ; // "JpgTiffExif->JP2";
         const char*  kJp2UuidIptc  = "d2a4c733-baa0-97e0-021c-302d54363430" ; // "\x33\xc7\xa4\xd2\xb8\x1d\x47\x23\xa0\xba\xf1\xa3\xe0\x97\xad\x38";
         const char*  kJp2UuidXmp   = "cbcf7abe-719c-e391-3f3c-3557223d6967" ; // "\xbe\x7a\xcf\xcb\x97\xa9\x42\xe8\x9c\x71\x99\x94\x91\xe3\xaf\xac";
-        const char*  kJp2UuidXmp2  = "cbcf7abe-719c-e391-3f3c-3557273d6967" ;
-        const char*  kJp2UuidCan1  = "87b6c085-1181-2b46-0000-302e3930436e" ;
-        const char*  kJp2UuidCan2  = "5e2bf4ea-fbb9-6e40-0000-010038045250" ;
+        const char*  kJp2UuidXmp2  = "be7acfcb-97a9-42e8-9c71-999491e3afac" ;
+        const char*  kJp2UuidCan1  = "85c0b687-820f-11e0-8111-f4ce462b6a48" ;
+        const char*  kJp2UuidCan2  = "eaf42b5e-1c98-4b88-b9fb-b7dc406e4d16" ;
 
         uuids_[kJp2UuidExif] = "exif" ;
         uuids_[kJp2UuidIptc] = "iptc" ;
@@ -1567,14 +1567,13 @@ bool Jp2Image::valid()
     if ( !valid_ ) {
         start_ = 0;
         IoSave     restore (io(),start_);
-        uint32_t   length = io().getLong(endian_);
         uint32_t   box    ;
-        io().read(&box,4) ;
-        valid_  = length == 12 && boxName(box) == kJp2Box_jP  ;
-        if ( length == 24 && boxName(box) == kJp2Box_ftyp ) {
+        io().getLong(endian_); // length
+        io().read(&box,4) ;    // box
+        if ( boxName(box) == kJp2Box_ftyp ) {
             io().read(&box,4);
             if ( boxName(box) == "crx " ) {
-                format_ = "CR3 ";
+                format_ = "CR3";
                 valid_  = true ;
             }
             if ( boxName(box) == "heic" ) {
@@ -1626,13 +1625,26 @@ void Jp2Image::accept(class Visitor& v)
             if ( length > io().size() ) {
                 // Error(kerCorruptedMetadata);
             }
+            
             v.visitBox(io(),*this,address,box,length); // tell the visitor
+            
             // recursion if superbox
             if ( superBox(box) ) {
                 uint64_t  subA = io().tell() ;
                 Jp2Image jp2(io(),subA,length-8);
                 jp2.valid_ = true ;
                 jp2.accept(v);
+            }
+            // recursion for a can1 box
+            if ( boxName(box) == "uuid" ) {
+                DataBuf uuid(16);
+                io().read(uuid);
+                if ( uuidName(uuid) == "can1" ) {
+                    uint64_t  subA = io().tell() ;
+                    Jp2Image jp2(io(),subA,length-16);
+                    jp2.valid_ = true ;
+                    jp2.accept(v);
+                }
             }
             address = (boxName(box) == kJp2Box_jp2c
                    ||  boxName(box) == kJp2Box_mdat) ? io().size()
@@ -1886,8 +1898,9 @@ void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
 {
     IoSave save(io,address+8);
     length -= 8              ;
-    DataBuf   data(length);
+    DataBuf data(length);
     io.read(data);
+    // std::cout << data.toUuidString() << std::endl;
     
     std::string name = image.boxName (box);
     std::string uuid = name == "uuid" ? image.uuidName(data) : "";
@@ -1903,6 +1916,11 @@ void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
     }
     if ( option() & kpsRecursive && uuid == "exif" ) {
         Io        tiff(io,address+8+16,data.size_-16); // uuid is 16 bytes (128 bits)
+        TiffImage(tiff).accept(*this);
+    }
+    if ( option() & kpsRecursive && (name == "CMT1" || name == "CMT2" || name == "CMT3" || name == "CMT4") ) {
+        ImageEndianSaver save(image,keLittle);
+        Io        tiff(io,address+8,data.size_);
         TiffImage(tiff).accept(*this);
     }
     if ( option() & kpsXMP && uuid == "xmp " ) {
