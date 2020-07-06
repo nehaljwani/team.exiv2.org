@@ -1630,7 +1630,7 @@ void Jp2Image::accept(class Visitor& v)
             v.visitBox(io(),*this,address,box,length); // tell the visitor
             
             // recursion if superbox
-            if ( superBox(box) || boxName(box) == "colr" ) {
+            if ( superBox(box) ) {
                 uint64_t  subA = io().tell() ;
                 Jp2Image jp2(io(),subA,length-8);
                 jp2.valid_ = true ;
