@@ -1568,6 +1568,9 @@ bool Jp2Image::valid()
         uint32_t   box    ;
         io().getLong(endian_); // length
         io().read(&box,4) ;    // box
+        
+        valid_ = boxName(box) == kJp2Box_jP ;
+        
         if ( boxName(box) == kJp2Box_ftyp ) {
             io().read(&box,4);
             if ( boxName(box) == "crx " ) {
@@ -1627,7 +1630,7 @@ void Jp2Image::accept(class Visitor& v)
             v.visitBox(io(),*this,address,box,length); // tell the visitor
             
             // recursion if superbox
-            if ( superBox(box) ) {
+            if ( superBox(box) || boxName(box) == "colr" ) {
                 uint64_t  subA = io().tell() ;
                 Jp2Image jp2(io(),subA,length-8);
                 jp2.valid_ = true ;
