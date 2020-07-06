@@ -2381,9 +2381,7 @@ I have found recruiting contributors to be very challenging and difficult.  I ap
 
 I'll leave you to figure out what an **AB** is.  It might be "A Bike Shedder".  They come to the project in different versions.
 
-The first is a **VAB** who uses the password to block progress.  Before we used GitHub, the only way to release a new version of Exiv2 was via the web-site.  Sure we could tag a version in SVN, however this was passive.  I'm not aware of any central organisation which tracks the versions of projects.  So, publishing requires the password to enable the site to be updated.  And there's only one person who knows the password.
-
-There is another version which I'll call **EMAB**.  In this version, you own the domain registration and allow it to expire.  This is very effective.
+The first is a **VAB** who uses the password to block progress.  Before we used GitHub, the only way to release a new version of Exiv2 was via the web-site.  Sure we could tag a version in SVN, however this was passive.  I'm not aware of any central organisation which tracks the versions of projects.  So, publishing requires the password to enable the site to be updated.  And there's only one person who knows the password.  There is another version which I'll call **EMAB**.  In this version, you own the domain registration and allow it to expire.  This is very effective.
 
 I think the need for a web-site for the project has been mostly replaced by GitHub.  We can publish new releases (and pre-releases).  However the effort to transfer all project resources to GitHub is considerable.  We have had complaints about the repository being too big, so we have an SVN repository for team resources such as old releases, this book, the project logo, minutes of team meetings and so on.  And while I understand the team hostility to SVN, no sensible alternative has been proposed.
 
@@ -2407,7 +2405,9 @@ There are many other forms of **AB**.  For example, there is **BAB** which is th
 
 How about this method?  You complain about a font face being used.  We'll call this **FAB**.  This is very effective because you're only asking for a 100% reformat of the book and all the graphics.  That's not too much to ask.  When I designed the Exiv2 Logo, a contributor asked for the font to be changed.  I proposed alternatives and received no response.
 
-There are so many ways to incur the outrage of other people.  And so many ways in which others can and do complain.  All in all, working on an open-source project is a thank-less task.  A user in Peru did say on Facebook when I released v0.25. "Robin should get a medal for his work.  Exiv2 would have died years ago without his commitment.".  So I asked my family to write to the UK Government to propose that I be given an honour.  They silently refused.  Alison did assure me "Nobody is going to thank you for working on Exiv2.".
+As for myself, I am a **CAB** where *C* stands for *clever*.  However I am an **AB** and that's why I've found it so difficult to recruit and retain contributors.
+
+There are so many ways to incur the outrage of other people.  And so many ways in which others can and do complain.  All in all, working on an open-source project is a thank-less task.  When I released v0.25, a user in Peru said on Facebook  "Robin should get a medal for his work.  Exiv2 would have died years ago without his commitment.".  So I asked my family to write to the UK Government to propose that I be given an honour.  They silently refused.  Alison did assure me "Nobody is going to thank you for working on Exiv2.".
 
 [TOC](#TOC)
 <div id="13-1">
