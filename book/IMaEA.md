@@ -2375,7 +2375,39 @@ I am astonished at the verbal abuse I have received.  About every three years I 
 
 When somebody provides a patch, they seldom provide test code, update the documentation or modify the build scripts.  The feature is often incomplete.  For example, in adding a new platform, nobody has ever provided platform specific code in src/version.cpp and src/futils.cpp.  Sometimes they break all the sample applications.  When I ask them to finish the job, they say: "oh you can do that.".  Nobody ever maintains or supports their patch.  Contributors frequently refuse to modify a patch when asked to do so in a review.
 
-I have found recruiting contributors is a very challenging and difficult aspect of maintaining Exiv2.  I appreciate the work done by everybody who has contributed.  The future of Exiv2 is a matter for the community.  Perhaps this book will inspire somebody to maintain Exiv2 or write a replacement.
+I have found recruiting contributors to be very challenging and difficult.  I appreciate the work done by everybody who has contributed.  The future of Exiv2 is a matter for the community.  Perhaps this book will inspire somebody to maintain Exiv2 or write a replacement.
+
+#### Methods of being an AB
+
+I'll leave you to figure out what an **AB** is.  It might be "A Bike Shedder".  They come to the project in different versions.
+
+The first is a **VAB** who uses the password to block progress.  Before we used GitHub, the only way to release a new version of Exiv2 was via the web-site.  Sure we could tag a version in SVN, however this was passive.  I'm not aware of any central organisation which tracks the versions of projects.  So, publishing requires the password to enable the site to be updated.  And there's only one person who knows the password.
+
+There is another version which I'll call **EMAB**.  In this version, you own the domain registration and allow it to expire.  This is very effective.
+
+I think the need for a web-site for the project has been mostly replaced by GitHub.  We can publish new releases (and pre-releases).  However the effort to transfer all project resources to GitHub is considerable.  We have had complaints about the repository being too big, so we have an SVN repository for team resources such as old releases, this book, the project logo, minutes of team meetings and so on.  And while I understand the team hostility to SVN, no sensible alternative has been proposed.
+
+How about **TAB** which is to insist on using weird tools.  Git came close to killing me.  I know many people love Git and think it's the greatest thing ever invented.  I don't.  I worked on Acrobat at Adobe.  A big project.  When I retired in 2014, there were about 200 developers who had been working for 20 years on 25 million lines of code.  To build it, you need 100GBytes of free space.   How can git handle such a monster when every repos has 100% of the code and 100% history of the project?  Nobody has given me an answer.
+
+So we adopted Git and it took me 2 years to figure out how to submit a PR.  I purchased the book "ProGit".  It doesn't cover PRs.  So, the only way to submit code is undocumented.  I am very grateful to Luis and Andreas S for helping me with Git.  I eventually wrote this on a card:
+
+<center><img src="GitIdiotCard.jpg" width="500" style="border:2px solid #23668F;"/></center>
+
+The funny brown marks were contributed by our cat Lizzie.  I'd just written this card when she arrived in my office fresh from the garden.  I don't know what she did to the card.  She's never done anything like that before.  She certainly expressed her opinion of git.
+
+Another flavour is the **AAB** which I reserve for the fuzzing police.  The **A** stands for **Aggressive**.  I've discussed my dislike of these people here:  [12.1 The Fuzzing Police](#12)
+
+Or there's the review and approve mechanism which I'll dub **RAB**  You insist:
+
+1. All code changes must be approved.
+2. No contributor can approve their own change.
+3. Nobody ever reviews or approves a code change.
+
+There are many other forms of **AB**.  For example, there is **BAB** which is the legal challenge.  You say "We might be infringing somebody's patent!".  This is very effective, because you don't provide evidence.  And even when you get a legal judgement you can refute that with the words: "The legal judgement may be wrong".  This show stopper was used by two contributors to block adding ISOBMFF support to Exiv2 v0.27.3.  I received more than 100 emails from users asking "What is the legal problem?", so I called a meeting on Zoom and users on 5 continents attended.  The two contributors who raised the challenge did not bother to show up.  One emailed to say "he fell asleep on the couch and missed the meeting.".
+
+How about this method?  You complain about a font face being used.  We'll call this **FAB**.  This is very effective because you're only asking for a 100% reformat of the book and all the graphics.  That's not too much to ask.  When I designed the Exiv2 Logo, a contributor asked for the font to be changed.  I proposed alternatives and received no response.
+
+There are so many ways to incur the outrage of other people.  And so many ways in which others can and do complain.  All in all, working on an open-source project is a thank-less task.  A user in Peru did say on Facebook when I released v0.25. "Robin should get a medal for his work.  Exiv2 would have died years ago without his commitment.".  So I asked my family to write to the UK Government to propose that I be given an honour.  They silently refused.  Alison did assure me "Nobody is going to thank you for working on Exiv2.".
 
 [TOC](#TOC)
 <div id="13-1">
