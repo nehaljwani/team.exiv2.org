@@ -2379,17 +2379,17 @@ I have found recruiting contributors to be very challenging and difficult.  I ap
 
 #### Methods of being an AB
 
-I'll leave you to figure out what an **AB** is.  It might be _**Awkward Bikeshedder**_.  They come in different versions.
+I'll leave you to figure out what an **AB** is.  It might be _**Annoying Bikeshedder**_.  They come in different versions.
 
 The first is a **DAB** who deliberately blocks progress.  Before we used GitHub, the only way to release a new version of Exiv2 was via the web-site.  Sure we could tag a version in SVN, however this was passive.  I'm not aware of any central organisation which tracks the versions of projects.  So, publishing requires the password to enable the site to be updated.  And there's only one person who knows the password.  There is another version which I'll call **VAB**.  In this version, you own the domain registration and allow it to expire.
 
-I think the need for a web-site for the project has been mostly replaced by GitHub.  We can publish new releases (and pre-releases).  However the effort to transfer all project resources to GitHub is considerable.  We have had complaints about the repository being too big, so we have an SVN repository for team resources such as old releases, this book, the project logo, minutes of team meetings and so on.  And while I understand the team hostility to SVN, no sensible alternative has been proposed.
+I think the need for a web-site for the project has been mostly replaced by GitHub.  We can publish new releases (and pre-releases).  However the effort to transfer all project resources to GitHub is considerable.  We have had complaints about the repository being too big, so we have an SVN repository for team resources such as old releases, this book, the project logo, minutes of team meetings and so on.  And while I understand the team's hostility to SVN, no sensible alternative has been proposed.
 
-The first couple of releases I published on GitHub were not instantly tagged.   Guess what?  Within hours, somebody complained.  People have complained about the version numbering scheme.  GitHub automatically generates bundles when you create a release.  Somebody complained about them.  You might expect that complaints would include words of appreciation for the effort to make the release.  You'd be wrong.  Complaints are normally abrupt.  Words such as _**Please**_ and _**Thank You**_ are seldom used by members of the community.
+The first couple of releases I published on GitHub were not instantly tagged.   Guess what?  Within hours, somebody complained.  People have complained about the version numbering scheme.  GitHub automatically generates bundles when you create a release.  Somebody complained about them.  Somebody complained that the pre-release web-site was too similar to the release web-site (although every page is labelled) so I put "PRERELEASE" on the background of every page.  You might expect that complaints would include words of appreciation for the effort to make the release.  You'd be wrong.  Complaints are normally abrupt.  Words such as _**Please**_ and _**Thank You**_ are seldom used by members of the community.
 
 How about **TAB** which is to change the project tools.  Git came close to killing me.  I know many people love Git and think it's the greatest thing ever invented.  I don't.  I worked on Acrobat at Adobe.  A big project.  When I retired in 2014, there were about 200 developers who had been working for 20 years on 25 million lines of code.  To build it, you need 100GBytes of free space.   How can git handle such a monster when every repos has 100% of the code and 100% of the project history?  Nobody has given me an answer.
 
-So we adopted Git and it took me 2 years to figure out how to submit a PR.  I purchased the book "Pro Git".  It doesn't cover PRs.  So, the only way to submit code is undocumented.  I am very grateful to Luis and Andreas S for helping me with Git.  I eventually wrote this on a card:
+When we adopted Git and it took me 2 years to figure out how to submit a PR.  I purchased the book "Pro Git".  It doesn't cover PRs.  So, the only way to submit code is undocumented.  I am very grateful to Luis and Andreas S for helping me with Git.  I eventually wrote this on a card:
 
 <center><img src="GitIdiotCard.jpg" width="500" style="border:2px solid #23668F;"/></center>
 
@@ -2403,21 +2403,21 @@ Or there's the review mechanism which I'll dub **RAB**  You insist:
 2. No contributor can approve their own change.
 3. Nobody reviews or approves a code change.
 
-There are many other forms of **AB**.  For example, there is **UAB** which is the useless.  For example, a legal challenge.  You say "We might be infringing somebody's patent!".  This is very effective, because you don't provide evidence.  And even when there is a written legal judgement you can refute that with the words: "The legal judgement might be wrong.  It hasn't been tested in court.".  This show stopper was used by two contributors to block ISOBMFF support in Exiv2 v0.27.3.  I received more than 100 emails from users asking "What is the legal problem?", so I called a meeting on Zoom and users on 5 continents attended.  The two contributors who raised the challenge did not show up.  One emailed later to say "Apologies.  I fell asleep on the couch and missed the meeting.".
+There are many other forms of **AB**.  For example, there is useless **UAB**.  For example, a legal challenge.  You say "We might be infringing somebody's patent!".  This is particularly effective when you don't provide evidence.  Even if there is a written legal judgement you can refute that with the words: "The legal judgement has not been tested in court.".  This show-stopper was used by two contributors to block ISOBMFF support in Exiv2 v0.27.3.  I received more than 100 emails from users asking "What is the legal problem?", so I called a meeting on Zoom and users on 5 continents attended.  The two contributors who raised the show-stopper did not attend.  One emailed later to say "Apologies.  I fell asleep on the couch and missed the meeting.".
 
 How about this method?  You complain about a font being used.  We'll call this **FAB**.  This is very effective because you're only asking for a 100% reformat of the book and all the graphics.  That's not too much to ask.  When I designed the Exiv2 Logo, a contributor asked for the font to be changed.  I proposed alternatives and received no response.
 
 As for myself, I am a **CAB** where *C* stands for *clever*.  However I am an **AB** and that's why I've found it so difficult to recruit and retain contributors.
 
-There are so many ways to incur the outrage of stakeholders.  And so many ways in which people can and do complain.  All in all, working on an open-source project is a thank-less task.  When I released v0.25, a user in Peru said on Facebook  _**Robin should get a medal for his work.  Exiv2 would have died years ago without his commitment.**_  So I asked my family to write to the UK Government to propose that I be given an honour.  They silently refused.  Alison comforted me by saying _**Nobody is ever going to thank you for working on Exiv2.**_
+There are so many ways to incur the outrage of stakeholders.  And so many ways in which people can and do complain.  All in all, working on an open-source project is a thank-less task.  When I released v0.25, a contributor in Peru said on Facebook  _**Robin should get a medal for his work.  Exiv2 would have died years ago without his commitment.**_  So I asked my family to write to the UK Government to propose that I be given an honour.  They silently refused.  Alison comforted me by saying _**Nobody is ever going to thank you for working on Exiv2.**_
 
 #### Solution to the issue of ABs
 
 There is a fix.  We do what the Fuzzing Police do.  They do not negotiate with any project.  They arrive unexpectedly and deliver their message.  And they track your response and performance.
 
-The Community would be well served by a similar task force to investigate complaints about the behaviour of stakeholders and maintainers.  There are undoubtably stakeholders who will report me.  I would be able to raise a complaint about a stakeholder if I felt they had behaved inappropriately.
+The Community would be well served by a similar task force to investigate complaints about the behaviour of stakeholders and maintainers.  There are undoubtably stakeholders who would report me.  I would be able to raise a complaint about a stakeholder if I felt they had behaved inappropriately.
 
-For sure, I would not welcome my performance being reviewed.  However a fair, honest and independant review of an issue would be helpful.  The stakeholder and I would shake hands and learn from the situation.
+For sure, I would not welcome my performance being reviewed.  However a fair, honest and independant review of an issue would be helpful.  The stakeholder and I would shake hands and learn from the situation.  If the stakeholder or maintainer do not attend the review, their github account should be suspended.
 
 While there is no sanction for a stakeholder being unreasonable, bad behaviour will continue.  A solution is possible.  _**Will the Community accept the challenge?**_
 
