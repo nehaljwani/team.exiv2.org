@@ -2379,35 +2379,47 @@ I have found recruiting contributors to be very challenging and difficult.  I ap
 
 #### Methods of being an AB
 
-I'll leave you to figure out what an **AB** is.  It might be "A Bike Shedder".  They come to the project in different versions.
+I'll leave you to figure out what an **AB** is.  It might be _**Awkward Bikeshedder**_.  They come in different versions.
 
-The first is a **VAB** who uses the password to block progress.  Before we used GitHub, the only way to release a new version of Exiv2 was via the web-site.  Sure we could tag a version in SVN, however this was passive.  I'm not aware of any central organisation which tracks the versions of projects.  So, publishing requires the password to enable the site to be updated.  And there's only one person who knows the password.  There is another version which I'll call **EMAB**.  In this version, you own the domain registration and allow it to expire.  This is very effective.
+The first is a **DAB** who deliberately blocks progress.  Before we used GitHub, the only way to release a new version of Exiv2 was via the web-site.  Sure we could tag a version in SVN, however this was passive.  I'm not aware of any central organisation which tracks the versions of projects.  So, publishing requires the password to enable the site to be updated.  And there's only one person who knows the password.  There is another version which I'll call **VAB**.  In this version, you own the domain registration and allow it to expire.
 
 I think the need for a web-site for the project has been mostly replaced by GitHub.  We can publish new releases (and pre-releases).  However the effort to transfer all project resources to GitHub is considerable.  We have had complaints about the repository being too big, so we have an SVN repository for team resources such as old releases, this book, the project logo, minutes of team meetings and so on.  And while I understand the team hostility to SVN, no sensible alternative has been proposed.
 
-How about **TAB** which is to insist on using weird tools.  Git came close to killing me.  I know many people love Git and think it's the greatest thing ever invented.  I don't.  I worked on Acrobat at Adobe.  A big project.  When I retired in 2014, there were about 200 developers who had been working for 20 years on 25 million lines of code.  To build it, you need 100GBytes of free space.   How can git handle such a monster when every repos has 100% of the code and 100% history of the project?  Nobody has given me an answer.
+The first couple of releases I published on GitHub were not instantly tagged.   Guess what?  Within hours, somebody complained.  People have complained about the version numbering scheme.  GitHub automatically generates bundles when you create a release.  Somebody complained about them.  You might expect that complaints would include words of appreciation for the effort to make the release.  You'd be wrong.  Complaints are normally abrupt.  Words such as _**Please**_ and _**Thank You**_ are seldom used by members of the community.
 
-So we adopted Git and it took me 2 years to figure out how to submit a PR.  I purchased the book "ProGit".  It doesn't cover PRs.  So, the only way to submit code is undocumented.  I am very grateful to Luis and Andreas S for helping me with Git.  I eventually wrote this on a card:
+How about **TAB** which is to change the project tools.  Git came close to killing me.  I know many people love Git and think it's the greatest thing ever invented.  I don't.  I worked on Acrobat at Adobe.  A big project.  When I retired in 2014, there were about 200 developers who had been working for 20 years on 25 million lines of code.  To build it, you need 100GBytes of free space.   How can git handle such a monster when every repos has 100% of the code and 100% of the project history?  Nobody has given me an answer.
+
+So we adopted Git and it took me 2 years to figure out how to submit a PR.  I purchased the book "Pro Git".  It doesn't cover PRs.  So, the only way to submit code is undocumented.  I am very grateful to Luis and Andreas S for helping me with Git.  I eventually wrote this on a card:
 
 <center><img src="GitIdiotCard.jpg" width="500" style="border:2px solid #23668F;"/></center>
 
-The funny brown marks were contributed by our cat Lizzie.  I'd just written this card when she arrived in my office fresh from the garden.  I don't know what she did to the card.  She's never done anything like that before.  She certainly expressed her opinion of git.
+The funny brown marks were added by our cat Lizzie.  I'd just written this card when she arrived in my office fresh from a hunt in the garden.  I don't know what she did to the card.  She's never done anything like this before or since.  She expressed her opinion of git.
 
 Another flavour is the **AAB** which I reserve for the fuzzing police.  The **A** stands for **Aggressive**.  I've discussed my dislike of these people here:  [12.1 The Fuzzing Police](#12)
 
-Or there's the review and approve mechanism which I'll dub **RAB**  You insist:
+Or there's the review mechanism which I'll dub **RAB**  You insist:
 
 1. All code changes must be approved.
 2. No contributor can approve their own change.
-3. Nobody ever reviews or approves a code change.
+3. Nobody reviews or approves a code change.
 
-There are many other forms of **AB**.  For example, there is **BAB** which is the legal challenge.  You say "We might be infringing somebody's patent!".  This is very effective, because you don't provide evidence.  And even when you get a legal judgement you can refute that with the words: "The legal judgement may be wrong".  This show stopper was used by two contributors to block adding ISOBMFF support to Exiv2 v0.27.3.  I received more than 100 emails from users asking "What is the legal problem?", so I called a meeting on Zoom and users on 5 continents attended.  The two contributors who raised the challenge did not bother to show up.  One emailed to say "he fell asleep on the couch and missed the meeting.".
+There are many other forms of **AB**.  For example, there is **UAB** which is the useless.  For example, a legal challenge.  You say "We might be infringing somebody's patent!".  This is very effective, because you don't provide evidence.  And even when there is a written legal judgement you can refute that with the words: "The legal judgement might be wrong.  It hasn't been tested in court.".  This show stopper was used by two contributors to block ISOBMFF support in Exiv2 v0.27.3.  I received more than 100 emails from users asking "What is the legal problem?", so I called a meeting on Zoom and users on 5 continents attended.  The two contributors who raised the challenge did not show up.  One emailed later to say "Apologies.  I fell asleep on the couch and missed the meeting.".
 
-How about this method?  You complain about a font face being used.  We'll call this **FAB**.  This is very effective because you're only asking for a 100% reformat of the book and all the graphics.  That's not too much to ask.  When I designed the Exiv2 Logo, a contributor asked for the font to be changed.  I proposed alternatives and received no response.
+How about this method?  You complain about a font being used.  We'll call this **FAB**.  This is very effective because you're only asking for a 100% reformat of the book and all the graphics.  That's not too much to ask.  When I designed the Exiv2 Logo, a contributor asked for the font to be changed.  I proposed alternatives and received no response.
 
 As for myself, I am a **CAB** where *C* stands for *clever*.  However I am an **AB** and that's why I've found it so difficult to recruit and retain contributors.
 
-There are so many ways to incur the outrage of other people.  And so many ways in which others can and do complain.  All in all, working on an open-source project is a thank-less task.  When I released v0.25, a user in Peru said on Facebook  "Robin should get a medal for his work.  Exiv2 would have died years ago without his commitment.".  So I asked my family to write to the UK Government to propose that I be given an honour.  They silently refused.  Alison did assure me "Nobody is going to thank you for working on Exiv2.".
+There are so many ways to incur the outrage of stakeholders.  And so many ways in which people can and do complain.  All in all, working on an open-source project is a thank-less task.  When I released v0.25, a user in Peru said on Facebook  _**Robin should get a medal for his work.  Exiv2 would have died years ago without his commitment.**_  So I asked my family to write to the UK Government to propose that I be given an honour.  They silently refused.  Alison comforted me by saying _**Nobody is ever going to thank you for working on Exiv2.**_
+
+#### Solution to the issue of ABs
+
+There is a fix.  We do what the Fuzzing Police do.  They do not negotiate with any project.  They arrive unexpectedly and deliver their message.  And they track your response and performance.
+
+The Community would be well served by a similar task force to investigate complaints about the behaviour of stakeholders and maintainers.  There are undoubtably stakeholders who will report me.  I would be able to raise a complaint about a stakeholder if I felt they had behaved inappropriately.
+
+For sure, I would not welcome my performance being reviewed.  However a fair, honest and independant review of an issue would be helpful.  The stakeholder and I would shake hands and learn from the situation.
+
+While there is no sanction for a stakeholder being unreasonable, bad behaviour will continue.  A solution is possible.  _**Will the Community accept the challenge?**_
 
 [TOC](#TOC)
 <div id="13-1">
@@ -2441,9 +2453,9 @@ Exiv2 has dependencies on the following libraries.  All are optional, however it
 
 Starting with Exiv2 v0.27, we can use conan to build dependencies.  I very much appreciate Luis bringing this technology to Exiv2 as it has hugely simplified building with Visual Studio.  In the CI builders on GitHub, conan is also used to build on Linux and macOS.  At this time (June 2020), I haven't been able to get conan to work on Cygwin and/or MinGW/msys2.  I expect that will soon be rectified.
 
-Prior to using conan, the build environment for Visual Studio were hand built for Visual Studio 2005 and relied on Visual Studio to convert them to the edition in use.  Additionally, source trees for dependencies were required in specific locations on storage.  We did support CMake on Visual Studio, however it required in a 500 line cmd file `cmakeBuild.cmd` to download and build the dependencies.  The effort to create and maintain that apparatus was considerable.
+Prior to using conan, the build environment for Visual Studio was hand built for Visual Studio 2005 and relied on Visual Studio to convert to the edition in use.  Additionally, source trees for dependencies were required in specific locations on storage.  We did support CMake on Visual Studio, however it required a 500 line cmd file `cmakeBuild.cmd` to download and build the dependencies.  The effort to create and maintain that apparatus was considerable.
 
-Conan brings a fresh approach to building dependencies.  Every dependancy has a "recipe" which tells conan how to build.  We have a file conanfile.py (written in python) which tells conan which dependencies we need.  Conan follows the recipe to obtain and build the dependency which is cached or future use.  When dealing with very large libraries such as openssl, the recipe might pull prebuilt binaries for your requested configuration.  For more modest libraries (such as expat and zlib), the recipe will pull the source and build.  Conan caches the dependencies on your ~/.conan directory.  This arrangement means that you seldom have to build dependencies as they are usually in the cache.
+Conan brings a fresh approach to building dependencies.  Every dependancy has a "recipe" which tells conan how to build a dependency.  The recipes are held on servers and are fetched from remote servers on demand.  Exiv2 has a file conanfile.py (written in python) which tells conan which dependencies are required.  Conan fetches the recipe, build the dependency and caches it for future use.  When dealing with very large libraries such as openssl, the recipe might pull prebuilt binaries for your requested configuration.  For more modest libraries (such as expat and zlib), the recipe will fetch the source and build.  Conan caches binary dependencies in your ~/.conan directory.  This arrangement means that you seldom build dependencies as they are usually in the cache.
 
 I have always supported the plan to use CMake as our common build platform and invested a lot of effort in cmakeBuild.cmd.  Using conan with Visual Studio is much superior to our prior methods of working with CMake and Visual Studio.
 
@@ -2453,19 +2465,19 @@ The final element of CMake which we have not yet deployed is CTest.  Perhaps one
 
 Thank You to Luis for introducing Conan to Exiv2 and all your outstanding work with CMake.
 
-The documentation about using Conan with Exiv2 is in [README-CONAN.md](README-CONAN.html)
+The documentation about using Conan with Exiv2 is in [README-CONAN.md](README-CONAN.md)
 
 #### Build Options
 
-There are numerous build options provided for Exiv2.  The documentation for this is in [README.md](README.html).  Most of the options concern dependencies, the configuration { debug | release }, kind { static | shared }, configuration { 32 | 64 }, run-time { shared | static }, compiler { GCC | Clang | 2008 | ... | 2019 } and the language standard { 98 | 11 | 14 | 17 }.  As you will appreciate the build matrix is huge.
+There are numerous build options provided for Exiv2.  The documentation for this is in [README.md](README.md).  Most of the options concern dependencies, the configuration { debug | release }, kind { static | shared }, configuration { 32 | 64 }, run-time { shared | static }, compiler { GCC | Clang | 2008 | ... | 2019 } and the language standard { 98 | 11 | 14 | 17 }.  The build matrix is huge.
 
 There are a number of convenience options to build packages for release, on-line documentation, unit_tests and ASAN support.  ASAN is the "Address Sanitiser".  When this option is selected, the code is built and instrumented with address checking.  Every memory access is tested before use.  This has a considerable performance penalty and is only intended for test and development purposes.  It shouldn't be used in production.
 
-An interesting option is BUILD\_WITH\_CCACHE.  This option can dramatically speed up rebuilding by caching compiled code.  If CCache determines that there are no code or configuration changes, the compiled object from the cache is used.  This can boost build performance by 100x.
+An interesting option is BUILD\_WITH\_CCACHE.  This option can dramatically speed up rebuilding by caching compiled code.  If CCache determines that there are no code or configuration changes, the compiled object from the cache is used.  This can accelerate build times by 100x.
 
 While lots of effort has been invested in the CMakeLists.txt and *.cmake files, some users may want something that has never been investigated by Team Exiv2.  For example, we do not support building for ARM processors.  It's highly likely that Exiv2 can be successfully built for those machines and the recommended way is to use options such as -DCMAKE\_CXX\_FLAGS to introduce the necessary compiler and linker options.  Other examples of "possible, yet not supported" are to request Visual Studio to use Clang, or its own CMake support, or its own Package Manager.
 
-Regrettably there are users who look to Team Exiv2 to support every possible configuration.  This is mission impossible.  The essential thing is that we have built and tested our code and many platforms.  Users will always think of novel ways in which to build and deploy. 
+Regrettably there are users who look to Team Exiv2 to support every possible configuration.  This is impossible.  The essential thing is that we have built and tested our code and many platforms.  Users will always think of novel ways in which to build and deploy. 
 
 [TOC](#TOC)
 <div id="13-3">
