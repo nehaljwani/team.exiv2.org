@@ -539,13 +539,15 @@ I'm very pleased to say that neither the Exiv2 or XMP metadata in the image book
 ## JP2 JPEG 2000
 ![jp2](jp2.png)
 
-JP2 is always big-endian encoded.
+JP2 is always big-endian encoded.  The documentation is available here:  [https://www.iso.org/standard/78321.html](https://www.iso.org/standard/78321.html)
 
-The JPEG 2000 file is an ISOBMFF Container.  It consists of a linked lists of "boxes" which have a uint32\_t length, char[4] box-type and length-8 bytes of data.  A box may be a "super-box" and be a container for other boxes.
+The JPEG 2000 file is an ISOBMFF Container.  It consists of a linked lists of "boxes" which have a uint32\_t length, char[4] box-type and length-8 bytes of data.  A box may be a "super-box" which is a container for other boxes.
 
 I believe the "box" idea in ISOBMFF is intended to address the issue I discussed about TIFF files.  In order to rewrite an image, it is necessary for the data to be self contained and relocatable.  Every "box" should be self contained with no offsets outside the box.  My study of JP2 is restricted to finding the Exiv2, ICC, IPTC and XMP data.  For sure these are self-contained blocks of binary data.  The metadata boxes are of type uuid and begin with a 128bit/16 byte UUID to identify the data.
 
 In a JP2 the first box, must be box-type of "jP\_\_" and have a length of 12.  The chain is terminated with a box-type of "jpcl".  Usually the terminal block with bring you to the end-of-file, however this should not be assumed as there can be garbage following the box chain.  The box chain of a super-box is normally terminated by reaching the end of its data.
+
+The box type of 'uuid' is interesting.  The first 12 bytes of the data are a UUID, then followed by the payload.  This is similar to the JPEG 'signature' concept, however it's fixed in length at 12 bytes and guaranteed to be globally unique.  The 'uuid' box is used by IPTC, Exiv2, XMP and IccProfiles.  JP2 files also have an optional 'colr' box to hold colour information which is usually an ICC profile.
 
 Validating a JP2 file is straight forward:
 
@@ -661,6 +663,38 @@ STRUCTURE OF JP2 FILE (MM): ../test/data/Reagan.jp2
     7951 |    32650 | 0x6332706a jp2c |      | .O.Q_/_____.___.___________.___.________
 END: ../test/data/Reagan.jp2
 908 rmills@rmillsmm-local:~/gnu/exiv2/team/book/build $ 
+```
+
+###ICC Profiles in JP2
+
+These are stored in the 'colr' box which is a sub-box of 'jp2h'.  I have found the specification very unsatisfactory.  w15177_15444 discusses ColourInformationBox extends Box(‘colr’).  I haven't found the definition of 'colr'.  I enquired on the ExifTool Forum and Phil offered advice which has been implemented in jp2image.cpp.  There are two ways to encode the profile.  You can use a `uuid` box with the uuid of "\x01\x00\x00\x00\x00\x00\x10\x00\x00\x05\x1c".  The box payload is the ICC profile.  Or you can use the 'colr' box which has 3 padding bytes "\02\0\0\" followed by the ICC profile.  So the length of the box will be 8 (the box) +3 (padding) +iccProfile.size()
+
+I found an older version of the spec in which 'colr' is documented on p161.  [http://hosting.astro.cornell.edu/~carcich/LRO/jp2/ISO\_JPEG200\_Standard/INCITS+ISO+IEC+15444-1-2000.pdf](http://hosting.astro.cornell.edu/~carcich/LRO/jp2/ISO_JPEG200_Standard/INCITS+ISO+IEC+15444-1-2000.pdf)
+
+```bash
+1380 rmills@rmillsmm-local:~/gnu/exiv2/team/book/build $ ./tvisitor ~/gnu/github/exiv2/0.27-maintenance/test/data/Reagan2.jp2 
+STRUCTURE OF JP2 FILE (MM): /Users/rmills/gnu/github/exiv2/0.27-maintenance/test/data/Reagan2.jp2
+ address |   length | box             | uuid | data
+       0 |        4 | 0x2020506a jP   |      | ....
+      12 |       12 | 0x70797466 ftyp |      | jp2 ____jp2 
+      32 |     3177 | 0x6832706a jp2h |      | ___.ihdr___.___._....___.Scolr.____.HLin
+  STRUCTURE OF JP2 FILE (MM): /Users/rmills/gnu/github/exiv2/0.27-maintenance/test/data/Reagan2.jp2:40->3177
+   address |   length | box             | uuid | data
+         0 |       14 | 0x72646869 ihdr |      | ___.___._...._
+        22 |     3147 | 0x726c6f63 colr |      | .____.HLino..__mntrRGB XYZ .._._._._1__a
+  END: /Users/rmills/gnu/github/exiv2/0.27-maintenance/test/data/Reagan2.jp2:40->3177
+    3217 |       -8 | 0x6332706a jp2c |      | .O.Q_/_____.___.___________.___.________
+END: /Users/rmills/gnu/github/exiv2/0.27-maintenance/test/data/Reagan2.jp2
+1381 rmills@rmillsmm-local:~/gnu/exiv2/team/book/build $ 
+```
+
+As you can see, the 'colr' box is stored at 40+22 bytes into the file and has a length of 3147.  The first four bytes of an ICC profile are the (big-endian) length of the file which in this case is 3144 bytes. The next 4 bytes of the profile are the maker and in this case is Linotype.
+
+```bash
+.../book/build $ dmpf skip=$((40+22)) count=19 endian=1  ~/gnu/github/exiv2/0.27-maintenance/test/data/Reagan2.jp2 
+   0x3e   62: __.Scolr.____.HLino  ->  00 00 0c 53 63 6f 6c 72 02 00 00 00 00 0c 48 4c 69 6e 6f 02
+                                       <--3147--->  c  o  l  r <-pad--> <--3144--->  L  i  n  o
+.../book/build $
 ```
 
 [TOC](#TOC)
@@ -2895,6 +2929,4 @@ I'm going off to cut the grass and to run in the beautiful countryside around my
 <center>![Exiv2](exiv2.png)</center>
 
 [TOC](#TOC)<br>
-
 ##
-
