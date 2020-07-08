@@ -539,15 +539,13 @@ I'm very pleased to say that neither the Exiv2 or XMP metadata in the image book
 ## JP2 JPEG 2000
 ![jp2](jp2.png)
 
-JP2 is always big-endian encoded.  The documentation is available here:  [https://www.iso.org/standard/78321.html](https://www.iso.org/standard/78321.html)
+JP2 is always big-endian encoded.  The documentation is available here:  https://www.iso.org/standard/78321.html
 
-The JPEG 2000 file is an ISOBMFF Container.  It consists of a linked lists of "boxes" which have a uint32\_t length, char[4] box-type and length-8 bytes of data.  A box may be a "super-box" which is a container for other boxes.
+The JPEG 2000 file is an ISOBMFF Container.  It consists of a linked lists of "boxes" which have a uint32\_t length, char[4] box-type and length-8 bytes of data.  A box may be a "super-box" and be a container for other boxes.
 
 I believe the "box" idea in ISOBMFF is intended to address the issue I discussed about TIFF files.  In order to rewrite an image, it is necessary for the data to be self contained and relocatable.  Every "box" should be self contained with no offsets outside the box.  My study of JP2 is restricted to finding the Exiv2, ICC, IPTC and XMP data.  For sure these are self-contained blocks of binary data.  The metadata boxes are of type uuid and begin with a 128bit/16 byte UUID to identify the data.
 
 In a JP2 the first box, must be box-type of "jP\_\_" and have a length of 12.  The chain is terminated with a box-type of "jpcl".  Usually the terminal block with bring you to the end-of-file, however this should not be assumed as there can be garbage following the box chain.  The box chain of a super-box is normally terminated by reaching the end of its data.
-
-The box type of 'uuid' is interesting.  The first 12 bytes of the data are a UUID, then followed by the payload.  This is similar to the JPEG 'signature' concept, however it's fixed in length at 12 bytes and guaranteed to be globally unique.  The 'uuid' box is used by IPTC, Exiv2, XMP and IccProfiles.  JP2 files also have an optional 'colr' box to hold colour information which is usually an ICC profile.
 
 Validating a JP2 file is straight forward:
 
@@ -669,7 +667,7 @@ END: ../test/data/Reagan.jp2
 
 These are stored in the 'colr' box which is a sub-box of 'jp2h'.  I have found the specification very unsatisfactory.  w15177_15444 discusses ColourInformationBox extends Box(‘colr’).  I haven't found the definition of 'colr'.  I enquired on the ExifTool Forum and Phil offered advice which has been implemented in jp2image.cpp.  There are two ways to encode the profile.  You can use a `uuid` box with the uuid of "\x01\x00\x00\x00\x00\x00\x10\x00\x00\x05\x1c".  The box payload is the ICC profile.  Or you can use the 'colr' box which has 3 padding bytes "\02\0\0\" followed by the ICC profile.  So the length of the box will be 8 (the box) +3 (padding) +iccProfile.size()
 
-I found an older version of the spec in which 'colr' is documented on p161.  [http://hosting.astro.cornell.edu/~carcich/LRO/jp2/ISO\_JPEG200\_Standard/INCITS+ISO+IEC+15444-1-2000.pdf](http://hosting.astro.cornell.edu/~carcich/LRO/jp2/ISO_JPEG200_Standard/INCITS+ISO+IEC+15444-1-2000.pdf)
+I found an older version of the spec in which 'colr' is documented on p161.  [http://hosting.astro.cornell.edu/~carcich/LRO/jp2/ISO_JPEG200_Standard/INCITS+ISO+IEC+15444-1-2000.pdf](http://hosting.astro.cornell.edu/~carcich/LRO/jp2/ISO_JPEG200_Standard/INCITS+ISO+IEC+15444-1-2000.pdf)
 
 ```bash
 1380 rmills@rmillsmm-local:~/gnu/exiv2/team/book/build $ ./tvisitor ~/gnu/github/exiv2/0.27-maintenance/test/data/Reagan2.jp2 
@@ -688,7 +686,7 @@ END: /Users/rmills/gnu/github/exiv2/0.27-maintenance/test/data/Reagan2.jp2
 1381 rmills@rmillsmm-local:~/gnu/exiv2/team/book/build $ 
 ```
 
-As you can see, the 'colr' box is stored at 40+22 bytes into the file and has a length of 3147.  The first four bytes of an ICC profile are the (big-endian) length of the file which in this case is 3144 bytes. The next 4 bytes of the profile are the maker and in this case is Linotype.
+As you can see, the 'colr' box is stored at 40+22 bytes into the file and has a length of 3147.  The first four bytes of an ICC profile is the length of the file which in this case is 3144 bytes. The next 4 bytes of the profile are the maker and in this case is Linotype.
 
 ```bash
 .../book/build $ dmpf skip=$((40+22)) count=19 endian=1  ~/gnu/github/exiv2/0.27-maintenance/test/data/Reagan2.jp2 
@@ -2419,11 +2417,11 @@ The first is a **DAB** who deliberately blocks progress.  Before we used GitHub,
 
 I think the need for a web-site for the project has been mostly replaced by GitHub.  We can publish new releases (and pre-releases).  However the effort to transfer all project resources to GitHub is considerable.  We have had complaints about the repository being too big, so we have an SVN repository for team resources such as old releases, this book, the project logo, minutes of team meetings and so on.  And while I understand the team's hostility to SVN, no sensible alternative has been proposed.
 
-The first couple of releases I published on GitHub were not instantly tagged.   Guess what?  Within hours, somebody complained.  People have complained about the version numbering scheme.  GitHub automatically generates bundles when you create a release.  Somebody complained about them.  Somebody complained that the pre-release web-site was too similar to the release web-site (although every page is labelled) so I put "PRERELEASE" on the background of every page.  You might expect that complaints would include words of appreciation for the effort to make the release.  You'd be wrong.  Complaints are normally abrupt.  Words such as _**Please**_ and _**Thank You**_ are seldom used by members of the community.
+The first couple of releases I published on GitHub were not instantly tagged.   Guess what?  Within hours, somebody complained.  People have complained about the version numbering scheme.  GitHub automatically generates bundles when you create a release.  Somebody complained about them.  Somebody complained that the pre-release web-site was too similar to the release web-site (although every page is labelled) so I put "Pre-Release" on the background of every page.  You might expect that complaints would include words of appreciation for the effort to make the release.  You'd be wrong.  Complaints are normally abrupt.  Words such as _**Please**_ and _**Thank You**_ are seldom used by members of the community.
 
 How about **TAB** which is to change the project tools.  Git came close to killing me.  I know many people love Git and think it's the greatest thing ever invented.  I don't.  I worked on Acrobat at Adobe.  A big project.  When I retired in 2014, there were about 200 developers who had been working for 20 years on 25 million lines of code.  To build it, you need 100GBytes of free space.   How can git handle such a monster when every repos has 100% of the code and 100% of the project history?  Nobody has given me an answer.
 
-When we adopted Git and it took me 2 years to figure out how to submit a PR.  I purchased the book "Pro Git".  It doesn't cover PRs.  So, the only way to submit code is undocumented.  I am very grateful to Luis and Andreas S for helping me with Git.  I eventually wrote this on a card:
+When we adopted Git and it took me 2 years to figure out how to submit a PR.  I purchased the book **Pro Git**.  It doesn't cover PRs.  So, the only way to submit code is undocumented.  I am very grateful to Luis and Andreas S for helping me with Git.  I eventually wrote this on a card:
 
 <center><img src="GitIdiotCard.jpg" width="500" style="border:2px solid #23668F;"/></center>
 
@@ -2607,7 +2605,166 @@ To be written.
 <div id="13-18">
 ### 13.18 Project Management and Scheduling
 
-To be written.
+This is another very difficult topic to discuss.  There are two worlds.  There is the perfect world which is inhabited by management.  Those people live in a world which is quite different from mine.  In their world, the schedule is king, nobody ever makes a mistake, everything works.  It's a wonderful place.  Sadly, I've never had the good fortune to live in that world.
+
+I worked in a company which, to hide their identity, we'll call "West Anchors".  A colleague was giving a board presentation in which they had a slide:
+
+_**It is the Policy of West Anchors to get it right first time, every time.**_
+
+There we have it.  Nothing is ever late, nothing is more difficult than expected, all suppliers deliver on time to specification and nobody is ever sick.  When I discussed the project schedule with my boss I asked him why there was no time in the schedule for bugs and fixes, his response was "There better not be be any bugs."  Five years later, West Anchors were closed by their owners. 
+
+I also had the misfortune to work at a company where the boss was an expert in planning.  He explained to me that the only challenge in software engineering is to get the schedule right.  Everything else was trivial.
+
+So, if you live in the perfect world, you'll not find anything interesting or useful in this part of the book, because I'm talking a less that perfect world which I will call "Reality".
+
+Scheduling an open-source project is almost impossible.  You are dealing with volunteers.  You might think you know the volunteers, however you don't.  It's unusual to have even met the people.  How can you understand the pressure and stress in another person's life when you know so little about their circumstances.  And remember they are volunteers.  They can walk off the job if they wish.  In a business, management have tools such as money, vacations, bonuses, lay-offs and promotions to manipulate the employees.  In the open-source world, you have none of those tools.
+
+Another challenge is that most users are perfect and live in this other world where everything works.  The world of "West Anchors".  So users seldom understand that the open-source project might be populated by people who live in the depressing world of "Reality".
+
+Here is the problem and my thoughts about how to solve the scheduling problem.
+
+####The Problem
+
+The problem is really simple.  How to plan large projects and deliver on time to budget.
+
+####The state of the game
+
+Currently, planning is based mostly on PERT and descendant technology.  Products such as Microsoft Project are designed to schedule resources and tasks.  And indeed it works for some projects and fails hopelessly for others.
+
+When the London 2012 Olympic Games were bid, the budget was $3 billion.  The final cost has been stated as $20 billion.  I have no data to say if there were other costs, such as policing, which are not included in the $20 billion.
+
+This is rather common.  The cost of construction of the aircraft carriers HMS Queen Elizabeth and HMS Prince of Wales are other high visibility projects in which the plan and reality are very different.
+
+The reason for cost over-runs is that new work items are required that were not known early enough to be in the plan.  We cannot know what we do not know.  However there may be a way to calculate the size of the unknowns at the beginning of a project.
+
+####A project is recursive and requires recursive handling
+
+When a project is simple - for example painting your house - it is possible to measure the size of the task and calculate the quantity of materials and labour required.  This method works fine for a well defined project with quantifiable tasks.
+
+However, if you want your house to be painted in an extra-ordinary way, this method totally fails.  Think of Michael Angelo in the Sistine Chapel in Rome.  Michael and the Pope came close to blows in a 20 year struggle to produce one of the wonders of man's creativity.  Nobody gives a hoot today about the cost.  Nobody cares about how long it took.  Nobody can understand why the customer and the contractor were divided over something as trivial as money.
+
+The reason for the cost over-runs is because the project is recursive.  In a simple project, you have a sequence (or connected graph) of tasks:
+
+| Step 1 | Step 2 | Step 3 | Step 4 | Step 5 |
+|:--     |:--     |:--     |:--     |:--     |
+| Begin | Remove furniture | Apply N litres of paint | Restore furniture | Done |
+
+
+If the project had many rooms (say 10-20), you have to schedule resources (people).  You have a finite set of painters, and you may have more than 1 team of painters.  However the basic linear model is not affected.
+
+When you scale to painting something large (like an Aircraft Carrier), two items rapidly emerge to invalidate the simple model.
+
+1) Requirements Change
+   The Aircraft Carrier requires stealth paint that hasn't been invented.
+
+2) The paint task is large
+   You require training and inspection services to manage quality.
+
+And many other things arrive which were not in the simple model. In the worst case, new tasks can be larger than the original task.  You have an exploding, complex challenge.
+
+To deal with this, you have to start a project inside the project.  Something like "Remove all furniture" is obvious in a house. But what would it mean on an Aircraft Carrier?
+
+So, we stay calm and add more items to the project plan.  And that's when everything goes wrong.  The plan gets longer and more detailed.  However it's still the same old linear model.
+
+My observation is that the project is an assembly of projects.  As you develop the project, every line item in the simple model is a project.  And then there are projects inside the projects.  For example if special paint is required for the Aircraft Carrier, that task is probably a complex network of projects involving chemistry, special machines to apply the paint, and maintenance processes for the ship in service.
+
+####What does this have to do with Fractals?
+
+Everything.  A project is a recursive entity that must be handled with recursive techniques.  Fractal Geometry deals with recursion.
+
+Being a retired Software Engineer, I have often been told "The project is late because you (the engineer) did not itemise the project properly at the outset.".  Wrong.  It's the inflexible PERT model that cannot handle recursion.
+
+####The State of Project Planning Today
+
+The software industry has a huge and sad collection of projects which have come off the rails.  If the bosses had known at the outset, things would have been different.  There are two things we care about passionately:
+
+1. How long is this going to take?
+2. How much is this going to cost?
+
+Notice, we don't get overly bothered about what "it" is.  We care about time and money.
+
+If we do not know about the special paint for the Aircraft Carrier, are we upset?  No.  However the cost and schedule damage is painful for everybody involved.
+
+Now, we can't know what we do not know.  Is there are a way to calculate the size of the unknowns?  There might be, as I will explain.
+
+When you plan a project, you say "How long did it take to do the last one?", take into account inflation and apply optimism "We won't make the same mistakes again.".  This is very bad thinking.  The United Kingdom has not built an Aircraft Carrier for almost 40 years.  Most of the engineers working on HMS Queen Elizabeth were not born when HMS Invincible sailed to the Falklands.
+
+A whole collection of project planning tools are now used in the software industry.  Together they go under the banner: "Agile" or "Scrum".  Scrum imposes a regime of meetings and reviews on the project team.  Several of these techniques are interesting.
+
+1. Story Points, Task Size (and Task Poker)
+The size of a task is not 1,2,3,4,5 as difficulty increases.  They use the Fibonacci series: 1,2,3,5,8,13,21 ...  So big tasks rapidly increase their allocation of resources and time.
+
+Notice that the Fibonacci series is recursive: X(n) = X(n-1) + X(n-2) where X(1),X(2)=1
+
+2. Step wise linear (the sprint)
+Scrum says "we can't plan everything at once, however we can complete well defined tasks on sprint schedules (typically 2 weeks).  I don't know how scrum deals with tasks that are longer than 1 sprint.
+
+3. Velocity
+The team velocity (average story points completed over the last 3 sprints) are monitored and used to verify that the team is being neither optimistic nor pessimistic in their determination of story points for tasks.
+
+Velocity is not predicted, it is measured by project performance.  In a nutshell, it is recursive.
+
+However scrum has a fatal weakness.  Nobody knows the size of the total project.  The model is fundamentally inadequate, because it is a monitoring tool and not predictive.
+
+####Can we have a single unified model for project planning?
+
+I believe there's a measure in Fractals called "Roughness" which measures some feature of the recursive item.  If you measure the roughness of animal lungs (which are of course recursive), they are about the same in Elephants, Humans and Mice.  A value of 1.0 implies that the object is perfectly smooth.  Higher values represent the chaotic nature of the item.
+
+I think it's possible to measure roughness in past projects in addition to the historical performance.  So, although we have never built HMS Queen Elizabeth, we could know from other Naval projects:
+
+1. How much paint/painter/per time unit (the only measure in Microsoft Project)
+2. The roughness of painting Navy Ships (projects hiding inside the project)
+
+Both are required to estimate the size of the task.  PERT models assume a roughness of 1.0 and that is why they are bound to failure in large projects.  No large project has a roughness of 1.0.
+
+#### So how can we use this?
+
+We need the following feature added to Microsoft Project:
+1. Add roughness to every item in the the project plan
+2. Collect data to estimate roughness
+3. We need a pot of time and money, which I call "Contingencies"
+
+Contingencies are a % of the whole project that should be used to assign resources as sub-projects emerge.  All items in the project should have contingencies from which additional resources can be allocated.  This is non-confrontational and does not require blame and finger pointing.  We knew about the roughness and planned for it.
+
+In the past, I have applied contingencies as big brush stokes to the complete project.  If the project is similar to the last one, contingencies are 10%.  If the project involves many unknowns, perhaps it is 300% of the project.
+
+An ex-boss thought 414.159%  Factor 3.14159 to walk round the object, then 1.0 for the task itself!  The point is that when you do something for the first time, you will spend time doing work that is subsequently abandoned.  Nothing new can be achieved without trial and error.
+
+Research is required to measure task roughness in past projects to validate this approach.
+
+####Other serious limitations with PERT
+
+There are serious limitations with PERT.  I only intend to investigate the use of fractals in planning and to ignore other limitations of PERT such as:
+
+1. PERT assumes that you can itemise and quantify every task in the project. If you are investigating something, you can probably do neither of these things.
+
+Imagine using PERT to investigate a crime.  Impossible.  Or consider medical treatment.  If you demanded a PERT plan from a doctor treating your cancer, he will show you out of his office.  Or consider demanding a PERT plan from a financial advisor about your investments.
+
+2. The circumstances surrounding the project can change during the life of the project and have major implications for the project.
+
+3. You will do abortive work and encounter road blocks.
+
+4. People are not interchangeable.  People leave, or are assigned to other projects.  New team members require time to come up to speed with the project.
+
+5. Management, and other project stakeholders, can change goals and objectives.
+
+Because of the recursive nature of projects, there are other serious limitations hiding inside these limitations.  And of course there are limitations I have not considered, imagined, or thought about.
+
+#### How do I move from here?
+
+I'm thinking about a PhD in this area.  This will take about 10,000 hours over 5 years. The only tasks that I can define now are:
+
+1. Write a Paper for Review (this document)
+2. Find a University willing to house/mentor/supervise the effort
+3. Learn all about Fractals
+4. Find solution and publish
+5. Graduate
+
+What is the roughness of these tasks?  Unknown.  Graduate is simple.  Or is it?  Do I need a new kilt?  Who's going to attend?  Where will everybody stay?  Even little tasks can grow into projects.
+
+One thing is certain, getting a better approach to project estimation is of enormous importance.  We have to do better.  I have tried to set out here an area of investigation that is worthy of attention.
+
+
 
 [TOC](#TOC)
 <div id="13-19">
@@ -2700,10 +2857,9 @@ The purpose of this program is to inspect files.  It's od on steroids.
 
 std::vector      <const char*> paths;
 std::map<std::string,uint32_t> options;
-
 static enum error_e
-{    errorOK = 0
-,     errorSyntax
+{   errorOK = 0
+,   errorSyntax
 ,   errorProcessing
 }   error = errorOK ;
 
@@ -2769,7 +2925,6 @@ uint16_t swap(uint16_t* value,bool bSwap)
     if ( bSwap ) swap(value,&result,sizeof result);
     return result;
 }
-
 bool file(const char* arg)
 {
     if ( std::string("-") == std::string(arg) ) return true ;
@@ -2911,7 +3066,6 @@ int main(int argc, char* argv[])
         }
         f = NULL;
     }
-
     return error ;
 } // main
 ```
@@ -2929,4 +3083,6 @@ I'm going off to cut the grass and to run in the beautiful countryside around my
 <center>![Exiv2](exiv2.png)</center>
 
 [TOC](#TOC)<br>
+
 ##
+
