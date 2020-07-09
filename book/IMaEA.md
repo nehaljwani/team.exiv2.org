@@ -261,13 +261,24 @@ The header for TIFF is 8 bytes.  It is the _**magic**_  header followed by a lon
 
 | Element  | TIFF             | BigTiff              | Element        | TIFF      | BigTiff    |
 |:--       |:--               |:--                   |:--             |:--        |:--         |
-| Header   | XX*_Offset       | XX+_ 8 0 64bitOffset | Header         | 8 bytes   | 16 bytes   |
+| Header   | XX*_Long         | XX+_ 8 0 Long8       | Header         | 8 bytes   | 16 bytes   |
 | Marker   | **\*** 0x2a = 42 | **\+** 0x2b = 43     | Offset         | uint32\_t | uint64\_t  |
 | Tag      | uint16\_t        | uint16\_t            | Entry          | 12 bytes  | 20 bytes   |
 | Type     | uint16\_t        | uint16\_t            | Entries **#E** | uint16\_t | uint64\_t  |
 | Count    | uint32\_t        | uint64\_t            | Next           | uint32\_t | uint64\_t  | 
 
 It's also important to understand that Endian can change as we descend into the file.  There are images in which there are sub-files whose endian setting is different from the container.
+
+### XMP and ICC Profiles in Tiff
+
+These are defined in the following tags:
+
+```bash
+$ taglist ALL | grep -e ^Image\.InterColorProfile  -e ^Image.XMLPacket
+Image.XMLPacket,	700,	0x02bc,	Image,	Exif.Image.XMLPacket,	Byte,	XMP Metadata (Adobe technote 9-14-02)
+Image.InterColorProfile,	34675,	0x8773,	Image,	Exif.Image.InterColorProfile,	Undefined,	Contains an InterColor Consortium (ICC) format color space characterization/profile
+$ 
+```
 
 ### Garbage Collecting Tiff Files
 
@@ -433,7 +444,30 @@ The Agfa MakerNote contains an IFD which is preceded by **ABC_II#E** where #E is
 
 #### ICC Profile data > 64k in JPEG
 
-This is documented by ICC and implemented in Exiv2 for both reading and writing.  tvisitor.cpp does not support ICC Profiles.
+This is documented by ICC in ICC1v43\_2010-12.pdf and implemented in Exiv2 for both reading and writing.  The ICC profile has a signature of ICC_PROFILE_ followed by two uint_8t values which are the chunk sequence and the chunks count.  The remainder of the data is the ICC profile.  The test file test/data/ReaganLargeJpg.jpg has data in the format.
+
+```bash
+1155 rmills@rmillsmbp:~/gnu/github/exiv2/0.27-maintenance $ exiv2 -pS test/data/ReaganLargeJpg.jpg 
+STRUCTURE OF JPEG FILE: test/data/ReaganLargeJpg.jpg
+ address | marker       |  length | data
+       0 | 0xffd8 SOI  
+       2 | 0xffe0 APP0  |      16 | JFIF.....,.,....
+      20 | 0xffe1 APP1  |    4073 | Exif..MM.*......................
+    4095 | 0xffe1 APP1  |    6191 | http://ns.adobe.com/xap/1.0/.<?x
+   10288 | 0xffe2 APP2  |   65535 | ICC_PROFILE...... APPL....prtrRG chunk 1/25
+   75825 | 0xffe2 APP2  |   65535 | ICC_PROFILE....S...r.R...t.RT..w chunk 2/25
+  141362 | 0xffe2 APP2  |   65535 | ICC_PROFILE.....o..b.tn..Q.Km... chunk 3/25
+...
+ 1517639 | 0xffe2 APP2  |   65535 | ICC_PROFILE...9.0.894.0.901.0.90 chunk 24/25
+ 1583176 | 0xffe2 APP2  |   41160 | ICC_PROFILE....463.0.465.0.469.0 chunk 25/25
+ 1624338 | 0xffdb DQT   |      67 
+ 1624407 | 0xffdb DQT   |      67 
+ 1624476 | 0xffc2 SOF2  |      17 
+ 1624495 | 0xffc4 DHT   |      30 
+ 1624527 | 0xffc4 DHT   |      27 
+ 1624556 | 0xffda SOS  
+1156 rmills@rmillsmbp:~/gnu/github/exiv2/0.27-maintenance $ 
+```
 
 #### XMP data > 64k in JPEG
 
@@ -527,6 +561,36 @@ void Visitor::visitChunk(Io& io,Image& image
     }
 }
 ```
+
+### PNG ICC Profiles and XMP
+
+As PNG chunks have a 32 bit length field, they are a single chunk.  I believe the ICC profile is normally zlib compressed.   Read the read the code in Exiv2 for more information.  XMP is normally stored as a iTXt (uncompressed) or zTXt compressed block.  There is a uncompressed signature at the start of the chunk for easy identification.
+
+An ICC profile is optionally present in the iCCP chunk.  As PNG Ch
+
+```bash
+1174 rmills@rmillsmbp:~/gnu/github/exiv2/0.27-maintenance $ exiv2 -pS test/data/ReaganLargePng.png 
+STRUCTURE OF PNG FILE: test/data/ReaganLargePng.png
+ address | chunk |  length | data                           | checksum
+       8 | IHDR  |      13 | ............                   | 0x8cf910c3
+      33 | zTXt  |    8461 | Raw profile type exif..x...iv. | 0x91fbf6a0
+    8506 | zTXt  |     636 | Raw profile type iptc..x..TKn. | 0x4e5178d3
+    9154 | iTXt  |    7156 | XML:com.adobe.xmp.....<?xpacke | 0x8d6d70ba
+   16322 | gAMA  |       4 | ....                           | 0x0bfc6105
+   16338 | iCCP  | 1151535 | ICC profile..x...UP.........!! | 0x11f49e31
+ 1167885 | bKGD  |       6 | ......                         | 0xa0bda793
+ 1167903 | pHYs  |       9 | ...#...#.                      | 0x78a53f76
+ 1167924 | tIME  |       7 | ......2                        | 0x582d32e4
+ 1167943 | zTXt  |     278 | Comment..x.}..n.@....O..5..h.. | 0xdb1dfff5
+ 1168233 | IDAT  |    8192 | x...k.%.u%....D......GWW...ER. | 0x929ed75c
+ 1176437 | IDAT  |    8192 | .F('.T)\....D"]..."2 '(...D%.. | 0x52c572c0
+ 1184641 | IDAT  |    8192 | y-.....>....3..p.....$....E.Bj | 0x65a90ffb
+ 1192845 | IDAT  |    8192 | ....S....?..G.....G........... | 0xf44da161
+ 1201049 | IDAT  |    7173 | .evl...3K..j.S.....x......Z .D | 0xbe6d3574
+ 1208234 | IEND  |       0 |                                | 0xae426082
+1175 rmills@rmillsmbp:~/gnu/github/exiv2/0.27-maintenance $ 
+```
+
 
 ### PNG and the Zlib compression library
 
@@ -1624,9 +1688,11 @@ The code in _**tvisitor.cpp**_ implements the visitor pattern and three visitors
 
 | _tvisitor option_ | _exiv2 option_ | Description |
 |:--              |:-----        |:-- |
-| $ ./tvisitor -pS path<br>$ ./tvisitor path | $ exiv2 -pS path | Print the structure of the image |
-| $ ./tvisitor -pR path   | $ exiv2 -pR path | Recursively print the structure of the image |
-| $ ./tvisitor -pX path   | $ exiv2 -pX path | Print the XMP/xml in the image |
+| $ ./tvisitor S path<br>$ ./tvisitor path | $ exiv2 -pS path | Print the structure of the image |
+| $ ./tvisitor R path   | $ exiv2 -pR path | Recursively print the structure of the image |
+| $ ./tvisitor X path   | $ exiv2 -pX path | Print the XMP/xml in the image |
+| $ ./tvisitor I path   | $ exiv2 -pI path | Print the ICC Profile in the image |
+| $ ./tvisitor U path   | $ exiv2 -pa --undefined path | Show unknown tags |
 
 There's a deliberate bug in the code in tvisitor.cpp.  The class Tiff does not know how to recover the XMP/xml.  You the reader, can investigate a fix.  You will find the solution in the code in the Exiv2 library.
 

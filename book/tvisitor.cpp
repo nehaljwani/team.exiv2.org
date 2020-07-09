@@ -2018,7 +2018,7 @@ void init()
     tiffDict  [ 0x0112 ] = "Orientation";
     tiffDict  [ 0x0115 ] = "SamplesPerPixel";
     tiffDict  [ 0x0116 ] = "RowsPerStrip";
-    tiffDict  [ 0x0117 ] = "StringByteCounts";
+    tiffDict  [ 0x0117 ] = "StripByteCounts";
     tiffDict  [ 0x011a ] = "XResolution";
     tiffDict  [ 0x011b ] = "YResolution";
     tiffDict  [ 0x011c ] = "PlanarConfiguration";
