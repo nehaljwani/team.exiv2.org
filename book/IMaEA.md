@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 48px;color:#FF4646;font-family: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:36px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-07-03</h3>
+<h3 align=center style="font-size:36px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-07-09</h3>
 
 <div id="dedication">
 ## _Dedication and Acknowledgment_
@@ -232,7 +232,7 @@ The good news however is that file formats come in families which are:
 | JPG     | The most common format                                                                 | JPEG |
 | PNG     | Another popular format<br>Linked list of chunks                                         | PNG |
 | Canon   | Popular Canon "Raw" formats.<br>Dave Coffin parse.c decodes                        | CRW, CR2 |
-| IsoBMFF | Based on the .mp4 format                                           | MP4, CR3, AVI, HEIF, JP2 |
+| ISOBMFF | Based on the .mp4 format                                           | MP4, CR3, AVI, HEIF, JP2 |
 | RIFF    | Google Promoted Format                                                                 | WEBP |
 | Legacy  | These legacy formats<br>usually have no metadata                                   | GIF, BMP |
 | IPTC    | Interpress Trade Consortium | Many |
@@ -244,7 +244,7 @@ The good news however is that file formats come in families which are:
 
 I suspect the software mess is caused by the hardware engineers.  When hardware people start a new project, they copy the CAD files from the last project and proceed from there.  They don't worry about back-porting changes or compatibility.  They think firmware people are stupid and do a terrible job!  We have to live with this.
 
-There is also the issue of patents.  It's unclear if it's legal to read an IsoBMFF file which is used by Apple to store Heif files.  I believe it is legal to read IsoBMFF files.  It's illegal to reverse engineer the H.264 codec which is used to encrypt the image in a HEIF.  Metadata is occasionally compressed (PNG), encrypted (Nikon) or ciphered (Sony).
+There is also the issue of patents.  It's unclear if it's legal to read an ISOBMFF file which is used by Apple to store Heif files.  I believe it is legal to read ISOBMFF files.  It's illegal to reverse engineer the H.264 codec which is used to encrypt the image in a HEIF.  Metadata is occasionally compressed (PNG), encrypted (Nikon) or ciphered (Sony).
 
 [TOC](#TOC)
 <div id="TIFF">
@@ -2459,7 +2459,7 @@ You are probably not surprised to learn that most stakeholders consider their co
 
 The difficulties of maintaining an open-source project are well explained in this article: [https://steemit.com/opensource/@crell/open-source-is-awful](https://steemit.com/opensource/@crell/open-source-is-awful) from which I have copied this cartoon:
 
-<center><img src="open-source-today.jpg" width="400" style="border:2px solid #23668F"/></center>
+<center><img src="open-source-today.jpg" width="300" style="border:2px solid #23668F"/></center>
 
 I will quote the following as it seems totally true.
 
@@ -2489,7 +2489,7 @@ How about **TAB** which is to change the project tools.  Git came close to killi
 
 When we adopted Git and it took me 2 years to figure out how to submit a PR.  I purchased the book **Pro Git**.  It doesn't cover PRs.  So, the only way to submit code is undocumented.  I am very grateful to Luis and Andreas S for helping me with Git.  I eventually wrote this on a card:
 
-<center><img src="GitIdiotCard.jpg" width="500" style="border:2px solid #23668F;"/></center>
+<center><img src="GitIdiotCard.jpg" width="300" style="border:2px solid #23668F;"/></center>
 
 The funny brown marks were added by our cat Lizzie.  I'd just written this card when she arrived in my office fresh from a hunt in the garden.  I don't know what she did to the card.  She's never done anything like this before or since.  She expressed her opinion of git.
 
@@ -2501,11 +2501,11 @@ Or there's the review mechanism which I'll dub **RAB**  You insist:
 2. No contributor can approve their own change.
 3. Nobody reviews or approves a code change.
 
-There are many other forms of **AB**.  For example, there is useless **UAB**.  For example, a legal challenge.  You say "We might be infringing somebody's patent!".  This is particularly effective when you don't provide evidence.  Even if there is a written legal judgement you can refute that with the words: "The legal judgement has not been tested in court.".  This show-stopper was used by two contributors to block ISOBMFF support in Exiv2 v0.27.3.  I received more than 100 emails from users asking "What is the legal problem?", so I called a meeting on Zoom and users on 5 continents attended.  The two contributors who raised the show-stopper did not attend.  One emailed later to say "Apologies.  I fell asleep on the couch and missed the meeting.".
+There are many other forms of **AB**.  For example, there is useless **UAB**.  For example, a legal challenge.  You say "We might be infringing somebody's patent!".  This is particularly effective when you don't need to provide evidence.  Even if there is a written legal opinion you can refute that with the words: "The legal opinion has not been tested in court.".  This show-stopper was used by two contributors to block ISOBMFF support in Exiv2 v0.27.3.  I received more than 100 emails from users asking "What is the legal problem?", so I called a meeting on Zoom and users on 5 continents attended.  The two contributors who raised the show-stopper did not attend.  One emailed later to say "Apologies.  I fell asleep on the couch and missed the meeting.".
 
 How about this method?  You complain about a font being used.  We'll call this **FAB**.  This is very effective because you're only asking for a 100% reformat of the book and all the graphics.  That's not too much to ask.  When I designed the Exiv2 Logo, a contributor asked for the font to be changed.  I proposed alternatives and received no response.
 
-As for myself, I am a **CAB** where *C* stands for *clever*.  However I am an **AB** and that's why I've found it so difficult to recruit and retain contributors.
+As for myself, I am a **CAB** where *C* stands for *clever*.  However I am an **AB** and that's why I've found it difficult to recruit and retain contributors.
 
 There are so many ways to incur the outrage of stakeholders.  And so many ways in which people can and do complain.  All in all, working on an open-source project is a thank-less task.  When I released v0.25, a contributor in Peru said on Facebook  _**Robin should get a medal for his work.  Exiv2 would have died years ago without his commitment.**_  So I asked my family to write to the UK Government to propose that I be given an honour.  They silently refused.  Alison comforted me by saying _**Nobody is ever going to thank you for working on Exiv2.**_
 
@@ -2513,7 +2513,7 @@ There are so many ways to incur the outrage of stakeholders.  And so many ways i
 
 There is a fix.  We do what the Fuzzing Police do.  They do not negotiate with any project.  They arrive unexpectedly and deliver their message.  And they track your response and performance.
 
-The Community would be well served by a similar task force to investigate complaints about the behaviour of stakeholders and maintainers.  There are undoubtably stakeholders who would report me.  I would be able to raise a complaint about a stakeholder if I felt they had behaved inappropriately.
+The Community would be well served by a similar task force to investigate complaints about the behaviour of stakeholders and maintainers.  There are undoubtably stakeholders who would report me.  However I would be able to complain about a stakeholder if I felt they had behaved inappropriately.
 
 For sure, I would not welcome my performance being reviewed.  However a fair, honest and independant review of an issue would be helpful.  The stakeholder and I would shake hands and learn from the situation.  If the stakeholder or maintainer do not attend the review, their github account should be suspended.
 
@@ -2812,30 +2812,30 @@ There are serious limitations with PERT.  I only intend to investigate the use o
 
 | Trouble | Observation |
 |:--      |:--          |
-|  PERT assumes that you can itemise and quantify every task in the project. | If you are investigating something, you can probably do neither of these things. |
-| Many projects cannot be quantified.  | Imagine using PERT to investigate a crime.  Impossible.<br>  Or consider medical treatment.  If you demanded a PERT plan from a doctor treating your cancer, he will show you out of his office.<br>Or consider demanding a PERT plan from a financial advisor about your investments. |
-| The circumstances surrounding the project can change during the life of the project and have major implications for the project. | |
+|  PERT assumes that you can itemise and quantify every task in the project. | If you are investigating something new, you can probably do neither of these things. |
+| Many projects cannot be quantified.  | Imagine using PERT to investigate a crime.  Impossible.<br>Can you imagine getting a PERT plan from a doctor who is treating your cancer?  <br>Why can you not get a PERT plan from a financial advisor about your investments? |
 | You will do abortive work and encounter road blocks. | |
 | People are not interchangeable. | People leave, or are assigned to other projects.  New team members require time to come up to speed with the project. |
-| Management, and other project stakeholders, can change goals and objectives. | |
+| Some tasks have a genstation period | If you and having a baby, bringing in more woman won't reduce the 9 month wait.  |
+| Management, and other project stakeholders, can change goals and objectives. | The circumstances surrounding the project can change during the life of the project and have major implications for the project. |
 
-Because of the recursive nature of projects, there are other serious limitations hiding inside these limitations.  And of course there are limitations I have not considered, imagined, or thought about.
+Because of the recursive nature of projects, there are serious limitations hiding inside these limitations.  And of course there are limitations I have not considered, imagined, or thought about.
 
 #### So what am I going to do about this?
 
-When I retired, I was thinking about doing a PhD in this area and thought it might take 10,000 hours over 5 years. The only tasks that I could define were:
+When I retired, I was thinking about doing a PhD in this area and thought it might take 10,000 hours over 5 years. The only tasks that I could define in 2014 were:
 
-1. Write a Paper for Review (this document)
-2. Find a University willing to house/mentor/supervise the effort
+1. Write an outline of the project
+2. Find a University willing to mentor/supervise the effort
 3. Learn all about Fractals
-4. Find solution and publish
+4. Research and publish a thesis
 5. Graduate
 
 What is the roughness of these tasks?  Unknown.  Graduate is simple.  Or is it?  Do I need a new kilt?  Who's going to attend?  Where will everybody stay?  Even little tasks can grow into projects.
 
 One thing is certain, getting a better approach to project estimation is of enormous importance.  We have to do better.  I have tried to set out here an area of investigation that is worthy of attention.
 
-Final words about this.  I didn't undertake a PhD.  Instead I have spent 10,000 hours working on Exiv2.  This book is my "thesis".  The presentation at LGM in Rennes is my defence.  My reward is to know that I've done my best.
+Final words about this.  I didn't undertake a PhD.  Instead I have spent 10,000 hours working on Exiv2.  This book is my  thesis.  The presentation at LGM in Rennes is my defence.  My reward is to know that I've done my best.
 
 [TOC](#TOC)
 <div id="13-19">
