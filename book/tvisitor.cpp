@@ -315,7 +315,7 @@ uint16_t typeSize(type_e type)
     return isType1Byte(type) ? 1
         :  isType2Byte(type) ? 2
         :  isType4Byte(type) ? 4
-        :  isType8Byte(type)  ? 8
+        :  isType8Byte(type) ? 8
         :  1 ;
 }
 type_e getType(const DataBuf& buf,size_t offset,endian_e endian)
@@ -737,6 +737,7 @@ typedef uint32_t PSopt_e;
 #define kpsRecursive 2
 #define kpsXMP       4
 #define kpsUnknown   8
+#define kpsIcc      16
 
 // 1.  declare types
 class   Image; // forward
@@ -755,6 +756,7 @@ public:
     {};
     virtual ~Visitor() {};
 
+    // abstract methods which visitors must define
     virtual void visitBegin   (Image& image)                         = 0 ;
     virtual void visitEnd     (Image& image)                         = 0 ;
     virtual void visitDirBegin(Image& image,uint64_t nEntries)       = 0 ;
@@ -766,11 +768,14 @@ public:
     virtual void visitCiff    (Io& io,Image& image,uint64_t address) = 0 ;
     virtual void visitSegment (Io& io,Image& image,uint64_t address
              ,uint8_t marker,uint16_t length,std::string& signature) = 0 ;
-    virtual void visitXMP     (DataBuf& xmp)                         = 0 ;
     virtual void visitExif    (Io& io)                               = 0 ;
     virtual void visitChunk   (Io& io,Image& image,uint64_t address,char* chunk,uint32_t length,uint32_t checksum) = 0;
     virtual void visitBox     (Io& io,Image& image,uint64_t address,uint32_t box,uint32_t length) = 0 ;
-
+    
+    // optional methods
+    virtual void visitXMP     (DataBuf& /* xmp */ ) { return ; }
+    virtual void visitICC     (DataBuf& /* icc */ ) { return ; }
+ 
     PSopt_e       option() { return option_ ; }
     std::ostream& out()    { return out_    ; }
 private:
@@ -1240,8 +1245,6 @@ public:
     {
         // if ( start ) out() << std::endl;
     }
-    void visitXMP (DataBuf& xmp);
-    void visitExif(Io&      io );
     void visitCiff
     ( Io&                   io
     , Image&                image
@@ -1249,6 +1252,9 @@ public:
     ) {
         IoSave  restore(io,address);
     }
+    void visitXMP (DataBuf& xmp);
+    void visitICC (DataBuf& xmp);
+    void visitExif(Io&      io );
 
     bool printTag(std::string& name)
     {
@@ -1417,7 +1423,7 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
             uint64_t size   = typeSize(type) ;
             size_t   alloc  = size*count     ;
             DataBuf  buf(alloc);
-            if ( alloc < (bigtiff?8:4) ) {
+            if ( alloc <= (bigtiff?8:4) ) {
                 buf.copy(&offset,size);
             } else {
                 IoSave save(io_,offset);
@@ -1739,6 +1745,10 @@ void ReportVisitor::visitXMP(DataBuf& xmp)
 {
     if ( option() & kpsXMP ) out() << xmp.pData_;
 }
+void ReportVisitor::visitICC(DataBuf& icc)
+{
+    if ( option() & kpsIcc ) out().write((const char*)icc.pData_,icc.size_);
+}
 void ReportVisitor::visitExif(Io& io)
 {
     if ( option() & kpsRecursive ) {
@@ -1766,6 +1776,7 @@ void JpegImage::accept(Visitor& visitor)
     uint64_t   nExif     = 0       ; // Count the segments in Exif
     uint64_t   aExif     = 0       ; // Remember address of block0
 
+    DataBuf    ICC                 ; // buffer to suck up ICC
     DataBuf    XMP                 ; // buffer to suck up XMP
     bool       bExtXMP   = false   ;
 
@@ -1788,7 +1799,8 @@ void JpegImage::accept(Visitor& visitor)
         bool        bHasSignature = marker == com_ || bAppn ;
         std::string signature     = bHasSignature ? buf.binaryToString(2, buf.size_ - 2): "";
 
-        bool        bExif         = bAppn && signature.size() > 6 && signature.find("Exif") == 0  ;
+        bool        bExif         = bAppn && signature.size() >  6 && signature.find("Exif"       ) == 0;
+        bool        bICC          = bAppn && signature.size() > 10 && signature.find("ICC_PROFILE") == 0;
         exifState                 = bExif       ? kesAdobe
                                   : (exifState == kesAdobe && length == 65535) ? kesAgfa
                                   : kesNone ;
@@ -1810,11 +1822,15 @@ void JpegImage::accept(Visitor& visitor)
             exif.empty(true)  ; // empty the exif buffer
             nExif     = 0     ; // reset the block counter
         }
-        // deal with deferred XMP
+        // deal with deferred XMP and ICC
         if ( !XMP.empty() && !bAppn ) {
             visitor.visitXMP(XMP); // tell the visitor
             bExtXMP = false ;
             XMP.empty(true) ; // empty the exif buffer
+        }
+        if ( !ICC.empty() && !bAppn ) {
+            visitor.visitICC(ICC); // tell the visitor
+            ICC.empty(true) ; // empty the exif buffer
         }
         visitor.visitSegment(io_,*this,address,marker,length,signature); // tell the visitor
 
@@ -1858,6 +1874,10 @@ void JpegImage::accept(Visitor& visitor)
                     }
                     XMP.read(io_,address+2+start,length - start); // read the XMP from the stream
                 }
+            }
+            if ( bICC ) {
+                uint16_t start = 2+2+14 ; // "\mark\length\ICC_PROFILE\0\C\Z" = \C: 1 byte chunk. \Z: 1 byte chunks.
+                ICC.read(io_,address+start,length - start); // read the XMP from the stream
             }
         }
 
@@ -1944,6 +1964,7 @@ int main(int argc,const char* argv[])
             option  = arg.find("R") != std::string::npos ? kpsRecursive
                     : arg.find("X") != std::string::npos ? kpsXMP
                     : arg.find("S") != std::string::npos ? kpsBasic
+                    : arg.find("I") != std::string::npos ? kpsIcc
                     : option
                     ;
             if ( arg.find("U") != std::string::npos ) option |= kpsUnknown;
