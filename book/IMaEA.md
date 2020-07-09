@@ -2501,7 +2501,18 @@ The documentation about using Conan with Exiv2 is in [README-CONAN.md](README-CO
 
 #### Build Options
 
-There are numerous build options provided for Exiv2.  The documentation for this is in [README.md](README.md).  Most of the options concern dependencies, the configuration { debug | release }, kind { static | shared }, configuration { 32 | 64 }, run-time { shared | static }, compiler { GCC | Clang | 2008 | ... | 2019 } and the language standard { 98 | 11 | 14 | 17 }.  The build matrix is huge.
+There are numerous build options provided for Exiv2.  The documentation for this is in [README.md](README.md).  Most of the options concern dependencies, the configuration:
+
+| Description | Choices |
+|:--          |:--      |
+| build_type | debug or release  |
+| kind       | static or shared  |
+| configuration | 32 or 64  |
+| run-time       | shared or static |
+| compiler  |  GCC or Clang or 2008 ... 2019  |
+| language standard | 98 or 11 or 14 or 17  |
+
+And we have not considered the selection of build dependencies required by the user.  For example, support for PNG, XMP, Localisation, Web Protocols and Character Conversions.
 
 There are a number of convenience options to build packages for release, on-line documentation, unit_tests and ASAN support.  ASAN is the "Address Sanitiser".  When this option is selected, the code is built and instrumented with address checking.  Every memory access is tested before use.  This has a considerable performance penalty and is only intended for test and development purposes.  It shouldn't be used in production.
 
@@ -2605,7 +2616,9 @@ To be written.
 <div id="13-18">
 ### 13.18 Project Management and Scheduling
 
-This is another very difficult topic to discuss.  There are two worlds.  There is the perfect world which is inhabited by management.  Those people live in a world which is quite different from mine.  In their world, the schedule is king, nobody ever makes a mistake, everything works.  It's a wonderful place.  Sadly, I've never had the good fortune to live in that world.
+This is a major and important topic.  Apart from writing code, I've spent more time thinking about project scheduling than any other aspect of Software Engineering.  
+
+There are two worlds.  There is the perfect world which is inhabited by management.  These people live in a world which is quite different from mine.  In their world, the specification is clear, the schedule is realistic, nobody makes mistake and everything works.  It's a wonderful place.  Sadly, I've never had the good fortune to live in that world.
 
 I worked in a company which, to hide their identity, we'll call "West Anchors".  A colleague was giving a board presentation in which they had a slide:
 
@@ -2613,13 +2626,13 @@ _**It is the Policy of West Anchors to get it right first time, every time.**_
 
 There we have it.  Nothing is ever late, nothing is more difficult than expected, all suppliers deliver on time to specification and nobody is ever sick.  When I discussed the project schedule with my boss I asked him why there was no time in the schedule for bugs and fixes, his response was "There better not be be any bugs."  Five years later, West Anchors were closed by their owners. 
 
-I also had the misfortune to work at a company where the boss was an expert in planning.  He explained to me that the only challenge in software engineering is to get the schedule right.  Everything else was trivial.
+I also had the misfortune to work at a company where the boss was an expert in planning.  He explained to me that the only challenge in Software Engineering is to get the schedule right.  Everything else was trivial.
 
-So, if you live in the perfect world, you'll not find anything interesting or useful in this part of the book, because I'm talking a less that perfect world which I will call "Reality".
+So, if you live in the perfect world, you'll not find anything interesting or useful in this part of the book, because I'm talking a less than perfect world in which I live.  I usually call it "Reality".
+
+Another challenge is that many users are perfect and live in this other world where everything works.  The world of "West Anchors".  So users seldom understand that the open-source project may be populated by people who live in the depressing world of "Reality".
 
 Scheduling an open-source project is almost impossible.  You are dealing with volunteers.  You might think you know the volunteers, however you don't.  It's unusual to have even met the people.  How can you understand the pressure and stress in another person's life when you know so little about their circumstances.  And remember they are volunteers.  They can walk off the job if they wish.  In a business, management have tools such as money, vacations, bonuses, lay-offs and promotions to manipulate the employees.  In the open-source world, you have none of those tools.
-
-Another challenge is that most users are perfect and live in this other world where everything works.  The world of "West Anchors".  So users seldom understand that the open-source project might be populated by people who live in the depressing world of "Reality".
 
 Here is the problem and my thoughts about how to solve the scheduling problem.
 
@@ -2654,15 +2667,17 @@ If the project had many rooms (say 10-20), you have to schedule resources (peopl
 
 When you scale to painting something large (like an Aircraft Carrier), two items rapidly emerge to invalidate the simple model.
 
-1) Requirements Change
-   The Aircraft Carrier requires stealth paint that hasn't been invented.
+1) Requirements Change  
 
-2) The paint task is large
-   You require training and inspection services to manage quality.
+The Aircraft Carrier requires stealth paint that hasn't been invented.
+
+2) The paint task is large  
+
+You require training and inspection services to manage quality.
 
 And many other things arrive which were not in the simple model. In the worst case, new tasks can be larger than the original task.  You have an exploding, complex challenge.
 
-To deal with this, you have to start a project inside the project.  Something like "Remove all furniture" is obvious in a house. But what would it mean on an Aircraft Carrier?
+To deal with this, you have to start a project inside the project.  Something like "Remove furniture" is obvious in a house. But what would it mean on an Aircraft Carrier?
 
 So, we stay calm and add more items to the project plan.  And that's when everything goes wrong.  The plan gets longer and more detailed.  However it's still the same old linear model.
 
@@ -2691,18 +2706,11 @@ When you plan a project, you say "How long did it take to do the last one?", tak
 
 A whole collection of project planning tools are now used in the software industry.  Together they go under the banner: "Agile" or "Scrum".  Scrum imposes a regime of meetings and reviews on the project team.  Several of these techniques are interesting.
 
-1. Story Points, Task Size (and Task Poker)
-The size of a task is not 1,2,3,4,5 as difficulty increases.  They use the Fibonacci series: 1,2,3,5,8,13,21 ...  So big tasks rapidly increase their allocation of resources and time.
-
-Notice that the Fibonacci series is recursive: X(n) = X(n-1) + X(n-2) where X(1),X(2)=1
-
-2. Step wise linear (the sprint)
-Scrum says "we can't plan everything at once, however we can complete well defined tasks on sprint schedules (typically 2 weeks).  I don't know how scrum deals with tasks that are longer than 1 sprint.
-
-3. Velocity
-The team velocity (average story points completed over the last 3 sprints) are monitored and used to verify that the team is being neither optimistic nor pessimistic in their determination of story points for tasks.
-
-Velocity is not predicted, it is measured by project performance.  In a nutshell, it is recursive.
+| Measure | Description | Observation |
+|:--      |:--          |:--          |
+| Story Points, Task Size (and Task Poker)  | The size of a task is not 1,2,3,4,5 as difficulty increases.  They use the Fibonacci series: 1,2,3,5,8,13,21 ...  So big tasks rapidly increase their allocation of resources and time. | Fibonacci series is recursive: X(n) = X(n-1) + X(n-2) where X(1),X(2)=1 |
+| The Sprint<br>Step wise linear  | Scrum says "we can't plan everything at once, however we can complete well defined tasks on sprint schedules (typically 2 weeks). | I don't know how scrum deals with tasks that are longer than 1 sprint. |
+| Velocity   | The team velocity (average story points completed over the last 3 sprints) are monitored and used to verify that the team is being neither optimistic nor pessimistic in their determination of story points for tasks. | Velocity is not predicted, it is measured by project performance.  In a nutshell, it is recursive. |
 
 However scrum has a fatal weakness.  Nobody knows the size of the total project.  The model is fundamentally inadequate, because it is a monitoring tool and not predictive.
 
@@ -2736,23 +2744,20 @@ Research is required to measure task roughness in past projects to validate this
 
 There are serious limitations with PERT.  I only intend to investigate the use of fractals in planning and to ignore other limitations of PERT such as:
 
-1. PERT assumes that you can itemise and quantify every task in the project. If you are investigating something, you can probably do neither of these things.
-
-Imagine using PERT to investigate a crime.  Impossible.  Or consider medical treatment.  If you demanded a PERT plan from a doctor treating your cancer, he will show you out of his office.  Or consider demanding a PERT plan from a financial advisor about your investments.
-
-2. The circumstances surrounding the project can change during the life of the project and have major implications for the project.
-
-3. You will do abortive work and encounter road blocks.
-
-4. People are not interchangeable.  People leave, or are assigned to other projects.  New team members require time to come up to speed with the project.
-
-5. Management, and other project stakeholders, can change goals and objectives.
+| Trouble | Observation |
+|:--      |:--          |
+|  PERT assumes that you can itemise and quantify every task in the project. | If you are investigating something, you can probably do neither of these things. |
+| Many projects cannot be quantified.  | Imagine using PERT to investigate a crime.  Impossible.<br>  Or consider medical treatment.  If you demanded a PERT plan from a doctor treating your cancer, he will show you out of his office.<br>Or consider demanding a PERT plan from a financial advisor about your investments. |
+| The circumstances surrounding the project can change during the life of the project and have major implications for the project. | |
+| You will do abortive work and encounter road blocks. | |
+| People are not interchangeable. | People leave, or are assigned to other projects.  New team members require time to come up to speed with the project. |
+| Management, and other project stakeholders, can change goals and objectives. | |
 
 Because of the recursive nature of projects, there are other serious limitations hiding inside these limitations.  And of course there are limitations I have not considered, imagined, or thought about.
 
-#### How do I move from here?
+#### So what am I going to do about this?
 
-I'm thinking about a PhD in this area.  This will take about 10,000 hours over 5 years. The only tasks that I can define now are:
+When I retired, I was thinking about doing a PhD in this area and thought it might take 10,000 hours over 5 years. The only tasks that I could define were:
 
 1. Write a Paper for Review (this document)
 2. Find a University willing to house/mentor/supervise the effort
@@ -2764,7 +2769,7 @@ What is the roughness of these tasks?  Unknown.  Graduate is simple.  Or is it? 
 
 One thing is certain, getting a better approach to project estimation is of enormous importance.  We have to do better.  I have tried to set out here an area of investigation that is worthy of attention.
 
-
+Final words about this.  I didn't undertake a PhD.  Instead I have spent 10,000 hours working on Exiv2.  This book is my "thesis".  The presentation at LGM in Rennes is my defence.  My reward is to know that I've done my best.
 
 [TOC](#TOC)
 <div id="13-19">
@@ -2773,30 +2778,46 @@ One thing is certain, getting a better approach to project estimation is of enor
 To be written.
 
 [TOC](#TOC)
-<div id="13-2">
+<div id="13-20">
 ### 13.20 Tools
 
-Every year brings new/different tools (cmake, git, MarkDown, C++11)
+Every year brings new/different tools.  For example: cmake, git, MarkDown, conan and C++11.  One of the remarkable properties of tools you have never used is that they are perfect and solve all known issues, _until you use them_,   Tools you have never used are bug free and perfect.  Or so I am told.
 
-To be written.
+I had an issue with the release bundles for Exiv2 v0.26.  My primary development platform is macOS.  Remarkably, the version of tar shipped by Apple puts hidden files in bundles to store file extended attributes.  I didn't know this until the bundles shipped and a bug report appeared.  You cannot see those files on macOS, because tar on macOS recreates the extended attributes.  However there were thousands of hidden files in the source bundle on Linux.  I recreated the bundles as Exiv2 v0.27a and shipped them.  There is an environment variable to suppress this.  I believe it is:  TAR\_WRITER\_OPTIONS=--no-mac-metadata.
+
+Case closed.  Except for very critical emails about changing bundles checksums.
+
+For v0.27 we adopted CMake to do the packaging.  Very nice.  Works well.  Guess what?  CMake produces .tar.gz files which have these hidden files.  Several people emailed to say "You wouldn't have this problem if you used CPack.".  100% wrong.  It is a known documented issue in CPack. So, the issue resurfaced because we used CPack.  Additionally, we had three release candidates for v0.27 which were published on 27 October, 15 November and 7 December 2018.  v0.27 shipped on 20 December and the bug report arrived on Christmas Day.
+
+I rebuilt the bundles as Exiv2 v0.27.0a and shipped them on 2 January 2019.  I updated the build script to ensure that source bundles are created on Linux. 
+
+Please understand that I have nothing against using new tools.  However most of the hype surrounding new tools is nonesense.  This has been studied.  There are 5 stages in adopting new tools.
+
+<center><img src="hype.jpg" width="500" style="border:2px solid #23668F;"/></center>
+
+There is one recent tool which has surprised and pleased me.  I have written this book using markdown and very pleased with the experience.  As the Americans say "your mileage may differ!".
 
 [TOC](#TOC)
 <div id="13-21">
 ### 13.21 Licensing
 
-To be written.
+This is simply a legal minefield.  Exiv2 is licensed under GPLv2.  Until Exiv2 v0.26, Andreas offered a commercial license for Exiv2.   The contract between Andreas and users is not the concern of the Exiv2 open-source project. 
+
+In the days of the Commercial license, I made not distinction between open-source and commercial license users when it came to dealing with support and other requests.  I felt that the commercial license freed the user from the obligations of GPL.  However, it did not provide priority support, enhancement requests or any other benefit.
 
 [TOC](#TOC)
 <div id="13-22">
 ### 13.22 Back-porting fixes to earlier releases
 
-To be written.
+I believe there are some folks maintaining back-ports of Exiv2.  Our friend Pascal works on **darktable** and has back-ported many features and fixes.  Thank You, Pascal for undertaking that chore.
+
+I have to say that the inertia of the Linux Distros is considerable.  It can take several years for new releases to arrive on the platform.  I don't know anything about the distros and I'm not going to judge why it is so sluggish.
 
 [TOC](#TOC)
 <div id="13-23">
 ### 13.23 Other projects demanding support and changes
 
-To be written.
+Without question, dealing with this has been very difficult.  Folks who have adopted Exiv2 in their product may feel they are entitled to make enhancement requests, demand fixes, superior support and other privileges.  In a nutshell, they feel entitled.  They are not.  They are entitled to the same as all other stakeholders.  No more.  No less.
 
 [TOC](#TOC)
 <div id="14">
@@ -3085,4 +3106,3 @@ I'm going off to cut the grass and to run in the beautiful countryside around my
 [TOC](#TOC)<br>
 
 ##
-
