@@ -1424,7 +1424,7 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
             size_t   alloc  = size*count     ;
             DataBuf  buf(alloc);
             if ( alloc <= (bigtiff?8:4) ) {
-                buf.copy(&offset,size);
+                buf.copy(&offset,size*count);
             } else {
                 IoSave save(io_,offset);
                 io_.read(buf);
