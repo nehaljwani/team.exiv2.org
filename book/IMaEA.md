@@ -2219,7 +2219,7 @@ Exiv2 has several different elements in the test suite. They are:
 3. Unit Test
 4. Version Test
 
-In writing this book, I want to avoid duplicating information between Exiv2 documentation and this book.  This book is intended to provide an engineering explanation of how the code works and why various design decisions were chosen.  However, you will find that this book doesn't explain how to use Exiv2. How to use execute the test suite is documented in [README.md](README.html).
+In writing this book, I want to avoid duplicating information between Exiv2 documentation and this book.  This book is intended to provide an engineering explanation of how the code works and why various design decisions were chosen.  However, you will find that this book doesn't explain how to use Exiv2. How to use execute the test suite is documented in [README.md](README.md).
 
 [TOC](#TOC)
 <div id="10-1">
@@ -2627,7 +2627,30 @@ To be written.
 <div id="13-9">
 ### 13.9 Release Engineering
 
-To be written.
+Making a new release is very time-consuming.  The business of performing the builds and updating the web-site is straightforward.  It is totally scripted and easy to perform.
+
+However the time involved in updating the release notes, determining the contents of the release, submitting all the PRs, testing and documenting is considerable.
+
+Moreover, I like to publish release candidates.  I never make code changes between the final release candidate the the Golden Master.  Let me define the terminology and the version numbering scheme.
+
+| Version    | Name             | Status      | Purpose |
+|:--         |:--               |:--          |:--      |
+| 0.27.7.3   | Exiv2 v0.27.3    | GM          | Golden Master.  This is the final and official release. |
+| 0.27.3.2   | Exiv2 v0.27.3.2  | RC2         | Release Candidate 2.                             |
+| v0.27.3.20 | Exiv2 v0.27.3.2  | RC2 Preview | Dry-run for release candidate.  For team review. |
+| v0.27.3.29 | Exiv2 v0.27.3.29 | Development | Should never be installed for production. |
+| v0.27.4.9  | Exiv2 v0.27.4.9  | Development | Should never be installed for production. |
+| v0.27.99   | Exiv2 v0.28      | Development | Should never be installed for production. |
+
+The release procedure is documented here:  svn://dev.exiv2.org/svn/team/website/Checklist.txt
+
+It typically takes about 3 months to make a release and consumes 100-400 hours.
+
+In month 1, the release and release notes are developed.  Depending on the complexity of the features being added for release, this can be 40 to 200 hours of work.  In month 2, we respond to matters arising from RC1.  As with month 1, it's usually 40-200 hours of work to reach RC2.  In month 3, we do nothing.  It's an afternoon's work to publish GM and tag the release.
+
+If an issue arrives between RC2 and GM and it is decided to change code, I always accept a schedule delay and publish RC3.
+
+It's only fair to say that others will say "Oh, it shouldn't be so complicated.".  And I agree.  It shouldn't.  I've been the Release Engineer for at least 6 releases and have not discovered any tricks to eliminate the work involved.  You could just tag the current development branch, bump the version number and hope for the best.
 
 [TOC](#TOC)
 <div id="13-10">
@@ -2649,7 +2672,24 @@ I'll write more later about how this is achieved.
 
 This file has utility code for dealing with files and paths.  For example, there is a base64 encoder/decode which is used to manage paths of the form _data:abc..._.  There is also a URL parser for decomposing URLs to determine protocol, serverer, user, password and other URL paraphernalia.
 
-The function std::string getProcessPath() determines the process path and is similar to much of the code in src/version.cpp
+```bash
+.../exiv2/0.27-maintenance $ grep -e ') {' -e getProcessPath src/futils.cpp | grep -v if | grep -v for | grep -v while
+    char to_hex(char code) {
+    char from_hex(char ch) {
+    std::string urlencode(const char* str) {
+    char* urldecode(const char* str) {
+    void urldecode(std::string& str) {
+    int base64encode(const void* data_buf, size_t dataLength, char* result, size_t resultSize) {
+    long base64decode(const char *in, char *out, size_t out_size) {
+    Protocol fileProtocol(const std::string& path) {
+    Protocol fileProtocol(const std::wstring& path) {
+    std::string pathOfFileUrl(const std::string& url) {
+    std::wstring pathOfFileUrl(const std::wstring& wurl) {
+    std::string getProcessPath()
+.../exiv2/0.27-maintenance $ 
+```
+
+The function std::string getProcessPath() determines the process path and is similar to code in src/version.cpp.
 
 #### UNICODE path support
 
@@ -2668,7 +2708,7 @@ I really admire the code in samples/JZon.cpp.  The Swedish Engineer who created 
 <div id="13-11">
 ### 13.11 Localisation
 
-Localisation is documented in (README.md)[README.md].
+Localisation is documented in [README.md](README.md).
 
 [TOC](#TOC)
 <div id="13-12">
