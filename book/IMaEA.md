@@ -43,8 +43,8 @@ _And our cat Lizzie._
 | [8.4 Visitor Design Pattern](#8-4)                    | 44 | [RAF](#RAF)                           | 26 | [13.11 Localisation](#13-11)            | 81 |
 | [8.5 IFD:accept() and TiffImage::accept() ](#8-5)     | 48 | [RW2](#RW2)                           | 27 | [13.12 Build Server](#13-12)            | 81 |
 | [8.6 Presenting data with visitTag()](#8-6)<br>       | 53 | [TGA](#TGA)                           | 28 | [13.13 Source Code Management](#13-13)  | 81 |
-| [8.7 Tag Decoder](#8-7)                               | 57 | [GIF Graphical Image Format](#GIF)    | 29 | [13.14 Project Web Site](#13-14)        | 81 |
-| [8.8 Jpeg::Image accept()](#8-8)                      | 59 | [BMP Windows Bitmap](#BMP)            | 30 | [13.15 Project Servers ](#13-15)        | 81 |
+| [8.7 Tag Decoder](#8-7)                               | 57 | [BMP Windows Bitmap](#BMP)            | 29 | [13.14 Project Web Site](#13-14)        | 81 |
+| [8.8 Jpeg::Image accept()](#8-8)                      | 59 | [GIF Graphical Image Format](#GIF)    | 30 | [13.15 Project Servers ](#13-15)        | 81 |
 | [9. Image Previews](#9)                               | 61 |                                       | 31 | [13.16 API Management](#13-16)          | 81 |
 | [10. Test Suite and Build](#10)                       | 63 | _**Other Sections**_                  |    | [13.17 Recruiting Contributors](#13-17) | 81 |
 | [10.1 Bash Tests](#10-1)                              | 63 | [Dedication](#dedication)             |  2 | [13.18 Project Scheduling](#13-18)      | 82 |
@@ -831,13 +831,14 @@ To be written.
 <div id="BMP">
 ## BMP Windows Bitmap
 
-To be written.
+![bmp](bmp.png)
 
 [TOC](#TOC)
 <div id="GIF">
 ## GIF Graphics Image Format
 
-To be written.
+![gif](gif.png)
+
 
 [TOC](#TOC)
 <div id="2">
