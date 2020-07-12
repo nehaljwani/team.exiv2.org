@@ -34,18 +34,18 @@ _And our cat Lizzie._
 | [3. MakerNotes](#3)                                   | 35 | [PNG Portable Network Graphics](#PNG) | 17 | [13.2 Build](#13-2)                     | 79 |
 | [4. Other metadata containers](#4)                    | 36 | [JP2 Jpeg 2000](#JP2)                 | 18 | [13.3 Security](#13-3)                  | 80 |
 | [5. Lens Recognition](#5)                             | 37 | [CRW Canon Raw](#CRW)                 | 19 | [13.4 Documentation](#13-4)             | 80 |
-| [6. Sample Applications](#6)                          | 38 | [CR2 Canon Raw Format 2](#CR2)        | 20 | [13.5 Testing](#13-5)                   | 80 |
-| [7. I/O in Exiv2](#7)                                 | 39 | [ISOBMFF, CR3, HEIF, AVI](#ISOBMFF)   | 21 | [13.6 Sample programs](#13-6)           | 80 |
-| [8. Exiv2 Architecture](#8)                           | 41 | [WebP Web Photograph ](#WEBP)         | 22 | [13.7 User Support](#13-7)              | 80 |
-| [8.1 Extracting metadata using dd](#8-1)              | 41 | [MRW Minolta Raw](#MRW)               | 23 | [13.8 Bug Tracking](#13-8)              | 81 |
-| [8.2 Tag Names in Exiv2](#8-2)                        | 42 | [ORF Olympus Raw Format](#ORF)        | 24 | [13.9 Release Engineering](#13-9)       | 81 |
-| [8.3 TagInfo](#8-3)                                   | 44 | [PGF Portable Graphics Format](#PGF)  | 25 | [13.10 Platform Support](#13-10)        | 81 |
-| [8.4 Visitor Design Pattern](#8-4)                    | 44 | [PSD PhotoShop Document](#PSD)        | 26 | [13.11 Localisation](#13-11)            | 81 |
-| [8.5 IFD:accept() and TiffImage::accept() ](#8-5)     | 48 | [RAF](#RAF)                           | 27 | [13.12 Build Server](#13-12)            | 81 |
-| [8.6 Presenting data with visitTag()](#8-6)<br>       | 53 | [RW2](#RW2)                           | 28 | [13.13 Source Code Management](#13-13)  | 81 |
-| [8.7 Tag Decoder](#8-7)                               | 57 | [TGA](#TGA)                           | 29 | [13.14 Project Web Site](#13-14)        | 81 |
-| [8.8 Jpeg::Image accept()](#8-8)                      | 59 | [GIF Graphical Image Format](#GIF)    | 30 | [13.15 Project Servers ](#13-15)        | 81 |
-| [9. Image Previews](#9)                               | 61 | [BMP Windows Bitmap](#BMP)            | 31 | [13.16 API Management](#13-16)          | 81 |
+| [6. Sample Applications](#6)                          | 38 | [ISOBMFF, CR3, HEIF, AVI](#ISOBMFF)   | 20 | [13.5 Testing](#13-5)                   | 80 |
+| [7. I/O in Exiv2](#7)                                 | 39 | [WebP Web Photograph ](#WEBP)         | 21 | [13.6 Sample programs](#13-6)           | 80 |
+| [8. Exiv2 Architecture](#8)                           | 41 | [MRW Minolta Raw](#MRW)               | 22 | [13.7 User Support](#13-7)              | 80 |
+| [8.1 Extracting metadata using dd](#8-1)              | 41 | [ORF Olympus Raw Format](#ORF)        | 23 | [13.8 Bug Tracking](#13-8)              | 81 |
+| [8.2 Tag Names in Exiv2](#8-2)                        | 42 | [PGF Portable Graphics Format](#PGF)  | 24 | [13.9 Release Engineering](#13-9)       | 81 |
+| [8.3 TagInfo](#8-3)                                   | 44 | [PSD PhotoShop Document](#PSD)        | 25 | [13.10 Platform Support](#13-10)        | 81 |
+| [8.4 Visitor Design Pattern](#8-4)                    | 44 | [RAF](#RAF)                           | 26 | [13.11 Localisation](#13-11)            | 81 |
+| [8.5 IFD:accept() and TiffImage::accept() ](#8-5)     | 48 | [RW2](#RW2)                           | 27 | [13.12 Build Server](#13-12)            | 81 |
+| [8.6 Presenting data with visitTag()](#8-6)<br>       | 53 | [TGA](#TGA)                           | 28 | [13.13 Source Code Management](#13-13)  | 81 |
+| [8.7 Tag Decoder](#8-7)                               | 57 | [GIF Graphical Image Format](#GIF)    | 29 | [13.14 Project Web Site](#13-14)        | 81 |
+| [8.8 Jpeg::Image accept()](#8-8)                      | 59 | [BMP Windows Bitmap](#BMP)            | 30 | [13.15 Project Servers ](#13-15)        | 81 |
+| [9. Image Previews](#9)                               | 61 |                                       | 31 | [13.16 API Management](#13-16)          | 81 |
 | [10. Test Suite and Build](#10)                       | 63 | _**Other Sections**_                  |    | [13.17 Recruiting Contributors](#13-17) | 81 |
 | [10.1 Bash Tests](#10-1)                              | 63 | [Dedication](#dedication)             |  2 | [13.18 Project Scheduling](#13-18)      | 82 |
 | [10.2 Python Tests](#10-2)                            | 68 | [About this book](#about)             |  4 | [13.19 Enhancement Requests](#13-19)    | 82 |
@@ -56,7 +56,6 @@ _And our cat Lizzie._
 | [12.1 The Fuzzing Police](#12)                        | 74 | [Future Projects](#future)            |  6 |                                         |    |
 | [12.2 How we deal with security issues](12-2)         | 75 | [Scope of Book](#scope)               |  7 |                                         |    |
 | [14. Code discussed in this book](#14)                | 80 | [Making this book](#making)           |  8 | [The Last Word](#finally)               | 84 |
-
 
 <div id="about">
 ## About this book
@@ -228,19 +227,19 @@ The good news however is that file formats come in families which are:
 
 | Family  | Description | Examples |
 |:--      |:---         |:--       |
-| TIFF    | You must learn Tiff thoroughly to understand metadata                   | TIFF, DNG, NEF, ICC |
+| TIFF    | You must learn Tiff thoroughly to understand metadata              | TIFF, DNG, NEF, ICC, CR2 |
 | JPG     | The most common format                                                                 | JPEG |
 | PNG     | Another popular format<br>Linked list of chunks                                         | PNG |
-| Canon   | Popular Canon "Raw" formats.<br>Dave Coffin parse.c decodes                        | CRW, CR2 |
+| CIFF    | Canon Raw format.  Dave Coffin parse.c decodes          v                               | CRW |
 | ISOBMFF | Based on the .mp4 format                                           | MP4, CR3, AVI, HEIF, JP2 |
 | RIFF    | Google Promoted Format                                                                 | WEBP |
 | Legacy  | These legacy formats<br>usually have no metadata                                   | GIF, BMP |
-| IPTC    | Interpress Trade Consortium | Many |
-| ICC     | Internation Colour Consortium | Many |
-| XMP     | Adobe XMP is written in XML | XMP, sidecar | 
-| COS     | Adobe PDF Format<br>Very flexible container                                             | PDF, JDF |
+| IPTC    | Interpress Trade Consortium                                                            | Many |
+| ICC     | Internation Colour Consortium                                                          | Many |
+| XMP     | Adobe XMP is written in XML                                                    | XMP, sidecar | 
+| COS     | Adobe PDF Format.  This is a very flexible container                               | PDF, JDF |
 | EPS     | Adobe Encapsulated PostScript<br>The code in Exiv2 to deal with this is deprecated  | EPS, AI |
-| PS      | Adobe PostScript<br>The most beautiful graphics language ever invented.                           | PS |
+| PS      | Adobe PostScript.  Beautiful graphics language.                                          | PS |
 
 I suspect the software mess is caused by the hardware engineers.  When hardware people start a new project, they copy the CAD files from the last project and proceed from there.  They don't worry about back-porting changes or compatibility.  They think firmware people are stupid and do a terrible job!  We have to live with this.
 
@@ -2467,7 +2466,7 @@ _If most businesses are using Open Source code for free, how are the developers 
 
 _The very large projects (the Linux kernel, the Firefox web browser, etc.) end up with a few smart companies realizing it's in their self-interest to fund full time development, and most of their work ends up being non-volunteer. They're not the problem. The problem is the mid-range to small projects, maintained by volunteers, that get short-shrifted. People don't value free._
 
-_Not a month goes by without some maintainer of an Open Source project throwing up their hands in frustration and walking away because of burnout.  Burnout caused invariably by the demands that people make of their free time. The code was free, so why isn't free support and personalized help available for life???_
+_Not a month goes by without some maintainer of an Open Source project throwing up their hands in frustration and walking away because of burnout.  Burnout caused invariably by the demands that people make of their free time. The code was free, so why isn't free support and personalised help available for life???_
 
 I am astonished at the verbal abuse I have received.  About every three years I receive an email from somebody I have never met thanking me for my efforts.  I get daily emails of criticism and complaint.  I will not name a French Engineer on whose behalf I have spent hundreds of hours.  Not once has he expressed appreciation.  His emails and public posts of criticism are brutal.
 
@@ -2551,7 +2550,7 @@ Exiv2 has dependencies on the following libraries.  All are optional, however it
 
 Starting with Exiv2 v0.27, we can use conan to build dependencies.  I very much appreciate Luis bringing this technology to Exiv2 as it has hugely simplified building with Visual Studio.  In the CI builders on GitHub, conan is also used to build on Linux and macOS.  At this time (June 2020), I haven't been able to get conan to work on Cygwin and/or MinGW/msys2.  I expect that will soon be rectified.
 
-Prior to using conan, the build environment for Visual Studio was hand built for Visual Studio 2005 and relied on Visual Studio to convert to the edition in use.  Additionally, source trees for dependencies were required in specific locations on storage.  We did support CMake on Visual Studio, however it required a 500 line cmd file `cmakeBuild.cmd` to download and build the dependencies.  The effort to create and maintain that apparatus was considerable.
+Prior to using conan, the build environment for Visual Studio was hand built for Visual Studio 2005 and relied on Visual Studio to convert to the edition in use.  Additionally, source trees for dependencies were required in specific locations on storage.  We did support CMake on Visual Studio, however it required a 500 line cmd file _cmakeBuild.cmd_ to download and build the dependencies.  The effort to create and maintain that apparatus was considerable.
 
 Conan brings a fresh approach to building dependencies.  Every dependancy has a "recipe" which tells conan how to build a dependency.  The recipes are held on servers and are fetched from remote servers on demand.  Exiv2 has a file conanfile.py (written in python) which tells conan which dependencies are required.  Conan fetches the recipe, build the dependency and caches it for future use.  When dealing with very large libraries such as openssl, the recipe might pull prebuilt binaries for your requested configuration.  For more modest libraries (such as expat and zlib), the recipe will fetch the source and build.  Conan caches binary dependencies in your ~/.conan directory.  This arrangement means that you seldom build dependencies as they are usually in the cache.
 
@@ -2634,19 +2633,61 @@ To be written.
 <div id="13-10">
 ### 13.10 Platform Support
 
+There are several parts of Exiv2 which are platform specific.  Additionally the platform dependent function _getopt()_ is never used.
+
+#### src/getopt.cpp
+
+The command-line handler getopt() is use by the exiv2 command-line program and by samples/metacopy.cpp, samples/getopt-test.cpp and samples/toexv.cpp.  In the early days of Exiv2, getopt() was provided by the C-runtime library.  When support for msvc was added, the code in src/getopt.cpp was added.  Relying on the C-runtime library revealed differences between platforms and between platforms and src/getopt.cpp.  It was decided to ensure consistent behaviour to use src/getopt.cpp on all platforms.
+
+#### src/version.cpp
+
+I'm rather proud of the code in src/version.cpp.  In addition to reporting the version number, version.cpp reports the build settings used to compile the code.  It also inspects the run-time environment to determine shared objects which have been loaded.  I added this to the test harness because I was suspicious that we were not testing the correct shared object.
+
+I'll write more later about how this is achieved.
+
+#### src/futils.cpp
+
+This file has utility code for dealing with files and paths.  For example, there is a base64 encoder/decode which is used to manage paths of the form _data:abc..._.  There is also a URL parser for decomposing URLs to determine protocol, serverer, user, password and other URL paraphernalia.
+
+The function std::string getProcessPath() determines the process path and is similar to much of the code in src/version.cpp
+
+#### UNICODE path support
+
 To be written.
+
+#### Character Set Encoding
+
+To be written.
+
+#### JSON Support
+
+I really admire the code in samples/JZon.cpp.  The Swedish Engineer who created this made a super-human effort to fix a bug for me.  However, the latest public version of that code has lost his fix.  I have spoken with him about this and we agreed that I would maintain the copy in the samples/.  It isn't in the library.  It is compiled and linked with samples/exiv2json.cpp
+
 
 [TOC](#TOC)
 <div id="13-11">
 ### 13.11 Localisation
 
-To be written.
+Localisation is documented in (README.md)[README.md].
 
 [TOC](#TOC)
 <div id="13-12">
 ### 13.12 Build Server
 
+At different times, we have used different build server technologies.
+
+#### Appveyor, Travis and GitLab
+
 To be written.
+
+#### My build script ./build.sh
+
+To be written.
+
+#### Jenkins and buildbot
+
+To be written.
+
 
 [TOC](#TOC)
 <div id="13-13">
@@ -2684,23 +2725,23 @@ To be written.
 
 This is a major and important topic.  Apart from writing code, I've spent more time thinking about project scheduling than any other aspect of Software Engineering.  
 
-There are two worlds.  There is the perfect world which is inhabited by management.  These people live in a world which is quite different from mine.  In their world, the specification is clear, the schedule is realistic, nobody makes mistake and everything works.  It's a wonderful place.  Sadly, I've never had the good fortune to live in that world.
+There are two worlds.  There is the perfect world which is inhabited by management.  These people live in a world which is quite different from mine.  In their world, the specification is clear, the schedule is realistic, nobody makes mistakes and everything works.  It's a wonderful place.  Sadly, I've never had the good fortune to live in that world.
 
-I worked in a company which, to hide their identity, we'll call "West Anchors".  A colleague was giving a board presentation in which they had a slide:
+I worked in a company which, to hide their identity, I will call "West Anchors".  A colleague was giving a board presentation in which they had a slide:
 
 _**It is the Policy of West Anchors to get it right first time, every time.**_
 
-There we have it.  Nothing is ever late, nothing is more difficult than expected, all suppliers deliver on time to specification and nobody is ever sick.  When I discussed the project schedule with my boss I asked him why there was no time in the schedule for bugs and fixes, his response was "There better not be be any bugs."  Five years later, West Anchors were closed by their owners. 
+There we have it.  Nothing is ever late, nothing is more difficult than expected, all suppliers deliver on time to specification and nobody is ever sick.  When I discussed the project schedule with my boss I asked him why there was no time in the schedule for bugs and fixes, his response was "There better not be be any bugs."  Five years later, West Anchors were closed by their owners.
 
 I also had the misfortune to work at a company where the boss was an expert in planning.  He explained to me that the only challenge in Software Engineering is to get the schedule right.  Everything else was trivial.
 
-So, if you live in the perfect world, you'll not find anything interesting or useful in this part of the book, because I'm talking a less than perfect world in which I live.  I usually call it "Reality".
+So, if you live in the perfect world, you'll not find anything interesting or useful in this part of the book, because I'm talking the less than perfect world in which I live.  I usually call it "Reality".
 
-Another challenge is that many users are perfect and live in this other world where everything works.  The world of "West Anchors".  So users seldom understand that the open-source project may be populated by people who live in the depressing world of "Reality".
+Another challenge is that many users are perfect and live in this other world where everything works.  So users seldom understand that the open-source project may be populated by people who live in the depressing world of "Reality".
 
-Scheduling an open-source project is almost impossible.  You are dealing with volunteers.  You might think you know the volunteers, however you don't.  It's unusual to have even met the people.  How can you understand the pressure and stress in another person's life when you know so little about their circumstances.  And remember they are volunteers.  They can walk off the job if they wish.  In a business, management have tools such as money, vacations, bonuses, lay-offs and promotions to manipulate the employees.  In the open-source world, you have none of those tools.
+Scheduling an open-source project is almost impossible.  You are dealing with volunteers.  You might think you know the volunteers, however you don't.  It's unusual to have even met the people.  How can you understand the pressure and stress in another person's life when you know so little about their circumstances.  And remember they are volunteers.  They can walk off the job if they wish.  In a business, management have tools such as reviews, salary, careers, vacations, bonuses, promotions and lay-offs to manipulate the employees.  In the open-source world, you have none of those tools.
 
-Here is the problem and my thoughts about how to solve the scheduling problem.
+Here are my thought about how to solve the scheduling problem.
 
 ####The Problem
 
@@ -2724,7 +2765,7 @@ However, if you want your house to be painted in an extra-ordinary way, this met
 
 The reason for the cost over-runs is because the project is recursive.  In a simple project, you have a sequence (or connected graph) of tasks:
 
-| Step 1 | Step 2 | Step 3 | Step 4 | Step 5 |
+| | Step | Step | Step | |
 |:--     |:--     |:--     |:--     |:--     |
 | Begin | Remove furniture | Apply N litres of paint | Restore furniture | Done |
 
@@ -2774,8 +2815,8 @@ A whole collection of project planning tools are now used in the software indust
 
 | Measure | Description | Observation |
 |:--      |:--          |:--          |
-| Story Points, Task Size (and Task Poker)  | The size of a task is not 1,2,3,4,5 as difficulty increases.  They use the Fibonacci series: 1,2,3,5,8,13,21 ...  So big tasks rapidly increase their allocation of resources and time. | Fibonacci series is recursive: X(n) = X(n-1) + X(n-2) where X(1),X(2)=1 |
-| The Sprint<br>Step wise linear  | Scrum says "we can't plan everything at once, however we can complete well defined tasks on sprint schedules (typically 2 weeks). | I don't know how scrum deals with tasks that are longer than 1 sprint. |
+| Story&nbsp;Points<br>Task&nbsp;Size<br>Task&nbsp;Poker | The size of a task is not 1,2,3,4,5 as difficulty increases.  They use the Fibonacci series: 1,2,3,5,8,13,21 ...  So big tasks rapidly increase their allocation of resources and time. | Fibonacci series is recursive: X(n) = X(n-1) + X(n-2) where X(1),X(2)=1 |
+| The Sprint<br>Step&nbsp;wise&nbsp;linear | Scrum says "we can't plan everything at once, however we can complete well defined tasks on sprint schedules (typically 2 weeks). | I don't know how scrum deals with tasks that are longer than 1 sprint. |
 | Velocity   | The team velocity (average story points completed over the last 3 sprints) are monitored and used to verify that the team is being neither optimistic nor pessimistic in their determination of story points for tasks. | Velocity is not predicted, it is measured by project performance.  In a nutshell, it is recursive. |
 
 However scrum has a fatal weakness.  Nobody knows the size of the total project.  The model is fundamentally inadequate, because it is a monitoring tool and not predictive.
@@ -2854,7 +2895,7 @@ I had an issue with the release bundles for Exiv2 v0.26.  My primary development
 Case closed.  Except for very critical emails about changing bundles checksums.
 
 For v0.27 we adopted CMake to do the packaging.  Very nice.  Works well.  Guess what?  CMake produces .tar.gz files which have these hidden files.  Several people emailed to say "You wouldn't have this problem if you used CPack.".  100% wrong.  It is a known documented issue in CPack. So, the issue resurfaced because we used CPack.  Additionally, we had three release candidates for v0.27 which were published on 27 October, 15 November and 7 December 2018.  v0.27 shipped on 20 December and the bug report arrived on Christmas Day.
-
+2
 I rebuilt the bundles as Exiv2 v0.27.0a and shipped them on 2 January 2019.  I updated the build script to ensure that source bundles are created on Linux. 
 
 Please understand that I have nothing against using new tools.  However most of the hype surrounding new tools is nonesense.  This has been studied.  There are 5 stages in adopting new tools.
