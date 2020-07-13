@@ -3,12 +3,12 @@
 
 <h3 align=center style="font-size: 48px;color:#FF4646;font-family: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:36px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-07-09</h3>
+<h3 align=center style="font-size:36px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-07-13</h3>
 
 <div id="dedication">
 ## _Dedication and Acknowledgment_
 
-_I want to say <b>Thank You</b> to a few folks who have made this possbile._
+_I want to say <b>Thank You</b> to a few folks who have made this book possbile._
 
 _First, my wife Alison, who has been my loyal support since the day we met in High School in 1967._
 
@@ -833,12 +833,23 @@ To be written.
 
 ![bmp](bmp.png)
 
+The Windows Bitmap Format "Bimp" has been around in Windows forever.  It may even have been in Windows 1.0.  For sure, it was there when I started to work in Windows 3.0 in 1991.  It's not a container.  It's a few fields of data and lots of pixels!
+
+BMP is often referred to as a "device independant bitmap" because it's not designed for any physical device.  It is the responsibility of the device or printer driver to render the image.  Windows device drivers are required to implement the GDI (Graphical Device Interface).
+
+The first 4 bytes of the BITMAP header (following the 14 byte file BITMAPFILE header) are the length of BITMAP header.   As well has being useful for navigating the file, this is effectively the BITMAP version.  In the Windows SDK, they call it bmType.  The last time I looked at the structure of a BMP (Windows 95) it was 40 bytes.  On Windows 10 it's now 124.
+
+From a metadata standpoint, there's almost no metadata in the file.  I was surprised to discover that the latest version (BITMAPV5) can store an ICC profile and has an alpha channel bitmask.  Perhaps a future version will include XMP and Exif metadata.
+
+A BMP can be rendered with transparency.  The GDI has a method TransparentBlt() in which one colour value is defined to be "transparent".  This method of supporting transparency is the responsibility of application code and isn't defined in the file itself.
+
+Before moving on from BMP, I'd like to say something about the flexibility of the BMP format.  You can have different colours depths and the image can have indexed color.  In this format, a table of up to 256 colours can be defined and the value of a pixel is the index and not the colour itself.  It's interesting to see that Microsoft have been working with this for 40 years, occassionaly upgraded it and never broken backwards compatibility.  Everybody would benefit from camera manufacturers adopting a similar approach to file formats.
+
 [TOC](#TOC)
 <div id="GIF">
 ## GIF Graphics Image Format
 
 ![gif](gif.png)
-
 
 [TOC](#TOC)
 <div id="2">
