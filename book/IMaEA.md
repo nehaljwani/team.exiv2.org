@@ -279,6 +279,76 @@ Image.InterColorProfile,	34675,	0x8773,	Image,	Exif.Image.InterColorProfile,	Und
 $ 
 ```
 
+### NEF, DNG and CR2
+
+These are tiff files.  There must be some subtle matters to be handled in these format, however tvisitor has no trouble running over the files.  Allow me to quote directly from Adobe's document: (dng_spec_1.4.0.0.pdf)[https://www.adobe.com/content/dam/acom/en/products/photoshop/pdfs/dng_spec_1.4.0.0.pdf]
+
+_**A Standard Format**_
+
+_The lack of a standard format for camera raw files creates additional work for camera manufacturers because they need to develop proprietary formats along with the software to process them. It also poses risks for end users. Camera raw formats vary from camera to camera, even those produced by the same manufacturer. It is not uncommon for a camera manufacturer to terminate support for a discontinued camera’s raw format. This means users have no guarantee they will be able to open archived camera raw files in the future._
+
+_To address these problems, Adobe has defined a new non-proprietary format for camera raw files. The format, called Digital Negative or DNG, can be used by a wide range of hardware and software developers to provide a more flexible raw processing and archiving workflow. End users may also use DNG as an intermediate format for storing images that were originally captured using a proprietary camera raw format._
+
+The document then proceeds to say that DNG and TIFF are identical.  I believe there are some Tiff Tags in DNG which are not in the Tiff6 Specification.  I discuss this again below.
+
+_**TIFF Compatible**_
+
+_DNG is an extension of the TIFF 6.0 format, and is compatible with the TIFF-EP standard. It is possible (but not required) for a DNG file to simultaneously comply with both the Digital Negative specification and the TIFF-EP standard._
+
+I downloaded and installed Adobe's DNG Convertor and applied it to some NEF files from my Nikon D5300:
+
+```bash
+.../book/build $ ./tvisitor -pU /Users/rmills/temp/Raw/DSC_0003.dng
+STRUCTURE OF TIFF FILE (II): /Users/rmills/temp/Raw/DSC_0003.dng
+ address |    tag                              |      type |    count |    offset | value
+      10 | 0x00fe Exif.Image.NewSubfileType    |      LONG |        1 |           | 1
+      22 | 0x0100 Exif.Image.ImageWidth        |      LONG |        1 |           | 256
+      34 | 0x0101 Exif.Image.ImageLength       |      LONG |        1 |           | 171
+      46 | 0x0102 Exif.Image.BitsPerSample     |     SHORT |        3 |       734 | 8 8 8
+      58 | 0x0103 Exif.Image.Compression       |     SHORT |        1 |           | 1
+      70 | 0x0106 Exif.Image.PhotometricInte.. |     SHORT |        1 |           | 2
+      82 | 0x010f Exif.Image.Make              |     ASCII |       18 |       740 | NIKON CORPORATION
+      94 | 0x0110 Exif.Image.Model             |     ASCII |       12 |       758 | NIKON D5300
+     106 | 0x0111 Exif.Image.StripOffsets      |      LONG |        1 |           | 286218
+     118 | 0x0112 Exif.Image.Orientation       |     SHORT |        1 |           | 1
+     130 | 0x0115 Exif.Image.SamplesPerPixel   |     SHORT |        1 |           | 3
+     142 | 0x0116 Exif.Image.RowsPerStrip      |      LONG |        1 |           | 171
+     154 | 0x0117 Exif.Image.StripByteCounts   |      LONG |        1 |           | 131328
+     166 | 0x011c Exif.Image.PlanarConfigura.. |     SHORT |        1 |           | 1
+     178 | 0x0131 Exif.Image.Software          |     ASCII |       37 |       770 | Adobe DNG Converter 12.3 (Macintosh)
+     190 | 0x0132 Exif.Image.DateTime          |     ASCII |       20 |       808 | 2020:07:13 14:53:56
+     202 | 0x014a Exif.Image.SubIFD            |      LONG |        2 |       828 | 280022 285140
+  STRUCTURE OF TIFF FILE (II): /Users/rmills/temp/Raw/DSC_0003.dng
+   address |    tag                              |      type |    count |    offset | value
+    280024 | 0x00fe Exif.Image.NewSubfileType    |      LONG |        1 |           | 0
+    280036 | 0x0100 Exif.Image.ImageWidth        |      LONG |        1 |           | 6016
+    280048 | 0x0101 Exif.Image.ImageLength       |      LONG |        1 |           | 4016
+    280060 | 0x0102 Exif.Image.BitsPerSample     |     SHORT |        1 |           | 16
+    280072 | 0x0103 Exif.Image.Compression       |     SHORT |        1 |           | 7
+    280084 | 0x0106 Exif.Image.PhotometricInte.. |     SHORT |        1 |           | 32803
+    280096 | 0x0115 Exif.Image.SamplesPerPixel   |     SHORT |        1 |           | 1
+    280108 | 0x011c Exif.Image.PlanarConfigura.. |     SHORT |        1 |           | 1
+    280120 | 0x0142 Exif.Image.0x142             |      LONG |        1 |           | 256
+    280132 | 0x0143 Exif.Image.0x143             |      LONG |        1 |           | 256
+...
+    280348 | 0xc761 Exif.Image.0xc761            |    DOUBLE |        6 |    285092 | 4549338546106269780 4516671190936266 +++
+  END: /Users/rmills/temp/Raw/DSC_0003.dng
+...
+     706 | 0xc761 Exif.Image.0xc761            |    DOUBLE |        6 |    279958 | 4549338546106269780 4516671190936266 +++
+     718 | 0xc7a7 Exif.Image.0xc7a7            |     UBYTE |       16 |    280006 | 51 35 79 139 126 151 164 251 56 72 2 +++
+END: /Users/rmills/temp/Raw/DSC_0003.dng
+```
+
+I was a little surprised that Adobe have removed the MakerNote.
+
+I believe the "undefined" tags which are listed in the format: Exif.Image.0xc761 and defined in the specification.  C761.H is "Noise Profile" for which the mathematics are explained by Adobe!
+
+A curiosity about the DNG Standard is know when reading a DNG that those tags are valid.  Of course the DNG's Exif.Image.Software is "Adobe DNG Converter 12.3", however I believe most image editors would overwrite that when the file is modified.  Perhaps it's better to consider tags such as 0xc761 to be part of the "Core" Tiff Specification.
+
+#### CR2 and NEF will require more investigation.
+
+It's possible that there are tags which are unique to CR2 and NEF and tvisitor.cpp is hiding them when the *U* option is not being used.  In the first instance, I can search in the Exiv2 source code to see if there is any special or unusual being defined or used by the CR2 and NEF handlers.
+
 ### Garbage Collecting Tiff Files
 
 There is a significant problem with the Tiff format.  It's possible for binary records to hold offsets to significant data elsewhere in the file.  This creates two problems.  Firstly, when buried in an undocumented MakerNote, we don't know that the data is an offset.  So, when all the blocks move in a rewrite of the file, we can neither relocate the referenced data, nor update the offset.  My conclusion is that is almost impossible to garbage collect a tiff file.  However, the situation isn't hopeless.  The offset in the Tiff Header defines the location of IFD0.  It's very common that IFD0 is at the end of the file and the reason is obvious.  When a Tiff is rewritten by an application, they create IFD0 in memory, then copy it to the end of the file and update the offset in the header.  If we are creating IFD0, we can safely reuse the spaced occuped by previous IFD0.
@@ -837,13 +907,13 @@ The Windows Bitmap Format "Bimp" has been around in Windows forever.  It may eve
 
 BMP is often referred to as a "device independant bitmap" because it's not designed for any physical device.  It is the responsibility of the device or printer driver to render the image.  Windows device drivers are required to implement the GDI (Graphical Device Interface).
 
-The first 4 bytes of the BITMAP header (following the 14 byte file BITMAPFILE header) are the length of BITMAP header.   As well has being useful for navigating the file, this is effectively the BITMAP version.  In the Windows SDK, they call it bmType.  The last time I looked at the structure of a BMP (Windows 95) it was 40 bytes.  On Windows 10 it's now 124.
+The first 4 bytes of the BITMAP (following the 14 byte file BITMAPFILE header) is the length of BITMAP.   As well as being useful for navigating the file, this is effectively the BITMAP version.  In the Windows SDK, they call it bmType.  The last time I looked at the structure of a BMP (Windows 95) it was 40 bytes.  On Windows 10 it's now 124.
 
-From a metadata standpoint, there's almost no metadata in the file.  I was surprised to discover that the latest version (BITMAPV5) can store an ICC profile and has an alpha channel bitmask.  Perhaps a future version will include XMP and Exif metadata.
+From a metadata standpoint, there's almost nothing interesting in a BMP.  I was surprised to discover that the latest version (BITMAPV5) can store an ICC profile and has an alpha channel bitmask.  Perhaps a future version will include XMP and Exif metadata.
 
-A BMP can be rendered with transparency.  The GDI has a method TransparentBlt() in which one colour value is defined to be "transparent".  This method of supporting transparency is the responsibility of application code and isn't defined in the file itself.
+A BMP can be rendered with transparency.  The GDI has a method TransparentBlt() in which one colour value is defined to be "transparent".  This method of supporting transparency is the responsibility of the application code and not defined in the file itself.
 
-Before moving on from BMP, I'd like to say something about the flexibility of the BMP format.  You can have different colours depths and the image can have indexed color.  In this format, a table of up to 256 colours can be defined and the value of a pixel is the index and not the colour itself.  It's interesting to see that Microsoft have been working with this for 40 years, occassionaly upgraded it and never broken backwards compatibility.  Everybody would benefit from camera manufacturers adopting a similar approach to file formats.
+Before moving on from BMP, I'd like to say something about the flexibility of the BMP format.  You can have different colours depths and the image can have indexed color.  In this format, a table of up to 256 colours can be defined and the value of a pixel is the index and not the colour itself.  It's interesting to see that Microsoft have been working with this for 40 years, occasionally upgrading, and have never broken backwards compatibility.  Everybody would benefit from camera manufacturers adopting a similar approach to file formats.
 
 [TOC](#TOC)
 <div id="GIF">
