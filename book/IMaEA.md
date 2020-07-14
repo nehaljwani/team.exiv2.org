@@ -38,11 +38,11 @@ _And our cat Lizzie._
 | [7. I/O in Exiv2](#7)                                 | 39 | [WebP Web Photograph ](#WEBP)         | 21 | [13.6 Sample programs](#13-6)           | 80 |
 | [8. Exiv2 Architecture](#8)                           | 41 | [MRW Minolta Raw](#MRW)               | 22 | [13.7 User Support](#13-7)              | 80 |
 | [8.1 Extracting metadata using dd](#8-1)              | 41 | [ORF Olympus Raw Format](#ORF)        | 23 | [13.8 Bug Tracking](#13-8)              | 81 |
-| [8.2 Tag Names in Exiv2](#8-2)                        | 42 | [PGF Portable Graphics Format](#PGF)  | 24 | [13.9 Release Engineering](#13-9)       | 81 |
+| [8.2 Tag Names in Exiv2](#8-2)                        | 42 | [PGF Progressive Graphics File](#PGF) | 24 | [13.9 Release Engineering](#13-9)       | 81 |
 | [8.3 TagInfo](#8-3)                                   | 44 | [PSD PhotoShop Document](#PSD)        | 25 | [13.10 Platform Support](#13-10)        | 81 |
-| [8.4 Visitor Design Pattern](#8-4)                    | 44 | [RAF](#RAF)                           | 26 | [13.11 Localisation](#13-11)            | 81 |
-| [8.5 IFD:accept() and TiffImage::accept() ](#8-5)     | 48 | [RW2](#RW2)                           | 27 | [13.12 Build Server](#13-12)            | 81 |
-| [8.6 Presenting data with visitTag()](#8-6)<br>       | 53 | [TGA](#TGA)                           | 28 | [13.13 Source Code Management](#13-13)  | 81 |
+| [8.4 Visitor Design Pattern](#8-4)                    | 44 | [RAF Fujifilm RAW](#RAF)              | 26 | [13.11 Localisation](#13-11)            | 81 |
+| [8.5 IFD:accept() and TiffImage::accept() ](#8-5)     | 48 | [RW2 Panasonic RAW](#RW2)             | 27 | [13.12 Build Server](#13-12)            | 81 |
+| [8.6 Presenting data with visitTag()](#8-6)<br>       | 53 | [TGA Truevision Targa](#TGA)          | 28 | [13.13 Source Code Management](#13-13)  | 81 |
 | [8.7 Tag Decoder](#8-7)                               | 57 | [BMP Windows Bitmap](#BMP)            | 29 | [13.14 Project Web Site](#13-14)        | 81 |
 | [8.8 Jpeg::Image accept()](#8-8)                      | 59 | [GIF Graphical Image Format](#GIF)    | 30 | [13.15 Project Servers ](#13-15)        | 81 |
 | [9. Image Previews](#9)                               | 61 |                                       | 31 | [13.16 API Management](#13-16)          | 81 |
@@ -244,6 +244,8 @@ The good news however is that file formats come in families which are:
 I suspect the software mess is caused by the hardware engineers.  When hardware people start a new project, they copy the CAD files from the last project and proceed from there.  They don't worry about back-porting changes or compatibility.  They think firmware people are stupid and do a terrible job!  We have to live with this.
 
 There is also the issue of patents.  It's unclear if it's legal to read an ISOBMFF file which is used by Apple to store Heif files.  I believe it is legal to read ISOBMFF files.  It's illegal to reverse engineer the H.264 codec which is used to encrypt the image in a HEIF.  Metadata is occasionally compressed (PNG), encrypted (Nikon) or ciphered (Sony).
+
+Here is a useful WikiPedia site that summarises file formats: [https://en.wikipedia.org/wiki/Comparison_of_graphics_file_formats](https://en.wikipedia.org/wiki/Comparison_of_graphics_file_formats)
 
 [TOC](#TOC)
 <div id="TIFF">
@@ -870,7 +872,7 @@ To be written.
 
 [TOC](#TOC)
 <div id="PGF">
-## PGF Portable Graphics Format
+## PGF Progressive Graphics File
 
 To be written.
 
@@ -881,19 +883,19 @@ To be written.
 To be written.
 
 <div id="RAF">
-## RAF
+## RAF Fujifilm RAW
 
 To be written.
 
 [TOC](#TOC)
 <div id="RW2">
-## RW2
+## RW2 Panasonic RAW
 
 To be written.
 
 [TOC](#TOC)
 <div id="TGA">
-## TGA
+## TGA Truevision Targa
 
 To be written.
 
@@ -1380,7 +1382,7 @@ So, Minolta have 6 "sub-records".  Other manufacturers have more.  Let's say 10 
 
 Now to address your concern about **Exif.MinoltaCsNew.ISOSpeed**.  It will throw an exception in Exiv2 v0.27.2.  Was it defined in an earlier version of Exiv2 such as 0.21?  I don't know.
 
-Your application code has to use exception handlers to catch these matters and determine what to do.  Without getting involved with your application code, I can't comment on your best approach to manage this.  There is a macro EXIV2\_TEST\_VERSION which enables you to have version specific code in your application.
+Your application code has to use exception handlers to catch these matters and determine what to do.  Without getting involved with your application code, I can't comment on your best approach to manage this.  There is a macro EXIV2\_TEST\_VERSION which enables you to have version specific code in your application.  This is discussed in more detail here:  [13-9](13-9)
 
 [TOC](#TOC)
 
@@ -2486,7 +2488,31 @@ To be written.
 <div id="10-4">
 # 10.4 Version Test
 
-To be written.
+The version test is _more-or-less_ the output of the command _$ exiv2 --verbose --version_ which produces about 150 lines of output.  About 60 lines of the output are a list of pre-registed XMP namespaces and of little interest.  So, the script test/version-test.sh counts and filters out the XMP namespaces.
+
+```bash
+#!/usr/bin/env bash
+# Test driver for exiv2.exe --verbose --version
+
+source ./functions.source
+
+(   cd "$testdir"
+    # Curiously the pipe into grep causes FreeBSD to core dump!
+    if [ $(uname) != "FreeBSD" ]; then
+                                  runTest exiv2 --verbose --version | grep -v ^xmlns
+        echo xmlns entry count: $(runTest exiv2 --verbose --version | grep    ^xmlns | wc -l)
+    else
+        runTest exiv2 --verbose --version     
+    fi
+)
+
+# That's all Folks!
+##
+```
+
+The implementation of the command _$ exiv2 --verbose --version_ and the version number scheme is discussed in detail: [13.9 Release Engineering](#13-9).
+
+
 
 [TOC](#TOC)
 <div id="10">
@@ -2732,7 +2758,26 @@ In month 1, the release and release notes are developed.  Depending on the compl
 
 If an issue arrives between RC2 and GM and it is decided to change code, I always accept a schedule delay and publish RC3.
 
-It's only fair to say that others will say "Oh, it shouldn't be so complicated.".  And I agree.  It shouldn't.  I've been the Release Engineer for at least 6 releases and have not discovered any tricks to eliminate the work involved.  You could just tag the current development branch, bump the version number and hope for the best.
+It's only fair to say that others will say "Oh, it shouldn't be so complicated.".  And I agree.  It shouldn't.  I've been the Release Engineer for at least 6 releases and have not discovered any tricks to eliminate the work involved.  You could just tag the current development branch, bump the version number and hope for the best.  While we currently have two major branches _0.27-maintenance_ and _master_, this isn't possible.  At least half the PRs and changes in the release are changes which have to be ported from the other branch. 
+
+If we reach Exiv2 v0.28, I hope that a further dot release from Exiv2 v0.27-maintenance will never be required.  I suspect we will see Exiv2 v0.27.4 in 2021 and v0.27.5 in 2022 with security fixes which will need to be ported from _master_.  To reach Exiv2 v0.28, there are numerous fixes in 0.27-maintenance which should be ported from 0.27-maintenance.
+
+#### The Macro EXIV2\_TEST\_VERSION
+
+This enables application code to easily test for a _**minimum**_ version of exiv2.
+
+```
+#define EXIV2_TEST_VERSION(major,minor,patch) \
+    ( EXIV2_VERSION >= EXIV2_MAKE_VERSION(major,minor,patch) )
+```
+
+For example, to safely call image->setIccProfile(), this is compile time safe and will not link Exiv2::Image::setIccProfile() if you are using any version of Exiv2 prior to 0.27.0 when this API was added.
+
+```cpp
+#ifdef EXIV2_TEST_VERSION(0,27,0)
+    image->setIccProfile(....);
+#endif
+``` 
 
 [TOC](#TOC)
 <div id="13-10">
