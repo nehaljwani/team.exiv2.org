@@ -44,7 +44,7 @@ _And our cat Lizzie._
 | [8.5 IFD:accept() and TiffImage::accept() ](#8-5)     | 48 | [RW2 Panasonic RAW](#RW2)             | 27 | [13.12 Build Server](#13-12)            | 81 |
 | [8.6 Presenting data with visitTag()](#8-6)<br>       | 53 | [TGA Truevision Targa](#TGA)          | 28 | [13.13 Source Code Management](#13-13)  | 81 |
 | [8.7 Tag Decoder](#8-7)                               | 57 | [BMP Windows Bitmap](#BMP)            | 29 | [13.14 Project Web Site](#13-14)        | 81 |
-| [8.8 Jpeg::Image accept()](#8-8)                      | 59 | [GIF Graphical Image Format](#GIF)    | 30 | [13.15 Project Servers ](#13-15)        | 81 |
+| [8.8 Jpeg::Image accept()](#8-8)                      | 59 | [GIF Graphical Interchange Format](#GIF) | 30 | [13.15 Project Servers ](#13-15)        | 81 |
 | [9. Image Previews](#9)                               | 61 |                                       | 31 | [13.16 API Management](#13-16)          | 81 |
 | [10. Test Suite and Build](#10)                       | 63 | _**Other Sections**_                  |    | [13.17 Recruiting Contributors](#13-17) | 81 |
 | [10.1 Bash Tests](#10-1)                              | 63 | [Dedication](#dedication)             |  2 | [13.18 Project Scheduling](#13-18)      | 82 |
@@ -922,6 +922,67 @@ Before moving on from BMP, I'd like to say something about the flexibility of th
 ## GIF Graphics Image Format
 
 ![gif](gif.png)
+
+| Component | URL |
+|:--        |:--  |
+| Gif Specification |  [https://www.w3.org/Graphics/GIF/spec-gif89a.txt](https://www.w3.org/Graphics/GIF/spec-gif89a.txt) |
+| LibGif    | [https://sourceforge.net/projects/giflib/](https://sourceforge.net/projects/giflib/) |
+| LibGif Man Pages | [https://www.mankier.com/1/gifbuild](https://www.mankier.com/1/gifbuild) |
+| Adobe XMPsdk     |  [https://github.com/adobe/XMP-Toolkit-SDK.git](https://github.com/adobe/XMP-Toolkit-SDK.git) |
+| WikiPedia GIF    | [https://en.wikipedia.org/wiki/GIF](https://en.wikipedia.org/wiki/GIF) |
+
+
+I built GifLib 5.1.1 on macOS .  5.2.1 complained about the option linker option _-soname_ and refused to link!
+
+I followed the discussion on the WikiPedia site and created a 3x2 pixel gif with MSPaint on Windows-10 which I've inspected with the giflib/.  The file gif.gif is in the book resources at: svn://dev.exiv2.org/svn/team/book
+
+```bash
+1606 rmills@rmillsmbp:~/gnu/exiv2/team/book $ gifbuild -d -v gif.gif 
+#
+# GIF information from gif.gif
+screen width 2
+screen height 3
+screen colors 256
+screen background 0
+pixel aspect byte 0
+
+screen map
+	sort flag off
+	rgb 000 000 000
+	rgb 000 000 051
+.... color table entries ....
+	rgb 000 000 000
+end
+
+graphics control
+	disposal mode 0
+	user input flag off
+	delay 0
+	transparent index 252
+end
+
+image # 1
+image left 0
+image top 0
+image bits 2 by 3 hex
+9993
+9300
+fbe0
+```
+
+```bash
+.../book$ dmpf gif.gif 
+       0        0: GIF89a._._._______3__f__.__.__._  ->  47 49 46 38 39 61 02 00 03 00 f7 00 00 00 00 00 00 00 33 00 00 66 00 00 99 00 00 cc 00 00 ff 00
+                                                          G  I  F  8  9  a <-W-> <-H-> <-FLAGS> |-> ColorTable ->    
+    0x20       32: +__+3_+f_+._+._+._U__U3_Uf_U._U.  ->  2b 00 00 2b 33 00 2b 66 00 2b 99 00 2b cc 00 2b ff 00 55 00 00 55 33 00 55 66 00 55 99 00 55 cc
+...
+   0x300      768: .____________!...__._,____._.__.  ->  ff 00 00 00 00 00 00 00 00 00 00 00 00 21 f9 04 01 00 00 fc 00 2c 00 00 00 00 02 00 03 00 00 08
+   0x320      800: ._3M..`..._;                      ->  09 00 33 4d 9a 04 60 1f b8 80 00 3b
+```
+
+### XMP in Gif
+
+This is supported by Gif89a files and documented by Adobe in XMPSpecificationPart3.pdf on page 17 of the 2010 edition.  At present I don't have a sample GIF with embedded XMP.  I don't know if Exiv2 support GIF/XML.
 
 [TOC](#TOC)
 <div id="2">
