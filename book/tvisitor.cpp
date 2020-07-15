@@ -743,6 +743,7 @@ typedef uint32_t PSopt_e;
 class   Image; // forward
 class   TiffImage;
 class   CrwImage ;
+class   ICC;
 class   IFD;
 class   CIFF;
 
@@ -1195,6 +1196,53 @@ private:
     const char*  kJp2Box_iprp  = "iprp";
     const char*  kJp2Box_ipco  = "ipco";
 };
+
+class ICC : public Image
+{
+public:
+    ICC(std::string path)
+    : Image(path)
+    { init(); }
+    ICC(Io& io,maker_e maker=kUnknown)
+    : Image(io)
+    { init(); }
+
+    void init()
+    {   depth_=0;
+        valid_=false;
+        endian_=keBig;
+        format_ = "ICC";
+        start_ =128;
+    }
+
+    void accept(class Visitor& visitor);
+
+    bool valid()
+    {
+        if ( !valid_ ) {
+            IoSave restore(io(),0);
+            valid_= io().getLong(endian_) == io().size();
+        }
+        return valid_;
+    }
+};
+
+void ICC::accept(class Visitor& visitor)
+{
+    if ( !valid_ ) return ;
+    visitor.visitBegin((*this)); // tell the visitor
+
+    IoSave restore(io(),start_);
+    uint32_t nEntries = io().getLong(endian_);
+    while  ( nEntries-- ) {
+        DataBuf sig(5);
+        io().read(sig.pData_,4);
+        uint32_t offset = io().getLong(endian_);
+        uint32_t length = io().getLong(endian_);
+        visitor.out() << stringFormat("%4s | %8d | %8d ",sig.pData_,offset,length) << std::endl;
+    }
+    visitor.visitEnd((*this)); // tell the visitor
+}
 
 // 4. Create concrete "visitors"
 class ReportVisitor: public Visitor
@@ -1691,6 +1739,8 @@ void ReportVisitor::visitBegin(Image& image)
             out() << indent() << " address |   length | box             | uuid | data";
         } else if ( image.format() == "PNG") {
             out() << indent() << "  address | chunk |  length |   checksum | data " ;
+        } else if ( image.format() == "ICC" ) {
+            out() << indent() << " sig |   offset |   length" ;
         } else {
             out() << indent() << " address |    tag                              |      type |    count |    offset | value" ;
         }
@@ -1979,6 +2029,7 @@ int main(int argc,const char* argv[])
         CrwImage  crw (path);
         PngImage  png (path);
         Jp2Image  jp2 (path);
+        ICC       icc (path);
 
         // Visit the image
         if      ( tiff.valid() ) tiff.accept(visitor);
@@ -1986,6 +2037,7 @@ int main(int argc,const char* argv[])
         else if (  crw.valid() )  crw.accept(visitor);
         else if (  png.valid() )  png.accept(visitor);
         else if (  jp2.valid() )  jp2.accept(visitor);
+        else if (  icc.valid() )  icc.accept(visitor);
         else    { Error(kerUnknownFormat,path); }
     } else {
         std::cout << "usage: " << argv[0] << " [ { U | S | R | X} ] path" << std::endl;

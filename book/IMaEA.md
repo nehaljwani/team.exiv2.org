@@ -245,7 +245,7 @@ I suspect the software mess is caused by the hardware engineers.  When hardware 
 
 There is also the issue of patents.  It's unclear if it's legal to read an ISOBMFF file which is used by Apple to store Heif files.  I believe it is legal to read ISOBMFF files.  It's illegal to reverse engineer the H.264 codec which is used to encrypt the image in a HEIF.  Metadata is occasionally compressed (PNG), encrypted (Nikon) or ciphered (Sony).
 
-Here is a useful WikiPedia site that summarises file formats: [https://en.wikipedia.org/wiki/Comparison_of_graphics_file_formats](https://en.wikipedia.org/wiki/Comparison_of_graphics_file_formats)
+Here is a useful WikiPedia site that summarises file formats: [https://en.wikipedia.org/wiki/Comparison\_of\_graphics\_file\_formats](https://en.wikipedia.org/wiki/Comparison_of_graphics_file_formats)
 
 [TOC](#TOC)
 <div id="TIFF">
@@ -676,7 +676,7 @@ I'm very pleased to say that neither the Exiv2 or XMP metadata in the image book
 
 JP2 is always big-endian encoded.  The documentation is available here:  https://www.iso.org/standard/78321.html
 
-The JPEG 2000 file is an ISOBMFF Container.  It consists of a linked lists of "boxes" which have a uint32\_t length, char[4] box-type and length-8 bytes of data.  A box may be a "super-box" and be a container for other boxes.
+The JPEG 2000 file is an ISOBMFF Container.  It consists of a linked lists of "boxes" which have a uint32\_t length, char[4] box-type and (length-8) bytes of data.  A box may be a "super-box" which is a container for other boxes.
 
 I believe the "box" idea in ISOBMFF is intended to address the issue I discussed about TIFF files.  In order to rewrite an image, it is necessary for the data to be self contained and relocatable.  Every "box" should be self contained with no offsets outside the box.  My study of JP2 is restricted to finding the Exiv2, ICC, IPTC and XMP data.  For sure these are self-contained blocks of binary data.  The metadata boxes are of type uuid and begin with a 128bit/16 byte UUID to identify the data.
 
@@ -837,12 +837,6 @@ As you can see, the 'colr' box is stored at 40+22 bytes into the file and has a 
 ![crw](crw.png)
 
 The specification is here: [CIFFspecV1R04.pdf](https://web.archive.org/web/20081230095207/http://xyrion.org/ciff/CIFFspecV1R04.pdf)
-
-[TOC](#TOC)
-<div id="CR2">
-## CR2 Canon Raw Format 2
-
-To be written.
 
 [TOC](#TOC)
 <div id="ISOBMFF">
