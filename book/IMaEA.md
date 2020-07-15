@@ -34,18 +34,18 @@ _And our cat Lizzie._
 | [3. MakerNotes](#3)                                   | 35 | [PNG Portable Network Graphics](#PNG) | 17 | [13.2 Build](#13-2)                     | 79 |
 | [4. Other metadata containers](#4)                    | 36 | [JP2 Jpeg 2000](#JP2)                 | 18 | [13.3 Security](#13-3)                  | 80 |
 | [5. Lens Recognition](#5)                             | 37 | [CRW Canon Raw](#CRW)                 | 19 | [13.4 Documentation](#13-4)             | 80 |
-| [6. Sample Applications](#6)                          | 38 | [ISOBMFF, CR3, HEIF, AVI](#ISOBMFF)   | 20 | [13.5 Testing](#13-5)                   | 80 |
-| [7. I/O in Exiv2](#7)                                 | 39 | [WebP Web Photograph ](#WEBP)         | 21 | [13.6 Sample programs](#13-6)           | 80 |
-| [8. Exiv2 Architecture](#8)                           | 41 | [MRW Minolta Raw](#MRW)               | 22 | [13.7 User Support](#13-7)              | 80 |
-| [8.1 Extracting metadata using dd](#8-1)              | 41 | [ORF Olympus Raw Format](#ORF)        | 23 | [13.8 Bug Tracking](#13-8)              | 81 |
-| [8.2 Tag Names in Exiv2](#8-2)                        | 42 | [PGF Progressive Graphics File](#PGF) | 24 | [13.9 Release Engineering](#13-9)       | 81 |
-| [8.3 TagInfo](#8-3)                                   | 44 | [PSD PhotoShop Document](#PSD)        | 25 | [13.10 Platform Support](#13-10)        | 81 |
-| [8.4 Visitor Design Pattern](#8-4)                    | 44 | [RAF Fujifilm RAW](#RAF)              | 26 | [13.11 Localisation](#13-11)            | 81 |
-| [8.5 IFD:accept() and TiffImage::accept() ](#8-5)     | 48 | [RW2 Panasonic RAW](#RW2)             | 27 | [13.12 Build Server](#13-12)            | 81 |
-| [8.6 Presenting data with visitTag()](#8-6)<br>       | 53 | [TGA Truevision Targa](#TGA)          | 28 | [13.13 Source Code Management](#13-13)  | 81 |
-| [8.7 Tag Decoder](#8-7)                               | 57 | [BMP Windows Bitmap](#BMP)            | 29 | [13.14 Project Web Site](#13-14)        | 81 |
-| [8.8 Jpeg::Image accept()](#8-8)                      | 59 | [GIF Graphical Interchange Format](#GIF) | 30 | [13.15 Project Servers ](#13-15)        | 81 |
-| [9. Image Previews](#9)                               | 61 |                                       | 31 | [13.16 API Management](#13-16)          | 81 |
+| [6. Sample Applications](#6)                          | 38 | [ICC Profile](#ICC)                   | 20 | [13.5 Testing](#13-5)                   | 80 |
+| [7. I/O in Exiv2](#7)                                 | 39 | [ISOBMFF, CR3, HEIF, AVI](#ISOBMFF)   | 21 | [13.6 Sample programs](#13-6)           | 80 |
+| [8. Exiv2 Architecture](#8)                           | 41 | [WebP Web Photograph ](#WEBP)         | 22 | [13.7 User Support](#13-7)              | 80 |
+| [8.1 Extracting metadata using dd](#8-1)              | 41 | [MRW Minolta Raw](#MRW)               | 23 | [13.8 Bug Tracking](#13-8)              | 81 |
+| [8.2 Tag Names in Exiv2](#8-2)                        | 42 | [ORF Olympus Raw Format](#ORF)        | 24 | [13.9 Release Engineering](#13-9)       | 81 |
+| [8.3 TagInfo](#8-3)                                   | 44 | [PGF Progressive Graphics File](#PGF) | 25 | [13.10 Platform Support](#13-10)        | 81 |
+| [8.4 Visitor Design Pattern](#8-4)                    | 44 | [PSD PhotoShop Document](#PSD)        | 26 | [13.11 Localisation](#13-11)            | 81 |
+| [8.5 IFD:accept() and TiffImage::accept() ](#8-5)     | 48 | [RAF Fujifilm RAW](#RAF)              | 27 | [13.12 Build Server](#13-12)            | 81 |
+| [8.6 Presenting data with visitTag()](#8-6)<br>       | 53 | [RW2 Panasonic RAW](#RW2)             | 28 | [13.13 Source Code Management](#13-13)  | 81 |
+| [8.7 Tag Decoder](#8-7)                               | 57 | [TGA Truevision Targa](#TGA)          | 29 | [13.14 Project Web Site](#13-14)        | 81 |
+| [8.8 Jpeg::Image accept()](#8-8)                      | 59 | [BMP Windows Bitmap](#BMP)            | 30 | [13.15 Project Servers ](#13-15)        | 81 |
+| [9. Image Previews](#9)                               | 61 | [GIF Graphical Interchange Format](#GIF) | 31 | [13.16 API Management](#13-16)       | 81 |
 | [10. Test Suite and Build](#10)                       | 63 | _**Other Sections**_                  |    | [13.17 Recruiting Contributors](#13-17) | 81 |
 | [10.1 Bash Tests](#10-1)                              | 63 | [Dedication](#dedication)             |  2 | [13.18 Project Scheduling](#13-18)      | 82 |
 | [10.2 Python Tests](#10-2)                            | 68 | [About this book](#about)             |  4 | [13.19 Enhancement Requests](#13-19)    | 82 |
@@ -837,6 +837,21 @@ As you can see, the 'colr' box is stored at 40+22 bytes into the file and has a 
 ![crw](crw.png)
 
 The specification is here: [CIFFspecV1R04.pdf](https://web.archive.org/web/20081230095207/http://xyrion.org/ciff/CIFFspecV1R04.pdf)
+
+[TOC](#TOC)
+<div id="ICC">
+## ICC Profile
+![icc](icc.png)
+
+The ICC Profile isn't an image format.  It's a data stream that is present in many images.  The purpose of the ICC profile is to provide additional color data about the image.  Most colour images are encoded as RGB or CMYK.   When these are rendered on a device, it's necessary to know the actual colour of Red is in the image and on the output device.  The Colour Management System (CMS) attempts to render the image to be the same on different devices.  This is of course impossible, however the aim of the ICC Profile is enable the software achieve good colour fidelity when printing on different devices.
+
+The ICC Profile is a member of the "TIFF" family of image standards.  It has a header, a directory of "tags" and values for the tags.
+
+Exiv2 has not code to inspect or modify the contents of the ICC Profile.  The data is treated as a binary "blob". You can insert/delete/add/replace the ICC Colour Profile in several image formats including JPEG, JP2, PNG and TIFF.
+
+The code which accompanies this book can inspect the contents of the ICC profile.
+
+The specification is available here: [http://www.color.org/icc_specs2.xalter](http://www.color.org/icc_specs2.xalter).  I believe the current ICC Profile Specification is: ICC.2-2016-7.pdf
 
 [TOC](#TOC)
 <div id="ISOBMFF">

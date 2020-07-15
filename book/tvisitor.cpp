@@ -776,6 +776,7 @@ public:
     // optional methods
     virtual void visitXMP     (DataBuf& /* xmp */ ) { return ; }
     virtual void visitICC     (DataBuf& /* icc */ ) { return ; }
+    virtual void visitICCTag  (const byte* sig,uint32_t offset,uint32_t length) { return; }
  
     PSopt_e       option() { return option_ ; }
     std::ostream& out()    { return out_    ; }
@@ -870,6 +871,7 @@ protected:
     bool        bigtiff_;
     size_t      depth_;
     std::string format_; // "TIFF", "JPEG" etc...
+    std::string header_; // title for report
 
     bool isPrintXMP(uint16_t type, PSopt_e option)
     {
@@ -1027,6 +1029,7 @@ public:
     }
     bool valid() {
         if ( valid_ ) return valid_;
+        header_ = "    tag | mask | code | name                           |  kount | offset | value ";
 
         IoSave  restore(io(),0);
         bool    result = false;
@@ -1220,8 +1223,9 @@ public:
     bool valid()
     {
         if ( !valid_ ) {
-            IoSave restore(io(),0);
-            valid_= io().getLong(endian_) == io().size();
+            IoSave  restore(io(),0);
+            valid_  = io().getLong(endian_) == io().size();
+            header_ = " sig |   offset |   length" ;
         }
         return valid_;
     }
@@ -1229,19 +1233,21 @@ public:
 
 void ICC::accept(class Visitor& visitor)
 {
-    if ( !valid_ ) return ;
-    visitor.visitBegin((*this)); // tell the visitor
+    if ( !valid_ ) valid();
+    if (  valid_ ) {
+        visitor.visitBegin((*this)); // tell the visitor
 
-    IoSave restore(io(),start_);
-    uint32_t nEntries = io().getLong(endian_);
-    while  ( nEntries-- ) {
-        DataBuf sig(5);
-        io().read(sig.pData_,4);
-        uint32_t offset = io().getLong(endian_);
-        uint32_t length = io().getLong(endian_);
-        visitor.out() << stringFormat("%4s | %8d | %8d ",sig.pData_,offset,length) << std::endl;
+        IoSave restore(io(),start_);
+        uint32_t nEntries = io().getLong(endian_);
+        while  ( nEntries-- ) {
+            DataBuf sig(5);
+            io().read(sig.pData_,4);
+            uint32_t offset = io().getLong(endian_);
+            uint32_t length = io().getLong(endian_);
+            visitor.visitICCTag(sig.pData_,offset,length);
+        }
+        visitor.visitEnd((*this)); // tell the visitor
     }
-    visitor.visitEnd((*this)); // tell the visitor
 }
 
 // 4. Create concrete "visitors"
@@ -1314,6 +1320,7 @@ public:
     void visitTag( Io&  io,Image& image, uint64_t  address
                          , uint16_t         tag, type_e       type,uint64_t count, uint64_t offset
                          , DataBuf&         buf,const TagDict& tagDict);
+    void visitICCTag(const byte* tag,uint32_t offset,uint32_t length);
 
     void visitEnd(Image& image)
     {
@@ -1513,7 +1520,7 @@ bool TiffImage::valid()
 {
     if ( !valid_ ) {
         IoSave restore(io(),0);
-
+        
         // read header
         DataBuf  header(16);
         io_.read(header);
@@ -1525,6 +1532,7 @@ bool TiffImage::valid()
         bigtiff_ = magic_ == 43;
         start_   = bigtiff_ ? getLong8(header,8,endian_) : getLong (header,4,endian_);
         format_  = bigtiff_ ? "BIGTIFF"                  : "TIFF"                    ;
+        header_  = " address |    tag                              |      type |    count |    offset | value" ;
 
         uint16_t bytesize = bigtiff_ ? getShort(header,4,endian_) : 8;
         uint16_t version  = bigtiff_ ? getShort(header,6,endian_) : 0;
@@ -1569,6 +1577,7 @@ bool JpegImage::valid()
                 valid_  = true;
             }
         }
+        header_ = " address | marker       |  length | signature";
     }
     return valid_ ;
 }
@@ -1586,6 +1595,7 @@ bool PngImage::valid()
             start_  = 8       ;
             endian_ = keBig   ;
             format_ = "PNG"   ;
+            header_  = "  address | chunk |  length |   checksum | data " ;
         }
     }
     return valid_ ;
@@ -1636,6 +1646,7 @@ bool Jp2Image::valid()
                 valid_  = true ;
             }
         }
+        header_ = " address |   length | box             | uuid | data";
     }
     return valid_ ;
 }
@@ -1717,34 +1728,29 @@ void ReportVisitor::visitSegment(Io& io,Image& image,uint64_t address
     IoSave  save(io,address+4);
     io.read(buf);
     std::string value = buf.toString(kttUndefined,buf.size_,image.endian());
-    if ( option() & kpsBasic || option() & kpsRecursive ) {
+    if ( option() & (kpsBasic | kpsRecursive) ) {
         out() <<           stringFormat("%8ld | 0xff%02x %-5s", address,marker,nm_[marker].c_str())
               << (length ? stringFormat(" | %7d | %s", length,value.c_str()) : "")
               << std::endl;
     }
 }
+void ReportVisitor::visitICCTag(const byte* tag,uint32_t offset,uint32_t length)
+{
+    if ( option() & (kpsBasic | kpsRecursive) ) {
+        out() << indent() << stringFormat("%4s | %8d | %8d ",tag,offset,length) << std::endl;
+    }
+}
+
 
 void ReportVisitor::visitBegin(Image& image)
 {
     indent_++;
-    if ( option() & kpsBasic || option() & kpsRecursive ) {
+    if ( option() & (kpsBasic|kpsRecursive) ) {
         char c = image.endian() == keBig ? 'M' : 'I';
         out() << indent() << stringFormat("STRUCTURE OF %s FILE (%c%c): ",image.format().c_str(),c,c) <<  image.io().path() << std::endl;
-
-        if ( image.format() == "CRW" ) {
-            out() << indent() << "    tag | mask | code | name                           |  kount | offset | value ";
-        } else if ( image.format() == "JPEG" ) {
-            out() << indent() << " address | marker       |  length | signature";
-        } else if ( image.format() == "JP2" || image.format() == "HEIC" || image.format() == "CR3" ) {
-            out() << indent() << " address |   length | box             | uuid | data";
-        } else if ( image.format() == "PNG") {
-            out() << indent() << "  address | chunk |  length |   checksum | data " ;
-        } else if ( image.format() == "ICC" ) {
-            out() << indent() << " sig |   offset |   length" ;
-        } else {
-            out() << indent() << " address |    tag                              |      type |    count |    offset | value" ;
+        if ( image.header_.size() ) {
+            out() << indent() << image.header_ << std::endl;
         }
-        out() << std::endl;
     }
 }
 
@@ -1797,7 +1803,12 @@ void ReportVisitor::visitXMP(DataBuf& xmp)
 }
 void ReportVisitor::visitICC(DataBuf& icc)
 {
-    if ( option() & kpsIcc ) out().write((const char*)icc.pData_,icc.size_);
+    Io  profile(icc);
+    switch ( option() ) {
+        case kpsIcc        : out().write((const char*)icc.pData_,icc.size_); break;
+        case kpsRecursive  : ICC(profile).accept(*this)                    ; break;
+        default            : /* do nothing */                              ; break;
+    }
 }
 void ReportVisitor::visitExif(Io& io)
 {
@@ -1845,7 +1856,8 @@ void JpegImage::accept(Visitor& visitor)
         // Read size and signature
         uint64_t    bufRead       = io_.read(buf);
         uint16_t    length        = bHasLength_[marker] ? getShort(buf,0,keBig):0;
-        bool        bAppn         = marker >= app0_ && marker <= (app0_ | 0x0F);
+        bool        bAppn         = marker >= app0_ && marker <= (app0_ +15) ;
+        bool        bApp2         = marker == app0_ +2 ;
         bool        bHasSignature = marker == com_ || bAppn ;
         std::string signature     = bHasSignature ? buf.binaryToString(2, buf.size_ - 2): "";
 
@@ -1878,7 +1890,7 @@ void JpegImage::accept(Visitor& visitor)
             bExtXMP = false ;
             XMP.empty(true) ; // empty the exif buffer
         }
-        if ( !ICC.empty() && !bAppn ) {
+        if ( !ICC.empty() && !bApp2 ) {
             visitor.visitICC(ICC); // tell the visitor
             ICC.empty(true) ; // empty the exif buffer
         }
@@ -1926,8 +1938,8 @@ void JpegImage::accept(Visitor& visitor)
                 }
             }
             if ( bICC ) {
-                uint16_t start = 2+2+14 ; // "\mark\length\ICC_PROFILE\0\C\Z" = \C: 1 byte chunk. \Z: 1 byte chunks.
-                ICC.read(io_,address+start,length - start); // read the XMP from the stream
+                uint16_t start = 2+14 ; // "\mark\length\ICC_PROFILE\0\C\Z" = \C: 1 byte chunk. \Z: 1 byte chunks.
+                ICC.read(io_,address+2+start,length - start); // read the XMP from the stream
             }
         }
 
