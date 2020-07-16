@@ -1,8 +1,7 @@
-// g++ create_tiff.cpp -ltiff -lz -L. -o create_tiff
+// g++ create_tiff.cpp -ltiff -lz -o create_tiff
 #include <iostream>
 #include <math.h>
-
-#include "libtiff/tiffio.h"
+#include <tiffio.h>
 
 // https://research.cs.wisc.edu/graphics/Courses/638-f1999/libtiff_tutorial.htm
 int main(int argc, const char* argv[])

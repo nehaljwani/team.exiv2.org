@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 48px;color:#FF4646;font-family: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:36px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-07-13</h3>
+<h3 align=center style="font-size:36px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-07-15</h3>
 
 <div id="dedication">
 ## _Dedication and Acknowledgment_
@@ -53,7 +53,7 @@ _And our cat Lizzie._
 | [10.4 Version Test](#10-4)                            | 70 | [2012 - 2017](#2012)                  |  5 | [13.21 Licensing](#13-21)               | 82 |
 | [11. API/ABI Compatibility](#11)                      | 71 | [2017 - Present](#2017)               |  5 | [13.22 Back-porting](#13-22)            | 82 |
 | [12. Security](#12)                                   | 73 | [Current Priorities](#current)        |  6 | [13.23 Other OSS projects](#13-23)      | 82 |
-| [12.1 The Fuzzing Police](#12)                        | 74 | [Future Projects](#future)            |  6 |                                         |    |
+| [12.1 The Fuzzing Police](#12)                        | 74 | [Future Projects](#future)            |  6 | [13.24 Software Development](#13-24)    | 85 |                          |    |
 | [12.2 How we deal with security issues](12-2)         | 75 | [Scope of Book](#scope)               |  7 |                                         |    |
 | [14. Code discussed in this book](#14)                | 80 | [Making this book](#making)           |  8 | [The Last Word](#finally)               | 84 |
 
@@ -2582,13 +2582,106 @@ source ./functions.source
 
 The implementation of the command _$ exiv2 --verbose --version_ and the version number scheme is discussed in detail: [13.9 Release Engineering](#13-9).
 
+### Generating test images
 
+Before getting into a discussion about this, I'd like to thank several collaborators who have contributed to this part of the book. Joris Van Damme of AWare Systems maintains the BigTiff web-site and was very helpful on email.  This topic was also discussed at: [https://github.com/Exiv2/exiv2/issues/1248](https://github.com/Exiv2/exiv2/issues/1248) and I wish to thank LeoHsiao1 and kolt54321 for their input.
 
-[TOC](#TOC)
-<div id="10">
-# 10 API/ABI
+Almost all the test images in the Exiv2 test have been added in response to bugs _**or**_ during feature development.  Most of the test files are checked into the repository.  There is an svn directory with larger test images which are downloaded on demand by the test suite. svn://dev.exiv2.org/svn/team/test
 
-To be written.
+As Exiv2 moved from 32 to 64 bits, the size of images has grown.  HUGE files > 3GB are commonly used in medical and space imaging applications.  For years, I've wanted to undertake a project to test if Exiv2 can really handle HUGE files.  The obvious way to work with them is to generate them on demand.
+ 
+I've looked at several libraries for the purpose of generating HUGE files.
+
+1.  libtiff-4 (which supports BigTiff)
+2.  PIL (python imaging library)
+3.  FreeImage a wrapper for libJPEG,libtiff, libpng, LibOpenJPEG, LibJXR, LibRAW, LibWebP and OpenEXR.
+
+#### libtiff-4 with BigTiff support
+
+**1.  Build and install jpeg-6b:**
+
+```bash
+$ cd ~/gnu/jpeg/jpeg-6b
+$ make clean ; ./configure --prefix=/usr/local ; make 
+$ sudo make install
+$ sudo cp j*.h  /usr/local/include
+```
+
+**2 Build and install zlib:**
+
+```bash
+$ ~/gnu/zlib/zlib-1.2.11
+$ ./configure --prefix=/usr/local
+$ make
+$ sudo make install
+```
+
+**3 Download and install libtiff4** from [http://download.osgeo.org/libtiff/](http://download.osgeo.org/libtiff/)
+
+```bash
+$ cd ~/gnu/tiff/libtiff-4.1.1
+$ cd build
+$ cmake ..
+$ sudo make install
+```
+
+**4 Build the program create_tiff from the book resources:**
+
+```bash
+$ g++ create_tiff.cpp -ltiff -lz -o create_tiff
+$ ./create_tiff
+usage ./create_tiff width height path [open-option]
+```
+
+You may wish to use the code in CMakeLists.txt to build create_tiff.  However most folks have neither _-ljpeg_ nor _-ltiff_ installed, so the default CMakeList.txt does not build create_tiff.
+
+**5 Testing BigTiff**
+
+The parameter open-option defaults to w8 which means "write a BigTiff Little Endiand".  Other options useful are "w4", "w8b" and "w4b".  The documentation for this is at: [file:///usr/local/share/doc/tiff/html/man/TIFFOpen.3tiff.html](file:///usr/local/share/doc/tiff/html/man/TIFFOpen.3tiff.html) un
+
+```bash
+.../book $ ./create_tiff 200 400 foo.tif ; ls -l foo.tif ; build/tvisitor foo.tif | head -1
+TIFFScanlineSize64: Computed scanline size is zero.
+-rw-r--r--+ 1 rmills  staff  320252 16 Jul 18:39 foo.tif
+STRUCTURE OF BIGTIFF FILE (II): foo.tif
+.../book $ ./create_tiff 200 400 foo.tif w4 ; ls -l foo.tif ; build/tvisitor foo.tif | head -1
+TIFFScanlineSize64: Computed scanline size is zero.
+-rw-r--r--+ 1 rmills  staff  320154 16 Jul 18:40 foo.tif
+STRUCTURE OF TIFF FILE (II): foo.tif
+.../book $ ./create_tiff 200 400 foo.tif wb4 ; ls -l foo.tif ; build/tvisitor foo.tif | head -1
+TIFFScanlineSize64: Computed scanline size is zero.
+-rw-r--r--+ 1 rmills  staff  320154 16 Jul 18:40 foo.tif
+STRUCTURE OF TIFF FILE (MM): foo.tif
+.../book $ ./create_tiff 200 400 foo.tif wb8 ; ls -l foo.tif ; build/tvisitor foo.tif | head -1
+TIFFScanlineSize64: Computed scanline size is zero.
+-rw-r--r--+ 1 rmills  staff  320252 16 Jul 18:40 foo.tif
+STRUCTURE OF BIGTIFF FILE (MM): foo.tif
+```
+
+You can create HUGE BigTiff files:
+
+```
+.../book $ ./create_tiff 80000 20000 foo.tif  ; ls -lh foo.tif ; build/tvisitor foo.tif 
+TIFFScanlineSize64: Computed scanline size is zero.
+-rw-r--r--+ 1 rmills  staff   6.0G 16 Jul 18:43 foo.tif
+STRUCTURE OF BIGTIFF FILE (II): foo.tif
+ address |    tag                              |      type |    count |    offset | value
+2105032728 | 0x0100 Exif.Image.ImageWidth        |      LONG |        1 |           | 80000
+2105032748 | 0x0101 Exif.Image.ImageLength       |     SHORT |        1 |           | 20000
+2105032768 | 0x0102 Exif.Image.BitsPerSample     |     SHORT |        4 |           | 8 8 8 8
+2105032788 | 0x0103 Exif.Image.Compression       |     SHORT |        1 |           | 1
+2105032808 | 0x0106 Exif.Image.PhotometricInte.. |     SHORT |        1 |           | 2
+2105032828 | 0x0111 Exif.Image.StripOffsets      |     LONG8 |        1 |           | 16
+2105032848 | 0x0112 Exif.Image.Orientation       |     SHORT |        1 |           | 1
+2105032868 | 0x0115 Exif.Image.SamplesPerPixel   |     SHORT |        1 |           | 4
+2105032888 | 0x0116 Exif.Image.RowsPerStrip      |      LONG |        1 |           | 320000
+2105032908 | 0x0117 Exif.Image.StripByteCounts   |     LONG8 |        1 |           | 6400000000
+2105032928 | 0x011c Exif.Image.PlanarConfigura.. |     SHORT |        1 |           | 1
+END: foo.tif
+.../book $ 
+```
+
+I have not investigated the message _TIFFScanlineSize64: Computed scanline size is zero._
 
 [TOC](#TOC)
 <div id="11">
@@ -3162,6 +3255,18 @@ I have to say that the inertia of the Linux Distros is considerable.  It can tak
 ### 13.23 Other projects demanding support and changes
 
 Without question, dealing with this has been very difficult.  Folks who have adopted Exiv2 in their product may feel they are entitled to make enhancement requests, demand fixes, superior support and other privileges.  In a nutshell, they feel entitled.  They are not.  They are entitled to the same as all other stakeholders.  No more.  No less.
+
+[TOC](#TOC)
+<div id="13-24">
+### 13.24 Software Development
+
+As this is the first and last book I will ever write, I'd like to close the discussion of "Project Management" will some opinions and thoughts about how software is developed.  Since I wrote my first code in Algol in High School in 1968, management have been searching for the silver bullet that will cause projects to be delivered on time, to budget with great performance, few bugs and low cost maintenance.
+
+I've seen different approaches used.  In the IT world, people involved in systems development adopted the "drawing office" model and adapted it.  In the drawing office, you have draftsmen working on drawing boards and engineers work at desks.  The engineers do the design and the draftsmen draw it.  This was modified and the systems analysts became the designers and the programmers created the code.  They work in a strict regime of SSADM - the Standard Structure Analysis and Design Methodology.  This is often called "The Waterfall Method".  It's horrible.  It's inflexible, slow and very expensive.  It's amazing that anything can be delivered that way.
+
+Before I retired, we started adoption Scrum.  Loads of meetings.  The project is divided into sprints.  There are two days of meetings at the end of every sprint.  Two days of meetings at the start of every sprint.  A daily "stand-up" which was usually about 1 hour.  And I'm sure I've forgotten other pointless meetings.  Sometimes people say they are "agile".  I haven't figure out what that is.  I think it's some kind of "let's not bother looking ahead.  It'll be great if it's ever delivered.".  And of course, all software development engineers (except me) are geniuses who never create bugs, documentation and never help co-workers.  Their code is perfect - or so they tell me.
+
+Software Development is Russian Roulette with a bullet in every chamber.  If you have good folks on the team, the development will be enjoyable and the results will be good.  Mostly, the experience is horrible.  Good Luck.  I'm happy to be retired.
 
 [TOC](#TOC)
 <div id="14">
