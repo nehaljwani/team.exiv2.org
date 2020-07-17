@@ -1586,17 +1586,15 @@ bool PngImage::valid()
 {
     if ( !valid_ ) {
         IoSave   restore(io(),0);
-        bool     result  = true ;
+        valid_  = true ;
         const byte pngHeader[] = { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A };
-        for ( size_t i = 0 ; result && i < sizeof (pngHeader ); i ++) {
-            result = io().getb() == pngHeader[i];
+        for ( size_t i = 0 ; valid_ && i < sizeof (pngHeader ); i ++) {
+            valid_ = io().getb() == pngHeader[i];
         }
-        if ( result ) {
-            start_  = 8       ;
-            endian_ = keBig   ;
-            format_ = "PNG"   ;
-            header_  = "  address | chunk |  length |   checksum | data " ;
-        }
+        start_  = 8       ;
+        endian_ = keBig   ;
+        format_ = "PNG"   ;
+        header_  = "  address | chunk |  length |   checksum | data " ;
     }
     return valid_ ;
 }
