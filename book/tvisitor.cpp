@@ -1953,21 +1953,23 @@ void ReportVisitor::visitChunk(Io& io,Image& image,uint64_t address
                         ,char* chunk,uint32_t length,uint32_t chksum)
 {
     IoSave save(io,address+8);
-    DataBuf   data(length);
-    io.read(data);
-
     if ( option() & (kpsBasic | kpsRecursive) ) {
+        DataBuf   data(length > 40 ? 40 : length ); // read enougth data for reporting purposes
+        io.read(data);
         out() << indent() << stringFormat(" %8d |  %s | %7d | %#10x | ",address,chunk,length,chksum);
-        if ( length > 40 ) length = 40;
         out() << data.toString(kttUndefined,length,image.endian()) << std::endl;
     }
 
     if ( option() & kpsRecursive && std::strcmp(chunk,"eXIf") == 0 ) {
+        DataBuf   data(length);  // read the whole chunk
+        io.read(data);
         Io        tiff(io,address+8,length);
         TiffImage(tiff).accept(*this);
     }
 
     if ( option() & kpsXMP && std::strcmp(chunk,"iTXt")==0 ) {
+        DataBuf   data(length); // read the whole chunk
+        io.read(data);
         if ( data.strcmp("XML:com.adobe.xmp")==0 ) {
             out() << data.pData_+22 ;
         }
