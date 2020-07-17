@@ -2637,7 +2637,7 @@ You may wish to use the code in CMakeLists.txt to build create_tiff.  However mo
 
 **5 Testing BigTiff**
 
-The parameter open-option defaults to w8 which means "write a BigTiff Little Endiand".  Other options useful are "w4", "w8b" and "w4b".  The documentation for this is at: [file:///usr/local/share/doc/tiff/html/man/TIFFOpen.3tiff.html](file:///usr/local/share/doc/tiff/html/man/TIFFOpen.3tiff.html) un
+The parameter open-option defaults to w8 which means "write a BigTiff Little Endian".  Other options useful are "w4", "w8b" and "w4b".  The documentation for this is at: [file:///usr/local/share/doc/tiff/html/man/TIFFOpen.3tiff.html](file:///usr/local/share/doc/tiff/html/man/TIFFOpen.3tiff.html)
 
 ```bash
 .../book $ ./create_tiff 200 400 foo.tif ; ls -l foo.tif ; build/tvisitor foo.tif | head -1
@@ -3260,11 +3260,17 @@ Without question, dealing with this has been very difficult.  Folks who have ado
 <div id="13-24">
 ### 13.24 Software Development
 
-As this is the first and last book I will ever write, I'd like to close the discussion of "Project Management" will some opinions and thoughts about how software is developed.  Since I wrote my first code in Algol in High School in 1968, management have been searching for the silver bullet that will cause projects to be delivered on time, to budget with great performance, few bugs and low cost maintenance.
+As this is the first and last book I will ever write, I'd like to close the discussion of "Project Management" will some opinions and thoughts about how software is developed.  Management have been searching for the silver bullet that will cause projects to be delivered on time, to budget with great performance, few bugs and low cost maintenance.  This search has been proceeding for more than 50 years.  We've made some progress.  However system complexity out-strips our management and control tools.  The challenges are emense.
 
 I've seen different approaches used.  In the IT world, people involved in systems development adopted the "drawing office" model and adapted it.  In the drawing office, you have draftsmen working on drawing boards and engineers work at desks.  The engineers do the design and the draftsmen draw it.  This was modified and the systems analysts became the designers and the programmers created the code.  They work in a strict regime of SSADM - the Standard Structure Analysis and Design Methodology.  This is often called "The Waterfall Method".  It's horrible.  It's inflexible, slow and very expensive.  It's amazing that anything can be delivered that way.
 
-Before I retired, we started adoption Scrum.  Loads of meetings.  The project is divided into sprints.  There are two days of meetings at the end of every sprint.  Two days of meetings at the start of every sprint.  A daily "stand-up" which was usually about 1 hour.  And I'm sure I've forgotten other pointless meetings.  Sometimes people say they are "agile".  I haven't figure out what that is.  I think it's some kind of "let's not bother looking ahead.  It'll be great if it's ever delivered.".  And of course, all software development engineers (except me) are geniuses who never create bugs, documentation and never help co-workers.  Their code is perfect - or so they tell me.
+When I worked at West Anchors, the analysts had promoted all the programmers to programmer/analyst.  So the programmer had to do his programming and the work of the analyst which enabled the analyst to concentrate on office politics.  The QE team at West Anchors didn't test anything.  They approved to the test proposal of the programmer analyst and inspected the test logs required to prove that the work had been carried out. 
+
+Before I retired, the circus has started to use Scrum.  Loads of meetings.  The project is divided into sprints.  There are two days of meetings at the end of every sprint.  Two days of meetings at the start of every sprint.  A daily "stand-up" which was usually about 1 hour.  And I'm sure I've forgotten other pointless meetings.  Sometimes people say they are "agile".  I haven't figure out what that is.  I think it's some kind of "let's not bother looking ahead.  It'll be great if it's ever delivered.".  And of course, all software development engineers (except me) are geniuses who never create bugs, documentation and never help co-workers.  Their code is perfect - or so they tell me.
+
+In the last 10 years we have seen AI move out of the lab and into our homes, cars and phones.  Probably 50% of code development time is spent on test related activity.  Perhaps in the future, the AI will undertake that work.  Remember he can work 7x24, never takes a vacation and works very quickly.  I have high hopes that AI can be used to automate testing in future.
+
+There is a method of developing code that works for me and that's to do everything myself.   This model doesn't scale.  However it is effective.  Do I create bugs?  Of course, I do.  However I find and fix them.  Many of the best people I worked with in Silicon Valley use that approach.
 
 Software Development is Russian Roulette with a bullet in every chamber.  If you have good folks on the team, the development will be enjoyable and the results will be good.  Mostly, the experience is horrible.  Good Luck.  I'm happy to be retired.
 
