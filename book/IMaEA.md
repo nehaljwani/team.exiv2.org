@@ -637,7 +637,7 @@ void Visitor::visitChunk(Io& io,Image& image
 
 As PNG chunks have a 32 bit length field, they are a single chunk.  I believe the ICC profile is normally zlib compressed.   Read the read the code in Exiv2 for more information.  XMP is normally stored as a iTXt (uncompressed) or zTXt compressed block.  There is a uncompressed signature at the start of the chunk for easy identification.
 
-An ICC profile is optionally present in the iCCP chunk.  As PNG Ch
+An ICC profile is optionally present in the iCCP chunk.
 
 ```bash
 1174 rmills@rmillsmbp:~/gnu/github/exiv2/0.27-maintenance $ exiv2 -pS test/data/ReaganLargePng.png 
@@ -665,7 +665,7 @@ STRUCTURE OF PNG FILE: test/data/ReaganLargePng.png
 
 ### PNG and the Zlib compression library
 
-PNG usually compresses chunked data using Flate (lossless) compression.  For simplicity tvisitor.cpp does does not link zlib and therefore cannot decompress these chunks.  tvisitor.cpp is unable to verify that the checksums are correct.  Exiv2 is normally linked by with zlib and can perform those tasks.  I recommend that you read the Exiv2 library code if you want to learn about using zlib and metadata.
+PNG usually compresses chunked data using Flate (lossless) compression.  For simplicity tvisitor.cpp does does not link zlib and therefore cannot decompress these chunks.  tvisitor.cpp is unable to verify that the checksums are correct.  Exiv2 is normally linked with zlib and can perform those tasks.  I recommend that you read the Exiv2 library code if you want to learn about using zlib and metadata.
 
 I'm very pleased to say that neither the Exiv2 or XMP metadata in the image book/png.png have been compressed and can be easily reported by tvisitor.cpp.  It's very satisfying to  use images from this book as test data for the code in this book.
 
@@ -762,7 +762,7 @@ void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
 Although the JP2 file is big endian, the embedded Exif metadata may be be little-endian encoded.  That's the case with test file Reagan.jp2.
 
 ```bash
-907 rmills@rmillsmm-local:~/gnu/exiv2/team/book/build $ ./tvisitor -pR ../test/data/Reagan.jp2 
+.../book/build $ ./tvisitor -pR ../test/data/Reagan.jp2 
 STRUCTURE OF JP2 FILE (MM): ../test/data/Reagan.jp2
  address |   length | box             | uuid | data
        0 |        4 | 0x2020506a jP   |      | ....
@@ -795,7 +795,7 @@ STRUCTURE OF JP2 FILE (MM): ../test/data/Reagan.jp2
     2361 |     5582 | 0x64697575 uuid | xmp  | .z....B..q......<?xpacket begin="..." id
     7951 |    32650 | 0x6332706a jp2c |      | .O.Q_/_____.___.___________.___.________
 END: ../test/data/Reagan.jp2
-908 rmills@rmillsmm-local:~/gnu/exiv2/team/book/build $ 
+.../book/build $ 
 ```
 
 ###ICC Profiles in JP2
@@ -805,7 +805,7 @@ These are stored in the 'colr' box which is a sub-box of 'jp2h'.  I have found t
 I found an older version of the spec in which 'colr' is documented on p161.  [http://hosting.astro.cornell.edu/~carcich/LRO/jp2/ISO_JPEG200_Standard/INCITS+ISO+IEC+15444-1-2000.pdf](http://hosting.astro.cornell.edu/~carcich/LRO/jp2/ISO_JPEG200_Standard/INCITS+ISO+IEC+15444-1-2000.pdf)
 
 ```bash
-1380 rmills@rmillsmm-local:~/gnu/exiv2/team/book/build $ ./tvisitor ~/gnu/github/exiv2/0.27-maintenance/test/data/Reagan2.jp2 
+.../book/build $ ./tvisitor ~/gnu/github/exiv2/0.27-maintenance/test/data/Reagan2.jp2 
 STRUCTURE OF JP2 FILE (MM): /Users/rmills/gnu/github/exiv2/0.27-maintenance/test/data/Reagan2.jp2
  address |   length | box             | uuid | data
        0 |        4 | 0x2020506a jP   |      | ....
@@ -818,7 +818,7 @@ STRUCTURE OF JP2 FILE (MM): /Users/rmills/gnu/github/exiv2/0.27-maintenance/test
   END: /Users/rmills/gnu/github/exiv2/0.27-maintenance/test/data/Reagan2.jp2:40->3177
     3217 |       -8 | 0x6332706a jp2c |      | .O.Q_/_____.___.___________.___.________
 END: /Users/rmills/gnu/github/exiv2/0.27-maintenance/test/data/Reagan2.jp2
-1381 rmills@rmillsmm-local:~/gnu/exiv2/team/book/build $ 
+.../book/build $ 
 ```
 
 As you can see, the 'colr' box is stored at 40+22 bytes into the file and has a length of 3147.  The first four bytes of an ICC profile is the length of the file which in this case is 3144 bytes. The next 4 bytes of the profile are the maker and in this case is Linotype.
@@ -946,7 +946,7 @@ I built GifLib 5.1.1 on macOS .  5.2.1 complained about the option linker option
 I followed the discussion on the WikiPedia site and created a 3x2 pixel gif with MSPaint on Windows-10 which I've inspected with the giflib/.  The file gif.gif is in the book resources at: svn://dev.exiv2.org/svn/team/book
 
 ```bash
-1606 rmills@rmillsmbp:~/gnu/exiv2/team/book $ gifbuild -d -v gif.gif 
+.../book $ gifbuild -d -v gif.gif 
 #
 # GIF information from gif.gif
 screen width 2
@@ -1282,7 +1282,7 @@ $ dd if=~/Stonehenge.jpg count=$((15288-(2+2+2+6))) bs=1 skip=$((2+2+2+6)) > foo
 15276 bytes transferred in 0.102577 secs (148922 bytes/sec)
 $ dd if=~/Stonehenge.jpg count=$((15288-(2+2+2+6))) bs=1 skip=$((2+2+2+6)) | dmpf - | head -1
        0        0: II*_.___._..._.___.___..._.___._  ->  49 49 2a 00 08 00 ...
-915 rmills@rmillsmbp:~/gnu/exiv2/team/book $ 
+.../book $ 
 $ file foo.tif
 foo.tif: TIFF image data, little-endian, direntries=11, manufacturer=NIKON CORPORATION, model=NIKON D5300, orientation=upper-left, xresolution=176, yresolution=184, resolutionunit=2, software=Ver.1.00 , datetime=2015:07:16 20:25:28, GPS-Data
 $ exiv2 -pa foo.tif 
@@ -3260,19 +3260,19 @@ Without question, dealing with this has been very difficult.  Folks who have ado
 <div id="13-24">
 ### 13.24 Software Development
 
-As this is the first and last book I will ever write, I'd like to close the discussion of "Project Management" will some opinions and thoughts about how software is developed.  Management have been searching for the silver bullet that will cause projects to be delivered on time, to budget with great performance, few bugs and low cost maintenance.  This search has been proceeding for more than 50 years.  We've made some progress.  However system complexity out-strips our management and control tools.  The challenges are emense.
+As this is the first and last book I will ever write, I'd like to close the discussion of _**Project Management**_ with some thoughts and opinions about how software is developed.  Management have been searching for the silver bullet that will cause projects to be delivered on time, to budget, with great performance, few bugs and low cost maintenance.  This search has been proceeding for more than 50 years.  We've made some progress.  However system complexity out-strips our management and control tools.  The challenges are immense.
 
-I've seen different approaches used.  In the IT world, people involved in systems development adopted the "drawing office" model and adapted it.  In the drawing office, you have draftsmen working on drawing boards and engineers work at desks.  The engineers do the design and the draftsmen draw it.  This was modified and the systems analysts became the designers and the programmers created the code.  They work in a strict regime of SSADM - the Standard Structure Analysis and Design Methodology.  This is often called "The Waterfall Method".  It's horrible.  It's inflexible, slow and very expensive.  It's amazing that anything can be delivered that way.
+I've seen different approaches used.  In the IT world, people involved in systems development adopted the _**drawing office**_ model and adapted it.  In the drawing office, you have draftsmen working on drawing boards and engineers working at desks.  The engineers do the design and the draftsmen draw it.  This was method was modified and the systems analysts became the designers and the programmers created the code.  They work in a strict regime of SSADM - the Standard Structure Analysis and Design Methodology.  This is often called "The Waterfall Method".  It's horrible.  It's inflexible, slow and very expensive.  It's amazing that anything can be delivered that way.
 
-When I worked at West Anchors, the analysts had promoted all the programmers to programmer/analyst.  So the programmer had to do his programming and the work of the analyst which enabled the analyst to concentrate on office politics.  The QE team at West Anchors didn't test anything.  They approved to the test proposal of the programmer analyst and inspected the test logs required to prove that the work had been carried out. 
+When I worked at West Anchors, the analysts had promoted all the programmers to programmer/analyst.  So the programmer had to do the programming and the work of the analyst.  This enabled the analyst to concentrate on office politics.  The QE team at West Anchors didn't test anything.  They approved the test plans written by the programmer/analyst and they inspected the test logs required to prove that the programmer/analyst had done all the work. The parrot phrase of everybody who wasn't a programmer/analyst was "I'm not technical" which meant "I'm not going to help you, so don't ask.  And, by the way, I am superior to you and you will do exactly what I tell you to do.".
 
-Before I retired, the circus has started to use Scrum.  Loads of meetings.  The project is divided into sprints.  There are two days of meetings at the end of every sprint.  Two days of meetings at the start of every sprint.  A daily "stand-up" which was usually about 1 hour.  And I'm sure I've forgotten other pointless meetings.  Sometimes people say they are "agile".  I haven't figure out what that is.  I think it's some kind of "let's not bother looking ahead.  It'll be great if it's ever delivered.".  And of course, all software development engineers (except me) are geniuses who never create bugs, documentation and never help co-workers.  Their code is perfect - or so they tell me.
+Before I retired, the circus started to adopt Scrum.  Loads of meetings.  The project is divided into two-week _**sprints**_.  There were two days of _**review**_ meetings at the end of every sprint.  Two days of _**planning**_ meetings at the start of every sprint.  Daily _**stand-up**_ meetings which were usually about 1 hour.  And I'm sure I've forgotten other pointless meetings.  Sometimes people say they are _**agile**_.  I haven't figured out what that is.  I think it's some kind of "Let's not bother looking ahead.  It'll be great if or when it's delivered.".  And of course, all software development engineers _**(except me)**_ are geniuses who never create bugs, never document and never help co-workers.  Their code is perfect - or so they tell me.
 
-In the last 10 years we have seen AI move out of the lab and into our homes, cars and phones.  Probably 50% of code development time is spent on test related activity.  Perhaps in the future, the AI will undertake that work.  Remember he can work 7x24, never takes a vacation and works very quickly.  I have high hopes that AI can be used to automate testing in future.
+In the last 10 years we have seen AI move out of the lab and into our homes, cars and phones.  Probably 50% of code development time is spent on test related activity.  Perhaps in the future, the AI will undertake some of that work.  Remember it works 7x24, never takes a vacation and works very quickly.  I have high hopes that AI can be used to automate testing in future.
 
-There is a method of developing code that works for me and that's to do everything myself.   This model doesn't scale.  However it is effective.  Do I create bugs?  Of course, I do.  However I find and fix them.  Many of the best people I worked with in Silicon Valley use that approach.
+There is a method of developing code that works for me and that's to do everything myself.   This model doesn't scale.  However it is effective.  Do I create bugs?  Of course, I do.  However I find and fix them.  Many of the best people with whom I worked in Silicon Valley use that approach.  And when I think about it, that's exactly how Andreas created Exiv2.
 
-Software Development is Russian Roulette with a bullet in every chamber.  If you have good folks on the team, the development will be enjoyable and the results will be good.  Mostly, the experience is horrible.  Good Luck.  I'm happy to be retired.
+Software Development in large teams is Russian Roulette with a bullet in every chamber.  If you have good folks on the team, the development will be enjoyable and the results will be good.  Mostly, the experience is horrible.  Good Luck.  I'm happy to be retired.
 
 [TOC](#TOC)
 <div id="14">
