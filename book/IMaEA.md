@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 48px;color:#FF4646;font-family: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:36px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-07-15</h3>
+<h3 align=center style="font-size:36px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-07-17</h3>
 
 <div id="dedication">
 ## _Dedication and Acknowledgment_
@@ -51,9 +51,9 @@ _And our cat Lizzie._
 | [10.2 Python Tests](#10-2)                            | 68 | [About this book](#about)             |  4 | [13.19 Enhancement Requests](#13-19)    | 82 |
 | [10.3 Unit Tests](#10-3)                              | 69 | [How did I get interested ?](#begin)  |  4 | [13.20 Tools](#13-20)                   | 82 |
 | [10.4 Version Test](#10-4)                            | 70 | [2012 - 2017](#2012)                  |  5 | [13.21 Licensing](#13-21)               | 82 |
-| [11. API/ABI Compatibility](#11)                      | 71 | [2017 - Present](#2017)               |  5 | [13.22 Back-porting](#13-22)            | 82 |
-| [12. Security](#12)                                   | 73 | [Current Priorities](#current)        |  6 | [13.23 Other OSS projects](#13-23)      | 82 |
-| [12.1 The Fuzzing Police](#12)                        | 74 | [Future Projects](#future)            |  6 | [13.24 Software Development](#13-24)    | 85 |                          |    |
+| [10.5 Generating HUGE images](#10-5)                  | 71 | [2017 - Present](#2017)               |  5 | [13.22 Back-porting](#13-22)            | 82 |
+| [11. API/ABI Compatibility](#11)                      | 73 | [Current Priorities](#current)        |  6 | [13.23 Other OSS projects](#13-23)      | 82 |
+| [12. Security](#12)                                   | 74 | [Future Projects](#future)            |  6 | [13.24 Software Development](#13-24)    | 85 |
 | [12.2 How we deal with security issues](12-2)         | 75 | [Scope of Book](#scope)               |  7 |                                         |    |
 | [14. Code discussed in this book](#14)                | 80 | [Making this book](#making)           |  8 | [The Last Word](#finally)               | 84 |
 
@@ -2582,7 +2582,8 @@ source ./functions.source
 
 The implementation of the command _$ exiv2 --verbose --version_ and the version number scheme is discussed in detail: [13.9 Release Engineering](#13-9).
 
-### Generating test images
+<div id="10-5">
+## 10.5 Generating HUGE images
 
 Before getting into a discussion about this, I'd like to thank several collaborators who have contributed to this part of the book. Joris Van Damme of AWare Systems maintains the BigTiff web-site and was very helpful on email.  This topic was also discussed at: [https://github.com/Exiv2/exiv2/issues/1248](https://github.com/Exiv2/exiv2/issues/1248) and I wish to thank LeoHsiao1 and kolt54321 for their input.
 
@@ -2594,9 +2595,9 @@ I've looked at several libraries for the purpose of generating HUGE files.
 
 1.  libtiff-4 (which supports BigTiff)
 2.  PIL (python imaging library)
-3.  FreeImage a wrapper for libJPEG,libtiff, libpng, LibOpenJPEG, LibJXR, LibRAW, LibWebP and OpenEXR.
+3.  FreeImage is a wrapper for libJPEG,libtiff, libpng, LibOpenJPEG, LibJXR, LibRAW, LibWebP and OpenEXR.
 
-#### libtiff-4 with BigTiff support
+### 10.5.1 libtiff-4 with BigTiff support
 
 **1.  Build and install jpeg-6b:**
 
@@ -2682,6 +2683,54 @@ END: foo.tif
 ```
 
 I have not investigated the message _TIFFScanlineSize64: Computed scanline size is zero._
+
+
+### 10.5.1 PIL (python imaging library)
+
+PIL is the Python Imaging Library.  The clone Pillow is well maintained and documented.  It's very impressive.  Interestingly, PIL has some metadata capability to deal with Exif, XMP, ICC and IPTC data.  I'll investigate this as time permits.
+
+For the moment, I've started a little python program to create images.  I'll add options to this.  At the moment, you use it like this:
+
+```bash
+$ width=50000 ; height=50000 ; path=foo.png ; ./create_image.py $width $height $path ; ls -lh $path ; build/tvisitor $path | head -1
+-rw-r--r--+ 1 rmills  staff   7.0G 17 Jul 14:06 foo.png
+STRUCTURE OF PNG FILE (MM): foo.png
+$
+```
+
+Curiously, exiv2 can read this file in 0.2 seconds and say "No metadata".  tvisitor takes 30 seconds to reach the same conclusion.  I will investigate this.
+
+```python
+#!/usr/bin/env python3
+
+import sys
+from   PIL import Image
+ 
+##
+#
+def main(argv):
+    """main - main program of course"""
+
+    argc     = len(argv)
+    if argc < 2:
+        syntax()
+        return
+    
+    width  = int(argv[1])
+    height = int(argv[2])
+    path   =     argv[3]
+
+    img    = Image.new('RGB', (width, height), color = 'red')
+    img.save(path,compress_level=0)
+
+##
+#
+if __name__ == '__main__':
+    main(sys.argv)
+```
+### 10.5.3 FreeImage
+
+To be written.
 
 [TOC](#TOC)
 <div id="11">
