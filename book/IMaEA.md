@@ -2778,9 +2778,9 @@ You are probably not surprised to learn that most stakeholders consider their co
 
 The difficulties of maintaining an open-source project are well explained in this article: [https://steemit.com/opensource/@crell/open-source-is-awful](https://steemit.com/opensource/@crell/open-source-is-awful) from which I have copied this cartoon:
 
-<center><img src="open-source-today1.png" style="border:2px solid #23668F"/>
-<img src="open-source-today2.png" style="border:2px solid #23668F"/>
-<img src="open-source-today3.png" style="border:2px solid #23668F"/>
+<center><img src="open-source-today1.png" style="width:500;border:2px solid #23668F"/>
+<img src="open-source-today2.png" style="width:500;border:2px solid #23668F"/>
+<img src="open-source-today3.png" style="width:500;border:2px solid #23668F"/>
 </center>
 
 I will quote the following as it seems totally true.
