@@ -2428,7 +2428,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2020-07-17 17:03:36 +0000</string>
+	<string>2020-07-19 10:07:00 +0000</string>
 	<key>Modifier</key>
 	<string>Robin Mills</string>
 	<key>NotesVisible</key>
@@ -4184,8 +4184,8 @@ $ }</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -4819,8 +4819,8 @@ $ }</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -4860,8 +4860,8 @@ $ }</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 				</dict>
@@ -4892,8 +4892,8 @@ $ }</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 				</dict>
@@ -4921,11 +4921,6 @@ $ }</string>
 								<key>space</key>
 								<string>srgb</string>
 							</dict>
-						</dict>
-						<key>shadow</key>
-						<dict>
-							<key>Draws</key>
-							<string>NO</string>
 						</dict>
 					</dict>
 				</dict>
@@ -5084,8 +5079,8 @@ $ }</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -5132,8 +5127,8 @@ $ }</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -5383,7 +5378,7 @@ $ }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{242.49695300108468, 85.853491079941335}, {251.17954449680445, 18.425196067179286}}</string>
+					<string>{{16.459560338087954, 85.853491079941335}, {477.2169371598012, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>HFlip</key>
@@ -5394,8 +5389,8 @@ $ }</string>
 					<dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 				</dict>
@@ -6599,8 +6594,8 @@ after SOI }</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -6645,8 +6640,8 @@ after SOI }</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -6691,8 +6686,8 @@ after SOI }</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -6875,8 +6870,8 @@ after SOI }</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -7367,8 +7362,8 @@ $ }</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -7413,8 +7408,8 @@ $ }</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -7601,8 +7596,8 @@ $ }</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -7647,8 +7642,8 @@ $ }</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -8016,8 +8011,8 @@ $ }</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -9293,8 +9288,8 @@ $ }</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -9890,8 +9885,8 @@ $ }</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -9936,8 +9931,8 @@ $ }</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -9982,8 +9977,8 @@ $ }</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -10120,8 +10115,8 @@ $ }</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -10815,8 +10810,8 @@ $ }</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -11211,8 +11206,8 @@ $ }</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -11257,8 +11252,8 @@ $ }</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -11303,8 +11298,8 @@ $ }</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -12230,8 +12225,8 @@ STRUCTURE OF PNG FILE (MM): ../png.png\
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -12322,8 +12317,8 @@ STRUCTURE OF PNG FILE (MM): ../png.png\
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -12626,8 +12621,8 @@ STRUCTURE OF PNG FILE (MM): ../png.png\
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -12672,8 +12667,8 @@ STRUCTURE OF PNG FILE (MM): ../png.png\
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -12718,8 +12713,8 @@ STRUCTURE OF PNG FILE (MM): ../png.png\
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -14340,8 +14335,8 @@ kStg_InRecordEntry = 0x4000}</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -14386,8 +14381,8 @@ kStg_InRecordEntry = 0x4000}</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -14432,8 +14427,8 @@ kStg_InRecordEntry = 0x4000}</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -15417,8 +15412,8 @@ kStg_InRecordEntry = 0x4000}</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -15463,8 +15458,8 @@ kStg_InRecordEntry = 0x4000}</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -15509,8 +15504,8 @@ kStg_InRecordEntry = 0x4000}</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -15689,43 +15684,6 @@ kStg_InRecordEntry = 0x4000}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{7.0866141319274902, 31.181102856313146}, {505.98425655937564, 352.41732448067251}}</string>
-					<key>Class</key>
-					<string>ShapedGraphic</string>
-					<key>ID</key>
-					<integer>67</integer>
-					<key>IsLocked</key>
-					<string>YES</string>
-					<key>Style</key>
-					<dict>
-						<key>fill</key>
-						<dict>
-							<key>Draws</key>
-							<string>NO</string>
-						</dict>
-						<key>shadow</key>
-						<dict>
-							<key>Draws</key>
-							<string>NO</string>
-						</dict>
-						<key>stroke</key>
-						<dict>
-							<key>Color</key>
-							<dict>
-								<key>b</key>
-								<real>0.5607843137254902</real>
-								<key>g</key>
-								<real>0.40000000000000002</real>
-								<key>r</key>
-								<real>0.13725490196078433</real>
-								<key>space</key>
-								<string>srgb</string>
-							</dict>
-						</dict>
-					</dict>
-				</dict>
-				<dict>
-					<key>Bounds</key>
 					<string>{{90.176081409767562, 143.71653138317464}, {357.84364563796862, 188.21584154319311}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
@@ -15754,8 +15712,43 @@ kStg_InRecordEntry = 0x4000}</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
+							<key>Beneath</key>
+							<string>YES</string>
+						</dict>
+					</dict>
+				</dict>
+				<dict>
+					<key>Bounds</key>
+					<string>{{7.0866141319274902, 31.181102856313146}, {505.98425655937564, 352.41732448067251}}</string>
+					<key>Class</key>
+					<string>ShapedGraphic</string>
+					<key>ID</key>
+					<integer>67</integer>
+					<key>Style</key>
+					<dict>
+						<key>fill</key>
+						<dict>
 							<key>Draws</key>
 							<string>NO</string>
+						</dict>
+						<key>shadow</key>
+						<dict>
+							<key>Draws</key>
+							<string>NO</string>
+						</dict>
+						<key>stroke</key>
+						<dict>
+							<key>Color</key>
+							<dict>
+								<key>b</key>
+								<real>0.5607843137254902</real>
+								<key>g</key>
+								<real>0.40000000000000002</real>
+								<key>r</key>
+								<real>0.13725490196078433</real>
+								<key>space</key>
+								<string>srgb</string>
+							</dict>
 						</dict>
 					</dict>
 				</dict>
@@ -16450,11 +16443,6 @@ $ }</string>
 								<string>srgb</string>
 							</dict>
 						</dict>
-						<key>shadow</key>
-						<dict>
-							<key>Draws</key>
-							<string>NO</string>
-						</dict>
 					</dict>
 					<key>Text</key>
 					<dict>
@@ -16543,11 +16531,6 @@ $ }</string>
 								<key>space</key>
 								<string>srgb</string>
 							</dict>
-						</dict>
-						<key>shadow</key>
-						<dict>
-							<key>Draws</key>
-							<string>NO</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -16731,11 +16714,6 @@ $ }</string>
 								<real>1</real>
 							</dict>
 						</dict>
-						<key>shadow</key>
-						<dict>
-							<key>Draws</key>
-							<string>NO</string>
-						</dict>
 					</dict>
 					<key>Text</key>
 					<dict>
@@ -16776,11 +16754,6 @@ $ }</string>
 								<key>r</key>
 								<real>1</real>
 							</dict>
-						</dict>
-						<key>shadow</key>
-						<dict>
-							<key>Draws</key>
-							<string>NO</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -16997,8 +16970,8 @@ $ }</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -17516,11 +17489,6 @@ $ }</string>
 								<key>space</key>
 								<string>srgb</string>
 							</dict>
-						</dict>
-						<key>shadow</key>
-						<dict>
-							<key>Draws</key>
-							<string>NO</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -18164,8 +18132,8 @@ END: /Users/rmills/small.icc }</string>
 					<integer>297</integer>
 					<key>Points</key>
 					<array>
-						<string>{182.1574817680937, 76.751966355175497}</string>
-						<string>{201.51251177127295, 76.751966355175497}</string>
+						<string>{182.1574817680937, 75.806927426896891}</string>
+						<string>{201.51251177127295, 75.806927426896891}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -18217,11 +18185,6 @@ END: /Users/rmills/small.icc }</string>
 					</array>
 					<key>Style</key>
 					<dict>
-						<key>shadow</key>
-						<dict>
-							<key>Draws</key>
-							<string>NO</string>
-						</dict>
 						<key>stroke</key>
 						<dict>
 							<key>Color</key>
@@ -18260,8 +18223,8 @@ END: /Users/rmills/small.icc }</string>
 					<integer>295</integer>
 					<key>Points</key>
 					<array>
-						<string>{101.69684754199871, 76.751966355175497}</string>
-						<string>{117.05187754517794, 76.751966355175497}</string>
+						<string>{101.69684754199871, 75.806927426896891}</string>
+						<string>{117.05187754517794, 75.806927426896891}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -18313,11 +18276,6 @@ END: /Users/rmills/small.icc }</string>
 					</array>
 					<key>Style</key>
 					<dict>
-						<key>shadow</key>
-						<dict>
-							<key>Draws</key>
-							<string>NO</string>
-						</dict>
 						<key>stroke</key>
 						<dict>
 							<key>Color</key>
@@ -18442,8 +18400,8 @@ END: /Users/rmills/small.icc }</string>
 					<integer>284</integer>
 					<key>Points</key>
 					<array>
-						<string>{42.519685425157618, 190.53291509170228}</string>
-						<string>{160.50413153231642, 190.08661587069352}</string>
+						<string>{42.519685425157618, 196.53291509170228}</string>
+						<string>{160.50413153231642, 196.08661587069352}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -18477,8 +18435,8 @@ END: /Users/rmills/small.icc }</string>
 					<integer>283</integer>
 					<key>Points</key>
 					<array>
-						<string>{158.08848069519155, 190.11377669593892}</string>
-						<string>{231.41732284750526, 189.79346419593892}</string>
+						<string>{158.08848069519155, 196.11377669593892}</string>
+						<string>{231.41732284750526, 195.79346419593892}</string>
 						<string>{231.6479780536568, 137.92984702692652}</string>
 						<string>{206.80866013235988, 137.92984702692652}</string>
 					</array>
@@ -18514,8 +18472,8 @@ END: /Users/rmills/small.icc }</string>
 					<integer>282</integer>
 					<key>Points</key>
 					<array>
-						<string>{263.81463315810646, 92.125985087841514}</string>
-						<string>{263.81463315810646, 147.56182326247378}</string>
+						<string>{263.31463315810646, 92.625985087841514}</string>
+						<string>{263.40226480143497, 147.375}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -18704,11 +18662,6 @@ END: /Users/rmills/small.icc }</string>
 								<string>srgb</string>
 							</dict>
 						</dict>
-						<key>shadow</key>
-						<dict>
-							<key>Draws</key>
-							<string>NO</string>
-						</dict>
 					</dict>
 					<key>Text</key>
 					<dict>
@@ -18835,11 +18788,6 @@ END: /Users/rmills/small.icc }</string>
 								<string>srgb</string>
 							</dict>
 						</dict>
-						<key>shadow</key>
-						<dict>
-							<key>Draws</key>
-							<string>NO</string>
-						</dict>
 					</dict>
 					<key>Text</key>
 					<dict>
@@ -18855,7 +18803,7 @@ END: /Users/rmills/small.icc }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{204.09449764386869, 76.031496680252189}, {59.307767157566246, 17.792330147269869}}</string>
+					<string>{{204.09449764386869, 75.806927426896891}, {59.307767157566246, 17.792330147269869}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -18883,11 +18831,6 @@ END: /Users/rmills/small.icc }</string>
 								<string>srgb</string>
 							</dict>
 						</dict>
-						<key>shadow</key>
-						<dict>
-							<key>Draws</key>
-							<string>NO</string>
-						</dict>
 					</dict>
 					<key>Text</key>
 					<dict>
@@ -18903,7 +18846,7 @@ END: /Users/rmills/small.icc }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{119.70798118255985, 76.031496680252189}, {59.307767157566246, 17.792330147269869}}</string>
+					<string>{{119.70798118255985, 75.806927426896891}, {59.307767157566246, 17.792330147269869}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -18931,11 +18874,6 @@ END: /Users/rmills/small.icc }</string>
 								<string>srgb</string>
 							</dict>
 						</dict>
-						<key>shadow</key>
-						<dict>
-							<key>Draws</key>
-							<string>NO</string>
-						</dict>
 					</dict>
 					<key>Text</key>
 					<dict>
@@ -18951,7 +18889,7 @@ END: /Users/rmills/small.icc }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{40.762203459581997, 75.806447182231238}, {59.307767157566246, 17.792330147269869}}</string>
+					<string>{{40.763419020903328, 75.837620505269314}, {59.307767157566246, 17.792330147269869}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -18979,11 +18917,6 @@ END: /Users/rmills/small.icc }</string>
 								<string>srgb</string>
 							</dict>
 						</dict>
-						<key>shadow</key>
-						<dict>
-							<key>Draws</key>
-							<string>NO</string>
-						</dict>
 					</dict>
 					<key>Text</key>
 					<dict>
@@ -18999,7 +18932,7 @@ END: /Users/rmills/small.icc }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{40.762203459581997, 93.598777329501104}, {59.307767157566246, 17.792330147269869}}</string>
+					<string>{{40.762203459581997, 93.599257574166757}, {59.307767157566246, 17.792330147269869}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -19047,7 +18980,7 @@ END: /Users/rmills/small.icc }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{40.763419020903321, 111.39110747677097}, {59.307767157566246, 17.792330147269869}}</string>
+					<string>{{40.762203459581997, 111.39110747677097}, {59.307767157566246, 17.792330147269869}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -19169,11 +19102,6 @@ END: /Users/rmills/small.icc }</string>
 								<string>srgb</string>
 							</dict>
 						</dict>
-						<key>shadow</key>
-						<dict>
-							<key>Draws</key>
-							<string>NO</string>
-						</dict>
 					</dict>
 					<key>Text</key>
 					<dict>
@@ -19216,11 +19144,6 @@ END: /Users/rmills/small.icc }</string>
 								<key>space</key>
 								<string>srgb</string>
 							</dict>
-						</dict>
-						<key>shadow</key>
-						<dict>
-							<key>Draws</key>
-							<string>NO</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -19515,7 +19438,7 @@ END: /Users/rmills/small.icc }</string>
 	<key>WindowInfo</key>
 	<dict>
 		<key>CurrentSheet</key>
-		<integer>9</integer>
+		<integer>0</integer>
 		<key>Expanded_Canvases</key>
 		<array/>
 		<key>Frame</key>
@@ -19531,9 +19454,9 @@ END: /Users/rmills/small.icc }</string>
 		<key>TopSlabHeight</key>
 		<real>33</real>
 		<key>VisibleRegion</key>
-		<string>{{-96, -45}, {999, 628}}</string>
+		<string>{{-38, -9}, {883.85727491998307, 555.61798663638569}}</string>
 		<key>Zoom</key>
-		<real>1</real>
+		<real>1.1302729845046997</real>
 		<key>ZoomValues</key>
 		<array>
 			<array>

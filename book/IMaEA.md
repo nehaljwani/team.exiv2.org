@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 48px;color:#FF4646;font-family: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:36px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-07-17</h3>
+<h3 align=center style="font-size:36px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-07-19</h3>
 
 <div id="dedication">
 ## _Dedication and Acknowledgment_
@@ -283,7 +283,7 @@ $
 
 ### NEF, DNG and CR2
 
-These are tiff files.  There must be some subtle matters to be handled in these format, however tvisitor has no trouble running over the files.  Allow me to quote directly from Adobe's document: (dng_spec_1.4.0.0.pdf)[https://www.adobe.com/content/dam/acom/en/products/photoshop/pdfs/dng_spec_1.4.0.0.pdf]
+These are tiff files.  There must be some subtle matters to be handled in these format, however tvisitor has no trouble running over the files.  Allow me to quote directly from Adobe's document: [https://www.adobe.com/content/dam/acom/en/products/photoshop/pdfs/dng\_spec\_1.4.0.0.pdf](dng_spec_1.4.0.0.pdf)
 
 _**A Standard Format**_
 
@@ -2778,7 +2778,10 @@ You are probably not surprised to learn that most stakeholders consider their co
 
 The difficulties of maintaining an open-source project are well explained in this article: [https://steemit.com/opensource/@crell/open-source-is-awful](https://steemit.com/opensource/@crell/open-source-is-awful) from which I have copied this cartoon:
 
-<center><img src="open-source-today.jpg" width="300" style="border:2px solid #23668F"/></center>
+<center><img src="open-source-today1.png" style="border:2px solid #23668F"/>
+<img src="open-source-today2.png" style="border:2px solid #23668F"/>
+<img src="open-source-today3.png" style="border:2px solid #23668F"/>
+</center>
 
 I will quote the following as it seems totally true.
 
@@ -2808,7 +2811,7 @@ How about **TAB** which is to change the project tools.  Git came close to killi
 
 When we adopted Git and it took me 2 years to figure out how to submit a PR.  I purchased the book **Pro Git**.  It doesn't cover PRs.  So, the only way to submit code is undocumented.  I am very grateful to Luis and Andreas S for helping me with Git.  I eventually wrote this on a card:
 
-<center><img src="GitIdiotCard.jpg" width="300" style="border:2px solid #23668F;"/></center>
+<center><img src="GitIdiotCard.jpg" width="500" style="border:2px solid #23668F;"/></center>
 
 The funny brown marks were added by our cat Lizzie.  I'd just written this card when she arrived in my office fresh from a hunt in the garden.  I don't know what she did to the card.  She's never done anything like this before or since.  She expressed her opinion of git.
 
@@ -3233,13 +3236,13 @@ There are serious limitations with PERT.  I only intend to investigate the use o
 | Trouble | Observation |
 |:--      |:--          |
 |  PERT assumes that you can itemise and quantify every task in the project. | If you are investigating something new, you can probably do neither of these things. |
-| Many projects cannot be quantified.  | Imagine using PERT to investigate a crime.  Impossible.<br>Can you imagine getting a PERT plan from a doctor who is treating your cancer?  <br>Why can you not get a PERT plan from a financial advisor about your investments? |
-| You will do abortive work and encounter road blocks. | |
+| Many projects cannot be quantified.  | Why isn't PERT used<br>1. In crime investigation.<br>2. In medical treatment.<3>3.  In investment management. |
+| You will do abortive work and encounter road blocks. | No Program Manager ever includes time for this.<br>Every innovative project has abortive work. |
 | People are not interchangeable. | People leave, or are assigned to other projects.  New team members require time to come up to speed with the project. |
-| Some tasks have a genstation period | If you and having a baby, bringing in more woman won't reduce the 9 month wait.  |
-| Management, and other project stakeholders, can change goals and objectives. | The circumstances surrounding the project can change during the life of the project and have major implications for the project. |
+| Some tasks have a gestation period | If you are having a baby, more woman won't reduce the 9 month wait.<br>Adding people is often counter-productive.  |
+| Management, and other project stakeholders, change goals and objectives. | The circumstances surrounding the project can change and have major implications for the project. |
 
-Because of the recursive nature of projects, there are serious limitations hiding inside these limitations.  And of course there are limitations I have not considered, imagined, or thought about.
+Because of the recursive nature of projects, there are serious limitations hiding inside these limitations.
 
 #### So what am I going to do about this?
 
@@ -3319,9 +3322,11 @@ Before I retired, the circus started to adopt Scrum.  Loads of meetings.  The pr
 
 In the last 10 years we have seen AI move out of the lab and into our homes, cars and phones.  Probably 50% of code development time is spent on test related activity.  Perhaps in the future, the AI will undertake some of that work.  Remember it works 7x24, never takes a vacation and works very quickly.  I have high hopes that AI can be used to automate testing in future.
 
-There is a method of developing code that works for me and that's to do everything myself.   This model doesn't scale.  However it is effective.  Do I create bugs?  Of course, I do.  However I find and fix them.  Many of the best people with whom I worked in Silicon Valley use that approach.  And when I think about it, that's exactly how Andreas created Exiv2.
+There is a method of developing code that works for me and that's to do everything myself.   This model doesn't scale.  However it is effective.  Do I create bugs?  Of course, I do.  However I find and fix them.  Many of the best people with whom I worked in Silicon Valley use this approach.  And when I think about it, that's exactly how Andreas created Exiv2.
 
-Software Development in large teams is Russian Roulette with a bullet in every chamber.  If you have good folks on the team, the development will be enjoyable and the results will be good.  Mostly, the experience is horrible.  Good Luck.  I'm happy to be retired.
+Another method that I believe is very effective is prototyping.  Working in a sand-box with a small amount of code can be very effective to explore and learn.  I can say with certainty that I have learned more about metadata in a couple of months by writing this book than I discovered by working on the Exiv2 code for 12 years.  Program Management people hate prototyping because it doesn't have a specification, milestones, deliverable or schedule.  
+
+If you have good folks on the team, the development will be enjoyable and the results will be good.  However, Software Development in large teams is Russian Roulette with a bullet in every chamber.  Mostly, the experience is horrible.  Good Luck.  I'm happy to be retired.
 
 [TOC](#TOC)
 <div id="14">
@@ -3368,7 +3373,7 @@ int main(int argc, char* argv[])
 
 #### dmpf.cpp
 
-The purpose of this program is to inspect files.  It's od on steroids.
+The purpose of this program is to inspect files.  It's _**od**_ on steroids.
 
 ```cpp
 // g++ --std=c++11 dmpf.cpp
