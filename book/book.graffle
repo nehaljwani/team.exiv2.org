@@ -2428,7 +2428,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2020-07-19 19:14:59 +0000</string>
+	<string>2020-07-20 13:57:08 +0000</string>
 	<key>Modifier</key>
 	<string>Robin Mills</string>
 	<key>NotesVisible</key>
@@ -13346,7 +13346,7 @@ STRUCTURE OF PNG FILE (MM): ../png.png\
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{126.15041152999856, 230.13888212641947}, {38, 23}}</string>
+					<string>{{150.08936452745465, 248.29496178374208}, {38, 23}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -13501,7 +13501,7 @@ STRUCTURE OF PNG FILE (MM): ../png.png\
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{123.11921678687852, 249.61348177407581}, {28.61472459292429, 17.792330147269869}}</string>
+					<string>{{122.9817087193577, 249.16597617138987}, {28.61472459292429, 17.792330147269869}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -13513,6 +13513,15 @@ STRUCTURE OF PNG FILE (MM): ../png.png\
 					<string>YES</string>
 					<key>ID</key>
 					<integer>179</integer>
+					<key>Line</key>
+					<dict>
+						<key>ID</key>
+						<integer>148</integer>
+						<key>Position</key>
+						<real>0.12000854611824274</real>
+						<key>RotationType</key>
+						<integer>0</integer>
+					</dict>
 					<key>Style</key>
 					<dict>
 						<key>fill</key>
@@ -14029,8 +14038,8 @@ kStg_InRecordEntry = 0x4000}</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -14559,8 +14568,8 @@ kStg_InRecordEntry = 0x4000}</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -14761,7 +14770,7 @@ kStg_InRecordEntry = 0x4000}</string>
 					<integer>208</integer>
 					<key>Points</key>
 					<array>
-						<string>{422.16634050858153, 322.99782461244843}</string>
+						<string>{422.16634050858158, 322.55545360397997}</string>
 						<string>{422.43610406651885, 345.94729838377532}</string>
 						<string>{96.523954897763844, 345.44812583591914}</string>
 						<string>{96.523954897763844, 249.44812583591903}</string>
@@ -14870,8 +14879,8 @@ kStg_InRecordEntry = 0x4000}</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -14916,8 +14925,8 @@ kStg_InRecordEntry = 0x4000}</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -14964,8 +14973,8 @@ kStg_InRecordEntry = 0x4000}</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -15060,8 +15069,8 @@ kStg_InRecordEntry = 0x4000}</string>
 						</dict>
 						<key>shadow</key>
 						<dict>
-							<key>Draws</key>
-							<string>NO</string>
+							<key>Beneath</key>
+							<string>YES</string>
 						</dict>
 					</dict>
 					<key>Text</key>
@@ -15078,7 +15087,7 @@ kStg_InRecordEntry = 0x4000}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{396.31295396942699, 314.10165953881346}, {51.706773078309133, 17.792330147269869}}</string>
+					<string>{{396.31295396942704, 313.65928853034501}, {51.706773078309133, 17.792330147269869}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>

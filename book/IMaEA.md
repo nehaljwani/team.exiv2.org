@@ -81,7 +81,7 @@ I said "Oh, it can't be too difficult to do that!".  And here we are more than a
 
 The program samples/geotag.cpp is a command line utility to geotag photos and I frequently use this on my own photographs.  Today, I have a Samsung Galaxy Watch which uploads runs to Strava.  I download the GPX from Strava.  The date/time information in the JPG is the key to search for the position data.  The GPS tags are created and saved in the image.
 
-In 2008, I chose to implement this in python because I wanted to learn Python.  Having discovered exiv2 and the python wrapper pyexiv2, I set off with enthusiasm to build a cross-platform script to run on **Windows** _(XP, Visual Studio 2003)_, **Ubuntu Linux** _(Hardy Heron 2008.04 LTS)_ and **macOS** _(32 bit Tiger 10.4 on a big-endian PPC)_.  After I finished, I emailed Andreas.  He responded in less than an hour and invited me to join Team Exiv2.  Initialially, I provided support to build Exiv2 with Visual Studio.
+In 2008, I chose to implement this in python because I wanted to learn the language.  Having discovered exiv2 and the python wrapper pyexiv2, I set off with enthusiasm to build a cross-platform script to run on **Windows** _(XP, Visual Studio 2003)_, **Ubuntu Linux** _(Hardy Heron 2008.04 LTS)_ and **macOS** _(32 bit Tiger 10.4 on a big-endian PPC)_.  After I finished, I emailed Andreas.  He responded in less than an hour and invited me to join Team Exiv2.  Initialially, I provided support to build Exiv2 with Visual Studio.
 
 Incidentally, later in 2008, Dennis offered me a contract to port his company's Linux code to Visual Studio to be used on a Windows CE Embedded Controller.  1 million lines of C++ were ported from Linux in 6 weeks.  I worked with Dennis for 4 years on all manner of GPS related software development.
 
@@ -136,7 +136,7 @@ The toolset used in Software Engineering evolves with time.  C++ has been around
 
 The most common issue raised on GitHub concerns lens recognition.  For v0.26, I added the _**Configuration File**_ feature to enable users to modify lens recognition on their computer.  While this is helpful, many users would like Exiv2 to deal with this perfectly, both now and in the future.
 
-I intend to make a proposal at LGM in Rennes in May 2021 concerning this matter. Both exiv2 and ExifTool can extract metadata from an image into a .EXV file. I will propose to implement a program to read the .exv and return the Lens. That program will have an embedded programming language with the rules to identify the lens. The scripts will be ascii files which can be updated. It will be called M2Lscript (MetaData to Lens Script), pronounced _**"MillsScript"**_. The M2Lscript interpreter will be available as a command-line program, a perl module (for ExifTool), a C++ library (for linking into exiv2) and perhaps a python module.
+I intend to make a proposal at LGM in Rennes in May 2021 concerning this matter. Both exiv2 and ExifTool can extract metadata from an image into a .EXV file. I will propose to implement a program to read the .EXV and return the Lens. That program will have an embedded programming language with the rules to identify the lens. The scripts will be ascii files which can be updated. It will be called M2Lscript (MetaData to Lens Script), pronounced _**"MillsScript"**_. The M2Lscript interpreter will be available as a command-line program, a perl module (for ExifTool), a C++ library (for linking into exiv2) and perhaps a python module.
 
 In this way, new lens definitions can be written in M2Lscript without touching anything in Exiv2 or ExifTool.
 
@@ -2780,7 +2780,7 @@ The difficulties of maintaining an open-source project are well explained in thi
 
 <center><img src="open-source-today1.png" style="width:500;border:2px solid #23668F"/>
 <img src="open-source-today2.png" style="width:500;border:2px solid #23668F"/>
-<img src="open-source-today3.png" style="width:500;border:2px solid #23668F"/>
+<img src="open-source-today3.png" style="width:500;Why isborder:2px solid #23668F"/>
 </center>
 
 I will quote the following as it seems totally true.
@@ -3236,10 +3236,10 @@ There are serious limitations with PERT.  I only intend to investigate the use o
 | Trouble | Observation |
 |:--      |:--          |
 |  PERT assumes that you can itemise and quantify every task in the project. | If you are investigating something new, you can probably do neither of these things. |
-| Many projects cannot be quantified.  | Why isn't PERT used<br>1. In crime investigation.<br>2. In medical treatment.<3>3.  In investment management. |
-| You will do abortive work and encounter road blocks. | No Program Manager ever includes time for this.<br>Every innovative project has abortive work. |
+| Many projects cannot be quantified.  | Why isn't PERT used:<br>1. In crime investigation.<br>2. In medical treatment.<br>3.  In investment management. |
+| You will do abortive work and encounter road blocks. | Program Managers never plan time for this.<br>Every innovative project has abortive work. |
 | People are not interchangeable. | People leave, or are assigned to other projects.  New team members require time to come up to speed with the project. |
-| Some tasks have a gestation period | If you are having a baby, more woman won't reduce the 9 month wait.<br>Adding people is often counter-productive.  |
+| Some tasks have a gestation period | If you are having a baby, more women won't reduce the 9 month wait.<br>Adding people is often counter-productive.  |
 | Management, and other project stakeholders, change goals and objectives. | The circumstances surrounding the project can change and have major implications for the project. |
 
 Because of the recursive nature of projects, there are serious limitations hiding inside these limitations.
@@ -3270,17 +3270,17 @@ To be written.
 <div id="13-20">
 ### 13.20 Tools
 
-Every year brings new/different tools.  For example: cmake, git, MarkDown, conan and C++11.  One of the remarkable properties of tools you have never used is that they are perfect and solve all known issues, _until you use them_,   Tools you have never used are bug free and perfect.  Or so I am told.
+Every year brings new/different tools.  For example: cmake, git, MarkDown, conan and C++11.  One of the remarkable properties of tools you have never used is that they are perfect and solve all known issues, _until you use them_.   Tools you have never used are bug free and perfect.  Or so I am told.
 
 I had an issue with the release bundles for Exiv2 v0.26.  My primary development platform is macOS.  Remarkably, the version of tar shipped by Apple puts hidden files in bundles to store file extended attributes.  I didn't know this until the bundles shipped and a bug report appeared.  You cannot see those files on macOS, because tar on macOS recreates the extended attributes.  However there were thousands of hidden files in the source bundle on Linux.  I recreated the bundles as Exiv2 v0.27a and shipped them.  There is an environment variable to suppress this.  I believe it is:  TAR\_WRITER\_OPTIONS=--no-mac-metadata.
 
 Case closed.  Except for very critical emails about changing bundles checksums.
 
-For v0.27 we adopted CMake to do the packaging.  Very nice.  Works well.  Guess what?  CMake produces .tar.gz files which have these hidden files.  Several people emailed to say "You wouldn't have this problem if you used CPack.".  100% wrong.  It is a known documented issue in CPack. So, the issue resurfaced because we used CPack.  Additionally, we had three release candidates for v0.27 which were published on 27 October, 15 November and 7 December 2018.  v0.27 shipped on 20 December and the bug report arrived on Christmas Day.
-2
+For v0.27 we adopted CMake to do the packaging.  Very nice.  Works well.  Guess what?  CMake produces .tar.gz files which have these hidden files.  Several people emailed to say "You wouldn't have this problem if you used CPack.".  100% wrong.  It is a known documented issue in CPack. So, the issue resurfaced because we used CPack.  Additionally, we had three release candidates for v0.27 which were published on 27 October, 15 November and 7 December 2018.  v0.27 shipped on 20 December and the bug report arrived on the day after Christmas Day.
+
 I rebuilt the bundles as Exiv2 v0.27.0a and shipped them on 2 January 2019.  I updated the build script to ensure that source bundles are created on Linux. 
 
-Please understand that I have nothing against using new tools.  However most of the hype surrounding new tools is nonesense.  This has been studied.  There are 5 stages in adopting new tools.
+Please understand that I have nothing against using new tools.  However most of the hype surrounding new tools is nonsense.  This has been studied.  There are 5 stages in adopting new tools.
 
 <center><img src="hype.jpg" width="500" style="border:2px solid #23668F;"/></center>
 
@@ -3312,15 +3312,15 @@ Without question, dealing with this has been very difficult.  Folks who have ado
 <div id="13-24">
 ### 13.24 Software Development
 
-As this is the first and last book I will ever write, I'd like to close the discussion of _**Project Management**_ with some thoughts and opinions about how software is developed.  Management have been searching for the silver bullet that will cause projects to be delivered on time, to budget, with great performance, few bugs and low cost maintenance.  This search has been proceeding for more than 50 years.  We've made some progress.  However system complexity out-strips our management and control tools.  The challenges are immense.
+As this is the first and last book I will ever write, I'd like to close the discussion of _**Project Management**_ with some thoughts and opinions about how software is developed.  Management have been searching for the silver bullet that will cause projects to deliver on time, to budget, with great performance, few bugs and low cost maintenance.  This search has been proceeding for more than 50 years.  We've made some progress.  However system complexity out-strips our management and control tools.  The challenges are immense.
 
-I've seen different approaches used.  In the IT world, people involved in systems development adopted the _**drawing office**_ model and adapted it.  In the drawing office, you have draftsmen working on drawing boards and engineers working at desks.  The engineers do the design and the draftsmen draw it.  This was method was modified and the systems analysts became the designers and the programmers created the code.  They work in a strict regime of SSADM - the Standard Structure Analysis and Design Methodology.  This is often called "The Waterfall Method".  It's horrible.  It's inflexible, slow and very expensive.  It's amazing that anything can be delivered that way.
+I've seen different approaches used.  In the IT world, people involved in system development adopted and modified the _**drawing office**_ model.  In the drawing office, you have draftsmen working on drawing boards and engineers working at desks.  The engineers do the design and the draftsmen draw it.  The systems analyst was the designer and the programmers created the code.  They work in a strict regime of SSADM - the Standard Structure Analysis and Design Methodology.  This is often called "The Waterfall Method".  It's horrible.  It's inflexible, slow and very expensive.  It's amazing that anything can be delivered this way.
 
-When I worked at West Anchors, the analysts had promoted all the programmers to programmer/analyst.  So the programmer had to do the programming and the work of the analyst.  This enabled the analyst to concentrate on office politics.  The QE team at West Anchors didn't test anything.  They approved the test plans written by the programmer/analyst and they inspected the test logs required to prove that the programmer/analyst had done all the work. The parrot phrase of everybody who wasn't a programmer/analyst was "I'm not technical" which meant "I'm not going to help you, so don't ask.  And, by the way, I am superior to you and you will do exactly what I tell you to do.".
+When I worked at West Anchors, the analysts promoted all the programmers to programmer/analyst.  So the programmer had to do the programming and the work of the analyst.  This enabled the analyst to concentrate on office politics.  The QE team at West Anchors didn't test anything.  They approved the test plans written by the programmer/analyst and they inspected the test logs required to prove that the programmer/analyst had done all the work. The parrot phrase of everybody who wasn't a programmer/analyst was "I'm not technical" which meant "I'm not going to help you, so don't ask.  And, by the way, I am superior to you and you will do exactly what I tell you to do.".
 
-Before I retired, the circus started to adopt Scrum.  Loads of meetings.  The project is divided into two-week _**sprints**_.  There were two days of _**review**_ meetings at the end of every sprint.  Two days of _**planning**_ meetings at the start of every sprint.  Daily _**stand-up**_ meetings which were usually about 1 hour.  And I'm sure I've forgotten other pointless meetings.  Sometimes people say they are _**agile**_.  I haven't figured out what that is.  I think it's some kind of "Let's not bother looking ahead.  It'll be great if or when it's delivered.".  And of course, all software development engineers _**(except me)**_ are geniuses who never create bugs, never document and never help co-workers.  Their code is perfect - or so they tell me.
+Before I retired, the circus started adopting Scrum.  Loads of meetings.  The project is divided into two-week _**sprints**_.  There were two days of _**review**_ meetings at the end of every sprint.  Two days of _**planning**_ meetings at the start of every sprint.  Daily _**stand-up**_ meetings which were usually about 1 hour.  And I'm sure I've forgotten other pointless meetings.  Sometimes people say they are _**agile**_.  I haven't figured out what that is.  I think it's some kind of "Let's not bother looking ahead.  It'll be great if or when it's delivered.".  And of course, all software development engineers _**(except me)**_ are geniuses who create perfect code and therefore no reason to document or help lesser co-workers.
 
-In the last 10 years we have seen AI move out of the lab and into our homes, cars and phones.  Probably 50% of code development time is spent on test related activity.  Perhaps in the future, the AI will undertake some of that work.  Remember it works 7x24, never takes a vacation and works very quickly.  I have high hopes that AI can be used to automate testing in future.
+In the last 10 years we have seen AI move out of the lab and into our homes, cars and phones.  Probably 50% of code development time is spent on test related activity.  Perhaps in future, AI will undertake more of that work.  Remember it works 7x24, never takes a vacation and works very quickly.  I have high hopes that AI can be used to automate testing in future.
 
 There is a method of developing code that works for me and that's to do everything myself.   This model doesn't scale.  However it is effective.  Do I create bugs?  Of course, I do.  However I find and fix them.  Many of the best people with whom I worked in Silicon Valley use this approach.  And when I think about it, that's exactly how Andreas created Exiv2.
 
