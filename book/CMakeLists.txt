@@ -10,6 +10,13 @@ add_executable(tvisitor    tvisitor.cpp   )
 add_executable(args        args.cpp       )
 add_executable(dmpf        dmpf.cpp       )
 
+if(WIN32)
+  find_library(WSOCK32_LIBRARY wsock32)
+  find_library(WS2_32_ LIBRARY ws2_32)
+  target_link_libraries(parse    wsock32 ws2_32)
+  target_link_libraries(tvisitor wsock32 ws2_32)
+endif()
+
 # This is intentionally commented off
 # See Chapter 10 Testing for discussion about building libtiff
 if ( 0 ) 

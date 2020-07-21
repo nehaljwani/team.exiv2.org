@@ -1,3 +1,17 @@
+#ifdef  _MSC_VER
+#define _CRT_SECURE_NO_WARNINGS
+#define  FSEEK_LONG  long
+#pragma warning(disable : 4996)
+#include <stdio.h>
+#include <io.h>
+#include <fcntl.h>
+#include <windows.h>
+#define  fileno      _fileno
+#else
+#include <unistd.h>
+#define  FSEEK_LONG uint64_t
+#endif
+
 #include <iostream>
 #include <set>
 #include <vector>
@@ -10,7 +24,6 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <unistd.h>
 #include <string.h>
 #include <stdarg.h>
 
@@ -619,7 +632,46 @@ typedef std::map<std::string,Fields>  MakerTags;
 // global variable
 MakerTags makerTags;
 
-// IO supprt
+// https://github.com/openSUSE/libsolv/blob/master/win32/fmemopen.c
+#ifdef _MSC_VER
+FILE* fmemopen(void* buf, size_t size, const char* mode)
+{
+    char temppath[MAX_PATH + 1];
+    char tempnam[MAX_PATH + 1];
+    DWORD l;
+    HANDLE fh;
+    FILE* fp;
+
+    if (strcmp(mode, "r") != 0 && strcmp(mode, "r+") != 0)
+        return 0;
+    l = GetTempPath(MAX_PATH, temppath);
+    if (!l || l >= MAX_PATH)
+        return 0;
+    if (!GetTempFileName(temppath, "solvtmp", 0, tempnam))
+        return 0;
+    fh = CreateFile(tempnam, DELETE | GENERIC_READ | GENERIC_WRITE, 0,
+        NULL, CREATE_ALWAYS,
+        FILE_ATTRIBUTE_NORMAL | FILE_FLAG_DELETE_ON_CLOSE,
+        NULL);
+    if (fh == INVALID_HANDLE_VALUE)
+        return 0;
+    fp = _fdopen(_open_osfhandle((intptr_t)fh, 0), "w+b");
+    if (!fp)
+    {
+        CloseHandle(fh);
+        return 0;
+    }
+    if (buf && size && fwrite(buf, size, 1, fp) != 1)
+    {
+        fclose(fp);
+        return 0;
+    }
+    rewind(fp);
+    return fp;
+}
+#endif
+
+// IO support
 enum seek_e
 {   ksStart   = SEEK_SET
 ,   ksCurrent = SEEK_CUR
@@ -665,8 +717,8 @@ public:
     byte     getb()                                      { byte b; if (read(&b,1)==1) return b ; else return -1; }
     int      eof()                                       { return feof(f_) ; }
     uint64_t tell()                                      { return ftell(f_)-start_ ; }
-    void     seek(uint64_t offset,seek_e whence=ksStart) { fseek(f_,offset+start_,whence) ; }
-    uint64_t size()                                      { if ( size_ ) return size_ ; struct stat st ; fstat(fileno(f_),&st) ; return st.st_size-start_ ; }
+    void     seek(int64_t offset,seek_e whence=ksStart)  { fseek(f_,(FSEEK_LONG)(offset+start_),whence) ; }
+    uint64_t size()                                      { if ( size_ ) return size_ ; struct stat st ; fstat(::fileno(f_),&st) ; return st.st_size-start_ ; }
     bool     good()                                      { return f_ ? true : false ; }
     void     close()
     {
@@ -674,7 +726,7 @@ public:
         if ( start_ == 0 && size_ == 0 && restore_ == 0 ) {
             fclose(f_) ;
         } else {
-            fseek(f_,restore_,ksStart);
+            fseek(f_,(FSEEK_LONG)restore_,ksStart);
         }
         f_ = NULL  ;
     }
@@ -917,7 +969,7 @@ public:
         vector_ = Io(parent,start,parent.size()-start);
     }
 
-    void dumpImageSpec(Visitor& visitor,uint16_t tag,size_t start,size_t count,uint16_t depth)
+    void dumpImageSpec(Visitor& visitor,uint16_t tag,size_t start,size_t count,uint64_t depth)
     {
         image().depth_++;
 
@@ -1906,7 +1958,7 @@ void JpegImage::accept(Visitor& visitor)
             if ( signature.find("http://ns.adobe.com/x") == 0 ) {
                 // extract XMP
                 if (length > 0) {
-                    io_.seek(-bufRead, ksCurrent);
+                    io_.seek(io_.tell() - bufRead);
                     std::vector<byte> xmp(length + 1);
                     io_.read(&xmp[0], length);
                     int start = 0;
