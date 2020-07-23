@@ -647,7 +647,7 @@ FILE* fmemopen(void* buf, size_t size, const char* mode)
     l = GetTempPath(MAX_PATH, temppath);
     if (!l || l >= MAX_PATH)
         return 0;
-    if (!GetTempFileName(temppath, "solvtmp", 0, tempnam))
+    if (!GetTempFileName(temppath, "tvisitor", 0, tempnam))
         return 0;
     fh = CreateFile(tempnam, DELETE | GENERIC_READ | GENERIC_WRITE, 0,
         NULL, CREATE_ALWAYS,
@@ -718,7 +718,12 @@ public:
     int      eof()                                       { return feof(f_) ; }
     uint64_t tell()                                      { return ftell(f_)-start_ ; }
     void     seek(int64_t offset,seek_e whence=ksStart)  { fseek(f_,(FSEEK_LONG)(offset+start_),whence) ; }
-    uint64_t size()                                      { if ( size_ ) return size_ ; struct stat st ; fstat(::fileno(f_),&st) ; return st.st_size-start_ ; }
+    uint64_t size()                                      {
+        if ( size_ ) return size_ ;
+        struct stat st ;
+        fstat(::fileno(f_),&st) ;
+        return st.st_size-start_ ;
+    }
     bool     good()                                      { return f_ ? true : false ; }
     void     close()
     {
@@ -734,8 +739,8 @@ public:
 
     uint32_t getLong(endian_e endian)
     {
-        DataBuf buf(4);
-        read   (buf);
+        byte buf[4];
+        read(buf,4);
         return ::getLong(buf,0,endian);
     }
     float getFloat(endian_e endian)
