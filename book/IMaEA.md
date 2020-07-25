@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 48px;color:#FF4646;font-family: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:36px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-07-20</h3>
+<h3 align=center style="font-size:36px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-07-25</h3>
 
 <div id="dedication">
 ## _Dedication and Acknowledgment_
@@ -30,32 +30,32 @@ _And our cat Lizzie._
 | Section                                             | Page | Image Formats                       | Page | Project Management                    | Page | 
 |:--                                                    | --:|:--                                    | --:|:--                                      | --:|
 | [1. Image File Formats](#1)                           |  9 | [TIFF and BigTiff](#TIFF)             | 10 | [13. Project Management](#13)           | 77 |
-| [2. Tiff and Exif metadata](#2)                       | 32 | [JPEG and EXV](#JPEG)                 | 12 | [13.1 C++ Code](#13-1)                  | 78 |
-| [3. MakerNotes](#3)                                   | 35 | [PNG Portable Network Graphics](#PNG) | 17 | [13.2 Build](#13-2)                     | 79 |
-| [4. Metadata containers](#4)                          | 36 | [JP2 Jpeg 2000](#JP2)                 | 18 | [13.3 Security](#13-3)                  | 80 |
-| [5. Lens Recognition](#5)                             | 37 | [CRW Canon Raw](#CRW)                 | 19 | [13.4 Documentation](#13-4)             | 80 |
-| [6. Sample Applications](#6)                          | 38 | [ICC Profile](#ICC)                   | 20 | [13.5 Testing](#13-5)                   | 80 |
-| [7. I/O in Exiv2](#7)                                 | 39 | [ISOBMFF, CR3, HEIF, AVI](#ISOBMFF)   | 21 | [13.6 Sample programs](#13-6)           | 80 |
-| [8. Exiv2 Architecture](#8)                           | 41 | [WebP Web Photograph ](#WEBP)         | 22 | [13.7 User Support](#13-7)              | 80 |
-| [8.1 Extracting metadata using dd](#8-1)              | 41 | [MRW Minolta Raw](#MRW)               | 23 | [13.8 Bug Tracking](#13-8)              | 81 |
-| [8.2 Tag Names in Exiv2](#8-2)                        | 42 | [ORF Olympus Raw Format](#ORF)        | 24 | [13.9 Release Engineering](#13-9)       | 81 |
-| [8.3 TagInfo](#8-3)                                   | 44 | [PGF Progressive Graphics File](#PGF) | 25 | [13.10 Platform Support](#13-10)        | 81 |
-| [8.4 Visitor Design Pattern](#8-4)                    | 44 | [PSD PhotoShop Document](#PSD)        | 26 | [13.11 Localisation](#13-11)            | 81 |
-| [8.5 IFD:accept() and TiffImage::accept() ](#8-5)     | 48 | [RAF Fujifilm RAW](#RAF)              | 27 | [13.12 Build Server](#13-12)            | 81 |
-| [8.6 Presenting data with visitTag()](#8-6)<br>       | 53 | [RW2 Panasonic RAW](#RW2)             | 28 | [13.13 Source Code Management](#13-13)  | 81 |
-| [8.7 Tag Decoder](#8-7)                               | 57 | [TGA Truevision Targa](#TGA)          | 29 | [13.14 Project Web Site](#13-14)        | 81 |
-| [8.8 Jpeg::Image accept()](#8-8)                      | 59 | [BMP Windows Bitmap](#BMP)            | 30 | [13.15 Project Servers ](#13-15)        | 81 |
-| [9. Image Previews](#9)                               | 61 | [GIF Graphical Interchange Format](#GIF) | 31 | [13.16 API Management](#13-16)       | 81 |
-| [10. Test Suite and Build](#10)                       | 63 | _**Other Sections**_                  |    | [13.17 Recruiting Contributors](#13-17) | 81 |
-| [10.1 Bash Tests](#10-1)                              | 63 | [Dedication](#dedication)             |  2 | [13.18 Project Scheduling](#13-18)      | 82 |
-| [10.2 Python Tests](#10-2)                            | 68 | [About this book](#about)             |  4 | [13.19 Enhancement Requests](#13-19)    | 82 |
-| [10.3 Unit Tests](#10-3)                              | 69 | [How did I get interested ?](#begin)  |  4 | [13.20 Tools](#13-20)                   | 82 |
-| [10.4 Version Test](#10-4)                            | 70 | [2012 - 2017](#2012)                  |  5 | [13.21 Licensing](#13-21)               | 82 |
-| [10.5 Generating HUGE images](#10-5)                  | 71 | [2017 - Present](#2017)               |  5 | [13.22 Back-porting](#13-22)            | 82 |
-| [11. API/ABI Compatibility](#11)                      | 73 | [Current Priorities](#current)        |  6 | [13.23 Other OSS projects](#13-23)      | 82 |
-| [12. Security](#12)                                   | 74 | [Future Projects](#future)            |  6 | [13.24 Software Development](#13-24)    | 85 |
-| [12.2 How we deal with security issues](12-2)         | 75 | [Scope of Book](#scope)               |  7 |                                         |    |
-| [14. Code discussed in this book](#14)                | 80 | [Making this book](#making)           |  8 | [The Last Word](#finally)               | 84 |
+| [2. Metadata Standards](#2)                           | 32 | [JPEG and EXV](#JPEG)                 | 12 | [13.1 C++ Code](#13-1)                  | 78 |
+| [2.1 Tiff and Exif metadata](#2-1)                    | 35 | [PNG Portable Network Graphics](#PNG) | 17 | [13.2 Build](#13-2)                     | 79 |
+| [2.2 XMP](#2-2)                                       | 36 | [JP2 Jpeg 2000](#JP2)                 | 18 | [13.3 Security](#13-3)                  | 80 |
+| [2.3 IPTC](#2-3)                                      | 37 | [CRW Canon Raw](#CRW)                 | 19 | [13.4 Documentation](#13-4)             | 80 |
+| [5. Lens Recognition](#5)                             | 38 | [ICC Profile](#ICC)                   | 20 | [13.5 Testing](#13-5)                   | 80 |
+| [6. Sample Applications](#6)                          | 39 | [ISOBMFF, CR3, HEIF, AVI](#ISOBMFF)   | 21 | [13.6 Sample programs](#13-6)           | 80 |
+| [7. I/O in Exiv2](#7)                                 | 41 | [WebP Web Photograph ](#WEBP)         | 22 | [13.7 User Support](#13-7)              | 80 |
+| [8. Exiv2 Architecture](#8)                           | 41 | [MRW Minolta Raw](#MRW)               | 23 | [13.8 Bug Tracking](#13-8)              | 81 |
+| [8.1 Extracting metadata using dd](#8-1)              | 42 | [ORF Olympus Raw Format](#ORF)        | 24 | [13.9 Release Engineering](#13-9)       | 81 |
+| [8.2 Tag Names in Exiv2](#8-2)                        | 44 | [PGF Progressive Graphics File](#PGF) | 25 | [13.10 Platform Support](#13-10)        | 81 |
+| [8.3 TagInfo](#8-3)                                   | 44 | [PSD PhotoShop Document](#PSD)        | 26 | [13.11 Localisation](#13-11)            | 81 |
+| [8.4 Visitor Design Pattern](#8-4)                    | 48 | [RAF Fujifilm RAW](#RAF)              | 27 | [13.12 Build Server](#13-12)            | 81 |
+| [8.5 IFD:accept() and TiffImage::accept() ](#8-5)     | 53 | [RW2 Panasonic RAW](#RW2)             | 28 | [13.13 Source Code Management](#13-13)  | 81 |
+| [8.6 Presenting data with visitTag()](#8-6)           | 57 | [TGA Truevision Targa](#TGA)          | 29 | [13.14 Project Web Site](#13-14)        | 81 |
+| [8.7 Tag Decoder](#8-7)                               | 59 | [BMP Windows Bitmap](#BMP)            | 30 | [13.15 Project Servers ](#13-15)        | 81 |
+| [8.8 Jpeg::Image accept()](#8-8)                      | 61 | [GIF Graphical Interchange Format](#GIF) | 31 | [13.16 API Management](#13-16)       | 81 |
+| [9. Image Previews](#9)                               | 63 | _**Other Sections**_                  |    | [13.17 Recruiting Contributors](#13-17) | 81 |
+| [10. Test Suite and Build](#10)                       | 63 | [Dedication](#dedication)             |  2 | [13.18 Project Scheduling](#13-18)      | 82 |
+| [10.1 Bash Tests](#10-1)                              | 68 | [About this book](#about)             |  4 | [13.19 Enhancement Requests](#13-19)    | 82 |
+| [10.2 Python Tests](#10-2)                            | 69 | [How did I get interested ?](#begin)  |  4 | [13.20 Tools](#13-20)                   | 82 |
+| [10.3 Unit Tests](#10-3)                              | 70 | [2012 - 2017](#2012)                  |  5 | [13.21 Licensing](#13-21)               | 82 |
+| [10.4 Version Test](#10-4)                            | 71 | [2017 - Present](#2017)               |  5 | [13.22 Back-porting](#13-22)            | 82 |
+| [10.5 Generating HUGE images](#10-5)                  | 73 | [Current Priorities](#current)        |  6 | [13.23 Other OSS projects](#13-23)      | 82 |
+| [11. API/ABI Compatibility](#11)                      | 74 | [Future Projects](#future)            |  6 | [13.24 Software Development](#13-24)    | 85 |
+| [12. Security](#12)                                   | 75 | [Scope of Book](#scope)               |  7 | [14. Code discussed in this book](#14) | 130 |                                      
+| [12.2 How we deal with security issues](12-2)         | 80 | [Making this book](#making)           |  8 | [The Last Word](#finally)              | 131 |
 
 <div id="about">
 ## About this book
@@ -225,12 +225,12 @@ A good model for an image is to think of it as a container.  It's like a directo
 
 The good news however is that file formats come in families which are:
 
-| Family  | Description | Examples |
-|:--      |:---         |:--       |
+| Family  | Description                                                                        | Examples |
+|:--      |:---                                                                                |:--       |
 | TIFF    | You must learn Tiff thoroughly to understand metadata              | TIFF, DNG, NEF, ICC, CR2 |
 | JPG     | The most common format                                                                 | JPEG |
 | PNG     | Another popular format<br>Linked list of chunks                                         | PNG |
-| CIFF    | Canon Raw format.  Dave Coffin parse.c decodes          v                               | CRW |
+| CIFF    | Canon Raw format.  Dave Coffin parse.c decodes CRW                                      | CRW |
 | ISOBMFF | Based on the .mp4 format                                           | MP4, CR3, AVI, HEIF, JP2 |
 | RIFF    | Google Promoted Format                                                                 | WEBP |
 | Legacy  | These legacy formats<br>usually have no metadata                                   | GIF, BMP |
@@ -995,7 +995,25 @@ This is supported by Gif89a files and documented by Adobe in XMPSpecificationPar
 
 [TOC](#TOC)
 <div id="2">
-# 2 Tiff and Exif metadata
+# 2 Metadata Standards
+
+Exif is the most important of the metadata containers.  However others exist and are supported by Exiv2:
+
+| Type | Definition | Comment |
+|:---  |:----       |:------  |
+| EXIF | EXchangeable Image Format | Japanese Electronic Industry Development Association Standard |
+| IPTC | International Press Telecommunications Council  | Press Industry Standard |
+| Xmp  | Extensible Metadata Platform | Adobe Standard |
+| ICC  | International Color Consortium | Industry Consortium for Color Handling Standards |
+| ImageMagick/PNG | Portable Network Graphics | Not implemented in Exiv2 |
+
+[TOC](#TOC)
+<div id="2-1">
+## 2.1 Exif Metadata
+
+Exif is the largest and most commonly used metadata standard.  The standard is defined by JEITA which is the Japanese Association of Camera Manufacturers.  Exif metadata is embedded in almost all images captured by cameras, phones and other "smart" devices.  Exif has tags for for Maker, Model, Aperture and many other settings.  Exiv2 supports the Exif 2.2 Standard.  Exiv2 knows the definition of about 6000 tags.  Exif however is not extensible.  Over the years, features such as GPS, Lens and Time Zone have been added.
+
+To enable the manufacturer to store both proprietary and non-standard data, the MakerNote Tag is defined.  Usually the Manufacturer will write a TIFF Encoded record into the MakerNote.  Exiv2 can reliably read and rewrite Manufacturer's MakerNotes.  The implementation of this in Exiv2 is outstanding work by Andreas Huggel.
 
 ![tiff](tiff.png)
 
@@ -1121,122 +1139,24 @@ GPSDateStamp -> 2015-07-16 00:00:00 (dat     ImageUniqueID -> "090caaf..."
 Data's similar.  The order is different.  Good news is that the commands _**$ exiv2 -pe ~/Stonehenge.jpg**_ and __*$ exiv2 -pe ~/Stonehenge.tif*__ produce similar data in the same order.  We'd hope so as both commands are reading the same embedded Exif metadata.  The way in which the Exif is embedded in Tiff and JPG is different, however the Exif metadata is effectively the same.
 
 [TOC](#TOC)
-<div id="3">
-# 3 MakerNotes
-
-https://exiv2.org/makernote.html
-
-MakerNotes are usually written as an IFD, however most manufacturers have a few bytes the precede the IFD.  I suspect this is to store version information.  The code in tvisitor.cpp to handle the makernotes is:
-
-```cpp
-void IFD::visitMakerNote(Visitor& visitor,DataBuf& buf,uint16_t count,uint32_t offset)
-{
-    if ( image_.maker_ == kNikon ) {
-        // Nikon MakerNote is embeded tiff `II*_....` 10 bytes into the data!
-        size_t punt = buf.strequals("Nikon") ? 10
-                    : 0
-                    ;
-        Io     io(io_,offset+punt,count-punt);
-        TiffImage makerNote(io,image_.maker_);
-        makerNote.visit(visitor,makerDict());
-    } else if ( image_.maker_ == kAgfa && buf.strequals("ABC") ) {
-        // Agfa  MakerNote is an IFD `ABC_II#E...`  6 bytes into the data!
-        ImageEndianSaver save(image_,keLittle);
-        IFD makerNote(image_,offset+6,false);
-        makerNote.visit(visitor,makerDict());
-    } else {
-        bool   bNext = maker()  != kSony;                                        // Sony no trailing next
-        size_t punt  = maker()  == kSony && buf.strequals("SONY DSC ") ? 12 : 0; // Sony 12 byte punt
-        IFD makerNote(image_,offset+punt,bNext);
-        makerNote.visit(visitor,makerDict());
-    }
-} // visitMakerNote
-```
-
-I will write more about this subject later.
-
-[TOC](#TOC)
-<div id="4">
-# 4 Other metadata containers
-
-Exif is the most important of the metadata containers.  However others exist and are supported by Exiv2:
-
-| Type | Definition | Comment |
-|:---  |:----       |:------  |
-| EXIF | EXchangeable Image Format | Japanese Electronic Industry Development Association Standard |
-| IPTC | International Press Telecommunications Council  | Press Industry Standard |
-| Xmp  | Extensible Metadata Platform | Adobe Standard |
-| ICC  | International Color Consortium | Industry Consortium for Color Handling Standards |
-| ImageMagick/PNG | Portable Network Graphics | Not implemented in Exiv2 |
-
-## 4.1 Exif Metadata
-
-Exif is the largest and most commonly used metadata standard.  The standard is defined by Jeica which is the Japanese Association of Camera Manufacturers.  It's not surprising that it's implemented in most Japanese Cameras and all phones.  And, as it's a camera standard, it's very well suited to cameras with fields for Maker, Model, Aperture and many other settings.  Exiv2 supports the Exif 2.2 Standard.  Exiv2 knows the definition of about 6000 tags.  Exif however is not extensible.  Over the years, features such as GPS, Lens and Time Zone have been added.
-
-To enable the manufacturer to store both proprietary and non-standard data, the MakerNote Tag is defined.  Usually the Manufacturer will write a TIFF Encoded record into the MakerNote.  Exiv2 can reliably read and rewrite Manufacturer's MakerNotes.  The implementation of this in Exiv2 is outstanding work by Andreas Huggel.
-
-I'll say a lot more about Exif soon.
-
-##4.2 XMP Metadata
+<div id="2-2">
+##2.2 XMP Metadata
 
 XMP is an Adobe initiative to provide a comprensive and eXtendable Metadata frame to a wide range of documents.
 
 You can create Bag, Seq or Struct of metadata.  An "XmpBag" is a set of key/value pairs and are represented by XML attributes.  An "XmpSeq" is a an array of metadata similar to a JavaScript or Python Array.  It's represented by an XML list and can be accessed by index.  An XmpStruct is a set of keys to trees of metadata rathen like a JavaScript or Python Object or Python.
 
-I will write much more about this later.  The following code is a temporary memory jogger.
-
-```bash
-.../temp $ exiv2 -pX Stonehenge.jpg | xmllint -pretty 1 -
-<?xml version="1.0"?>
-<?xpacket begin="﻿" id="W5M0MpCehiHzreSzNTczkc9d"?>
-<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="XMP Core 4.4.0-Exiv2">
-  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-    <rdf:Description xmlns:xmp="http://ns.adobe.com/xap/1.0/" xmlns:dc="http://purl.org/dc/elements/1.1/" rdf:about="" xmp:Rating="0" xmp:ModifyDate="2015-07-16T20:25:28+01:00">
-      <dc:description>
-        <rdf:Alt>
-          <rdf:li xml:lang="x-default">Classic View</rdf:li>
-        </rdf:Alt>
-      </dc:description>
-    </rdf:Description>
-  </rdf:RDF>
-</x:xmpmeta>
-<?xpacket end="w"?>
-.../temp $ exiv2 -M'set Xmp.iptc.LocationCreated XmpText type=Bag' Stonehenge.jpg 
-.../temp $ exiv2 -M'set Xmp.iptc.LocationCreated[1]/iptcExt:City Camberley' Stonehenge.jpg 
-.../temp $ exiv2 -M'set Xmp.iptc.LocationCreated[1]/iptcExt:CountryName England' Stonehenge.jpg 
-784 rmills@rmillsmbp:~/temp $ exiv2 -pX Stonehenge.jpg | xmllint -pretty 1 -
-<?xml version="1.0"?>
-<?xpacket begin="﻿" id="W5M0MpCehiHzreSzNTczkc9d"?>
-<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="XMP Core 4.4.0-Exiv2">
-  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-    <rdf:Description xmlns:xmp="http://ns.adobe.com/xap/1.0/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:Iptc4xmpCore="http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/" xmlns:iptcExt="http://iptc.org/std/Iptc4xmpExt/2008-02-29/" rdf:about="" xmp:Rating="0" xmp:ModifyDate="2015-07-16T20:25:28+01:00">
-      <dc:description>
-        <rdf:Alt>
-          <rdf:li xml:lang="x-default">Classic View</rdf:li>
-        </rdf:Alt>
-      </dc:description>
-      <Iptc4xmpCore:LocationCreated>
-        <rdf:Bag>
-          <rdf:li iptcExt:City="Camberley" iptcExt:CountryName="England"/>
-        </rdf:Bag>
-      </Iptc4xmpCore:LocationCreated>
-    </rdf:Description>
-  </rdf:RDF>
-</x:xmpmeta>
-<?xpacket end="w"?>
-```
-
 Here are a couple of discussions about XMP on GitHub and Redmine. [https://github.com/Exiv2/exiv2/issues/1254](https://github.com/Exiv2/exiv2/issues/1254) and [https://dev.exiv2.org/boards/3/topics/2016](https://dev.exiv2.org/boards/3/topics/2016).
 
-Exiv2 provides a veneer over the Adobe XMPsdk that makes it quite easy to work with XMP.  As XMP is eXtensible, you are more-or-less free to create arbitrary trees of metadata which conform to the RDF schema.  I strongly recommend however that applications emulate the XMP generated by Adobe in their applications as that promotes better application interoperability.
+Exiv2 provides a veneer over the Adobe XMPsdk that makes it quite easy to work with XMP.  As XMP is eXtensible, you are more-or-less free to create arbitrary trees of metadata which conform to the RDF schema.  I strongly recommend however that applications emulate the XMP generated by Adobe Applications as that promotes better interoperability.
 
 Exiv2 is not a metadata policeman.  You are provided with tools to modify metadata.  _**As Jabba said in Star Wars:** "With great power comes great responsibility."_.  Use the tools wisely.  Learn the ways of the force!
 
-I have taken the XMP example from this web-site:  [https://en.wikipedia.org/wiki/Extensible\_Metadata\_Platform](https://en.wikipedia.org/wiki/Extensible_Metadata_Platform)
+I have taken the XMP example from this web-site and simplified it a little into the file _**xmp.xmp**_  [https://en.wikipedia.org/wiki/Extensible\_Metadata\_Platform](https://en.wikipedia.org/wiki/Extensible_Metadata_Platform)
 
 ```xml
 <?xpacket begin="?" id="W5M0MpCehiHzreSzNTczkc9d"?>
-<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 5.4-c002 1.000000, 0000/00/00-00:00:00        ">
+ <x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 5.4-c002 1.000000, 0000/00/00-00:00:00        ">
    <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
       <rdf:Description rdf:about=""
             xmlns:xmp="http://ns.adobe.com/xap/1.0/">
@@ -1255,13 +1175,11 @@ I have taken the XMP example from this web-site:  [https://en.wikipedia.org/wiki
             <mwg-rs:RegionList>
                <rdf:Bag>
                   <rdf:li rdf:parseType="Resource">
-                     <mwg-rs:Type></mwg-rs:Type>
                      <mwg-rs:Area rdf:parseType="Resource">
                         <stArea:x>0.680921052631579</stArea:x>
                         <stArea:y>0.3537117903930131</stArea:y>
                         <stArea:h>0.4264919941775837</stArea:h>
                         <stArea:w>0.32127192982456143</stArea:w>
-                        <stArea:unit>normalized</stArea:unit>
                      </mwg-rs:Area>
                   </rdf:li>
                </rdf:Bag>
@@ -1269,7 +1187,7 @@ I have taken the XMP example from this web-site:  [https://en.wikipedia.org/wiki
          </mwg-rs:Regions>
       </rdf:Description>
    </rdf:RDF>
-</x:xmpmeta>
+ </x:xmpmeta>
 <?xpacket end="w"?>
 ```
 
@@ -1279,6 +1197,7 @@ You can add this directly into a file as follows:
 $ curl -LO http://clanmills.com/Stonehenge.jpg
 $ cat xmp.xmp | exiv2 -iX- ~/Stonehenge.jpg
 $ exiv2 -px Stonehenge.jpg 
+980 rmills@rmillsmbp:~/temp $ exiv2 -px Stonehenge.jpg 
 Xmp.xmp.CreatorTool                          XmpText     6  Picasa
 Xmp.mwg-rs.Regions                           XmpText     0  type="Struct"
 Xmp.mwg-rs.Regions/mwg-rs:AppliedToDimensions XmpText     0  type="Struct"
@@ -1287,23 +1206,14 @@ Xmp.mwg-rs.Regions/mwg-rs:AppliedToDimensions/stDim:h XmpText     3  687
 Xmp.mwg-rs.Regions/mwg-rs:AppliedToDimensions/stDim:unit XmpText     5  pixel
 Xmp.mwg-rs.Regions/mwg-rs:RegionList         XmpText     0  type="Bag"
 Xmp.mwg-rs.Regions/mwg-rs:RegionList[1]      XmpText     0  type="Struct"
-Xmp.mwg-rs.Regions/mwg-rs:RegionList[1]/mwg-rs:Type XmpText     0  
 Xmp.mwg-rs.Regions/mwg-rs:RegionList[1]/mwg-rs:Area XmpText     0  type="Struct"
 Xmp.mwg-rs.Regions/mwg-rs:RegionList[1]/mwg-rs:Area/stArea:x XmpText    17  0.680921052631579
 Xmp.mwg-rs.Regions/mwg-rs:RegionList[1]/mwg-rs:Area/stArea:y XmpText    18  0.3537117903930131
 Xmp.mwg-rs.Regions/mwg-rs:RegionList[1]/mwg-rs:Area/stArea:h XmpText    18  0.4264919941775837
 Xmp.mwg-rs.Regions/mwg-rs:RegionList[1]/mwg-rs:Area/stArea:w XmpText    19  0.32127192982456143
-Xmp.mwg-rs.Regions/mwg-rs:RegionList[1]/mwg-rs:Area/stArea:unit XmpText    10  normalized
-$ 
 ```
 
-I find the structure easier to understand in JSON, which can be generated with the following:
-
-```bash
-$ exiv2json x Stonehenge.jpg 
-```
-
-And the JSON is:
+I find the structure easier to understand in JSON, which can be generated with the command _**$ exiv2json Stonehenge.jpg**_
 
 ```json
 {
@@ -1324,14 +1234,12 @@ And the JSON is:
           "RegionList": [
             {
               "mwg-rs": {
-                "Type": "",
                 "Area": {
                   "stArea": {
                     "x": "0.680921052631579",
                     "y": "0.3537117903930131",
                     "h": "0.4264919941775837",
-                    "w": "0.32127192982456143",
-                    "unit": "normalized"
+                    "w": "0.32127192982456143"
                   }
                 }
               }
@@ -1344,7 +1252,6 @@ And the JSON is:
       "AppliedToDimensions": "",
       "Area": "",
       "Regions": "",
-      "exif": "http:\/\/ns.adobe.com\/exif\/1.0\/",
       "mwg-rs": "http:\/\/www.metadataworkinggroup.com\/schemas\/regions\/",
       "xmp": "http:\/\/ns.adobe.com\/xap\/1.0\/"
     }
@@ -1421,7 +1328,7 @@ $ exiv2 -pX Stonehenge.jpg | xmllint -pretty 1 -
 $ 
 ```
 
-**Step 4 Create a bag with Struct of Areas
+**Step 4 Create a bag with Struct of Areas:**
 
 ```bash
 $ exiv2 -M'set Xmp.mwg-rs.Regions/mwg-rs:RegionList  XmpText type="Bag"' Stonehenge.jpg 
@@ -1435,7 +1342,7 @@ $ exiv2 -pX Stonehenge.jpg | xmllint -pretty 1 -
 <?xpacket begin="﻿" id="W5M0MpCehiHzreSzNTczkc9d"?>
 <x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="XMP Core 4.4.0-Exiv2">
   <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-    <rdf:Description xmlns:xmp="http://ns.adobe.com/xap/1.0/" xmlns:mwg-rs="http://www.metadataworkinggroup.com/schemas/regions/" xmlns:stDim="http://ns.adobe.com/xap/1.0/sType/Dimensions#" xmlns:stArea="http://ns.adobe.com/xmp/sType/Area#" rdf:about="" xmp:CreatorTool="Picasa">
+    <rdf:Description xmlns:xmp="http://ns.adobe.com/xap/1.0/" xmlns:mwg-rs="..." xmlns:stArea=".." rdf:about="" xmp:CreatorTool="Picasa">
       <mwg-rs:Regions rdf:parseType="Resource">
         <mwg-rs:AppliedToDimensions stDim:w="912"/>
         <mwg-rs:RegionList>
@@ -1450,25 +1357,28 @@ $ exiv2 -pX Stonehenge.jpg | xmllint -pretty 1 -
   </rdf:RDF>
 </x:xmpmeta>
 <?xpacket end="w"?>```
-$
 ```
 
-##4.3 IPTC Metadata
+[TOC](#TOC)
+<div id="2-3">
+##2.3 IPTC Metadata
 
-As is common, there are competing and overlapping standards for metadata that reflect the interests of their champions.  So, Exif is for Cameras, XMP primarily for Application Programs, and IPTC is for the Press Industry.  Being a software engineer, I know very little about how people actually use metadata.  I belive IPTC preserves copyright and other high value resources as files move along the work-flow from the origin to a magazine or news papers.
+As is common, there are competing and overlapping standards for metadata that reflect the interests of their champions.  So, Exif is for Cameras, XMP primarily for Application Programs, and IPTC is for the Press Industry.  Being a software engineer, I know very little about how people actually use metadata.  I belive IPTC preserves copyright and other high value resources as files move along the work-flow from the origin to a magazine or newspaper.
 
-The Metadata Working Group has something to do with defining those standards: [https://en.wikipedia.org/wiki/Metadata_Working_Group](https://en.wikipedia.org/wiki/Metadata_Working_Group)
+The Metadata Working Group defines the standards: [https://en.wikipedia.org/wiki/Metadata_Working_Group](https://en.wikipedia.org/wiki/Metadata_Working_Group)
 
 There is a website that documents IPTC here: [https://help.accusoft.com/ImageGear-Net/v22.1/Windows/HTML/topic371.html](https://help.accusoft.com/ImageGear-Net/v22.1/Windows/HTML/topic371.html)
 
-| Name                  | Purpose | Typical Values |
-|:---------            |:-------  |:------------   |
-| Envelope  | 1  | Destination, DateSent |
-| Application | 2 | ObjectName |
-| Digital News Photo | 3 | PictureNumber, ICCInputColourProfile |
-| Pre-Object Descriptor | 7 | MaxSubfileSize |
-| Object Record | 8 | SubFile |
-| Post-Object Descriptor | 9 | ConfirmedObjectDataSize |
+| Name                   | Section | Typical Values          |
+|:---------              | -------:|:------------            |
+| Envelope               |       1 | Destination, DateSent   |
+| Application            |       2 | Subject, ObjectName     |
+| Digital News Photo     |       3 | PictureNumber, ICCInputColourProfile |
+| Pre-Object Descriptor  |       7 | MaxSubfileSize          |
+| Object Record          |       8 | SubFile                 |
+| Post-Object Descriptor |       9 | ConfirmedObjectDataSize |
+
+I don't know why there are no sections 5 or 6.
 
 ```bash
 $ exiv2 -M'set Iptc.Envelope.Destination Camberley Print Room' Stonehenge.jpg 
@@ -1478,15 +1388,83 @@ Iptc.Envelope.Destination                    String     20  Camberley Print Room
 Iptc.Application2.Subject                    String     12  Robin's Book
 ```
 
+The Exiv2 support for IPTC is documented here: [https://exiv2.org/iptc.html](https://exiv2.org/iptc.html)
+
+The IPTC data in a JPEG is stored in the APP13 PhotoShop segment, as we see here:
+
+```bash
+962 rmills@rmillsmbp:~/temp $ exiv2 -pR Stonehenge.jpg 
+STRUCTURE OF JPEG FILE: Stonehenge.jpg
+ address | marker       |  length | data
+       0 | 0xffd8 SOI  
+       2 | 0xffe1 APP1  |    2902 | http://ns.adobe.com/xap/1.0/.<?x
+    2906 | 0xffed APP13 |      98 | Photoshop 3.0.8BIM.......*.....C
+  Record | DataSet | Name                     | Length | Data
+       1 |       5 | Destination              |     20 | Camberley Print Room
+       2 |      12 | Subject                  |     12 | Robin's Book
+    3006 | 0xffe2 APP2  |    4094 | MPF.II*...............0100.....
+  STRUCTURE OF TIFF FILE (II): MemIo
+   address |    tag                              |      type |    count |    offset | value
+        10 | 0xb000 MPFVersion                   | UNDEFINED |        4 |           | 0100
+        22 | 0xb001 MPFNumberOfImages            |      LONG |        1 |           | 3
+        34 | 0xb002 MPFImageList                 | UNDEFINED |       48 |        52 | .....N_............@.....G^.... ...
+  END MemIo
+    7102 | 0xffdb DQT   |     132 
+    7236 | 0xffc0 SOF0  |      17 
+    7255 | 0xffc4 DHT   |     418 
+    7675 | 0xffda SOS  
+963 rmills@rmillsmbp:~/temp $ 
+```
+
+I don't know why Exiv2 does not provide support for sections 3, 7, 8 or 9.  
+
 ### IPTC Character Set Encoding
 
 To be written.
 
-##4.4 Convertors
+[TOC](#TOC)
+<div id="4-4">
+##4.4 Metadata Convertors
 
-Exiv2 has code to convert data between different standards.  Generally when you update Exif metadata, equivalent modifications will be performed on the IPTC and XMP metadata.  I can't explain why this code was added to Exiv2 and, while it may be convenient and invisible in its operation, it also has undesirable side effects.
+Exiv2 has code to convert data between different Metdata standards.  Generally when you update Exif metadata, equivalent modifications will be performed on the IPTC and XMP metadata.  I can't explain why this code was added to Exiv2 and, while it may be convenient and invisible in its operation, it also has undesirable side effects.
 
 If Exiv2 is ever rewritten, the decision to keep this capability should be carefully reviewed.  I think it would be better to not have this at all and leave library users to provide this in their application code.
+
+
+[TOC](#TOC)
+<div id="3">
+# 3 MakerNotes
+
+https://exiv2.org/makernote.html
+
+MakerNotes are usually written as an IFD, however most manufacturers have a few bytes the precede the IFD.  I suspect this is to store version information.  The code in tvisitor.cpp to handle the makernotes is:
+
+```cpp
+void IFD::visitMakerNote(Visitor& visitor,DataBuf& buf,uint16_t count,uint32_t offset)
+{
+    if ( image_.maker_ == kNikon ) {
+        // Nikon MakerNote is embeded tiff `II*_....` 10 bytes into the data!
+        size_t punt = buf.strequals("Nikon") ? 10
+                    : 0
+                    ;
+        Io     io(io_,offset+punt,count-punt);
+        TiffImage makerNote(io,image_.maker_);
+        makerNote.visit(visitor,makerDict());
+    } else if ( image_.maker_ == kAgfa && buf.strequals("ABC") ) {
+        // Agfa  MakerNote is an IFD `ABC_II#E...`  6 bytes into the data!
+        ImageEndianSaver save(image_,keLittle);
+        IFD makerNote(image_,offset+6,false);
+        makerNote.visit(visitor,makerDict());
+    } else {
+        bool   bNext = maker()  != kSony;                                        // Sony no trailing next
+        size_t punt  = maker()  == kSony && buf.strequals("SONY DSC ") ? 12 : 0; // Sony 12 byte punt
+        IFD makerNote(image_,offset+punt,bNext);
+        makerNote.visit(visitor,makerDict());
+    }
+} // visitMakerNote
+```
+
+I will write more about this subject later.
 
 [TOC](#TOC)
 <div id="5">
