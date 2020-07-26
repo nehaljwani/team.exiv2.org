@@ -31,9 +31,9 @@ _And our cat Lizzie._
 |:--                                                    | --:|:--                                    | --:|:--                                      | --:|
 | [1. Image File Formats](#1)                           |  9 | [TIFF and BigTiff](#TIFF)             | 10 | [13. Project Management](#13)           | 77 |
 | [2. Metadata Standards](#2)                           | 32 | [JPEG and EXV](#JPEG)                 | 12 | [13.1 C++ Code](#13-1)                  | 78 |
-| [2.1 Tiff and Exif metadata](#2-1)                    | 35 | [PNG Portable Network Graphics](#PNG) | 17 | [13.2 Build](#13-2)                     | 79 |
-| [2.2 XMP](#2-2)                                       | 36 | [JP2 Jpeg 2000](#JP2)                 | 18 | [13.3 Security](#13-3)                  | 80 |
-| [2.3 IPTC](#2-3)                                      | 37 | [CRW Canon Raw](#CRW)                 | 19 | [13.4 Documentation](#13-4)             | 80 |
+| [2.1 Exif Metadata](#Exif)                            | 35 | [PNG Portable Network Graphics](#PNG) | 17 | [13.2 Build](#13-2)                     | 79 |
+| [2.2 XMP Metadata](#XMP)                                       | 36 | [JP2 Jpeg 2000](#JP2)                 | 18 | [13.3 Security](#13-3)                  | 80 |
+| [2.3 IPTC Metadata](#IPTC)                                     | 37 | [CRW Canon Raw](#CRW)                 | 19 | [13.4 Documentation](#13-4)             | 80 |
 | [5. Lens Recognition](#5)                             | 38 | [ICC Profile](#ICC)                   | 20 | [13.5 Testing](#13-5)                   | 80 |
 | [6. Sample Applications](#6)                          | 39 | [ISOBMFF, CR3, HEIF, AVI](#ISOBMFF)   | 21 | [13.6 Sample programs](#13-6)           | 80 |
 | [7. I/O in Exiv2](#7)                                 | 41 | [WebP Web Photograph ](#WEBP)         | 22 | [13.7 User Support](#13-7)              | 80 |
@@ -1008,7 +1008,7 @@ Exif is the most important of the metadata containers.  However others exist and
 | ImageMagick/PNG | Portable Network Graphics | Not implemented in Exiv2 |
 
 [TOC](#TOC)
-<div id="2-1">
+<div id="Exif">
 ## 2.1 Exif Metadata
 
 Exif is the largest and most commonly used metadata standard.  The standard is defined by JEITA which is the Japanese Association of Camera Manufacturers.  Exif metadata is embedded in almost all images captured by cameras, phones and other "smart" devices.  Exif has tags for for Maker, Model, Aperture and many other settings.  Exiv2 supports the Exif 2.2 Standard.  Exiv2 knows the definition of about 6000 tags.  Exif however is not extensible.  Over the years, features such as GPS, Lens and Time Zone have been added.
@@ -1139,7 +1139,7 @@ GPSDateStamp -> 2015-07-16 00:00:00 (dat     ImageUniqueID -> "090caaf..."
 Data's similar.  The order is different.  Good news is that the commands _**$ exiv2 -pe ~/Stonehenge.jpg**_ and __*$ exiv2 -pe ~/Stonehenge.tif*__ produce similar data in the same order.  We'd hope so as both commands are reading the same embedded Exif metadata.  The way in which the Exif is embedded in Tiff and JPG is different, however the Exif metadata is effectively the same.
 
 [TOC](#TOC)
-<div id="2-2">
+<div id="XMP">
 ##2.2 XMP Metadata
 
 XMP is an Adobe initiative to provide a comprensive and eXtendable Metadata frame to a wide range of documents.
@@ -1259,7 +1259,13 @@ I find the structure easier to understand in JSON, which can be generated with t
 }
 ```
 
-You can create this XMP structure using the Exiv2 command-line program as follows:
+You create XMP metadata with the syntax:
+
+```bash
+$ exiv2 -M'set Xmp.namespace.Key value' path
+```
+
+The Adobe XMPsdk isn't easy to understand. I honestly have no idea how it works.  Exiv2 however enables you to insert, modify and delete simple values, Seq and Struct objects and Bags.  You can create this XMP structure about using the Exiv2 command-line program as follows:
 
 **Step 1 Get an image and delete all XMP metadata:**
 
@@ -1310,7 +1316,7 @@ $ exiv2 -pX Stonehenge.jpg | xmllint -pretty 1 -
 
 ```bash
 $ exiv2 -M'set Xmp.mwg-rs.Regions XmpText type=Struct' \
-        -M'set Xmp.mwg-rs.Regions/mwg-rs:AppliedToDimensions XmpText type=Struct' 
+        -M'set Xmp.mwg-rs.Regions/mwg-rs:AppliedToDimensions XmpText type=Struct' \
         -M'set Xmp.mwg-rs.Regions/mwg-rs:AppliedToDimensions/stDim:w 912' Stonehenge.jpg
 $ exiv2 -pX Stonehenge.jpg | xmllint -pretty 1 -
 <?xml version="1.0"?>
@@ -1360,10 +1366,10 @@ $ exiv2 -pX Stonehenge.jpg | xmllint -pretty 1 -
 ```
 
 [TOC](#TOC)
-<div id="2-3">
-##2.3 IPTC Metadata
+<div id="IPTC">
+##2.3 IPTC/IIM Metadata
 
-As is common, there are competing and overlapping standards for metadata that reflect the interests of their champions.  So, Exif is for Cameras, XMP primarily for Application Programs, and IPTC is for the Press Industry.  Being a software engineer, I know very little about how people actually use metadata.  I belive IPTC preserves copyright and other high value resources as files move along the work-flow from the origin to a magazine or newspaper.
+As is common in standards, there are competing and overlapping standards for metadata that reflect the interests of their champions.  So, Exif is for Cameras, XMP primarily for Application Programs, and IPTC is for the Press Industry.  Being a software engineer, I know very little about how people actually use metadata.  I belive IPTC preserves copyright and other high value resources as files move along the work-flow from the origin to a magazine or newspaper.
 
 The Metadata Working Group defines the standards: [https://en.wikipedia.org/wiki/Metadata_Working_Group](https://en.wikipedia.org/wiki/Metadata_Working_Group)
 
@@ -1424,20 +1430,19 @@ To be written.
 
 [TOC](#TOC)
 <div id="4-4">
-##4.4 Metadata Convertors
+##2.4 Metadata Convertors
 
 Exiv2 has code to convert data between different Metdata standards.  Generally when you update Exif metadata, equivalent modifications will be performed on the IPTC and XMP metadata.  I can't explain why this code was added to Exiv2 and, while it may be convenient and invisible in its operation, it also has undesirable side effects.
 
 If Exiv2 is ever rewritten, the decision to keep this capability should be carefully reviewed.  I think it would be better to not have this at all and leave library users to provide this in their application code.
 
-
 [TOC](#TOC)
 <div id="3">
-# 3 MakerNotes
+# 2.5 MakerNotes
 
-https://exiv2.org/makernote.html
+[https://exiv2.org/makernote.html](https://exiv2.org/makernote.html)
 
-MakerNotes are usually written as an IFD, however most manufacturers have a few bytes the precede the IFD.  I suspect this is to store version information.  The code in tvisitor.cpp to handle the makernotes is:
+MakerNotes are usually written as an IFD, however most manufacturers have extra bytes that precede the IFD.  I suspect the extra bytes arex version information.  The code in tvisitor.cpp to handle the makernotes is:
 
 ```cpp
 void IFD::visitMakerNote(Visitor& visitor,DataBuf& buf,uint16_t count,uint32_t offset)
@@ -2141,7 +2146,8 @@ The code in _**tvisitor.cpp**_ implements the visitor pattern and three visitors
 | $ ./tvisitor S path<br>$ ./tvisitor path | $ exiv2 -pS path | Print the structure of the image |
 | $ ./tvisitor R path   | $ exiv2 -pR path | Recursively print the structure of the image |
 | $ ./tvisitor X path   | $ exiv2 -pX path | Print the XMP/xml in the image |
-| $ ./tvisitor I path   | $ exiv2 -pI path | Print the ICC Profile in the image |
+| $ ./tvisitor C path   | $ exiv2 -pC path | Print the ICC Profile in the image |
+| $ ./tvisitor I path   | $ exiv2 -pi path | Print IPTC data |
 | $ ./tvisitor U path   | $ exiv2 -pa --undefined path | Show unknown tags |
 
 There's a deliberate bug in the code in tvisitor.cpp.  The class Tiff does not know how to recover the XMP/xml.  You the reader, can investigate a fix.  You will find the solution in the code in the Exiv2 library.

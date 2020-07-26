@@ -1,15 +1,12 @@
 #ifdef  _MSC_VER
 #define _CRT_SECURE_NO_WARNINGS
 #define  FSEEK_LONG  long
-#pragma warning(disable : 4996)
+#pragma  warning(disable : 4996)
 #include <stdio.h>
 #include <io.h>
 #include <fcntl.h>
 #include <windows.h>
 #define  fileno      _fileno
-#else
-#include <unistd.h>
-#define  FSEEK_LONG uint64_t
 #endif
 
 #include <iostream>
@@ -20,12 +17,19 @@
 #include <map>
 #include <cstdlib>
 #include <cassert>
+#include <algorithm>
 
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <string.h>
 #include <stdarg.h>
+
+#ifndef  _MSC_VER
+#include <unistd.h>
+#define  FSEEK_LONG uint64_t
+#endif
+
 
 typedef std::set<uint64_t> Visits;
 
@@ -97,6 +101,7 @@ enum error_e
 ,   kerFileDidNotOpen
 ,   kerUnknownFormat
 ,   kerAlreadyVisited
+,   kerInvalidMemoryAccess
 };
 
 void Error (error_e error, std::string msg,std::string m2="")
@@ -113,6 +118,7 @@ void Error (error_e error, std::string msg,std::string m2="")
         case   kerFileDidNotOpen         : std::cerr << "file did not open"        ; break;
         case   kerUnknownFormat          : std::cerr << "unknown format"           ; break;
         case   kerAlreadyVisited         : std::cerr << "already visited"          ; break;
+        case   kerInvalidMemoryAccess    : std::cerr << "invalid memory access"    ; break;
         default                          : std::cerr << "unknown error"            ; break;
     }
     if ( msg.size() ) std::cerr << " " << msg ;
@@ -221,6 +227,12 @@ uint32_t byteSwap(uint32_t value,bool bSwap)
     return (uint32_t) byteSwap((uint64_t)value,bSwap,4);
 }
 
+uint8_t  getByte(const DataBuf& buf,size_t offset)
+{
+    if ( offset > buf.size_ ) Error(kerInvalidMemoryAccess);
+    return (uint8_t) buf.pData_[offset];
+}
+
 uint16_t getShort(const byte b[],size_t offset,endian_e endian)
 {
     bool bSwap = endian != ::platformEndian();
@@ -233,6 +245,8 @@ uint32_t getLong(const byte b[],size_t offset,endian_e endian)
 }
 uint16_t getShort(const DataBuf& buf,size_t offset,endian_e endian)
 {
+    if ( offset+1 > buf.size_ ) Error(kerInvalidMemoryAccess);
+
     uint16_t v;
     char*    p = (char*) &v;
     p[0] = buf.pData_[offset+0];
@@ -243,6 +257,8 @@ uint16_t getShort(const DataBuf& buf,size_t offset,endian_e endian)
 }
 uint32_t getLong(const DataBuf& buf,size_t offset,endian_e endian)
 {
+    if ( offset+3 > buf.size_ ) Error(kerInvalidMemoryAccess);
+
     uint32_t v;
     char*    p = (char*) &v;
     p[0] = buf.pData_[offset+0];
@@ -254,6 +270,8 @@ uint32_t getLong(const DataBuf& buf,size_t offset,endian_e endian)
 }
 uint64_t getLong8(const DataBuf& buf,size_t offset,endian_e endian)
 {
+    if ( offset+7 > buf.size_ ) Error(kerInvalidMemoryAccess);
+
     uint64_t v;
     byte*    p = reinterpret_cast<byte *>(&v);
     p[0] = buf.pData_[offset+0];
@@ -568,28 +586,33 @@ enum ktSpecial
 ,   ktGroup     = 0xffff
 };
 
+std::map<uint16_t,TagDict> iptcDicts;
+TagDict iptc0 ;
+TagDict iptcEnvelope;
+TagDict iptcApplication;
+
 bool tagKnown(uint16_t tag,const TagDict& tagDict)
 {
     return tagDict.find(tag) != tagDict.end();
 }
 
-std::string groupName(const TagDict& tagDict)
+std::string groupName(const TagDict& tagDict,std::string family="Exif" )
 {
     std::string group = tagKnown(ktGroup,tagDict)
                       ? tagDict.find(ktGroup)->second
                       : "Unknown"
                       ;
-    return "Exif." + group ;
+    return family+ "." + group ;
 }
 
-std::string tagName(uint16_t tag,const TagDict& tagDict,const size_t max=0)
+std::string tagName(uint16_t tag,const TagDict& tagDict,const size_t max=0,std::string family="Exif")
 {
     std::string name = tagKnown(tag,tagDict)
                      ? tagDict.find(tag)->second
                      : stringFormat("%#x",tag)
                      ;
 
-    name =  groupName(tagDict) + "." + name;
+    name =  groupName(tagDict,family) + "." + name;
     if ( max && name.size() > max ){
         name = name.substr(0,max-2)+"..";
     }
@@ -647,7 +670,7 @@ FILE* fmemopen(void* buf, size_t size, const char* mode)
     l = GetTempPath(MAX_PATH, temppath);
     if (!l || l >= MAX_PATH)
         return 0;
-    if (!GetTempFileName(temppath, "tvisitor", 0, tempnam))
+    if (!GetTempFileName(temppath, "solvtmp", 0, tempnam))
         return 0;
     fh = CreateFile(tempnam, DELETE | GENERIC_READ | GENERIC_WRITE, 0,
         NULL, CREATE_ALWAYS,
@@ -718,12 +741,7 @@ public:
     int      eof()                                       { return feof(f_) ; }
     uint64_t tell()                                      { return ftell(f_)-start_ ; }
     void     seek(int64_t offset,seek_e whence=ksStart)  { fseek(f_,(FSEEK_LONG)(offset+start_),whence) ; }
-    uint64_t size()                                      {
-        if ( size_ ) return size_ ;
-        struct stat st ;
-        fstat(::fileno(f_),&st) ;
-        return st.st_size-start_ ;
-    }
+    uint64_t size()                                      { if ( size_ ) return size_ ; struct stat st ; fstat(::fileno(f_),&st) ; return st.st_size-start_ ; }
     bool     good()                                      { return f_ ? true : false ; }
     void     close()
     {
@@ -739,8 +757,8 @@ public:
 
     uint32_t getLong(endian_e endian)
     {
-        byte buf[4];
-        read(buf,4);
+        DataBuf buf(4);
+        read   (buf);
         return ::getLong(buf,0,endian);
     }
     float getFloat(endian_e endian)
@@ -795,6 +813,8 @@ typedef uint32_t PSopt_e;
 #define kpsXMP       4
 #define kpsUnknown   8
 #define kpsIcc      16
+#define kpsIptc     32
+
 
 // 1.  declare types
 class   Image; // forward
@@ -829,12 +849,13 @@ public:
     virtual void visitExif    (Io& io)                               = 0 ;
     virtual void visitChunk   (Io& io,Image& image,uint64_t address,char* chunk,uint32_t length,uint32_t checksum) = 0;
     virtual void visitBox     (Io& io,Image& image,uint64_t address,uint32_t box,uint32_t length) = 0 ;
-    
+
     // optional methods
     virtual void visitXMP     (DataBuf& /* xmp */ ) { return ; }
     virtual void visitICC     (DataBuf& /* icc */ ) { return ; }
     virtual void visitICCTag  (const byte* sig,uint32_t offset,uint32_t length) { return; }
- 
+    virtual void visitIptc    (Io& io,Image& image,uint64_t address,uint32_t length) { return ; }
+
     PSopt_e       option() { return option_ ; }
     std::ostream& out()    { return out_    ; }
 private:
@@ -1135,7 +1156,7 @@ public:
     JpegImage(Io& io,size_t start,size_t count)
     : Image(Io(io,start,count))
     { init(); }
-    
+
     virtual void accept(class Visitor& v);
     bool valid();
 
@@ -1224,7 +1245,7 @@ public:
                 ||  name == kJp2Box_ipco
                 ;
     }
-                          
+
     void init()
     {
         endian_ = keBig ;
@@ -1242,7 +1263,7 @@ public:
         uuids_[kJp2UuidCan1] = "can1" ;
         uuids_[kJp2UuidCan2] = "can2" ;
     }
-    
+
 private:
     std::map<std::string,std::string> uuids_;
 
@@ -1378,6 +1399,7 @@ public:
                          , uint16_t         tag, type_e       type,uint64_t count, uint64_t offset
                          , DataBuf&         buf,const TagDict& tagDict);
     void visitICCTag(const byte* tag,uint32_t offset,uint32_t length);
+    void visitIptc  (Io& io,Image& image,uint64_t address,uint32_t length);
 
     void visitEnd(Image& image)
     {
@@ -1577,7 +1599,7 @@ bool TiffImage::valid()
 {
     if ( !valid_ ) {
         IoSave restore(io(),0);
-        
+
         // read header
         DataBuf  header(16);
         io_.read(header);
@@ -1687,9 +1709,9 @@ bool Jp2Image::valid()
         uint32_t   box    ;
         io().getLong(endian_); // length
         io().read(&box,4) ;    // box
-        
+
         valid_ = boxName(box) == kJp2Box_jP ;
-        
+
         if ( boxName(box) == kJp2Box_ftyp ) {
             io().read(&box,4);
             if ( boxName(box) == "crx " ) {
@@ -1709,7 +1731,7 @@ bool Jp2Image::valid()
 void Jp2Image::accept(class Visitor& v)
 {
     if ( !valid() ) return ;
-    
+
     // search for MM_*
     if ( format_ == "HEIC" ) {
         v.visitBegin(*this);
@@ -1742,13 +1764,13 @@ void Jp2Image::accept(class Visitor& v)
             uint32_t  length  = io().getLong(endian_);
             uint32_t  box     ;
             io().read(&box,4) ;
-            
+
             if ( length > io().size() ) {
                 // Error(kerCorruptedMetadata);
             }
-            
+
             v.visitBox(io(),*this,address,box,length); // tell the visitor
-            
+
             // recursion if superbox
             if ( superBox(box) ) {
                 uint64_t  subA = io().tell() ;
@@ -1996,6 +2018,10 @@ void JpegImage::accept(Visitor& visitor)
                 uint16_t start = 2+14 ; // "\mark\length\ICC_PROFILE\0\C\Z" = \C: 1 byte chunk. \Z: 1 byte chunks.
                 ICC.read(io_,address+2+start,length - start); // read the XMP from the stream
             }
+            if ( signature.find("Photoshop 3.0") == 0 ) {
+                uint16_t start = 2+18 ; // "\mark\length\Photoshop 3.0\08BIM".
+                visitor.visitIptc(io(),*this,address+start,length-start);
+            }
         }
 
         // Jump past the segment
@@ -2033,6 +2059,35 @@ void ReportVisitor::visitChunk(Io& io,Image& image,uint64_t address
     }
 }
 
+void ReportVisitor::visitIptc(Io& io,Image& image,uint64_t address,uint32_t length)
+{
+    if ( option() & (kpsRecursive|kpsIptc) ) {
+        indent_++;
+        IoSave restore(io,address);
+        DataBuf buff(length);
+        io.read(buff);
+        out() << indent() << "  Record | DataSet | Name                     | Length | Data" << std::endl;
+        uint32_t i  = 0 ;
+        uint32_t bs = 5 ; // blocksize
+        while (i+bs < length && getByte  (buff,i) != 0x1c ) i++; // find first 0x1c (== escape)
+        while (i+bs < length && getByte  (buff,i) == 0x1c ) {    // ERDlen = byte, byte, byte, short data
+            uint16_t record   = ::getByte (buff,i+1);
+            uint16_t dataset  = ::getByte (buff,i+2);
+            uint16_t len      = ::getShort(buff,i+3,keBig);
+
+            TagDict& iptcDict = iptcDicts.find(record) != iptcDicts.end() ? iptcDicts[record] : iptc0;
+            std::string name  = tagName(dataset,iptcDict,30,"Iptc");
+
+            out() << indent() << stringFormat("  %6d | %7d | %-30s | %6d | ", record, dataset,name.c_str(),len)
+                  << chop(::binaryToString(buff.pData_,i+5,len),60) << std::endl;
+
+            i += bs + len;
+        }
+        indent_--;
+    }
+}
+
+
 void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
                             ,uint32_t box,uint32_t length)
 {
@@ -2041,7 +2096,7 @@ void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
     DataBuf data(length);
     io.read(data);
     // std::cout << data.toUuidString() << std::endl;
-    
+
     std::string name = image.boxName (box);
     std::string uuid = name == "uuid" ? image.uuidName(data) : "";
     if ( name == "uuid" && !uuid.size() ) {
@@ -2083,10 +2138,11 @@ int main(int argc,const char* argv[])
             option  = arg.find("R") != std::string::npos ? kpsRecursive
                     : arg.find("X") != std::string::npos ? kpsXMP
                     : arg.find("S") != std::string::npos ? kpsBasic
-                    : arg.find("I") != std::string::npos ? kpsIcc
+                    : arg.find("C") != std::string::npos ? kpsIcc
                     : option
                     ;
             if ( arg.find("U") != std::string::npos ) option |= kpsUnknown;
+            if ( arg.find("I") != std::string::npos ) option |= kpsIptc   ;
         }
 
         ReportVisitor visitor(std::cout,option);
@@ -2109,7 +2165,7 @@ int main(int argc,const char* argv[])
         else if (  icc.valid() )  icc.accept(visitor);
         else    { Error(kerUnknownFormat,path); }
     } else {
-        std::cout << "usage: " << argv[0] << " [ { U | S | R | X} ] path" << std::endl;
+        std::cout << "usage: " << argv[0] << " [ { U | S | R | X | C | I } ] path" << std::endl;
         rc = 1;
     }
     return rc;
@@ -2331,6 +2387,7 @@ void init()
     crwDict   [ 0x300a ] = "ImageProps";
     crwDict   [ 0x300b ] = "ExifInformation";
 
+    // Fields
     makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcVersion"         ,kttAscii , 0, 4));
     makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcName"            ,kttAscii , 4,20));
     makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcBase"            ,kttAscii ,24,20));
@@ -2344,6 +2401,20 @@ void init()
     makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcFilterEffect"    ,kttUByte, 55, 1));
     makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcFilterEffect"    ,kttUByte, 56, 1));
     makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcToningSaturation",kttUByte, 57, 1));
+
+    // Iptc dicts
+    iptcEnvelope   [ktGroup] = "Envelope"      ;
+    iptcEnvelope   [      0] = "ModelVersion"  ;
+    iptcEnvelope   [      5] = "Destination"   ;
+    iptcEnvelope   [     90] = "CharacterSet"  ;
+
+    iptcApplication[ktGroup] = "Application"   ;
+    iptcApplication[      0] = "RecordVersion" ;
+    iptcApplication[     12] = "Subject"       ;
+    iptcApplication[    120] = "Caption"       ;
+
+    iptcDicts[1]             = iptcEnvelope;
+    iptcDicts[2]             = iptcApplication ;
 }
 
 // That's all Folks!
