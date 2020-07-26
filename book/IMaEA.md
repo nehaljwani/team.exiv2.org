@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 48px;color:#FF4646;font-family: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:36px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-07-25</h3>
+<h3 align=center style="font-size:36px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-07-26</h3>
 
 <div id="dedication">
 ## _Dedication and Acknowledgment_
@@ -32,10 +32,10 @@ _And our cat Lizzie._
 | [1. Image File Formats](#1)                           |  9 | [TIFF and BigTiff](#TIFF)             | 10 | [13. Project Management](#13)           | 77 |
 | [2. Metadata Standards](#2)                           | 32 | [JPEG and EXV](#JPEG)                 | 12 | [13.1 C++ Code](#13-1)                  | 78 |
 | [2.1 Exif Metadata](#Exif)                            | 35 | [PNG Portable Network Graphics](#PNG) | 17 | [13.2 Build](#13-2)                     | 79 |
-| [2.2 XMP Metadata](#XMP)                                       | 36 | [JP2 Jpeg 2000](#JP2)                 | 18 | [13.3 Security](#13-3)                  | 80 |
-| [2.3 IPTC Metadata](#IPTC)                                     | 37 | [CRW Canon Raw](#CRW)                 | 19 | [13.4 Documentation](#13-4)             | 80 |
-| [5. Lens Recognition](#5)                             | 38 | [ICC Profile](#ICC)                   | 20 | [13.5 Testing](#13-5)                   | 80 |
-| [6. Sample Applications](#6)                          | 39 | [ISOBMFF, CR3, HEIF, AVI](#ISOBMFF)   | 21 | [13.6 Sample programs](#13-6)           | 80 |
+| [2.2 XMP Metadata](#XMP)                              | 36 | [JP2 Jpeg 2000](#JP2)                 | 18 | [13.3 Security](#13-3)                  | 80 |
+| [2.3 IPTC Metadata](#IPTC)                            | 37 | [CRW Canon Raw](#CRW)                 | 19 | [13.4 Documentation](#13-4)             | 80 |
+| [2.5 MakerNotes](#MakerNotes)                         | 38 | [ICC Profile](#ICC)                   | 20 | [13.5 Testing](#13-5)                   | 80 |
+| [5. Lens Recognition](#5)                             | 39 | [ISOBMFF, CR3, HEIF, AVI](#ISOBMFF)   | 21 | [13.6 Sample programs](#13-6)           | 80 |
 | [7. I/O in Exiv2](#7)                                 | 41 | [WebP Web Photograph ](#WEBP)         | 22 | [13.7 User Support](#13-7)              | 80 |
 | [8. Exiv2 Architecture](#8)                           | 41 | [MRW Minolta Raw](#MRW)               | 23 | [13.8 Bug Tracking](#13-8)              | 81 |
 | [8.1 Extracting metadata using dd](#8-1)              | 42 | [ORF Olympus Raw Format](#ORF)        | 24 | [13.9 Release Engineering](#13-9)       | 81 |
@@ -1386,43 +1386,56 @@ There is a website that documents IPTC here: [https://help.accusoft.com/ImageGea
 
 I don't know why there are no sections 5 or 6.
 
+The Exiv2 support for IPTC is documented here: [https://exiv2.org/iptc.html](https://exiv2.org/iptc.html).  I don't know why Exiv2 does not provide support for sections 3, 7, 8 or 9 as it can be easily added.
+
+The code in tvisitor.cpp supports the following:
+
+| Section | Record | Name |
+|:--      |     --:|:--   |
+| 1. Envelope      |    0<br>5<br>90   | RecordVersion<br>Destination<br>CharacterSet |
+| 2. Application   |    0<br>12<br>120 | ModelVersion<br>Subject<br>Caption |
+
+
+There is considerably more information about DataSets in the Exiv2 code-base.  I believe this defines the format data values such as short and long.  I don't recall anybody ever reporting an issue about IPTC, so my knowledge of this part of the code is minimal.  In the discussion about MakerNotes, I added code to decode binary data in tvisitor.cpp as this is a very important topic to understand in the Exiv2 code-base.  I haven't studied the IPTC data to the same depth as I believe the tvisitor.cpp/IPTC support is sufficient to understand how IPTC data is stored and decoded.
+
 ```bash
+$ cp ~/Stonehenge.jpg .
 $ exiv2 -M'set Iptc.Envelope.Destination Camberley Print Room' Stonehenge.jpg 
 $ exiv2 -M"set Iptc.Application2.Subject Robin's Book" Stonehenge.jpg 
 $ exiv2 -pi Stonehenge.jpg 
+Iptc.Envelope.ModelVersion                   Short       1  4
+Iptc.Envelope.CharacterSet                   String      3  G
 Iptc.Envelope.Destination                    String     20  Camberley Print Room
+Iptc.Application2.RecordVersion              Short       1  4
+Iptc.Application2.Caption                    String     12  Classic View
 Iptc.Application2.Subject                    String     12  Robin's Book
 ```
-
-The Exiv2 support for IPTC is documented here: [https://exiv2.org/iptc.html](https://exiv2.org/iptc.html)
 
 The IPTC data in a JPEG is stored in the APP13 PhotoShop segment, as we see here:
 
 ```bash
-962 rmills@rmillsmbp:~/temp $ exiv2 -pR Stonehenge.jpg 
-STRUCTURE OF JPEG FILE: Stonehenge.jpg
- address | marker       |  length | data
+1121 rmills@rmillsmbp:~/gnu/exiv2/team/book/build $ ./tvisitor -pI Stonehenge.jpg 
+STRUCTURE OF JPEG FILE (II): Stonehenge.jpg
+ address | marker       |  length | signature
        0 | 0xffd8 SOI  
-       2 | 0xffe1 APP1  |    2902 | http://ns.adobe.com/xap/1.0/.<?x
-    2906 | 0xffed APP13 |      98 | Photoshop 3.0.8BIM.......*.....C
-  Record | DataSet | Name                     | Length | Data
-       1 |       5 | Destination              |     20 | Camberley Print Room
-       2 |      12 | Subject                  |     12 | Robin's Book
-    3006 | 0xffe2 APP2  |    4094 | MPF.II*...............0100.....
-  STRUCTURE OF TIFF FILE (II): MemIo
-   address |    tag                              |      type |    count |    offset | value
-        10 | 0xb000 MPFVersion                   | UNDEFINED |        4 |           | 0100
-        22 | 0xb001 MPFNumberOfImages            |      LONG |        1 |           | 3
-        34 | 0xb002 MPFImageList                 | UNDEFINED |       48 |        52 | .....N_............@.....G^.... ...
-  END MemIo
-    7102 | 0xffdb DQT   |     132 
-    7236 | 0xffc0 SOF0  |      17 
-    7255 | 0xffc4 DHT   |     418 
-    7675 | 0xffda SOS  
-963 rmills@rmillsmbp:~/temp $ 
+       2 | 0xffe1 APP1  |   15288 | Exif__II*_.___._..._.___.___..._.___.___
+   15292 | 0xffe1 APP1  |    2786 | http://ns.adobe.com/xap/1.0/_<?xpacket b
+   18080 | 0xffed APP13 |     138 | Photoshop 3.0_8BIM.._____Q..__._...Z_..%
+    Record | DataSet | Name                     | Length | Data
+         1 |       0 | Iptc.Envelope.ModelVersion     |      2 | _.
+         1 |      90 | Iptc.Envelope.CharacterSet     |      3 | .%G
+         1 |       5 | Iptc.Envelope.Destination      |     20 | Camberley Print Room
+         2 |       0 | Iptc.Application.RecordVersion |      2 | _.
+         2 |     120 | Iptc.Application.Caption       |     12 | Classic View
+         2 |      12 | Iptc.Application.Subject       |     12 | Robin's Book
+   18220 | 0xffe2 APP2  |    4094 | MPF_II*_.___.__.._.___0100..._.___.___..
+   22316 | 0xffdb DQT   |     132 | _.......................................
+   22450 | 0xffc0 SOF0  |      17 | ....p..!_........
+   22469 | 0xffc4 DHT   |     418 | __........________............_.........
+   22889 | 0xffda SOS   |      12 | .._...._?_..
+END: Stonehenge.jpg
+1122 rmills@rmillsmbp:~/gnu/exiv2/team/book/build $ 
 ```
-
-I don't know why Exiv2 does not provide support for sections 3, 7, 8 or 9.  
 
 ### IPTC Character Set Encoding
 
@@ -1437,12 +1450,12 @@ Exiv2 has code to convert data between different Metdata standards.  Generally w
 If Exiv2 is ever rewritten, the decision to keep this capability should be carefully reviewed.  I think it would be better to not have this at all and leave library users to provide this in their application code.
 
 [TOC](#TOC)
-<div id="3">
+<div id="MakerNotes">
 # 2.5 MakerNotes
 
 [https://exiv2.org/makernote.html](https://exiv2.org/makernote.html)
 
-MakerNotes are usually written as an IFD, however most manufacturers have extra bytes that precede the IFD.  I suspect the extra bytes arex version information.  The code in tvisitor.cpp to handle the makernotes is:
+MakerNotes are usually written as an IFD, however most manufacturers have extra bytes that precede the IFD.  I suspect the extra bytes are version information.  The code in tvisitor.cpp to handle the makernotes is:
 
 ```cpp
 void IFD::visitMakerNote(Visitor& visitor,DataBuf& buf,uint16_t count,uint32_t offset)
@@ -1475,39 +1488,7 @@ I will write more about this subject later.
 <div id="5">
 # 5 Lens Recognition
 
-[TOC](#TOC)
-<div id="6">
-# 6 Sample Applications
-
-Exiv2 has sample applications which have their own documentation: [README-SAMPLES.md](README-SAMPLES.html).  In Exiv2 v0.27.3, there are 17 samples applications and 19 test programs.  The test programs are intended for use by the test suite and are not installed on the user's computer.
-
-The following programs are built and installed in /usr/local/bin.
-
-| Name | Purpose |
-|:---  |:---     |
-| _**addmoddel**_   | Demonstrates Exiv2 library APIs to add, modify or delete metadata          |
-| _**exifcomment**_ | Set Exif.Photo.UserComment in an image                                     |
-| _**exifdata**_    | Prints _**Exif**_ metadata in different formats in an image                |
-| _**exifprint**_   | Print _**Exif**_ metadata in images<br>Miscelleous other features          |
-| _**exifvalue**_   | Prints the value of a single _**Exif**_ tag in a file                      |
-| _**exiv2**_       | Command line utility to read, write, delete and modify Exif, IPTC, XMP and ICC image metadata.<br>This is the primary test tool used by Team Exiv2 and can exercise almost all code in the library.  Due to the extensive capability of this utility, the APIs used are usually less obvious for casual code inspection. | 
-| _**exiv2json**_   | Extracts data from image in JSON format.<br>This program also contains a parser to recursively parse Xmp metadata into vectors and objects. | 
-| _**geotag**_      | Reads GPX data and updates images with GPS Tags                            |
-| _**iptceasy**_    | Demonstrates read, set or modify IPTC metadata                             |
-| _**iptcprint**_   | Demonstrates Exiv2 library APIs to print Iptc data                         |
-| _**metacopy**_    | Demonstrates copying metadata from one image to another                    |
-| _**mrwthumb**_    | Sample program to extract a Minolta thumbnail from the makernote           |
-| _**taglist**_     | Print a simple comma separated list of tags defined in Exiv2               |
-| _**xmpdump**_     | Sample program to dump the XMP packet of an image                          |
-| _**xmpparse**_    | Read an XMP packet from a file, parse it and print all (known) properties. |
-| _**xmpprint**_    | Read an XMP from a file, parse it and print all (known) properties..       |
-| _**xmpsample**_   | Demonstrates Exiv2 library high level XMP classes                          |
-
-Most of the programs are about 100 lines of C++ and do simple tasks to demonstrate how to use the library API.  Three of the programs are substantial. They are: _**exiv2**_, _**geotag**_ and _**exiv2json**_
-
-The Exiv2 command-line program _**exiv2**_ enables users to manipulate metadata in images using most of the features of the library.  Being a general utility, it has about 4000 lines of code. The length of the program proves the point that it is full featured, however the quantity of code rather obscures the use of the library APIs.
-
-Exiv2 has always resisted the temptation to provide a GUI version of the program as that would involve considerable cross-platform development and user interface skills.  As Andreas Huggel summarised: _Exiv2 does depth, not breadth_.  Providing a GUI would lead the project away from metadata into the world of the _User Experience_.
+To be written.
 
 [TOC](#TOC)
 <div id="7">
@@ -1632,7 +1613,7 @@ You may be interested to discover that option _**-pS**_ which arrived with Exiv2
 [TOC](#TOC)
 
 <div id="8-2">
-### 8.2 Tag Names in Exiv2
+### 8.2 Tags in Exiv2
 
 The following test program is very useful for understanding tags:
 
@@ -1647,26 +1628,15 @@ Usage: taglist [--help]
 Print Exif tags, MakerNote tags, or Iptc datasets
 ```
 
-Let me explain what the tag names mean.
+How Tags are organised:
 
-Tag: Family.Group.TagName<br>
-Family: Exif | Iptc | Xmp<br>
-Group : There are 106 groups:
+| Element | Definition           | Example |
+|:--      |:--                   |:--      |
+| Tag     | Family.Group.TagName | Exif.Image.Model |
+| Family  | Exif or Iptc or  Xmp |  |
+| Group   | There are 106 groups<br>Further discussed below. | Minolta<br>MinoltaCs5D... |
+| TagName | Can be almost anything | TagName is a sub-part of a Group |
 
-```bash
-$ taglist Groups | wc
-     106     106    1016
-$ taglist Groups | grep Minolta
-Minolta
-MinoltaCs5D
-MinoltaCs7D
-MinoltaCsOld
-MinoltaCsNew
-SonyMinolta
-$
-```
-
-TagName: Can be almost anything and depends on the Group.
 
 ```bash
 $ taglist MinoltaCsNew
@@ -1728,7 +1698,7 @@ $ for group in $(taglist Groups); do for tag in $(taglist $group | cut -d, -f 1)
 $
 ```
 
-Now, let me explain why there are 106 groups.  There are about 10 camera manufacturers (Canon, Minolta, Nikon etc) and they use the tag Exif.Photo.MakerNote to store data in a myriad of different (and proprietary standards).
+Let's discuss why there are 106 groups.  There are about 10 camera manufacturers (Canon, Minolta, Nikon etc) and they use the tag Exif.Photo.MakerNote to store data in a myriad of different (and proprietary standards).
 
 ```bash
 $ exifvalue ~/Stonehenge.jpg Exif.Photo.MakerNote
@@ -1737,7 +1707,7 @@ $ exifvalue ~/Stonehenge.jpg Exif.Photo.MakerNote
 
 Exiv2 has code to read/modify/write makernotes.  All achieved by reverse engineering.  References on the web site. [https://exiv2.org/makernote.html](https://exiv2.org/makernote.html)
 
-The MakerNote usually isn't a simple structure.  The manufacturer usually has "sub-records" for Camera Settings (Cs), AutoFocus (Af) and so on.  Additionally, the format of the sub-records can evolve and change with time.  For example (as above)
+The MakerNote usually isn't a simple structure.  The manufacturer usually has "sub-records" for Camera Settings (Cs), AutoFocus (Af) and so on.  Additionally, the format of the sub-records can evolve and change with different models from the manufacturer.  For example (as above):
 
 ```bash
 $ taglist Groups | grep Minolta
@@ -1752,16 +1722,12 @@ $
 
 So, Minolta have 6 "sub-records".  Other manufacturers have more.  Let's say 10 manufacturers have an average of 10 "sub-records".  That's 100 groups.
 
-Now to address your concern about **Exif.MinoltaCsNew.ISOSpeed**.  It will throw an exception in Exiv2 v0.27.2.  Was it defined in an earlier version of Exiv2 such as 0.21?  I don't know.
-
-Your application code has to use exception handlers to catch these matters and determine what to do.  Without getting involved with your application code, I can't comment on your best approach to manage this.  There is a macro EXIV2\_TEST\_VERSION which enables you to have version specific code in your application.  This is discussed in more detail here:  [13-9](13-9)
-
 [TOC](#TOC)
 
 <div id="8-3">
 ### 8.3 TagInfo
 
-Another matter to appreciate is that tag definitions are not constant.  A tag is simply an uint16.  The Tiff Standard specifies about 50 tags.  Anybody creating an IFD can use the same tag number for different purposes.  The Tiff Specification says _"TIFF readers must safely skip over these fields if they do not understand or do not wish to use the information."_.  We do have to understand every tag.  In a tiff file, the pixels are located using the tag StripOffsets.  We report StripOffsets, however we don't read pixel data.
+Another matter to appreciate is that tag definitions are not constant.  A tag is simply an uint16\_t.  The Tiff Standard specifies about 50 tags.  Anybody creating an IFD can use the same tag number for different purposes.  The Tiff Specification says _"TIFF readers must safely skip over these fields if they do not understand or do not wish to use the information."_.  We do have to understand every tag.  In a tiff file, the pixels are located using the tag StripOffsets.  We report StripOffsets, however we don't read pixel data.
 
 If the user wishes to recover data such as the pixels, it is possible to do this with the utility dd.  This is discussed here: [8.1 Extracting metadata using dd](#8-1). 
 
@@ -3235,7 +3201,35 @@ This is discussed in detail here: [10 Testing](#10).
 <div id="13-6">
 ### 13.6 Sample programs
 
-This is discussed in detail here: [6 Sample Applications](#6).
+Exiv2 has sample applications which have their own documentation: [README-SAMPLES.md](README-SAMPLES.html).  In Exiv2 v0.27.3, there are 17 samples applications and 19 test programs.  The test programs are intended for use by the test suite and are not installed on the user's computer.
+
+The following programs are built and installed in /usr/local/bin.
+
+| Name | Purpose |
+|:---  |:---     |
+| _**addmoddel**_   | Demonstrates Exiv2 library APIs to add, modify or delete metadata          |
+| _**exifcomment**_ | Set Exif.Photo.UserComment in an image                                     |
+| _**exifdata**_    | Prints _**Exif**_ metadata in different formats in an image                |
+| _**exifprint**_   | Print _**Exif**_ metadata in images<br>Miscelleous other features          |
+| _**exifvalue**_   | Prints the value of a single _**Exif**_ tag in a file                      |
+| _**exiv2**_       | Command line utility to read, write, delete and modify Exif, IPTC, XMP and ICC image metadata.<br>This is the primary test tool used by Team Exiv2 and can exercise almost all code in the library.  Due to the extensive capability of this utility, the APIs used are usually less obvious for casual code inspection. | 
+| _**exiv2json**_   | Extracts data from image in JSON format.<br>This program also contains a parser to recursively parse Xmp metadata into vectors and objects. | 
+| _**geotag**_      | Reads GPX data and updates images with GPS Tags                            |
+| _**iptceasy**_    | Demonstrates read, set or modify IPTC metadata                             |
+| _**iptcprint**_   | Demonstrates Exiv2 library APIs to print Iptc data                         |
+| _**metacopy**_    | Demonstrates copying metadata from one image to another                    |
+| _**mrwthumb**_    | Sample program to extract a Minolta thumbnail from the makernote           |
+| _**taglist**_     | Print a simple comma separated list of tags defined in Exiv2               |
+| _**xmpdump**_     | Sample program to dump the XMP packet of an image                          |
+| _**xmpparse**_    | Read an XMP packet from a file, parse it and print all (known) properties. |
+| _**xmpprint**_    | Read an XMP from a file, parse it and print all (known) properties..       |
+| _**xmpsample**_   | Demonstrates Exiv2 library high level XMP classes                          |
+
+Most of the programs are about 100 lines of C++ and do simple tasks to demonstrate how to use the library API.  Three of the programs are substantial. They are: _**exiv2**_, _**geotag**_ and _**exiv2json**_
+
+The Exiv2 command-line program _**exiv2**_ enables users to manipulate metadata in images using most of the features of the library.  Being a general utility, it has about 4000 lines of code. The length of the program proves the point that it is full featured, however the quantity of code rather obscures the use of the library APIs.
+
+Exiv2 has always resisted the temptation to provide a GUI version of the program as that would involve considerable cross-platform development and user interface skills.  As Andreas Huggel summarised: _Exiv2 does depth, not breadth_.  Providing a GUI would lead the project away from metadata into the world of the _User Experience_.
 
 [TOC](#TOC)
 <div id="13-7">
