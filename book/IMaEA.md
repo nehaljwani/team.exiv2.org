@@ -3,9 +3,9 @@
 
 <h3 align=center style="font-size: 48px;color:#FF4646;font-family: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:36px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-07-26</h3>
+<h3 align=center style="font-size:36px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-07-27</h3>
 
-<div id="dedication">
+<div id="dedication"/>
 ## _Dedication and Acknowledgment_
 
 _I want to say <b>Thank You</b> to a few folks who have made this book possbile._
@@ -25,7 +25,7 @@ _And our cat Lizzie._
 [TOC](#TOC)  
 
 ## <center>TABLE of CONTENTS</center>
-<div id="TOC">
+<div id="TOC"/>
 
 | Section                                             | Page | Image Formats                       | Page | Project Management                    | Page | 
 |:--                                                    | --:|:--                                    | --:|:--                                      | --:|
@@ -57,7 +57,7 @@ _And our cat Lizzie._
 | [12. Security](#12)                                   | 75 | [Scope of Book](#scope)               |  7 | [14. Code discussed in this book](#14) | 130 |                                      
 | [12.2 How we deal with security issues](12-2)         | 80 | [Making this book](#making)           |  8 | [The Last Word](#finally)              | 131 |
 
-<div id="about">
+<div id="about"/>
 ## About this book
 
 This book is about **Image Metadata _and_ Exiv2 Architecture**.
@@ -70,7 +70,7 @@ At the moment, the book is _**work in progress**_ and expected to be finished by
 
 [TOC](#TOC)
 
-<div id="begin">
+<div id="begin"/>
 ### How did I get interested in this matter?
 
 I first became interested in metadata because of a trail conversation with Dennis Connor in 2008.  Dennis and I ran frequently together in Silicon Valley and Dennis was a Software Development Manager in a company that made GPS systems for Precision Agriculture.  I had a Garmin Forerunner 201 Watch.  We realised that we could extract the GPS data from the watch in GPX format, then merge the position into photos.  Today this is called "GeoTagging" and is supported by many applications.
@@ -91,7 +91,7 @@ I have never been employed to work on Metadata.  I was a Senior Computer Scienti
 
 [TOC](#TOC)
 
-<div id="2012">
+<div id="2012"/>
 ### 2012 - 2017
 
 By 2012, Andreas was loosing interest in Exiv2.  Like all folks, he has many matters which deserve his time.  A family, a business, biking and other pursuits.  From 2012 until 2017, I supported Exiv2 mostly alone.  I had lots of encouragement from Alan and other occasional contributors.  Neils did great work on lens recognition and compatibility with ExifTool.  Ben helped greatly with WebP support and managed the transition of the code from SVN to GitHub.  Phil _(of ExifTool fame)_ has always been very supportive and helpful.
@@ -105,7 +105,7 @@ I personally found working with the students to be enjoyable and interesting.  I
 I started working on Exiv2 to implement GeoTagging.  As the years have passed, I've explored most of the code.  I've added new capability such as support for ICC profiles, metadata-piping and file-debugging.  I've done lots of work on the build, test suite and documentation.  I've talked to users all over the world and closed several hundred issues and feature requests.  Over the years, I've met users in India, Singapore, Armenia, the USA and the UK.  I've attended 2 Open-Source Conferences. It's been an adventure and mostly rewarding.  It's remarkable how seldom users express appreciation.
 
 [TOC](#TOC)
-<div id="2017">
+<div id="2017"/>
 ### 2017 - 2020
 
 After v0.26 was released in 2017, Luis and Dan started making contributions.  They have made many important contributions in the areas of security, test and build.  In 2019, Kevin joined us.  He discovered and fixed some security issues.
@@ -115,7 +115,7 @@ The current release of Exiv2 is v0.27.3 and was released on 2020-06-30.  I hope 
 The Libre Graphics Meeting is scheduled to take place in May 2021 in Rennes, France.  I intend to conduct a workshop on **Image Metadata _and_ Exiv2 Architecture**.  This book is being written to be used in that presentation.
 
 [TOC](#TOC)
-<div id="current">
+<div id="current"/>
 ### Current Development Priorities
 
 In July 2017 we received our first security CVE.  Not a pleasant experience.  The security folks started hitting us with fuzzed files. These are files which violate format specifications and can cause the code to crash. We responded with v0.27 which will have regular "dot" releases to provide security fixes.  Managing frequent releases and user correspondence consumes lots of my time.
@@ -125,7 +125,7 @@ In parallel with "the dots", major work is being carried to prepare Exiv2 for th
 I'm delighted by the work done by Dan, Luis and Kevin to deal with the assault of the security people. I believe we are responding effectively to security issues. None-the-less, they have dominated the development of Exiv2 for at least two years and many ideas could not be pursued because security consumed our engineering resources.
 
 [TOC](#TOC)
-<div id="future">
+<div id="future"/>
 ### Future Development Projects
 
 The code is in good shape, our release process is solid and we have comprehensive user documentation.  As photography develops, there will be many new cameras and more image formats such as CR3, HEIF and BigTiff.   Exiv2 Video support is weak and was deprecated in v0.27.  It will be removed in 0.28.
@@ -143,7 +143,7 @@ In this way, new lens definitions can be written in M2Lscript without touching a
 I will be unable to work on both Exiv2 and M2Lscript simulateously.  When a new maintainer takes responsibility for Exiv2, I will retire.  M2Lscript will be my swansong technology project.
 
 [TOC](#TOC)
-<div id="scope">
+<div id="scope"/>
 ### Purpose and Scope of this book
 
 This book is my gift and legacy to Exiv2.  I hope Exiv2 will continue to exist long into the future.  This book is being written to document my discoveries about **Image Metadata _and_ Exiv2 Architecture**.  However, I want to avoid a _**cut'n'paste**_ of information already in the project documentation.  This book is an effort to collect my knowledge of this code into a single location.  Many topics in this book are discussed in more detail in the issue history stored in Redmine and GitHub.  I hope this book helps future maintainers to understand Exiv2, solve issues and develop the code for years to come.
@@ -153,7 +153,7 @@ I wish you a happy adventure in the world of Image Metadata.  If you'd like to d
 This book is copyright and licensed under GNU GPLv2. [https://www.gnu.org/licenses/old-licenses/gpl-2.0.html](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
 
 [TOC](#TOC)
-<div id="making">
+<div id="making"/>
 ### Making this book
 
 I've had a lot of fun making this book.  Most of the time was spent on the code, however getting the book into good shape for the web and print has been fun.  The graphics were drawn using OmniGraffle 6.6.2 on my MacBook Pro.
@@ -214,12 +214,12 @@ So, I decided that the Safari/PDF was the best PDF and I tweaked the PDF in thre
 Thank You for reading my book.  If you find errors, please let me know.  If you'd like to discuss any of the technology involved in Image Metadata, please contact me by opening an issue on GitHub. [https://github.com/exiv2/exiv2](https://github.com/exiv2/exiv2)
 
 [TOC](#TOC)
-<div id="1"">
+<div id="1"/>
 # 1 Image File Formats
 
 The following summaries of the file formats are provided to help you to understand both this book and the Exiv2 code.  The Standard Specifications should be consulted for more detail.
 
-I've made a summary of every file format as I think you'll find that useful.  There are an absurd number of Graphics File Formats.  I have a copy somewhere of the O'Reilly book.  I got it in 1996 and it is 1000+ pages.  Since then there have been many many more invented.  It's a software mess.  In the early days, many formats were local to a few users in a University and escaped to a wider audience.  However the never ending stream of new standards is horrible.  Canon have several different RAW formats such as CRW, CR2 and CR3.
+I've made a summary of every file format supported by Exiv2 and hope you find that useful.  There are an absurd number of Graphics File Formats.  I have a copy somewhere of the O'Reilly book.  I got it in 1996 and it has 1000+ pages.  Since then there have been many more invented.  It's a software mess.  In the early days, many formats were local to a few users in a University and escaped to a wider audience.  However the never ending stream of new standards is horrible.  Canon have several different RAW formats such as CRW, CR2 and CR3.
 
 A good model for an image is to think of it as a container.  It's like a directory on the disk.   The directory can hold files with different formats and the directory is recursive as it can contain a directory of more files.  Almost every graphics format since TIFF in 1992 is a container.
 
@@ -233,13 +233,20 @@ The good news however is that file formats come in families which are:
 | CIFF    | Canon Raw format.  Dave Coffin parse.c decodes CRW                                      | CRW |
 | ISOBMFF | Based on the .mp4 format                                           | MP4, CR3, AVI, HEIF, JP2 |
 | RIFF    | Google Promoted Format                                                                 | WEBP |
-| Legacy  | These legacy formats<br>usually have no metadata                                   | GIF, BMP |
-| IPTC    | Interpress Trade Consortium                                                            | Many |
-| ICC     | Internation Colour Consortium                                                          | Many |
-| XMP     | Adobe XMP is written in XML                                                    | XMP, sidecar | 
+| GIF     | Graphics Image Format                                                                   | GIF | 
+| BMP     | This format can contain an ICC profile.  It never has XMP, IPTC or Exif metadata        | BMP |
 | COS     | Adobe PDF Format.  This is a very flexible container                               | PDF, JDF |
 | EPS     | Adobe Encapsulated PostScript<br>The code in Exiv2 to deal with this is deprecated  | EPS, AI |
 | PS      | Adobe PostScript.  Beautiful graphics language.                                          | PS |
+
+The Metadata is defined by standards which also define how to embed the data in the image.
+
+| Stardard  | Description                                                      |
+|:--        |:---                                                              |
+| Exif      | EXchangeable Image Format.<br>This is encoded as a TIFF sub-file |
+| IPTC      | Interpress Trade Consortium                                      |
+| ICC       | Internation Colour Consortium<br>The ICC Profile is similar to TIFF<br>The ICC Profile is an ICC sub-file. |
+| XMP       | Adobe XMP is encoded as a XML sub-file                           | 
 
 I suspect the software mess is caused by the hardware engineers.  When hardware people start a new project, they copy the CAD files from the last project and proceed from there.  They don't worry about back-porting changes or compatibility.  They think firmware people are stupid and do a terrible job!  We have to live with this.
 
@@ -248,7 +255,7 @@ There is also the issue of patents.  It's unclear if it's legal to read an ISOBM
 Here is a useful WikiPedia site that summarises file formats: [https://en.wikipedia.org/wiki/Comparison\_of\_graphics\_file\_formats](https://en.wikipedia.org/wiki/Comparison_of_graphics_file_formats)
 
 [TOC](#TOC)
-<div id="TIFF">
+<div id="TIFF"/>
 ## Tagged Image File Format
 ![tiff](tiff.png)
 
@@ -345,7 +352,7 @@ I was a little surprised that Adobe have removed the MakerNote.
 
 I believe the "undefined" tags which are listed in the format: Exif.Image.0xc761 and defined in the specification.  C761.H is "Noise Profile" for which the mathematics are explained by Adobe!
 
-A curiosity about the DNG Standard is know when reading a DNG that those tags are valid.  Of course the DNG's Exif.Image.Software is "Adobe DNG Converter 12.3", however I believe most image editors would overwrite that when the file is modified.  Perhaps it's better to consider tags such as 0xc761 to be part of the "Core" Tiff Specification.
+A curiosity about the DNG Standard is how to know that these tags are valid when reading a DNG.  Of course the DNG's tag Exif.Image.Software is "Adobe DNG Converter 12.3", however I believe most image editors would overwrite that when the file is modified.  Perhaps it's better to consider tags such as 0xc761 to be part of the "Core" Tiff Specification.
 
 #### CR2 and NEF will require more investigation.
 
@@ -374,7 +381,7 @@ There are tags in Tiff such as _**ImageWidth**_ which cannot be modified without
 Exiv2 has a write method to determine how to rewrite TIFF.  I will have to conduct more research concerning this matter.
 
 [TOC](#TOC)
-<div id="JPEG">
+<div id="JPEG"/>
 ## JPEG and EXV Format
 ![jpeg](jpeg.png)<br>
 ![jpegs.png](jpegs.png)
@@ -551,7 +558,7 @@ This is documented by Adobe in the XMP Specification 2016+ and implemented in Ex
 Adobe have implemented transparency in JPEG by storing a PostScript clippath in the APP13 Photoshop 3.0 segment.  Exiv2 has no code to deal with this. There is an Exif tag ClipPath which Exiv2 does support.  I have encountered PhotoShop APP13 transparency.  I've never encountered Exif.Image.ClipPath.
 
 [TOC](#TOC)
-<div id="PNG">
+<div id="PNG"/>
 ## PNG Portable Network Graphics
 ![png](png.png)
 
@@ -635,7 +642,7 @@ void Visitor::visitChunk(Io& io,Image& image
 
 ### PNG ICC Profiles and XMP
 
-As PNG chunks have a 32 bit length field, they are a single chunk.  I believe the ICC profile is normally zlib compressed.   Read the read the code in Exiv2 for more information.  XMP is normally stored as a iTXt (uncompressed) or zTXt compressed block.  There is a uncompressed signature at the start of the chunk for easy identification.
+As PNG chunks have a 32 bit length field, they are a single chunk.  I believe the ICC profile is normally zlib compressed.   Read the code in Exiv2 for more information.  XMP is normally stored as a iTXt/uncompressed or zTXt/compressed block.  There is a uncompressed signature at the start of the chunk for easy identification.
 
 An ICC profile is optionally present in the iCCP chunk.
 
@@ -665,12 +672,12 @@ STRUCTURE OF PNG FILE: test/data/ReaganLargePng.png
 
 ### PNG and the Zlib compression library
 
-PNG usually compresses chunked data using Flate (lossless) compression.  For simplicity tvisitor.cpp does does not link zlib and therefore cannot decompress these chunks.  tvisitor.cpp is unable to verify that the checksums are correct.  Exiv2 is normally linked with zlib and can perform those tasks.  I recommend that you read the Exiv2 library code if you want to learn about using zlib and metadata.
+PNG usually compresses chunked data using Flate (lossless) compression.  For simplicity tvisitor.cpp does not link zlib and therefore cannot decompress these chunks.  tvisitor.cpp is unable to verify that the checksums are correct.  Exiv2 is normally linked with zlib to perform those tasks.  I recommend that you read the Exiv2 library code if you want to learn about using zlib and metadata.
 
 I'm very pleased to say that neither the Exiv2 or XMP metadata in the image book/png.png have been compressed and can be easily reported by tvisitor.cpp.  It's very satisfying to  use images from this book as test data for the code in this book.
 
 [TOC](#TOC)
-<div id="JP2">
+<div id="JP2"/>
 ## JP2 JPEG 2000
 ![jp2](jp2.png)
 
@@ -759,7 +766,7 @@ void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
 }
 ```
 
-Although the JP2 file is big endian, the embedded Exif metadata may be be little-endian encoded.  That's the case with test file Reagan.jp2.
+Although the JP2 file is big endian, the embedded Exif metadata may be little-endian encoded.  That's the case with test file Reagan.jp2.
 
 ```bash
 .../book/build $ ./tvisitor -pR ../test/data/Reagan.jp2 
@@ -831,7 +838,7 @@ As you can see, the 'colr' box is stored at 40+22 bytes into the file and has a 
 ```
 
 [TOC](#TOC)
-<div id="CRW">
+<div id="CRW"/>
 ## CRW Canon Raw Format
 
 ![crw](crw.png)
@@ -839,7 +846,7 @@ As you can see, the 'colr' box is stored at 40+22 bytes into the file and has a 
 The specification is here: [CIFFspecV1R04.pdf](https://web.archive.org/web/20081230095207/http://xyrion.org/ciff/CIFFspecV1R04.pdf)
 
 [TOC](#TOC)
-<div id="ICC">
+<div id="ICC"/>
 ## ICC Profile
 ![icc](icc.png)
 
@@ -854,7 +861,7 @@ The code which accompanies this book can inspect the contents of the ICC profile
 The specification is available here: [http://www.color.org/icc_specs2.xalter](http://www.color.org/icc_specs2.xalter).  I believe the current ICC Profile Specification is: ICC.2-2016-7.pdf
 
 [TOC](#TOC)
-<div id="ISOBMFF">
+<div id="ISOBMFF"/>
 ## ISOBMFF, CR3, HEIF, AVI
 
 I obtained the standard here: [https://mpeg.chiariglione.org/standards/mpeg-4/iso-base-media-file-format/text-isoiec-14496-12-5th-edition](https://mpeg.chiariglione.org/standards/mpeg-4/iso-base-media-file-format/text-isoiec-14496-12-5th-edition)
@@ -863,53 +870,53 @@ There has been a lot of discussion in Team Exiv2 concerning the legality of read
 
 
 [TOC](#TOC)
-<div id="WEBP">
+<div id="WEBP"/>
 ## WEBP Web Photograph
 ![webp](webp.png)
 
 [TOC](#TOC)
-<div id="MWR">
+<div id="MRW"/>
 ## MRW Minolta Raw Format
 
 To be written.
 
 [TOC](#TOC)
-<div id="ORF">
+<div id="ORF"/>
 ## ORF Olympus Raw Format
 
 To be written.
 
 [TOC](#TOC)
-<div id="PGF">
+<div id="PGF"/>
 ## PGF Progressive Graphics File
 
 To be written.
 
 [TOC](#TOC)
-<div id="1-16">
+<div id="1-16"/>
 ## PSD PhotoShop
 
 To be written.
 
-<div id="RAF">
+<div id="RAF"/>
 ## RAF Fujifilm RAW
 
 To be written.
 
 [TOC](#TOC)
-<div id="RW2">
+<div id="RW2"/>
 ## RW2 Panasonic RAW
 
 To be written.
 
 [TOC](#TOC)
-<div id="TGA">
+<div id="TGA"/>
 ## TGA Truevision Targa
 
 To be written.
 
 [TOC](#TOC)
-<div id="BMP">
+<div id="BMP"/>
 ## BMP Windows Bitmap
 
 ![bmp](bmp.png)
@@ -927,7 +934,7 @@ A BMP can be rendered with transparency.  The GDI has a method TransparentBlt() 
 Before moving on from BMP, I'd like to say something about the flexibility of the BMP format.  You can have different colours depths and the image can have indexed color.  In this format, a table of up to 256 colours can be defined and the value of a pixel is the index and not the colour itself.  It's interesting to see that Microsoft have been working with this for 40 years, occasionally upgrading, and have never broken backwards compatibility.  Everybody would benefit from camera manufacturers adopting a similar approach to file formats.
 
 [TOC](#TOC)
-<div id="GIF">
+<div id="GIF"/>
 ## GIF Graphics Image Format
 
 ![gif](gif.png)
@@ -994,7 +1001,7 @@ fbe0
 This is supported by Gif89a files and documented by Adobe in XMPSpecificationPart3.pdf on page 17 of the 2010 edition.  At present I don't have a sample GIF with embedded XMP.  I don't know if Exiv2 support GIF/XML.
 
 [TOC](#TOC)
-<div id="2">
+<div id="2"/>
 # 2 Metadata Standards
 
 Exif is the most important of the metadata containers.  However others exist and are supported by Exiv2:
@@ -1008,10 +1015,10 @@ Exif is the most important of the metadata containers.  However others exist and
 | ImageMagick/PNG | Portable Network Graphics | Not implemented in Exiv2 |
 
 [TOC](#TOC)
-<div id="Exif">
+<div id="Exif"/>
 ## 2.1 Exif Metadata
 
-Exif is the largest and most commonly used metadata standard.  The standard is defined by JEITA which is the Japanese Association of Camera Manufacturers.  Exif metadata is embedded in almost all images captured by cameras, phones and other "smart" devices.  Exif has tags for for Maker, Model, Aperture and many other settings.  Exiv2 supports the Exif 2.2 Standard.  Exiv2 knows the definition of about 6000 tags.  Exif however is not extensible.  Over the years, features such as GPS, Lens and Time Zone have been added.
+Exif is the largest and most commonly used metadata standard.  The standard is defined by JEITA which is the Japanese Association of Camera Manufacturers.  Exif metadata is embedded in almost all images captured by cameras, phones and other "smart" devices.  Exif has tags for Maker, Model, Aperture and many other settings.  Exiv2 supports the Exif 2.2 Standard.  Exiv2 knows the definition of about 6000 tags.  Exif however is not extensible.  Over the years, features such as GPS, Lens and Time Zone have been added.
 
 To enable the manufacturer to store both proprietary and non-standard data, the MakerNote Tag is defined.  Usually the Manufacturer will write a TIFF Encoded record into the MakerNote.  Exiv2 can reliably read and rewrite Manufacturer's MakerNotes.  The implementation of this in Exiv2 is outstanding work by Andreas Huggel.
 
@@ -1139,7 +1146,7 @@ GPSDateStamp -> 2015-07-16 00:00:00 (dat     ImageUniqueID -> "090caaf..."
 Data's similar.  The order is different.  Good news is that the commands _**$ exiv2 -pe ~/Stonehenge.jpg**_ and __*$ exiv2 -pe ~/Stonehenge.tif*__ produce similar data in the same order.  We'd hope so as both commands are reading the same embedded Exif metadata.  The way in which the Exif is embedded in Tiff and JPG is different, however the Exif metadata is effectively the same.
 
 [TOC](#TOC)
-<div id="XMP">
+<div id="XMP"/>
 ##2.2 XMP Metadata
 
 XMP is an Adobe initiative to provide a comprensive and eXtendable Metadata frame to a wide range of documents.
@@ -1366,7 +1373,7 @@ $ exiv2 -pX Stonehenge.jpg | xmllint -pretty 1 -
 ```
 
 [TOC](#TOC)
-<div id="IPTC">
+<div id="IPTC"/>
 ##2.3 IPTC/IIM Metadata
 
 As is common in standards, there are competing and overlapping standards for metadata that reflect the interests of their champions.  So, Exif is for Cameras, XMP primarily for Application Programs, and IPTC is for the Press Industry.  Being a software engineer, I know very little about how people actually use metadata.  I belive IPTC preserves copyright and other high value resources as files move along the work-flow from the origin to a magazine or newspaper.
@@ -1442,7 +1449,7 @@ END: Stonehenge.jpg
 To be written.
 
 [TOC](#TOC)
-<div id="4-4">
+<div id="4-4"/>
 ##2.4 Metadata Convertors
 
 Exiv2 has code to convert data between different Metdata standards.  Generally when you update Exif metadata, equivalent modifications will be performed on the IPTC and XMP metadata.  I can't explain why this code was added to Exiv2 and, while it may be convenient and invisible in its operation, it also has undesirable side effects.
@@ -1450,7 +1457,7 @@ Exiv2 has code to convert data between different Metdata standards.  Generally w
 If Exiv2 is ever rewritten, the decision to keep this capability should be carefully reviewed.  I think it would be better to not have this at all and leave library users to provide this in their application code.
 
 [TOC](#TOC)
-<div id="MakerNotes">
+<div id="MakerNotes"/>
 # 2.5 MakerNotes
 
 [https://exiv2.org/makernote.html](https://exiv2.org/makernote.html)
@@ -1485,13 +1492,13 @@ void IFD::visitMakerNote(Visitor& visitor,DataBuf& buf,uint16_t count,uint32_t o
 I will write more about this subject later.
 
 [TOC](#TOC)
-<div id="5">
+<div id="5"/>
 # 5 Lens Recognition
 
 To be written.
 
 [TOC](#TOC)
-<div id="7">
+<div id="7"/>
 # 7 I/O in Exiv2
 
 I/O in Exiv2 is achieved using the class BasicIo and derived classes which are:
@@ -1513,7 +1520,7 @@ You will find a simplified version of BasicIo in tvisitor.cpp in the code that a
 
 The constructor **Io(DataBuf&)** is used to create an in-memory I/O stream.  _**DataBuf**_ has a **read()** method to binary copy from a stream into memory.  As we will see, some subfiles are not contiguous in the image and "chunked" by the image format.  For example, JPEG is always chunked into segments of 64k or less.  When a subfile has been chunked it is convenient to copy bytes into a buffer from which we can create an Io source.
 
-Other metadata standards use a similar design.  XMP is embedded XML, an Icc Profile is a major block of technology.  Exiv2 knows how to extract, insert, delete and replace an Icc Profile.  It knows nothing about the contents of the Icc Profile.  With Xmp, Exiv2 uses Adobe's XMPsdk to enable the the Xmp data to be modified.
+Other metadata standards use a similar design.  XMP is embedded XML, an Icc Profile is a major block of technology.  Exiv2 knows how to extract, insert, delete and replace an Icc Profile.  It knows nothing about the contents of the Icc Profile.  With Xmp, Exiv2 uses Adobe's XMPsdk to enable the Xmp data to be modified.
 
 Exiv2 has an abstract RemoteIo object which can read/write on the internet.  For http, there is a basic implementation of the http protocol in src/http.cpp.  For production use, Exiv2 should be linked with libcurl.  The reason for providing a "no thrills" implementation of http was two fold.  Firstly, it enabled the project to proceed rapidly without learning the curl API.  Secondly, I wanted all versions of the exiv2 command-line to have http support as I thought it would be useful for testing as we could store video and other large files remotely.
 
@@ -1532,10 +1539,10 @@ The reason for using memory mapped files was for the convenience of converting o
 Exiv2 is very reliable at writing files which conform to standards.  Andreas has done a wonderful job to ensure that we never damage or corrupt a file.  I believe he uses a "double blind" technique to write the file in memory and verify it before updating the file on disk.  More research is required into this important subject.
 
 [TOC](#TOC)
-<div id="8">
+<div id="8"/>
 # 8 Exiv2 Architecture
 
-<div id="8-1">
+<div id="8-1"/>
 ### 8.1 Extracting metadata using dd
 
 The exiv2 option _**-pS**_ prints the structure of an image.
@@ -1580,7 +1587,7 @@ Exif.Image.YResolution                       Rational    1  300
 
 Internally, this is exactly how exiv2 works.  It doesn't use _**dd**_ of course.  However it identifies the Exif IFD and parses it into memory.
 
-Using dd is a useful trick to recover data which be easily seen in the file.  For example, if you wished to extract the pixels from an image, dd can extract them.  Of course you have to determine the offset and length to extract and exiv2 has excellent tools to provide that data.
+Using dd is a useful trick to recover data which can be easily seen in the file.  For example, if you wished to extract the pixels from an image, dd can extract them.  Of course you have to determine the offset and length to extract and exiv2 has excellent tools to provide that data.
 
 You can extract and inspect the metadata with this single _rather elegant_ command:
 
@@ -1612,7 +1619,7 @@ You may be interested to discover that option _**-pS**_ which arrived with Exiv2
 
 [TOC](#TOC)
 
-<div id="8-2">
+<div id="8-2"/>
 ### 8.2 Tags in Exiv2
 
 The following test program is very useful for understanding tags:
@@ -1724,7 +1731,7 @@ So, Minolta have 6 "sub-records".  Other manufacturers have more.  Let's say 10 
 
 [TOC](#TOC)
 
-<div id="8-3">
+<div id="8-3"/>
 ### 8.3 TagInfo
 
 Another matter to appreciate is that tag definitions are not constant.  A tag is simply an uint16\_t.  The Tiff Standard specifies about 50 tags.  Anybody creating an IFD can use the same tag number for different purposes.  The Tiff Specification says _"TIFF readers must safely skip over these fields if they do not understand or do not wish to use the information."_.  We do have to understand every tag.  In a tiff file, the pixels are located using the tag StripOffsets.  We report StripOffsets, however we don't read pixel data.
@@ -1763,7 +1770,7 @@ As we can see, tag == 1 in the Nikon MakerNotes is Version.  In Canon MakerNotes
 
 [TOC](#TOC)
 
-<div id="8-4">
+<div id="8-4"/>
 ### 8.4 Visitor Design Pattern
 
 The tiff visitor code is based on the visitor pattern in [Design Patterns: Elements of Reusable Object=Oriented Software](https://www.oreilly.com/library/view/design-patterns-elements/0201633612/).  Before we discuss tiff visitor, let's review the visitor pattern.
@@ -1924,7 +1931,7 @@ average age = 12
 
 We could of course add other classes to this program.  We could have **class Building** and add buildings to the college.  The visitor could visit all the buildings.  We could have rooms in every building.  I am sure you get the idea.
 
-In a JPEG, we have a linked list of segments.  So we visitor has a visitSegment() method.  As JPEG has an embedded Exif Tiff, so we have visitExif(), visitIFD(), visitTag(), visitXMP().  The visitor knows nothing about how to navigate the file.
+In a JPEG, we have a linked list of segments.  So tvisitor.cpp has a visitSegment() method.  As JPEG has an embedded Exif Tiff, so we have visitExif(), visitIFD(), visitTag(), visitXMP().  The visitor knows nothing about how to navigate the file.
 
 In tvisitor.cpp, we only have a single Visitor called ReportVisitor.  When you create him, you specify options which are Basic, Recursive, XMP.  The ReportVisitor effectively performs the same options as _**$ exiv2 -pS**_, or _**$ exiv2 -pR**_, or _**$ exiv2 -pX**_.  We could easily create a new class Exiv2Visitor which would create Exiv2::ExifData.  It's also possible to create a class Exiv2Writer which would output a new file with modified metadata.
 
@@ -1941,7 +1948,7 @@ Exiv2 has an abstract TiffVisitor class, and the following concrete visitors:
 I need to do more research into this complex design.
 
 [TOC](#TOC)
-<div id="8-5">
+<div id="8-5"/>
 ### 8.5 IFD::accept() and TiffImage::accept()
 
 The TiffVisitor is ingenious.  It's also difficult to understand.  Exiv2 has two tiff parsers - TiffVisitor and Image::printIFDStructure().  TiffVisitor was written by Andreas Huggel.  It's very robust and has been almost bug free for 15 years.  I wrote the parser in Image::printIFDStructure() to try to understand the structure of a tiff file.  The code in Image::printIFDStructure() is easier to understand.
@@ -2177,12 +2184,12 @@ $
 
 Using dd to extract metadata is discussed in more detail here: [8.1 Extracting metadata using dd](#8-1).
 
-Please be aware that there are two ways in which IFDs can occur in the file.  They can be an embedded TIFF which is complete with the **II*\_long** or **MM\_*long** 8-byte header and the offset leads to the IFD.   Or the IFD can be in the file without the header.  IFD::visit(visitor) knows that the tags such as GpsTag and ExifTag are IFDs and recursively calls recursively calls IFD::visit(visitor).  For the embedded TIFF (such as Nikon MakerNote), IFD::visit(visitor) creates a TiffImage and calls TiffImages.accept(visitor) which validates the header and calls IFD::visit(visitor).
+Please be aware that there are two ways in which IFDs can occur in the file.  They can be an embedded TIFF which is complete with the **II*\_long** or **MM\_*long** 8-byte header and the offset leads to the IFD.   Or the IFD can be in the file without the header.  IFD::visit(visitor) knows that the tags such as GpsTag and ExifTag are IFDs and recursively calls IFD::visit(visitor).  For the embedded TIFF (such as Nikon MakerNote), IFD::visit(visitor) creates a TiffImage and calls TiffImages.accept(visitor) which validates the header and calls IFD::visit(visitor).
 
 Another important detail is that although the Tiff Specification expects the IFD to end with a uint32\_t offset == 0, Sony (and other) maker notes do not.  The IFD begins with a uint32\_t to define length, followed by 12 byte tags.  There is no trailing null uint32\_t.
 
 [TOC](#TOC)
-<div id="8-6">
+<div id="8-6"/>
 ### 8.6 Presenting the data with visitTag()
 
 I added support in tvisitor.cpp for one binary tag which is Nikon Picture Control tag = 0x0023.  You'll see from the output of tvisitor that it's 58 bytes.
@@ -2389,11 +2396,11 @@ Here's the beautiful result on ~/Stonehenge.jpg
 Could this be even better?  Of course.  As always reader, I leave you to send me a patch which will:
 
 1. Test that we only decode bytes read from image.<br>
-2. Build and run this on a BigEndian machine (PPC, Spark)<br>
+2. Build and run this on a BigEndian machine (PPC, Sparc)<br>
 3. You're welcome to suggest other magic!
 
 [TOC](#TOC)
-<div id="8-7">
+<div id="8-7"/>
 ### 8.7 Tag Decoder
 
 This is a story in two parts.  Firstly, we have to find metadata which is formatted as a Tiff Entry and I call that the _**Metadata Decoder**_.  Some tags are encoded in binary which must be decoded.  I call that the _**Binary Tag Decoder**_.
@@ -2498,7 +2505,7 @@ This function understands how to decode byte-by-byte from `const ArrayDef` into 
 
 
 [TOC](#TOC)
-<div id="8-8">
+<div id="8-8"/>
 ## 8.8 JpegImage::accept()
 
 ```cpp
@@ -2595,7 +2602,7 @@ The way in which extended JPEG is managed is quite simple.  A DataBuf is used an
 ![jpeg](jpeg.png)
 
 [TOC](#TOC)
-<div id="9">
+<div id="9"/>
 # 9 Image Previews
 
 I don't know much about the image previews.  Previews are usually JPEG encoded and have no metadata.  Exiv2 has no code to edit previews in images.  About all that I know about previews is that the library finds them and creates a vector of thumbnails.  Like most of Andreas' code, the Preview code works well and has seldom required attention.
@@ -2632,7 +2639,7 @@ dmpf.cpp finds it.  So, we know it is 4448 bytes into the file and the Exif Tiff
 ```
 
 [TOC](#TOC)
-<div id="10">
+<div id="10"/>
 # 10 Test Suite and Build
 
 Exiv2 has several different elements in the test suite. They are:
@@ -2645,7 +2652,7 @@ Exiv2 has several different elements in the test suite. They are:
 In writing this book, I want to avoid duplicating information between Exiv2 documentation and this book.  This book is intended to provide an engineering explanation of how the code works and why various design decisions were chosen.  However, you will find that this book doesn't explain how to use Exiv2. How to use execute the test suite is documented in [README.md](README.md).
 
 [TOC](#TOC)
-<div id="10-1">
+<div id="10-1"/>
 # 10.1 Bash Tests
 
 As the name implies, these tests were originally implemented as bash scripts.
@@ -2812,19 +2819,19 @@ reportTest(r,t)
 ```
 
 [TOC](#TOC)
-<div id="10-2">
+<div id="10-2"/>
 # 10.2 Python Tests
 
 To be written.
 
 [TOC](#TOC)
-<div id="10-3">
+<div id="10-3"/>
 # 10.3 Unit Test
 
 To be written.
 
 [TOC](#TOC)
-<div id="10-4">
+<div id="10-4"/>
 # 10.4 Version Test
 
 The version test is _more-or-less_ the output of the command _$ exiv2 --verbose --version_ which produces about 150 lines of output.  About 60 lines of the output are a list of pre-registed XMP namespaces and of little interest.  So, the script test/version-test.sh counts and filters out the XMP namespaces.
@@ -2851,7 +2858,7 @@ source ./functions.source
 
 The implementation of the command _$ exiv2 --verbose --version_ and the version number scheme is discussed in detail: [13.9 Release Engineering](#13-9).
 
-<div id="10-5">
+<div id="10-5"/>
 ## 10.5 Generating HUGE images
 
 Before getting into a discussion about this, I'd like to thank several collaborators who have contributed to this part of the book. Joris Van Damme of AWare Systems maintains the BigTiff web-site and was very helpful on email.  This topic was also discussed at: [https://github.com/Exiv2/exiv2/issues/1248](https://github.com/Exiv2/exiv2/issues/1248) and I wish to thank LeoHsiao1 and kolt54321 for their input.
@@ -3002,13 +3009,13 @@ if __name__ == '__main__':
 To be written.
 
 [TOC](#TOC)
-<div id="11">
+<div id="11"/>
 # 11 API/ABI Compatibility
 
 To be written.
 
 [TOC](#TOC)
-<div id="12">
+<div id="12"/>
 # 12 Security
 
 ## 12.1 The Fuzzing Police
@@ -3028,13 +3035,13 @@ Everything is treated as urgent.  All their reports are assigned very high level
 As the fuzzing police maintain their own CVE data base, the number and frequency of security issues is tracked and published.  Their mission in life is negative.  I don't have a good word to say about those peple.
 
 [TOC](#TOC)
-<div id="12-2">
+<div id="12-2"/>
 ## 12.2 How we deal with security issues
 
 To be written.
 
 [TOC](#TOC)
-<div id="13">
+<div id="13"/>
 # 13 Project Management
 
 <center>![open-source-cartoon.png](open-source-cartoon.png)</center>
@@ -3049,7 +3056,7 @@ The difficulties of maintaining an open-source project are well explained in thi
 
 <center><img src="open-source-today1.png" style="width:500;border:2px solid #23668F"/>
 <img src="open-source-today2.png" style="width:500;border:2px solid #23668F"/>
-<img src="open-source-today3.png" style="width:500;Why isborder:2px solid #23668F"/>
+<img src="open-source-today3.png" style="width:500;border:2px solid #23668F"/>
 </center>
 
 I will quote the following as it seems totally true.
@@ -3100,18 +3107,25 @@ As for myself, I am a **CAB** where *C* stands for *clever*.  However I am an **
 
 There are so many ways to incur the outrage of stakeholders.  And so many ways in which people can and do complain.  All in all, working on an open-source project is a thank-less task.  When I released v0.25, a contributor in Peru said on Facebook  _**Robin should get a medal for his work.  Exiv2 would have died years ago without his commitment.**_  So I asked my family to write to the UK Government to propose that I be given an honour.  They silently refused.  Alison comforted me by saying _**Nobody is ever going to thank you for working on Exiv2.**_
 
-#### Solution to the issue of ABs
+#### Solutions to the issue of ABs
 
-There is a fix.  We do what the Fuzzing Police do.  They do not negotiate with any project.  They arrive unexpectedly and deliver their message.  And they track your response and performance.
+There are ways to fix on-line abuse.  We do what the Fuzzing Police do.  They do not negotiate with any project.  They arrive unexpectedly and deliver their message.  And they track your response and performance.
 
 The Community would be well served by a similar task force to investigate complaints about the behaviour of stakeholders and maintainers.  There are undoubtably stakeholders who would report me.  However I would be able to complain about a stakeholder if I felt they had behaved inappropriately.
 
 For sure, I would not welcome my performance being reviewed.  However a fair, honest and independant review of an issue would be helpful.  The stakeholder and I would shake hands and learn from the situation.  If the stakeholder or maintainer do not attend the review, their github account should be suspended.
 
-While there is no sanction for a stakeholder being unreasonable, bad behaviour will continue.  A solution is possible.  _**Will the Community accept the challenge?**_
+Another possible solution would be to register a complaint about an individual.  In the same way as a bug report can be opened on a project, it would be helpful to open a complaint about an individual.  And that complaint can only be closed by the person who opened it.  I'm fairly sure, we'd soon discover two things:
+
+1.  Some people raise loads of complaints about other people.
+2.  There are many open complaints about a few people.
+
+While there is no sanction for a stakeholder being unreasonable, bad behaviour will continue.  A solution is possible.  If you are thinking _**I never contribute, therefore this does not affect me!**_, I ask you to think again if you use open-source.  When maintainers are abused and leave their project, everybody looses out.
+
+_**Will the Community do something about on-line abuse?**_
 
 [TOC](#TOC)
-<div id="13-1">
+<div id="13-1"/>
 ### 13.1 C++ Code
 
 Exiv2 is written in C++.  Prior to v0.28, the code was written to the C++ 1998 Standard and makes considerable use of STL containers such as vector, map, set, string and many others.  The code started life as a 32-bit library on Unix and today builds on 32 and 64 bit systems running Linux, Unix, macOS and Windows (Cygwin, MinGW, and 7 editions of Visual Studio).  It can be build by GCC or Clang.  Although the Exiv2 project has never supported Mobile Platforms or Embedded Systems, it should be possible to build for other platforms with modest effort.
@@ -3121,7 +3135,7 @@ The code has taken a great deal of inspiration from the book [Design Patterns: E
 Starting with Exiv2 v0.28, the code requires a C++11 Compiler.  Exiv2 v0.28 is a major refactoring of the code and provides a new API.  The project maintains a series of v0.27 "dot" releases for security updates.  These releases are intended to ease the transition of existing applications in adapting to the new v0.28 API.
 
 [TOC](#TOC)
-<div id="13-2">
+<div id="13-2"/>
 ### 13.2 Build
 
 The build code in Exiv2 is implemented using CMake: cross platform make.  This system enables the code to be built on many different platforms in a consistant manner.  CMake recursively reads the files CMakeLists.txt in the source tree and generates build environments for different build systems.  For Exiv2, we actively support using CMake to build on Unix type plaforms (Linux, macOS, Cygwin, MinGW, NetBSD, Solaris and FreeBSD), and several editions of Visual Studio.  CMake can generate project files for Xcode and other popular IDEs.
@@ -3180,25 +3194,25 @@ While lots of effort has been invested in the CMakeLists.txt and *.cmake files, 
 Regrettably there are users who look to Team Exiv2 to support every possible configuration.  This is impossible.  The essential thing is that we have built and tested our code and many platforms.  Users will always think of novel ways in which to build and deploy. 
 
 [TOC](#TOC)
-<div id="13-3">
+<div id="13-3"/>
 ### 13.3 Security
 
 This is discussed in detail here: [11 Security](#11).
 
 [TOC](#TOC)
-<div id="13-4">
+<div id="13-4"/>
 ### 13.4 Documentation
 
 To be written.
 
 [TOC](#TOC)
-<div id="13-5">
+<div id="13-5"/>
 ### 13.5 Testing
 
 This is discussed in detail here: [10 Testing](#10).
 
 [TOC](#TOC)
-<div id="13-6">
+<div id="13-6"/>
 ### 13.6 Sample programs
 
 Exiv2 has sample applications which have their own documentation: [README-SAMPLES.md](README-SAMPLES.html).  In Exiv2 v0.27.3, there are 17 samples applications and 19 test programs.  The test programs are intended for use by the test suite and are not installed on the user's computer.
@@ -3232,26 +3246,26 @@ The Exiv2 command-line program _**exiv2**_ enables users to manipulate metadata 
 Exiv2 has always resisted the temptation to provide a GUI version of the program as that would involve considerable cross-platform development and user interface skills.  As Andreas Huggel summarised: _Exiv2 does depth, not breadth_.  Providing a GUI would lead the project away from metadata into the world of the _User Experience_.
 
 [TOC](#TOC)
-<div id="13-7">
+<div id="13-7"/>
 ### 13.7 User Support
 
 To be written.
 
 [TOC](#TOC)
-<div id="13-8">
+<div id="13-8"/>
 ### 13.8 Bug Tracking
 
 To be written.
 
 [TOC](#TOC)
-<div id="13-9">
+<div id="13-9"/>
 ### 13.9 Release Engineering
 
 Making a new release is very time-consuming.  The business of performing the builds and updating the web-site is straightforward.  It is totally scripted and easy to perform.
 
 However the time involved in updating the release notes, determining the contents of the release, submitting all the PRs, testing and documenting is considerable.
 
-Moreover, I like to publish release candidates.  I never make code changes between the final release candidate the the Golden Master.  Let me define the terminology and the version numbering scheme.
+Moreover, I like to publish release candidates.  I never make code changes between the final release candidate the Golden Master.  Let me define the terminology and the version numbering scheme.
 
 | Version    | Name             | Status      | Purpose |
 |:--         |:--               |:--          |:--      |
@@ -3292,7 +3306,7 @@ For example, to safely call image->setIccProfile(), this is compile time safe an
 ``` 
 
 [TOC](#TOC)
-<div id="13-10">
+<div id="13-10"/>
 ### 13.10 Platform Support
 
 There are several parts of Exiv2 which are platform specific.  Additionally the platform dependent function _getopt()_ is never used.
@@ -3344,13 +3358,13 @@ I really admire the code in samples/JZon.cpp.  The Swedish Engineer who created 
 
 
 [TOC](#TOC)
-<div id="13-11">
+<div id="13-11"/>
 ### 13.11 Localisation
 
 Localisation is documented in [README.md](README.md).
 
 [TOC](#TOC)
-<div id="13-12">
+<div id="13-12"/>
 ### 13.12 Build Server
 
 At different times, we have used different build server technologies.
@@ -3369,37 +3383,37 @@ To be written.
 
 
 [TOC](#TOC)
-<div id="13-13">
+<div id="13-13"/>
 ### 13.13 Source Code Management
 
 To be written.
 
 [TOC](#TOC)
-<div id="13-14">
+<div id="13-14"/>
 ### 13.14 Project Web Site
 
 To be written.
 
 [TOC](#TOC)
-<div id="13-15">
+<div id="13-15"/>
 ### 13.15 Project Servers (apache, SVN, GitHub, Redmine)
 
 To be written.
 
 [TOC](#TOC)
-<div id="13-16">
+<div id="13-16"/>
 ### 13.16 API Management
 
 To be written.
 
 [TOC](#TOC)
-<div id="13-17">
+<div id="13-17"/>
 ### 13.17 Recruiting Contributors
 
 To be written.
 
 [TOC](#TOC)
-<div id="13-18">
+<div id="13-18"/>
 ### 13.18 Project Management and Scheduling
 
 This is a major and important topic.  Apart from writing code, I've spent more time thinking about project scheduling than any other aspect of Software Engineering.  
@@ -3410,7 +3424,7 @@ I worked in a company which, to hide their identity, I will call "West Anchors".
 
 _**It is the Policy of West Anchors to get it right first time, every time.**_
 
-There we have it.  Nothing is ever late, nothing is more difficult than expected, all suppliers deliver on time to specification and nobody is ever sick.  When I discussed the project schedule with my boss I asked him why there was no time in the schedule for bugs and fixes, his response was "There better not be be any bugs."  Five years later, West Anchors were closed by their owners.
+There we have it.  Nothing is ever late, nothing is more difficult than expected, all suppliers deliver on time to specification and nobody is ever sick.  When I discussed the project schedule with my boss I asked him why there was no time in the schedule for bugs and fixes, his response was "There better not be any bugs."  Five years later, West Anchors were closed by their owners.
 
 I also had the misfortune to work at a company where the boss was an expert in planning.  He explained to me that the only challenge in Software Engineering is to get the schedule right.  Everything else was trivial.
 
@@ -3444,7 +3458,7 @@ However, if you want your house to be painted in an extra-ordinary way, this met
 
 The reason for the cost over-runs is because the project is recursive.  In a simple project, you have a sequence (or connected graph) of tasks:
 
-| | Step | Step | Step | |
+| | Task | Task | Task | |
 |:--     |:--     |:--     |:--     |:--     |
 | Begin | Remove furniture | Apply N litres of paint | Restore furniture | Done |
 
@@ -3465,7 +3479,7 @@ And many other things arrive which were not in the simple model. In the worst ca
 
 To deal with this, you have to start a project inside the project.  Something like "Remove furniture" is obvious in a house. But what would it mean on an Aircraft Carrier?
 
-So, we stay calm and add more items to the project plan.  And that's when everything goes wrong.  The plan gets longer and more detailed.  However it's still the same old linear model.
+So, we stay calm and add more items to the project plan.  And that's when and why everything goes wrong.  The plan gets longer and more detailed.  However it's still the same old linear model.
 
 My observation is that the project is an assembly of projects.  As you develop the project, every line item in the simple model is a project.  And then there are projects inside the projects.  For example if special paint is required for the Aircraft Carrier, that task is probably a complex network of projects involving chemistry, special machines to apply the paint, and maintenance processes for the ship in service.
 
@@ -3507,14 +3521,14 @@ I believe there's a measure in Fractals called "Roughness" which measures some f
 I think it's possible to measure roughness in past projects in addition to the historical performance.  So, although we have never built HMS Queen Elizabeth, we could know from other Naval projects:
 
 1. How much paint/painter/per time unit (the only measure in Microsoft Project)
-2. The roughness of painting Navy Ships (projects hiding inside the project)
+2. The roughness of painting Naval Ships (projects hiding inside the project)
 
 Both are required to estimate the size of the task.  PERT models assume a roughness of 1.0 and that is why they are bound to failure in large projects.  No large project has a roughness of 1.0.
 
 #### So how can we use this?
 
 We need the following feature added to Microsoft Project:
-1. Add roughness to every item in the the project plan
+1. Add roughness to every item in the project plan
 2. Collect data to estimate roughness
 3. We need a pot of time and money, which I call "Contingencies"
 
@@ -3558,13 +3572,13 @@ One thing is certain, getting a better approach to project estimation is of enor
 Final words about this.  I didn't undertake a PhD.  Instead I have spent 10,000 hours working on Exiv2.  This book is my  thesis.  The presentation at LGM in Rennes is my defence.  My reward is to know that I've done my best.
 
 [TOC](#TOC)
-<div id="13-19">
+<div id="13-19"/>
 ### 13.19 Enhancement Requests
 
 To be written.
 
 [TOC](#TOC)
-<div id="13-20">
+<div id="13-20"/>
 ### 13.20 Tools
 
 Every year brings new/different tools.  For example: cmake, git, MarkDown, conan and C++11.  One of the remarkable properties of tools you have never used is that they are perfect and solve all known issues, _until you use them_.   Tools you have never used are bug free and perfect.  Or so I am told.
@@ -3579,12 +3593,12 @@ I rebuilt the bundles as Exiv2 v0.27.0a and shipped them on 2 January 2019.  I u
 
 Please understand that I have nothing against using new tools.  However most of the hype surrounding new tools is nonsense.  This has been studied.  There are 5 stages in adopting new tools.
 
-<center><img src="hype.jpg" width="500" style="border:2px solid #23668F;"/></center>
+<center><img src="hype.jpg" width="400" style="border:2px solid #23668F;"/></center>
 
-There is one recent tool which has surprised and pleased me.  I have written this book using markdown and very pleased with the experience.  As the Americans say "your mileage may differ!".
+There is one recent tool which has surprised and pleased me.  I have written this book using markdown and very pleased with the experience.  As Americans say "your mileage may differ!".
 
 [TOC](#TOC)
-<div id="13-21">
+<div id="13-21"/>
 ### 13.21 Licensing
 
 This is simply a legal minefield.  Exiv2 is licensed under GPLv2.  Until Exiv2 v0.26, Andreas offered a commercial license for Exiv2.   The contract between Andreas and users is not the concern of the Exiv2 open-source project. 
@@ -3592,7 +3606,7 @@ This is simply a legal minefield.  Exiv2 is licensed under GPLv2.  Until Exiv2 v
 In the days of the Commercial license, I made not distinction between open-source and commercial license users when it came to dealing with support and other requests.  I felt that the commercial license freed the user from the obligations of GPL.  However, it did not provide priority support, enhancement requests or any other benefit.
 
 [TOC](#TOC)
-<div id="13-22">
+<div id="13-22"/>
 ### 13.22 Back-porting fixes to earlier releases
 
 I believe there are some folks maintaining back-ports of Exiv2.  Our friend Pascal works on **darktable** and has back-ported many features and fixes.  Thank You, Pascal for undertaking that chore.
@@ -3600,13 +3614,13 @@ I believe there are some folks maintaining back-ports of Exiv2.  Our friend Pasc
 I have to say that the inertia of the Linux Distros is considerable.  It can take several years for new releases to arrive on the platform.  I don't know anything about the distros and I'm not going to judge why it is so sluggish.
 
 [TOC](#TOC)
-<div id="13-23">
+<div id="13-23"/>
 ### 13.23 Other projects demanding support and changes
 
 Without question, dealing with this has been very difficult.  Folks who have adopted Exiv2 in their product may feel they are entitled to make enhancement requests, demand fixes, superior support and other privileges.  In a nutshell, they feel entitled.  They are not.  They are entitled to the same as all other stakeholders.  No more.  No less.
 
 [TOC](#TOC)
-<div id="13-24">
+<div id="13-24"/>
 ### 13.24 Software Development
 
 As this is the first and last book I will ever write, I'd like to close the discussion of _**Project Management**_ with some thoughts and opinions about how software is developed.  Management have been searching for the silver bullet that will cause projects to deliver on time, to budget, with great performance, few bugs and low cost maintenance.  This search has been proceeding for more than 50 years.  We've made some progress.  However system complexity out-strips our management and control tools.  The challenges are immense.
@@ -3626,7 +3640,7 @@ Another method that I believe is very effective is prototyping.  Working in a sa
 If you have good folks on the team, the development will be enjoyable and the results will be good.  However, Software Development in large teams is Russian Roulette with a bullet in every chamber.  Mostly, the experience is horrible.  Good Luck.  I'm happy to be retired.
 
 [TOC](#TOC)
-<div id="14">
+<div id="14"/>
 # 14 Code discussed in this book
 
 The latest version of this book and the programs discussed are available for download from:
@@ -3899,7 +3913,7 @@ int main(int argc, char* argv[])
 
 [TOC](#TOC)
 # The Last Word
-<div id="finally">
+<div id="finally"/>
 
 I hope you found this book interesting.  More to the point, I hope you found the book useful.  I hope Exiv2 will live into the future, or this book inspires somebody to write a new library.
 
