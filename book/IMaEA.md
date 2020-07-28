@@ -1377,9 +1377,11 @@ $ exiv2 -pX Stonehenge.jpg | xmllint -pretty 1 -
 ##2.3 IPTC/IIM Metadata
 ![iptc](iptc.png)
 
-As is common in standards, there are competing and overlapping standards for metadata that reflect the interests of their champions.  So, Exif is for Cameras, XMP primarily for Application Programs, and IPTC is for the Press Industry.  Being a software engineer, I know very little about how people actually use metadata.  I belive IPTC preserves copyright and other high value resources as files move along the work-flow from the origin to a magazine or newspaper.
+This standard is championed by the International Press Telecommunications Council and predates both Exif and XMP.
 
-The Metadata Working Group defines the standards: [https://en.wikipedia.org/wiki/Metadata\_Working\_Group](https://en.wikipedia.org/wiki/Metadata_Working_Group)
+The latest documentation (2014) is [https://www.iptc.org/std/photometadata/specification/IPTC-PhotoMetadata-201407_1.pdf](https://www.iptc.org/std/photometadata/specification/IPTC-PhotoMetadata-201407_1.pdf)  The implementation of IPTC in Exiv2 was added before I joined the project and I know very little about this matter.  I'm pleased to say that the code is stable and reliable and I cannot recall any user raising an issue about IPTC.
+
+As is common in standards, there are competing and overlapping standards for metadata that reflect the interests of their champions.  So, Exif is for Cameras, XMP primarily for Application Programs, and IPTC is for the Press Industry.  Being a software engineer, I know very little about how people actually use metadata.  I belive IPTC preserves copyright and other high value resources as files move along the work-flow from the origin to a magazine or newspaper.  There is another parallel trade association called The Metadata Working Group which works to define the use and meaning of metadata.  [https://en.wikipedia.org/wiki/Metadata\_Working\_Group](https://en.wikipedia.org/wiki/Metadata_Working_Group)
 
 There is a website that documents IPTC here: [https://help.accusoft.com/ImageGear-Net/v22.1/Windows/HTML/topic371.html](https://help.accusoft.com/ImageGear-Net/v22.1/Windows/HTML/topic371.html)
 
@@ -1404,7 +1406,7 @@ The code in tvisitor.cpp supports the following:
 | 2. Application   |    0<br>12<br>120 | ModelVersion<br>Subject<br>Caption |
 
 
-There is considerably more information about DataSets in the Exiv2 code-base.  I believe this defines the format data values such as short and long.  I don't recall anybody ever reporting an issue about IPTC, so my knowledge of this part of the code is minimal.  In the discussion about MakerNotes, I added code to decode binary data in tvisitor.cpp as this is a very important topic to understand in the Exiv2 code-base.  I haven't studied the IPTC data to the same depth as I believe the tvisitor.cpp/IPTC support is sufficient to understand how IPTC data is stored and decoded.
+There is considerably more information about DataSets in the Exiv2 code-base.  I believe this defines the format of data values such as short and long.  In the discussion about MakerNotes, I added code to decode binary data in tvisitor.cpp as this is a very important topic to understand in the Exiv2 code-base.  I haven't studied the IPTC data to the same depth as I believe the tvisitor.cpp/IPTC support is sufficient to understand how IPTC data is stored and decoded.
 
 ```bash
 $ cp ~/Stonehenge.jpg .
@@ -1422,32 +1424,33 @@ Iptc.Application2.Subject                    String     12  Robin's Book
 The IPTC data in a JPEG is stored in the APP13 PhotoShop segment, as we see here:
 
 ```bash
-1121 rmills@rmillsmbp:~/gnu/exiv2/team/book/build $ ./tvisitor -pI Stonehenge.jpg 
-STRUCTURE OF JPEG FILE (II): Stonehenge.jpg
+.../book $ tvisitor -pI ~/Stonehenge.jpg 
+STRUCTURE OF JPEG FILE (II): /Users/rmills/Stonehenge.jpg
  address | marker       |  length | signature
        0 | 0xffd8 SOI  
        2 | 0xffe1 APP1  |   15288 | Exif__II*_.___._..._.___.___..._.___.___
    15292 | 0xffe1 APP1  |    2786 | http://ns.adobe.com/xap/1.0/_<?xpacket b
-   18080 | 0xffed APP13 |     138 | Photoshop 3.0_8BIM.._____Q..__._...Z_..%
-    Record | DataSet | Name                     | Length | Data
+   18080 | 0xffed APP13 |      96 | Photoshop 3.0_8BIM.._____'..__._...Z_..%
+    Record | DataSet | Name                           | Length | Data
          1 |       0 | Iptc.Envelope.ModelVersion     |      2 | _.
          1 |      90 | Iptc.Envelope.CharacterSet     |      3 | .%G
-         1 |       5 | Iptc.Envelope.Destination      |     20 | Camberley Print Room
          2 |       0 | Iptc.Application.RecordVersion |      2 | _.
          2 |     120 | Iptc.Application.Caption       |     12 | Classic View
-         2 |      12 | Iptc.Application.Subject       |     12 | Robin's Book
-   18220 | 0xffe2 APP2  |    4094 | MPF_II*_.___.__.._.___0100..._.___.___..
-   22316 | 0xffdb DQT   |     132 | _.......................................
-   22450 | 0xffc0 SOF0  |      17 | ....p..!_........
-   22469 | 0xffc4 DHT   |     418 | __........________............_.........
-   22889 | 0xffda SOS   |      12 | .._...._?_..
-END: Stonehenge.jpg
-1122 rmills@rmillsmbp:~/gnu/exiv2/team/book/build $ 
+   18178 | 0xffe2 APP2  |    4094 | MPF_II*_.___.__.._.___0100..._.___.___..
+   22274 | 0xffdb DQT   |     132 | _.......................................
+   22408 | 0xffc0 SOF0  |      17 | ....p..!_........
+   22427 | 0xffc4 DHT   |     418 | __........________............_.........
+   22847 | 0xffda SOS   |      12 | .._...._?_..
+END: /Users/rmills/Stonehenge.jpg
 ```
 
 ### IPTC Character Set Encoding
 
-To be written.
+CharacterSet is in the Envelope DataSection.  CharacterSet is used by transmission protocols to transmit resources via modems and other resources that were in common use when IPTC was first defined in the 1990s.  This field is set by the exiv2 convertors to "\<esc\>%G" to represent UTF-8.  "\<esc\>" is ascii 0x01b (27)     
+
+I believe the data is defined in the Standard ISO/IEC 2022.  The following web page has a section _**Interaction with other coding systems**_ in which I discovered the following table. [https://en.wikipedia.org/wiki/ISO%2FIEC_2022](https://en.wikipedia.org/wiki/ISO%2FIEC_2022)
+
+<img src="iso-2020.png" width="300" style="border:2px solid #23668F;"/>
 
 [TOC](#TOC)
 <div id="4-4"/>
