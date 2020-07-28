@@ -241,7 +241,7 @@ The good news however is that file formats come in families which are:
 
 The Metadata is defined by standards which also define how to embed the data in the image.
 
-| Stardard  | Description                                                      |
+| Standard  | Description                                                      |
 |:--        |:---                                                              |
 | Exif      | EXchangeable Image Format.<br>This is encoded as a TIFF sub-file |
 | IPTC      | Interpress Trade Consortium                                      |
@@ -551,7 +551,7 @@ STRUCTURE OF JPEG FILE: test/data/ReaganLargeJpg.jpg
 
 This is documented by Adobe in the XMP Specification 2016+ and implemented in Exiv2 in the API **JpegBase::printStructure::(kpsXMP)**.  It is not implemented in **JpegBase::readMetadata()**.
 
-![XmpPart3-2016-page13.png](XmpPart3-2016-page13.png)
+<img src="XmpPart3-2016-page13.png" width="500" style="border:2px solid #23668F;"/>
 
 ### Other Unusual Adobe JPEG Features
 
@@ -921,11 +921,11 @@ To be written.
 
 ![bmp](bmp.png)
 
-The Windows Bitmap Format "Bimp" has been around in Windows forever.  It may even have been in Windows 1.0.  For sure, it was there when I started to work in Windows 3.0 in 1991.  It's not a container.  It's a few fields of data and lots of pixels!
+The Windows Bitmap Format "Bimp" has been around in Windows forever.  It may even have been in Windows 1.0.  For sure, it was there when I started to working with Windows 3.0 in 1991.  It's not a container.  It's a few fields of data and lots of pixels!
 
 BMP is often referred to as a "device independant bitmap" because it's not designed for any physical device.  It is the responsibility of the device or printer driver to render the image.  Windows device drivers are required to implement the GDI (Graphical Device Interface).
 
-The first 4 bytes of the BITMAP (following the 14 byte file BITMAPFILE header) is the length of BITMAP.   As well as being useful for navigating the file, this is effectively the BITMAP version.  In the Windows SDK, they call it bmType.  The last time I looked at the structure of a BMP (Windows 95) it was 40 bytes.  On Windows 10 it's now 124.
+The first 4 bytes of the BITMAP (following the 14 byte file BITMAPFILE header) is the length of BITMAP.   As well as being useful for navigating the file, this is effectively the BITMAP version.  In the Windows SDK, they call it bmType.  The last time I looked at the structure of a BMP (Windows 95) it believe it was 42 bytes.  On Windows 10 it's now 124.
 
 From a metadata standpoint, there's almost nothing interesting in a BMP.  I was surprised to discover that the latest version (BITMAPV5) can store an ICC profile and has an alpha channel bitmask.  Perhaps a future version will include XMP and Exif metadata.
 
@@ -939,13 +939,13 @@ Before moving on from BMP, I'd like to say something about the flexibility of th
 
 ![gif](gif.png)
 
-| Component | URL |
-|:--        |:--  |
+| Component         | URL |
+|:--                |:--  |
 | Gif Specification |  [https://www.w3.org/Graphics/GIF/spec-gif89a.txt](https://www.w3.org/Graphics/GIF/spec-gif89a.txt) |
-| LibGif    | [https://sourceforge.net/projects/giflib/](https://sourceforge.net/projects/giflib/) |
-| LibGif Man Pages | [https://www.mankier.com/1/gifbuild](https://www.mankier.com/1/gifbuild) |
-| Adobe XMPsdk     |  [https://github.com/adobe/XMP-Toolkit-SDK.git](https://github.com/adobe/XMP-Toolkit-SDK.git) |
-| WikiPedia GIF    | [https://en.wikipedia.org/wiki/GIF](https://en.wikipedia.org/wiki/GIF) |
+| LibGif            | [https://sourceforge.net/projects/giflib/](https://sourceforge.net/projects/giflib/) |
+| LibGif Man Pages  | [https://www.mankier.com/1/gifbuild](https://www.mankier.com/1/gifbuild) |
+| Adobe XMPsdk      |  [https://github.com/adobe/XMP-Toolkit-SDK.git](https://github.com/adobe/XMP-Toolkit-SDK.git) |
+| WikiPedia GIF     | [https://en.wikipedia.org/wiki/GIF](https://en.wikipedia.org/wiki/GIF) |
 
 
 I built GifLib 5.1.1 on macOS .  5.2.1 complained about the option linker option _-soname_ and refused to link!
@@ -998,7 +998,7 @@ fbe0
 
 ### XMP in Gif
 
-This is supported by Gif89a files and documented by Adobe in XMPSpecificationPart3.pdf on page 17 of the 2010 edition.  At present I don't have a sample GIF with embedded XMP.  I don't know if Exiv2 support GIF/XML.
+This is supported by Gif89a files and documented by Adobe in XMPSpecificationPart3.pdf on page 17 of the 2010 edition.  At present I don't have a sample GIF with embedded XMP.  I don't know if Exiv2 supports GIF/XML.
 
 [TOC](#TOC)
 <div id="2"/>
@@ -1398,13 +1398,12 @@ I don't know why there are no sections 4, 5 or 6.
 
 The Exiv2 support for IPTC is documented here: [https://exiv2.org/iptc.html](https://exiv2.org/iptc.html).  I don't know why Exiv2 does not provide support for sections 3, 7, 8 or 9 as it could be easily added.
 
-The code in tvisitor.cpp supports the following:
+The code in tvisitor.cpp supports the following DataSets, all others are ignored.
 
 | Section | Record | Name |
 |:--      |     --:|:--   |
 | 1. Envelope      |    0<br>5<br>90   | RecordVersion<br>Destination<br>CharacterSet |
 | 2. Application   |    0<br>12<br>120 | ModelVersion<br>Subject<br>Caption |
-
 
 There is considerably more information about DataSets in the Exiv2 code-base.  I believe this defines the format of data values such as short and long.  In the discussion about MakerNotes, I added code to decode binary data in tvisitor.cpp as this is a very important topic to understand in the Exiv2 code-base.  I haven't studied the IPTC data to the same depth as I believe the tvisitor.cpp/IPTC support is sufficient to understand how IPTC data is stored and decoded.
 
@@ -1451,6 +1450,57 @@ CharacterSet is in the Envelope DataSection.  CharacterSet is used by transmissi
 I believe the data is defined in the Standard ISO/IEC 2022.  The following web page has a section _**Interaction with other coding systems**_ in which I discovered the following table. [https://en.wikipedia.org/wiki/ISO%2FIEC_2022](https://en.wikipedia.org/wiki/ISO%2FIEC_2022)
 
 <img src="iso-2020.png" width="300" style="border:2px solid #23668F;"/>
+
+### IPTC Extended Blocks
+
+As with Exif metdata, the IPTC data block can exceed 64k byte and this cannot be stored in a single JPEG segment.  Exiv2 has code to deal with this and is thouroughly documented here: [https://dev.exiv2.org/issues/0000533](https://dev.exiv2.org/issues/0000533)
+
+### IPTC in Tiff and other formats.
+
+In Tiff, IPTC data is contained in the following tag:
+```bash
+$ taglist ALL | grep Image.IPTCNAA | head -1
+Image.IPTCNAA,	33723,	0x83bb,	Image,	Exif.Image.IPTCNAA,	Long,	Contains an IPTC/NAA record
+$ 
+```
+
+In PNG files, the signature _**Raw profile type iptc*__ is used.
+
+```bash
+$ exiv2 -pS test/data/ReaganLargePng.png 
+STRUCTURE OF PNG FILE: test/data/ReaganLargePng.png
+ address | chunk |  length | data                           | checksum
+       8 | IHDR  |      13 | ............                   | 0x8cf910c3
+      33 | zTXt  |    8461 | Raw profile type exif..x...iv. | 0x91fbf6a0
+    8506 | zTXt  |     636 | Raw profile type iptc..x..TKn. | 0x4e5178d3
+    9154 | iTXt  |    7156 | XML:com.adobe.xmp.....<?xpacke | 0x8d6d70ba
+   16322 | gAMA  |       4 | ....                           | 0x0bfc6105
+   16338 | iCCP  | 1151535 | ICC profile..x...UP.........!! | 0x11f49e31
+ 1167885 | bKGD  |       6 | ......                         | 0xa0bda793
+ 1167903 | pHYs  |       9 | ...#...#.                      | 0x78a53f76
+ 1167924 | tIME  |       7 | ......2                        | 0x582d32e4
+ 1167943 | zTXt  |     278 | Comment..x.}..n.@....O..5..h.. | 0xdb1dfff5
+...
+
+In JP2 file, IPTC is embedded in the uuid/iptc box.
+
+```bash
+$ tvisitor -pR ~/jp2.jp2 
+STRUCTURE OF JP2 FILE (MM): /Users/rmills/jp2.jp2
+ address |   length | box             | uuid | data
+       0 |        4 | 0x2020506a jP   |      | ....
+      12 |       12 | 0x70797466 ftyp |      | jp2 ____jp2 
+      32 |       37 | 0x6832706a jp2h |      | ___.ihdr___.___._..._____.colr._____.
+  STRUCTURE OF JP2 FILE (MM): /Users/rmills/jp2.jp2:40->37
+         0 |       14 | 0x72646869 ihdr |      | ___.___._...__
+        22 |        7 | 0x726c6f63 colr |      | ._____.
+  END: /Users/rmills/jp2.jp2:40->37
+      77 |     1334 | 0x64697575 uuid | exif | II*_.___._..._..__.___..._.___>.__..._._
+    1419 |      934 | 0x64697575 uuid | iptc | ..__._...._.040621-N-6536T-062..._.5..._  <--- It's in here
+    2361 |     5582 | 0x64697575 uuid |  xmp | <?xpacket begin="..." id="W5M0MpCehiHzre
+    7951 |    32650 | 0x6332706a jp2c |      | .O.Q_/_____.___.___________.___.________
+END: /Users/rmills/jp2.jp2
+```
 
 [TOC](#TOC)
 <div id="4-4"/>

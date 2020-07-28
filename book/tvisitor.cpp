@@ -1251,9 +1251,9 @@ public:
         endian_ = keBig ;
         format_ = "JP2" ;
 
-        const char*  kJp2UuidExif  = "5467704a-6978-4a3e-4949-001200020002" ; // "JpgTiffExif->JP2";
-        const char*  kJp2UuidIptc  = "d2a4c733-baa0-97e0-021c-302d54363430" ; // "\x33\xc7\xa4\xd2\xb8\x1d\x47\x23\xa0\xba\xf1\xa3\xe0\x97\xad\x38";
-        const char*  kJp2UuidXmp   = "cbcf7abe-719c-e391-3f3c-3557223d6967" ; // "\xbe\x7a\xcf\xcb\x97\xa9\x42\xe8\x9c\x71\x99\x94\x91\xe3\xaf\xac";
+        const char*  kJp2UuidExif  = "4a706754-6966-6645-7869-662d3e4a5032" ; // "JpgTiffExif->JP2";
+        const char*  kJp2UuidIptc  = "33c7a4d2-b81d-4723-a0ba-f1a3e097ad38" ; // "\x33\xc7\xa4\xd2\xb8\x1d\x47\x23\xa0\xba\xf1\xa3\xe0\x97\xad\x38";
+        const char*  kJp2UuidXmp   = "be7acfcb-97a9-42e8-9c71-999491e3afac" ; // "\xbe\x7a\xcf\xcb\x97\xa9\x42\xe8\x9c\x71\x99\x94\x91\xe3\xaf\xac";
         const char*  kJp2UuidCan1  = "85c0b687-820f-11e0-8111-f4ce462b6a48" ;
         const char*  kJp2UuidCan2  = "eaf42b5e-1c98-4b88-b9fb-b7dc406e4d16" ;
 
