@@ -497,7 +497,6 @@ std::string DataBuf::toUuidString()
     return result ;
 } // DataBuf::toUuidString
 
-
 // Camera manufacturers
 enum maker_e
 {   kUnknown

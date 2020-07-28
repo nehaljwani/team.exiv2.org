@@ -225,19 +225,19 @@ A good model for an image is to think of it as a container.  It's like a directo
 
 The good news however is that file formats come in families which are:
 
-| Family  | Description                                                                        | Examples |
-|:--      |:---                                                                                |:--       |
-| TIFF    | You must learn Tiff thoroughly to understand metadata              | TIFF, DNG, NEF, ICC, CR2 |
-| JPG     | The most common format                                                                 | JPEG |
-| PNG     | Another popular format<br>Linked list of chunks                                         | PNG |
-| CIFF    | Canon Raw format.  Dave Coffin parse.c decodes CRW                                      | CRW |
-| ISOBMFF | Based on the .mp4 format                                           | MP4, CR3, AVI, HEIF, JP2 |
-| RIFF    | Google Promoted Format                                                                 | WEBP |
-| GIF     | Graphics Image Format                                                                   | GIF | 
-| BMP     | This format can contain an ICC profile.  It never has XMP, IPTC or Exif metadata        | BMP |
-| COS     | Adobe PDF Format.  This is a very flexible container                               | PDF, JDF |
-| EPS     | Adobe Encapsulated PostScript<br>The code in Exiv2 to deal with this is deprecated  | EPS, AI |
-| PS      | Adobe PostScript.  Beautiful graphics language.                                          | PS |
+| Family  | Description                                                                          | Examples |
+|:--      |:---                                                                                  |:--       |
+| TIFF    | You must learn Tiff thoroughly to understand metadata                | TIFF, DNG, NEF, ICC, CR2 |
+| JIFF    | JPEG Image File Format<br>Linked list of 64k segments                               | JPEG, EXV |
+| PNG     | Another popular format<br>Linked list of chunks                                           | PNG |
+| CIFF    | Camera Image File Format.  Dave Coffin parse.c decodes CRW                                | CRW |
+| ISOBMFF | Based on the .mp4 format                                             | MP4, CR3, AVI, HEIF, JP2 |
+| RIFF    | Resource Interchange File Format                                                         | WEBP |
+| GIF     | Graphics Image Format                                                                     | GIF | 
+| BMP     | Windows BMP never has XMP, IPTC or Exif metadata.<br>Version5 may include an ICC profile. | BMP |
+| COS     | Adobe PDF Format.  This is a very flexible container<br>Exiv2 does not support this. | PDF, JDF |
+| EPS     | Adobe Encapsulated PostScript<br>The code in Exiv2 to deal with this is deprecated    | EPS, AI |
+| PS      | Adobe PostScript.  Beautiful graphics language.                                            | PS |
 
 The Metadata is defined by standards which also define how to embed the data in the image.
 
@@ -246,9 +246,9 @@ The Metadata is defined by standards which also define how to embed the data in 
 | Exif      | EXchangeable Image Format.<br>This is encoded as a TIFF sub-file |
 | IPTC      | Interpress Trade Consortium                                      |
 | ICC       | Internation Colour Consortium<br>The ICC Profile is similar to TIFF<br>The ICC Profile is an ICC sub-file. |
-| XMP       | Adobe XMP is encoded as a XML sub-file                           | 
+| XMP       | Adobe XMP is encoded as an XML sub-file                          | 
 
-I suspect the software mess is caused by the hardware engineers.  When hardware people start a new project, they copy the CAD files from the last project and proceed from there.  They don't worry about back-porting changes or compatibility.  They think firmware people are stupid and do a terrible job!  We have to live with this.
+I suspect the proliferation of formats is caused by the hardware engineers.  When hardware people start a new project, they copy the CAD files from the last project and proceed from there.  They don't worry about back-porting changes or compatibility.  We have to live with this mess.
 
 There is also the issue of patents.  It's unclear if it's legal to read an ISOBMFF file which is used by Apple to store Heif files.  I believe it is legal to read ISOBMFF files.  It's illegal to reverse engineer the H.264 codec which is used to encrypt the image in a HEIF.  Metadata is occasionally compressed (PNG), encrypted (Nikon) or ciphered (Sony).
 
@@ -3028,7 +3028,7 @@ STRUCTURE OF PNG FILE (MM): foo.png
 $
 ```
 
-Curiously, exiv2 can read this file in 0.2 seconds and say "No metadata".  tvisitor takes 30 seconds to reach the same conclusion.  I will investigate this.
+Both exiv2 and tvisitor parse this file in 0.2 seconds and say "No metadata".
 
 ```python
 #!/usr/bin/env python3
@@ -3139,7 +3139,7 @@ The first couple of releases I published on GitHub were not instantly tagged.   
 
 How about **TAB** which is to change the project tools.  Git came close to killing me.  I know many people love Git and think it's the greatest thing ever invented.  I don't.  I worked on Acrobat at Adobe.  A big project.  When I retired in 2014, there were about 200 developers who had been working for 20 years on 25 million lines of code.  To build it, you need 100GBytes of free space.   How can git handle such a monster when every repos has 100% of the code and 100% of the project history?  Nobody has given me an answer.
 
-When we adopted Git and it took me 2 years to figure out how to submit a PR.  I purchased the book **Pro Git**.  It doesn't cover PRs.  So, the only way to submit code is undocumented.  I am very grateful to Luis and Andreas S for helping me with Git.  I eventually wrote this on a card:
+When we adopted Git, it took me 2 years to figure out how to submit a PR.  I purchased the book **Pro Git**.  It doesn't cover PRs.  So, the only way to submit code is undocumented.  I am very grateful to Luis and Andreas S for helping me with Git.  I eventually wrote this on a card:
 
 <center><img src="GitIdiotCard.jpg" width="500" style="border:2px solid #23668F;"/></center>
 
