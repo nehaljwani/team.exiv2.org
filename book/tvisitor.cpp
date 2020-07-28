@@ -2066,11 +2066,12 @@ void ReportVisitor::visitIptc(Io& io,Image& image,uint64_t address,uint32_t leng
         IoSave restore(io,address);
         DataBuf buff(length);
         io.read(buff);
-        out() << indent() << "  Record | DataSet | Name                     | Length | Data" << std::endl;
-        uint32_t i  = 0 ;
-        uint32_t bs = 5 ; // blocksize
-        while (i+bs < length && getByte  (buff,i) != 0x1c ) i++; // find first 0x1c (== escape)
-        while (i+bs < length && getByte  (buff,i) == 0x1c ) {    // ERDlen = byte, byte, byte, short data
+        out() << indent() << "  Record | DataSet | Name                           | Length | Data" << std::endl;
+        uint32_t i  =    0 ; // index
+        uint32_t bs =    5 ; // blocksize
+        uint8_t  fs = 0x1c ; // field seperator
+        while (i+bs < length && ::getByte (buff,i) != fs ) i++; // find fs (== escape)
+        while (i+bs < length && ::getByte (buff,i) == fs ) {    // FS-RE-DS-short = byte, byte, byte, short ... data ....
             uint16_t record   = ::getByte (buff,i+1);
             uint16_t dataset  = ::getByte (buff,i+2);
             uint16_t len      = ::getShort(buff,i+3,keBig);

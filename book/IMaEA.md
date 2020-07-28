@@ -1,7 +1,7 @@
 <br><br><br><br>
 <center>![Exiv2](exiv2-large.png)</center>
 
-<h3 align=center style="font-size: 48px;color:#FF4646;font-family: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
+<h3 align=center style="font-size: 48px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
 <h3 align=center style="font-size:36px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-07-27</h3>
 
@@ -96,7 +96,7 @@ I have never been employed to work on Metadata.  I was a Senior Computer Scienti
 
 By 2012, Andreas was loosing interest in Exiv2.  Like all folks, he has many matters which deserve his time.  A family, a business, biking and other pursuits.  From 2012 until 2017, I supported Exiv2 mostly alone.  I had lots of encouragement from Alan and other occasional contributors.  Neils did great work on lens recognition and compatibility with ExifTool.  Ben helped greatly with WebP support and managed the transition of the code from SVN to GitHub.  Phil _(of ExifTool fame)_ has always been very supportive and helpful.
 
-I must also mention our adventures with Google Summer of Cocde and our students Abhinav, Tuan and Mahesh.  GSoC is a program at Google to sponsor students to contribute to open source projects. 1200 Students from around the world are given a bounty of $5000 to contribute 500 hours to a project during summer recess.  The projects are supervised by a mentor.  Exiv2 is considered to be part of the KDE family of projects.  Within KDE, there a sub-group of Graphics Applications and Technology.  We advertised our projects, the students wrote proposals and some were accepted by Google on the Recommendation of the KDE/Graphics group.
+I must also mention our adventures with Google Summer of Code and our students Abhinav, Tuan and Mahesh.  GSoC is a program at Google to sponsor students to contribute to open source projects. 1200 Students from around the world are given a bounty of $5000 to contribute 500 hours to a project during summer recess.  The projects are supervised by a mentor.  Exiv2 is considered to be part of the KDE family of projects.  Within KDE, there is a sub-group of Graphics Applications and Technology.  We advertised our projects, the students wrote proposals and some were accepted by Google on the Recommendation of the KDE/Graphics group.
 
 In 2012, Abhinav joined us and contributed the Video read code and was mentored by Andreas.  In 2013, Tuan joined us and contributed the WebReady code and was mentored by me.  Mahesh also joined us to contribute the Video write code and was mentored by Abhinav.
 
@@ -1375,10 +1375,11 @@ $ exiv2 -pX Stonehenge.jpg | xmllint -pretty 1 -
 [TOC](#TOC)
 <div id="IPTC"/>
 ##2.3 IPTC/IIM Metadata
+![iptc](iptc.png)
 
 As is common in standards, there are competing and overlapping standards for metadata that reflect the interests of their champions.  So, Exif is for Cameras, XMP primarily for Application Programs, and IPTC is for the Press Industry.  Being a software engineer, I know very little about how people actually use metadata.  I belive IPTC preserves copyright and other high value resources as files move along the work-flow from the origin to a magazine or newspaper.
 
-The Metadata Working Group defines the standards: [https://en.wikipedia.org/wiki/Metadata_Working_Group](https://en.wikipedia.org/wiki/Metadata_Working_Group)
+The Metadata Working Group defines the standards: [https://en.wikipedia.org/wiki/Metadata\_Working\_Group](https://en.wikipedia.org/wiki/Metadata_Working_Group)
 
 There is a website that documents IPTC here: [https://help.accusoft.com/ImageGear-Net/v22.1/Windows/HTML/topic371.html](https://help.accusoft.com/ImageGear-Net/v22.1/Windows/HTML/topic371.html)
 
@@ -1391,9 +1392,9 @@ There is a website that documents IPTC here: [https://help.accusoft.com/ImageGea
 | Object Record          |       8 | SubFile                 |
 | Post-Object Descriptor |       9 | ConfirmedObjectDataSize |
 
-I don't know why there are no sections 5 or 6.
+I don't know why there are no sections 4, 5 or 6.
 
-The Exiv2 support for IPTC is documented here: [https://exiv2.org/iptc.html](https://exiv2.org/iptc.html).  I don't know why Exiv2 does not provide support for sections 3, 7, 8 or 9 as it can be easily added.
+The Exiv2 support for IPTC is documented here: [https://exiv2.org/iptc.html](https://exiv2.org/iptc.html).  I don't know why Exiv2 does not provide support for sections 3, 7, 8 or 9 as it could be easily added.
 
 The code in tvisitor.cpp supports the following:
 
