@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 48px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:36px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-07-27</h3>
+<h3 align=center style="font-size:36px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-07-28</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -3400,7 +3400,92 @@ The function std::string getProcessPath() determines the process path and is sim
 
 #### UNICODE path support
 
-To be written.
+There is a build option EXIV2\_ENABLE\_WIN\_UNICODE which may be used on Windows (Visual Studio, MinGW/msys2 and Cygwin64) to build support for UNICODE paths.  This is useful for applications using wchar\_t path strings.  I believe this is the default for most applications using the Qt libraries.  This version of the library can be used by other applications such as command-line utilities which link wmain().  When the library is build with UNICODE path support, the char versions of the API are also built.
+
+Please be aware that this feature only applies to paths.  Using UNICODE in UserComments and other fields is explained in the Exiv2 man page and discussed in more detail below under the title _**Character Set Encoding**_.
+
+Here is a typical build sequence to build with UNICODE path support for Visual Studio:
+
+```cmd
+>cd    <exiv2dir>
+>mkdir build && cd build
+build>conan install .. --profile msvc2019Release --build missing
+build>cmake .. -G "Visual Studio 16 2019" -DEXIV2_ENABLE_WIN_UNICODE=On
+build>cmake --build . --config Release
+``` 
+
+When the build finishes, you can inspect the setting and read the export table of _**ImageFactory::open()**_ functions as follows.  The output presented here has been simplified for presentation in this book.
+
+```cmd
+>cd \<exiv2dir\>
+>mkdir build && cd build
+build>bin\exiv2 -vVg unicode
+exiv2 0.27.3
+processpath=C:\Users\rmills\gnu\github\exiv2\0.27-maintenance\build\bin
+executable=C:\Users\rmills\gnu\github\exiv2\0.27-maintenance\build\bin\exiv2.exe
+library=C:\Users\rmills\gnu\github\exiv2\0.27-maintenance\build\bin\exiv2.dll
+have_unicode_path=1
+build>dumpbin/exports bin\exiv2.dll | grep ImageFactory | grep open > foo.txt
+Exiv2::Image::auto_ptr Exiv2::ImageFactory::open
+... (class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >
+...  const & __ptr64,bool)
+Exiv2::Image::auto_ptr Exiv2::ImageFactory::open
+...(class std::basic_string<wchar_t,struct std::char_traits<wchar_t>,class std::allocator<wchar_t> >
+... const & __ptr64,bool)
+Exiv2::Image::auto_ptr Exiv2::ImageFactory::open(unsigned char const * __ptr64,long)
+Exiv2::Image::auto_ptr Exiv2::ImageFactory::open(class std::auto_ptr<class Exiv2::BasicIo>)build>
+``` 
+
+**Caution:** _You should use the "Developer Command Prompt" in Visual Studio Studio to ensure you have the utilities dumpbin and undname on your path.  To filter the output with grep, you will need to ensure grep is on your PATH._
+
+Performing the same tests on a default build (without UNICODE path support), shows one less entry point because the library does not provide the UNICODE entry-point _**Exiv2::ImageFactory::open(std::wstring,const bool& )**_.
+
+The UNICODE library has been build with both wstring and string entry points.  All samples (except exifprint.cpp) are built to use the char entry points, so you can the test suite runs.
+
+```cmd
+build> cmake --build . --config Release --target tests
+```
+
+The test suite passes because our test image paths do not need UNICODE path support.  See README.md for more information about running the test suite.
+
+When you build the library with UNICODE path support, the sample program samples/exifprint.cpp is built as a UNICODE application.  You can observe the UNICODE path support in the following way:
+
+```cmd
+build>copy %USERPROFILE%\Stonehenge.jpg %USERPROFILE%\√.jpg
+build>bin\exifprint.exe %USERPROFILE%\√.jpg | grep Date
+Exif.Image.DateTime                          0x0132 Ascii      20  2015:02:18 21:42:57
+Exif.Photo.DateTimeOriginal                  0x9003 Ascii      20  2015:02:15 12:29:49
+Exif.Photo.DateTimeDigitized                 0x9004 Ascii      20  2015:02:15 12:29:49
+Exif.NikonWt.DateDisplayFormat               0x0003 Byte        1  0
+Exif.GPSInfo.GPSDateStamp                    0x001d Ascii      11  2015:02:15
+
+build>cd ..\build_no_unicode
+build_no_unicode>bin\exifprint.exe %USERPROFILE%\√.jpg | grep Date
+build_no_unicode>
+``` 
+
+When you build the library with UNICODE path support, wchar_t versions of the following APIs are built:
+
+```bash
+Exiv2::BasicError
+Exiv2::FileIo::FileIo
+Exiv2::HttpIo::HttpIo
+Exiv2::XPathIo::XPathIo
+Exiv2::ImageFactory::create
+Exiv2::ImageFactory::createIo
+Exiv2::fileExists
+Exiv2::fileProtocol
+Exiv2::ImageFactory::getType
+Exiv2::ImageFactory::open
+Exiv2::pathOfFileUrl
+Exiv2::readFile
+Exiv2::ExifThumb::setJpegThumbnail
+Exiv2::FileIo::setPath
+Exiv2::XPathIo::writeDataToFile
+Exiv2::ExifThumbC::writeFile
+Exiv2::writeFile
+Exiv2::PreviewImage::writeFile
+``` 
 
 #### Character Set Encoding
 
