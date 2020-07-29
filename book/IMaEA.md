@@ -1,9 +1,9 @@
 <br><br><br><br>
-<center>![Exiv2](exiv2-large.png)</center>
+<center><img src="exiv2-large.png" width="600"/></center>
 
-<h3 align=center style="font-size: 48px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
+<h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:36px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-07-28</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-07-29</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -384,7 +384,6 @@ Exiv2 has a write method to determine how to rewrite TIFF.  I will have to condu
 <div id="JPEG"/>
 ## JPEG and EXV Format
 ![jpeg](jpeg.png)<br>
-![jpegs.png](jpegs.png)
 
 JPEG and EXF are almost the same thing, however most graphics applications will reject EXF because it is not a valid JPEG.  ExifTool also supports EXF.  In tvisitor.cpp, class JpegImage handles both and the only difference is respected in JpegImage::valid():
 
