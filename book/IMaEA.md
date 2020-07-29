@@ -599,7 +599,7 @@ void PngImage::accept(class Visitor& v)
             char      chunk  [5] ;
             io().read(chunk  ,4) ;
             chunk[4]        = 0  ; // nul byte
-           
+
             io().seek(next-4);                            // jump over data to checksum
             uint32_t  chksum  = io().getLong(endian_);
             v.visitChunk(io(),*this,address,chunk,length,chksum); // tell the visitor
@@ -614,7 +614,7 @@ Reporting Exif and XMP is also easy.
 
 ```cpp
 void Visitor::visitChunk(Io& io,Image& image
-                        ,uint64_t address,char* chunk,uint32_t length,uint32_t chksum)
+        ,uint64_t address,char* chunk,uint32_t length,uint32_t chksum)
 {
     IoSave save(io,address+8);
     DataBuf   data(length);
@@ -746,7 +746,7 @@ void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
     length -= 8              ;
     DataBuf   data(length);
     io.read(data);
-    
+
     std::string name = image.boxName (box);
     std::string uuid = image.uuidName(data);
 
@@ -1069,7 +1069,7 @@ def dumpTags(ifd):
                 t=str(len(V))
             if len(t) > 30:
                 t = t[0:26]+'.. '
-                
+
             t='('+t+')'
 
             print('%s -> %s %s' % ( tag[0], v , t)  )
@@ -1948,7 +1948,7 @@ Create an application with data.
 int main() {
     // create a highSchool and add some students
     College highSchool;
-    
+
     highSchool.add(Student("this",10,"art"             ));
     highSchool.add(Student("that",12,"music"           ));
     highSchool.add(Student("the other",14,"engineering"));
@@ -2778,9 +2778,9 @@ def runTest(r,cmd):
 			warn('%s returncode = %d' % (cmd,p.returncode) )
 	except:
 		error('%s died' % cmd )
-			
+
 	return r+lines
-	
+
 def echo(r,s):
 	return r+[s]
 
@@ -2824,7 +2824,7 @@ def reportTest(r,t):
 		f.close()
 
 	print('passed %s' % t) if good else error('failed %s' %t )
-	
+
 # Update the environment
 key="PATH"
 if key in os.environ:
@@ -2864,7 +2864,7 @@ lines=      runTest([],'geotag -ascii -tz -8:00 tmp/%s tmp/%s' % (jpg,gpx))
 r=          cut    (r,' ',2,lines)
 r=          echo   (r,'--- show GPSInfo tags ---')
 r=          runTest(r,'exiv2 -pa --grep GPSInfo tmp/%s' % jpg)
- 
+
 reportTest(r,t)
 
 # That's all Folks
@@ -2919,7 +2919,7 @@ Before getting into a discussion about this, I'd like to thank several collabora
 Almost all the test images in the Exiv2 test have been added in response to bugs _**or**_ during feature development.  Most of the test files are checked into the repository.  There is an svn directory with larger test images which are downloaded on demand by the test suite. svn://dev.exiv2.org/svn/team/test
 
 As Exiv2 moved from 32 to 64 bits, the size of images has grown.  HUGE files > 3GB are commonly used in medical and space imaging applications.  For years, I've wanted to undertake a project to test if Exiv2 can really handle HUGE files.  The obvious way to work with them is to generate them on demand.
- 
+
 I've looked at several libraries for the purpose of generating HUGE files.
 
 1.  libtiff-4 (which supports BigTiff)
@@ -3034,7 +3034,7 @@ Both exiv2 and tvisitor parse this file in 0.2 seconds and say "No metadata".
 
 import sys
 from   PIL import Image
- 
+
 ##
 #
 def main(argv):
@@ -3044,7 +3044,7 @@ def main(argv):
     if argc < 2:
         syntax()
         return
-    
+
     width  = int(argv[1])
     height = int(argv[2])
     path   =     argv[3]
@@ -3399,9 +3399,9 @@ The function std::string getProcessPath() determines the process path and is sim
 
 #### UNICODE path support
 
-There is a build option EXIV2\_ENABLE\_WIN\_UNICODE which may be used on Windows (Visual Studio, MinGW/msys2 and Cygwin64) to build support for UNICODE paths.  This is useful for applications using wchar\_t path strings.  I believe this is the default for most applications using the Qt libraries.  This version of the library can be used by other applications such as command-line utilities which link wmain().  When the library is build with UNICODE path support, the char versions of the API are also built.
+There is a build option EXIV2\_ENABLE\_WIN\_UNICODE which may be used on Windows when building with Visual Studio.  This is useful for applications using wchar\_t path strings.  I believe this is the default for most applications using the Qt libraries.  This version of the library can be used by other applications such as command-line utilities which link wmain().  When the library is build with UNICODE path support, the char versions of the API are also built.
 
-Please be aware that this feature only applies to paths.  Using UNICODE in UserComments and other fields is explained in the Exiv2 man page and discussed in more detail below under the title _**Character Set Encoding**_.
+Please be aware that this feature only applies to paths.  Using UNICODE in UserComments and other Tags is explained in the Exiv2 man page and discussed in more detail below under the title _**Character Set Encoding**_.
 
 Here is a typical build sequence to build with UNICODE path support for Visual Studio:
 
@@ -3661,16 +3661,17 @@ I think it's possible to measure roughness in past projects in addition to the h
 1. How much paint/painter/per time unit (the only measure in Microsoft Project)
 2. The roughness of painting Naval Ships (projects hiding inside the project)
 
-Both are required to estimate the size of the task.  PERT models assume a roughness of 1.0 and that is why they are bound to failure in large projects.  No large project has a roughness of 1.0.
+Both are required to estimate the size of the task.  PERT models assume a roughness of 1.0 and that is why it fails on large projects.  No large project has a roughness of 1.0.
 
 #### So how can we use this?
 
-We need the following feature added to Microsoft Project:
+We need to do three things:
+
 1. Add roughness to every item in the project plan
 2. Collect data to estimate roughness
-3. We need a pot of time and money, which I call "Contingencies"
+3. We need a pot of time and money, which I call _**Contingencies**_
 
-Contingencies are a % of the whole project that should be used to assign resources as sub-projects emerge.  All items in the project should have contingencies from which additional resources can be allocated.  This is non-confrontational and does not require blame and finger pointing.  We knew about the roughness and planned for it.
+_**Contingencies**_ are a % of the whole project that should be used to assign resources as sub-projects emerge.  All items in the project should have contingencies from which additional resources can be allocated.  This is non-confrontational and does not require blame and finger pointing.  We knew about the roughness and must plan for it.
 
 In the past, I have applied contingencies as big brush stokes to the complete project.  If the project is similar to the last one, contingencies are 10%.  If the project involves many unknowns, perhaps it is 300% of the project.
 
@@ -3945,10 +3946,10 @@ int main(int argc, char* argv[])
             error = errorProcessing;
         }
     }
-            
+
     // report arguments
     if ( options["verbose"] ) printOptions(error) ;
-    
+
     // process
     if ( !error  ) for ( auto path : paths ) {
         FILE* f = NULL  ;
@@ -3956,7 +3957,7 @@ int main(int argc, char* argv[])
         size_t  skip   = options["skip" ];
         size_t  count  = options["count"];
         size_t  width  = options["width"];
-        
+
         if ( path != std::string("-") ) {
             f     = fopen(path,"rb");
             fseek(f,0,SEEK_END);
@@ -3970,7 +3971,7 @@ int main(int argc, char* argv[])
             std::cerr << path << " insufficient data" << std::endl;
             error = errorProcessing;
         }
-        
+
         char    line[1000]  ;
         char    buff[64]    ;
         size_t  reads  = 0 ; // count the reads
@@ -3978,7 +3979,7 @@ int main(int argc, char* argv[])
         size_t  remain = count ; // how many bytes still to read
         if ( width > sizeof buff ) width = sizeof(buff);
         fseek(f,skip,SEEK_SET);
-        
+
         if ( !error ) while ( remain && (nRead = fread(buff,1,remain>width?width:remain,f)) > 0 ) {
             // line number
             int l = sprintf(line,"%#8lx %8ld: ",skip+reads*width,skip+reads*width ) ;
@@ -3994,7 +3995,7 @@ int main(int argc, char* argv[])
                 l += sprintf(line+l," ") ;
             }
             l += sprintf(line+l,"  -> ") ;
-            
+
             size_t   bs = options["bs"];
             switch ( bs ) {
             case 8 :
