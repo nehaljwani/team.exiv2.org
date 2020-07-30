@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-07-29</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-07-30</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -892,10 +892,78 @@ To be written.
 To be written.
 
 [TOC](#TOC)
-<div id="1-16"/>
+<div id="PSD"/>
 ## PSD PhotoShop
+![psd](psd.png)
 
-To be written.
+This is documented [http://paulbourke.net/dataformats/psdpsb/psdpsb.html](http://paulbourke.net/dataformats/psdpsb/psdpsb.html)
+
+PSDImage::valid() is straightforward:
+
+```cpp
+bool PSDImage::valid()
+{
+    if ( !valid_ ) {
+        endian_ = keBig ;
+        IoSave   restore(io(),0);
+        DataBuf  h(4); io_.read(h);
+        uint16_t version = io_.getShort(endian_);
+        
+        if ( h.is("8BPS") && version == 1 && io_.getLong(endian_) == 0 && io_.getShort(endian_) == 0  ) {
+            start_  = 26;
+            format_ = "PSD";
+            valid_  = true;
+        }
+        header_ = " address | length | data";
+    }
+    return valid_ ;
+}
+```
+
+PSDImage::accept() is easy.  As the header has been validated, all it has to do is the run the link-list of 3 resources (Color, Image and Layer/Mask).
+
+```cpp
+void PSDImage::accept(Visitor& visitor)
+{
+    // Ensure that this is the correct image type
+    if (!valid()) {
+        std::ostringstream os ; os << "expected " << format_ ;
+        Error(kerInvalidFileFormat,io().path(),os.str());
+    }
+    
+    visitor.visitBegin(*this); // tell the visitor
+
+    IoSave restore(io_,start_) ;
+    DataBuf  lBuff(4);
+    uint64_t address = start_ ;
+    for ( uint16_t i = 0 ; i <=2 ; i++ ) {
+        io().seek(address);
+        uint32_t length = io_.getLong(endian());
+        visitor.visitResource(io_,*this,address);
+        address += length + 4 ;
+    }
+
+    visitor.visitEnd  (*this); // tell the visitor
+}
+```
+
+ReportVisitor::visitResource() is called 3 times and reports the address,length and data.  When the report visitor option in kpsRecursive  adn the signature is 8BIM, it calls visitor.visitIPTC().  Very elegant.
+
+```cpp
+void ReportVisitor::visitResource(Io& io,Image& image,uint64_t address)
+{
+    IoSave   restore(io,address);
+    uint32_t length = io.getLong(image.endian());
+    DataBuf  buff(length > 40 ? 40 : length);
+    io.read(buff);
+    out() << indent() << stringFormat("%8d | %d | ",address,length) << buff.binaryToString() << std::endl;
+    if ( length > 8 && option() & kpsRecursive ) {
+        if ( buff.is("8BIM") ) {
+            visitIptc(io,image,address+8,length);
+        }
+    }
+}
+```
 
 <div id="RAF"/>
 ## RAF Fujifilm RAW

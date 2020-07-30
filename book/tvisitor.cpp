@@ -175,7 +175,7 @@ public:
     bool strequals(const char* str) { return strcmp(str)==0                   ;}
     bool is       (const char* str) {
         uint64_t l      = ::strlen(str);
-        bool     result = l == size_;
+        bool     result = l <= size_;
         size_t i = 0 ;
         while ( result && i < l ) {
             result = str[i]==pData_[i];
@@ -211,20 +211,20 @@ bool isPlatformBigEndian()
 }
 bool   isPlatformLittleEndian() { return !isPlatformBigEndian(); }
 endian_e platformEndian() { return isPlatformBigEndian() ? keBig : keLittle; }
-uint64_t byteSwap(uint64_t value,bool bSwap,uint16_t n)
+
+uint64_t byteSwap(byte* p,bool bSwap,uint16_t n)
 {
+    uint64_t value  = 0;
     uint64_t result = 0;
-    byte* source_value      = reinterpret_cast<byte *>(&value);
+    byte* source_value      = reinterpret_cast<byte *>(&value );
     byte* destination_value = reinterpret_cast<byte *>(&result);
 
-    for (int i = 0; i < n; i++)
-        destination_value[i] = source_value[n - i - 1];
+    for (int i = 0; i < n; i++) {
+        source_value     [i] = p[i] ;
+        destination_value[i] = p[n - i - 1];
+    }
 
     return bSwap ? result : value;
-}
-uint32_t byteSwap(uint32_t value,bool bSwap)
-{
-    return (uint32_t) byteSwap((uint64_t)value,bSwap,4);
 }
 
 uint8_t  getByte(const DataBuf& buf,size_t offset)
@@ -233,26 +233,26 @@ uint8_t  getByte(const DataBuf& buf,size_t offset)
     return (uint8_t) buf.pData_[offset];
 }
 
-uint16_t getShort(const byte b[],size_t offset,endian_e endian)
+uint16_t getShort(byte b[],size_t offset,endian_e endian)
 {
     bool bSwap = endian != ::platformEndian();
-    return (uint16_t) byteSwap((uint64_t)*(b+offset),bSwap,2);
+    return (uint16_t) byteSwap(b+offset,bSwap,2);
 }
-uint32_t getLong(const byte b[],size_t offset,endian_e endian)
+uint32_t getLong(byte b[],size_t offset,endian_e endian)
 {
     bool bSwap = endian != ::platformEndian();
-    return (uint32_t) byteSwap((uint64_t)*(b+offset),bSwap,2);
+    return (uint32_t) byteSwap(b+offset,bSwap,2);
 }
 uint16_t getShort(const DataBuf& buf,size_t offset,endian_e endian)
 {
     if ( offset+1 > buf.size_ ) Error(kerInvalidMemoryAccess);
 
     uint16_t v;
-    char*    p = (char*) &v;
+    byte*    p = (byte*) &v;
     p[0] = buf.pData_[offset+0];
     p[1] = buf.pData_[offset+1];
     bool bSwap = endian != ::platformEndian();
-    return (uint16_t) byteSwap(v,bSwap,2);
+    return (uint16_t) byteSwap(p,bSwap,2);
 
 }
 uint32_t getLong(const DataBuf& buf,size_t offset,endian_e endian)
@@ -260,13 +260,13 @@ uint32_t getLong(const DataBuf& buf,size_t offset,endian_e endian)
     if ( offset+3 > buf.size_ ) Error(kerInvalidMemoryAccess);
 
     uint32_t v;
-    char*    p = (char*) &v;
+    byte*    p = (byte*) &v;
     p[0] = buf.pData_[offset+0];
     p[1] = buf.pData_[offset+1];
     p[2] = buf.pData_[offset+2];
     p[3] = buf.pData_[offset+3];
     bool bSwap = endian != ::platformEndian();
-    return (uint32_t)byteSwap(v,bSwap,4);
+    return (uint32_t)byteSwap(p,bSwap,4);
 }
 uint64_t getLong8(const DataBuf& buf,size_t offset,endian_e endian)
 {
@@ -283,7 +283,7 @@ uint64_t getLong8(const DataBuf& buf,size_t offset,endian_e endian)
     p[6] = buf.pData_[offset+6];
     p[7] = buf.pData_[offset+7];
     bool bSwap = endian != ::platformEndian();
-    return byteSwap (v,bSwap,8);
+    return byteSwap (p,bSwap,8);
 }
 
 // Tiff Data Functions
@@ -850,10 +850,11 @@ public:
     virtual void visitBox     (Io& io,Image& image,uint64_t address,uint32_t box,uint32_t length) = 0 ;
 
     // optional methods
-    virtual void visitXMP     (DataBuf& /* xmp */ ) { return ; }
-    virtual void visitICC     (DataBuf& /* icc */ ) { return ; }
-    virtual void visitICCTag  (const byte* sig,uint32_t offset,uint32_t length) { return; }
+    virtual void visitXMP     (DataBuf& /* xmp */ )                                  { return ; }
+    virtual void visitICC     (DataBuf& /* icc */ )                                  { return ; }
+    virtual void visitICCTag  (const byte* sig,uint32_t offset,uint32_t length)      { return ; }
     virtual void visitIptc    (Io& io,Image& image,uint64_t address,uint32_t length) { return ; }
+    virtual void visitResource(Io& io,Image& image,uint64_t address)                 { return ; }
 
     PSopt_e       option() { return option_ ; }
     std::ostream& out()    { return out_    ; }
@@ -1210,6 +1211,36 @@ public:
 private:
 };
 
+class PSDImage : public Image
+{
+public:
+    PSDImage(std::string path)
+    : Image  (path)
+    { }
+    PSDImage(Io& io,size_t start,size_t count)
+    : Image(Io(io,start,count))
+    { }
+
+    virtual void accept(class Visitor& v);
+    bool valid()
+    {
+        if ( !valid_ ) {
+            endian_ = keBig ;
+            IoSave   restore(io(),0);
+            DataBuf  h(4); io_.read(h);
+            uint16_t version = io_.getShort(endian_);
+            
+            if ( h.is("8BPS") && version == 1 && io_.getLong(endian_) == 0 && io_.getShort(endian_) == 0  ) {
+                start_  = 26;
+                format_ = "PSD";
+                valid_  = true;
+            }
+            header_ = " address | length | data";
+        }
+        return valid_ ;
+    }
+};
+
 class Jp2Image : public Image
 {
 public:
@@ -1327,6 +1358,29 @@ void ICC::accept(class Visitor& visitor)
     }
 }
 
+void PSDImage::accept(Visitor& visitor)
+{
+    // Ensure that this is the correct image type
+    if (!valid()) {
+        std::ostringstream os ; os << "expected " << format_ ;
+        Error(kerInvalidFileFormat,io().path(),os.str());
+    }
+    
+    visitor.visitBegin(*this); // tell the visitor
+
+    IoSave restore(io_,start_) ;
+    DataBuf  lBuff(4);
+    uint64_t address = start_ ;
+    for ( uint16_t i = 0 ; i <=2 ; i++ ) {
+        io().seek(address);
+        uint32_t length = io_.getLong(endian());
+        visitor.visitResource(io_,*this,address);
+        address += length + 4 ;
+    }
+
+    visitor.visitEnd  (*this); // tell the visitor
+}
+
 // 4. Create concrete "visitors"
 class ReportVisitor: public Visitor
 {
@@ -1399,6 +1453,8 @@ public:
                          , DataBuf&         buf,const TagDict& tagDict);
     void visitICCTag(const byte* tag,uint32_t offset,uint32_t length);
     void visitIptc  (Io& io,Image& image,uint64_t address,uint32_t length);
+    void visitResource(Io& io,Image& image,uint64_t address);
+
 
     void visitEnd(Image& image)
     {
@@ -2018,7 +2074,7 @@ void JpegImage::accept(Visitor& visitor)
                 ICC.read(io_,address+2+start,length - start); // read the XMP from the stream
             }
             if ( signature.find("Photoshop 3.0") == 0 ) {
-                uint16_t start = 2+18 ; // "\mark\length\Photoshop 3.0\08BIM".
+                uint16_t start = 2+14 ; // "\mark\length\Photoshop 3.0\0"     "8BIM"
                 visitor.visitIptc(io(),*this,address+start,length-start);
             }
         }
@@ -2087,6 +2143,19 @@ void ReportVisitor::visitIptc(Io& io,Image& image,uint64_t address,uint32_t leng
     }
 }
 
+void ReportVisitor::visitResource(Io& io,Image& image,uint64_t address)
+{
+    IoSave   restore(io,address);
+    uint32_t length = io.getLong(image.endian());
+    DataBuf  buff(length > 40 ? 40 : length);
+    io.read(buff);
+    out() << indent() << stringFormat("%8d | %d | ",address,length) << buff.binaryToString() << std::endl;
+    if ( length > 8 && option() & kpsRecursive ) {
+        if ( buff.is("8BIM") ) {
+            visitIptc(io,image,address+8,length);
+        }
+    }
+}
 
 void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
                             ,uint32_t box,uint32_t length)
@@ -2155,6 +2224,7 @@ int main(int argc,const char* argv[])
         PngImage  png (path);
         Jp2Image  jp2 (path);
         ICC       icc (path);
+        PSDImage  psd (path);
 
         // Visit the image
         if      ( tiff.valid() ) tiff.accept(visitor);
@@ -2163,6 +2233,7 @@ int main(int argc,const char* argv[])
         else if (  png.valid() )  png.accept(visitor);
         else if (  jp2.valid() )  jp2.accept(visitor);
         else if (  icc.valid() )  icc.accept(visitor);
+        else if (  psd.valid() )  psd.accept(visitor);
         else    { Error(kerUnknownFormat,path); }
     } else {
         std::cout << "usage: " << argv[0] << " [ { U | S | R | X | C | I } ] path" << std::endl;
