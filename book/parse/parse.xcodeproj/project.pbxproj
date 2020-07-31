@@ -80,7 +80,7 @@
 		A12A06F32493E18900471C7E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1150;
+				LastUpgradeCheck = 1160;
 				ORGANIZATIONNAME = "Robin Mills";
 				TargetAttributes = {
 					A12A06FA2493E18900471C7E = {
@@ -230,6 +230,7 @@
 		A12A07032493E18900471C7E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4D9X8YN3W4;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -240,6 +241,7 @@
 		A12A07042493E18900471C7E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4D9X8YN3W4;
 				ENABLE_HARDENED_RUNTIME = YES;

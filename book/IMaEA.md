@@ -920,7 +920,7 @@ bool PSDImage::valid()
 }
 ```
 
-PSDImage::accept() is easy.  As the header has been validated, all it has to do is the run the link-list of 3 resources (Color, Image and Layer/Mask).
+PSDImage::accept() is easy.  As the header has been validated, all it has to do is to run the link-list of 3 resources (Color, Image and Layer/Mask).
 
 ```cpp
 void PSDImage::accept(Visitor& visitor)
@@ -947,7 +947,8 @@ void PSDImage::accept(Visitor& visitor)
 }
 ```
 
-ReportVisitor::visitResource() is called 3 times and reports the address,length and data.  When the report visitor option in kpsRecursive  adn the signature is 8BIM, it calls visitor.visitIPTC().  Very elegant.
+ReportVisitor::visitResource() is called 3 times and reports the address,length and data.  When the report visitor option in kpsRecursive,
+the code runs the 8BIM chain in the ImageResource.  Although we can see XMP, ICC and Exif metadata, only IPTC is recursively decoded.  I'll leave you the reader to 
 
 ```cpp
 void ReportVisitor::visitResource(Io& io,Image& image,uint64_t address)
@@ -958,8 +959,26 @@ void ReportVisitor::visitResource(Io& io,Image& image,uint64_t address)
     io.read(buff);
     out() << indent() << stringFormat("%8d | %d | ",address,length) << buff.binaryToString() << std::endl;
     if ( length > 8 && option() & kpsRecursive ) {
-        if ( buff.is("8BIM") ) {
-            visitIptc(io,image,address+8,length);
+        if ( buff.begins("8BIM") ) {
+            // read in all the data
+            uint32_t offset = 0  ;
+            DataBuf  b(length);
+            io.seek(address+4);
+            io.read(b);
+            out() << indent() << "    offset  |   kind |   length | " << std::endl;
+            // run the linked-list of 8BIM records
+            while ( offset+4 < length ) {
+                uint32_t end  = b.search(offset+4,"8BIM") ;
+                uint32_t len  = end - offset;
+                uint16_t kind = getShort(b,offset+4,image.endian());
+                out() << indent() << stringFormat("   %8d | %06#x | %8d | ",offset,kind,len)
+                      << b.binaryToString(offset,len>40?40:len)
+                      << std::endl;
+                if ( kind == 0x0404 ) {
+                    visitIptc(io,image,address+4+offset,len);
+                }
+                offset += len ;
+            }
         }
     }
 }

@@ -173,16 +173,28 @@ public:
     void read (Io& io,uint64_t offset,uint64_t size) ;
     int  strcmp   (const char* str) { return ::strcmp((const char*)pData_,str);}
     bool strequals(const char* str) { return strcmp(str)==0                   ;}
-    bool is       (const char* str) {
+    bool begins       (const char* str,uint64_t offset=0) {
         uint64_t l      = ::strlen(str);
-        bool     result = l <= size_;
-        size_t i = 0 ;
+        bool     result = l <= size_-offset;
+        size_t   i = 0 ;
         while ( result && i < l ) {
-            result = str[i]==pData_[i];
+            result = str[i]==pData_[i+offset];
             i++;
         }
         return result;
     }
+    
+    uint32_t search(uint32_t start,const char* s)
+    {
+        uint64_t l = ::strlen(s);
+        if ( size_ < l ) return 0 ;
+        
+        uint32_t found = start;
+        uint32_t max   = (uint32_t) ( size_ - l );
+        while ( ! begins(s,found) && found < max ) found++;
+        return found;
+    }
+
     void copy(void* src,uint64_t size,uint64_t offset=0)
     {
         memcpy(pData_+offset,src,size);
@@ -834,7 +846,7 @@ public:
     virtual ~Visitor() {};
 
     // abstract methods which visitors must define
-    virtual void visitBegin   (Image& image)                         = 0 ;
+    virtual void visitBegin   (Image& image,std::string msg="")      = 0 ;
     virtual void visitEnd     (Image& image)                         = 0 ;
     virtual void visitDirBegin(Image& image,uint64_t nEntries)       = 0 ;
     virtual void visitDirEnd  (Image& image,uint64_t start)          = 0 ;
@@ -1230,15 +1242,26 @@ public:
             DataBuf  h(4); io_.read(h);
             uint16_t version = io_.getShort(endian_);
             
-            if ( h.is("8BPS") && version == 1 && io_.getLong(endian_) == 0 && io_.getShort(endian_) == 0  ) {
+            if ( h.begins("8BPS") && version == 1 && io_.getLong(endian_) == 0 && io_.getShort(endian_) == 0  ) {
                 start_  = 26;
                 format_ = "PSD";
                 valid_  = true;
             }
+            ch_     = io_.getShort(endian_);
+            width_  = io_.getLong (endian_);
+            height_ = io_.getLong (endian_);
+            bits_   = io_.getShort(endian_);
+            col_    = io_.getLong (endian_);
             header_ = " address | length | data";
         }
         return valid_ ;
     }
+private:
+    uint16_t ch_     ;
+    uint32_t width_  ;
+    uint32_t height_ ;
+    uint16_t bits_   ;
+    uint16_t col_    ;
 };
 
 class Jp2Image : public Image
@@ -1365,10 +1388,10 @@ void PSDImage::accept(Visitor& visitor)
         std::ostringstream os ; os << "expected " << format_ ;
         Error(kerInvalidFileFormat,io().path(),os.str());
     }
-    
-    visitor.visitBegin(*this); // tell the visitor
+    std::string msg = stringFormat("#ch = %d, width x height = %d x %d, bits/col = %d/%d",ch_,width_,height_,bits_,col_);
+    visitor.visitBegin(*this,msg); // tell the visitor
 
-    IoSave restore(io_,start_) ;
+    IoSave restore(io_,0) ;
     DataBuf  lBuff(4);
     uint64_t address = start_ ;
     for ( uint16_t i = 0 ; i <=2 ; i++ ) {
@@ -1414,13 +1437,12 @@ public:
     void visitChunk   (Io& io,Image& image,uint64_t address,char* chunk,uint32_t length,uint32_t checksum);
     void visitBox     (Io& io,Image& image,uint64_t address,uint32_t box,uint32_t length);
 
-
     std::string indent() { return ::indent(indent_); }
 
     void visitSegment (Io& io,Image& image,uint64_t address
              ,uint8_t marker,uint16_t length,std::string& signature);
 
-    void visitBegin(Image& image);
+    void visitBegin(Image& image,std::string msg="");
     void visitDirBegin(Image& image,uint64_t nEntries)
     {
         //size_t depth = image.depth();
@@ -1705,7 +1727,7 @@ bool JpegImage::valid()
         } else if  ( h[0] == 0xff && h[1]==0x01 ) { // .EXV
             DataBuf buf(5);
             io_.read(buf);
-            if ( buf.is("Exiv2") ) {
+            if ( buf.begins("Exiv2") ) {
                 start_  = 7;
                 format_ = "EXV";
                 valid_  = true;
@@ -1874,12 +1896,13 @@ void ReportVisitor::visitICCTag(const byte* tag,uint32_t offset,uint32_t length)
 }
 
 
-void ReportVisitor::visitBegin(Image& image)
+void ReportVisitor::visitBegin(Image& image,std::string msg)
 {
     indent_++;
     if ( option() & (kpsBasic|kpsRecursive) ) {
         char c = image.endian() == keBig ? 'M' : 'I';
         out() << indent() << stringFormat("STRUCTURE OF %s FILE (%c%c): ",image.format().c_str(),c,c) <<  image.io().path() << std::endl;
+        if ( msg.size() ) out() << indent() << msg << std::endl;
         if ( image.header_.size() ) {
             out() << indent() << image.header_ << std::endl;
         }
@@ -2121,7 +2144,7 @@ void ReportVisitor::visitIptc(Io& io,Image& image,uint64_t address,uint32_t leng
         IoSave restore(io,address);
         DataBuf buff(length);
         io.read(buff);
-        out() << indent() << "  Record | DataSet | Name                           | Length | Data" << std::endl;
+        out() << indent() << "    Record | DataSet | Name                           | Length | Data" << std::endl;
         uint32_t i  =    0 ; // index
         uint32_t bs =    5 ; // blocksize
         uint8_t  fs = 0x1c ; // field seperator
@@ -2134,7 +2157,7 @@ void ReportVisitor::visitIptc(Io& io,Image& image,uint64_t address,uint32_t leng
             TagDict& iptcDict = iptcDicts.find(record) != iptcDicts.end() ? iptcDicts[record] : iptc0;
             std::string name  = tagName(dataset,iptcDict,30,"Iptc");
 
-            out() << indent() << stringFormat("  %6d | %7d | %-30s | %6d | ", record, dataset,name.c_str(),len)
+            out() << indent() << stringFormat("    %6d | %7d | %-30s | %6d | ", record, dataset,name.c_str(),len)
                   << chop(::binaryToString(buff.pData_,i+5,len),60) << std::endl;
 
             i += bs + len;
@@ -2151,8 +2174,26 @@ void ReportVisitor::visitResource(Io& io,Image& image,uint64_t address)
     io.read(buff);
     out() << indent() << stringFormat("%8d | %d | ",address,length) << buff.binaryToString() << std::endl;
     if ( length > 8 && option() & kpsRecursive ) {
-        if ( buff.is("8BIM") ) {
-            visitIptc(io,image,address+8,length);
+        if ( buff.begins("8BIM") ) {
+            // read in all the data
+            uint32_t offset = 0  ;
+            DataBuf  b(length);
+            io.seek(address+4);
+            io.read(b);
+            out() << indent() << "    offset  |   kind |   length | " << std::endl;
+            // run the linked-list of 8BIM records
+            while ( offset+4 < length ) {
+                uint32_t end  = b.search(offset+4,"8BIM") ;
+                uint32_t len  = end - offset;
+                uint16_t kind = getShort(b,offset+4,image.endian());
+                out() << indent() << stringFormat("   %8d | %06#x | %8d | ",offset,kind,len)
+                      << b.binaryToString(offset,len>40?40:len)
+                      << std::endl;
+                if ( kind == 0x0404 ) {
+                    visitIptc(io,image,address+4+offset,len);
+                }
+                offset += len ;
+            }
         }
     }
 }
