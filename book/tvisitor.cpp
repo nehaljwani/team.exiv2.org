@@ -2166,34 +2166,48 @@ void ReportVisitor::visitIptc(Io& io,Image& image,uint64_t address,uint32_t leng
     }
 }
 
+DataBuf getPascalString(DataBuf& buff,uint32_t offset)
+{
+    uint8_t  L = buff.pData_[offset];  // #abc
+    uint16_t l = L==0  ? 2
+               : L % 2 ? L + 1
+               : L     ;
+    DataBuf result (l);
+    for ( uint16_t i = 0 ; i < L ; i++ ) {
+        result.pData_[i] = buff.pData_[offset+i+1];
+    }
+    return result;
+}
+
 void ReportVisitor::visitResource(Io& io,Image& image,uint64_t address)
 {
     IoSave   restore(io,address);
     uint32_t length = io.getLong(image.endian());
     DataBuf  buff(length > 40 ? 40 : length);
     io.read(buff);
-    out() << indent() << stringFormat("%8d | %d | ",address,length) << buff.binaryToString() << std::endl;
-    if ( length > 8 && option() & kpsRecursive ) {
-        if ( buff.begins("8BIM") ) {
-            // read in all the data
-            uint32_t offset = 0  ;
-            DataBuf  b(length);
-            io.seek(address+4);
-            io.read(b);
-            out() << indent() << "    offset  |   kind |   length | " << std::endl;
-            // run the linked-list of 8BIM records
-            while ( offset+4 < length ) {
-                uint32_t end  = b.search(offset+4,"8BIM") ;
-                uint32_t len  = end - offset;
-                uint16_t kind = getShort(b,offset+4,image.endian());
-                out() << indent() << stringFormat("   %8d | %06#x | %8d | ",offset,kind,len)
-                      << b.binaryToString(offset,len>40?40:len)
-                      << std::endl;
-                if ( kind == 0x0404 ) {
-                    visitIptc(io,image,address+4+offset,len);
-                }
-                offset += len ;
+    out() << indent() << stringFormat("%8d | %6d | ",address,length) << buff.binaryToString()
+    //    << " " << buff.toString(kttUByte,buff.size_,image.endian())
+          << std::endl;
+    if ( buff.begins("8BIM") ) {
+        // read in all the data
+        uint32_t offset = 0  ;
+        DataBuf  b(length);
+        io.seek(address+4);
+        io.read(b);
+        out() << indent() << "    offset  |   kind | name |      len | data | " << std::endl;
+        while ( offset+4 < length ) {
+            uint16_t kind = getShort       (b,offset+4,image.endian());
+            DataBuf  name = getPascalString(b,offset+6);
+            uint32_t len  = getLong        (b,offset+6+name.size_,image.endian());
+            uint32_t pad  = len%2?1:0;
+            uint32_t data = (uint32_t)(4+2+4+name.size_); // "8BIM" + short (kind) + name + long (len)
+            out() << indent() << stringFormat("   %8d | %06#x | %4s | %8d | %2d+%1d | ",offset,kind,(char*)name.pData_,len,data,pad)
+                  <<        b.binaryToString(offset,len>40?40:len+data+pad)
+                  << std::endl;
+            if ( option() & kpsRecursive && kind == 0x0404) {
+                visitIptc(io,image,address+offset+data+pad,len);
             }
+            offset += len + pad + data ;
         }
     }
 }
