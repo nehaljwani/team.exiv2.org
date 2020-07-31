@@ -909,18 +909,25 @@ bool PSDImage::valid()
         DataBuf  h(4); io_.read(h);
         uint16_t version = io_.getShort(endian_);
         
-        if ( h.is("8BPS") && version == 1 && io_.getLong(endian_) == 0 && io_.getShort(endian_) == 0  ) {
+        if ( h.begins("8BPS") && version == 1 && io_.getLong(endian_) == 0 && io_.getShort(endian_) == 0  ) {
             start_  = 26;
             format_ = "PSD";
             valid_  = true;
         }
+        ch_     = io_.getShort(endian_);
+        width_  = io_.getLong (endian_);
+        height_ = io_.getLong (endian_);
+        bits_   = io_.getShort(endian_);
+        col_    = io_.getLong (endian_);
         header_ = " address | length | data";
     }
     return valid_ ;
 }
 ```
 
-PSDImage::accept() is easy.  As the header has been validated, all it has to do is to run the link-list of 3 resources (Color, Image and Layer/Mask).
+PSDImage::accept() is easy.  As the header has been validated, all it has to do is to run the link-list of 3 resources (Color, Image and Layer/Mask).  However, because the Metadata is all stored in the "Image Resources", I also navigate that structure and call visit8BIM().
+
+There is a 'name' in the data structure which is stored as a Pascal string which is an array of up to 257 bytes.  The first byte in the length of the string.  The string is not null terminated.  The string "\0\0" is the empty string.  I think this is a software relic as my test file has the empty string for every 8BIM record.
 
 ```cpp
 void PSDImage::accept(Visitor& visitor)
@@ -930,16 +937,38 @@ void PSDImage::accept(Visitor& visitor)
         std::ostringstream os ; os << "expected " << format_ ;
         Error(kerInvalidFileFormat,io().path(),os.str());
     }
-    
-    visitor.visitBegin(*this); // tell the visitor
+    std::string msg = stringFormat("#ch = %d, width x height = %d x %d, bits/col = %d/%d",ch_,width_,height_,bits_,col_);
+    visitor.visitBegin(*this,msg); // tell the visitor
 
-    IoSave restore(io_,start_) ;
+    IoSave restore(io_,0) ;
     DataBuf  lBuff(4);
     uint64_t address = start_ ;
     for ( uint16_t i = 0 ; i <=2 ; i++ ) {
         io().seek(address);
         uint32_t length = io_.getLong(endian());
         visitor.visitResource(io_,*this,address);
+        DataBuf buff(8);
+        io_.read(buff);
+        if ( buff.begins("8BIM") ) {
+            // read in all the data
+            uint32_t offset = 0  ;
+            DataBuf  b(length);
+            io().seek(address+4);
+            io().read(b);
+            visitor.visit8BIM(io_,*this,0,offset,0,b,0,0,0); // display the banner
+            while ( offset+4 < length ) {
+                uint16_t kind = getShort       (b,offset+4           ,endian_);
+                DataBuf  name = getPascalString(b,offset+6);
+                uint32_t len  = getLong        (b,offset+6+name.size_,endian_);
+                uint32_t pad  = len%2?1:0;
+                uint32_t data = (uint32_t)(4+2+4+name.size_); // "8BIM" + short (kind) + name + long (len)
+                visitor.visit8BIM(io_,*this,address,offset,kind,name,len,data,pad);
+                if ( visitor.option() & kpsRecursive && kind == 0x0404) {
+                    visitor.visitIptc(io(),*this,address+4+offset+data,len); // no pad.  pad is after the data
+                }
+                offset += len + pad + data ;
+            }
+        }
         address += length + 4 ;
     }
 
@@ -947,8 +976,7 @@ void PSDImage::accept(Visitor& visitor)
 }
 ```
 
-ReportVisitor::visitResource() is called 3 times and reports the address,length and data.  When the report visitor option in kpsRecursive,
-the code runs the 8BIM chain in the ImageResource.  Although we can see XMP, ICC and Exif metadata, only IPTC is recursively decoded.  I'll leave you the reader to 
+ReportVisitor::visitResource() is called 3 times and reports the address,length and data.
 
 ```cpp
 void ReportVisitor::visitResource(Io& io,Image& image,uint64_t address)
@@ -957,32 +985,30 @@ void ReportVisitor::visitResource(Io& io,Image& image,uint64_t address)
     uint32_t length = io.getLong(image.endian());
     DataBuf  buff(length > 40 ? 40 : length);
     io.read(buff);
-    out() << indent() << stringFormat("%8d | %d | ",address,length) << buff.binaryToString() << std::endl;
-    if ( length > 8 && option() & kpsRecursive ) {
-        if ( buff.begins("8BIM") ) {
-            // read in all the data
-            uint32_t offset = 0  ;
-            DataBuf  b(length);
-            io.seek(address+4);
-            io.read(b);
-            out() << indent() << "    offset  |   kind |   length | " << std::endl;
-            // run the linked-list of 8BIM records
-            while ( offset+4 < length ) {
-                uint32_t end  = b.search(offset+4,"8BIM") ;
-                uint32_t len  = end - offset;
-                uint16_t kind = getShort(b,offset+4,image.endian());
-                out() << indent() << stringFormat("   %8d | %06#x | %8d | ",offset,kind,len)
-                      << b.binaryToString(offset,len>40?40:len)
-                      << std::endl;
-                if ( kind == 0x0404 ) {
-                    visitIptc(io,image,address+4+offset,len);
-                }
-                offset += len ;
-            }
-        }
+    out() << indent() << stringFormat("%8d | %6d | ",address,length) << buff.binaryToString() << std::endl;
+}
+```
+
+And to complete the story, the reporter for 8BIM is quite simple.
+
+```cpp
+void ReportVisitor::visit8BIM(Io& io,Image& image,uint64_t address,uint32_t offset
+                ,uint16_t kind,DataBuf& name,uint32_t len,uint32_t data,uint32_t pad)
+{
+    IoSave   restore(io,address+4+offset);
+    if ( address == 0 ) {
+        out() << indent() << "    offset  |   kind | name |      len | data | " << std::endl;
+    } else {
+        DataBuf  b(len+12);
+        io.read(b);
+        out() << indent() << stringFormat("   %8d | %06#x | %4s | %8d | %2d+%1d | ",offset,kind,(char*)name.pData_,len,data,pad)
+        <<        b.binaryToString(0,len>40?40:len+data+pad)
+        << std::endl;
     }
 }
 ```
+
+I haven't bothered to implement options -pX (XMP), -pC (ICC Color Profile) or -pI (IPTC) although it's very simple to implement.
 
 <div id="RAF"/>
 ## RAF Fujifilm RAW

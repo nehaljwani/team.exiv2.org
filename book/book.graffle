@@ -2428,7 +2428,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2020-07-31 11:07:24 +0000</string>
+	<string>2020-07-31 14:21:56 +0000</string>
 	<key>Modifier</key>
 	<string>Robin Mills</string>
 	<key>NotesVisible</key>
@@ -22846,7 +22846,7 @@ word align}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{333.0708691637347, 332.29294433909695}, {169, 104}}</string>
+					<string>{{335.90551485874516, 332.29294433909689}, {169, 104}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -23200,7 +23200,7 @@ col  = Bitmap       = 0\
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{34.015748340126095, 265.67358607683639}, {439.66142048629229, 248}}</string>
+					<string>{{28.346456950105079, 279.21879958570872}, {439.66142048629229, 224}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -23263,24 +23263,21 @@ $ tvisitor  -pR ~/psd.psd \
 STRUCTURE OF PSD FILE (MM): /Users/rmills/psd.psd\
 #ch = 3, width x height = 91 x 150, bits/col = 8/0\
  address | length | data\
-      26 | 0 | \
-      30 | 23142 | 8BIM.._____...Z_..%G..__.___8BIM.%_____.\
-    offset  |   kind |   length | \
-          0 | 0x0404 |       28 | 8BIM.._____...Z_..%G..__.___\
+      26 |      0 | \
+      30 |  23142 | 8BIM.._____...Z_..%G..__.___8BIM.%_____.\
+    offset  |   kind | name |      len | data | \
+          0 | 0x0404 |      |       15 | 12+1 | 8BIM.._____...Z_..%G..__.___\
       Record | DataSet | Name                           | Length | Data\
            1 |      90 | Iptc.Envelope.CharacterSet     |      3 | .%G\
            2 |       0 | Iptc.Application.RecordVersion |      2 | __\
-         28 | 0x0425 |       28 | 8BIM.%_____....\}.....pv....N\
-         56 | 0x0424 |    15572 | 8BIM.$____&lt;.&lt;?xpacket begin="..." id="W5\
-      15628 | 0x043a |      254 | 8BIM.:_____.___.___._____.printOutput___\
-      15882 | 0x043b |      446 | 8BIM.;____..___.___._____.printOutputOpt\
-      16328 | 0x03ed |       28 | 8BIM.._____._H___._._H___._.\
-...\
-      22428 | 0x0422 |      394 | 8BIM."____.~MM_*___._..__.___._.__.._.__\
-...\
-   23176 | 32 | ________8BIMFMsk___.__.._______2\
-END: /Users/rmills/psd.psd\
-}</string>
+         28 | 0x0425 |      |       16 | 12+0 | 8BIM.%_____....\}.....pv....N\
+         56 | 0x0424 |      |    15560 | 12+0 | 8BIM.$____&lt;.&lt;?xpacket begin="..." id="W5\
+... \
+      22428 | 0x0422 |      |      382 | 12+0 | 8BIM."____.~MM_*___._..__.___._.__.._.__\
+      22822 | 0x0fa0 |      |      268 | 12+0 | 8BIM..____..maniIRFR__._8BIMAnDs___.___.\
+      23102 | 0x0fa1 |      |       28 | 12+0 | 8BIM.._____.mfri___.___.___._______.____\
+   23176 |     32 | ________8BIMFMsk___.__.._______2\
+END: /Users/rmills/psd.psd}</string>
 					</dict>
 				</dict>
 				<dict>
@@ -23662,9 +23659,9 @@ END: /Users/rmills/psd.psd\
 		<key>TopSlabHeight</key>
 		<real>33</real>
 		<key>VisibleRegion</key>
-		<string>{{6, 104.25}, {492, 306.5}}</string>
+		<string>{{-96, -45}, {999, 628}}</string>
 		<key>Zoom</key>
-		<real>2</real>
+		<real>1</real>
 		<key>ZoomValues</key>
 		<array>
 			<array>
@@ -23724,8 +23721,8 @@ END: /Users/rmills/psd.psd\
 			</array>
 			<array>
 				<string>PSD</string>
-				<real>2</real>
 				<real>1</real>
+				<real>2</real>
 			</array>
 		</array>
 	</dict>
