@@ -2428,7 +2428,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2020-07-31 14:21:56 +0000</string>
+	<string>2020-08-01 07:07:59 +0000</string>
 	<key>Modifier</key>
 	<string>Robin Mills</string>
 	<key>NotesVisible</key>
@@ -21697,11 +21697,11 @@ word align}</string>
 							<key>Color</key>
 							<dict>
 								<key>b</key>
-								<real>0.0</real>
+								<real>0.99983245129999998</real>
 								<key>g</key>
-								<real>0.97800900000000002</real>
+								<real>0.94890445469999996</real>
 								<key>r</key>
-								<real>0.0</real>
+								<real>0.73019015789999997</real>
 								<key>space</key>
 								<string>srgb</string>
 							</dict>
@@ -21738,9 +21738,9 @@ word align}</string>
 					<integer>348</integer>
 					<key>Points</key>
 					<array>
-						<string>{204.42123845852302, 229.05161579055763}</string>
-						<string>{204.58723573894042, 251.71048520232497}</string>
-						<string>{244.59448269035875, 251.64407895232497}</string>
+						<string>{210.42123845852302, 229.05161579055763}</string>
+						<string>{210.58723573894042, 251.71048520232497}</string>
+						<string>{250.59448269035875, 251.64407895232497}</string>
 					</array>
 					<key>Style</key>
 					<dict>

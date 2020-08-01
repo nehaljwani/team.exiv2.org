@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-07-30</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-07-31</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -237,7 +237,6 @@ The good news however is that file formats come in families which are:
 | BMP     | Windows BMP never has XMP, IPTC or Exif metadata.<br>Version5 may include an ICC profile. | BMP |
 | COS     | Adobe PDF Format.  This is a very flexible container<br>Exiv2 does not support this. | PDF, JDF |
 | EPS     | Adobe Encapsulated PostScript<br>The code in Exiv2 to deal with this is deprecated    | EPS, AI |
-| PS      | Adobe PostScript.  Beautiful graphics language.                                            | PS |
 
 The Metadata is defined by standards which also define how to embed the data in the image.
 
@@ -261,7 +260,7 @@ Here is a useful WikiPedia site that summarises file formats: [https://en.wikipe
 
 The architecture of TIFF and BigTiff are the same.  BigTiff is 64 bit based.  So most uint16\_t data types become uint32\_t and uint32\_t become uint64\_t.  BigTiff has three additional 8 byte types: Long8, SLong8 and Ifd8.
 
-For both TIFF and BigTiff, the _**magic**_ header is MM (Motorola) for big-endian and II (Intel) for little-endian, followed by a 2-byte integer which must be 42 (ascii \*) for Tiff and 43 (ascii +) for BigTiff.  These markers are very obvious **MM\_+** or **II*\_** when formatted by dmpf.cpp
+For both TIFF and BigTiff, the _**magic**_ header is MM (Motorola) for big-endian and II (Intel) for little-endian, followed by a 2-byte integer which must be 42 (ascii \*) for Tiff and 43 (ascii \+) for BigTiff.  These markers are very obvious **MM\_+** or **II*\_** when formatted by dmpf.cpp
 
 Both tag and type are uint16\_t in TIFF and BigTiff.
 
@@ -275,7 +274,7 @@ The header for TIFF is 8 bytes.  It is the _**magic**_  header followed by a lon
 | Type     | uint16\_t        | uint16\_t            | Entries **#E** | uint16\_t | uint64\_t  |
 | Count    | uint32\_t        | uint64\_t            | Next           | uint32\_t | uint64\_t  | 
 
-It's also important to understand that Endian can change as we descend into the file.  There are images in which there are sub-files whose endian setting is different from the container.
+It's important to understand that Endian can change as we descend into the file.  There are images in which there are sub-files whose endian setting is different from the container.
 
 ### XMP and ICC Profiles in Tiff
 
@@ -290,7 +289,7 @@ $
 
 ### NEF, DNG and CR2
 
-These are tiff files.  There must be some subtle matters to be handled in these format, however tvisitor has no trouble running over the files.  Allow me to quote directly from Adobe's document: [https://www.adobe.com/content/dam/acom/en/products/photoshop/pdfs/dng\_spec\_1.4.0.0.pdf](dng_spec_1.4.0.0.pdf)
+These are tiff files.  There must be some subtle matters to be handled in these formats, however tvisitor has no trouble running over the files.  Allow me to quote directly from Adobe's document: [https://www.adobe.com/content/dam/acom/en/products/photoshop/pdfs/dng\_spec\_1.4.0.0.pdf](dng_spec_1.4.0.0.pdf)
 
 _**A Standard Format**_
 
@@ -1565,7 +1564,7 @@ I believe the data is defined in the Standard ISO/IEC 2022.  The following web p
 
 ### IPTC Extended Blocks
 
-As with Exif metdata, the IPTC data block can exceed 64k byte and this cannot be stored in a single JPEG segment.  Exiv2 has code to deal with this and is thouroughly documented here: [https://dev.exiv2.org/issues/0000533](https://dev.exiv2.org/issues/0000533)
+As with Exif metdata, the IPTC data block can exceed 64k byte and this cannot be stored in a single JPEG segment.  Exiv2 has code to deal with this and is documented here: [https://dev.exiv2.org/issues/0000533](https://dev.exiv2.org/issues/0000533)
 
 ### IPTC in Tiff and other formats.
 
