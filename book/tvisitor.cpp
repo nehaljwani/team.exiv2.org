@@ -601,6 +601,7 @@ TagDict agfaDict  ;
 TagDict appleDict ;
 TagDict gpsDict   ;
 TagDict crwDict   ;
+TagDict psdDict   ;
 
 enum ktSpecial
 {   ktMakerNote = 0x927c
@@ -2208,11 +2209,15 @@ void ReportVisitor::visit8BIM(Io& io,Image& image,uint64_t address,uint32_t offs
                 ,uint16_t kind,DataBuf& name,uint32_t len,uint32_t data,uint32_t pad,DataBuf& b)
 {
     if ( address == 0 ) {
-        out() << indent() << "     offset |   kind | name |      len | data | " << std::endl;
+        out() << indent() << "     offset |   kind | tagName                    | name |      len | data | " << std::endl;
     } else {
-        out() << indent() << stringFormat("   %8d | %06#x | %4s | %8d | %2d+%1d | ",offset,kind,(char*)name.pData_,len,data,pad)
-        <<        b.binaryToString(0,len>40?40:len+data+pad)
-        << std::endl;
+        std::string tag = ::tagName(kind,psdDict,40,"PSD");
+        if ( printTag(tag) ) {
+            out() << indent() << stringFormat("   %8d | %06#x | %-28s | %4s | %8d | %2d+%1d | "
+                                ,offset,kind,tag.c_str(),(char*)name.pData_,len,data,pad)
+            <<        b.binaryToString(0,len>40?40:len+data+pad)
+            << std::endl;
+        }
     }
 }
 
@@ -2569,6 +2574,15 @@ void init()
     iptcApplication[      0] = "RecordVersion" ;
     iptcApplication[     12] = "Subject"       ;
     iptcApplication[    120] = "Caption"       ;
+    
+    psdDict        [ktGroup] = "8BIM"          ;
+    psdDict        [ 0x0404] = "IPTC-NAA"      ;
+    psdDict        [ 0x040C] = "Thumbnail"     ;
+    psdDict        [ 0x040F] = "ICCProfile"    ;
+    psdDict        [ 0x0421] = "Version"       ;
+    psdDict        [ 0x0422] = "Exif"          ;
+    psdDict        [ 0x0423] = "Exif"          ;
+    psdDict        [ 0x0424] = "XMP"           ;
 
     iptcDicts[1]             = iptcEnvelope;
     iptcDicts[2]             = iptcApplication ;
