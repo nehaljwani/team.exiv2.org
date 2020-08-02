@@ -895,7 +895,7 @@ To be written.
 ## PSD PhotoShop
 ![psd](psd.png)
 
-This is documented [http://paulbourke.net/dataformats/psdpsb/psdpsb.html](http://paulbourke.net/dataformats/psdpsb/psdpsb.html)
+Adobe Publish the following: [https://www.adobe.com/devnet-apps/photoshop/fileformatashtml/#50577411_21585](https://www.adobe.com/devnet-apps/photoshop/fileformatashtml/#50577411_21585).  And, I found this PDF very useful.  [http://paulbourke.net/dataformats/psdpsb/psdpsb.html](http://paulbourke.net/dataformats/psdpsb/psdpsb.html)
 
 PSDImage::valid() is straightforward:
 
