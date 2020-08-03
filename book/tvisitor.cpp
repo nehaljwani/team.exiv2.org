@@ -1307,8 +1307,8 @@ public:
         format_ = "JP2" ;
 
         const char*  kJp2UuidExif  = "4a706754-6966-6645-7869-662d3e4a5032" ; // "JpgTiffExif->JP2";
-        const char*  kJp2UuidIptc  = "33c7a4d2-b81d-4723-a0ba-f1a3e097ad38" ; // "\x33\xc7\xa4\xd2\xb8\x1d\x47\x23\xa0\xba\xf1\xa3\xe0\x97\xad\x38";
-        const char*  kJp2UuidXmp   = "be7acfcb-97a9-42e8-9c71-999491e3afac" ; // "\xbe\x7a\xcf\xcb\x97\xa9\x42\xe8\x9c\x71\x99\x94\x91\xe3\xaf\xac";
+        const char*  kJp2UuidIptc  = "33c7a4d2-b81d-4723-a0ba-f1a3e097ad38" ;
+        const char*  kJp2UuidXmp   = "be7acfcb-97a9-42e8-9c71-999491e3afac" ;
         const char*  kJp2UuidCan1  = "85c0b687-820f-11e0-8111-f4ce462b6a48" ;
         const char*  kJp2UuidCan2  = "eaf42b5e-1c98-4b88-b9fb-b7dc406e4d16" ;
 
@@ -1407,9 +1407,9 @@ public:
     bool valid()
     {
         if ( !valid_ ) {
-            valid_  = true; // we have to trust the caller
-            endian_ = keBig ;
             IoSave  restore(io(),0);
+            valid_  = io().getb() == 0x1c; // must start with FS (field separator)
+            endian_ = keBig ;
             header_ = "    Record | DataSet | Name                           | Length | Data" ;
             format_ = "IPTC";
             start_  = 0;
@@ -1588,12 +1588,13 @@ public:
                       , uint64_t       count, uint64_t offset
                       , DataBuf&         buf, const TagDict& tagDict);
     void visitICCTag  (const byte* tag,uint32_t offset,uint32_t length);
-    void visitIPTC    (Io& io,Image& image,uint64_t address
-                      ,uint16_t record,uint16_t dataset,std::string& name
-                       ,DataBuf& buff,uint32_t len,uint32_t offset);
+    void visitIPTC    (Io& io,Image& image
+                      ,uint16_t record,uint16_t dataset,uint32_t len
+                      ,DataBuf& buff,uint32_t offset);
     void visitResource(Io& io,Image& image,uint64_t address);
-    void visit8BIM(Io& io,Image& image,uint32_t offset
-        ,uint16_t kind,DataBuf& name,uint32_t len,uint32_t data,uint32_t pad,DataBuf& b);
+    void visit8BIM    (Io& io,Image& image,uint32_t offset
+                      ,uint16_t kind,DataBuf& name,uint32_t len
+                      ,uint32_t data,uint32_t pad,DataBuf& b);
 
     void visitEnd(Image& image)
     {
@@ -1992,14 +1993,15 @@ void Jp2Image::accept(class Visitor& v)
     }
 } // Jp2Image::accept()
 
-void ReportVisitor::visitIPTC(Io& io,Image& image,uint64_t address
-,uint16_t record,uint16_t dataset,std::string& name,DataBuf& buff,uint32_t len,uint32_t offset)
+void ReportVisitor::visitIPTC(Io& io,Image& image
+                          ,uint16_t record,uint16_t dataset,uint32_t len
+                          ,DataBuf& buff,uint32_t offset)
 {
     TagDict& iptcDict = iptcDicts.find(record) != iptcDicts.end() ? iptcDicts[record] : iptc0;
     std::string tag  = tagName(dataset,iptcDict,30,"Iptc");
     if ( printTag(tag) ) {
-        out() << indent() << stringFormat("    %6d | %7d | %-30s | %6d | ", record, dataset,name.c_str(),len)
-          << chop(::binaryToString(buff.pData_,offset+5,len),60) << std::endl;
+        out() << indent() << stringFormat("    %6d | %7d | %-30s | %6d | ", record, dataset,tag.c_str(),len)
+              << chop(::binaryToString(buff.pData_,offset+5,len),60) << std::endl;
     }
 }
 
@@ -2280,7 +2282,7 @@ void IPTC::accept(Visitor& visitor)
         uint32_t i  =    0 ; // index
         uint32_t bs =    5 ; // blocksize
         uint8_t  fs = 0x1c ; // field seperator
-        while (i+bs < length && ::getByte (buff,i) != fs ) i++; // find fs (== escape)
+        while (i+bs < length && ::getByte (buff,i) != fs ) i++; // find fs
         while (i+bs < length && ::getByte (buff,i) == fs ) {    // FS-RE-DS-short = byte, byte, byte, short ... data ....
             uint16_t record   = ::getByte (buff,i+1);
             uint16_t dataset  = ::getByte (buff,i+2);
@@ -2404,6 +2406,9 @@ void init()
     if ( tiffDict.size() ) return; // don't do this twice!
 
     tiffDict  [ktGroup ] = "Image";
+    tiffDict  [ 0x83bb ] = "IPTCNAA";
+    tiffDict  [ 0x02bc ] = "XMLPacket";
+    tiffDict  [ 0x8773 ] = "InterColorProfile";
     tiffDict  [ 0x8769 ] = "ExifTag";
     tiffDict  [ 0x014a ] = "SubIFD";
     tiffDict  [ 0x00fe ] = "NewSubfileType";
@@ -2429,9 +2434,6 @@ void init()
     tiffDict  [ 0x0213 ] = "YCbCrPositioning";
 
     exifDict  [ktGroup ] = "Photo";
-    tiffDict  [ 0x83bb ] = "IPTCNAA";
-    tiffDict  [ 0x02bc ] = "XMLPacket";
-    tiffDict  [ 0x8773 ] = "InterColorProfile";
     exifDict  [ 0x927c ] = "MakerNote";
     exifDict  [ 0x829a ] = "ExposureTime";
     exifDict  [ 0x829d ] = "FNumber";
@@ -2639,6 +2641,8 @@ void init()
     iptcApplication[      0] = "RecordVersion" ;
     iptcApplication[     12] = "Subject"       ;
     iptcApplication[    120] = "Caption"       ;
+    iptcDicts[1]             = iptcEnvelope;
+    iptcDicts[2]             = iptcApplication ;
 
     psdDict        [ktGroup] = "8BIM"          ;
     psdDict        [ 0x0404] = "IPTC-NAA"      ;
@@ -2648,9 +2652,6 @@ void init()
     psdDict        [ 0x0422] = "Exif"          ;
     psdDict        [ 0x0423] = "Exif"          ;
     psdDict        [ 0x0424] = "XMP"           ;
-
-    iptcDicts[1]             = iptcEnvelope;
-    iptcDicts[2]             = iptcApplication ;
 }
 
 // That's all Folks!

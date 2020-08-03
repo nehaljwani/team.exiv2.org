@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-08-02</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-08-03</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -444,6 +444,10 @@ STRUCTURE OF EXV FILE (II): /Users/rmills/Stonehenge.exv
 END: /Users/rmills/Stonehenge.exv
 .../book/build $ 
 ```
+
+### APP13 Photoshop 3.0 Segment
+
+This is an 8BIM chain and is explained in [PSD PhotoShop Document](#PSD)
 
 ### Extended JPEG
 
@@ -928,6 +932,8 @@ PSDImage::accept() is easy.  As the header has been validated, all it has to do 
 
 There is a 'name' in the data structure which is stored as a Pascal string which is an array of up to 257 bytes.  The first byte in the length of the string.  The string is not null terminated.  The string "\0\0" is the empty string.  I think this is a software relic as my test file has the empty string for every 8BIM record.
 
+I've chosen to treat the 8BIM chain as a file type.  You will never find this as a file on your computer, however you will find this record type in JPEG files in App13 with signature _**PhotoShop 3.0**_.
+
 ```cpp
 void PSDImage::accept(Visitor& visitor)
 {
@@ -936,7 +942,8 @@ void PSDImage::accept(Visitor& visitor)
         std::ostringstream os ; os << "expected " << format_ ;
         Error(kerInvalidFileFormat,io().path(),os.str());
     }
-    std::string msg = stringFormat("#ch = %d, width x height = %d x %d, bits/col = %d/%d",ch_,width_,height_,bits_,col_);
+    std::string msg = stringFormat("#ch = %d, width x height = %d x %d, "
+        "bits/col = %d/%d",ch_,width_,height_,bits_,col_);
     visitor.visitBegin(*this,msg); // tell the visitor
 
     IoSave restore(io_,0) ;
@@ -946,28 +953,9 @@ void PSDImage::accept(Visitor& visitor)
         io().seek(address);
         uint32_t length = io_.getLong(endian());
         visitor.visitResource(io_,*this,address);
-        DataBuf buff(8);
-        io_.read(buff);
-        if ( buff.begins("8BIM") ) {
-            // read in all the data
-            uint32_t offset = 0  ;
-            DataBuf  b(length);
-            io().seek(address+4);
-            io().read(b);
-            visitor.visit8BIM(io_,*this,0,offset,0,b,0,0,0); // display the banner
-            while ( offset+4 < length ) {
-                uint16_t kind = getShort       (b,offset+4           ,endian_);
-                DataBuf  name = getPascalString(b,offset+6);
-                uint32_t len  = getLong        (b,offset+6+name.size_,endian_);
-                uint32_t pad  = len%2?1:0;
-                uint32_t data = (uint32_t)(4+2+4+name.size_); // "8BIM" + short (kind) + name + long (len)
-                visitor.visit8BIM(io_,*this,address,offset,kind,name,len,data,pad);
-                if ( visitor.option() & kpsRecursive && kind == 0x0404) {
-                    visitor.visitIptc(io(),*this,address+4+offset+data,len); // no pad.  pad is after the data
-                }
-                offset += len + pad + data ;
-            }
-        }
+        Io    bim(io_,address+4,length);
+        C8BIM c8bim(bim);
+        c8bim.accept(visitor);
         address += length + 4 ;
     }
 
