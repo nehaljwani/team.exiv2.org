@@ -2428,7 +2428,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2020-08-01 07:07:59 +0000</string>
+	<string>2020-08-03 08:45:35 +0000</string>
 	<key>Modifier</key>
 	<string>Robin Mills</string>
 	<key>NotesVisible</key>
@@ -20411,55 +20411,7 @@ END: /Users/rmills/small.icc }</string>
 			<array>
 				<dict>
 					<key>Bounds</key>
-					<string>{{25.500315262809124, 123.55905437469482}, {260.79889993325219, 18.425196067179286}}</string>
-					<key>Class</key>
-					<string>ShapedGraphic</string>
-					<key>FontInfo</key>
-					<dict>
-						<key>Size</key>
-						<real>10</real>
-					</dict>
-					<key>HFlip</key>
-					<string>YES</string>
-					<key>ID</key>
-					<integer>323</integer>
-					<key>Style</key>
-					<dict>
-						<key>fill</key>
-						<dict>
-							<key>Color</key>
-							<dict>
-								<key>b</key>
-								<real>0.0</real>
-								<key>g</key>
-								<real>0.97805699999999995</real>
-								<key>r</key>
-								<real>0.0</real>
-								<key>space</key>
-								<string>srgb</string>
-							</dict>
-						</dict>
-						<key>shadow</key>
-						<dict>
-							<key>Beneath</key>
-							<string>YES</string>
-						</dict>
-					</dict>
-					<key>Text</key>
-					<dict>
-						<key>Text</key>
-						<string>{\rtf1\ansi\ansicpg1252\cocoartf2513
-\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 HelveticaNeue;}
-{\colortbl;\red255\green255\blue255;}
-{\*\expandedcolortbl;;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc\partightenfactor0
-
-\f0\fs20 \cf0 trailing data bytes}</string>
-					</dict>
-				</dict>
-				<dict>
-					<key>Bounds</key>
-					<string>{{333.02788039835201, 68.283466173156967}, {169, 76}}</string>
+					<string>{{333.02788039835201, 67.283466173156967}, {169, 85}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -20531,31 +20483,32 @@ END: /Users/rmills/small.icc }</string>
 						BAtzdHJlYW10eXBlZIHoA4QBQISE
 						hBJOU0F0dHJpYnV0ZWRTdHJpbmcA
 						hIQITlNPYmplY3QAhZKEhIQITlNT
-						dHJpbmcBlIQBK4HxAERTID0gRGF0
-						YVNlY3Rpb24gIFJFID0gUmVjb3Jk
-						IFR5cGUKIDEgPSBFbnZlbG9wZSAg
-						ICAgIDAgICBSZWNvcmRWZXJzaW9u
-						CiAgICAgICAgICAgICAgICAgICA1
-						ICAgRGVzdGluYXRpb24KICAgICAg
-						ICAgICAgICAgICAgOTAgICBDaGFy
-						YWN0ZXIgU2V0CiAyID0gQXBwbGlj
-						YXRpb24gICAwICAgTW9kZWxWZXJz
+						dHJpbmcBlIQBK4H7AEZTID0gMHgx
+						YwpEUyA9IERhdGFTZWN0aW9uICBS
+						RSA9IFJlY29yZCBUeXBlCiAxID0g
+						RW52ZWxvcGUgICAgICAwICAgUmVj
+						b3JkVmVyc2lvbgogICAgICAgICAg
+						ICAgICAgICAgNSAgIERlc3RpbmF0
 						aW9uCiAgICAgICAgICAgICAgICAg
-						IDEyICAgU3ViamVjdAogICAgICAg
-						ICAgICAgICAgIDEyMCAgIENhcHRp
-						b26GhAJpSQGB8QCShISEDE5TRGlj
-						dGlvbmFyeQCUhAFpA5KElpYHTlND
-						b2xvcoaShISEB05TQ29sb3IAlIQB
-						YwGEBGZmZmaDHm18P4M8gwY8g9R9
-						AD8BhpKElpYQTlNQYXJhZ3JhcGhT
-						dHlsZYaShISEF05TTXV0YWJsZVBh
-						cmFncmFwaFN0eWxlAISEEE5TUGFy
-						YWdyYXBoU3R5bGUAlIQEQ0NAUwAA
-						hISEB05TQXJyYXkAlJkAhoEAAoQE
-						WzFmXSSGkoSWlgZOU0ZvbnSGkoSE
-						hAZOU0ZvbnQelJkchAVbMjhjXQYA
-						AAASAAAA//5DAG8AbgBzAG8AbABh
-						AHMAAACEAWYImwCbAZsAmwCGhoY=
+						IDkwICAgQ2hhcmFjdGVyIFNldAog
+						MiA9IEFwcGxpY2F0aW9uICAgMCAg
+						IE1vZGVsVmVyc2lvbgogICAgICAg
+						ICAgICAgICAgICAxMiAgIFN1Ympl
+						Y3QKICAgICAgICAgICAgICAgICAx
+						MjAgICBDYXB0aW9uhoQCaUkBgfsA
+						koSEhAxOU0RpY3Rpb25hcnkAlIQB
+						aQOShJaWB05TQ29sb3KGkoSEhAdO
+						U0NvbG9yAJSEAWMBhARmZmZmgx5t
+						fD+DPIMGPIPUfQA/AYaShJaWEE5T
+						UGFyYWdyYXBoU3R5bGWGkoSEhBdO
+						U011dGFibGVQYXJhZ3JhcGhTdHls
+						ZQCEhBBOU1BhcmFncmFwaFN0eWxl
+						AJSEBENDQFMAAISEhAdOU0FycmF5
+						AJSZAIaBAAKEBFsxZl0khpKElpYG
+						TlNGb250hpKEhIQGTlNGb250HpSZ
+						HIQFWzI4Y10GAAAAEgAAAP/+QwBv
+						AG4AcwBvAGwAYQBzAAAAhAFmCJsA
+						mwGbAJsAhoaG
 						</data>
 						<key>Text</key>
 						<string>{\rtf1\ansi\ansicpg1252\cocoartf2513
@@ -20565,7 +20518,8 @@ END: /Users/rmills/small.icc }</string>
 \deftab720
 \pard\pardeftab720\partightenfactor0
 
-\f0\fs16 \cf2 DS = DataSection  RE = Record Type\
+\f0\fs16 \cf2 FS = 0x1c\
+DS = DataSection  RE = Record Type\
  1 = Envelope      0   RecordVersion\
                    5   Destination\
                   90   Character Set\
@@ -20576,55 +20530,7 @@ END: /Users/rmills/small.icc }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{25.500315262809124, 68.283466173156967}, {260.79889993325219, 18.425196067179286}}</string>
-					<key>Class</key>
-					<string>ShapedGraphic</string>
-					<key>FontInfo</key>
-					<dict>
-						<key>Size</key>
-						<real>10</real>
-					</dict>
-					<key>HFlip</key>
-					<string>YES</string>
-					<key>ID</key>
-					<integer>322</integer>
-					<key>Style</key>
-					<dict>
-						<key>fill</key>
-						<dict>
-							<key>Color</key>
-							<dict>
-								<key>b</key>
-								<real>0.0</real>
-								<key>g</key>
-								<real>0.97805699999999995</real>
-								<key>r</key>
-								<real>0.0</real>
-								<key>space</key>
-								<string>srgb</string>
-							</dict>
-						</dict>
-						<key>shadow</key>
-						<dict>
-							<key>Draws</key>
-							<string>NO</string>
-						</dict>
-					</dict>
-					<key>Text</key>
-					<dict>
-						<key>Text</key>
-						<string>{\rtf1\ansi\ansicpg1252\cocoartf2513
-\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 HelveticaNeue;}
-{\colortbl;\red255\green255\blue255;}
-{\*\expandedcolortbl;;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc\partightenfactor0
-
-\f0\fs20 \cf0 leading data bytes != 0x1c == FS (field separator)}</string>
-					</dict>
-				</dict>
-				<dict>
-					<key>Bounds</key>
-					<string>{{328.02788039835201, 145.56693044553592}, {55, 23}}</string>
+					<string>{{140.22834766549386, 115.68503959634174}, {55, 23}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -20675,7 +20581,7 @@ END: /Users/rmills/small.icc }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{81.432750216555888, 105.13385830751554}, {28.346456527709961, 18.425196067179286}}</string>
+					<string>{{81.346135979029611, 85.70866128994723}, {28.346456527709961, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -20718,7 +20624,7 @@ END: /Users/rmills/small.icc }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{53.086293688845949, 105.13385830751554}, {28.346456527709961, 18.425196067179286}}</string>
+					<string>{{52.999679451319679, 85.70866128994723}, {28.346456527709961, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -20761,7 +20667,7 @@ END: /Users/rmills/small.icc }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{25.598425492620841, 105.13385830751554}, {28.346456527709961, 18.425196067179286}}</string>
+					<string>{{25.511811255094571, 85.70866128994723}, {28.346456527709961, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -20804,7 +20710,7 @@ END: /Users/rmills/small.icc }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{166.47211979968569, 105.13385830751554}, {155.90551090240479, 18.425196067179286}}</string>
+					<string>{{166.38550556215941, 85.70866128994723}, {155.90551090240479, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -20847,7 +20753,7 @@ END: /Users/rmills/small.icc }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{109.77920674426585, 105.13385830751554}, {56.692913055419922, 18.425196067179286}}</string>
+					<string>{{109.69259250673957, 85.70866128994723}, {56.692913055419922, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -20890,7 +20796,7 @@ END: /Users/rmills/small.icc }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{81.432750216555917, 86.708662240336253}, {28.346456527709961, 18.425196067179286}}</string>
+					<string>{{81.34613597902964, 67.283465222767944}, {28.346456527709961, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -20938,7 +20844,7 @@ END: /Users/rmills/small.icc }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{53.086293688845949, 86.708662240336253}, {28.346456527709961, 18.425196067179286}}</string>
+					<string>{{52.999679451319679, 67.283465222767944}, {28.346456527709961, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -20986,7 +20892,7 @@ END: /Users/rmills/small.icc }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{26.500315262809124, 169.66141885312524}, {475.52756513554289, 207}}</string>
+					<string>{{26.500315262809124, 167.3152026335257}, {475.52756513554289, 207}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -21054,14 +20960,14 @@ STRUCTURE OF JPEG FILE (II): /Users/rmills/Stonehenge.jpg\
 ...\
    22847 | 0xffda SOS   |      12 | .._...._?_..\
 END: /Users/rmills/Stonehenge.jpg\
-.../book $ dmpf endian=1 skip=18080 count=96 width=24 ~/Stonehenge.jpg \
+... /book $ dmpf endian=1 skip=18080 count=96 width=24 ~/Stonehenge.jpg \
   0x46a0    18080: .._`Photoshop 3.0_8BIM..  -&gt;  ff ed 00 60 50 68 6f 74 6f 73 68 6f 70 20 33 2e 30 00 38 42 49 4d 04 04\
   0x46b8    18104: _____'..__._...Z_..%G.._  -&gt;  00 00 00 00 00 27 1c 01 00 00 02 00 04 1c 01 5a 00 03 1b 25 47 1c 02 00\
                                                                    FS DS RE &lt;len&gt; &lt;dat&gt; FS DS RE &lt;len&gt; &lt;-data-&gt; FS RE DS\
   0x46d0    18128: _._...x_.Classic View_8B  -&gt;  00 02 00 04 1c 02 78 00 0c 43 6c 61 73 73 69 63 20 56 69 65 77 00 38 42\
                                                  &lt;len&gt; &lt;dat&gt; FS DS RE &lt;len&gt;  C  l  a  s  s  i  c     V  i e   w\
   0x46e8    18152: IM.%_____.3..M..E.w..)..  -&gt;  49 4d 04 25 00 00 00 00 00 10 33 9e ec 4d fa f7 45 c9 77 18 cd 29 d2 87\
-.../book $ }</string>
+.../book $}</string>
 					</dict>
 				</dict>
 				<dict>
@@ -21078,8 +20984,8 @@ END: /Users/rmills/Stonehenge.jpg\
 					<integer>280</integer>
 					<key>Points</key>
 					<array>
-						<string>{25.598425492620841, 156.97589861235608}</string>
-						<string>{320.859239276962, 157.44833901713534}</string>
+						<string>{25.511811255094571, 119.85826915558866}</string>
+						<string>{320.77262503943575, 120.33070956036792}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -21101,7 +21007,7 @@ END: /Users/rmills/Stonehenge.jpg\
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{25.598425492620841, 86.708662240336253}, {28.346456527709961, 18.425196067179286}}</string>
+					<string>{{25.511811255094571, 67.283465222767944}, {28.346456527709961, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -21149,7 +21055,7 @@ END: /Users/rmills/Stonehenge.jpg\
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{166.4721197996858, 86.708662240336253}, {141.7322826385498, 18.425196067179286}}</string>
+					<string>{{166.38550556215952, 67.283465222767944}, {141.7322826385498, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -21197,7 +21103,7 @@ END: /Users/rmills/Stonehenge.jpg\
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{109.77920674426588, 86.708662240336253}, {56.692913055419922, 18.425196067179286}}</string>
+					<string>{{109.6925925067396, 67.283465222767944}, {56.692913055419922, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -21552,8 +21458,8 @@ END: /Users/rmills/Stonehenge.jpg\
 					<integer>350</integer>
 					<key>Points</key>
 					<array>
-						<string>{342.56500641794844, 187.18897096211518}</string>
-						<string>{342.73197110960052, 219.44817194545752}</string>
+						<string>{342.56500641794844, 178.18897096211518}</string>
+						<string>{342.73197110960052, 210.44817194545752}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -21575,7 +21481,7 @@ END: /Users/rmills/Stonehenge.jpg\
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{292.25196026834919, 176.18439415986538}, {52, 33}}</string>
+					<string>{{292.25196026834919, 164.18439415986538}, {52, 33}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -21627,7 +21533,7 @@ word align}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{269.85826011199651, 234.99211936223227}, {22, 22}}</string>
+					<string>{{269.85826011199651, 225.99211936223227}, {22, 22}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -21678,7 +21584,7 @@ word align}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{181.40156963493882, 220.32218826063428}, {56.692913055419922, 18.425196067179286}}</string>
+					<string>{{181.40156963493882, 211.32218826063428}, {56.692913055419922, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -21738,9 +21644,9 @@ word align}</string>
 					<integer>348</integer>
 					<key>Points</key>
 					<array>
-						<string>{210.42123845852302, 229.05161579055763}</string>
-						<string>{210.58723573894042, 251.71048520232497}</string>
-						<string>{250.59448269035875, 251.64407895232497}</string>
+						<string>{210.42123845852302, 220.05161579055763}</string>
+						<string>{210.58723573894042, 242.71048520232497}</string>
+						<string>{250.59448269035875, 242.64407895232497}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -21774,8 +21680,8 @@ word align}</string>
 					<integer>347</integer>
 					<key>Points</key>
 					<array>
-						<string>{237.94488317830363, 251.71048520232497}</string>
-						<string>{328.57842590621362, 251.71048520232497}</string>
+						<string>{237.94488317830363, 242.71048520232497}</string>
+						<string>{328.57842590621362, 242.71048520232497}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -21797,7 +21703,7 @@ word align}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{124.7086565795189, 220.2519622972913}, {56.692913055419922, 18.425196067179286}}</string>
+					<string>{{124.7086565795189, 211.2519622972913}, {56.692913055419922, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -21857,8 +21763,8 @@ word align}</string>
 					<integer>297</integer>
 					<key>Points</key>
 					<array>
-						<string>{406.44523170732299, 221.23541628165242}</string>
-						<string>{425.8002617105023, 221.23541628165242}</string>
+						<string>{406.44523170732299, 212.23541628165242}</string>
+						<string>{425.8002617105023, 212.23541628165242}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -21905,8 +21811,8 @@ word align}</string>
 					<integer>296</integer>
 					<key>Points</key>
 					<array>
-						<string>{404.89335416214504, 237.74738432781351}</string>
-						<string>{426.24838416532435, 237.74738432781351}</string>
+						<string>{404.89335416214504, 228.74738432781351}</string>
+						<string>{426.24838416532435, 228.74738432781351}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -21936,7 +21842,7 @@ word align}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{342.8536646831696, 220.32218826063422}, {56.692913055419922, 18.425196067179286}}</string>
+					<string>{{342.8536646831696, 211.32218826063422}, {56.692913055419922, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -21984,7 +21890,7 @@ word align}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{237.94488317830354, 220.32218826063428}, {90.633542727910083, 18.425196067179286}}</string>
+					<string>{{237.94488317830354, 211.32218826063428}, {90.633542727910083, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -22032,7 +21938,7 @@ word align}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{328.07842590621334, 220.32218826063422}, {14.653545203387182, 18.425196067179286}}</string>
+					<string>{{328.07842590621334, 211.32218826063422}, {14.653545203387182, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -22080,7 +21986,7 @@ word align}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{96.47606301537877, 220.32218826063428}, {28.346456527709961, 18.425196067179286}}</string>
+					<string>{{96.47606301537877, 211.32218826063428}, {28.346456527709961, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -22128,7 +22034,7 @@ word align}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{39.685039730147111, 220.32218826063428}, {56.692913055419922, 18.425196067179286}}</string>
+					<string>{{39.685039730147111, 211.32218826063428}, {56.692913055419922, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -22176,7 +22082,7 @@ word align}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{36.685039730147111, 199.32218826063428}, {136, 23}}</string>
+					<string>{{36.685039730147111, 190.32218826063428}, {136, 23}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -22324,7 +22230,7 @@ word align}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{379.94062829247844, 82.270006175715054}, {28.346456527709961, 18.425196067179286}}</string>
+					<string>{{379.94062829247844, 70.270006175715054}, {28.346456527709961, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -22372,7 +22278,7 @@ word align}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{294.90125870934855, 82.270006175715054}, {56.692913055419922, 18.425196067179286}}</string>
+					<string>{{294.90125870934855, 70.270006175715054}, {56.692913055419922, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -22420,7 +22326,7 @@ word align}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{238.20834565392857, 82.270006175715054}, {56.692913055419922, 18.425196067179286}}</string>
+					<string>{{238.20834565392857, 70.270006175715054}, {56.692913055419922, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -22468,7 +22374,7 @@ word align}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{209.86188912621861, 82.270006175715054}, {28.346456527709961, 18.425196067179286}}</string>
+					<string>{{209.86188912621861, 70.270006175715054}, {28.346456527709961, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -22511,7 +22417,7 @@ word align}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{124.82251954308873, 82.270006175715054}, {85.039369583129883, 18.425196067179286}}</string>
+					<string>{{124.82251954308873, 70.270006175715054}, {85.039369583129883, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -22559,7 +22465,7 @@ word align}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{300.48393839621394, 134.05740284526246}, {135, 23}}</string>
+					<string>{{300.48393839621394, 124.05740284526246}, {135, 23}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -22610,7 +22516,7 @@ word align}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{300.48393839621394, 115.80182153505211}, {88, 23}}</string>
+					<string>{{300.48393839621394, 104.80182153505211}, {88, 23}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -22661,7 +22567,7 @@ word align}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{300.48393839621394, 98.695202242894339}, {87, 23}}</string>
+					<string>{{300.48393839621394, 86.695202242894339}, {87, 23}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -22712,7 +22618,7 @@ word align}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{96.377952785567061, 137.54559437725288}, {155.90551090240479, 18.425196067179286}}</string>
+					<string>{{96.377952785567061, 125.54559437725288}, {155.90551090240479, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -22755,7 +22661,7 @@ word align}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{39.685038462961757, 137.57676918586407}, {56.692913055419922, 18.425196067179286}}</string>
+					<string>{{39.685038462961757, 125.57676918586407}, {56.692913055419922, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -22798,7 +22704,7 @@ word align}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{39.685038462961757, 156.03314006165448}, {233.29133179738767, 45.510161345519407}}</string>
+					<string>{{39.685038462961757, 144.03314006165448}, {233.29133179738767, 45.510161345519407}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -22846,7 +22752,7 @@ word align}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{335.90551485874516, 332.29294433909689}, {169, 104}}</string>
+					<string>{{362.25197180885027, 402.10236584398689}, {143.57673027635366, 114}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -22918,32 +22824,32 @@ word align}</string>
 						BAtzdHJlYW10eXBlZIHoA4QBQISE
 						hBJOU0F0dHJpYnV0ZWRTdHJpbmcA
 						hIQITlNPYmplY3QAhZKEhIQITlNT
-						dHJpbmcBlIQBK4H9ACNjaCAgPSBO
+						dHJpbmcBlIQBK4EEASNjaCAgPSBO
 						dW1iZXIgb2YgQ2hhbm5lbHMKYml0
-						cyA9IEJpdHMgUGVyIENoYW5uZWwg
-						KDEvOC8xNi8zMikKY29sICA9IEJp
-						dG1hcCAgICAgICA9IDAKICAgICAg
-						IEdyYXlzY2FsZSAgICA9IDEKICAg
-						ICAgIEluZGV4ZWQgICAgICA9IDIK
-						ICAgICAgIFJHQiAgICAgICAgICA9
-						IDMKICAgICAgIENNWUsgICAgICAg
-						ICA9IDQKICAgICAgIE11bHRpY2hh
-						bm5lbCA9IDcKICAgICAgIER1b3Rv
-						bmUgICAgICA9IDgKICAgICAgIExh
-						YiAgICAgICAgICA9IDmGhAJpSQGB
-						/QCShISEDE5TRGljdGlvbmFyeQCU
-						hAFpA5KElpYHTlNDb2xvcoaShISE
-						B05TQ29sb3IAlIQBYwGEBGZmZmaD
-						Hm18P4M8gwY8g9R9AD8BhpKElpYQ
-						TlNQYXJhZ3JhcGhTdHlsZYaShISE
-						F05TTXV0YWJsZVBhcmFncmFwaFN0
-						eWxlAISEEE5TUGFyYWdyYXBoU3R5
-						bGUAlIQEQ0NAUwAAhISEB05TQXJy
-						YXkAlJkAhoEAAoQEWzFmXSSGkoSW
-						lgZOU0ZvbnSGkoSEhAZOU0ZvbnQe
-						lJkchAVbMjhjXQYAAAASAAAA//5D
-						AG8AbgBzAG8AbABhAHMAAACEAWYI
-						mwCbAZsAmwCGhoY=
+						cyA9IEJpdHMgUGVyIENoYW5uZWwK
+						ICAgICAgICgxLzgvMTYvMzIpCmNv
+						bCAgPSBCaXRtYXAgICAgICAgPSAw
+						CiAgICAgICBHcmF5c2NhbGUgICAg
+						PSAxCiAgICAgICBJbmRleGVkICAg
+						ICAgPSAyCiAgICAgICBSR0IgICAg
+						ICAgICAgPSAzCiAgICAgICBDTVlL
+						ICAgICAgICAgPSA0CiAgICAgICBN
+						dWx0aWNoYW5uZWwgPSA3CiAgICAg
+						ICBEdW90b25lICAgICAgPSA4CiAg
+						ICAgICBMYWIgICAgICAgICAgPSA5
+						hoQCaUkBgQQBkoSEhAxOU0RpY3Rp
+						b25hcnkAlIQBaQOShJaWB05TQ29s
+						b3KGkoSEhAdOU0NvbG9yAJSEAWMB
+						hARmZmZmgx5tfD+DPIMGPIPUfQA/
+						AYaShJaWEE5TUGFyYWdyYXBoU3R5
+						bGWGkoSEhBdOU011dGFibGVQYXJh
+						Z3JhcGhTdHlsZQCEhBBOU1BhcmFn
+						cmFwaFN0eWxlAJSEBENDQFMAAISE
+						hAdOU0FycmF5AJSZAIaBAAKEBFsx
+						Zl0khpKElpYGTlNGb250hpKEhIQG
+						TlNGb250HpSZHIQFWzI4Y10GAAAA
+						EgAAAP/+QwBvAG4AcwBvAGwAYQBz
+						AAAAhAFmCJsAmwGbAJsAhoaG
 						</data>
 						<key>Text</key>
 						<string>{\rtf1\ansi\ansicpg1252\cocoartf2513
@@ -22954,7 +22860,8 @@ word align}</string>
 \pard\pardeftab720\partightenfactor0
 
 \f0\fs16 \cf2 #ch  = Number of Channels\
-bits = Bits Per Channel (1/8/16/32)\
+bits = Bits Per Channel\
+       (1/8/16/32)\
 col  = Bitmap       = 0\
        Grayscale    = 1\
        Indexed      = 2\
@@ -22967,7 +22874,7 @@ col  = Bitmap       = 0\
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{411.02361046470065, 61.25654617827314}, {84, 23}}</string>
+					<string>{{411.02361046470065, 53.25654617827314}, {84, 23}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -23018,7 +22925,7 @@ col  = Bitmap       = 0\
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{96.47606301537877, 82.270006175715054}, {28.346456527709961, 18.425196067179286}}</string>
+					<string>{{96.47606301537877, 70.270006175715054}, {28.346456527709961, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -23061,7 +22968,7 @@ col  = Bitmap       = 0\
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{96.476063015378742, 119.08922350146247}, {130.59054521678007, 18.425196067179286}}</string>
+					<string>{{96.476063015378742, 107.08922350146247}, {130.59054521678007, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -23104,7 +23011,7 @@ col  = Bitmap       = 0\
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{39.685038462961757, 119.12039831007363}, {56.692913055419922, 18.425196067179286}}</string>
+					<string>{{39.685038462961757, 107.12039831007363}, {56.692913055419922, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -23152,7 +23059,7 @@ col  = Bitmap       = 0\
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{351.59417176476848, 82.270006175715054}, {28.346456527709961, 18.425196067179286}}</string>
+					<string>{{351.59417176476848, 70.270006175715054}, {28.346456527709961, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -23200,7 +23107,7 @@ col  = Bitmap       = 0\
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{28.346456950105079, 279.21879958570872}, {439.66142048629229, 224}}</string>
+					<string>{{38.346456950105079, 252.91531185630626}, {439.66142048629229, 265}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -23258,26 +23165,31 @@ col  = Bitmap       = 0\
     0x12       18: ___._._.______Zf8B  -&gt;  00 00 00 96 00 08 00 03 00 00 00 00 00 00 5a 66 38 42\
                                            &lt;  height &gt; &lt;bit&gt; &lt;col&gt; &lt; length  &gt; &lt;  length &gt;  8  B\
     0x24       36: IM.._____...Z_..%G  -&gt;  49 4d 04 04 00 00 00 00 00 0f 1c 01 5a 00 03 1b 25 47\
-                                            I  M ....\
-$ tvisitor  -pR ~/psd.psd \
-STRUCTURE OF PSD FILE (MM): /Users/rmills/psd.psd\
-#ch = 3, width x height = 91 x 150, bits/col = 8/0\
- address | length | data\
-      26 |      0 | \
-      30 |  23142 | 8BIM.._____...Z_..%G..__.___8BIM.%_____.\
-    offset  |   kind | name |      len | data | \
-          0 | 0x0404 |      |       15 | 12+1 | 8BIM.._____...Z_..%G..__.___\
-      Record | DataSet | Name                           | Length | Data\
-           1 |      90 | Iptc.Envelope.CharacterSet     |      3 | .%G\
-           2 |       0 | Iptc.Application.RecordVersion |      2 | __\
-         28 | 0x0425 |      |       16 | 12+0 | 8BIM.%_____....\}.....pv....N\
-         56 | 0x0424 |      |    15560 | 12+0 | 8BIM.$____&lt;.&lt;?xpacket begin="..." id="W5\
-... \
-      22428 | 0x0422 |      |      382 | 12+0 | 8BIM."____.~MM_*___._..__.___._.__.._.__\
-      22822 | 0x0fa0 |      |      268 | 12+0 | 8BIM..____..maniIRFR__._8BIMAnDs___.___.\
-      23102 | 0x0fa1 |      |       28 | 12+0 | 8BIM.._____.mfri___.___.___._______.____\
-   23176 |     32 | ________8BIMFMsk___.__.._______2\
-END: /Users/rmills/psd.psd}</string>
+                                            I  M &lt;kind&gt;&lt;nam&gt; &lt;- length-&gt; FS DS RE &lt;len&gt; &lt;-data-&gt;\
+STRUCTURE OF JPEG FILE (II): /Users/rmills/Stonehenge.jpg\
+ address | marker       |  length | signature\
+       0 | 0xffd8 SOI  \
+       2 | 0xffe1 APP1  |   15288 | Exif__II*_.___._..._.___.___..._.___.___\
+   15292 | 0xffe1 APP1  |    2786 | http://ns.adobe.com/xap/1.0/_&lt;?xpacket b\
+   18080 | 0xffed APP13 |      96 | Photoshop 3.0_8BIM.._____'..__._...Z_..%\
+  STRUCTURE OF 8BIM FILE (MM): /Users/rmills/Stonehenge.jpg:18098-&gt;78\
+       offset |   kind | tagName                      | name |      len | data | \
+            0 | 0x0404 | PSD.8BIM.IPTC-NAA            |      |       39 | 12+1 | ..__._...\
+    STRUCTURE OF IPTC FILE (MM): /Users/rmills/Stonehenge.jpg:18098-&gt;78:12-&gt;39\
+        Record | DataSet | Name                           | Length | Data\
+             1 |       0 | Iptc.Envelope.ModelVersion     |      2 | _.\
+             1 |      90 | Iptc.Envelope.CharacterSet     |      3 | .%G\
+             2 |       0 | Iptc.Application.RecordVersion |      2 | _.\
+             2 |     120 | Iptc.Application.Caption       |     12 | Classic View\
+    END: /Users/rmills/Stonehenge.jpg:18098-&gt;78:12-&gt;39\
+  END: /Users/rmills/Stonehenge.jpg:18098-&gt;78\
+   18178 | 0xffe2 APP2  |    4094 | MPF_II*_.___.__.._.___0100..._.___.___..\
+   22274 | 0xffdb DQT   |     132 | _.......................................\
+   22408 | 0xffc0 SOF0  |      17 | ....p..!_........\
+   22427 | 0xffc4 DHT   |     418 | __........________............_.........\
+   22847 | 0xffda SOS   |      12 | .._...._?_..\
+END: /Users/rmills/Stonehenge.jpg\
+1102 rmills@rmillsmbp:~/gnu/exiv2/team/book/build $ }</string>
 					</dict>
 				</dict>
 				<dict>
@@ -23294,8 +23206,8 @@ END: /Users/rmills/psd.psd}</string>
 					<integer>327</integer>
 					<key>Points</key>
 					<array>
-						<string>{39.685039730147111, 72.25654617827314}</string>
-						<string>{407.94585351448842, 72.728986583052404}</string>
+						<string>{39.685039730147111, 63.25654617827314}</string>
+						<string>{407.94585351448842, 63.728986583052404}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -23317,7 +23229,7 @@ END: /Users/rmills/psd.psd}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{39.685039730147111, 82.270006175715054}, {56.692913055419922, 18.425196067179286}}</string>
+					<string>{{39.685039730147111, 70.270006175715054}, {56.692913055419922, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -23365,7 +23277,7 @@ END: /Users/rmills/psd.psd}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{96.47606301537877, 100.69520224289434}, {169, 18.425196067179286}}</string>
+					<string>{{96.47606301537877, 88.695202242894339}, {169, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -23413,7 +23325,7 @@ END: /Users/rmills/psd.psd}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{39.685038462961757, 100.69520224289434}, {56.692913055419922, 18.425196067179286}}</string>
+					<string>{{39.685038462961757, 88.695202242894339}, {56.692913055419922, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -23647,7 +23559,7 @@ END: /Users/rmills/psd.psd}</string>
 		<key>Expanded_Canvases</key>
 		<array/>
 		<key>Frame</key>
-		<string>{{167, 216}, {1513, 787}}</string>
+		<string>{{77, 185}, {1513, 787}}</string>
 		<key>ShowInfo</key>
 		<true/>
 		<key>ShowRuler</key>
