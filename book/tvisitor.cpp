@@ -378,7 +378,6 @@ type_e getType(const DataBuf& buf,size_t offset,endian_e endian)
 {
     return (type_e) getShort(buf,offset,endian);
 }
-
 bool typeValid(type_e type,bool bigtiff)
 {
     return  bigtiff ? type > kttMin && type < kttMax && type != kttNot1 && type != kttNot2
@@ -609,6 +608,8 @@ enum ktSpecial
 ,   ktSubIFD    = 0x014a
 ,   ktMake      = 0x010f
 ,   ktXMLPacket = 0x02bc
+,   ktIPTCNAA   = 0x83bb
+,   ktICCProfile= 0x8773
 ,   ktGroup     = 0xffff
 };
 
@@ -1997,31 +1998,34 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
 
             uint64_t size   = typeSize(type) ;
             size_t   alloc  = size*count     ;
-            DataBuf  buf(alloc);
+            DataBuf  buff(alloc);
             if ( alloc <= (bigtiff?8:4) ) {
-                buf.copy(&offset,size*count);
+                buff.copy(&offset,size*count);
             } else {
                 IoSave save(io_,offset);
-                io_.read(buf);
+                io_.read(buff);
             }
-            if ( tagDict == tiffDict && tag == ktMake ) image_.setMaker(buf);
-            visitor.visitTag(io_,image_,address,tag,type,count,offset,buf,tagDict);  // Tell the visitor
-            
-            if ( tagDict == tiffDict && tag == 0x8773 ) { // similar for IPTCNAA and XMLPacket
-                Io      stream(io_,offset,count);
-                ICC icc(stream);
-                icc.accept(visitor);
-            }
+            if ( tagDict == tiffDict && tag == ktMake ) image_.setMaker(buff);
+            visitor.visitTag(io_,image_,address,tag,type,count,offset,buff,tagDict);  // Tell the visitor
 
             // recursion anybody?
+            if ( tagDict == tiffDict ) {
+                Io       io(io_,offset,count);
+                switch ( tag ) {
+                    case ktXMLPacket  : visitor.visitXMP(buff)   ; break;
+                    case ktICCProfile : ICC (io).accept(visitor) ; break;
+                    case ktIPTCNAA    : IPTC(io).accept(visitor) ; break;
+                }
+            }
+
             if ( isTypeIFD(type) ) tag  = ktSubIFD;
             switch ( tag ) {
                 case ktGps       : IFD(image_,offset,false).accept(visitor,gpsDict );break;
                 case ktExif      : IFD(image_,offset,false).accept(visitor,exifDict);break;
-                case ktMakerNote :         visitMakerNote(visitor,buf,count,offset);break;
+                case ktMakerNote :          visitMakerNote(visitor,buff,count,offset);break;
                 case ktSubIFD    :
                      for ( uint64_t i = 0 ; i < count ; i++ ) {
-                         offset = get4or8 (buf,0,i,endian);
+                         offset = get4or8 (buff,0,i,endian);
                          IFD(image_,offset,false).accept(visitor,tagDict);
                      }
                 break;
@@ -2155,25 +2159,29 @@ void ReportVisitor::visitIPTC(Io& io,Image& image
                           ,uint16_t record,uint16_t dataset,uint32_t len
                           ,DataBuf& buff,uint32_t offset)
 {
-    TagDict& iptcDict = iptcDicts.find(record) != iptcDicts.end() ? iptcDicts[record] : iptc0;
-    std::string tag  = tagName(dataset,iptcDict,30,"Iptc");
-    if ( printTag(tag) ) {
-        out() << indent() << stringFormat("    %6d | %7d | %-30s | %6d | ", record, dataset,tag.c_str(),len)
-              << chop(::binaryToString(buff.pData_,offset+5,len),60) << std::endl;
+    if ( option() & (kpsBasic|kpsRecursive) ) {
+        TagDict& iptcDict = iptcDicts.find(record) != iptcDicts.end() ? iptcDicts[record] : iptc0;
+        std::string tag  = tagName(dataset,iptcDict,30,"Iptc");
+        if ( printTag(tag) ) {
+            out() << indent() << stringFormat("    %6d | %7d | %-30s | %6d | ", record, dataset,tag.c_str(),len)
+                  << chop(::binaryToString(buff.pData_,offset+5,len),60) << std::endl;
+        }
     }
 }
 
 void ReportVisitor::visitSegment(Io& io,Image& image,uint64_t address
          ,uint8_t marker,uint16_t length,std::string& signature)
 {
-    DataBuf buf( length < 40 ? length : 40 );
-    IoSave  save(io,address+4);
-    io.read(buf);
-    std::string value = buf.toString(kttUndefined,buf.size_,image.endian());
-    if ( option() & (kpsBasic | kpsRecursive) ) {
-        out() <<           stringFormat("%8ld | 0xff%02x %-5s", address,marker,nm_[marker].c_str())
-              << (length ? stringFormat(" | %7d | %s", length,value.c_str()) : "")
-              << std::endl;
+    if ( option() & (kpsBasic|kpsRecursive) ) {
+        DataBuf buf( length < 40 ? length : 40 );
+        IoSave  save(io,address+4);
+        io.read(buf);
+        std::string value = buf.toString(kttUndefined,buf.size_,image.endian());
+        if ( option() & (kpsBasic | kpsRecursive) ) {
+            out() <<           stringFormat("%8ld | 0xff%02x %-5s", address,marker,nm_[marker].c_str())
+                  << (length ? stringFormat(" | %7d | %s", length,value.c_str()) : "")
+                  << std::endl;
+        }
     }
 }
 
@@ -2208,33 +2216,35 @@ void ReportVisitor::visitTag
 , DataBuf&       buf
 , const TagDict& tagDict
 ) {
-    std::string offsetS ;
-    if ( typeSize(type)*count > (image.bigtiff_?8:4) ) {
-        std::ostringstream os ;
-        os  <<  offset;
-        offsetS         = os.str();
-    }
+    if ( option() & (kpsBasic|kpsRecursive) ) {
+        std::string offsetS ;
+        if ( typeSize(type)*count > (image.bigtiff_?8:4) ) {
+            std::ostringstream os ;
+            os  <<  offset;
+            offsetS         = os.str();
+        }
 
-    std::string    name = tagName(tag,tagDict,28);
-    std::string   value = buf.toString(type,count,image.endian_);
+        std::string    name = tagName(tag,tagDict,28);
+        std::string   value = buf.toString(type,count,image.endian_);
 
-    if ( printTag(name) ) {
-        out() << indent()
-              << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
-                    ,address,tag,name.c_str(),::typeName(type),count,offsetS.c_str())
-              << chop(value,40)
-              << std::endl
-        ;
-        if ( makerTags.find(name) != makerTags.end() ) {
-            for (Field field : makerTags[name] ) {
-                std::string n      = join(groupName(tagDict),field.name(),28);
-                endian_e    endian = field.endian() == keImage ? image.endian() : field.endian();
-                out() << indent()
-                      << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
-                                     ,offset+field.start(),tag,n.c_str(),typeName(field.type()),field.count(),"")
-                      << chop(buf.toString(field.type(),field.count(),endian,field.start()),40)
-                      << std::endl
-                ;
+        if ( printTag(name) ) {
+            out() << indent()
+                  << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
+                        ,address,tag,name.c_str(),::typeName(type),count,offsetS.c_str())
+                  << chop(value,40)
+                  << std::endl
+            ;
+            if ( makerTags.find(name) != makerTags.end() ) {
+                for (Field field : makerTags[name] ) {
+                    std::string n      = join(groupName(tagDict),field.name(),28);
+                    endian_e    endian = field.endian() == keImage ? image.endian() : field.endian();
+                    out() << indent()
+                          << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
+                                         ,offset+field.start(),tag,n.c_str(),typeName(field.type()),field.count(),"")
+                          << chop(buf.toString(field.type(),field.count(),endian,field.start()),40)
+                          << std::endl
+                    ;
+                }
             }
         }
     }
