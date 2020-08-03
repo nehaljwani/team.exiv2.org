@@ -30,7 +30,6 @@
 #define  FSEEK_LONG uint64_t
 #endif
 
-
 typedef std::set<uint64_t> Visits;
 
 // types of data in Exif Specification
@@ -183,12 +182,12 @@ public:
         }
         return result;
     }
-    
+
     uint32_t search(uint32_t start,const char* s)
     {
         uint64_t l = ::strlen(s);
         if ( size_ < l ) return 0 ;
-        
+
         uint32_t found = start;
         uint32_t max   = (uint32_t) ( size_ - l );
         while ( ! begins(s,found) && found < max ) found++;
@@ -850,6 +849,7 @@ class   CrwImage ;
 class   ICC;
 class   IFD;
 class   CIFF;
+class   C8BIM;
 
 // 2. Create abstract "visitor" base class with virtual methods
 class Visitor
@@ -881,11 +881,14 @@ public:
     virtual void visitXMP     (DataBuf& /* xmp */ )                                  { return ; }
     virtual void visitICC     (DataBuf& /* icc */ )                                  { return ; }
     virtual void visitICCTag  (const byte* sig,uint32_t offset,uint32_t length)      { return ; }
-    virtual void visitIptc    (Io& io,Image& image,uint64_t address,uint32_t length) { return ; }
+    virtual void visitIPTC    (Io& io,Image& image
+                              ,uint16_t record,uint16_t dataset,uint32_t len
+                              ,DataBuf& buff,uint32_t offset)                        { return ; }
+
     virtual void visitResource(Io& io,Image& image,uint64_t address)                 { return ; }
-    virtual void visit8BIM(Io& io,Image& image,uint64_t address,uint32_t offset
-    ,uint16_t kind,DataBuf& name,uint32_t len,uint32_t data,uint32_t pad,DataBuf& b) { return ; }
-    virtual void visit8BIM    (Io& io,Image& image,uint64_t address,uint64_t length) { return ; }
+    virtual void visit8BIM    (Io& io,Image& image,uint32_t offset
+                              ,uint16_t kind,DataBuf& name,uint32_t len
+                              ,uint32_t data,uint32_t pad ,DataBuf& b)               { return ; }
 
     PSopt_e       option() { return option_ ; }
     std::ostream& out()    { return out_    ; }
@@ -1254,7 +1257,7 @@ public:
 
     virtual void accept(class Visitor& v);
     bool         valid() ;
-    
+
 private:
     uint16_t ch_     ;
     uint32_t width_  ;
@@ -1361,6 +1364,91 @@ public:
     }
 };
 
+class C8BIM : public Image
+{
+public:
+    C8BIM(std::string path)
+    : Image(path)
+    { }
+    C8BIM(Io& io)
+    : Image(io)
+    {}
+
+    void accept(Visitor& visitor);
+
+    bool valid()
+    {
+        if ( !valid_ ) {
+            endian_ = keBig ;
+            IoSave  restore(io(),0);
+            DataBuf bim(4);
+            memcpy(bim.pData_,"8BIM",4);
+            valid_  = io().getLong(endian_) == ::getLong(bim,0,endian_);
+            header_ = "     offset |   kind | tagName                      | name |      len | data | " ;
+            format_ = "8BIM";
+            start_  = 0;
+        }
+        return valid_;
+    }
+};
+
+class IPTC : public Image
+{
+public:
+    IPTC(std::string path)
+    : Image(path)
+    { }
+    IPTC(Io& io)
+    : Image(io)
+    {}
+
+    void accept(Visitor& visitor);
+
+    bool valid()
+    {
+        if ( !valid_ ) {
+            valid_  = true; // we have to trust the caller
+            endian_ = keBig ;
+            IoSave  restore(io(),0);
+            header_ = "    Record | DataSet | Name                           | Length | Data" ;
+            format_ = "IPTC";
+            start_  = 0;
+        }
+        return valid_;
+    }
+};
+
+void C8BIM::accept(Visitor& visitor)
+{
+    if ( !valid_ ) valid();
+    if (  valid_ ) {
+        visitor.visitBegin((*this)); // tell the visitor
+
+        IoSave  restore(io(),start_);
+        DataBuf buff   (io().size()) ;
+        io().read(buff) ;
+    //  out() << indent() << buff.toString(kttUByte) << std::endl;
+        uint32_t offset = 0  ;
+        while ( offset+4 < buff.size_ ) {
+            uint16_t kind = getShort       (buff,offset+4           ,endian_);
+            DataBuf  name = getPascalString(buff,offset+6);
+            uint32_t len  = getLong        (buff,offset+6+name.size_,endian_);
+            uint32_t pad  = len%2?1:0;
+            uint32_t data = (uint32_t)(4+2+4+name.size_); // "8BIM" + short (kind) + name + long (len)
+            DataBuf  b(len);
+            memcpy(b.pData_,buff.pData_+offset+data,len);
+            visitor.visit8BIM(io(),*this,offset,kind,name,len,data,pad,b);
+            if ( visitor.option() & kpsRecursive && kind == 0x0404) {
+                Io   stream(io(),offset+data,len);
+                IPTC iptc(stream);
+                iptc.accept(visitor);
+            }
+            offset += len + pad + data ;
+        }
+        visitor.visitEnd((*this)); // tell the visitor
+    }
+}
+
 void ICC::accept(class Visitor& visitor)
 {
     if ( !valid_ ) valid();
@@ -1387,7 +1475,7 @@ bool PSDImage::valid()
         IoSave   restore(io(),0);
         DataBuf  h(4); io_.read(h);
         uint16_t version = io_.getShort(endian_);
-        
+
         if ( h.begins("8BPS") && version == 1 && io_.getLong(endian_) == 0 && io_.getShort(endian_) == 0  ) {
             start_  = 26;
             format_ = "PSD";
@@ -1420,11 +1508,9 @@ void PSDImage::accept(Visitor& visitor)
         io().seek(address);
         uint32_t length = io_.getLong(endian());
         visitor.visitResource(io_,*this,address);
-        DataBuf buff(8);
-        io_.read(buff);
-        if ( buff.begins("8BIM") ) {
-            visitor.visit8BIM(io_,*this,address+4,length);
-        }
+        Io    bim(io_,address+4,length);
+        C8BIM c8bim(bim);
+        c8bim.accept(visitor);
         address += length + 4 ;
     }
 
@@ -1497,15 +1583,17 @@ public:
                ;
     }
 
-    void visitTag( Io&  io,Image& image, uint64_t  address
-                         , uint16_t         tag, type_e       type,uint64_t count, uint64_t offset
-                         , DataBuf&         buf,const TagDict& tagDict);
-    void visitICCTag(const byte* tag,uint32_t offset,uint32_t length);
-    void visitIptc  (Io& io,Image& image,uint64_t address,uint32_t length);
+    void visitTag     ( Io&  io,Image& image, uint64_t  address
+                      , uint16_t         tag, type_e       type
+                      , uint64_t       count, uint64_t offset
+                      , DataBuf&         buf, const TagDict& tagDict);
+    void visitICCTag  (const byte* tag,uint32_t offset,uint32_t length);
+    void visitIPTC    (Io& io,Image& image,uint64_t address
+                      ,uint16_t record,uint16_t dataset,std::string& name
+                       ,DataBuf& buff,uint32_t len,uint32_t offset);
     void visitResource(Io& io,Image& image,uint64_t address);
-    void visit8BIM(Io& io,Image& image,uint64_t address,uint32_t offset
+    void visit8BIM(Io& io,Image& image,uint32_t offset
         ,uint16_t kind,DataBuf& name,uint32_t len,uint32_t data,uint32_t pad,DataBuf& b);
-    void visit8BIM    (Io& io,Image& image,uint64_t address,uint64_t length);
 
     void visitEnd(Image& image)
     {
@@ -1904,6 +1992,17 @@ void Jp2Image::accept(class Visitor& v)
     }
 } // Jp2Image::accept()
 
+void ReportVisitor::visitIPTC(Io& io,Image& image,uint64_t address
+,uint16_t record,uint16_t dataset,std::string& name,DataBuf& buff,uint32_t len,uint32_t offset)
+{
+    TagDict& iptcDict = iptcDicts.find(record) != iptcDicts.end() ? iptcDicts[record] : iptc0;
+    std::string tag  = tagName(dataset,iptcDict,30,"Iptc");
+    if ( printTag(tag) ) {
+        out() << indent() << stringFormat("    %6d | %7d | %-30s | %6d | ", record, dataset,name.c_str(),len)
+          << chop(::binaryToString(buff.pData_,offset+5,len),60) << std::endl;
+    }
+}
+
 void ReportVisitor::visitSegment(Io& io,Image& image,uint64_t address
          ,uint8_t marker,uint16_t length,std::string& signature)
 {
@@ -2125,9 +2224,11 @@ void JpegImage::accept(Visitor& visitor)
                 uint16_t start = 2+14 ; // "\mark\length\ICC_PROFILE\0\C\Z" = \C: 1 byte chunk. \Z: 1 byte chunks.
                 ICC.read(io_,address+2+start,length - start); // read the XMP from the stream
             }
-            if ( signature.find("Photoshop 3.0") == 0 ) {
+            if ( signature.find("Photoshop 3.0") == 0 && visitor.option() & kpsRecursive) {
                 uint16_t start = 2+2+14 ; // "\mark\length\Photoshop 3.0\08BIM..."
-                visitor.visit8BIM(io_,*this,address+start,length-start);
+                Io    bim(io_,address+start,length-start);
+                C8BIM c8bim(bim);
+                c8bim.accept(visitor);
             }
         }
 
@@ -2166,14 +2267,15 @@ void ReportVisitor::visitChunk(Io& io,Image& image,uint64_t address
     }
 }
 
-void ReportVisitor::visitIptc(Io& io,Image& image,uint64_t address,uint32_t length)
+void IPTC::accept(Visitor& visitor)
 {
-    if ( option() & (kpsRecursive|kpsIptc) ) {
-        indent_++;
-        IoSave restore(io,address);
+    if ( valid() ) {
+        visitor.visitBegin(*this);
+
+        IoSave restore(io(),start_);
+        uint64_t length = io().size();
         DataBuf buff(length);
-        io.read(buff);
-        out() << indent() << "    Record | DataSet | Name                           | Length | Data" << std::endl;
+        io().read(buff);
 //      out() << indent() << buff.toString(kttUByte,length);
         uint32_t i  =    0 ; // index
         uint32_t bs =    5 ; // blocksize
@@ -2183,16 +2285,10 @@ void ReportVisitor::visitIptc(Io& io,Image& image,uint64_t address,uint32_t leng
             uint16_t record   = ::getByte (buff,i+1);
             uint16_t dataset  = ::getByte (buff,i+2);
             uint16_t len      = ::getShort(buff,i+3,keBig);
-
-            TagDict& iptcDict = iptcDicts.find(record) != iptcDicts.end() ? iptcDicts[record] : iptc0;
-            std::string name  = tagName(dataset,iptcDict,30,"Iptc");
-
-            out() << indent() << stringFormat("    %6d | %7d | %-30s | %6d | ", record, dataset,name.c_str(),len)
-                  << chop(::binaryToString(buff.pData_,i+5,len),60) << std::endl;
-
+            visitor.visitIPTC(io(),*this,record,dataset,len,buff,i);
             i += bs + len;
         }
-        indent_--;
+        visitor.visitEnd(*this);
     }
 }
 
@@ -2205,46 +2301,15 @@ void ReportVisitor::visitResource(Io& io,Image& image,uint64_t address)
     out() << indent() << stringFormat("%8d | %6d | ",address,length) << buff.binaryToString() << std::endl;
 }
 
-void ReportVisitor::visit8BIM(Io& io,Image& image,uint64_t address,uint32_t offset
+void ReportVisitor::visit8BIM(Io& io,Image& image,uint32_t offset
                 ,uint16_t kind,DataBuf& name,uint32_t len,uint32_t data,uint32_t pad,DataBuf& b)
 {
-    if ( address == 0 ) {
-        out() << indent() << "     offset |   kind | tagName                    | name |      len | data | " << std::endl;
-    } else {
-        std::string tag = ::tagName(kind,psdDict,40,"PSD");
-        if ( printTag(tag) ) {
-            out() << indent() << stringFormat("   %8d | %06#x | %-28s | %4s | %8d | %2d+%1d | "
-                                ,offset,kind,tag.c_str(),(char*)name.pData_,len,data,pad)
-            <<        b.binaryToString(0,len>40?40:len+data+pad)
-            << std::endl;
-        }
-    }
-}
-
-void ReportVisitor::visit8BIM(Io& io,Image& image,uint64_t address,uint64_t length)
-{
-    // read in all the data
-    IoSave  restore(io,address);
-    DataBuf buff(length) ;
-    io.read(buff) ;
-//  out() << indent() << buff.toString(kttUByte) << std::endl;
-    uint32_t offset = 0  ;
-    if ( buff.begins("8BIM") ) {
-        visit8BIM(io,image,0,0,0,buff,0,0,0,buff); // display the banner
-        while ( offset+4 < length ) {
-            uint16_t kind = getShort       (buff,offset+4           ,keBig); // 8BIM is BigEndian (even in a JPEG)
-            DataBuf  name = getPascalString(buff,offset+6);
-            uint32_t len  = getLong        (buff,offset+6+name.size_,keBig);
-            uint32_t pad  = len%2?1:0;
-            uint32_t data = (uint32_t)(4+2+4+name.size_); // "8BIM" + short (kind) + name + long (len)
-            DataBuf  b(len);
-            memcpy(b.pData_,buff.pData_+offset+data,len);
-            visit8BIM(io,image,address,offset,kind,name,len,data,pad,b);
-            if ( option() & kpsRecursive && kind == 0x0404) {
-                visitIptc(io,image,address+offset+data,len); // no pad. pad trails data
-            }
-            offset += len + pad + data ;
-        }
+    std::string tag = ::tagName(kind,psdDict,40,"PSD");
+    if ( printTag(tag) ) {
+        out() << indent() << stringFormat("   %8d | %06#x | %-28s | %4s | %8d | %2d+%1d | "
+                            ,offset,kind,tag.c_str(),(char*)name.pData_,len,data,pad)
+        <<        b.binaryToString(0,len>40?40:len+data+pad)
+        << std::endl;
     }
 }
 
@@ -2341,9 +2406,6 @@ void init()
     tiffDict  [ktGroup ] = "Image";
     tiffDict  [ 0x8769 ] = "ExifTag";
     tiffDict  [ 0x014a ] = "SubIFD";
-    tiffDict  [ 0x83bb ] = "IPTCNAA";
-    tiffDict  [ 0x02bc ] = "XMLPacket";
-    tiffDict  [ 0x8773 ] = "InterColorProfile";
     tiffDict  [ 0x00fe ] = "NewSubfileType";
     tiffDict  [ 0x0100 ] = "ImageWidth";
     tiffDict  [ 0x0101 ] = "ImageLength";
@@ -2367,6 +2429,9 @@ void init()
     tiffDict  [ 0x0213 ] = "YCbCrPositioning";
 
     exifDict  [ktGroup ] = "Photo";
+    tiffDict  [ 0x83bb ] = "IPTCNAA";
+    tiffDict  [ 0x02bc ] = "XMLPacket";
+    tiffDict  [ 0x8773 ] = "InterColorProfile";
     exifDict  [ 0x927c ] = "MakerNote";
     exifDict  [ 0x829a ] = "ExposureTime";
     exifDict  [ 0x829d ] = "FNumber";
@@ -2574,7 +2639,7 @@ void init()
     iptcApplication[      0] = "RecordVersion" ;
     iptcApplication[     12] = "Subject"       ;
     iptcApplication[    120] = "Caption"       ;
-    
+
     psdDict        [ktGroup] = "8BIM"          ;
     psdDict        [ 0x0404] = "IPTC-NAA"      ;
     psdDict        [ 0x040C] = "Thumbnail"     ;
