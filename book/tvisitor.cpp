@@ -1113,10 +1113,34 @@ public:
     , next_(false)
     { setMaker(maker);}
 
+    bool valid()
+    {
+        if ( !valid_ ) {
+            IoSave restore(io(),0);
+
+            // read header
+            DataBuf  header(16);
+            io_.read(header);
+
+            char c   = (char) header.pData_[0] ;
+            char C   = (char) header.pData_[1] ;
+            endian_  = c == 'M' ? keBig : keLittle;
+            magic_   = getShort(header,2,endian_);
+            bigtiff_ = magic_ == 43;
+            start_   = bigtiff_ ? getLong8(header,8,endian_) : getLong (header,4,endian_);
+            format_  = bigtiff_ ? "BIGTIFF"                  : "TIFF"                    ;
+            header_  = " address |    tag                              |      type |    count |    offset | value" ;
+
+            uint16_t bytesize = bigtiff_ ? getShort(header,4,endian_) : 8;
+            uint16_t version  = bigtiff_ ? getShort(header,6,endian_) : 0;
+
+            valid_ =  (magic_ == 42||magic_ == 43) && (c == C) && ( c == 'I' || c == 'M' ) && bytesize == 8 && version == 0;
+        }
+        return valid_ ;
+    }
     void accept(class Visitor& visitor);
     void accept(Visitor& visitor,TagDict& tagDict);
 
-    bool valid();
     bool bigtiff()  { return bigtiff_ ; }
 private:
     bool next_;
@@ -1191,8 +1215,29 @@ public:
     : Image(Io(io,start,count))
     { init(); }
 
+    bool valid() {
+        if ( !valid_ ) {
+            IoSave   restore(io(),0);
+            byte     h[2];
+            io_.read(h,2);
+            if ( h[0] == 0xff && h[1] == 0xd8 ) { // .JPEG
+                start_  = 0;
+                format_ = "JPEG";
+                valid_  = true;
+            } else if  ( h[0] == 0xff && h[1]==0x01 ) { // .EXV
+                DataBuf buf(5);
+                io_.read(buf);
+                if ( buf.begins("Exiv2") ) {
+                    start_  = 7;
+                    format_ = "EXV";
+                    valid_  = true;
+                }
+            }
+            header_ = " address | marker       |  length | signature";
+        }
+        return valid_ ;
+    }
     virtual void accept(class Visitor& v);
-    bool valid();
 
 private:
     int advanceToMarker()
@@ -1239,10 +1284,23 @@ public:
     PngImage(Io& io,size_t start,size_t count)
     : Image(Io(io,start,count))
     {}
+    bool valid()
+    {
+        if ( !valid_ ) {
+            IoSave   restore(io(),0);
+            valid_  = true ;
+            const byte pngHeader[] = { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A };
+            for ( size_t i = 0 ; valid_ && i < sizeof (pngHeader ); i ++) {
+                valid_ = io().getb() == pngHeader[i];
+            }
+            start_  = 8       ;
+            endian_ = keBig   ;
+            format_ = "PNG"   ;
+            header_  = "  address | chunk |  length |   checksum | data " ;
+        }
+        return valid_ ;
+    }
     virtual void accept(class Visitor& v);
-    bool valid();
-
-private:
 };
 
 class PSDImage : public Image
@@ -1255,8 +1313,29 @@ public:
     : Image(Io(io,start,count))
     { }
 
+    bool valid()
+    {
+        if ( !valid_ ) {
+            endian_ = keBig ;
+            IoSave   restore(io(),0);
+            DataBuf  h(4); io_.read(h);
+            uint16_t version = io_.getShort(endian_);
+
+            if ( h.begins("8BPS") && version == 1 && io_.getLong(endian_) == 0 && io_.getShort(endian_) == 0  ) {
+                start_  = 26;
+                format_ = "PSD";
+                valid_  = true;
+            }
+            ch_     = io_.getShort(endian_);
+            width_  = io_.getLong (endian_);
+            height_ = io_.getLong (endian_);
+            bits_   = io_.getShort(endian_);
+            col_    = io_.getLong (endian_);
+            header_ = " address | length | data";
+        }
+        return valid_ ;
+    }
     virtual void accept(class Visitor& v);
-    bool         valid() ;
 
 private:
     uint16_t ch_     ;
@@ -1275,8 +1354,34 @@ public:
     Jp2Image(Io& io,size_t start,size_t count)
     : Image(Io(io,start,count))
     { init(); }
+
+    bool valid()
+    {
+        if ( !valid_ ) {
+            start_ = 0;
+            IoSave     restore (io(),start_);
+            uint32_t   box    ;
+            io().getLong(endian_); // length
+            io().read(&box,4) ;    // box
+
+            valid_ = boxName(box) == kJp2Box_jP ;
+
+            if ( boxName(box) == kJp2Box_ftyp ) {
+                io().read(&box,4);
+                if ( boxName(box) == "crx " ) {
+                    format_ = "CR3";
+                    valid_  = true ;
+                }
+                if ( boxName(box) == "heic" ) {
+                    format_ = "HEIC";
+                    valid_  = true ;
+                }
+            }
+            header_ = " address |   length | box             | uuid | data";
+        }
+        return valid_ ;
+    }
     virtual void accept(class Visitor& v);
-    bool valid();
 
     std::string boxName(uint32_t box)
     {
@@ -1358,11 +1463,81 @@ public:
         if ( !valid_ ) {
             IoSave  restore(io(),0);
             valid_  = io().getLong(endian_) == io().size();
-            header_ = " sig |   offset |   length" ;
+            header_ = "   sig |   offset |   length" ;
         }
         return valid_;
     }
 };
+
+void ICC::accept(class Visitor& visitor)
+{
+    if ( !valid_ ) valid();
+    if (  valid_ ) {
+        visitor.visitBegin((*this)); // tell the visitor
+
+        IoSave restore(io(),start_);
+        uint32_t nEntries = io().getLong(endian_);
+        while  ( nEntries-- ) {
+            DataBuf sig(5);
+            io().read(sig.pData_,4);
+            uint32_t offset = io().getLong(endian_);
+            uint32_t length = io().getLong(endian_);
+            visitor.visitICCTag(sig.pData_,offset,length);
+        }
+        visitor.visitEnd((*this)); // tell the visitor
+    }
+}
+
+class IPTC : public Image
+{
+public:
+    IPTC(std::string path)
+    : Image(path)
+    { }
+    IPTC(Io& io)
+    : Image(io)
+    {}
+
+    void accept(Visitor& visitor);
+
+    bool valid()
+    {
+        if ( !valid_ ) {
+            IoSave  restore(io(),0);
+            valid_  = io().getb() == 0x1c; // must start with FS (field separator)
+            endian_ = keBig ;
+            header_ = "    Record | DataSet | Name                           | Length | Data" ;
+            format_ = "IPTC";
+            start_  = 0;
+        }
+        return valid_;
+    }
+};
+
+void IPTC::accept(Visitor& visitor)
+{
+    if ( valid() ) {
+        visitor.visitBegin(*this);
+
+        IoSave restore(io(),start_);
+        uint64_t length = io().size();
+        DataBuf buff(length);
+        io().read(buff);
+//      out() << indent() << buff.toString(kttUByte,length);
+        uint32_t i  =    0 ; // index
+        uint32_t bs =    5 ; // blocksize
+        uint8_t  fs = 0x1c ; // field seperator
+        while (i+bs < length && ::getByte (buff,i) != fs ) i++; // find fs
+        while (i+bs < length && ::getByte (buff,i) == fs ) {    // FS-RE-DS-short = byte, byte, byte, short ... data ....
+            uint16_t record   = ::getByte (buff,i+1);
+            uint16_t dataset  = ::getByte (buff,i+2);
+            uint16_t len      = ::getShort(buff,i+3,keBig);
+            visitor.visitIPTC(io(),*this,record,dataset,len,buff,i);
+            i += bs + len;
+        }
+        visitor.visitEnd(*this);
+    }
+}
 
 class C8BIM : public Image
 {
@@ -1386,32 +1561,6 @@ public:
             valid_  = io().getLong(endian_) == ::getLong(bim,0,endian_);
             header_ = "     offset |   kind | tagName                      | name |      len | data | " ;
             format_ = "8BIM";
-            start_  = 0;
-        }
-        return valid_;
-    }
-};
-
-class IPTC : public Image
-{
-public:
-    IPTC(std::string path)
-    : Image(path)
-    { }
-    IPTC(Io& io)
-    : Image(io)
-    {}
-
-    void accept(Visitor& visitor);
-
-    bool valid()
-    {
-        if ( !valid_ ) {
-            IoSave  restore(io(),0);
-            valid_  = io().getb() == 0x1c; // must start with FS (field separator)
-            endian_ = keBig ;
-            header_ = "    Record | DataSet | Name                           | Length | Data" ;
-            format_ = "IPTC";
             start_  = 0;
         }
         return valid_;
@@ -1449,48 +1598,6 @@ void C8BIM::accept(Visitor& visitor)
     }
 }
 
-void ICC::accept(class Visitor& visitor)
-{
-    if ( !valid_ ) valid();
-    if (  valid_ ) {
-        visitor.visitBegin((*this)); // tell the visitor
-
-        IoSave restore(io(),start_);
-        uint32_t nEntries = io().getLong(endian_);
-        while  ( nEntries-- ) {
-            DataBuf sig(5);
-            io().read(sig.pData_,4);
-            uint32_t offset = io().getLong(endian_);
-            uint32_t length = io().getLong(endian_);
-            visitor.visitICCTag(sig.pData_,offset,length);
-        }
-        visitor.visitEnd((*this)); // tell the visitor
-    }
-}
-
-bool PSDImage::valid()
-{
-    if ( !valid_ ) {
-        endian_ = keBig ;
-        IoSave   restore(io(),0);
-        DataBuf  h(4); io_.read(h);
-        uint16_t version = io_.getShort(endian_);
-
-        if ( h.begins("8BPS") && version == 1 && io_.getLong(endian_) == 0 && io_.getShort(endian_) == 0  ) {
-            start_  = 26;
-            format_ = "PSD";
-            valid_  = true;
-        }
-        ch_     = io_.getShort(endian_);
-        width_  = io_.getLong (endian_);
-        height_ = io_.getLong (endian_);
-        bits_   = io_.getShort(endian_);
-        col_    = io_.getLong (endian_);
-        header_ = " address | length | data";
-    }
-    return valid_ ;
-}
-
 void PSDImage::accept(Visitor& visitor)
 {
     // Ensure that this is the correct image type
@@ -1516,6 +1623,145 @@ void PSDImage::accept(Visitor& visitor)
 
     visitor.visitEnd  (*this); // tell the visitor
 }
+
+void JpegImage::accept(Visitor& visitor)
+{
+    // Ensure that this is the correct image type
+    if (!valid()) {
+        std::ostringstream os ; os << "expected " << format_ ;
+        Error(kerInvalidFileFormat,io().path(),os.str());
+    }
+    IoSave save(io(),0);
+    visitor.visitBegin((*this)); // tell the visitor
+
+    enum                             // kes = Exif State
+    { kesNone = 0                    // not reading exif
+    , kesAdobe                       // in a chain of APP1/Exif__ segments
+    , kesAgfa                        // in AGFA segments of 65535
+    }          exifState = kesNone ;
+    DataBuf    exif                ; // buffer to suck up exif data
+    uint64_t   nExif     = 0       ; // Count the segments in Exif
+    uint64_t   aExif     = 0       ; // Remember address of block0
+
+    DataBuf    ICC                 ; // buffer to suck up ICC
+    DataBuf    XMP                 ; // buffer to suck up XMP
+    bool       bExtXMP   = false   ;
+
+    // Step along linked list of segments
+    bool     done = false;
+    while ( !done ) {
+        // step to next marker
+        int  marker = advanceToMarker();
+        if ( marker < 0 ) {
+            Error(kerInvalidFileFormat,io().path());
+        }
+
+        size_t      address       = io_.tell()-2;
+        DataBuf     buf(48);
+
+        // Read size and signature
+        uint64_t    bufRead       = io_.read(buf);
+        uint16_t    length        = bHasLength_[marker] ? getShort(buf,0,keBig):0;
+        bool        bAppn         = marker >= app0_ && marker <= (app0_ +15) ;
+        bool        bApp2         = marker == app0_ +2 ;
+        bool        bHasSignature = marker == com_ || bAppn ;
+        std::string signature     = bHasSignature ? buf.binaryToString(2, buf.size_ - 2): "";
+
+        bool        bExif         = bAppn && signature.size() >  6 && signature.find("Exif"       ) == 0;
+        bool        bICC          = bAppn && signature.size() > 10 && signature.find("ICC_PROFILE") == 0;
+        exifState                 = bExif       ? kesAdobe
+                                  : (exifState == kesAdobe && length == 65535) ? kesAgfa
+                                  : kesNone ;
+
+        if ( exifState ) { // suck up the Exif data
+            size_t chop = bExif ? 6 : 0 ;
+            exif.read(io_,(address+2)+2+chop,length-2-chop); // read into memory
+            if ( !nExif ++ ) aExif = (address+2)+2+chop ;
+            if ( exifState == kesAgfa && length != 65535 && !bExif ) exifState = kesNone;
+        }
+
+        // deal with deferred Exif metadata
+        if ( !exif.empty() && !exifState )
+        {
+            IoSave save(io_,aExif);
+            Io     file(io_,aExif,exif.size_); // stream on the file
+            Io     memory(exif);               // stream on memory buffer
+            visitor.visitExif(nExif == 1 ? file :memory ); // tell the visitor
+            exif.empty(true)  ; // empty the exif buffer
+            nExif     = 0     ; // reset the block counter
+        }
+        // deal with deferred XMP and ICC
+        if ( !XMP.empty() && !bAppn ) {
+            visitor.visitXMP(XMP); // tell the visitor
+            bExtXMP = false ;
+            XMP.empty(true) ; // empty the exif buffer
+        }
+        if ( !ICC.empty() && !bApp2 ) {
+            visitor.visitICC(ICC); // tell the visitor
+            ICC.empty(true) ; // empty the exif buffer
+        }
+        visitor.visitSegment(io_,*this,address,marker,length,signature); // tell the visitor
+
+        if ( bAppn ) {
+            // http://www.adobe.com/content/dam/Adobe/en/devnet/xmp/pdfs/XMPSpecificationPart3.pdf p75
+            // $ exiv2 -pS test/data/exiv2-bug922.jpg
+            // STRUCTURE OF JPEG FILE: test/data/exiv2-bug922.jpg
+            // address | marker     | length  | data
+            //       0 | 0xd8 SOI   |       0
+            //       2 | 0xe1 APP1  |     911 | Exif..MM.*.......%.........#....
+            //     915 | 0xe1 APP1  |     870 | http://ns.adobe.com/xap/1.0/.<x:
+            //    1787 | 0xe1 APP1  |   65460 | http://ns.adobe.com/xmp/extensio
+            if ( signature.find("http://ns.adobe.com/x") == 0 ) {
+                // extract XMP
+                if (length > 0) {
+                    io_.seek(io_.tell() - bufRead);
+                    std::vector<byte> xmp(length + 1);
+                    io_.read(&xmp[0], length);
+                    int start = 0;
+
+                    // http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/xmp/pdfs/XMPSpecificationPart3.pdf
+                    // if we find HasExtendedXMP, set the flag and ignore this block
+                    // the first extended block is a copy of the Standard block.
+                    // a robust implementation allows extended blocks to be out of sequence
+                    // we could implement out of sequence with a dictionary of sequence/offset
+                    // and dumping the XMP in a post read operation similar to kpsIptcErase
+                    // for the moment, dumping 'on the fly' is working fine
+                    if (!bExtXMP) {
+                        while (xmp.at(start)) {
+                            start++;
+                        }
+                        start++;
+                        const std::string xmp_from_start = binaryToString(
+                            reinterpret_cast<byte*>(&xmp.at(0)),start, length - start);
+                        if (xmp_from_start.find("HasExtendedXMP", start) != xmp_from_start.npos) {
+                            start = length;  // ignore this segment, we'll get extended packet in following segments
+                            bExtXMP = true;
+                        }
+                    } else {
+                        start = 2 + 35 + 32 + 4 + 4;  // Adobe Spec, p19
+                    }
+                    XMP.read(io_,address+2+start,length - start); // read the XMP from the stream
+                }
+            }
+            if ( bICC ) {
+                uint16_t start = 2+14 ; // "\mark\length\ICC_PROFILE\0\C\Z" = \C: 1 byte chunk. \Z: 1 byte chunks.
+                ICC.read(io_,address+2+start,length - start); // read the XMP from the stream
+            }
+            if ( signature.find("Photoshop 3.0") == 0 && visitor.option() & kpsRecursive) {
+                uint16_t start = 2+2+14 ; // "\mark\length\Photoshop 3.0\08BIM..."
+                Io    bim(io_,address+start,length-start);
+                C8BIM c8bim(bim);
+                c8bim.accept(visitor);
+            }
+        }
+
+        // Jump past the segment
+        io_.seek(address+2+length); // address is previous marker
+        done = marker == eoi_ || marker == sos_ || io().eof();
+    } // while !done
+
+    visitor.visitEnd((*this)); // tell the visitor
+}  // JpegImage::visit
 
 // 4. Create concrete "visitors"
 class ReportVisitor: public Visitor
@@ -1760,6 +2006,12 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
             }
             if ( tagDict == tiffDict && tag == ktMake ) image_.setMaker(buf);
             visitor.visitTag(io_,image_,address,tag,type,count,offset,buf,tagDict);  // Tell the visitor
+            
+            if ( tagDict == tiffDict && tag == 0x8773 ) { // similar for IPTCNAA and XMLPacket
+                Io      stream(io_,offset,count);
+                ICC icc(stream);
+                icc.accept(visitor);
+            }
 
             // recursion anybody?
             if ( isTypeIFD(type) ) tag  = ktSubIFD;
@@ -1790,32 +2042,6 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
     image_.depth_--;
 } // IFD::accept
 
-bool TiffImage::valid()
-{
-    if ( !valid_ ) {
-        IoSave restore(io(),0);
-
-        // read header
-        DataBuf  header(16);
-        io_.read(header);
-
-        char c   = (char) header.pData_[0] ;
-        char C   = (char) header.pData_[1] ;
-        endian_  = c == 'M' ? keBig : keLittle;
-        magic_   = getShort(header,2,endian_);
-        bigtiff_ = magic_ == 43;
-        start_   = bigtiff_ ? getLong8(header,8,endian_) : getLong (header,4,endian_);
-        format_  = bigtiff_ ? "BIGTIFF"                  : "TIFF"                    ;
-        header_  = " address |    tag                              |      type |    count |    offset | value" ;
-
-        uint16_t bytesize = bigtiff_ ? getShort(header,4,endian_) : 8;
-        uint16_t version  = bigtiff_ ? getShort(header,6,endian_) : 0;
-
-        valid_ =  (magic_ == 42||magic_ == 43) && (c == C) && ( c == 'I' || c == 'M' ) && bytesize == 8 && version == 0;
-    }
-    return valid_ ;
-} // TiffImage::valid
-
 void TiffImage::accept(class Visitor& visitor)
 {
     accept(visitor,tiffDict);
@@ -1831,47 +2057,6 @@ void TiffImage::accept(Visitor& visitor,TagDict& tagDict)
         Error(kerInvalidFileFormat,io().path(), os.str());
     }
 } // TiffImage::accept
-
-bool JpegImage::valid()
-{
-    if ( !valid_ ) {
-        IoSave   restore(io(),0);
-        byte     h[2];
-        io_.read(h,2);
-        if ( h[0] == 0xff && h[1] == 0xd8 ) { // .JPEG
-            start_  = 0;
-            format_ = "JPEG";
-            valid_  = true;
-        } else if  ( h[0] == 0xff && h[1]==0x01 ) { // .EXV
-            DataBuf buf(5);
-            io_.read(buf);
-            if ( buf.begins("Exiv2") ) {
-                start_  = 7;
-                format_ = "EXV";
-                valid_  = true;
-            }
-        }
-        header_ = " address | marker       |  length | signature";
-    }
-    return valid_ ;
-}
-
-bool PngImage::valid()
-{
-    if ( !valid_ ) {
-        IoSave   restore(io(),0);
-        valid_  = true ;
-        const byte pngHeader[] = { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A };
-        for ( size_t i = 0 ; valid_ && i < sizeof (pngHeader ); i ++) {
-            valid_ = io().getb() == pngHeader[i];
-        }
-        start_  = 8       ;
-        endian_ = keBig   ;
-        format_ = "PNG"   ;
-        header_  = "  address | chunk |  length |   checksum | data " ;
-    }
-    return valid_ ;
-}
 
 void PngImage::accept(class Visitor& v)
 {
@@ -1894,33 +2079,6 @@ void PngImage::accept(class Visitor& v)
         }
         v.visitEnd(*this);
     }
-}
-
-bool Jp2Image::valid()
-{
-    if ( !valid_ ) {
-        start_ = 0;
-        IoSave     restore (io(),start_);
-        uint32_t   box    ;
-        io().getLong(endian_); // length
-        io().read(&box,4) ;    // box
-
-        valid_ = boxName(box) == kJp2Box_jP ;
-
-        if ( boxName(box) == kJp2Box_ftyp ) {
-            io().read(&box,4);
-            if ( boxName(box) == "crx " ) {
-                format_ = "CR3";
-                valid_  = true ;
-            }
-            if ( boxName(box) == "heic" ) {
-                format_ = "HEIC";
-                valid_  = true ;
-            }
-        }
-        header_ = " address |   length | box             | uuid | data";
-    }
-    return valid_ ;
 }
 
 void Jp2Image::accept(class Visitor& v)
@@ -2018,13 +2176,13 @@ void ReportVisitor::visitSegment(Io& io,Image& image,uint64_t address
               << std::endl;
     }
 }
+
 void ReportVisitor::visitICCTag(const byte* tag,uint32_t offset,uint32_t length)
 {
     if ( option() & (kpsBasic | kpsRecursive) ) {
-        out() << indent() << stringFormat("%4s | %8d | %8d ",tag,offset,length) << std::endl;
+        out() << indent() << stringFormat("%6s | %8d | %8d ",tag,offset,length) << std::endl;
     }
 }
-
 
 void ReportVisitor::visitBegin(Image& image,std::string msg)
 {
@@ -2086,6 +2244,7 @@ void ReportVisitor::visitXMP(DataBuf& xmp)
 {
     if ( option() & kpsXMP ) out() << xmp.pData_;
 }
+
 void ReportVisitor::visitICC(DataBuf& icc)
 {
     Io  profile(icc);
@@ -2095,6 +2254,7 @@ void ReportVisitor::visitICC(DataBuf& icc)
         default            : /* do nothing */                              ; break;
     }
 }
+
 void ReportVisitor::visitExif(Io& io)
 {
     if ( option() & kpsRecursive ) {
@@ -2102,145 +2262,6 @@ void ReportVisitor::visitExif(Io& io)
         TiffImage(io).accept(*this);
     }
 }
-
-void JpegImage::accept(Visitor& visitor)
-{
-    // Ensure that this is the correct image type
-    if (!valid()) {
-        std::ostringstream os ; os << "expected " << format_ ;
-        Error(kerInvalidFileFormat,io().path(),os.str());
-    }
-    IoSave save(io(),0);
-    visitor.visitBegin((*this)); // tell the visitor
-
-    enum                             // kes = Exif State
-    { kesNone = 0                    // not reading exif
-    , kesAdobe                       // in a chain of APP1/Exif__ segments
-    , kesAgfa                        // in AGFA segments of 65535
-    }          exifState = kesNone ;
-    DataBuf    exif                ; // buffer to suck up exif data
-    uint64_t   nExif     = 0       ; // Count the segments in Exif
-    uint64_t   aExif     = 0       ; // Remember address of block0
-
-    DataBuf    ICC                 ; // buffer to suck up ICC
-    DataBuf    XMP                 ; // buffer to suck up XMP
-    bool       bExtXMP   = false   ;
-
-    // Step along linked list of segments
-    bool     done = false;
-    while ( !done ) {
-        // step to next marker
-        int  marker = advanceToMarker();
-        if ( marker < 0 ) {
-            Error(kerInvalidFileFormat,io().path());
-        }
-
-        size_t      address       = io_.tell()-2;
-        DataBuf     buf(48);
-
-        // Read size and signature
-        uint64_t    bufRead       = io_.read(buf);
-        uint16_t    length        = bHasLength_[marker] ? getShort(buf,0,keBig):0;
-        bool        bAppn         = marker >= app0_ && marker <= (app0_ +15) ;
-        bool        bApp2         = marker == app0_ +2 ;
-        bool        bHasSignature = marker == com_ || bAppn ;
-        std::string signature     = bHasSignature ? buf.binaryToString(2, buf.size_ - 2): "";
-
-        bool        bExif         = bAppn && signature.size() >  6 && signature.find("Exif"       ) == 0;
-        bool        bICC          = bAppn && signature.size() > 10 && signature.find("ICC_PROFILE") == 0;
-        exifState                 = bExif       ? kesAdobe
-                                  : (exifState == kesAdobe && length == 65535) ? kesAgfa
-                                  : kesNone ;
-
-        if ( exifState ) { // suck up the Exif data
-            size_t chop = bExif ? 6 : 0 ;
-            exif.read(io_,(address+2)+2+chop,length-2-chop); // read into memory
-            if ( !nExif ++ ) aExif = (address+2)+2+chop ;
-            if ( exifState == kesAgfa && length != 65535 && !bExif ) exifState = kesNone;
-        }
-
-        // deal with deferred Exif metadata
-        if ( !exif.empty() && !exifState )
-        {
-            IoSave save(io_,aExif);
-            Io     file(io_,aExif,exif.size_); // stream on the file
-            Io     memory(exif);               // stream on memory buffer
-            visitor.visitExif(nExif == 1 ? file :memory ); // tell the visitor
-            exif.empty(true)  ; // empty the exif buffer
-            nExif     = 0     ; // reset the block counter
-        }
-        // deal with deferred XMP and ICC
-        if ( !XMP.empty() && !bAppn ) {
-            visitor.visitXMP(XMP); // tell the visitor
-            bExtXMP = false ;
-            XMP.empty(true) ; // empty the exif buffer
-        }
-        if ( !ICC.empty() && !bApp2 ) {
-            visitor.visitICC(ICC); // tell the visitor
-            ICC.empty(true) ; // empty the exif buffer
-        }
-        visitor.visitSegment(io_,*this,address,marker,length,signature); // tell the visitor
-
-        if ( bAppn ) {
-            // http://www.adobe.com/content/dam/Adobe/en/devnet/xmp/pdfs/XMPSpecificationPart3.pdf p75
-            // $ exiv2 -pS test/data/exiv2-bug922.jpg
-            // STRUCTURE OF JPEG FILE: test/data/exiv2-bug922.jpg
-            // address | marker     | length  | data
-            //       0 | 0xd8 SOI   |       0
-            //       2 | 0xe1 APP1  |     911 | Exif..MM.*.......%.........#....
-            //     915 | 0xe1 APP1  |     870 | http://ns.adobe.com/xap/1.0/.<x:
-            //    1787 | 0xe1 APP1  |   65460 | http://ns.adobe.com/xmp/extensio
-            if ( signature.find("http://ns.adobe.com/x") == 0 ) {
-                // extract XMP
-                if (length > 0) {
-                    io_.seek(io_.tell() - bufRead);
-                    std::vector<byte> xmp(length + 1);
-                    io_.read(&xmp[0], length);
-                    int start = 0;
-
-                    // http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/xmp/pdfs/XMPSpecificationPart3.pdf
-                    // if we find HasExtendedXMP, set the flag and ignore this block
-                    // the first extended block is a copy of the Standard block.
-                    // a robust implementation allows extended blocks to be out of sequence
-                    // we could implement out of sequence with a dictionary of sequence/offset
-                    // and dumping the XMP in a post read operation similar to kpsIptcErase
-                    // for the moment, dumping 'on the fly' is working fine
-                    if (!bExtXMP) {
-                        while (xmp.at(start)) {
-                            start++;
-                        }
-                        start++;
-                        const std::string xmp_from_start = binaryToString(
-                            reinterpret_cast<byte*>(&xmp.at(0)),start, length - start);
-                        if (xmp_from_start.find("HasExtendedXMP", start) != xmp_from_start.npos) {
-                            start = length;  // ignore this segment, we'll get extended packet in following segments
-                            bExtXMP = true;
-                        }
-                    } else {
-                        start = 2 + 35 + 32 + 4 + 4;  // Adobe Spec, p19
-                    }
-                    XMP.read(io_,address+2+start,length - start); // read the XMP from the stream
-                }
-            }
-            if ( bICC ) {
-                uint16_t start = 2+14 ; // "\mark\length\ICC_PROFILE\0\C\Z" = \C: 1 byte chunk. \Z: 1 byte chunks.
-                ICC.read(io_,address+2+start,length - start); // read the XMP from the stream
-            }
-            if ( signature.find("Photoshop 3.0") == 0 && visitor.option() & kpsRecursive) {
-                uint16_t start = 2+2+14 ; // "\mark\length\Photoshop 3.0\08BIM..."
-                Io    bim(io_,address+start,length-start);
-                C8BIM c8bim(bim);
-                c8bim.accept(visitor);
-            }
-        }
-
-        // Jump past the segment
-        io_.seek(address+2+length); // address is previous marker
-        done = marker == eoi_ || marker == sos_ || io().eof();
-    } // while !done
-
-    visitor.visitEnd((*this)); // tell the visitor
-}  // JpegImage::visitTiff
 
 void ReportVisitor::visitChunk(Io& io,Image& image,uint64_t address
                         ,char* chunk,uint32_t length,uint32_t chksum)
@@ -2266,31 +2287,6 @@ void ReportVisitor::visitChunk(Io& io,Image& image,uint64_t address
         if ( data.strcmp("XML:com.adobe.xmp")==0 ) {
             out() << data.pData_+22 ;
         }
-    }
-}
-
-void IPTC::accept(Visitor& visitor)
-{
-    if ( valid() ) {
-        visitor.visitBegin(*this);
-
-        IoSave restore(io(),start_);
-        uint64_t length = io().size();
-        DataBuf buff(length);
-        io().read(buff);
-//      out() << indent() << buff.toString(kttUByte,length);
-        uint32_t i  =    0 ; // index
-        uint32_t bs =    5 ; // blocksize
-        uint8_t  fs = 0x1c ; // field seperator
-        while (i+bs < length && ::getByte (buff,i) != fs ) i++; // find fs
-        while (i+bs < length && ::getByte (buff,i) == fs ) {    // FS-RE-DS-short = byte, byte, byte, short ... data ....
-            uint16_t record   = ::getByte (buff,i+1);
-            uint16_t dataset  = ::getByte (buff,i+2);
-            uint16_t len      = ::getShort(buff,i+3,keBig);
-            visitor.visitIPTC(io(),*this,record,dataset,len,buff,i);
-            i += bs + len;
-        }
-        visitor.visitEnd(*this);
     }
 }
 
