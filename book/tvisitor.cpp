@@ -834,7 +834,7 @@ void DataBuf::read(Io& io,uint64_t offset,uint64_t size)
 }
 
 // Options for ReportVisitor
-typedef uint32_t PSopt_e;
+typedef uint16_t PSOption;
 #define kpsBasic     1
 #define kpsRecursive 2
 #define kpsXMP       4
@@ -856,7 +856,7 @@ class   C8BIM;
 class Visitor
 {
 public:
-    Visitor(std::ostream& out,PSopt_e option)
+    Visitor(std::ostream& out,PSOption option)
     : out_   (out)
     , option_(option)
     {};
@@ -891,10 +891,10 @@ public:
                               ,uint16_t kind,DataBuf& name,uint32_t len
                               ,uint32_t data,uint32_t pad ,DataBuf& b)               { return ; }
 
-    PSopt_e       option() { return option_ ; }
+    PSOption       option() { return option_ ; }
     std::ostream& out()    { return out_    ; }
 private:
-    PSopt_e       option_;
+    PSOption       option_;
     std::ostream& out_   ;
 };
 
@@ -986,7 +986,7 @@ protected:
     std::string format_; // "TIFF", "JPEG" etc...
     std::string header_; // title for report
 
-    bool isPrintXMP(uint16_t type, PSopt_e option)
+    bool isPrintXMP(uint16_t type, PSOption option)
     {
         return type == ktXMLPacket && option & kpsXMP;
     }
@@ -1768,7 +1768,7 @@ void JpegImage::accept(Visitor& visitor)
 class ReportVisitor: public Visitor
 {
 public:
-    ReportVisitor(std::ostream& out, PSopt_e option)
+    ReportVisitor(std::ostream& out, PSOption option)
     : Visitor(out,option)
     , indent_(0)
     {
@@ -2347,10 +2347,15 @@ void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
         TiffImage(tiff).accept(*this);
     }
     if ( option() & kpsRecursive && (name == "CMT1" || name == "CMT2" || name == "CMT3" || name == "CMT4") ) {
-        ImageEndianSaver save(image,keLittle);
         Io        tiff(io,address+8,data.size_);
-        TiffImage(tiff).accept(*this);
+        TagDict& tagDict = name == "CMT1" ? tiffDict
+                         : name == "CMT3" ? canonDict
+                         : name == "CMT4" ? gpsDict
+                         : exifDict
+                         ;
+        TiffImage(tiff).accept(*this,tagDict);
     }
+    
     if ( option() & kpsXMP && uuid == "xmp " ) {
         out() << data.pData_+17 ;
     }
@@ -2365,7 +2370,7 @@ int main(int argc,const char* argv[])
     int rc = 0;
     if ( argc == 2 || argc == 3 ) {
         // Create the visitor
-        PSopt_e option = kpsBasic;
+        PSOption option = kpsBasic;
         if ( argc == 3 ) {
             std::string arg(argv[1]);
             option  = arg.find("R") != std::string::npos ? kpsRecursive
@@ -2651,7 +2656,7 @@ void init()
     iptcDicts[2]             = iptcApplication ;
 
     psdDict        [ktGroup] = "8BIM"          ;
-    psdDict        [ 0x0404] = "IPTC-NAA"      ;
+    psdDict        [ 0x0404] = "IPTCNAA"       ;
     psdDict        [ 0x040C] = "Thumbnail"     ;
     psdDict        [ 0x040F] = "ICCProfile"    ;
     psdDict        [ 0x0421] = "Version"       ;

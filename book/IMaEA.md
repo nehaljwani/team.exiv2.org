@@ -870,6 +870,101 @@ I obtained the standard here: [https://mpeg.chiariglione.org/standards/mpeg-4/is
 
 There has been a lot of discussion in Team Exiv2 concerning the legality of reading this file.  I don't believe it's illegal to read metadata from a container.  I believe it's illegal to decode the H.264 encoder which is used to store the image in Heif.  However the metadata is not protected in anyway.  So, I'll implement this in tvisitor.cpp.  Team Exiv2 may agree to include this in Exiv2 v0.28.  If I every work on Exiv2 v0.27.4, I will implement ISOBMFF support.
 
+### Canon CR3 Format
+
+This is a dump from a CR3:
+
+```bash
+$ tvisitor ~/cr3.cr3
+STRUCTURE OF CR3 FILE (MM): /Users/rmills/cr3.cr3
+ address |   length | box             | uuid | data
+       0 |       16 | 0x70797466 ftyp |      | crx ___.crx isom
+      24 |    22784 | 0x766f6f6d moov |      | __PXuuid............F+jH___&CNCVCanonCR3
+  STRUCTURE OF JP2 FILE (MM): /Users/rmills/cr3.cr3:32->22784
+         0 |    20560 | 0x64697575 uuid | can1 | ___&CNCVCanonCR3_001/00.09.00/00.00.00__
+    STRUCTURE OF JP2 FILE (MM): /Users/rmills/cr3.cr3:32->22784:24->20552
+           0 |       30 | 0x56434e43 CNCV |      | CanonCR3_001/00.09.00/00.00.00
+          38 |       84 | 0x50544343 CCTP |      | _______.___.___.CCDT_______._______.___.
+         130 |       84 | 0x4f425443 CTBO |      | ___.___.______Y _____._.___._____.Y8____
+         222 |        2 | 0x65657266 free |      | __
+         232 |      384 | 0x31544d43 CMT1 |      | II*_.___.__.._.___p.__..._.___..__..._._
+         624 |     1056 | 0x32544d43 CMT2 |      | II*_.___'_..._.___..__..._.___..__".._._
+        1688 |     5168 | 0x33544d43 CMT3 |      | II*_.___/_._._1___B.__._._.___..__._._._
+        6864 |     1808 | 0x34544d43 CMT4 |      | II*_.___.___._.___..____________________
+        8680 |    11856 | 0x424d4854 THMB |      | _____._x__.=_.__...._._.................
+       20544 |      100 | 0x6468766d mvhd |      | ____..4...4.___.___._.__.____________.__
+    END: /Users/rmills/cr3.cr3:32->22784:24->20552
+     20568 |      100 | 0x6468766d mvhd |      | ____..4...4.___.___._.__.____________.__
+     20676 |      476 | 0x6b617274 trak |      | ___\tkhd___...4...4.___._______.________
+     21160 |      576 | 0x6b617274 trak |      | ___\tkhd___...4...4.___._______.________
+     21744 |      592 | 0x6b617274 trak |      | ___\tkhd___...4...4.___._______.________
+     22344 |      432 | 0x6b617274 trak |      | ___\tkhd___...4...4.___._______.________
+  END: /Users/rmills/cr3.cr3:32->22784
+   22816 |    65552 | 0x64697575 uuid |  xmp | <?xpacket begin='...' id='W5M0MpCehiHzre
+   88376 |   264921 | 0x64697575 uuid | can2 | _______._...PRVW_____..T.8_._......._._.
+  353305 |       -7 | 0x7461646d mdat |      | _____.j....._._.........................
+END: /Users/rmills/cr3.cr3
+```
+
+The CR3 format has been well documented by Laurent Cl&eacute;vy here:  [https://github.com/lclevy/canon_cr3.git](https://github.com/lclevy/canon_cr3.git)
+
+The XMP is clearly marked in a uuid packet.  The Exif metadata is stored as 4 embedded TIFF files in the Canon uuid packet.  The four files are the 'tiffTags', 'exifTags', 'canonTags' and 'gpsTags'.  In the test files, the gpsTags are about 1800 bytes of mostly zeros!
+
+Laurent hasn't identified IPTC and ICC data.  There is a discussion about concerning ICC in JP2000 files and I believe that's what is used by CR3.  I have not discovered anything about IPTC in CR3 files.
+
+The THMB record is a JPEG and written at an offset of 24 bytes into the record.
+
+```bash
+$ (dd bs=1 skip=32 count=22784 if=~/cr3.cr3 | dd bs=1 skip=24 count=20552 | dd bs=1 skip=$((8680+24)) count=$((11856-24)) | exiv2 -pS -) 2>/dev/null
+STRUCTURE OF JPEG FILE: 1596571254.exiv2_temp
+ address | marker       |  length | data
+       0 | 0xffd8 SOI  
+       2 | 0xffdb DQT   |     132 
+     136 | 0xffc0 SOF0  |      17 
+     155 | 0xffc4 DHT   |     418 
+     575 | 0xffda SOS  
+```
+
+In this case, the thumbnail is 160x120 pixels.   11837 is the filesize.
+
+```
+$ (dd bs=1 skip=32 count=22784 if=~/cr3.cr3 | dd bs=1 skip=24 count=20552 | dd bs=1 skip=8680 count=24 | dmpf -endian=1 -bs=2 hex=0 -) 2>/dev/null
+       0        0: __.XTHMB_____._x__.=_.__          ->      0 11864 21576 19778     0     0   160   120     0 11837     1     0
+$ ls -l foo.jpg 
+-rw-r--r--@ 1 rmills  staff  11832  4 Aug 20:58 foo.jpg
+```
+
+Laurent has documented this as: **THMB** _(Thumbnail)_  from **uuid** = 85c0b687 820f 11e0 8111 f4ce462b6a48
+
+
+| Offset       | type   | size                | content                     |
+| ------------ | ------ | ------------------- | --------------------------- |
+| 0            | long   | 1                   | size of this tag            |
+| 4            | char   | 4                   | "THMB"                      |
+| 8            | byte   | 1                   | likely version, value=0 or 1    |
+| 9            | bytes  | 3                   | likely flags, value = 0          |
+
+for version 0:
+
+| Offset       | type   | size                | content                     |
+| ------------ | ------ | ------------------- | --------------------------- |
+| 12/0xc       | short  | 1                   | width (160)                 |
+| 14/0xe       | short  | 1                   | height (120)                |
+| 16/0x10      | long   | 1                   | jpeg image size (jpeg_size) |
+| 20/0x14      | short   | 1                   | unknown, value = 1 |
+| 22/0x16      | short   | 1                   | unknown, value = 0 |
+| 24/0x18      | byte[] | stored at offset 16 | jpeg_data = ffd8ffdb...ffd9 |
+| **24+jpeg_size** | byte[] | ?                   | padding to next 4 bytes?    |
+|              | long   | 1                   | ?                           |
+
+for version 1:
+
+| Offset       | type   | size                | content                     |
+| ------------ | ------ | ------------------- | --------------------------- |
+| 12/0xc       | short  | 1                   | width (160)                 |
+| 14/0xe       | short  | 1                   | height (120)                |
+| 16/0x10      | long   | 1                   | jpeg image size (jpeg_size) |
+
 
 [TOC](#TOC)
 <div id="WEBP"/>
