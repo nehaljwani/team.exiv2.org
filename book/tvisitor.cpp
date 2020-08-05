@@ -1363,22 +1363,28 @@ public:
             IoSave     restore (io(),start_);
             uint32_t   box    ;
             io().getLong(endian_); // length
-            io().read(&box,4) ;    // box
+            io().read   (&box,4) ; // box
 
             valid_ = boxName(box) == kJp2Box_jP ;
 
             if ( boxName(box) == kJp2Box_ftyp ) {
                 io().read(&box,4);
-                if ( boxName(box) == "crx " ) {
-                    format_ = "CR3";
+                std::string boxname = boxName(box);
+                if ( boxname == "crx " ) {
+                    format_ = "JP2 (crx )";
+                    brand_  = boxname;
                     valid_  = true ;
-                }
-                if ( boxName(box) == "heic" ) {
-                    format_ = "HEIC";
+                } else if ( boxname == "mif1" ) {
+                    format_ = "JP2 (mif1)";
+                    brand_  = boxname;
+                    valid_  = true ;
+                } else if ( boxname == "heic" ) {
+                    format_ = "JP2 (heic)";
+                    brand_  = boxname;
                     valid_  = true ;
                 }
             }
-            header_ = " address |   length | box             | uuid | data";
+            header_ = " address |   length |  box | uuid | data";
         }
         return valid_ ;
     }
@@ -1406,23 +1412,25 @@ public:
                 ||  name == kJp2Box_ipco
                 ;
     }
+    std::string brand_   ;
+    bool        hasExif_ ; // set by visitBox("meta");
 
     void init()
     {
-        endian_ = keBig ;
-        format_ = "JP2" ;
+        endian_  = keBig ;
+        format_  = "JP2" ;
+        brand_   = "jp2" ;
+        hasExif_ = false ;
 
         const char*  kJp2UuidExif  = "4a706754-6966-6645-7869-662d3e4a5032" ; // "JpgTiffExif->JP2";
         const char*  kJp2UuidIptc  = "33c7a4d2-b81d-4723-a0ba-f1a3e097ad38" ;
         const char*  kJp2UuidXmp   = "be7acfcb-97a9-42e8-9c71-999491e3afac" ;
-        const char*  kJp2UuidCan1  = "85c0b687-820f-11e0-8111-f4ce462b6a48" ;
-        const char*  kJp2UuidCan2  = "eaf42b5e-1c98-4b88-b9fb-b7dc406e4d16" ;
+        const char*  kJp2UuidCano  = "85c0b687-820f-11e0-8111-f4ce462b6a48" ;
 
         uuids_[kJp2UuidExif] = "exif" ;
         uuids_[kJp2UuidIptc] = "iptc" ;
         uuids_[kJp2UuidXmp ] = "xmp"  ;
-        uuids_[kJp2UuidCan1] = "can1" ;
-        uuids_[kJp2UuidCan2] = "can2" ;
+        uuids_[kJp2UuidCano] = "cano" ;
     }
 
 private:
@@ -1437,6 +1445,8 @@ private:
     const char*  kJp2Box_dinf  = "dinf";
     const char*  kJp2Box_iprp  = "iprp";
     const char*  kJp2Box_ipco  = "ipco";
+    const char*  kJp2Box_meta  = "meta";
+    const char*  kJp2Box_hdlr  = "hdlr";
 };
 
 class ICC : public Image
@@ -1849,6 +1859,7 @@ public:
             out() << indent() << "END: " << image.path() << std::endl;
         }
         indent_--;
+        image.depth_--;
     } // visitEnd
 
 private:
@@ -1963,7 +1974,7 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
     bool     bigtiff = image_.bigtiff();
     endian_e endian  = image_.endian();
 
-    if ( !image_.depth_++ ) image_.visits().clear();
+    if ( !image_.depth_ ) image_.visits().clear();
     visitor.visitBegin(image_);
     if ( image_.depth_ > 100 ) Error(kerCorruptedMetadata) ; // weird file
 
@@ -2043,7 +2054,6 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
     } // while start != 0
 
     visitor.visitEnd(image_);
-    image_.depth_--;
 } // IFD::accept
 
 void TiffImage::accept(class Visitor& visitor)
@@ -2089,70 +2099,75 @@ void Jp2Image::accept(class Visitor& v)
 {
     if ( !valid() ) return ;
 
-    // search for MM_*
-    if ( format_ == "HEIC" ) {
-        v.visitBegin(*this);
-        Io& io = this->io();
-        uint64_t size = io.size();
-        while ( !io.eof() ) {
-            while ( size-- && io.getb() != 'M' ) {};
-            uint64_t address = io.tell();
-            int count = 1 ;
-            if ( io.getb() == 'M' ) count++;
-            if ( io.getb() ==  0  ) count++;
-            if ( io.getb() == '*' ) count++;
-            if ( count == 4 ) {
-                Io tiff(io,address-1);
-                TiffImage(tiff).accept(v);
-                break;
-            } else {
-                io.seek(address);
-            }
+    if ( !depth_ ) visits_.clear() ;
+    v.visitBegin(*this);
+    IoSave restore(io(),start_);
+    uint64_t address = start_ ;
+    while (  address < io().size() ) {
+        io().seek(address );
+        uint32_t  length  = io().getLong(endian_);
+        uint32_t  box     ;
+        io().read(&box,4) ;
+
+        if ( length > io().size() ) {
+            // Error(kerCorruptedMetadata);
         }
-        v.visitEnd(*this);
-    } else {
-        if ( !depth_++ ) visits_.clear() ;
-        v.visitBegin(*this);
-        IoSave restore(io(),start_);
-        uint64_t address = start_ ;
-        while (  address < io().size() ) {
-            // visit(address); // TODO we need to get the absolute address
-            io().seek(address );
-            uint32_t  length  = io().getLong(endian_);
-            uint32_t  box     ;
-            io().read(&box,4) ;
 
-            if ( length > io().size() ) {
-                // Error(kerCorruptedMetadata);
-            }
+        v.visitBox(io(),*this,address,box,length); // tell the visitor
 
-            v.visitBox(io(),*this,address,box,length); // tell the visitor
-
-            // recursion if superbox
-            if ( superBox(box) ) {
+        // recursion if superbox
+        if ( superBox(box) ) {
+            uint64_t  subA = io().tell() ;
+            Jp2Image jp2(io(),subA,length-8);
+            jp2.valid_ = true ;
+            jp2.accept(v);
+        }
+        // recursion for a can1 box
+        if ( boxName(box) == "uuid" ) {
+            DataBuf uuid(16);
+            io().read(uuid);
+            if ( uuidName(uuid) == "cano" ) {
                 uint64_t  subA = io().tell() ;
-                Jp2Image jp2(io(),subA,length-8);
+                Jp2Image jp2(io(),subA,length-16);
                 jp2.valid_ = true ;
                 jp2.accept(v);
             }
-            // recursion for a can1 box
-            if ( boxName(box) == "uuid" ) {
-                DataBuf uuid(16);
-                io().read(uuid);
-                if ( uuidName(uuid) == "can1" ) {
-                    uint64_t  subA = io().tell() ;
-                    Jp2Image jp2(io(),subA,length-16);
-                    jp2.valid_ = true ;
-                    jp2.accept(v);
+        } else if ( boxName(box) == "meta" ) {
+            // search and set hasExif_ ;
+            uint64_t size = io().size();
+            while ( !io().eof() && !hasExif_ ) {
+                while ( size-- && io().getb() != 'E' ) {};
+                int count = 1 ;
+                if ( io().getb() == 'x' ) count++;
+                if ( io().getb() == 'i'  ) count++;
+                if ( io().getb() == 'f' ) count++;
+                hasExif_ = count == 4 ;
+            }
+        } else if ( hasExif_ && (boxName(box) == "mdat") ) {
+            // search for MM_*
+            Io& io = this->io();
+            uint64_t size = io.size();
+            while ( !io.eof() ) {
+                while ( size-- && io.getb() != 'M' ) {};
+                uint64_t address = io.tell();
+                int count = 1 ;
+                if ( io.getb() == 'M' ) count++;
+                if ( io.getb() ==  0  ) count++;
+                if ( io.getb() == '*' ) count++;
+                if ( count == 4 ) {
+                    Io tiff(io,address-1);
+                    TiffImage(tiff).accept(v);
+                    break;
+                } else {
+                    io.seek(address);
                 }
             }
-            address = (boxName(box) == kJp2Box_jp2c
-                   ||  boxName(box) == kJp2Box_mdat) ? io().size()
-                    : address + length ;
         }
-        v.visitEnd(*this);
-        depth_--;
+        address = (boxName(box) == kJp2Box_jp2c
+               ||  boxName(box) == kJp2Box_mdat) ? io().size()
+                : address + length ;
     }
+    v.visitEnd(*this);
 } // Jp2Image::accept()
 
 void ReportVisitor::visitIPTC(Io& io,Image& image
@@ -2194,6 +2209,7 @@ void ReportVisitor::visitICCTag(const byte* tag,uint32_t offset,uint32_t length)
 
 void ReportVisitor::visitBegin(Image& image,std::string msg)
 {
+    image.depth_++;
     indent_++;
     if ( option() & (kpsBasic|kpsRecursive) ) {
         char c = image.endian() == keBig ? 'M' : 'I';
@@ -2337,23 +2353,26 @@ void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
     }
 
     if ( option() & (kpsBasic | kpsRecursive) ) {
-        out() << indent() << stringFormat("%8d |  %7d | %#10x %4s | %4s | ",address,length,box,name.c_str(),uuid.c_str() );
+        out() << indent() << stringFormat("%8d | %8d | %4s | %4s | ",address,length,name.c_str(),uuid.c_str() );
         uint64_t start = uuid.size() ? 16 : 0;
         if ( length > 40+start ) length = 40;
         out() << data.toString(kttUndefined,length,image.endian(),start) << std::endl;
     }
-    if ( option() & kpsRecursive && uuid == "exif" ) {
-        Io        tiff(io,address+8+16,data.size_-16); // uuid is 16 bytes (128 bits)
-        TiffImage(tiff).accept(*this);
-    }
-    if ( option() & kpsRecursive && (name == "CMT1" || name == "CMT2" || name == "CMT3" || name == "CMT4") ) {
-        Io        tiff(io,address+8,data.size_);
-        TagDict& tagDict = name == "CMT1" ? tiffDict
-                         : name == "CMT3" ? canonDict
-                         : name == "CMT4" ? gpsDict
-                         : exifDict
-                         ;
-        TiffImage(tiff).accept(*this,tagDict);
+    if ( option() & kpsRecursive ){
+        if ( uuid == "exif" ) {
+            Io        tiff(io,address+8+16,data.size_-16); // uuid is 16 bytes (128 bits)
+            TiffImage(tiff).accept(*this);
+        } else {
+            std::map<std::string,TagDict> dicts ;
+            dicts["CMT1"] = tiffDict;
+            dicts["CMT2"] = exifDict;
+            dicts["CMT3"] = canonDict;
+            dicts["CMT4"] = gpsDict;
+            if ( dicts.find(name) != dicts.end() ) {
+                Io        tiff(io,address+8,data.size_);
+                TiffImage(tiff).accept(*this,dicts[name]);
+            }
+        }
     }
     
     if ( option() & kpsXMP && uuid == "xmp " ) {
@@ -2442,6 +2461,7 @@ void init()
     tiffDict  [ 0x0128 ] = "ResolutionUnit";
     tiffDict  [ 0x0131 ] = "Software";
     tiffDict  [ 0x0132 ] = "DateTime";
+    tiffDict  [ 0x013b ] = "Artist";
     tiffDict  [ 0x0213 ] = "YCbCrPositioning";
 
     exifDict  [ktGroup ] = "Photo";
