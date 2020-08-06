@@ -1410,6 +1410,8 @@ public:
                 ||  name == kJp2Box_dinf
                 ||  name == kJp2Box_iprp
                 ||  name == kJp2Box_ipco
+                ||  name == kJp2Box_meta
+                ||  name == kJp2Box_iinf
                 ;
     }
     std::string brand_   ;
@@ -1447,6 +1449,7 @@ private:
     const char*  kJp2Box_ipco  = "ipco";
     const char*  kJp2Box_meta  = "meta";
     const char*  kJp2Box_hdlr  = "hdlr";
+    const char*  kJp2Box_iinf  = "iinf";
 };
 
 class ICC : public Image
@@ -2117,6 +2120,7 @@ void Jp2Image::accept(class Visitor& v)
 
         // recursion if superbox
         if ( superBox(box) ) {
+            if ( boxName(box) == "meta" || boxName(box) == "iinf" ) io().seek(4,ksCurrent); // skip mysterious long
             uint64_t  subA = io().tell() ;
             Jp2Image jp2(io(),subA,length-8);
             jp2.valid_ = true ;
