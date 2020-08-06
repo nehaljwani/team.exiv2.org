@@ -2107,6 +2107,7 @@ void Jp2Image::accept(class Visitor& v)
     IoSave restore(io(),start_);
     uint64_t address = start_ ;
     while (  address < io().size() ) {
+        uint64_t skipped = 0;
         io().seek(address );
         uint32_t  length  = io().getLong(endian_);
         uint32_t  box     ;
@@ -2120,7 +2121,10 @@ void Jp2Image::accept(class Visitor& v)
 
         // recursion if superbox
         if ( superBox(box) ) {
-            if ( boxName(box) == "meta" || boxName(box) == "iinf" ) io().seek(4,ksCurrent); // skip mysterious long
+            if ( boxName(box) == "meta" || boxName(box) == "iinf" ) {  // Don't understand why!
+                skipped = 4 ;
+                io().seek(skipped,ksCurrent); // skip mysterious long
+            }
             uint64_t  subA = io().tell() ;
             Jp2Image jp2(io(),subA,length-8);
             jp2.valid_ = true ;
@@ -2143,9 +2147,9 @@ void Jp2Image::accept(class Visitor& v)
                 while ( size-- && io().getb() != 'E' ) {};
                 int count = 1 ;
                 if ( io().getb() == 'x' ) count++;
-                if ( io().getb() == 'i'  ) count++;
+                if ( io().getb() == 'i' ) count++;
                 if ( io().getb() == 'f' ) count++;
-                hasExif_ = count == 4 ;
+                hasExif_ = count == 5 ;
             }
         } else if ( hasExif_ && (boxName(box) == "mdat") ) {
             // search for MM_*
@@ -2169,7 +2173,7 @@ void Jp2Image::accept(class Visitor& v)
         }
         address = (boxName(box) == kJp2Box_jp2c
                ||  boxName(box) == kJp2Box_mdat) ? io().size()
-                : address + length ;
+                : address + length + skipped;
     }
     v.visitEnd(*this);
 } // Jp2Image::accept()
