@@ -811,7 +811,7 @@ END: ../test/data/Reagan.jp2
 
 These are stored in the 'colr' box which is a sub-box of 'jp2h'.  I have found the specification very unsatisfactory.  w15177_15444 discusses ColourInformationBox extends Box(‘colr’).  I haven't found the definition of 'colr'.  I enquired on the ExifTool Forum and Phil offered advice which has been implemented in jp2image.cpp.  There are two ways to encode the profile.  You can use a `uuid` box with the uuid of "\x01\x00\x00\x00\x00\x00\x10\x00\x00\x05\x1c".  The box payload is the ICC profile.  Or you can use the 'colr' box which has 3 padding bytes "\02\0\0\" followed by the ICC profile.  So the length of the box will be 8 (the box) +3 (padding) +iccProfile.size()
 
-I found an older version of the spec in which 'colr' is documented on p161.  [http://hosting.astro.cornell.edu/~carcich/LRO/jp2/ISO_JPEG200_Standard/INCITS+ISO+IEC+15444-1-2000.pdf](http://hosting.astro.cornell.edu/~carcich/LRO/jp2/ISO_JPEG200_Standard/INCITS+ISO+IEC+15444-1-2000.pdf)
+I found an older version of the spec in which 'colr' is documented on p161.  [http://hosting.astro.cornell.edu/~carcich/LRO/jp2/ISO\_JPEG200\_Standard/INCITS+ISO+IEC+15444-1-2000.pdf](http://hosting.astro.cornell.edu/~carcich/LRO/jp2/ISO_JPEG200_Standard/INCITS+ISO+IEC+15444-1-2000.pdf)
 
 ```bash
 .../book/build $ ./tvisitor ~/gnu/github/exiv2/0.27-maintenance/test/data/Reagan2.jp2 
@@ -1217,6 +1217,30 @@ Exif is the largest and most commonly used metadata standard.  The standard is d
 To enable the manufacturer to store both proprietary and non-standard data, the MakerNote Tag is defined.  Usually the Manufacturer will write a TIFF Encoded record into the MakerNote.  Exiv2 can reliably read and rewrite Manufacturer's MakerNotes.  The implementation of this in Exiv2 is outstanding work by Andreas Huggel.
 
 ![tiff](tiff.png)
+
+### Structure of Exif Metadata
+
+Exif metadata is stored using the specification of the Tiff.  So, every tag has an array of values.  The array is homogeneous.  Every element of the array is of the same time.  So, there can be an array of ASCII values _(for strings)_, or an array of Shorts _(for image dimensions)_.  Foreign data such as IPTC, ICC Profiles and MakerNotes are typically an array of "UNDEFINED" which are binary data.
+
+There are 3 types of single-byte arrays in Exif.  An array of ASCII values should by 7-bit ascii values with a trailing null.  An array of UNDEFINED is usually use to define binary data.  An array of BYTE values is a byte-stream and typically used by XMPPacket to store XML.  
+
+### Character Set Encoding in Strings
+
+There are only 3 types of string in Exif which use CharSet encoding.  They are UserComment, GPSAreaInformation and GPSProcessingMethod
+
+```
+573 rmills@rmillsmm-local:~/gnu/exiv2/team/book $ taglist ALL | grep '\tComment,'
+Photo.UserComment,	37510,	0x9286,	Photo,	Exif.Photo.UserComment,	Comment,	
+GPSInfo.GPSProcessingMethod,	27,	0x001b,	GPSInfo,	Exif.GPSInfo.GPSProcessingMethod,	Comment,
+GPSInfo.GPSAreaInformation,	28,	0x001c,	GPSInfo,	Exif.GPSInfo.GPSAreaInformation,	Comment,
+574 rmills@rmillsmm-local:~/gnu/exiv2/team/book $ 
+```
+
+These tags are discussed and explained in the Exiv2 man page.  The code in tvisitor.cpp does not deal with CharSet decoding and reports the binary values of the bytes.
+
+The tag XMLPacket is normally an array of BYTE values.  The encoding of such a string defaults to UTF-8 and can be defined in the XML Processing Instruction.  For an Exif/Tiff perspective, the count is the number of bytes used to store the string.  The length of the decoded string may differ.
+ 
+### Inspecting the Values of Exif Data
 
 Before we get into the Exiv2 code, let's look at the simpler python TIFF/Exif library.   [https://github.com/Moustikitos/tyf](https://github.com/Moustikitos/tyf)
 
