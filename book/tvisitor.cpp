@@ -2122,8 +2122,8 @@ void Jp2Image::accept(class Visitor& v)
         // recursion if superbox
         if ( superBox(box) ) {
             if ( boxName(box) == "meta" || boxName(box) == "iinf" ) {  // Don't understand why!
-                skipped = 4 ;
-                io().seek(skipped,ksCurrent); // skip mysterious long
+                // skipped = 4 ;
+                io().seek(4,ksCurrent); // skip mysterious long
             }
             uint64_t  subA = io().tell() ;
             Jp2Image jp2(io(),subA,length-8);
@@ -2149,9 +2149,9 @@ void Jp2Image::accept(class Visitor& v)
                 if ( io().getb() == 'x' ) count++;
                 if ( io().getb() == 'i' ) count++;
                 if ( io().getb() == 'f' ) count++;
-                hasExif_ = count == 5 ;
+                hasExif_ = count == 4 ;
             }
-        } else if ( hasExif_ && (boxName(box) == "mdat") ) {
+        } else if ( hasExif_ && (boxName(box) == "mdat") && (v.option() & kpsRecursive) ) {
             // search for MM_*
             Io& io = this->io();
             uint64_t size = io.size();
@@ -2165,9 +2165,6 @@ void Jp2Image::accept(class Visitor& v)
                 if ( count == 4 ) {
                     Io tiff(io,address-1);
                     TiffImage(tiff).accept(v);
-                    break;
-                } else {
-                    io.seek(address);
                 }
             }
         }
