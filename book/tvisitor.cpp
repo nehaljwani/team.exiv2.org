@@ -2476,6 +2476,7 @@ void init()
     tiffDict  [ 0x0213 ] = "YCbCrPositioning";
 
     exifDict  [ktGroup ] = "Photo";
+    exifDict  [ 0x9286 ] = "UserComment";
     exifDict  [ 0x927c ] = "MakerNote";
     exifDict  [ 0x829a ] = "ExposureTime";
     exifDict  [ 0x829d ] = "FNumber";
