@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-08-03</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-08-07</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -524,7 +524,7 @@ The Agfa MakerNote contains an IFD which is preceded by **ABC_II#E** where #E is
 
 #### ICC Profile data > 64k in JPEG
 
-This is documented by ICC in ICC1v43\_2010-12.pdf and implemented in Exiv2 for both reading and writing.  The ICC profile has a signature of ICC_PROFILE_ followed by two uint_8t values which are the chunk sequence and the chunks count.  The remainder of the data is the ICC profile.  The test file test/data/ReaganLargeJpg.jpg has data in the format.
+This is documented by ICC in ICC1v43\_2010-12.pdf and implemented in Exiv2 for both reading and writing.  The ICC profile has a signature of ICC\_PROFILE_ followed by two uint8\_t values which are the chunk sequence and the chunks count.  The remainder of the data is the ICC profile.  The test file test/data/ReaganLargeJpg.jpg has data in the format.
 
 ```bash
 1155 rmills@rmillsmbp:~/gnu/github/exiv2/0.27-maintenance $ exiv2 -pS test/data/ReaganLargeJpg.jpg 
@@ -3373,17 +3373,17 @@ Or there's the review mechanism which I'll dub **RAB**  You insist:
 2. No contributor can approve their own change.
 3. Nobody reviews or approves a code change.
 
-There are many other forms of **AB**.  For example, there is useless **UAB**.  For example, a legal challenge.  You say "We might be infringing somebody's patent!".  This is particularly effective when you don't need to provide evidence.  Even if there is a written legal opinion you can refute that with the words: "The legal opinion has not been tested in court.".  This show-stopper was used by two contributors to block ISOBMFF support in Exiv2 v0.27.3.  I received more than 100 emails from users asking "What is the legal problem?", so I called a meeting on Zoom and users on 5 continents attended.  The two contributors who raised the show-stopper did not attend.  One emailed later to say "Apologies.  I fell asleep on the couch and missed the meeting.".
+There are many other forms of **AB**.  For example, there is useless **UAB**.  For example, a legal challenge.  You say "We might be infringing somebody's patent!".  This is particularly effective as you don't need to provide evidence.  Even if there is a written legal opinion you can refute that with the words: "The legal opinion has not been tested in court.".  This show-stopper was used by two contributors to block ISOBMFF support in Exiv2 v0.27.3.  I received more than 100 emails from users asking "What is the legal problem?", so I called a meeting on Zoom and users on 5 continents attended.  The two contributors who raised the show-stopper did not attend.  One emailed later to say "Apologies.  I fell asleep on the couch and missed the meeting.".
 
-How about this method?  You complain about a font being used.  We'll call this **FAB**.  This is very effective because you're only asking for a 100% reformat of the book and all the graphics.  That's not too much to ask.  When I designed the Exiv2 Logo, a contributor asked for the font to be changed.  I proposed alternatives and received no response.
+How about this method?  You complain about a font being used.  We'll call this **FAB**.  This is very effective because you're only asking for a 100% reformat of the book and all the graphics.  That's not much to ask.  When I designed the Exiv2 Logo, a contributor asked for the font to be changed.  I proposed alternatives and received no response.
 
 As for myself, I am a **CAB** where *C* stands for *clever*.  However I am an **AB** and that's why I've found it difficult to recruit and retain contributors.
 
-There are so many ways to incur the outrage of stakeholders.  And so many ways in which people can and do complain.  All in all, working on an open-source project is a thank-less task.  When I released v0.25, a contributor in Peru said on Facebook  _**Robin should get a medal for his work.  Exiv2 would have died years ago without his commitment.**_  So I asked my family to write to the UK Government to propose that I be given an honour.  They silently refused.  Alison comforted me by saying _**Nobody is ever going to thank you for working on Exiv2.**_
+There are so many ways to incur the outrage of stakeholders.  And so many ways in which people can and do complain.  All in all, working on an open-source project is a thank-less task.  When I released v0.25, a contributor in Peru said on Facebook  _**Robin should get a medal for his work.  Exiv2 would have died years ago without his commitment.**_  So I asked my family to write to the UK Government to propose that I be given an honour.  The family silently refused.  Alison comforted me by saying _**Nobody is ever going to thank you for working on Exiv2.**_
 
 #### Solutions to the issue of ABs
 
-There are ways to fix on-line abuse.  We do what the Fuzzing Police do.  They do not negotiate with any project.  They arrive unexpectedly and deliver their message.  And they track your response and performance.
+There are ways to fix on-line abuse.  We could do what the Fuzzing Police do.  They do not negotiate with any project.  They arrive unexpectedly and deliver their message.  And they track your response and performance.
 
 The Community would be well served by a similar task force to investigate complaints about the behaviour of stakeholders and maintainers.  There are undoubtably stakeholders who would report me.  However I would be able to complain about a stakeholder if I felt they had behaved inappropriately.
 
@@ -3391,7 +3391,7 @@ For sure, I would not welcome my performance being reviewed.  However a fair, ho
 
 Another possible solution would be to register a complaint about an individual.  In the same way as a bug report can be opened on a project, it would be helpful to open a complaint about an individual.  And that complaint can only be closed by the person who opened it.  I'm fairly sure, we'd soon discover two things:
 
-1.  Some people raise loads of complaints about other people.
+1.  A few people raise many complaints about other people.
 2.  There are many open complaints about a few people.
 
 While there is no sanction for a stakeholder being unreasonable, bad behaviour will continue.  A solution is possible.  If you are thinking _**I never contribute, therefore this does not affect me!**_, I ask you to think again if you use open-source.  When maintainers are abused and leave their project, everybody looses out.
@@ -3989,13 +3989,13 @@ I've seen different approaches used.  In the IT world, people involved in system
 
 When I worked at West Anchors, the analysts promoted all the programmers to programmer/analyst.  So the programmer had to do the programming and the work of the analyst.  This enabled the analyst to concentrate on office politics.  The QE team at West Anchors didn't test anything.  They approved the test plans written by the programmer/analyst and they inspected the test logs required to prove that the programmer/analyst had done all the work. The parrot phrase of everybody who wasn't a programmer/analyst was "I'm not technical" which meant "I'm not going to help you, so don't ask.  And, by the way, I am superior to you and you will do exactly what I tell you to do.".
 
-Before I retired, the circus started adopting Scrum.  Loads of meetings.  The project is divided into two-week _**sprints**_.  There were two days of _**review**_ meetings at the end of every sprint.  Two days of _**planning**_ meetings at the start of every sprint.  Daily _**stand-up**_ meetings which were usually about 1 hour.  And I'm sure I've forgotten other pointless meetings.  Sometimes people say they are _**agile**_.  I haven't figured out what that is.  I think it's some kind of "Let's not bother looking ahead.  It'll be great if or when it's delivered.".  And of course, all software development engineers _**(except me)**_ are geniuses who create perfect code and therefore no reason to document or help lesser co-workers.
+Before I retired, the circus started adopting Scrum.  Loads of meetings.  The project is divided into two-week _**sprints**_.  There were two days of _**review**_ meetings at the end of every sprint.  Two days of _**planning**_ meetings at the start of every sprint.  Daily _**stand-up**_ meetings which were usually about 1 hour.  And I'm sure I've forgotten other pointless meetings.  Sometimes people say they are _**agile**_.  I haven't figured out what that is.  I think it's some kind of "Let's not bother looking ahead.  It'll be great if or when it's delivered.".  And of course, all software development engineers _**(except me)**_ are geniuses who create perfect code and therefore have no reason to document or help lesser co-workers.
 
-In the last 10 years we have seen AI move out of the lab and into our homes, cars and phones.  Probably 50% of code development time is spent on test related activity.  Perhaps in future, AI will undertake more of that work.  Remember it works 7x24, never takes a vacation and works very quickly.  I have high hopes that AI can be used to automate testing in future.
+In the last 10 years we have seen AI move out of the lab and into our homes, cars and phones.  Probably 50% of code development time is spent on test related activity.  Perhaps in future, AI will undertake more of that work.  Remember it works 7x24, never takes a vacation and works very quickly.  I have high hopes that AI can be used to automate testing in future.  However, all coins have two sides and the AI may drown the engineer with very obscure bugs.  In some way, we see this with CVEs discovered by automatic fuzzing libraries.
 
 There is a method of developing code that works for me and that's to do everything myself.   This model doesn't scale.  However it is effective.  Do I create bugs?  Of course, I do.  However I find and fix them.  Many of the best people with whom I worked in Silicon Valley use this approach.  And when I think about it, that's exactly how Andreas created Exiv2.
 
-Another method that I believe is very effective is prototyping.  Working in a sand-box with a small amount of code can be very effective to explore and learn.  I can say with certainty that I have learned more about metadata in a couple of months by writing this book than I discovered by working on the Exiv2 code for 12 years.  Program Management people hate prototyping because it doesn't have a specification, milestones, deliverable or schedule.  
+Another method that I believe is very effective is prototyping.  Working in a sand-box with a small amount of code can be very effective to explore and learn.  I can say with certainty that I have learned more about metadata in 12 weeks by writing this book than I discovered by working on the Exiv2 code for 12 years.  Program Management people hate prototyping because it doesn't have a specification, milestones, deliverables or schedule.  
 
 If you have good folks on the team, the development will be enjoyable and the results will be good.  However, Software Development in large teams is Russian Roulette with a bullet in every chamber.  Mostly, the experience is horrible.  Good Luck.  I'm happy to be retired.
 
@@ -4284,5 +4284,3 @@ I'm going off to cut the grass and to run in the beautiful countryside around my
 <center>![Exiv2](exiv2.png)</center>
 
 [TOC](#TOC)<br>
-
-##
