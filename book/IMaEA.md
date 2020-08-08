@@ -685,7 +685,7 @@ I'm very pleased to say that neither the Exiv2 or XMP metadata in the image book
 
 JP2 is always big-endian encoded.  The documentation is available here:  https://www.iso.org/standard/78321.html
 
-The JPEG 2000 file is an ISOBMFF Container.  It consists of a linked lists of "boxes" which have a uint32\_t length, char[4] box-type and (length-8) bytes of data.  A box may be a "super-box" which is a container for other boxes.
+The JPEG 2000 file is an ISOBMFF Container.  It consists of a linked lists of "boxes" which have a uint32\_t length, char[4] box-type and (length-8) bytes of data.  A box may be a "super-box" which is a container for other boxes.  A "super-box" can have binary data before the box-chain.  Reading the file is very easy, however you need the specification to decode the contents of a box.
 
 I believe the "box" idea in ISOBMFF is intended to address the issue I discussed about TIFF files.  In order to rewrite an image, it is necessary for the data to be self contained and relocatable.  Every "box" should be self contained with no offsets outside the box.  My study of JP2 is restricted to finding the Exiv2, ICC, IPTC and XMP data.  For sure these are self-contained blocks of binary data.  The metadata boxes are of type uuid and begin with a 128bit/16 byte UUID to identify the data.
 
@@ -846,7 +846,7 @@ I obtained the standard here: [https://mpeg.chiariglione.org/standards/mpeg-4/is
 
 There has been a lot of discussion in Team Exiv2 concerning the legality of reading this file.  I don't believe it's illegal to read metadata from a container.  I believe it's illegal to decode H.264 encoded data stored in the image.  However the metadata is not protected in anyway.  So, I'll implement this in tvisitor.cpp.  Team Exiv2 may agree to include this in Exiv2 v0.28.  If I ever work on Exiv2 v0.27.4, I will implement ISOBMFF by extending the existing JP2 code.
 
-The most obvious difference between JP2000 and ISOBMFF is the first box.  For JP2, this is of type <bold>jP  </bold> followed by **ftyp**.  ISOBMFF begin with an **ftyp** box.  The syntax of that the **ftyp** box is:
+The most obvious difference between JP2000 and ISOBMFF is the first box.  For JP2, this is of type <b>jP  </b> _(jPspacespace)_ followed by **ftyp**.  ISOBMFF files begin with an **ftyp** box.  The syntax of the **ftyp** box is:
 
 ```
 aligned(8) class FileTypeBox  extends Box(‘ftyp’) {
@@ -856,11 +856,30 @@ aligned(8) class FileTypeBox  extends Box(‘ftyp’) {
 }
 ```
 
-So there are two uint32\_t values which are the brand and minor\_version.  Then zero or more unin32\_t values for compatible brands.
+So there are two uint32\_t values which are the brand and minor\_version.  Then zero or more uint32\_t values for compatible brands.
+
+#### Box Names
+
+A box name is a 4 byte big-endian byte stream and stored in a uint32\_t.  It is not nul-terminated.  So the box type <b>jP  </b> _(jPspacespace)_ is 0x2020506a, and **ftyp** is 0x70794666.
 
 #### UUID Box uuid
 
-This is mechanism to hold binary data in any format.  _Type Fields not defined here are reserved. Private extensions shall be achieved through the ‘uuid’ type._  The uuid box has a 128 bit (16 byte) UUID to identify the data, followed by the data.  This is similar to the "signature" in JPEG segment or PNG chunk.
+This is mechanism to store binary data in any format.  The ISOBMFF Specification states: _Type Fields not defined here are reserved. Private extensions shall be achieved through the ‘uuid’ type._  The uuid box has a 128 bit (16 byte) UUID to identify the data, followed by the data.  This is similar to the "signature" in JPEG segment or PNG chunk.
+
+#### ISOBMFF Explorer
+
+I've found the open-source product ISOBMFF Explorer very useful in learning about this file format.  [https://imazing.com/isobmff/download](https://imazing.com/isobmff/download).  The code is available from: (https://github.com/DigiDNA/ISOBMFF)[https://github.com/DigiDNA/ISOBMFF].  
+
+I built it as follows.  You should use the git --recursive option to ensure that Submodules are also cloned.
+
+```bash
+$ git clone --recursive https://github.com/DigiDNA/ISOBMFF --depth 1
+$ open ISOBMFF.xcodeproj/
+```
+
+Very nice program with very nice code.  In addition to the GUI/Explorer, there is command-line utility ISOBMFF-Dump provided.  I also built it with Visual Studio 2019.  I believe the GUI is only provided on the Mac.  The command-line program is supported on Mac, Windows and Linux.
+
+It did not build _out of the box_ for me on Ubuntu18.04.  [https://github.com/DigiDNA/ISOBMFF/issues/12](https://github.com/DigiDNA/ISOBMFF/issues/12}
 
 ### Canon CR3 Format
 
@@ -926,40 +945,39 @@ $ ls -l foo.jpg
 -rw-r--r--@ 1 rmills  staff  11832  4 Aug 20:58 foo.jpg
 ```
 
-Laurent has documented this as: **THMB** _(Thumbnail)_  from **uuid** = 85c0b687 820f 11e0 8111 f4ce462b6a48
+Laurent has documented this as: **THMB** _(Thumbnail)_  from **uuid** = 85c0b687-820f-11e0-8111-f4ce462b6a48
 
-| Offset       | type   | size                | content                     |
-| ------------ | ------ | ------------------- | --------------------------- |
-| 0            | long   | 1                   | size of this tag            |
-| 4            | char   | 4                   | "THMB"                      |
-| 8            | byte   | 1                   | likely version, value=0 or 1    |
-| 9            | bytes  | 3                   | likely flags, value = 0          |
+| Offset       | type    | size                | content                      |
+| ------------ | ------  | ------------------- | ---------------------------  |
+| 0            | long    | 1                   | size of this tag             |
+| 4            | char    | 4                   | "THMB"                       |
+| 8            | byte    | 1                   | likely version, value=0 or 1 |
+| 9            | bytes   | 3                   | likely flags, value = 0      |
 
 for version 0:
 
-| Offset       | type   | size                | content                     |
-| ------------ | ------ | ------------------- | --------------------------- |
-| 12/0xc       | short  | 1                   | width (160)                 |
-| 14/0xe       | short  | 1                   | height (120)                |
-| 16/0x10      | long   | 1                   | jpeg image size (jpeg_size) |
+| Offset       | type    | size                | content                     |
+| ------------ | ------  | ------------------- | --------------------------- |
+| 12/0xc       | short   | 1                   | width (160)                 |
+| 14/0xe       | short   | 1                   | height (120)                |
+| 16/0x10      | long    | 1                   | jpeg image size (jpeg_size) |
 | 20/0x14      | short   | 1                   | unknown, value = 1 |
 | 22/0x16      | short   | 1                   | unknown, value = 0 |
-| 24/0x18      | byte[] | stored at offset 16 | jpeg_data = ffd8ffdb...ffd9 |
-| **24+jpeg_size** | byte[] | ?                   | padding to next 4 bytes?    |
-|              | long   | 1                   | ?                           |
+| 24/0x18      | byte[]  | stored at offset 16 | jpeg_data = ffd8ffdb...ffd9 |
+| **24+jpeg_size** | byte[] | ?                | padding to next 4 bytes?    |
+|              | long    | 1                   | ?                           |
 
 for version 1:
 
-| Offset       | type   | size                | content                     |
-| ------------ | ------ | ------------------- | --------------------------- |
-| 12/0xc       | short  | 1                   | width (160)                 |
-| 14/0xe       | short  | 1                   | height (120)                |
-| 16/0x10      | long   | 1                   | jpeg image size (jpeg_size) |
-
+| Offset       | type    | size                | content                     |
+| ------------ | ------  | ------------------- | --------------------------- |
+| 12/0xc       | short   | 1                   | width (160)                 |
+| 14/0xe       | short   | 1                   | height (120)                |
+| 16/0x10      | long    | 1                   | jpeg image size (jpeg_size) |
 
 ### HEIC
 
-To understand how parse HEIC, we have to discuss the specification of some boxes.
+To understand how to parse HEIC, we have to discuss the specification of more boxes.
 
 #### Full Box
 
@@ -968,19 +986,19 @@ The Full Box is specified as follows:
 ```
 aligned(8) class FullBox(unsigned int(32) boxtype, unsigned int(8) v, bit(24) f) 
  extends Box(boxtype) {
-unsigned int(8) version = v;
-bit(24) flags = f;
+ unsigned int(8) version = v;
+ bit(24) flags = f;
 }
 ```
 
-A "Full Box" has a 4 byte header which are the version (1 byte) followed by flags (3 bytes).
+A "Full Box" has a 4 byte header which is version (1 byte) followed by flags (3 bytes).
 
 #### Handler Box
 
 This is specified as follows:
 
 ```
- aligned(8) class HandlerBox extends FullBox(‘hdlr’, version = 0, 0) {
+aligned(8) class HandlerBox extends FullBox(‘hdlr’, version = 0, 0) {
  unsigned int(32) pre_defined = 0;
  unsigned int(32) handler_type;
  const unsigned int(32)[3] reserved = 0;
@@ -999,7 +1017,7 @@ aligned(8) class MediaDataBox extends Box(‘mdat’) {
 }
 ```
 
-This is pure binary data.  Presumably somewhere in that data is the HEIF encoded data.   The start of mdat
+This is pure binary data.  From a metadata perspective, this the end of the file.
 
 #### Meta Box meta
 
@@ -1023,12 +1041,12 @@ aligned(8) class MetaBox (handler_type)
 
 #### Item Information Box iinf
 
-_The Item information box provides extra information about selected items, including symbolic (File) names._.
+_The Item information box provides extra information about selected items, including symbolic (File) names_.
 
 This is specified as follows:
 
 ```
-  aligned(8) class ItemInfoBox
+aligned(8) class ItemInfoBox
   extends FullBox(‘iinf’, version, 0) {
 
   if (version == 0) {
@@ -1042,13 +1060,12 @@ This is specified as follows:
 
 #### Item Location Box iloc
 
-_The item location box provides a directory of resources in this or other Piles, by locating their container, their offset within that container, and their length. Placing this in binary format enables common handling of this data, even by systems which do not understand the particular metadata system used_.
+_The item location box provides a directory of resources in this or other Files, by locating their container, their offset within that container, and their length. Placing this in binary format enables common handling of this data, even by systems which do not understand the particular metadata system used_.
 
 This is specified as follows:
 
 ```
 aligned(8) class ItemLocationBox extends FullBox(‘iloc’, version, 0) {
-
   unsigned int(4)
   unsigned int(4)
   unsigned int(4)
@@ -1060,29 +1077,24 @@ aligned(8) class ItemLocationBox extends FullBox(‘iloc’, version, 0) {
   } else {
     unsigned int(4) reserved;
   }
-
   if (version < 2) {
     unsigned int(16) item_count;
   } else if (version == 2) {
     unsigned int(32) item_count;
   }
-
   for (i=0; i<item_count; i++) {
     if (version < 2) {
       unsigned int(16) item_ID;
     } else if (version == 2) {
       unsigned int(32) item_ID;
     }
-
     if ((version == 1) || (version == 2)) {
       unsigned int(12) reserved = 0;
       unsigned int(4) construction_method; 
     }
-
     unsigned int(16) data_reference_index;
     unsigned int(base_offset_size*8) base_offset;
     unsigned int(16) extent_count;
-
     for (j=0; j<extent_count; j++) {
       if (((version == 1) || (version == 2)) && (index_size > 0)) {
         unsigned int(index_size*8) extent_index;
@@ -1098,7 +1110,7 @@ aligned(8) class ItemLocationBox extends FullBox(‘iloc’, version, 0) {
 
 I obtained HEIC test files from: [https://github.com/thorsted/digicam_corpus/tree/master/Apple/iPhone%20XR](https://github.com/thorsted/digicam_corpus/tree/master/Apple/iPhone%20XR)
 
-I dumped IMG_3578.HEIC with dmpf and disassembled by hand:
+I dumped IMG_3578.HEIC with dmpf and disassembled it by hand:
 
 ```
        0        0: ___ ftypheic____mif1  ->  00 00 00 20 66 74 79 70 68 65 69 63 00 00 00 00 6d 69 66 31
@@ -1126,22 +1138,50 @@ I dumped IMG_3578.HEIC with dmpf and disassembled by hand:
    0x49c     1180: ____2__hvc1____.infe  ->  00 00 00 00 32 00 00 68 76 63 31 00 00 00 00 15 69 6e 66 65
                                                                                  <  length >  i  n  f  e
    0x4b0     1200: .__._3__Exif____.ire  ->  02 00 00 01 00 33 00 00 45 78 69 66 00 00 00 00 94 69 72 65
-                                             < V > <flag>< ID> <pro>  E  x  i  fNUL <  length >  i  r  e
+                                             < V > <flag>< ID> <pro>  E  x  i  fnul <  length >  i  r  e
    0x4c4     1220: f_______ldimg_1_0_._  ->  66 00 00 00 00 00 00 00 6c 64 69 6d 67 00 31 00 30 00 01 00
                                               f
    0x4d8     1240: ._._._._._._._._._._  ->  02 00 03 00 04 00 05 00 06 00 07 00 08 00 09 00 0a 00 0b 00
 ...
    0xa14     2580: __.@iloc.___D__3_.__  ->  00 00 03 40 69 6c 6f 63 01 00 00 00 44 00 00 33 00 01 00 00
-                                             <  length >  i  l  o  c                                                         
+                                             <  length >  i  l  o  c < FullBox > <o-l> <-#E> < ID> < CM>                                    
    0xa28     2600: ___.__*.__.._._____.  ->  00 00 00 01 00 00 2a b3 00 00 2e a7 00 02 00 00 00 00 00 01
+                                             <DRI> <OFF> <EXC> 10931 < ??> 11943 < ID> < CM> <DRI> <OFF>
    0xa3c     2620: __YZ__`._._____.__.K  ->  00 00 59 5a 00 00 60 f1 00 03 00 00 00 00 00 01 00 00 ba 4b
+                                             <EXC> 22874  ?  ? 24817 < ID> < CM> <DRI> <OFF> <EXC> 47691
    0xa50     2640: __N._._____._...__K.  ->  00 00 4e 8e 00 04 00 00 00 00 00 01 00 01 08 d9 00 00 4b f9
    0xa64     2660: _._____._.T.__M._.__  ->  00 05 00 00 00 00 00 01 00 01 54 d2 00 00 4d 02 00 06 00 00
    0xa78     2680: ___._...__N._._____.  ->  00 00 00 01 00 01 a1 d4 00 00 4e ff 00 07 00 00 00 00 00 01
    0xa8c     2700: _...__F._._____._.7.  ->  00 01 f0 d3 00 00 46 cc 00 08 00 00 00 00 00 
+   
+   EXC = extent_count   CM = construction_method #E = Number of Entries  DRI = data_reverence_index
+   OFF = base_offset   o-l = offset-length       ID = Indentifier
 ```
 
-when this is processed by tvisitor, we see:
+The code in ISOBMFF/iloc.cpp is (effectively):
+```cpp
+void ILOC::ReadData( Parser & parser, BinaryStream & stream )
+{
+	FullBox::ReadData( parser, stream );
+
+	uint8_t u8 = stream.ReadUInt8();        
+	this->SetOffsetSize( u8 >> 4 );
+	this->SetLengthSize( u8 & 0xF );
+	
+	u8 = stream.ReadUInt8();
+	this->SetBaseOffsetSize( u8 >> 4 );
+	this->SetIndexSize( u8 & 0xF );
+	uint32_t count = this->GetVersion() < 2 ) ?stream.ReadBigEndianUInt16() : stream.ReadBigEndianUInt32();
+
+	this->impl->_items.clear();        
+	for( uint32_t i = 0; i < count; i++ )
+	{
+		this->AddItem( std::make_shared< Item >( stream, *( this ) ) );
+	}
+}
+```
+
+When this is processed by tvisitor, we see:
 
 ```bash
 STRUCTURE OF JP2 (heic) FILE (MM): /Users/rmills/Downloads/IMG_3578.HEIC
@@ -1186,9 +1226,6 @@ STRUCTURE OF JP2 (heic) FILE (MM): /Users/rmills/Downloads/IMG_3578.HEIC
     3412 |       -7 | mdat |      | _____...__.c(..........b.D*..R~A..c.....
 END: /Users/rmills/Downloads/IMG_3578.HEIC
 ```
-
-
-
 
 [TOC](#TOC)
 <div id="CRW"/>

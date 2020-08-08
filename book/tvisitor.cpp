@@ -798,6 +798,12 @@ public:
         read(b,2);
         return ::getShort(b,0,endian);
     }
+    uint8_t getByte()
+    {
+        byte   b[1];
+        read  (b,1);
+        return b[0];
+    }
 private:
     FILE*       f_;
     std::string path_;
@@ -1366,23 +1372,11 @@ public:
             io().read   (&box,4) ; // box
 
             valid_ = boxName(box) == kJp2Box_jP ;
-
             if ( boxName(box) == kJp2Box_ftyp ) {
+                valid_  = true ;
                 io().read(&box,4);
-                std::string boxname = boxName(box);
-                if ( boxname == "crx " ) {
-                    format_ = "JP2 (crx )";
-                    brand_  = boxname;
-                    valid_  = true ;
-                } else if ( boxname == "mif1" ) {
-                    format_ = "JP2 (mif1)";
-                    brand_  = boxname;
-                    valid_  = true ;
-                } else if ( boxname == "heic" ) {
-                    format_ = "JP2 (heic)";
-                    brand_  = boxname;
-                    valid_  = true ;
-                }
+                brand_ = boxName(box);
+                format_ = "JP2 (" + brand_ + ")";
             }
             header_ = " address |   length |  box | uuid | data";
         }
@@ -1412,7 +1406,7 @@ public:
                 ||  name == kJp2Box_ipco
                 ||  name == kJp2Box_meta
                 ||  name == kJp2Box_iinf
-            //  ||  name == kJp2Box_iloc // TODO: don't understand this box yet
+                ||  name == kJp2Box_iloc // TODO: don't understand this box yet
         ;
     }
     bool fullBox(uint32_t box)
@@ -2134,29 +2128,50 @@ void Jp2Image::accept(class Visitor& v)
             uint8_t  version = 0 ;
             uint32_t flags   = 0 ;
             uint32_t nEntries= 0 ;
+            bool     bRecurse= true;
             if ( fullBox(box) ) {
                 skip += 4 ;
                 flags = io().getLong(keBig); // version/flags
                 version = (int8_t ) flags >> 24 ;
                 version &= 0x00ffffff ;
             }
+            
             if ( boxName(box) == "iinf" ) {
                 nEntries = version ? io().getLong(keBig) : io().getShort(keBig);
                 skip    += version ?         4           :         2           ;
+            } else if ( boxName(box) == "iloc" ) {
+                bRecurse = false;
+                uint16_t u          = io().getByte() ;
+                uint16_t offsetSize = u >> 4  ;
+                uint16_t lengthSize = u & 0xF ;
+                io().getByte();
+                
+                skip += 2 ;
+                nEntries = version ? io().getLong(keBig) : io().getShort(keBig);
+                skip    += version ?         4           :         2           ;
+                skip    += nEntries*14;
+                std::cout << "offsetSize,lengthSize = " << offsetSize << "," << lengthSize << " nEntries = " << nEntries << std::endl;
+                for (uint64_t i = 0 ; i < nEntries ; i++ ) {
+                    DataBuf buff(16);
+                    io().read(buff);
+                    std::cout << buff.toString(kttUByte) << stringFormat(" a,b= %d,%d",getShort(buff,10,keBig),getShort(buff,14,keBig)) << std::endl;
+                    //std::string s = buff.binaryToString();
+                    //std::cout << stringFormat("%3d %20s %4d %d %d",i,s.c_str(),io().getShort(keBig),io().getShort(keBig),io().getShort(keBig)) << std::endl;
+                }
             }
-            Jp2Image jp2(io(),io().tell(),length-8-skip);
-            jp2.valid_ = true ;
-            jp2.accept(v);
+            if ( bRecurse ) {
+                Jp2Image jp2(io(),io().tell(),length-8-skip);
+                jp2.valid_=true;
+                jp2.accept(v);
+            }
         }
         
-        // recursion for a can1 box
+        // recursion?
         if ( boxName(box) == "uuid" ) {
             DataBuf uuid(16);
             io().read(uuid);
             if ( uuidName(uuid) == "cano" ) {
-                uint64_t  subA = io().tell() ;
-                Jp2Image jp2(io(),subA,length-16);
-                jp2.valid_ = true ;
+                Jp2Image jp2(io(),io().tell(),length-16);
                 jp2.accept(v);
             }
         } else if ( boxName(box) == "meta" ) {
@@ -2182,6 +2197,7 @@ void Jp2Image::accept(class Visitor& v)
                 if ( io.getb() ==  0  ) count++;
                 if ( io.getb() == '*' ) count++;
                 if ( count == 4 ) {
+                    std::cout << "searching TIFF at "  << address-1 << std::endl;
                     Io tiff(io,address-1);
                     TiffImage(tiff).accept(v);
                 }
@@ -2380,7 +2396,7 @@ void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
         out() << indent() << stringFormat("%8d | %8d | %4s | %4s | ",address,length,name.c_str(),uuid.c_str() );
         uint64_t start = uuid.size() ? 16 : 0;
         if ( length > 40+start ) length = 40;
-        out() << data.toString(kttUndefined,length,image.endian(),start) << std::endl;
+        out() << data.toString(kttUndefined,length,image.endian(),start) << " " << data.toString(kttUByte,length,image.endian(),start) << std::endl;
     }
     if ( option() & kpsRecursive ){
         if ( uuid == "exif" ) {
