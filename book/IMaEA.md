@@ -33,9 +33,9 @@ _And our cat Lizzie._
 | [2. Metadata Standards](#2)                           | 32 | [JPEG and EXV](#JPEG)                 | 12 | [13.1 C++ Code](#13-1)                  | 78 |
 | [2.1 Exif Metadata](#Exif)                            | 35 | [PNG Portable Network Graphics](#PNG) | 17 | [13.2 Build](#13-2)                     | 79 |
 | [2.2 XMP Metadata](#XMP)                              | 36 | [JP2 Jpeg 2000](#JP2)                 | 18 | [13.3 Security](#13-3)                  | 80 |
-| [2.3 IPTC Metadata](#IPTC)                            | 37 | [CRW Canon Raw](#CRW)                 | 19 | [13.4 Documentation](#13-4)             | 80 |
-| [2.5 MakerNotes](#MakerNotes)                         | 38 | [ICC Profile](#ICC)                   | 20 | [13.5 Testing](#13-5)                   | 80 |
-| [5. Lens Recognition](#5)                             | 39 | [ISOBMFF, CR3, HEIF, AVI](#ISOBMFF)   | 21 | [13.6 Sample programs](#13-6)           | 80 |
+| [2.3 IPTC Metadata](#IPTC)                            | 37 | [ISOBMFF, CR3, HEIF, AVI](#ISOBMFF)   | 19 | [13.4 Documentation](#13-4)             | 80 |
+| [2.5 MakerNotes](#MakerNotes)                         | 38 | [CRW Canon Raw](#CRW)                 | 20 | [13.5 Testing](#13-5)                   | 80 |
+| [5. Lens Recognition](#5)                             | 39 | [ICC Profile](#ICC)                   | 21 | [13.6 Sample programs](#13-6)           | 80 |
 | [7. I/O in Exiv2](#7)                                 | 41 | [WebP Web Photograph ](#WEBP)         | 22 | [13.7 User Support](#13-7)              | 80 |
 | [8. Exiv2 Architecture](#8)                           | 41 | [MRW Minolta Raw](#MRW)               | 23 | [13.8 Bug Tracking](#13-8)              | 81 |
 | [8.1 Extracting metadata using dd](#8-1)              | 42 | [ORF Olympus Raw Format](#ORF)        | 24 | [13.9 Release Engineering](#13-9)       | 81 |
@@ -838,37 +838,29 @@ As you can see, the 'colr' box is stored at 40+22 bytes into the file and has a 
                                        <--3147--->  c  o  l  r <-pad--> <--3144--->  L  i  n  o
 .../book/build $
 ```
-
-[TOC](#TOC)
-<div id="CRW"/>
-## CRW Canon Raw Format
-
-![crw](crw.png)
-
-The specification is here: [CIFFspecV1R04.pdf](https://web.archive.org/web/20081230095207/http://xyrion.org/ciff/CIFFspecV1R04.pdf)
-
-[TOC](#TOC)
-<div id="ICC"/>
-## ICC Profile
-![icc](icc.png)
-
-The ICC Profile isn't an image format.  It's a data stream that is present in many images.  The purpose of the ICC profile is to provide additional color data about the image.  Most colour images are encoded as RGB or CMYK.   When these are rendered on a device, it's necessary to know the actual colour of Red is in the image and on the output device.  The Colour Management System (CMS) attempts to render the image to be the same on different devices.  This is of course impossible, however the aim of the ICC Profile is enable the software achieve good colour fidelity when printing on different devices.
-
-The ICC Profile is a member of the "TIFF" family of image standards.  It has a header, a directory of "tags" and values for the tags.
-
-Exiv2 has not code to inspect or modify the contents of the ICC Profile.  The data is treated as a binary "blob". You can insert/delete/add/replace the ICC Colour Profile in several image formats including JPEG, JP2, PNG and TIFF.
-
-The code which accompanies this book can inspect the contents of the ICC profile.
-
-The specification is available here: [http://www.color.org/icc_specs2.xalter](http://www.color.org/icc_specs2.xalter).  I believe the current ICC Profile Specification is: ICC.2-2016-7.pdf
-
 [TOC](#TOC)
 <div id="ISOBMFF"/>
 ## ISOBMFF, CR3, HEIF, AVI
 
 I obtained the standard here: [https://mpeg.chiariglione.org/standards/mpeg-4/iso-base-media-file-format/text-isoiec-14496-12-5th-edition](https://mpeg.chiariglione.org/standards/mpeg-4/iso-base-media-file-format/text-isoiec-14496-12-5th-edition)
 
-There has been a lot of discussion in Team Exiv2 concerning the legality of reading this file.  I don't believe it's illegal to read metadata from a container.  I believe it's illegal to decode the H.264 encoder which is used to store the image in Heif.  However the metadata is not protected in anyway.  So, I'll implement this in tvisitor.cpp.  Team Exiv2 may agree to include this in Exiv2 v0.28.  If I every work on Exiv2 v0.27.4, I will implement ISOBMFF support.
+There has been a lot of discussion in Team Exiv2 concerning the legality of reading this file.  I don't believe it's illegal to read metadata from a container.  I believe it's illegal to decode H.264 encoded data stored in the image.  However the metadata is not protected in anyway.  So, I'll implement this in tvisitor.cpp.  Team Exiv2 may agree to include this in Exiv2 v0.28.  If I ever work on Exiv2 v0.27.4, I will implement ISOBMFF by extending the existing JP2 code.
+
+The most obvious difference between JP2000 and ISOBMFF is the first box.  For JP2, this is of type <bold>jP  </bold> followed by **ftyp**.  ISOBMFF begin with an **ftyp** box.  The syntax of that the **ftyp** box is:
+
+```
+aligned(8) class FileTypeBox  extends Box(‘ftyp’) {
+  unsigned int(32) major_brand;
+  unsigned int(32) minor_version;
+  unsigned int(32) compatible_brands[]; // to end of the box
+}
+```
+
+So there are two uint32\_t values which are the brand and minor\_version.  Then zero or more unin32\_t values for compatible brands.
+
+#### UUID Box uuid
+
+This is mechanism to hold binary data in any format.  _Type Fields not defined here are reserved. Private extensions shall be achieved through the ‘uuid’ type._  The uuid box has a 128 bit (16 byte) UUID to identify the data, followed by the data.  This is similar to the "signature" in JPEG segment or PNG chunk.
 
 ### Canon CR3 Format
 
@@ -936,7 +928,6 @@ $ ls -l foo.jpg
 
 Laurent has documented this as: **THMB** _(Thumbnail)_  from **uuid** = 85c0b687 820f 11e0 8111 f4ce462b6a48
 
-
 | Offset       | type   | size                | content                     |
 | ------------ | ------ | ------------------- | --------------------------- |
 | 0            | long   | 1                   | size of this tag            |
@@ -965,6 +956,262 @@ for version 1:
 | 14/0xe       | short  | 1                   | height (120)                |
 | 16/0x10      | long   | 1                   | jpeg image size (jpeg_size) |
 
+
+### HEIC
+
+To understand how parse HEIC, we have to discuss the specification of some boxes.
+
+#### Full Box
+
+The Full Box is specified as follows:
+
+```
+aligned(8) class FullBox(unsigned int(32) boxtype, unsigned int(8) v, bit(24) f) 
+ extends Box(boxtype) {
+unsigned int(8) version = v;
+bit(24) flags = f;
+}
+```
+
+A "Full Box" has a 4 byte header which are the version (1 byte) followed by flags (3 bytes).
+
+#### Handler Box
+
+This is specified as follows:
+
+```
+ aligned(8) class HandlerBox extends FullBox(‘hdlr’, version = 0, 0) {
+ unsigned int(32) pre_defined = 0;
+ unsigned int(32) handler_type;
+ const unsigned int(32)[3] reserved = 0;
+ string name;
+}
+```
+
+
+#### Media Box mdat
+
+This is specified as follows:
+
+```
+aligned(8) class MediaDataBox extends Box(‘mdat’) {
+   bit(8) data[]; 
+}
+```
+
+This is pure binary data.  Presumably somewhere in that data is the HEIF encoded data.   The start of mdat
+
+#### Meta Box meta
+
+This is specified as follows:
+
+```
+aligned(8) class MetaBox (handler_type)
+   extends FullBox(‘meta’, version = 0, 0) {
+   HandlerBox(handler_type) theHandler;
+   PrimaryItemBox
+   DataInformationBox
+   ItemLocationBox
+   ItemProtectionBox
+   ItemInfoBox
+   IPMPControlBox
+   ItemReferenceBox
+   ItemDataBox
+   Box other_boxes[];
+}
+```
+
+#### Item Information Box iinf
+
+_The Item information box provides extra information about selected items, including symbolic (File) names._.
+
+This is specified as follows:
+
+```
+  aligned(8) class ItemInfoBox
+  extends FullBox(‘iinf’, version, 0) {
+
+  if (version == 0) {
+    unsigned int(16) entry_count;
+  } else {
+    unsigned int(32) entry_count;
+  }
+  ItemInfoEntry[ entry_count ]
+}
+```
+
+#### Item Location Box iloc
+
+_The item location box provides a directory of resources in this or other Piles, by locating their container, their offset within that container, and their length. Placing this in binary format enables common handling of this data, even by systems which do not understand the particular metadata system used_.
+
+This is specified as follows:
+
+```
+aligned(8) class ItemLocationBox extends FullBox(‘iloc’, version, 0) {
+
+  unsigned int(4)
+  unsigned int(4)
+  unsigned int(4)
+  if ((version == 1) || (version == 2)) {
+     offset_size;
+     length_size;
+     base_offset_size;
+     unsigned int(4) index_size;
+  } else {
+    unsigned int(4) reserved;
+  }
+
+  if (version < 2) {
+    unsigned int(16) item_count;
+  } else if (version == 2) {
+    unsigned int(32) item_count;
+  }
+
+  for (i=0; i<item_count; i++) {
+    if (version < 2) {
+      unsigned int(16) item_ID;
+    } else if (version == 2) {
+      unsigned int(32) item_ID;
+    }
+
+    if ((version == 1) || (version == 2)) {
+      unsigned int(12) reserved = 0;
+      unsigned int(4) construction_method; 
+    }
+
+    unsigned int(16) data_reference_index;
+    unsigned int(base_offset_size*8) base_offset;
+    unsigned int(16) extent_count;
+
+    for (j=0; j<extent_count; j++) {
+      if (((version == 1) || (version == 2)) && (index_size > 0)) {
+        unsigned int(index_size*8) extent_index;
+      }
+      unsigned int(offset_size*8) extent_offset;
+      unsigned int(length_size*8) extent_length;
+    } // for j
+  } // for i
+}
+```
+
+#### Test HEIC File
+
+I obtained HEIC test files from: [https://github.com/thorsted/digicam_corpus/tree/master/Apple/iPhone%20XR](https://github.com/thorsted/digicam_corpus/tree/master/Apple/iPhone%20XR)
+
+I dumped IMG_3578.HEIC with dmpf and disassembled by hand:
+
+```
+       0        0: ___ ftypheic____mif1  ->  00 00 00 20 66 74 79 70 68 65 69 63 00 00 00 00 6d 69 66 31
+                                             <  length >  f  t  y  p <   brand > < minor   >  m  i  f  1
+    0x14       20: miafMiHBheic__.4meta  ->  6d 69 61 66 4d 69 48 42 68 65 69 63 00 00 0d 34 6d 65 74 61
+                                              m  i  a  f  M  i  H  B  h  e  i  c <  length >  m  e  t  a                
+    0x28       40: _______"hdlr________  ->  00 00 00 00 00 00 00 22 68 64 6c 72 00 00 00 00 00 00 00 00
+                                             < version?> < length  >  h  d  l  r < version > <  flags  >
+    0x3c       60: pict________________  ->  70 69 63 74 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                              p  i  c  t                                           < l e
+    0x50       80: _$dinf___.dref______  ->  00 24 64 69 6e 66 00 00 00 1c 64 72 65 66 00 00 00 00 00 00
+                                             ngth>  d  i  n  f <  length >  d  r  e  f
+    0x64      100: _.___.url ___.___.pi  ->  00 01 00 00 00 0c 75 72 6c 20 00 00 00 01 00 00 00 0e 70 69
+                                                   <  length >  u r  l  sp             <  length >  p  i
+    0x78      120: tm_____1__.=iinf____  ->  74 6d 00 00 00 00 00 31 00 00 04 3d 69 69 6e 66 00 00 00 00
+                                              t  m                   <  length >  i  i  n  f < version?>
+    0x8c      140: _3___.infe.__._.__hv  ->  00 33 00 00 00 15 69 6e 66 65 02 00 00 01 00 01 00 00 68 76
+                                             < E#> <  length > i  n  f  e  < V > <flag>< ID>        h  v
+    0xa0      160: c1____.infe.__._.__h  ->  63 31 00 00 00 00 15 69 6e 66 65 02 00 00 01 00 02 00 00 68
+                                              c  1    <  length >  i  n  f  e
+    0xb4      180: vc1____.infe.__._.__  ->  76 63 31 00 00 00 00 15 69 6e 66 65 02 00 00 01 00 03 00 00
+...
+   0x44c     1100: .__hvc1____.infe.__.  ->  2e 00 00 68 76 63 31 00 00 00 00 15 69 6e 66 65 02 00 00 01
+   0x460     1120: _/__hvc1____.infe.__  ->  00 2f 00 00 68 76 63 31 00 00 00 00 15 69 6e 66 65 02 00 00
+   0x49c     1180: ____2__hvc1____.infe  ->  00 00 00 00 32 00 00 68 76 63 31 00 00 00 00 15 69 6e 66 65
+                                                                                 <  length >  i  n  f  e
+   0x4b0     1200: .__._3__Exif____.ire  ->  02 00 00 01 00 33 00 00 45 78 69 66 00 00 00 00 94 69 72 65
+                                             < V > <flag>< ID> <pro>  E  x  i  fNUL <  length >  i  r  e
+   0x4c4     1220: f_______ldimg_1_0_._  ->  66 00 00 00 00 00 00 00 6c 64 69 6d 67 00 31 00 30 00 01 00
+                                              f
+   0x4d8     1240: ._._._._._._._._._._  ->  02 00 03 00 04 00 05 00 06 00 07 00 08 00 09 00 0a 00 0b 00
+...
+   0xa14     2580: __.@iloc.___D__3_.__  ->  00 00 03 40 69 6c 6f 63 01 00 00 00 44 00 00 33 00 01 00 00
+                                             <  length >  i  l  o  c                                                         
+   0xa28     2600: ___.__*.__.._._____.  ->  00 00 00 01 00 00 2a b3 00 00 2e a7 00 02 00 00 00 00 00 01
+   0xa3c     2620: __YZ__`._._____.__.K  ->  00 00 59 5a 00 00 60 f1 00 03 00 00 00 00 00 01 00 00 ba 4b
+   0xa50     2640: __N._._____._...__K.  ->  00 00 4e 8e 00 04 00 00 00 00 00 01 00 01 08 d9 00 00 4b f9
+   0xa64     2660: _._____._.T.__M._.__  ->  00 05 00 00 00 00 00 01 00 01 54 d2 00 00 4d 02 00 06 00 00
+   0xa78     2680: ___._...__N._._____.  ->  00 00 00 01 00 01 a1 d4 00 00 4e ff 00 07 00 00 00 00 00 01
+   0xa8c     2700: _...__F._._____._.7.  ->  00 01 f0 d3 00 00 46 cc 00 08 00 00 00 00 00 
+```
+
+when this is processed by tvisitor, we see:
+
+```bash
+STRUCTURE OF JP2 (heic) FILE (MM): /Users/rmills/Downloads/IMG_3578.HEIC
+ address |   length |  box | uuid | data
+       0 |       24 | ftyp |      | heic____mif1miafMiHBheic
+      32 |     3372 | meta |      | _______"hdlr________pict________________
+  STRUCTURE OF JP2 FILE (MM): /Users/rmills/Downloads/IMG_3578.HEIC:44->3368
+         0 |       26 | hdlr |      | ________pict______________
+        34 |       28 | dinf |      | ___.dref_______.___.url ___.
+    STRUCTURE OF JP2 FILE (MM): /Users/rmills/Downloads/IMG_3578.HEIC:44->3368:42->28
+           0 |       20 | dref |      | _______.___.url ___.
+    END: /Users/rmills/Downloads/IMG_3578.HEIC:44->3368:42->28
+        70 |        6 | pitm |      | _____1
+        84 |     1077 | iinf |      | _____3___.infe.__._.__hvc1____.infe.__._
+    STRUCTURE OF JP2 FILE (MM): /Users/rmills/Downloads/IMG_3578.HEIC:44->3368:98->1071
+           0 |       13 | infe |      | .__._.__hvc1_
+          21 |       13 | infe |      | .__._.__hvc1_
+...
+        1008 |       13 | infe |      | .____1__grid_
+        1029 |       13 | infe |      | .____2__hvc1_
+        1050 |       13 | infe |      | .__._3__Exif_
+    END: /Users/rmills/Downloads/IMG_3578.HEIC:44->3368:98->1071
+      1169 |      140 | iref |      | _______ldimg_1_0_._._._._._._._._._._._.
+      1317 |     1195 | iprp |      | __.lipco__.0colrprof__.$appl.___mntrRGB 
+    STRUCTURE OF JP2 FILE (MM): /Users/rmills/Downloads/IMG_3578.HEIC:44->3368:1325->1195
+           0 |      868 | ipco |      | __.0colrprof__.$appl.___mntrRGB XYZ .._.
+      STRUCTURE OF JP2 FILE (MM): /Users/rmills/Downloads/IMG_3578.HEIC:44->3368:1325->1195:8->868
+             0 |      552 | colr |      | prof__.$appl.___mntrRGB XYZ .._._._._._ 
+           560 |      104 | hvcC |      | ..p___._____Z._....__..._._.@......p__._
+           672 |       12 | ispe |      | ______.___._
+           692 |       12 | ispe |      | ______..__..
+           712 |        1 | irot |      | _
+           721 |        8 | pixi |      | ____....
+           737 |      103 | hvcC |      | ..p___._____<._....__..._._.@......p__._
+           848 |       12 | ispe |      | ______.@___.
+      END: /Users/rmills/Downloads/IMG_3578.HEIC:44->3368:1325->1195:8->868
+         876 |      311 | ipma |      | _______2_....._....._....._....._....._.
+    END: /Users/rmills/Downloads/IMG_3578.HEIC:44->3368:1325->1195
+      2520 |        8 | idat |      | __......
+      2536 |      824 | iloc |      | .___D__3_._____.__*.__.._._____.__YZ__`.
+  END: /Users/rmills/Downloads/IMG_3578.HEIC:44->3368
+    3412 |       -7 | mdat |      | _____...__.c(..........b.D*..R~A..c.....
+END: /Users/rmills/Downloads/IMG_3578.HEIC
+```
+
+
+
+
+[TOC](#TOC)
+<div id="CRW"/>
+## CRW Canon Raw Format
+
+![crw](crw.png)
+
+The specification is here: [CIFFspecV1R04.pdf](https://web.archive.org/web/20081230095207/http://xyrion.org/ciff/CIFFspecV1R04.pdf)
+
+[TOC](#TOC)
+<div id="ICC"/>
+## ICC Profile
+![icc](icc.png)
+
+The ICC Profile isn't an image format.  It's a data stream that is present in many images.  The purpose of the ICC profile is to provide additional color data about the image.  Most colour images are encoded as RGB or CMYK.   When these are rendered on a device, it's necessary to know the actual colour of Red is in the image and on the output device.  The Colour Management System (CMS) attempts to render the image to be the same on different devices.  This is of course impossible, however the aim of the ICC Profile is enable the software achieve good colour fidelity when printing on different devices.
+
+The ICC Profile is a member of the "TIFF" family of image standards.  It has a header, a directory of "tags" and values for the tags.
+
+Exiv2 has not code to inspect or modify the contents of the ICC Profile.  The data is treated as a binary "blob". You can insert/delete/add/replace the ICC Colour Profile in several image formats including JPEG, JP2, PNG and TIFF.
+
+The code which accompanies this book can inspect the contents of the ICC profile.
+
+The specification is available here: [http://www.color.org/icc_specs2.xalter](http://www.color.org/icc_specs2.xalter).  I believe the current ICC Profile Specification is: ICC.2-2016-7.pdf
 
 [TOC](#TOC)
 <div id="WEBP"/>

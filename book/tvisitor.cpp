@@ -1412,7 +1412,16 @@ public:
                 ||  name == kJp2Box_ipco
                 ||  name == kJp2Box_meta
                 ||  name == kJp2Box_iinf
-                ;
+            //  ||  name == kJp2Box_iloc // TODO: don't understand this box yet
+        ;
+    }
+    bool fullBox(uint32_t box)
+    {
+        std::string name = boxName(box);
+        return      name == kJp2Box_meta
+                ||  name == kJp2Box_iinf
+                ||  name == kJp2Box_iloc
+        ;
     }
     std::string brand_   ;
     bool        hasExif_ ; // set by visitBox("meta");
@@ -1450,6 +1459,7 @@ private:
     const char*  kJp2Box_meta  = "meta";
     const char*  kJp2Box_hdlr  = "hdlr";
     const char*  kJp2Box_iinf  = "iinf";
+    const char*  kJp2Box_iloc  = "iloc";
 };
 
 class ICC : public Image
@@ -2120,22 +2130,25 @@ void Jp2Image::accept(class Visitor& v)
 
         // recursion if superbox
         if ( superBox(box) ) {
-            uint64_t skip = 0 ;
-            // "meta" has 4 bytes before the block chain
-            // "iinf" has 6 bytes
-            if ( boxName(box) == "meta") {
-                skip=4 ;
-                io().getLong(keBig);
-            } else if ( boxName(box) == "iinf" ) {
-                skip=6 ;
-                io().getLong (keBig);
-                io().getShort(keBig); // Number of entries
+            uint64_t skip    = 0 ;
+            uint8_t  version = 0 ;
+            uint32_t flags   = 0 ;
+            uint32_t nEntries= 0 ;
+            if ( fullBox(box) ) {
+                skip += 4 ;
+                flags = io().getLong(keBig); // version/flags
+                version = (int8_t ) flags >> 24 ;
+                version &= 0x00ffffff ;
             }
-            uint64_t  subA = io().tell() ;
-            Jp2Image jp2(io(),subA,length-8-skip);
+            if ( boxName(box) == "iinf" ) {
+                nEntries = version ? io().getLong(keBig) : io().getShort(keBig);
+                skip    += version ?         4           :         2           ;
+            }
+            Jp2Image jp2(io(),io().tell(),length-8-skip);
             jp2.valid_ = true ;
             jp2.accept(v);
         }
+        
         // recursion for a can1 box
         if ( boxName(box) == "uuid" ) {
             DataBuf uuid(16);
