@@ -2142,26 +2142,7 @@ void Jp2Image::accept(class Visitor& v)
                 nEntries = version ? io().getLong(keBig) : io().getShort(keBig);
                 skip    += version ?         4           :         2           ;
             } else if ( boxName(box) == "iloc" ) {
-                bRecurse = false;
-                uint16_t u          = io().getByte() ;
-                uint16_t offsetSize = u >> 4  ;
-                uint16_t lengthSize = u & 0xF ;
-                io().getByte();
-                
-                skip += 2 ;
-                nEntries = version ? io().getLong(keBig) : io().getShort(keBig);
-                skip    += version ?         4           :         2           ;
-                skip    += nEntries*16;
-                std::cout << "offsetSize,lengthSize = " << offsetSize << "," << lengthSize << " nEntries = " << nEntries << std::endl;
-                /*
-                for (uint64_t i = 0 ; i < nEntries ; i++ ) {
-                    DataBuf buff(16);
-                    io().read(buff);
-                    std::cout << buff.toString(kttUByte) << stringFormat(" a,b= %d,%d",getShort(buff,10,keBig),getShort(buff,14,keBig)) << std::endl;
-                    //std::string s = buff.binaryToString();
-                    //std::cout << stringFormat("%3d %20s %4d %d %d",i,s.c_str(),io().getShort(keBig),io().getShort(keBig),io().getShort(keBig)) << std::endl;
-                }
-                */
+                bRecurse = false; // don't visitBox dealt with this
             }
             if ( bRecurse ) {
                 Jp2Image jp2(io(),io().tell(),length-8-skip);
@@ -2388,7 +2369,6 @@ void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
     length -= 8              ;
     DataBuf data(length);
     io.read(data);
-    // std::cout << data.toUuidString() << std::endl;
 
     std::string name = image.boxName (box);
     std::string uuid = name == "uuid" ? image.uuidName(data) : "";
@@ -2409,35 +2389,46 @@ void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
         }
         // 8.11.6.2.
         if ( image.boxName(box) == "infe" ) { // .__._.__hvc1_ 2 0 0 1 0 1 0 0 104 118 99 49 0
-                             getLong (data,skip,keBig) ; skip+= 4;
-            uint16_t   ID =  getShort(data,skip,keBig) ; skip+=2 ;
-                             getShort(data,skip,keBig) ; skip+=2 ; // protection
+                             getLong (data,skip,keBig) ; skip+=4;
+            uint16_t   ID =  getShort(data,skip,keBig) ; skip+=2;
+                             getShort(data,skip,keBig) ; skip+=2; // protection
             std::string name((const char*)data.pData_+skip);
             out() << stringFormat("%2d %s",ID,name.c_str()) << std::endl;
         }
-        // 8.11.3.
+        // 8.11.3.2
         else if ( image.boxName(box) == "iloc" ) { // 0 1 0 0 0 0 0 1 0 0 42 179 0 0 46 167 a,b= 10931,11943
             uint16_t u          = getByte(data,skip) ; skip++;
             uint16_t offsetSize = u >> 4  ;
             uint16_t lengthSize = u & 0xF ;
-            skip++ ; // index_size / reserved
-
-            uint32_t nEntries = version ? getLong(data,skip,keBig) : getShort(data,skip,keBig);
-            skip             += version ?              4           :         2                ;
-
-            uint16_t step = 2 + (version<2?2+1:4+4)+2+offsetSize+2+((version==1||version==2)?2:0)+offsetSize+lengthSize;
-            if ( step ) {
-                step = 16;
-                skip = 12;
+            uint16_t indexSize  = 0       ;
+                     u          = getByte(data,skip) ; skip++ ;
+            if ( version == 1 || version == 2 ) {
+                indexSize = u & 0xF ;
             }
-            out() << stringFormat("nEntries, skip, step = %d, %d, %d ",nEntries,skip,step) << data.toString(kttUByte,length>40?40:length,image.endian(),0) << std::endl;
-            uint32_t base = skip;
-            for ( uint32_t i = 0 ; i < nEntries ; i++ ) {
-                skip=base+i+16 ; // move in 16 byte steps
-                uint16_t ID     = version > 2 ? getShort(data,skip+0,keBig) : getLong(data,skip+0,keBig);
-                uint16_t offset = getShort(data,skip+10,keBig);
-                uint16_t length = getShort(data,skip+14,keBig);
-                out() << indent() << "                                   "  << stringFormat("%3d %6d,%6d",ID,offset,length) << std::endl;
+            uint16_t baseOffsetSize = u >> 4;
+
+            uint32_t itemCount  = version < 2 ? getShort(data,skip,keBig) : getLong(data,skip,keBig);
+            skip               += version < 2 ?               2           :         4               ;
+
+            uint32_t step       = 0                ; // length of data per item.
+            step               += version < 2 ?              2           :         4                ; // ID
+            step               += version ==2 ?              4           :         0                ; // construction_method
+            step               += 2                ; // data_reference_index
+            step               += baseOffsetSize   ;
+            step               += 2                ; // extent_count
+            step               += 2                ; // index
+            step               += offsetSize + lengthSize;
+            
+            if ( length == (skip + itemCount * step) ) {
+                out() << stringFormat("nEntries, skip, step = %d, %d, %d data = ",itemCount,skip,step) << data.toString(kttUByte,length>skip+step?skip+step:length,image.endian(),0) << std::endl;
+                uint32_t base = skip;
+                for ( uint32_t i = 0 ; i < itemCount ; i++ ) {
+                    skip=base+i*step ; // move in 16 byte steps
+                    uint16_t ID     = version > 2 ? getLong(data,skip+0,keBig) : getShort(data,skip+0,keBig);
+                    uint16_t offset = getShort(data,skip+10,keBig);
+                    uint16_t length = getShort(data,skip+14,keBig);
+                    out() << indent() << stringFormat("%8d | %8d | %4s | %4d | %6d,%6d",address+skip,step,"ext",ID,offset,length) << std::endl;
+                }
             }
         } else {
             uint64_t start    = uuid.size() ? 16 : 0;
