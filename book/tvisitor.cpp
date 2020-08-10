@@ -2157,6 +2157,7 @@ void Jp2Image::accept(class Visitor& v)
             io().read(uuid);
             if ( uuidName(uuid) == "cano" ) {
                 Jp2Image jp2(io(),io().tell(),length-16);
+                jp2.valid_=true;
                 jp2.accept(v);
             }
         } else if ( boxName(box) == "meta" ) {
