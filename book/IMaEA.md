@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-08-07</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-08-11</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -899,7 +899,7 @@ STRUCTURE OF CR3 FILE (MM): /Users/rmills/cr3.cr3
          130 |       84 | 0x4f425443 CTBO |      | ___.___.______Y _____._.___._____.Y8____
          222 |        2 | 0x65657266 free |      | __
          232 |      384 | 0x31544d43 CMT1 |      | II*_.___.__.._.___p.__..._.___..__..._._
-         624 |     1056 | 0x32544d43 CMT2 |      | II*_.___'_..._.___..__..._.___..__".._._
+         624 |     1056 | 0x32544d43 CMT2 |      | II*_.___._..._.___..__..._.___..__".._._
         1688 |     5168 | 0x33544d43 CMT3 |      | II*_.___/_._._1___B.__._._.___..__._._._
         6864 |     1808 | 0x34544d43 CMT4 |      | II*_.___.___._.___..____________________
         8680 |    11856 | 0x424d4854 THMB |      | _____._x__.=_.__...._._.................
@@ -911,7 +911,7 @@ STRUCTURE OF CR3 FILE (MM): /Users/rmills/cr3.cr3
      21744 |      592 | 0x6b617274 trak |      | ___\tkhd___...4...4.___._______.________
      22344 |      432 | 0x6b617274 trak |      | ___\tkhd___...4...4.___._______.________
   END: /Users/rmills/cr3.cr3:32->22784
-   22816 |    65552 | 0x64697575 uuid |  xmp | <?xpacket begin='...' id='W5M0MpCehiHzre
+   22816 |    65552 | 0x64697575 uuid |  xmp | <?xpacket begin='...' id='W5M0MpCehiHzre..'
    88376 |   264921 | 0x64697575 uuid | can2 | _______._...PRVW_____..T.8_._......._._.
   353305 |       -7 | 0x7461646d mdat |      | _____.j....._._.........................
 END: /Users/rmills/cr3.cr3
@@ -1117,7 +1117,7 @@ I dumped IMG_3578.HEIC with dmpf and disassembled it by hand:
                                              <  length >  f  t  y  p <   brand > < minor   >  m  i  f  1
     0x14       20: miafMiHBheic__.4meta  ->  6d 69 61 66 4d 69 48 42 68 65 69 63 00 00 0d 34 6d 65 74 61
                                               m  i  a  f  M  i  H  B  h  e  i  c <  length >  m  e  t  a                
-    0x28       40: _______"hdlr________  ->  00 00 00 00 00 00 00 22 68 64 6c 72 00 00 00 00 00 00 00 00
+    0x28       40: _______.hdlr________  ->  00 00 00 00 00 00 00 22 68 64 6c 72 00 00 00 00 00 00 00 00
                                              < version?> < length  >  h  d  l  r < version > <  flags  >
     0x3c       60: pict________________  ->  70 69 63 74 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
                                               p  i  c  t                                           < l e
@@ -1181,49 +1181,57 @@ void ILOC::ReadData( Parser & parser, BinaryStream & stream )
 }
 ```
 
-When this is processed by tvisitor, we see:
+When processed by tvisitor, we see:
 
 ```bash
+$ tvisitor ~/Downloads/IMG_3578.HEIC
 STRUCTURE OF JP2 (heic) FILE (MM): /Users/rmills/Downloads/IMG_3578.HEIC
  address |   length |  box | uuid | data
-       0 |       24 | ftyp |      | heic____mif1miafMiHBheic
-      32 |     3372 | meta |      | _______"hdlr________pict________________
-  STRUCTURE OF JP2 FILE (MM): /Users/rmills/Downloads/IMG_3578.HEIC:44->3368
-         0 |       26 | hdlr |      | ________pict______________
-        34 |       28 | dinf |      | ___.dref_______.___.url ___.
-    STRUCTURE OF JP2 FILE (MM): /Users/rmills/Downloads/IMG_3578.HEIC:44->3368:42->28
-           0 |       20 | dref |      | _______.___.url ___.
-    END: /Users/rmills/Downloads/IMG_3578.HEIC:44->3368:42->28
-        70 |        6 | pitm |      | _____1
-        84 |     1077 | iinf |      | _____3___.infe.__._.__hvc1____.infe.__._
-    STRUCTURE OF JP2 FILE (MM): /Users/rmills/Downloads/IMG_3578.HEIC:44->3368:98->1071
-           0 |       13 | infe |      | .__._.__hvc1_
-          21 |       13 | infe |      | .__._.__hvc1_
+       0 |       24 | ftyp |      | heic____mif1miafMiHB
+      32 |     3372 | meta |      | _______.hdlr________   'meta' box
+  STRUCTURE OF JP2 FILE (MM): /Users/rmills/Downloads/IM
+         0 |       26 | hdlr |      | ________pict______
+        34 |       28 | dinf |      | ___.dref_______.__   'meta/dinf' box
+    STRUCTURE OF JP2 FILE (MM): /Users/rmills/Downloads/
+           0 |       20 | dref |      | _______.___.url 
+    END: /Users/rmills/Downloads/IMG_3578.HEIC:44->3368:
+        70 |        6 | pitm |      | _____1 0 0 0 0 0 4
+        84 |     1077 | iinf |      | _____3___.infe.__.   'meta/dinf/iinf' box
+    STRUCTURE OF JP2 FILE (MM): /Users/rmills/Downloads/
+           0 |       13 | infe |      | .__._.__hvc1_      'meta/dinf/iinf/infe' boxes
 ...
-        1008 |       13 | infe |      | .____1__grid_
-        1029 |       13 | infe |      | .____2__hvc1_
-        1050 |       13 | infe |      | .__._3__Exif_
-    END: /Users/rmills/Downloads/IMG_3578.HEIC:44->3368:98->1071
-      1169 |      140 | iref |      | _______ldimg_1_0_._._._._._._._._._._._.
-      1317 |     1195 | iprp |      | __.lipco__.0colrprof__.$appl.___mntrRGB 
-    STRUCTURE OF JP2 FILE (MM): /Users/rmills/Downloads/IMG_3578.HEIC:44->3368:1325->1195
-           0 |      868 | ipco |      | __.0colrprof__.$appl.___mntrRGB XYZ .._.
-      STRUCTURE OF JP2 FILE (MM): /Users/rmills/Downloads/IMG_3578.HEIC:44->3368:1325->1195:8->868
-             0 |      552 | colr |      | prof__.$appl.___mntrRGB XYZ .._._._._._ 
-           560 |      104 | hvcC |      | ..p___._____Z._....__..._._.@......p__._
-           672 |       12 | ispe |      | ______.___._
-           692 |       12 | ispe |      | ______..__..
-           712 |        1 | irot |      | _
-           721 |        8 | pixi |      | ____....
-           737 |      103 | hvcC |      | ..p___._____<._....__..._._.@......p__._
-           848 |       12 | ispe |      | ______.@___.
-      END: /Users/rmills/Downloads/IMG_3578.HEIC:44->3368:1325->1195:8->868
-         876 |      311 | ipma |      | _______2_....._....._....._....._....._.
-    END: /Users/rmills/Downloads/IMG_3578.HEIC:44->3368:1325->1195
-      2520 |        8 | idat |      | __......
-      2536 |      824 | iloc |      | .___D__3_._____.__*.__.._._____.__YZ__`.
+        1050 |       13 | infe |      | .__._3__Exif_       ID==51 "Exif\0"
+    END: /Users/rmills/Downloads/IMG_3578.HEIC:44->3368:
+      1169 |      140 | iref |      | _______ldimg_1_0_.
+      1317 |     1195 | iprp |      | __.lipco__.0colrpr
+    STRUCTURE OF JP2 FILE (MM): /Users/rmills/Downloads/
+           0 |      868 | ipco |      | __.0colrprof__.$
+      STRUCTURE OF JP2 FILE (MM): /Users/rmills/Download
+             0 |      552 | colr |      | prof__.$appl._
+           560 |      104 | hvcC |      | ..p___._____Z.
+           672 |       12 | ispe |      | ______.___._ 0
+           692 |       12 | ispe |      | ______..__.. 0
+           712 |        1 | irot |      | _ 0
+           721 |        8 | pixi |      | ____.... 0 0 0
+           737 |      103 | hvcC |      | ..p___._____<.
+           848 |       12 | ispe |      | ______.@___. 0
+      END: /Users/rmills/Downloads/IMG_3578.HEIC:44->336
+         876 |      311 | ipma |      | _______2_....._.
+    END: /Users/rmills/Downloads/IMG_3578.HEIC:44->3368:
+      2520 |        8 | idat |      | __...... 0 0 5 7 1
+      2536 |      824 | iloc |      | .___D__3_._____.__   'meta/dinf/iloc' box
+      2544 |       16 |  ext |    1 |  10931, 11943         iloc is a binary array
+...
+      3344 |       16 |  ext |   51 |   8907,  2024         ID==51 offset/length
   END: /Users/rmills/Downloads/IMG_3578.HEIC:44->3368
-    3412 |       -7 | mdat |      | _____...__.c(..........b.D*..R~A..c.....
+    3412 |       -7 | mdat |      | _____...__.c(........  'mdat' box (EOF)
+  STRUCTURE OF TIFF FILE (MM): /Users/rmills/Downloads/IM Dump the embedded Exif/TIFF
+   address |    tag                              |      t
+        10 | 0x010f Exif.Image.Make              |     AS
+        22 | 0x0110 Exif.Image.Model             |     AS
+...
+    END: /Users/rmills/Downloads/IMG_3578.HEIC:8917->2014
+  END: /Users/rmills/Downloads/IMG_3578.HEIC:8917->2014
 END: /Users/rmills/Downloads/IMG_3578.HEIC
 ```
 
