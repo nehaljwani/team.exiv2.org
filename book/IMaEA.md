@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-08-11</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-08-14</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -1759,13 +1759,9 @@ I find the structure easier to understand in JSON, which can be generated with t
                     "y": "0.3537117903930131",
                     "h": "0.4264919941775837",
                     "w": "0.32127192982456143"
-                  }
-                }
-              }
-            }
+            } } } }
           ]
-        }
-      }
+      } }
     },
     "xmlns": {
       "AppliedToDimensions": "",
@@ -3620,9 +3616,9 @@ You are probably not surprised to learn that most stakeholders consider their co
 
 The difficulties of maintaining an open-source project are well explained in this article: [https://steemit.com/opensource/@crell/open-source-is-awful](https://steemit.com/opensource/@crell/open-source-is-awful) from which I have copied this cartoon:
 
-<center><img src="open-source-today1.png" style="width:500;border:2px solid #23668F"/>
-<img src="open-source-today2.png" style="width:500;border:2px solid #23668F"/>
-<img src="open-source-today3.png" style="width:500;border:2px solid #23668F"/>
+<center><img src="open-source-today1.png" style="width:400px;border:2px solid #23668F"/></br>
+<img src="open-source-today2.png" style="width:400px;border:2px solid #23668F"/></br>
+<img src="open-source-today3.png" style="width:400px;border:2px solid #23668F"/>
 </center>
 
 I will quote the following as it seems totally true.
@@ -3639,15 +3635,19 @@ When somebody provides a patch, they seldom provide test code, update the docume
 
 I have found recruiting contributors to be very challenging and difficult.  I appreciate the work done by everybody who has contributed.  The future of Exiv2 is a matter for the community.  Perhaps this book will inspire somebody to maintain Exiv2 or write a replacement.
 
-#### Methods of being an AB
+#### How to be an AB
+
+<center><img src="ab-cartoon.png" style="width:400px;border:2px solid #23668F"/></center>
 
 I'll leave you to figure out what an **AB** is.  It might be _**Annoying Bikeshedder**_.  They come in different versions.
 
-The first is a **DAB** who deliberately blocks progress.  Before we used GitHub, the only way to release a new version of Exiv2 was via the web-site.  Sure we could tag a version in SVN, however this was passive.  I'm not aware of any central organisation which tracks the versions of projects.  So, publishing requires the password to enable the site to be updated.  And there's only one person who knows the password.  There is another version which I'll call **VAB**.  In this version, you own the domain registration and allow it to expire.
+The first is a **DAB** who deliberately blocks progress.  Before we used GitHub, the only way to release a new version of Exiv2 was via the web-site.  Sure we could tag a version in SVN, however this was passive.  I'm not aware of any central organisation which tracks the versions of projects.  So, publishing requires the password to enable the site to be updated.  And there's only one person who knows the password.  There are advanced versiond which I'll call **VAB**.  In this version, you own the domain registration or hosting contract and allow it to expire. 
 
 I think the need for a web-site for the project has been mostly replaced by GitHub.  We can publish new releases (and pre-releases).  However the effort to transfer all project resources to GitHub is considerable.  We have had complaints about the repository being too big, so we have an SVN repository for team resources such as old releases, this book, the project logo, minutes of team meetings and so on.  And while I understand the team's hostility to SVN, no sensible alternative has been proposed.
 
 The first couple of releases I published on GitHub were not instantly tagged.   Guess what?  Within hours, somebody complained.  People have complained about the version numbering scheme.  GitHub automatically generates bundles when you create a release.  Somebody complained about them.  Somebody complained that the pre-release web-site was too similar to the release web-site (although every page is labelled) so I put "Pre-Release" on the background of every page.  You might expect that complaints would include words of appreciation for the effort to make the release.  You'd be wrong.  Complaints are normally abrupt.  Words such as _**Please**_ and _**Thank You**_ are seldom used by members of the community.
+
+On the subject of web-sites, I must mention DOS attacks.  DOS is Denial of Service.  Occasionally, exiv2.org will deliver a message about being severely busy.  This is because the web-site is being subjected to about 100 HTTP get requests per second.  Every request is from a different IP address.  These attacks can continue for several days.  Why does somebody attack exiv2.org in this way?  How can you defend exiv2.org from such an attack?  So, we'll call that **MAB** for Malicious.
 
 How about **TAB** which is to change the project tools.  Git came close to killing me.  I know many people love Git and think it's the greatest thing ever invented.  I don't.  I worked on Acrobat at Adobe.  A big project.  When I retired in 2014, there were about 200 developers who had been working for 20 years on 25 million lines of code.  To build it, you need 100GBytes of free space.   How can git handle such a monster when every repos has 100% of the code and 100% of the project history?  Nobody has given me an answer.
 
@@ -3665,7 +3665,7 @@ Or there's the review mechanism which I'll dub **RAB**  You insist:
 2. No contributor can approve their own change.
 3. Nobody reviews or approves a code change.
 
-There are many other forms of **AB**.  For example, there is useless **UAB**.  For example, a legal challenge.  You say "We might be infringing somebody's patent!".  This is particularly effective as you don't need to provide evidence.  Even if there is a written legal opinion you can refute that with the words: "The legal opinion has not been tested in court.".  This show-stopper was used by two contributors to block ISOBMFF support in Exiv2 v0.27.3.  I received more than 100 emails from users asking "What is the legal problem?", so I called a meeting on Zoom and users on 5 continents attended.  The two contributors who raised the show-stopper did not attend.  One emailed later to say "Apologies.  I fell asleep on the couch and missed the meeting.".
+There are many other forms of **AB**.  For example, there is legal **LAB**.  This involves a legal challenge.  You say "We might be infringing somebody's patent!".  This is particularly effective as you don't need to provide evidence.  Even if there is a written legal opinion you can refute that with the words: "The legal opinion has not been tested in court.".  The case has not been tested in court for the obvious reason that it is not illegal.  This show-stopper was used by two contributors to block ISOBMFF support in Exiv2 v0.27.3.  I received more than 100 emails from users asking "What is the legal problem?", so I called a meeting on Zoom and users on 5 continents attended.  The two contributors who raised the show-stopper did not attend.  One emailed later to say "Apologies.  I fell asleep on the couch and missed the meeting.".
 
 How about this method?  You complain about a font being used.  We'll call this **FAB**.  This is very effective because you're only asking for a 100% reformat of the book and all the graphics.  That's not much to ask.  When I designed the Exiv2 Logo, a contributor asked for the font to be changed.  I proposed alternatives and received no response.
 
@@ -4255,7 +4255,7 @@ There is one recent tool which has surprised and pleased me.  I have written thi
 
 This is simply a legal minefield.  Exiv2 is licensed under GPLv2.  Until Exiv2 v0.26, Andreas offered a commercial license for Exiv2.   The contract between Andreas and users is not the concern of the Exiv2 open-source project. 
 
-In the days of the Commercial license, I made not distinction between open-source and commercial license users when it came to dealing with support and other requests.  I felt that the commercial license freed the user from the obligations of GPL.  However, it did not provide priority support, enhancement requests or any other benefit.
+In the days of the Commercial license, I made no distinction between open-source and commercial license users when it came to dealing with support and other requests.  I felt that the commercial license freed the user from the obligations of GPL.  However, it did not provide priority support, enhancement requests or any other benefit.
 
 [TOC](#TOC)
 <div id="13-22"/>
