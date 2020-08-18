@@ -1393,6 +1393,58 @@ private:
     uint16_t col_    ;
 };
 
+class PGFImage : public Image
+{
+public:
+    PGFImage(std::string path)
+    : Image  (path)
+    { }
+    PGFImage(Io& io,size_t start,size_t count)
+    : Image(Io(io,start,count))
+    { }
+
+    bool valid()
+    {
+        if ( !valid_ ) {
+            endian_ = keLittle ;
+            IoSave   restore(io(),0);
+            start_  = 8+16    ;
+            DataBuf  h(start_);
+            io_.read(h);
+
+            if ( h.begins("PGF")   ) {
+                start_  = 8+16;
+                format_ = "PGF";
+                valid_  = true;
+            }
+            headersize_ = getLong(h,  4,endian_);
+            width_      = getLong(h,8 +0,endian_);
+            height_     = getLong(h,8 +4,endian_);
+            levels_     = getByte(h,8 +8);
+            comp_       = getByte(h,8 +9);
+            bpp_        = getByte(h,8+10);
+            colors_     = getByte(h,8+11);
+            mode_       = getByte(h,8+12);
+            bpc_        = getByte(h,8+13);
+            if ( mode_ == 2 ) start_ += 4*256; // start following color table
+        }
+        return valid_ ;
+    }
+    virtual void accept(class Visitor& v);
+
+private:
+    uint32_t headersize_ ;
+    
+    uint32_t width_  ;
+    uint32_t height_ ;
+    uint8_t  levels_ ;
+    uint8_t  comp_   ;
+    uint8_t  bpp_    ;
+    uint8_t  colors_ ;
+    uint8_t  mode_   ;
+    uint8_t  bpc_    ;
+};
+
 class Jp2Image : public Image
 {
 public:
@@ -1649,6 +1701,25 @@ void PSDImage::accept(Visitor& visitor)
     }
 
     visitor.visitEnd  (*this); // tell the visitor
+}
+
+void PGFImage::accept(Visitor& visitor)
+{
+    // Ensure that this is the correct image type
+    if (!valid()) {
+        std::ostringstream os ; os << "expected " << format_ ;
+        Error(kerInvalidFileFormat,io().path(),os.str());
+    }
+    std::string msg = stringFormat("headersize = %d, width x height = %d x %d levels,comp = %d,%d bpp,colors = %d,%d mode,bpc = %d,%d start = %d",headersize_,width_,height_,levels_,comp_,bpp_,colors_,mode_,bpc_,start_);
+    visitor.visitBegin(*this,msg); // tell the visitor
+    
+    PNGImage png(io(),start_,this->headersize_);
+    if (png.valid() )
+    {
+        png.accept(visitor);
+    }
+
+visitor.visitEnd  (*this); // tell the visitor
 }
 
 void JpegImage::accept(Visitor& visitor)
@@ -2487,6 +2558,7 @@ int main(int argc,const char* argv[])
         Jp2Image  jp2 (path);
         ICC       icc (path);
         PSDImage  psd (path);
+        PGFImage  pgf (path);
 
         // Visit the image
         if      ( tiff.valid() ) tiff.accept(visitor);
@@ -2496,6 +2568,7 @@ int main(int argc,const char* argv[])
         else if (  jp2.valid() )  jp2.accept(visitor);
         else if (  icc.valid() )  icc.accept(visitor);
         else if (  psd.valid() )  psd.accept(visitor);
+        else if (  pgf.valid() )  pgf.accept(visitor);
         else    { Error(kerUnknownFormat,path); }
     } else {
         std::cout << "usage: " << argv[0] << " [ { U | S | R | X | C | I } ] path" << std::endl;
