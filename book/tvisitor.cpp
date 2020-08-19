@@ -1713,13 +1713,9 @@ void PGFImage::accept(Visitor& visitor)
     std::string msg = stringFormat("headersize = %d, width x height = %d x %d levels,comp = %d,%d bpp,colors = %d,%d mode,bpc = %d,%d start = %d",headersize_,width_,height_,levels_,comp_,bpp_,colors_,mode_,bpc_,start_);
     visitor.visitBegin(*this,msg); // tell the visitor
     
-    PNGImage png(io(),start_,this->headersize_);
-    if (png.valid() )
-    {
-        png.accept(visitor);
-    }
+    PngImage(io(),start_,this->headersize_).accept(visitor);
 
-visitor.visitEnd  (*this); // tell the visitor
+    visitor.visitEnd  (*this); // tell the visitor
 }
 
 void JpegImage::accept(Visitor& visitor)
@@ -2441,7 +2437,7 @@ void ReportVisitor::visitChunk(Io& io,Image& image,uint64_t address
         DataBuf   data(length > 40 ? 40 : length ); // read enougth data for reporting purposes
         io.read(data);
         out() << indent() << stringFormat(" %8d |  %s | %7d | %#10x | ",address,chunk,length,chksum);
-        out() << data.toString(kttUndefined,length,image.endian()) << std::endl;
+        out() << data.toString(kttUndefined,data.size_,image.endian()) << std::endl;
     }
 
     if ( option() & kpsRecursive && std::strcmp(chunk,"eXIf") == 0 ) {

@@ -1159,6 +1159,7 @@ I dumped IMG_3578.HEIC with dmpf and disassembled it by hand:
 ```
 
 The code in ISOBMFF/iloc.cpp is (effectively):
+
 ```cpp
 void ILOC::ReadData( Parser & parser, BinaryStream & stream )
 {
@@ -1278,8 +1279,66 @@ To be written.
 [TOC](#TOC)
 <div id="PGF"/>
 ## PGF Progressive Graphics File
+![pgf](pgf.png)
 
-To be written.
+The PGF website is [https://www.libpgf.org](https://www.libpgf.org)
+
+This file format was introduced in 2000 at the same time as JP2000 with the intention of replacing JPEG.  Neither PGF nor JP2000 have been successful in their aims.  While both are technically superior to JPEG, the market as remained loyal to JPEG.  I suspect that is because few Camera manufacturers ship products that support this format.
+
+The file format is little-endian.  Curiously, the metadata is embedded as a PNG which is big-endian.
+
+The code to validate the file is simple:
+
+```cpp
+bool valid()
+{
+    if ( !valid_ ) {
+        endian_ = keLittle ;
+        IoSave   restore(io(),0);
+        start_  = 8+16    ;
+        DataBuf  h(start_);
+        io_.read(h);
+
+        if ( h.begins("PGF")   ) {
+            start_  = 8+16;
+            format_ = "PGF";
+            valid_  = true;
+        }
+        headersize_ = getLong(h,  4,endian_);
+        width_      = getLong(h,8 +0,endian_);
+        height_     = getLong(h,8 +4,endian_);
+        levels_     = getByte(h,8 +8);
+        comp_       = getByte(h,8 +9);
+        bpp_        = getByte(h,8+10);
+        colors_     = getByte(h,8+11);
+        mode_       = getByte(h,8+12);
+        bpc_        = getByte(h,8+13);
+        if ( mode_ == 3 ) start_ += 4*256; // start following color table
+    }
+    return valid_ ;
+}
+```
+
+The visitor code is also straightforward:
+
+```cpp
+void PGFImage::accept(Visitor& visitor)
+{
+    // Ensure that this is the correct image type
+    if (!valid()) {
+        std::ostringstream os ; os << "expected " << format_ ;
+        Error(kerInvalidFileFormat,io().path(),os.str());
+    }
+    std::string msg = stringFormat("headersize = %d, width x height = %d x %d levels,comp = %d,%d "
+                      "bpp,colors = %d,%d mode,bpc = %d,%d start = %d"
+                      ,headersize_,width_,height_,levels_,comp_,bpp_,colors_,mode_,bpc_,start_);
+    visitor.visitBegin(*this,msg); // tell the visitor
+    PngImage(io(),start_,this->headersize_).accept(visitor);
+    visitor.visitEnd  (*this); // tell the visitor
+}
+
+```
+
 
 [TOC](#TOC)
 <div id="PSD"/>
@@ -3673,6 +3732,8 @@ As for myself, I am a **CAB** where *C* stands for *clever*.  However I am an **
 
 There are so many ways to incur the outrage of stakeholders.  And so many ways in which people can and do complain.  All in all, working on an open-source project is a thank-less task.  When I released v0.25, a contributor in Peru said on Facebook  _**Robin should get a medal for his work.  Exiv2 would have died years ago without his commitment.**_  So I asked my family to write to the UK Government to propose that I be given an honour.  The family silently refused.  Alison comforted me by saying _**Nobody is ever going to thank you for working on Exiv2.**_
 
+<center><img src="dependency.png" width="300px" style="border:2px solid #23668F;"/></center>
+
 #### Solutions to the issue of ABs
 
 There are ways to fix on-line abuse.  We could do what the Fuzzing Police do.  They do not negotiate with any project.  They arrive unexpectedly and deliver their message.  And they track your response and performance.
@@ -4576,3 +4637,4 @@ I'm going off to cut the grass and to run in the beautiful countryside around my
 <center>![Exiv2](exiv2.png)</center>
 
 [TOC](#TOC)<br>
+ q
