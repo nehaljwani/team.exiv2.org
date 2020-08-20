@@ -2428,7 +2428,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2020-08-19 07:31:57 +0000</string>
+	<string>2020-08-20 19:32:18 +0000</string>
 	<key>Modifier</key>
 	<string>Robin Mills</string>
 	<key>NotesVisible</key>
@@ -11820,7 +11820,7 @@ XMP   Xmp Data}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{28.047247604074741, 158.11909380337852}, {456.37795009613046, 210}}</string>
+					<string>{{20.33353263153537, 158.74015892058844}, {456.37795009613046, 210}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -11870,22 +11870,22 @@ XMP   Xmp Data}</string>
 \deftab720
 \pard\pardeftab720\partightenfactor0
 
-\f0\fs20 \cf0 $ dmpf test/data/exiv2-bug1199.webp  | head -1\
-       0        0: RIFF..._WEBPVP8X.___,___.._.._IC  -&gt;  52 49 46 46 86 dc 02 00 57 ...\
-$ ls -l test/data/exiv2-bug1199.webp \
--rw-r--r--+ 1 rmills  staff  187534 20 Mar 20:58 test/data/exiv2-bug1199.webp\
-$ exiv2 -pS  test/data/exiv2-bug1199.webp \
-STRUCTURE OF WEBP FILE: test/data/exiv2-bug1199.webp\
- Chunk |   Length |   Offset | Payload\
-  RIFF |   187526 |        0 | WEBP\
-  VP8X |       10 |       12 | ,........\
-  ICCP |      560 |       30 | ...0ADBE....mntrRGB XYZ ........\
-  VP8  |   172008 |      598 | .G...*.. .&gt;1..B.!..o.. ......]..\
-  EXIF |    12040 |   172614 | II*........................... .\
-  XMP  |     2864 |   184662 | &lt;?xpacket begin="..." id="W5M0Mp\
-$ echo $((0x0002dc86))\
-187526\
-$ }</string>
+\f0\fs20 \cf0 book/build $ ls -l ~/webp.webp \
+-rw-r--r--  1 rmills  staff  187534 20 Aug 15:17 /Users/rmills/webp.webp\
+823 rmills@rmillsmbp:~/gnu/exiv2/team/book/build $ dmpf count=36 width=12 bs=4 endian=0 ~/webp.webp  hex=0\
+       0        0: RIFF..._WEBP  -&gt;  1179011410     187526 1346520407\
+     0xc       12: VP8X.___,___  -&gt;  1480085590         10         44\
+    0x18       24: .._.._ICCP0.  -&gt;   520094895 1128857603   36720707\
+book/build $ ./tvisitor ~/webp.webp \
+STRUCTURE OF WEBP FILE (II): /Users/rmills/webp.webp\
+ address | chunk |   length |   offset | data \
+      12 | VP8X  |       10 | ,___.._.._\
+      30 | ICCP  |      560 | __.0ADBE..__mntrRGB XYZ .._._._._3_;acsp\
+     598 | VP8   |   172008 | .G...*.. .&gt;1..B.!..o.. ......]..6^~nQ...\
+  172614 | EXIF  |    12040 | II*_.___.__.._.___..__..._.___ .__..._._\
+  184662 | XMP   |     2864 | &lt;?xpacket begin="..." id="W5M0MpCehiHzre\
+END: /Users/rmills/webp.webp\
+book/build $ }</string>
 					</dict>
 				</dict>
 				<dict>
@@ -11982,7 +11982,7 @@ $ }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{22.802372345692397, 31.728317909709801}, {146, 23}}</string>
+					<string>{{22.802372345692397, 31.728317909709801}, {140, 23}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -12026,7 +12026,7 @@ $ }</string>
 \deftab720
 \pard\pardeftab720\partightenfactor0
 
-\f0\fs20 \cf0 WebP File Format 
+\f0\fs20 \cf0 RIFF File Format 
 \f1\i (big-endian)}</string>
 					</dict>
 					<key>Wrap</key>
@@ -12034,185 +12034,7 @@ $ }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{164.84744183380036, 52.458201348030826}, {43, 23}}</string>
-					<key>Class</key>
-					<string>ShapedGraphic</string>
-					<key>FitText</key>
-					<string>YES</string>
-					<key>Flow</key>
-					<string>Resize</string>
-					<key>FontInfo</key>
-					<dict>
-						<key>Size</key>
-						<real>10</real>
-					</dict>
-					<key>ID</key>
-					<integer>57</integer>
-					<key>Style</key>
-					<dict>
-						<key>fill</key>
-						<dict>
-							<key>Draws</key>
-							<string>NO</string>
-						</dict>
-						<key>shadow</key>
-						<dict>
-							<key>Draws</key>
-							<string>NO</string>
-						</dict>
-						<key>stroke</key>
-						<dict>
-							<key>Draws</key>
-							<string>NO</string>
-						</dict>
-					</dict>
-					<key>Text</key>
-					<dict>
-						<key>Text</key>
-						<string>{\rtf1\ansi\ansicpg1252\cocoartf2513
-\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 HelveticaNeue;}
-{\colortbl;\red255\green255\blue255;}
-{\*\expandedcolortbl;;}
-\deftab720
-\pard\pardeftab720\qc\partightenfactor0
-
-\f0\fs20 \cf0 4 bytes}</string>
-					</dict>
-					<key>Wrap</key>
-					<string>NO</string>
-				</dict>
-				<dict>
-					<key>Class</key>
-					<string>LineGraphic</string>
-					<key>FontInfo</key>
-					<dict>
-						<key>Font</key>
-						<string>Helvetica</string>
-						<key>Size</key>
-						<real>12</real>
-					</dict>
-					<key>ID</key>
-					<integer>56</integer>
-					<key>Points</key>
-					<array>
-						<string>{155.37696956324493, 74.546323235767289}</string>
-						<string>{221.99114339599191, 74.458201348030855}</string>
-					</array>
-					<key>Style</key>
-					<dict>
-						<key>shadow</key>
-						<dict>
-							<key>Draws</key>
-							<string>NO</string>
-						</dict>
-						<key>stroke</key>
-						<dict>
-							<key>HeadArrow</key>
-							<string>FilledArrow</string>
-							<key>Legacy</key>
-							<false/>
-							<key>LineType</key>
-							<integer>1</integer>
-							<key>TailArrow</key>
-							<string>FilledArrow</string>
-						</dict>
-					</dict>
-				</dict>
-				<dict>
-					<key>Bounds</key>
-					<string>{{156.29133939283071, 122.18579711112707}, {68.031496680252189, 17.007874170063047}}</string>
-					<key>Class</key>
-					<string>ShapedGraphic</string>
-					<key>FontInfo</key>
-					<dict>
-						<key>Size</key>
-						<real>10</real>
-					</dict>
-					<key>ID</key>
-					<integer>55</integer>
-					<key>Style</key>
-					<dict>
-						<key>fill</key>
-						<dict>
-							<key>Color</key>
-							<dict>
-								<key>b</key>
-								<real>0.53080799999999995</real>
-								<key>g</key>
-								<real>1</real>
-								<key>r</key>
-								<real>0.96734900000000001</real>
-								<key>space</key>
-								<string>srgb</string>
-							</dict>
-						</dict>
-						<key>shadow</key>
-						<dict>
-							<key>Beneath</key>
-							<string>YES</string>
-						</dict>
-					</dict>
-					<key>Text</key>
-					<dict>
-						<key>Text</key>
-						<string>{\rtf1\ansi\ansicpg1252\cocoartf2513
-\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 HelveticaNeue;}
-{\colortbl;\red255\green255\blue255;}
-{\*\expandedcolortbl;;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc\partightenfactor0
-
-\f0\fs20 \cf0 offset}</string>
-					</dict>
-				</dict>
-				<dict>
-					<key>Bounds</key>
-					<string>{{156.29133939283071, 105.18579711112707}, {68.031496680252189, 17.007874170063047}}</string>
-					<key>Class</key>
-					<string>ShapedGraphic</string>
-					<key>FontInfo</key>
-					<dict>
-						<key>Size</key>
-						<real>10</real>
-					</dict>
-					<key>ID</key>
-					<integer>54</integer>
-					<key>Style</key>
-					<dict>
-						<key>fill</key>
-						<dict>
-							<key>Color</key>
-							<dict>
-								<key>b</key>
-								<real>0.53080799999999995</real>
-								<key>g</key>
-								<real>1</real>
-								<key>r</key>
-								<real>0.96734900000000001</real>
-								<key>space</key>
-								<string>srgb</string>
-							</dict>
-						</dict>
-						<key>shadow</key>
-						<dict>
-							<key>Draws</key>
-							<string>NO</string>
-						</dict>
-					</dict>
-					<key>Text</key>
-					<dict>
-						<key>Text</key>
-						<string>{\rtf1\ansi\ansicpg1252\cocoartf2513
-\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 HelveticaNeue;}
-{\colortbl;\red255\green255\blue255;}
-{\*\expandedcolortbl;;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc\partightenfactor0
-
-\f0\fs20 \cf0 offset}</string>
-					</dict>
-				</dict>
-				<dict>
-					<key>Bounds</key>
-					<string>{{156.29133939283071, 88.185797111127044}, {68.031496680252189, 17.007874170063047}}</string>
+					<string>{{156.01694412933824, 88.185797111127044}, {68.031496680252189, 17.007874170063047}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -12258,7 +12080,7 @@ $ }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{255.86614400842961, 52.458201348030826}, {38, 23}}</string>
+					<string>{{187.99332161914893, 52.458201348030826}, {38, 23}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -12417,8 +12239,8 @@ $ }</string>
 					<integer>40</integer>
 					<key>Points</key>
 					<array>
-						<string>{224.60630129585064, 74.546323235767289}</string>
-						<string>{340.25984271257767, 74.458201348030855}</string>
+						<string>{156.73347890656996, 74.546323235767289}</string>
+						<string>{302.02894291668667, 74.458201348030855}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -12516,7 +12338,7 @@ $ }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{223.60630129585064, 122.18579711112713}, {95.291339392830935, 17.007874170063047}}</string>
+					<string>{{155.90551322557792, 122.18579711112709}, {146.12342969110873, 17.007874170063047}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -12654,7 +12476,7 @@ $ }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{223.60630129585064, 105.18579711112713}, {65.259842712578745, 17.007874170063047}}</string>
+					<string>{{156.01694412933824, 105.18579711112713}, {94.849199879091714, 17.007874170063047}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -12980,7 +12802,7 @@ $ }</string>
 			<key>RowSpacing</key>
 			<real>36</real>
 			<key>SheetTitle</key>
-			<string>WebP</string>
+			<string>Riff</string>
 			<key>UniqueID</key>
 			<integer>5</integer>
 			<key>VPages</key>
@@ -25880,7 +25702,7 @@ B  = Bits per color}</string>
 	<key>WindowInfo</key>
 	<dict>
 		<key>CurrentSheet</key>
-		<integer>12</integer>
+		<integer>4</integer>
 		<key>Expanded_Canvases</key>
 		<array/>
 		<key>Frame</key>
@@ -25896,9 +25718,9 @@ B  = Bits per color}</string>
 		<key>TopSlabHeight</key>
 		<real>33</real>
 		<key>VisibleRegion</key>
-		<string>{{-32, -107}, {870, 752}}</string>
+		<string>{{0, -72.000000000000043}, {805.88977050781261, 682.69052972903205}}</string>
 		<key>Zoom</key>
-		<real>1</real>
+		<real>1.0795521072960015</real>
 		<key>ZoomValues</key>
 		<array>
 			<array>
@@ -25923,8 +25745,8 @@ B  = Bits per color}</string>
 			</array>
 			<array>
 				<string>WebP</string>
-				<real>0.0</real>
-				<real>1</real>
+				<real>1.0795521072960015</real>
+				<real>2.159104214592003</real>
 			</array>
 			<array>
 				<string>Jpeg Segments</string>

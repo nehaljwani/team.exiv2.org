@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-08-14</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-08-20</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -36,7 +36,7 @@ _And our cat Lizzie._
 | [2.3 IPTC Metadata](#IPTC)                            | 37 | [ISOBMFF, CR3, HEIF, AVI](#ISOBMFF)   | 19 | [13.4 Documentation](#13-4)             | 80 |
 | [2.5 MakerNotes](#MakerNotes)                         | 38 | [CRW Canon Raw](#CRW)                 | 20 | [13.5 Testing](#13-5)                   | 80 |
 | [5. Lens Recognition](#5)                             | 39 | [ICC Profile](#ICC)                   | 21 | [13.6 Sample programs](#13-6)           | 80 |
-| [7. I/O in Exiv2](#7)                                 | 41 | [WebP Web Photograph ](#WEBP)         | 22 | [13.7 User Support](#13-7)              | 80 |
+| [7. I/O in Exiv2](#7)                                 | 41 | [RIFF Resource Interchange File Format](#RIFF) | 22 | [13.7 User Support](#13-7)              | 80 |
 | [8. Exiv2 Architecture](#8)                           | 41 | [MRW Minolta Raw](#MRW)               | 23 | [13.8 Bug Tracking](#13-8)              | 81 |
 | [8.1 Extracting metadata using dd](#8-1)              | 42 | [ORF Olympus Raw Format](#ORF)        | 24 | [13.9 Release Engineering](#13-9)       | 81 |
 | [8.2 Tag Names in Exiv2](#8-2)                        | 44 | [PGF Progressive Graphics File](#PGF) | 25 | [13.10 Platform Support](#13-10)        | 81 |
@@ -232,7 +232,7 @@ The good news however is that file formats come in families which are:
 | PNG     | Another popular format<br>Linked list of chunks                                           | PNG |
 | CIFF    | Camera Image File Format.  Dave Coffin parse.c decodes CRW                                | CRW |
 | ISOBMFF | Based on the .mp4 format                                             | MP4, CR3, AVI, HEIF, JP2 |
-| RIFF    | Resource Interchange File Format                                                         | WEBP |
+| RIFF    | Resource Interchange File Format                                                    | WEBP, AVI |
 | GIF     | Graphics Image Format                                                                     | GIF | 
 | BMP     | Windows BMP never has XMP, IPTC or Exif metadata.<br>Version5 may include an ICC profile. | BMP |
 | COS     | Adobe PDF Format.  This is a very flexible container<br>Exiv2 does not support this. | PDF, JDF |
@@ -1260,9 +1260,9 @@ The code which accompanies this book can inspect the contents of the ICC profile
 The specification is available here: [http://www.color.org/icc_specs2.xalter](http://www.color.org/icc_specs2.xalter).  I believe the current ICC Profile Specification is: ICC.2-2016-7.pdf
 
 [TOC](#TOC)
-<div id="WEBP"/>
-## WEBP Web Photograph
-![webp](webp.png)
+<div id="RIFF"/>
+## RIFF Resource Interchange File Format
+![riff](riff.png)
 
 [TOC](#TOC)
 <div id="MRW"/>
@@ -1458,7 +1458,9 @@ To be written.
 <div id="TGA"/>
 ## TGA Truevision Targa
 
-To be written.
+The TGA file format is documented here:[http://www.ludorg.net/amnesia/TGA\_File\_Format\_Spec.html](http://www.ludorg.net/amnesia/TGA_File_Format_Spec.html)
+
+There is no Exiv2, xmp, ICC or IPTC metadata in a TGA file.
 
 [TOC](#TOC)
 <div id="BMP"/>

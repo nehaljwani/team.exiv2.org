@@ -184,6 +184,7 @@ public:
         }
         return result;
     }
+    void zero() { for ( uint64_t i = 0 ; i < size_ ; i++ ) pData_[i]=0; }
 
     uint32_t search(uint32_t start,const char* s)
     {
@@ -401,6 +402,16 @@ std::string chop(const std::string& a,size_t max=0)
     std::string result = a;
     if ( result.size() > max  && max > 4 ) {
         result = result.substr(0,max-4) + " +++";
+    }
+    return result;
+}
+
+// snip("a very long string",10) -> "a very lo"
+std::string snip(const std::string& a,size_t max=0)
+{
+    std::string result = a;
+    if ( result.size() > max  && max) {
+        result = result.substr(0,max);
     }
     return result;
 }
@@ -899,6 +910,8 @@ public:
     virtual void visit8BIM    (Io& io,Image& image,uint32_t offset
                               ,uint16_t kind,DataBuf& name,uint32_t len
                               ,uint32_t data,uint32_t pad ,DataBuf& b)               { return ; }
+    virtual void visitRiff    (uint64_t address,std::string chunk
+                              ,uint32_t length,DataBuf& data)                        { return ; }
 
     PSOption      option() { return option_ ; }
     std::ostream& out()    { return out_    ; }
@@ -1351,6 +1364,117 @@ public:
     virtual void accept(class Visitor& v);
 };
 
+class IPTC : public Image
+{
+public:
+    IPTC(std::string path)
+    : Image(path)
+    { }
+    IPTC(Io& io)
+    : Image(io)
+    {}
+
+    void accept(Visitor& visitor);
+
+    bool valid()
+    {
+        if ( !valid_ ) {
+            IoSave  restore(io(),0);
+            valid_  = io().getb() == 0x1c; // must start with FS (field separator)
+            endian_ = keBig ;
+            header_ = "    Record | DataSet | Name                           | Length | Data" ;
+            format_ = "IPTC";
+            start_  = 0;
+        }
+        return valid_;
+    }
+};
+
+void IPTC::accept(Visitor& visitor)
+{
+    if ( valid() ) {
+        visitor.visitBegin(*this);
+
+        IoSave restore(io(),start_);
+        uint64_t length = io().size();
+        DataBuf buff(length);
+        io().read(buff);
+//      out() << indent() << buff.toString(kttUByte,length);
+        uint32_t i  =    0 ; // index
+        uint32_t bs =    5 ; // blocksize
+        uint8_t  fs = 0x1c ; // field seperator
+        while (i+bs < length && ::getByte (buff,i) != fs ) i++; // find fs
+        while (i+bs < length && ::getByte (buff,i) == fs ) {    // FS-RE-DS-short = byte, byte, byte, short ... data ....
+            uint16_t record   = ::getByte (buff,i+1);
+            uint16_t dataset  = ::getByte (buff,i+2);
+            uint16_t len      = ::getShort(buff,i+3,keBig);
+            visitor.visitIPTC(io(),*this,record,dataset,len,buff,i);
+            i += bs + len;
+        }
+        visitor.visitEnd(*this);
+    }
+}
+
+class C8BIM : public Image
+{
+public:
+    C8BIM(std::string path)
+    : Image(path)
+    { }
+    C8BIM(Io& io)
+    : Image(io)
+    {}
+
+    void accept(Visitor& visitor);
+
+    bool valid()
+    {
+        if ( !valid_ ) {
+            endian_ = keBig ;
+            IoSave  restore(io(),0);
+            DataBuf bim(4);
+            memcpy(bim.pData_,"8BIM",4);
+            valid_  = io().getLong(endian_) == ::getLong(bim,0,endian_);
+            header_ = "     offset |   kind | tagName                      | name |      len | data | " ;
+            format_ = "8BIM";
+            start_  = 0;
+        }
+        return valid_;
+    }
+};
+
+void C8BIM::accept(Visitor& visitor)
+{
+    if ( !valid_ ) valid();
+    if (  valid_ ) {
+        visitor.visitBegin((*this)); // tell the visitor
+
+        IoSave  restore(io(),start_);
+        DataBuf buff   (io().size()) ;
+        io().read(buff) ;
+    //  out() << indent() << buff.toString(kttUByte) << std::endl;
+        uint32_t offset = 0  ;
+        while ( offset+4 < buff.size_ ) {
+            uint16_t kind = getShort       (buff,offset+4           ,endian_);
+            DataBuf  name = getPascalString(buff,offset+6);
+            uint32_t len  = getLong        (buff,offset+6+name.size_,endian_);
+            uint32_t pad  = len%2?1:0;
+            uint32_t data = (uint32_t)(4+2+4+name.size_); // "8BIM" + short (kind) + name + long (len)
+            DataBuf  b(len);
+            memcpy(b.pData_,buff.pData_+offset+data,len);
+            visitor.visit8BIM(io(),*this,offset,kind,name,len,data,pad,b);
+            if ( visitor.option() & kpsRecursive && kind == 0x0404) {
+                Io   stream(io(),offset+data,len);
+                IPTC iptc(stream);
+                iptc.accept(visitor);
+            }
+            offset += len + pad + data ;
+        }
+        visitor.visitEnd((*this)); // tell the visitor
+    }
+}
+
+
 class PSDImage : public Image
 {
 public:
@@ -1392,6 +1516,32 @@ private:
     uint16_t bits_   ;
     uint16_t col_    ;
 };
+
+void PSDImage::accept(Visitor& visitor)
+{
+    // Ensure that this is the correct image type
+    if (!valid()) {
+        std::ostringstream os ; os << "expected " << format_ ;
+        Error(kerInvalidFileFormat,io().path(),os.str());
+    }
+    std::string msg = stringFormat("#ch = %d, width x height = %d x %d, bits/col = %d/%d",ch_,width_,height_,bits_,col_);
+    visitor.visitBegin(*this,msg); // tell the visitor
+
+    IoSave restore(io_,0) ;
+    DataBuf  lBuff(4);
+    uint64_t address = start_ ;
+    for ( uint16_t i = 0 ; i <=2 ; i++ ) {
+        io().seek(address);
+        uint32_t length = io_.getLong(endian());
+        visitor.visitResource(io_,*this,address);
+        Io    bim(io_,address+4,length);
+        C8BIM c8bim(bim);
+        c8bim.accept(visitor);
+        address += length + 4 ;
+    }
+
+    visitor.visitEnd  (*this); // tell the visitor
+}
 
 class PGFImage : public Image
 {
@@ -1567,140 +1717,72 @@ void ICC::accept(class Visitor& visitor)
     }
 }
 
-class IPTC : public Image
+class RIFFImage : public Image
 {
 public:
-    IPTC(std::string path)
+    RIFFImage(std::string path)
     : Image(path)
-    { }
-    IPTC(Io& io)
+    { init() ; }
+    RIFFImage(Io& io,maker_e maker=kUnknown)
     : Image(io)
-    {}
+    { init() ; }
 
-    void accept(Visitor& visitor);
+    void init()
+    {   depth_  = 0       ;
+        valid_  = false   ;
+        endian_ = keLittle;
+        format_ = "RIFF"  ;
+        start_  =   12    ;
+    }
+
+    void accept(class Visitor& visitor);
 
     bool valid()
     {
         if ( !valid_ ) {
             IoSave  restore(io(),0);
-            valid_  = io().getb() == 0x1c; // must start with FS (field separator)
-            endian_ = keBig ;
-            header_ = "    Record | DataSet | Name                           | Length | Data" ;
-            format_ = "IPTC";
-            start_  = 0;
+            DataBuf header(12);
+            io().read(header);
+            size_   = ::getLong(header,4,endian_);
+            valid_  =  header.begins("RIFF") && size_ <= io().size();
+            DataBuf    signature(5);
+            signature.copy(header.pData_+8,4);
+            if ( valid_ ) format_ = std::string((const char*)signature.pData_) ;
+            header_ = " address | chunk |   length |   offset | data " ;
         }
         return valid_;
     }
+private:
+    uint32_t size_ ;
 };
 
-void IPTC::accept(Visitor& visitor)
-{
-    if ( valid() ) {
-        visitor.visitBegin(*this);
-
-        IoSave restore(io(),start_);
-        uint64_t length = io().size();
-        DataBuf buff(length);
-        io().read(buff);
-//      out() << indent() << buff.toString(kttUByte,length);
-        uint32_t i  =    0 ; // index
-        uint32_t bs =    5 ; // blocksize
-        uint8_t  fs = 0x1c ; // field seperator
-        while (i+bs < length && ::getByte (buff,i) != fs ) i++; // find fs
-        while (i+bs < length && ::getByte (buff,i) == fs ) {    // FS-RE-DS-short = byte, byte, byte, short ... data ....
-            uint16_t record   = ::getByte (buff,i+1);
-            uint16_t dataset  = ::getByte (buff,i+2);
-            uint16_t len      = ::getShort(buff,i+3,keBig);
-            visitor.visitIPTC(io(),*this,record,dataset,len,buff,i);
-            i += bs + len;
-        }
-        visitor.visitEnd(*this);
-    }
-}
-
-class C8BIM : public Image
-{
-public:
-    C8BIM(std::string path)
-    : Image(path)
-    { }
-    C8BIM(Io& io)
-    : Image(io)
-    {}
-
-    void accept(Visitor& visitor);
-
-    bool valid()
-    {
-        if ( !valid_ ) {
-            endian_ = keBig ;
-            IoSave  restore(io(),0);
-            DataBuf bim(4);
-            memcpy(bim.pData_,"8BIM",4);
-            valid_  = io().getLong(endian_) == ::getLong(bim,0,endian_);
-            header_ = "     offset |   kind | tagName                      | name |      len | data | " ;
-            format_ = "8BIM";
-            start_  = 0;
-        }
-        return valid_;
-    }
-};
-
-void C8BIM::accept(Visitor& visitor)
+void RIFFImage::accept(class Visitor& visitor)
 {
     if ( !valid_ ) valid();
     if (  valid_ ) {
         visitor.visitBegin((*this)); // tell the visitor
 
-        IoSave  restore(io(),start_);
-        DataBuf buff   (io().size()) ;
-        io().read(buff) ;
-    //  out() << indent() << buff.toString(kttUByte) << std::endl;
-        uint32_t offset = 0  ;
-        while ( offset+4 < buff.size_ ) {
-            uint16_t kind = getShort       (buff,offset+4           ,endian_);
-            DataBuf  name = getPascalString(buff,offset+6);
-            uint32_t len  = getLong        (buff,offset+6+name.size_,endian_);
-            uint32_t pad  = len%2?1:0;
-            uint32_t data = (uint32_t)(4+2+4+name.size_); // "8BIM" + short (kind) + name + long (len)
-            DataBuf  b(len);
-            memcpy(b.pData_,buff.pData_+offset+data,len);
-            visitor.visit8BIM(io(),*this,offset,kind,name,len,data,pad,b);
-            if ( visitor.option() & kpsRecursive && kind == 0x0404) {
-                Io   stream(io(),offset+data,len);
-                IPTC iptc(stream);
-                iptc.accept(visitor);
-            }
-            offset += len + pad + data ;
+        IoSave   restore(io(),start_);
+        uint64_t address = start_;
+        DataBuf  riff(8);
+        DataBuf  data(40);
+        while (  address < size_ ) {
+            io().seek(address);
+            io().read(riff);
+            
+            DataBuf   signature(5);
+            signature.copy(riff.pData_+0,4);
+
+            std::string chunk  =  std::string((const char*)signature.pData_);
+            uint32_t    length = ::getLong(riff,4,endian_);
+            uint64_t    next   = io().tell() + length ;
+            data.zero();
+            io().read(data.pData_,length < data.size_?length:data.size_);
+            visitor.visitRiff(address,chunk,length,data);
+            address = next ;
         }
         visitor.visitEnd((*this)); // tell the visitor
     }
-}
-
-void PSDImage::accept(Visitor& visitor)
-{
-    // Ensure that this is the correct image type
-    if (!valid()) {
-        std::ostringstream os ; os << "expected " << format_ ;
-        Error(kerInvalidFileFormat,io().path(),os.str());
-    }
-    std::string msg = stringFormat("#ch = %d, width x height = %d x %d, bits/col = %d/%d",ch_,width_,height_,bits_,col_);
-    visitor.visitBegin(*this,msg); // tell the visitor
-
-    IoSave restore(io_,0) ;
-    DataBuf  lBuff(4);
-    uint64_t address = start_ ;
-    for ( uint16_t i = 0 ; i <=2 ; i++ ) {
-        io().seek(address);
-        uint32_t length = io_.getLong(endian());
-        visitor.visitResource(io_,*this,address);
-        Io    bim(io_,address+4,length);
-        C8BIM c8bim(bim);
-        c8bim.accept(visitor);
-        address += length + 4 ;
-    }
-
-    visitor.visitEnd  (*this); // tell the visitor
 }
 
 void PGFImage::accept(Visitor& visitor)
@@ -1932,6 +2014,8 @@ public:
     void visit8BIM    (Io& io,Image& image,uint32_t offset
                       ,uint16_t kind,DataBuf& name,uint32_t len
                       ,uint32_t data,uint32_t pad,DataBuf& b);
+    void visitRiff    (uint64_t address,std::string chunk
+                      ,uint32_t length,DataBuf& data);
 
     void visitEnd(Image& image)
     {
@@ -2477,6 +2561,15 @@ void ReportVisitor::visit8BIM(Io& io,Image& image,uint32_t offset
     }
 }
 
+void ReportVisitor::visitRiff(uint64_t address,std::string chunk
+                ,uint32_t length,DataBuf& data)
+{
+    if ( option() & (kpsBasic | kpsRecursive) ) {
+        out() << indent() << stringFormat("%8d | %4s  | %8d | ",address,chunk.c_str(),length)
+              << snip(data.binaryToString(),length) << std::endl;
+    }
+}
+
 void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
                             ,uint32_t box,uint32_t length)
 {
@@ -2555,6 +2648,7 @@ int main(int argc,const char* argv[])
         ICC       icc (path);
         PSDImage  psd (path);
         PGFImage  pgf (path);
+        RIFFImage riff(path);
 
         // Visit the image
         if      ( tiff.valid() ) tiff.accept(visitor);
@@ -2565,6 +2659,7 @@ int main(int argc,const char* argv[])
         else if (  icc.valid() )  icc.accept(visitor);
         else if (  psd.valid() )  psd.accept(visitor);
         else if (  pgf.valid() )  pgf.accept(visitor);
+        else if ( riff.valid() ) riff.accept(visitor);
         else    { Error(kerUnknownFormat,path); }
     } else {
         std::cout << "usage: " << argv[0] << " [ { U | S | R | X | C | I } ] path" << std::endl;
