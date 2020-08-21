@@ -1006,7 +1006,7 @@ public:
                ;
         setMaker(maker_);
     } // setMaker
-    
+
     bool superBox(uint32_t box)
     {
         std::string name = boxName(box);
@@ -1607,7 +1607,7 @@ public:
 
 private:
     uint32_t headersize_ ;
-    
+
     uint32_t width_  ;
     uint32_t height_ ;
     uint8_t  levels_ ;
@@ -1627,7 +1627,7 @@ void PgfImage::accept(Visitor& visitor)
     }
     std::string msg = stringFormat("headersize = %d, width x height = %d x %d levels,comp = %d,%d bpp,colors = %d,%d mode,bpc = %d,%d start = %d",headersize_,width_,height_,levels_,comp_,bpp_,colors_,mode_,bpc_,start_);
     visitor.visitBegin(*this,msg); // tell the visitor
-    
+
     PngImage(io(),start_,this->headersize_).accept(visitor);
 
     visitor.visitEnd  (*this); // tell the visitor
@@ -1688,6 +1688,8 @@ public:
         format_  = "JP2"     ;
         brand_   = "jp2"     ;
         exifID_  = kUnknownID;
+        exifLength_ = 0      ;
+        exifOffset_ = 0      ;
 
         const char*  kJp2UuidExif  = "4a706754-6966-6645-7869-662d3e4a5032" ; // "JpgTiffExif->JP2";
         const char*  kJp2UuidIptc  = "33c7a4d2-b81d-4723-a0ba-f1a3e097ad38" ;
@@ -1785,7 +1787,7 @@ public:
             valid_        =  header.begins("RIFF") && fileLength_ <= io().size();
             char             signature[5];
             format_       =  header.getChars(8,4,signature);
-            header_       = " address | chunk |   length |   offset | data " ;
+            header_       = " address | chunk |   length | data " ;
         }
         return valid_;
     }
@@ -1803,18 +1805,17 @@ void RiffImage::accept(class Visitor& visitor)
         uint64_t address = start_;
         DataBuf  riff(8);
         DataBuf  data(40);  // buffer to pass data to visitRiff()
-        while (  address < fileLength_ ) {
+        while (  address+8 < fileLength_+12 ) {
             visit(address);
             io().seek(address);
             io().read(riff);
-            
+
             char        signature[5];
             std::string chunk   = riff.getChars(0,4,signature);
             uint32_t    length  = ::getLong(riff,4,endian_) ;
             uint64_t    pad     = length % 2 ? 1 : 0        ; // pad if length is odd
             uint64_t    next    = io().tell() + length +pad ;
-            if ( next > fileLength_ ) Error(kerCorruptedMetadata);
-            
+
             data.zero();
             io().read(data.pData_,length < data.size_?length:data.size_);
             visitor.visitRiff(address,chunk,length,data);
@@ -2319,7 +2320,7 @@ void Jp2Image::accept(class Visitor& v)
         }
 
         v.visitBox(io(),*this,address,box,length); // tell the visitor
-        
+
         // 8.11.3.1
         if ( boxName(box) == "iloc" ) { // 0 1 0 0 0 0 0 1 0 0 42 179 0 0 46 167 a,b= 10931,11943
             uint8_t  version = 0 ;
@@ -2333,35 +2334,27 @@ void Jp2Image::accept(class Visitor& v)
             uint16_t u          = getByte(data,skip) ; skip++;
             uint16_t offsetSize = u >> 4  ;
             uint16_t lengthSize = u & 0xF ;
+            
             uint16_t indexSize  = 0       ;
                      u          = getByte(data,skip) ; skip++ ;
             if ( version == 1 || version == 2 ) {
                 indexSize = u & 0xF ;
             }
-            uint16_t baseOffsetSize = u >> 4;
-
+            // uint16_t baseOffsetSize = u >> 4;
+            
             uint32_t itemCount  = version < 2 ? getShort(data,skip,keBig) : getLong(data,skip,keBig);
             skip               += version < 2 ?               2           :         4               ;
-
-            uint32_t step       = 0                ; // length of data per item.
-            step               += version < 2 ?              2           :         4                ; // ID
-            step               += version ==2 ?              4           :         0                ; // construction_method
-            step               += 2                ; // data_reference_index
-            step               += baseOffsetSize   ;
-            step               += 2                ; // extent_count
-            step               += 2                ; // index
-            step               += offsetSize + lengthSize;
-            
-            if ( length >= (skip + itemCount * step) ) {
+            if ( offsetSize == 4 && lengthSize == 4 && ((length-16) % itemCount) == 0 ) {
+                uint32_t step = (length-16)/itemCount                  ; // length of data per item.
                 uint32_t base = skip;
                 for ( uint32_t i = 0 ; i < itemCount ; i++ ) {
-                    skip=base+i*step ; // move in 16 byte steps
-                    uint16_t ID     = version > 2 ? getLong(data,skip+0,keBig) : getShort(data,skip+0,keBig);
-                    uint16_t offset = getShort(data,skip+10,keBig);
-                    uint16_t length = getShort(data,skip+14,keBig);
-                    v.out() << v.indent() << stringFormat("%8d | %8d | %4s | %4d | %6d,%6d",address+skip,step,"ext",ID,offset,length) << std::endl;
+                    skip=base+i*step ; // move in 16 or 14 byte steps
+                    uint32_t ID     = version > 2 ? getLong(data,skip,keBig) : getShort(data,skip,keBig);
+                    uint32_t offset = getLong(data,skip+step-8,keBig);
+                    uint32_t ldata  = getLong(data,skip+step-4,keBig);
+                    v.out() << v.indent() << stringFormat("%8d | %8d |  ext | %4d | %6d,%6d",address+skip,step,ID,offset,ldata) << std::endl;
                     if ( ID == exifID_ ) {
-                        exifLength_ = length ;
+                        exifLength_ = ldata ;
                         exifOffset_ = offset ;
                     }
                 }
@@ -2391,7 +2384,7 @@ void Jp2Image::accept(class Visitor& v)
                 version = (int8_t ) flags >> 24 ;
                 version &= 0x00ffffff ;
             }
-            
+
             // 8.11.6.1.
             if ( boxName(box) == "iinf" ) {
                 nEntries = version ? io().getLong(keBig) : io().getShort(keBig);
@@ -2404,12 +2397,16 @@ void Jp2Image::accept(class Visitor& v)
                 jp2.valid_=true;
                 jp2.exifID_ = exifID_;
                 jp2.accept(v);
-                exifID_     = jp2.exifID_;
-                exifLength_ = jp2.exifLength_;
-                exifOffset_ = jp2.exifOffset_;
+                if ( jp2.exifID_ != kUnknownID ) {
+                    exifID_     = jp2.exifID_;
+                }
+                if ( jp2.exifLength_ || jp2.exifOffset_ ) {
+                    exifLength_ = jp2.exifLength_;
+                    exifOffset_ = jp2.exifOffset_;
+                }
             }
         }
-        
+
         // recursion?
         if ( boxName(box) == "uuid" ) {
             DataBuf uuid(16);
@@ -2420,8 +2417,13 @@ void Jp2Image::accept(class Visitor& v)
                 jp2.accept(v);
             }
         } else if ( boxName(box) == "mdat" && (v.option() & kpsRecursive) && exifID_ != kUnknownID ) {
-            Io tiff(io(),exifOffset_+10,exifLength_-10);
-            TiffImage(tiff).accept(v);
+            // TODO:  We're not storing exifOffset_/exifLength_ correctly
+            Io t1(io(),exifOffset_+10,exifLength_-10);
+            Io t2(io(),exifOffset_+ 4,exifLength_ -4);
+            TiffImage tiff1(t1);
+            TiffImage tiff2(t2);
+            if ( tiff1.valid() ) tiff1.accept(v);
+            if ( tiff2.valid() ) tiff2.accept(v);
         }
         address = (boxName(box) == kJp2Box_jp2c
                ||  boxName(box) == kJp2Box_mdat) ? io().size()
@@ -2644,7 +2646,7 @@ void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
             }
         }
     }
-    
+
     if ( option() & kpsXMP && uuid == "xmp " ) {
         out() << data.pData_+17 ;
     }
