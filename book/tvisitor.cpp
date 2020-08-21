@@ -553,6 +553,7 @@ enum maker_e
 ,   kSony
 ,   kAgfa
 ,   kApple
+,   kPano
 };
 
 // Canon magic
@@ -620,6 +621,7 @@ TagDict nikonDict ;
 TagDict sonyDict  ;
 TagDict agfaDict  ;
 TagDict appleDict ;
+TagDict panoDict  ;
 TagDict gpsDict   ;
 TagDict crwDict   ;
 TagDict psdDict   ;
@@ -987,6 +989,7 @@ public:
             case kSony  : makerDict_ = sonyDict  ; break;
             case kAgfa  : makerDict_ = agfaDict  ; break;
             case kApple : makerDict_ = appleDict ; break;
+            case kPano  : makerDict_ = panoDict  ; break;
             default : /* do nothing */           ; break;
         }
     }
@@ -998,6 +1001,7 @@ public:
                : buf.strequals("SONY")              ? kSony
                : buf.strequals("AGFAPHOTO")         ? kAgfa
                : buf.strequals("Apple")             ? kApple
+               : buf.strequals("Panasonic")         ? kPano
                : maker_
                ;
         setMaker(maker_);
@@ -1205,7 +1209,16 @@ public:
             uint16_t bytesize = bigtiff_ ? getShort(header,4,endian_) : 8;
             uint16_t version  = bigtiff_ ? getShort(header,6,endian_) : 0;
 
-            valid_ =  (magic_ == 42||magic_ == 43) && (c == C) && ( c == 'I' || c == 'M' ) && bytesize == 8 && version == 0;
+            valid_ =  (magic_==42||magic_==43||magic_==85) && (c == C) && (c=='I'||c=='M') && bytesize == 8 && version == 0;
+            // Panosonic have augmented tiffDict with their keys
+            if ( magic_ == 85 ) {
+                setMaker(kPano);
+                for ( TagDict::iterator it = panoDict.begin() ; it != panoDict.end() ; it++ ) {
+                    if ( it->first != ktGroup ) {
+                        tiffDict[it->first] = it->second;
+                    }
+                }
+            }
         }
         return valid_ ;
     }
@@ -2839,20 +2852,36 @@ void init()
     agfaDict  [ 0x0004 ] = "Four";
     agfaDict  [ 0x0005 ] = "Thumbnail";
 
-    appleDict [ktGroup ] = "Apple"   ;
-    appleDict [ 0x0001 ] = "One"     ;
-    appleDict [ 0x0002 ] = "Two"     ;
-    appleDict [ 0x0003 ] = "Three"   ;
-    appleDict [ 0x0004 ] = "Four"    ;
-    appleDict [ 0x0005 ] = "Five"    ;
-    appleDict [ 0x0006 ] = "Six"     ;
-    appleDict [ 0x0007 ] = "Seven"   ;
-    appleDict [ 0x0008 ] = "Eight"   ;
-    appleDict [ 0x0009 ] = "Nine"    ;
-    appleDict [ 0x000a ] = "Ten"     ;
-    appleDict [ 0x000b ] = "Eleven"  ;
-    appleDict [ 0x000c ] = "Twelve"  ;
+    appleDict [ktGroup ] = "Apple";
+    appleDict [ 0x0001 ] = "One";
+    appleDict [ 0x0002 ] = "Two";
+    appleDict [ 0x0003 ] = "Three";
+    appleDict [ 0x0004 ] = "Four";
+    appleDict [ 0x0005 ] = "Five";
+    appleDict [ 0x0006 ] = "Six";
+    appleDict [ 0x0007 ] = "Seven";
+    appleDict [ 0x0008 ] = "Eight";
+    appleDict [ 0x0009 ] = "Nine";
+    appleDict [ 0x000a ] = "Ten";
+    appleDict [ 0x000b ] = "Eleven";
+    appleDict [ 0x000c ] = "Twelve";
     appleDict [ 0x000d ] = "Thirteen";
+
+    panoDict  [ktGroup ] = "Panosonic";
+    panoDict  [ 0x0001 ] = "Version";
+    panoDict  [ 0x0002 ] = "SensorWidth";
+    panoDict  [ 0x0003 ] = "SensorHeight";
+    panoDict  [ 0x0004 ] = "SensorTopBorder";
+    panoDict  [ 0x0005 ] = "SensorLeftBorder";
+    panoDict  [ 0x0006 ] = "ImageHeight";
+    panoDict  [ 0x0007 ] = "ImageWidth";
+    panoDict  [ 0x0011 ] = "RedBalance";
+    panoDict  [ 0x0012 ] = "BlueBalance";
+    panoDict  [ 0x0017 ] = "ISOSpeed";
+    panoDict  [ 0x0024 ] = "WBRedLevel";
+    panoDict  [ 0x0025 ] = "WBGreenLevel";
+    panoDict  [ 0x0026 ] = "WBBlueLevel";
+    panoDict  [ 0x002e ] = "PreviewImage";
 
     crwDict   [ktGroup ] = "CRW";
     crwDict   [ 0x0032 ] = "CanonColorInfo1";

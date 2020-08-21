@@ -1521,7 +1521,33 @@ To be written.
 <div id="RW2"/>
 ## RW2 Panasonic RAW
 
-To be written.
+There is a discussion of Raw Image Formats here: [https://en.wikipedia.org/wiki/Raw\_image\_format](https://en.wikipedia.org/wiki/Raw_image_format)
+
+RW2 is effectively Tiff, however Panasonic:
+
+1. Put their keys into the top level dictionary.
+2. Use 0x55 = 'U' = 85 in the 'magic' header.
+
+```bash
+914 rmills@rmillsmbp:~/gnu/exiv2/team/book/build $ dmpf count=20 ~/Downloads/RAW_PANASONIC_FZ8.RAW 
+       0        0: IIU_.___#_._._.___02              ->  49 49 55 00 08 00 00 00 23 00 01 00 07 00 04 00 00 00 30 32
+915 rmills@rmillsmbp:~/gnu/exiv2/team/book/build $ 
+```
+
+We deal with those differences in TiffImage::valid() as follows:
+
+```cpp
+    valid_ =  (magic_==42||magic_==43||magic_==85) && (c == C) && (c=='I'||c=='M') && bytesize == 8 && version == 0;
+    // Panosonic have augmented tiffDict with their keys
+    if ( magic_ == 85 ) {
+        setMaker(kPano);
+        for ( TagDict::iterator it = panoDict.begin() ; it != panoDict.end() ; it++ ) {
+            if ( it->first != ktGroup ) {
+                tiffDict[it->first] = it->second;
+            }
+        }
+    }
+```
 
 [TOC](#TOC)
 <div id="TGA"/>
