@@ -2428,7 +2428,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2020-08-20 19:32:18 +0000</string>
+	<string>2020-08-20 19:39:27 +0000</string>
 	<key>Modifier</key>
 	<string>Robin Mills</string>
 	<key>NotesVisible</key>
@@ -11820,7 +11820,7 @@ XMP   Xmp Data}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{20.33353263153537, 158.74015892058844}, {456.37795009613046, 210}}</string>
+					<string>{{20.33353263153537, 158.74015892058844}, {456.37795009613046, 198}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -11872,7 +11872,7 @@ XMP   Xmp Data}</string>
 
 \f0\fs20 \cf0 book/build $ ls -l ~/webp.webp \
 -rw-r--r--  1 rmills  staff  187534 20 Aug 15:17 /Users/rmills/webp.webp\
-823 rmills@rmillsmbp:~/gnu/exiv2/team/book/build $ dmpf count=36 width=12 bs=4 endian=0 ~/webp.webp  hex=0\
+book/build $ dmpf count=36 width=12 bs=4 endian=0 ~/webp.webp  hex=0\
        0        0: RIFF..._WEBP  -&gt;  1179011410     187526 1346520407\
      0xc       12: VP8X.___,___  -&gt;  1480085590         10         44\
     0x18       24: .._.._ICCP0.  -&gt;   520094895 1128857603   36720707\
@@ -25706,7 +25706,7 @@ B  = Bits per color}</string>
 		<key>Expanded_Canvases</key>
 		<array/>
 		<key>Frame</key>
-		<string>{{100, 108}, {1384, 911}}</string>
+		<string>{{394, 112}, {1384, 911}}</string>
 		<key>ShowInfo</key>
 		<true/>
 		<key>ShowRuler</key>
@@ -25718,9 +25718,9 @@ B  = Bits per color}</string>
 		<key>TopSlabHeight</key>
 		<real>33</real>
 		<key>VisibleRegion</key>
-		<string>{{0, -72.000000000000043}, {805.88977050781261, 682.69052972903205}}</string>
+		<string>{{-32, -107}, {870, 752}}</string>
 		<key>Zoom</key>
-		<real>1.0795521072960015</real>
+		<real>1</real>
 		<key>ZoomValues</key>
 		<array>
 			<array>
@@ -25742,11 +25742,6 @@ B  = Bits per color}</string>
 				<string>JP2k</string>
 				<real>1.0795520544052124</real>
 				<real>1.0795521072960015</real>
-			</array>
-			<array>
-				<string>WebP</string>
-				<real>1.0795521072960015</real>
-				<real>2.159104214592003</real>
 			</array>
 			<array>
 				<string>Jpeg Segments</string>
@@ -25787,6 +25782,11 @@ B  = Bits per color}</string>
 				<string>PGF</string>
 				<real>1</real>
 				<real>2</real>
+			</array>
+			<array>
+				<string>Riff</string>
+				<real>1</real>
+				<real>1</real>
 			</array>
 		</array>
 	</dict>

@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-08-20</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-08-21</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -33,10 +33,10 @@ _And our cat Lizzie._
 | [2. Metadata Standards](#2)                           | 32 | [JPEG and EXV](#JPEG)                 | 12 | [13.1 C++ Code](#13-1)                  | 78 |
 | [2.1 Exif Metadata](#Exif)                            | 35 | [PNG Portable Network Graphics](#PNG) | 17 | [13.2 Build](#13-2)                     | 79 |
 | [2.2 XMP Metadata](#XMP)                              | 36 | [JP2 Jpeg 2000](#JP2)                 | 18 | [13.3 Security](#13-3)                  | 80 |
-| [2.3 IPTC Metadata](#IPTC)                            | 37 | [ISOBMFF, CR3, HEIF, AVI](#ISOBMFF)   | 19 | [13.4 Documentation](#13-4)             | 80 |
+| [2.3 IPTC Metadata](#IPTC)                            | 37 | [ISOBMFF, CR3, HEIF, AVIF](#ISOBMFF)  | 19 | [13.4 Documentation](#13-4)             | 80 |
 | [2.5 MakerNotes](#MakerNotes)                         | 38 | [CRW Canon Raw](#CRW)                 | 20 | [13.5 Testing](#13-5)                   | 80 |
 | [5. Lens Recognition](#5)                             | 39 | [ICC Profile](#ICC)                   | 21 | [13.6 Sample programs](#13-6)           | 80 |
-| [7. I/O in Exiv2](#7)                                 | 41 | [RIFF Resource Interchange File Format](#RIFF) | 22 | [13.7 User Support](#13-7)              | 80 |
+| [7. I/O in Exiv2](#7)                                 | 41 | [RIFF Resource Interchange File Format](#RIFF) | 22 | [13.7 User Support](#13-7)     | 80 |
 | [8. Exiv2 Architecture](#8)                           | 41 | [MRW Minolta Raw](#MRW)               | 23 | [13.8 Bug Tracking](#13-8)              | 81 |
 | [8.1 Extracting metadata using dd](#8-1)              | 42 | [ORF Olympus Raw Format](#ORF)        | 24 | [13.9 Release Engineering](#13-9)       | 81 |
 | [8.2 Tag Names in Exiv2](#8-2)                        | 44 | [PGF Progressive Graphics File](#PGF) | 25 | [13.10 Platform Support](#13-10)        | 81 |
@@ -1263,6 +1263,75 @@ The specification is available here: [http://www.color.org/icc_specs2.xalter](ht
 <div id="RIFF"/>
 ## RIFF Resource Interchange File Format
 ![riff](riff.png)
+
+This file format is used by WEBP, AVI and WAV files.  RIFF was introduced in 1991 by Microsoft and IBM.  There is a discussion of the format here: [https://en.wikipedia.org/wiki/Resource\_Interchange\_File\_Format](https://en.wikipedia.org/wiki/Resource_Interchange_File_Format)
+
+
+Testing for validity is easy:
+
+```cpp
+bool valid()
+{
+    if ( !valid_ ) {
+        IoSave  restore(io(),0);
+        DataBuf header(12);
+        io().read(header);
+        fileLength_   = ::getLong(header,4,endian_);
+        valid_        =  header.begins("RIFF") && fileLength_ <= io().size();
+        char             signature[5];
+        format_       =  header.getChars(8,4,signature);
+        header_       = " address | chunk |   length |   offset | data " ;
+    }
+    return valid_;
+}
+```
+
+Reporting the data in the file is straight-forward:
+
+```cpp
+void RiffImage::accept(class Visitor& visitor)
+{
+    if ( !valid_ ) valid();
+    if (  valid_ ) {
+        visitor.visitBegin((*this)); // tell the visitor
+
+        IoSave   restore(io(),start_);
+        uint64_t address = start_;
+        DataBuf  riff(8);
+        DataBuf  data(40);  // buffer to pass data to visitRiff()
+        while (  address < fileLength_ ) {
+            visit(address);
+            io().seek(address);
+            io().read(riff);
+            
+            char        signature[5];
+            std::string chunk   = riff.getChars(0,4,signature);
+            uint32_t    length  = ::getLong(riff,4,endian_) ;
+            uint64_t    pad     = length % 2 ? 1 : 0        ; // pad if length is odd
+            uint64_t    next    = io().tell() + length +pad ;
+            if ( next > fileLength_ ) Error(kerCorruptedMetadata);
+            
+            data.zero();
+            io().read(data.pData_,length < data.size_?length:data.size_);
+            visitor.visitRiff(address,chunk,length,data);
+
+            if ( chunk == "XMP " || chunk == "ICCP" ) {
+                DataBuf    Data(length);
+                io().seek(address+8);
+                io().read(Data);
+                if ( chunk == "XMP "    ) visitor.visitXMP(Data);
+                if ( chunk == "ICCP"    ) visitor.visitICC(Data);
+            }
+            if ( chunk == "EXIF" ) {
+                Io tiff(io(),address+8,length);
+                visitor.visitExif(tiff);
+            }
+            address = next ;
+        }
+        visitor.visitEnd((*this)); // tell the visitor
+    }
+}
+```
 
 [TOC](#TOC)
 <div id="MRW"/>

@@ -140,6 +140,7 @@ void Error (error_e error)
 }
 class Io;
 typedef unsigned char byte ;
+
 class DataBuf
 {
 public:
@@ -184,7 +185,16 @@ public:
         }
         return result;
     }
-    void zero() { for ( uint64_t i = 0 ; i < size_ ; i++ ) pData_[i]=0; }
+    void  zero() { for ( uint64_t i = 0 ; i < size_ ; i++ ) pData_[i]=0; }
+    char* getChars(uint64_t offset,uint64_t count,char* chars) {
+        chars[0] = 0;
+        if ( offset + count <= size_ ) {
+            for ( uint64_t i = 0 ; i < count ; i++ )
+                chars[i] = (char) pData_[offset+i];
+            chars[count] = 0;
+        }
+        return chars;
+    }
 
     uint32_t search(uint32_t start,const char* s)
     {
@@ -1475,13 +1485,13 @@ void C8BIM::accept(Visitor& visitor)
 }
 
 
-class PSDImage : public Image
+class PsdImage : public Image
 {
 public:
-    PSDImage(std::string path)
+    PsdImage(std::string path)
     : Image  (path)
     { }
-    PSDImage(Io& io,size_t start,size_t count)
+    PsdImage(Io& io,size_t start,size_t count)
     : Image(Io(io,start,count))
     { }
 
@@ -1517,7 +1527,7 @@ private:
     uint16_t col_    ;
 };
 
-void PSDImage::accept(Visitor& visitor)
+void PsdImage::accept(Visitor& visitor)
 {
     // Ensure that this is the correct image type
     if (!valid()) {
@@ -1543,13 +1553,13 @@ void PSDImage::accept(Visitor& visitor)
     visitor.visitEnd  (*this); // tell the visitor
 }
 
-class PGFImage : public Image
+class PgfImage : public Image
 {
 public:
-    PGFImage(std::string path)
+    PgfImage(std::string path)
     : Image  (path)
     { }
-    PGFImage(Io& io,size_t start,size_t count)
+    PgfImage(Io& io,size_t start,size_t count)
     : Image(Io(io,start,count))
     { }
 
@@ -1594,6 +1604,21 @@ private:
     uint8_t  mode_   ;
     uint8_t  bpc_    ;
 };
+
+void PgfImage::accept(Visitor& visitor)
+{
+    // Ensure that this is the correct image type
+    if (!valid()) {
+        std::ostringstream os ; os << "expected " << format_ ;
+        Error(kerInvalidFileFormat,io().path(),os.str());
+    }
+    std::string msg = stringFormat("headersize = %d, width x height = %d x %d levels,comp = %d,%d bpp,colors = %d,%d mode,bpc = %d,%d start = %d",headersize_,width_,height_,levels_,comp_,bpp_,colors_,mode_,bpc_,start_);
+    visitor.visitBegin(*this,msg); // tell the visitor
+    
+    PngImage(io(),start_,this->headersize_).accept(visitor);
+
+    visitor.visitEnd  (*this); // tell the visitor
+}
 
 class Jp2Image : public Image
 {
@@ -1717,13 +1742,13 @@ void ICC::accept(class Visitor& visitor)
     }
 }
 
-class RIFFImage : public Image
+class RiffImage : public Image
 {
 public:
-    RIFFImage(std::string path)
+    RiffImage(std::string path)
     : Image(path)
     { init() ; }
-    RIFFImage(Io& io,maker_e maker=kUnknown)
+    RiffImage(Io& io,maker_e maker=kUnknown)
     : Image(io)
     { init() ; }
 
@@ -1743,20 +1768,19 @@ public:
             IoSave  restore(io(),0);
             DataBuf header(12);
             io().read(header);
-            size_   = ::getLong(header,4,endian_);
-            valid_  =  header.begins("RIFF") && size_ <= io().size();
-            DataBuf    signature(5);
-            signature.copy(header.pData_+8,4);
-            if ( valid_ ) format_ = std::string((const char*)signature.pData_) ;
-            header_ = " address | chunk |   length |   offset | data " ;
+            fileLength_   = ::getLong(header,4,endian_);
+            valid_        =  header.begins("RIFF") && fileLength_ <= io().size();
+            char             signature[5];
+            format_       =  header.getChars(8,4,signature);
+            header_       = " address | chunk |   length |   offset | data " ;
         }
         return valid_;
     }
 private:
-    uint32_t size_ ;
+    uint32_t fileLength_ ;
 };
 
-void RIFFImage::accept(class Visitor& visitor)
+void RiffImage::accept(class Visitor& visitor)
 {
     if ( !valid_ ) valid();
     if (  valid_ ) {
@@ -1765,39 +1789,38 @@ void RIFFImage::accept(class Visitor& visitor)
         IoSave   restore(io(),start_);
         uint64_t address = start_;
         DataBuf  riff(8);
-        DataBuf  data(40);
-        while (  address < size_ ) {
+        DataBuf  data(40);  // buffer to pass data to visitRiff()
+        while (  address < fileLength_ ) {
+            visit(address);
             io().seek(address);
             io().read(riff);
             
-            DataBuf   signature(5);
-            signature.copy(riff.pData_+0,4);
-
-            std::string chunk  =  std::string((const char*)signature.pData_);
-            uint32_t    length = ::getLong(riff,4,endian_);
-            uint64_t    next   = io().tell() + length ;
+            char        signature[5];
+            std::string chunk   = riff.getChars(0,4,signature);
+            uint32_t    length  = ::getLong(riff,4,endian_) ;
+            uint64_t    pad     = length % 2 ? 1 : 0        ; // pad if length is odd
+            uint64_t    next    = io().tell() + length +pad ;
+            if ( next > fileLength_ ) Error(kerCorruptedMetadata);
+            
             data.zero();
             io().read(data.pData_,length < data.size_?length:data.size_);
             visitor.visitRiff(address,chunk,length,data);
+
+            if ( chunk == "XMP " || chunk == "ICCP" ) {
+                DataBuf    Data(length);
+                io().seek(address+8);
+                io().read(Data);
+                if ( chunk == "XMP "    ) visitor.visitXMP(Data);
+                if ( chunk == "ICCP"    ) visitor.visitICC(Data);
+            }
+            if ( chunk == "EXIF" ) {
+                Io tiff(io(),address+8,length);
+                visitor.visitExif(tiff);
+            }
             address = next ;
         }
         visitor.visitEnd((*this)); // tell the visitor
     }
-}
-
-void PGFImage::accept(Visitor& visitor)
-{
-    // Ensure that this is the correct image type
-    if (!valid()) {
-        std::ostringstream os ; os << "expected " << format_ ;
-        Error(kerInvalidFileFormat,io().path(),os.str());
-    }
-    std::string msg = stringFormat("headersize = %d, width x height = %d x %d levels,comp = %d,%d bpp,colors = %d,%d mode,bpc = %d,%d start = %d",headersize_,width_,height_,levels_,comp_,bpp_,colors_,mode_,bpc_,start_);
-    visitor.visitBegin(*this,msg); // tell the visitor
-    
-    PngImage(io(),start_,this->headersize_).accept(visitor);
-
-    visitor.visitEnd  (*this); // tell the visitor
 }
 
 void JpegImage::accept(Visitor& visitor)
@@ -2646,9 +2669,9 @@ int main(int argc,const char* argv[])
         PngImage  png (path);
         Jp2Image  jp2 (path);
         ICC       icc (path);
-        PSDImage  psd (path);
-        PGFImage  pgf (path);
-        RIFFImage riff(path);
+        PsdImage  psd (path);
+        PgfImage  pgf (path);
+        RiffImage riff(path);
 
         // Visit the image
         if      ( tiff.valid() ) tiff.accept(visitor);
