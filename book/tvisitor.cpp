@@ -958,9 +958,6 @@ public:
     , depth_    (0)
     , valid_    (false)
     {};
-    
-    std::unique_ptr<Image> create(std::string path);
-    
     virtual    ~Image()        { io_.close()      ; }
     bool        valid()        { return false     ; }
     std::string path()         { return io_.path(); }
@@ -2678,7 +2675,7 @@ int main(int argc,const char* argv[])
 
     int rc = 0;
     if ( argc == 2 || argc == 3 ) {
-        // Create the visitor
+        // Parse the visitor options
         PSOption option = kpsBasic;
         if ( argc == 3 ) {
             std::string arg(argv[1]);
@@ -2695,13 +2692,10 @@ int main(int argc,const char* argv[])
         ReportVisitor visitor(std::cout,option);
 
         // Open the image
-        const char* path = argv[argc-1];
+        std::string             path  = argv[argc-1];
         std::unique_ptr<Image> pImage = ImageFactory(path);
-        if (   pImage ) {
-            pImage->accept(visitor);
-        } else {
-            Error(kerUnknownFormat,path);
-        }
+        if (   pImage ) pImage->accept(visitor);
+        else            Error(kerUnknownFormat,path);
     } else {
         std::cout << "usage: " << argv[0] << " [ { U | S | R | X | C | I } ] path" << std::endl;
         rc = 1;
