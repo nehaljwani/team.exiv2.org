@@ -958,6 +958,9 @@ public:
     , depth_    (0)
     , valid_    (false)
     {};
+    
+    std::unique_ptr<Image> create(std::string path);
+    
     virtual    ~Image()        { io_.close()      ; }
     bool        valid()        { return false     ; }
     std::string path()         { return io_.path(); }
@@ -2652,6 +2655,21 @@ void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
     }
 }
 
+
+std::unique_ptr<Image> ImageFactory(std::string path)
+{
+    TiffImage tiff(path); if ( tiff.valid() ) return std::unique_ptr<Image> (new TiffImage(path));
+    JpegImage jpeg(path); if ( jpeg.valid() ) return std::unique_ptr<Image> (new JpegImage(path));
+    CrwImage  crw (path); if (  crw.valid() ) return std::unique_ptr<Image> (new  CrwImage(path));
+    PngImage  png (path); if (  png.valid() ) return std::unique_ptr<Image> (new  PngImage(path));
+    Jp2Image  jp2 (path); if (  jp2.valid() ) return std::unique_ptr<Image> (new  Jp2Image(path));
+    ICC       icc (path); if (  icc.valid() ) return std::unique_ptr<Image> (new  ICC     (path));
+    PsdImage  psd (path); if (  psd.valid() ) return std::unique_ptr<Image> (new  PsdImage(path));
+    PgfImage  pgf (path); if (  pgf.valid() ) return std::unique_ptr<Image> (new  PgfImage(path));
+    RiffImage riff(path); if ( riff.valid() ) return std::unique_ptr<Image> (new RiffImage(path));
+    return NULL;
+}
+
 void init(); // prototype
 
 int main(int argc,const char* argv[])
@@ -2678,27 +2696,12 @@ int main(int argc,const char* argv[])
 
         // Open the image
         const char* path = argv[argc-1];
-        TiffImage tiff(path);
-        JpegImage jpeg(path);
-        CrwImage  crw (path);
-        PngImage  png (path);
-        Jp2Image  jp2 (path);
-        ICC       icc (path);
-        PsdImage  psd (path);
-        PgfImage  pgf (path);
-        RiffImage riff(path);
-
-        // Visit the image
-        if      ( tiff.valid() ) tiff.accept(visitor);
-        else if ( jpeg.valid() ) jpeg.accept(visitor);
-        else if (  crw.valid() )  crw.accept(visitor);
-        else if (  png.valid() )  png.accept(visitor);
-        else if (  jp2.valid() )  jp2.accept(visitor);
-        else if (  icc.valid() )  icc.accept(visitor);
-        else if (  psd.valid() )  psd.accept(visitor);
-        else if (  pgf.valid() )  pgf.accept(visitor);
-        else if ( riff.valid() ) riff.accept(visitor);
-        else    { Error(kerUnknownFormat,path); }
+        std::unique_ptr<Image> pImage = ImageFactory(path);
+        if (   pImage ) {
+            pImage->accept(visitor);
+        } else {
+            Error(kerUnknownFormat,path);
+        }
     } else {
         std::cout << "usage: " << argv[0] << " [ { U | S | R | X | C | I } ] path" << std::endl;
         rc = 1;
