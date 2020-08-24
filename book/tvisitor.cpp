@@ -81,8 +81,6 @@ const char* typeName(type_e tag)
     return result;
 }
 
-#define kUnknownID 0xffff
-
 enum endian_e
 {   keLittle
 ,   keBig
@@ -1684,10 +1682,10 @@ public:
 
     void init()
     {
-        endian_  = keBig     ;
-        format_  = "JP2"     ;
-        brand_   = "jp2"     ;
-        exifID_  = kUnknownID;
+        endian_     = keBig  ;
+        format_     = "JP2"  ;
+        brand_      = "jp2"  ;
+        exifID_     = 0      ;
         exifLength_ = 0      ;
         exifOffset_ = 0      ;
 
@@ -2397,7 +2395,7 @@ void Jp2Image::accept(class Visitor& v)
                 jp2.valid_=true;
                 jp2.exifID_ = exifID_;
                 jp2.accept(v);
-                if ( jp2.exifID_ != kUnknownID ) {
+                if ( jp2.exifID_ ) {
                     exifID_     = jp2.exifID_;
                 }
                 if ( jp2.exifLength_ || jp2.exifOffset_ ) {
@@ -2416,7 +2414,7 @@ void Jp2Image::accept(class Visitor& v)
                 jp2.valid_=true;
                 jp2.accept(v);
             }
-        } else if ( boxName(box) == "mdat" && (v.option() & kpsRecursive) && exifID_ != kUnknownID ) {
+        } else if ( boxName(box) == "mdat" && (v.option() & kpsRecursive) && exifID_ ) {
             // TODO:  We're not storing exifOffset_/exifLength_ correctly
             Io t1(io(),exifOffset_+10,exifLength_-10);
             Io t2(io(),exifOffset_+ 4,exifLength_ -4);
