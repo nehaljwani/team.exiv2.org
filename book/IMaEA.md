@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-08-21</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-08-26</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -1337,7 +1337,7 @@ void RiffImage::accept(class Visitor& visitor)
 <div id="MRW"/>
 ## MRW Minolta Raw Format
 
-To be written.
+[http://www.dalibor.cz/software/minolta-raw-mrw-file-format](http://www.dalibor.cz/software/minolta-raw-mrw-file-format)
 
 [TOC](#TOC)
 <div id="ORF"/>

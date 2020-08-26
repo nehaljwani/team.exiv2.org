@@ -552,6 +552,7 @@ enum maker_e
 ,   kAgfa
 ,   kApple
 ,   kPano
+,   kMino
 };
 
 // Canon magic
@@ -620,6 +621,7 @@ TagDict sonyDict  ;
 TagDict agfaDict  ;
 TagDict appleDict ;
 TagDict panoDict  ;
+TagDict minoDict  ;
 TagDict gpsDict   ;
 TagDict crwDict   ;
 TagDict psdDict   ;
@@ -988,6 +990,7 @@ public:
             case kAgfa  : makerDict_ = agfaDict  ; break;
             case kApple : makerDict_ = appleDict ; break;
             case kPano  : makerDict_ = panoDict  ; break;
+            case kMino  : makerDict_ = minoDict  ; break;
             default : /* do nothing */           ; break;
         }
     }
@@ -1000,6 +1003,7 @@ public:
                : buf.strequals("AGFAPHOTO")         ? kAgfa
                : buf.strequals("Apple")             ? kApple
                : buf.strequals("Panasonic")         ? kPano
+               : buf.strequals("Minolta Co., Ltd.") ? kMino
                : maker_
                ;
         setMaker(maker_);
@@ -1835,6 +1839,53 @@ void RiffImage::accept(class Visitor& visitor)
     }
 }
 
+class MrwImage : public Image
+{
+public:
+    MrwImage(std::string path)
+    : Image(path)
+    {}
+    MrwImage(Io& io,maker_e maker=kMino)
+    : Image(io)
+    {}
+
+
+    void accept(class Visitor& visitor);
+
+    bool valid()
+    {
+        if ( !valid_ ) {
+            start_  = 48    ; // 0x30
+            endian_ = keBig ;
+            format_ = "MRW" ;
+            IoSave  restore(io(),0);
+            DataBuf header(start_);
+            io().read(header);
+            height_       = ::getShort(header,28,endian_);
+            width_        = ::getShort(header,30,endian_);
+            end_          = ::getLong (header,0x2c,endian_);
+            valid_        = ::getByte(header,0) == 0 && header.begins("MRM",1) ;
+            
+        }
+        return valid_;
+    }
+private:
+    uint16_t width_  ;
+    uint16_t height_ ;
+    uint32_t end_    ;
+};
+
+void MrwImage::accept(class Visitor& visitor)
+{
+    if ( !valid_ ) valid();
+    if (  valid_ ) {
+        visitor.visitBegin((*this)); // tell the visitor
+        Io tiff(io(),start_,end_);
+        visitor.visitExif(tiff);
+        visitor.visitEnd((*this)); // tell the visitor
+    }
+}
+
 void JpegImage::accept(Visitor& visitor)
 {
     // Ensure that this is the correct image type
@@ -2650,7 +2701,6 @@ void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
     }
 }
 
-
 std::unique_ptr<Image> ImageFactory(std::string path)
 {
     TiffImage tiff(path); if ( tiff.valid() ) return std::unique_ptr<Image> (new TiffImage(path));
@@ -2661,6 +2711,7 @@ std::unique_ptr<Image> ImageFactory(std::string path)
     ICC       icc (path); if (  icc.valid() ) return std::unique_ptr<Image> (new  ICC     (path));
     PsdImage  psd (path); if (  psd.valid() ) return std::unique_ptr<Image> (new  PsdImage(path));
     PgfImage  pgf (path); if (  pgf.valid() ) return std::unique_ptr<Image> (new  PgfImage(path));
+    MrwImage  mrw (path); if (  mrw.valid() ) return std::unique_ptr<Image> (new  MrwImage(path));
     RiffImage riff(path); if ( riff.valid() ) return std::unique_ptr<Image> (new RiffImage(path));
     return NULL;
 }
@@ -2880,6 +2931,38 @@ void init()
     panoDict  [ 0x0026 ] = "WBBlueLevel";
     panoDict  [ 0x002e ] = "PreviewImage";
 
+    minoDict  [ktGroup ] = "Minolta";
+    minoDict  [ 0x8822 ] = "ExposureProgram";
+    minoDict  [ 0x9000 ] = "ISOSpeed";
+    minoDict  [ 0xa001 ] = "ColorSpace";
+/*
+    FA         8822    Exposure Program    SHORT        1        2
+    106        8827    ISO Speed        SHORT        1        C8 (200)
+    112        9000    Exif Version        UNDEFINED    4        30 32 31 30
+    11E        9003    DateTimeOriginal    ASCII        14        Offset 182        2001:10:25 14:14:32
+    12A        9004    DateTimeDigitized    ASCII        14        Offset 196        2001:10:25 14:14:32
+    136        9201    Shutter Speed        SRATIONAL    1        Offset 1AA        00 00 00 55 00 00 00 0A (8.5) <Note 1>
+    142        9020    Aperture        RATIONAL    1        Offset 1B2        00 00 00 32 00 00 00 0A    (5.0)
+    14E        9204    Exposure Bias Value    SRATIONAL    1        Offset 1BA        FF FF FF FD 00 00 00 0A (-0.3)
+    15A        9205    Max Aperture        RATIONAL    1        Offset 1C2        00 00 00 23 00 00 00 0A (3.5)
+    166        9207    Metering Mode        SHORT        1        3
+    172        9208    Light Source        SHORT        1        1
+    17E        9209    Flash            SHORT        1        0
+    18A        920A    Focal Length        RATIONAL    1        Offset 1CA        00 00 01 5D 00 00 00 10 (3.49)
+    196        927C    Manufacturer Notes    UNDEFINED    34CA (13514)    Offset 1D2
+    1A2        A001    ColorSpace        SHORT        1        1
+
+ Location    Tag    TagName            Type        Count        Value/Offset        Comments/ Value at Offset + 0x30
+
+ 204        0000    Block Descriptor    UNDEFINED    4        4D 4C 54 30        "MLT0"
+ 210        0001    Camera Settings        UNDEFINED    9C        Offset 22C        <See 2.2.5>
+ 21C        0010    Autofocus Related    UNDEFINED    32A8        Offset 2C8        <Note 1>
+ 228        0020    ???            UNDEFINED    104        Offset 3570        ???
+ 234        0040    Image Size        LONG        1        00 97 18 80 (9902208)    Image Data Size
+ 240        0081    Thumbnail        UNDEFINED    7152        Offset 3783        320x240 JPEG encoded Thumbnail
+ 24C        0E00    Epson PIM info?        UNDEFINED    28        Offset 3674        "PrintIM 0100"
+ 
+*/
     crwDict   [ktGroup ] = "CRW";
     crwDict   [ 0x0032 ] = "CanonColorInfo1";
     crwDict   [ 0x0805 ] = "CanonFileDescription";
