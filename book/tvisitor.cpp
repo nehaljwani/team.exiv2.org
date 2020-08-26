@@ -136,8 +136,13 @@ void Error (error_e error)
 {
     Error(error,"");
 }
+// forward and prototypes
 class Io;
+class DataBuf ; // forward
 typedef unsigned char byte ;
+uint8_t  getByte (const DataBuf& buf,size_t offset) ;
+uint16_t getShort(const DataBuf& buf,size_t offset,endian_e endian);
+uint32_t getLong (const DataBuf& buf,size_t offset,endian_e endian);
 
 class DataBuf
 {
@@ -193,6 +198,9 @@ public:
         }
         return chars;
     }
+    uint8_t  getByte (uint64_t offset                ) { return ::getByte (*this,offset)       ; }
+    uint16_t getShort(uint64_t offset,endian_e endian) { return ::getShort(*this,offset,endian); }
+    uint32_t getLong (uint64_t offset,endian_e endian) { return ::getLong (*this,offset,endian); }
 
     uint32_t search(uint32_t start,const char* s)
     {
@@ -923,6 +931,9 @@ public:
                               ,uint16_t kind,DataBuf& name,uint32_t len
                               ,uint32_t data,uint32_t pad ,DataBuf& b)               { return ; }
     virtual void visitRiff    (uint64_t address,std::string chunk
+                              ,uint32_t length,DataBuf& data)                        { return ; }
+    virtual void visitMrw     (Io& io,Image& image
+                              ,uint64_t address,std::string chunk
                               ,uint32_t length,DataBuf& data)                        { return ; }
 
     PSOption      option() { return option_ ; }
@@ -1855,24 +1866,20 @@ public:
     bool valid()
     {
         if ( !valid_ ) {
-            start_  = 48    ; // 0x30
             endian_ = keBig ;
             format_ = "MRW" ;
+            start_  = 8     ;
             IoSave  restore(io(),0);
-            DataBuf header(start_);
+            DataBuf header(8);
             io().read(header);
-            height_       = ::getShort(header,28,endian_);
-            width_        = ::getShort(header,30,endian_);
-            end_          = ::getLong (header,0x2c,endian_);
-            valid_        = ::getByte(header,0) == 0 && header.begins("MRM",1) ;
-            
+            image_        = header.getLong(4,endian_);
+            valid_        = header.getByte(0) == 0 && header.begins("MRM",1) && image_ <= io().size() ;
+            header_       = " address | kind |   length | data ";
         }
         return valid_;
     }
 private:
-    uint16_t width_  ;
-    uint16_t height_ ;
-    uint32_t end_    ;
+    uint32_t image_  ; // first byte of image
 };
 
 void MrwImage::accept(class Visitor& visitor)
@@ -1880,8 +1887,28 @@ void MrwImage::accept(class Visitor& visitor)
     if ( !valid_ ) valid();
     if (  valid_ ) {
         visitor.visitBegin((*this)); // tell the visitor
-        Io tiff(io(),start_,end_);
-        visitor.visitExif(tiff);
+        DataBuf image(40);
+        IoSave restore(io(),image_+8);
+        io().read(image);
+        visitor.visitMrw(io(),*this,0,"MRM",image_,image);
+
+        io().seek(start_);
+        uint64_t    address = io().tell() ;
+        while ( io().tell() < image_ ) {
+            DataBuf     block(8);
+            io().read  (block);
+            
+            uint32_t    length  = block.getLong(4,endian_);
+            char        signature[4];
+            std::string chunk = block.getChars(1,3,signature);
+            
+            DataBuf     data(length < 40 ? length : 40 );
+            io().read(data);
+            visitor.visitMrw(io(),*this,address,chunk,length,data);
+            address += 8+length;
+            io().seek(address);
+        }
+        
         visitor.visitEnd((*this)); // tell the visitor
     }
 }
@@ -2101,6 +2128,9 @@ public:
                       ,uint16_t kind,DataBuf& name,uint32_t len
                       ,uint32_t data,uint32_t pad,DataBuf& b);
     void visitRiff    (uint64_t address,std::string chunk
+                      ,uint32_t length,DataBuf& data);
+    void visitMrw     (Io& io,Image& image
+                      ,uint64_t address,std::string chunk
                       ,uint32_t length,DataBuf& data);
 
     void visitEnd(Image& image)
@@ -2659,6 +2689,21 @@ void ReportVisitor::visitRiff(uint64_t address,std::string chunk
         out() << indent() << stringFormat("%8d | %4s  | %8d | ",address,chunk.c_str(),length)
               << snip(data.binaryToString(),length) << std::endl;
     }
+}
+
+void ReportVisitor::visitMrw(Io& io,Image& image,uint64_t address,std::string chunk
+                ,uint32_t length,DataBuf& data)
+{
+    if ( option() & (kpsBasic | kpsRecursive) ) {
+        out() << indent() << stringFormat("%8d | %4s | %8d | ",address,chunk.c_str(),length)
+              << snip(data.binaryToString(),length) << std::endl;
+    }
+    
+    if ( kpsRecursive && chunk == "TTW" ) {
+        Io tiff(io,address+8,length);
+        visitExif(tiff);
+    }
+
 }
 
 void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
