@@ -1337,7 +1337,18 @@ void RiffImage::accept(class Visitor& visitor)
 <div id="MRW"/>
 ## MRW Minolta Raw Format
 
-[http://www.dalibor.cz/software/minolta-raw-mrw-file-format](http://www.dalibor.cz/software/minolta-raw-mrw-file-format)
+![mrw](mrw.png)
+
+There is information about this format here: [http://www.dalibor.cz/software/minolta-raw-mrw-file-format](http://www.dalibor.cz/software/minolta-raw-mrw-file-format)
+
+```bash
+659 rmills@rmillsmbp:~/gnu/exiv2/team/book $ dmpf ~/mrw.mrw count=60 width=16 endian=1 bs=2 hex=0
+       0        0: _MRM_..._PRD___.  ->     77 21069     1  4600    80 21060     0    24
+    0x10       16: 27790001......._  ->  12855 14137 12336 12337  1928  2568  1920  2560
+    0x20       32: ..R____._TTW_..x  ->   4108 20992     0     1    84 21591     1  3960   
+    0x30       48: MM_*___._.._      ->  19789    42     0     8    10   256
+660 rmills@rmillsmbp:~/gnu/exiv2/team/book $ 
+```
 
 [TOC](#TOC)
 <div id="ORF"/>
