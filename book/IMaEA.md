@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-08-26</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-09-04</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -151,6 +151,10 @@ This book is my gift and legacy to Exiv2.  I hope Exiv2 will continue to exist l
 I wish you a happy adventure in the world of Image Metadata.  If you'd like to discuss matters concerning this book, please open an issue on GitHub and share your thoughts with Team Exiv2.
 
 This book is copyright and licensed under GNU GPLv2. [https://www.gnu.org/licenses/old-licenses/gpl-2.0.html](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
+
+### Disclaimer
+
+Attention is drawn to the possibility that some elements of this document may be the subject of patent rights. Robin Mills or the Exiv2 Project or Exiv2 Contributors shall not be held responsible for identifying any or all such patent rights.
 
 [TOC](#TOC)
 <div id="making"/>
