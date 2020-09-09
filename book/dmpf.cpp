@@ -6,6 +6,9 @@
 #include <map>
 #include <iostream>
 #include <cstring>
+#ifdef _MSC_VER
+#pragma warning(disable : 4996)
+#endif
 
 std::vector      <const char*> paths;
 std::map<std::string,uint32_t> options;
@@ -51,7 +54,8 @@ bool isPlatformBigEndian()
     union { uint32_t i; char c[4]; } e = { 0x01000000 };
     return e.c[0]?true:false;
 }
-bool     platformEndian() { return isPlatformBigEndian() ? true : false; }
+
+uint32_t platformEndian() { return isPlatformBigEndian() ? 1 : 0; }
 void swap(void* from,void* to,size_t n)
 {
     uint8_t*     v = reinterpret_cast<uint8_t *>(from);
@@ -152,11 +156,11 @@ int main(int argc, char* argv[])
         size_t  nRead  = 0 ; // bytes actually read
         size_t  remain = count ; // how many bytes still to read
         if ( width > sizeof buff ) width = sizeof(buff);
-        fseek(f,skip,SEEK_SET);
+        fseek(f,(long)skip,SEEK_SET);
         
         if ( !error ) while ( remain && (nRead = fread(buff,1,remain>width?width:remain,f)) > 0 ) {
             // line number
-            int l = sprintf(line,"%#8lx %8ld: ",skip+reads*width,skip+reads*width ) ;
+            int l = sprintf(line,"%#8lx %8ld: ",(unsigned long)(skip+reads*width), (unsigned long)(skip+reads*width) ) ;
 
             // ascii print
             for ( int i = 0 ; i < nRead ; i++ ) {
@@ -175,7 +179,7 @@ int main(int argc, char* argv[])
             case 8 :
                 for ( size_t i = 0 ; i < nRead; i += bs ) {
                     uint64_t* p = (uint64_t*) &buff[i] ;
-                    uint64_t  v = swap(p,  options["endian"]!=platformEndian());
+                    uint64_t  v = swap(p, options["endian"]!=platformEndian() );
                     l += options["hex"] ? sprintf(line+l," %16llx" ,v )
                                         : sprintf(line+l," %20lld" ,v )
                     ;
