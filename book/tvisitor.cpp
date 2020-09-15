@@ -561,6 +561,7 @@ enum maker_e
 ,   kApple
 ,   kPano
 ,   kMino
+,   kOlym
 };
 
 // Canon magic
@@ -630,6 +631,7 @@ TagDict agfaDict  ;
 TagDict appleDict ;
 TagDict panoDict  ;
 TagDict minoDict  ;
+TagDict olymDict  ;
 TagDict gpsDict   ;
 TagDict crwDict   ;
 TagDict psdDict   ;
@@ -1002,6 +1004,7 @@ public:
             case kApple : makerDict_ = appleDict ; break;
             case kPano  : makerDict_ = panoDict  ; break;
             case kMino  : makerDict_ = minoDict  ; break;
+            case kOlym  : makerDict_ = olymDict  ; break;
             default : /* do nothing */           ; break;
         }
     }
@@ -1014,7 +1017,8 @@ public:
                : buf.strequals("AGFAPHOTO")         ? kAgfa
                : buf.strequals("Apple")             ? kApple
                : buf.strequals("Panasonic")         ? kPano
-               : buf.strequals("Minolta Co., Ltd.") ? kMino
+               : buf.strequals("Minolta Co., Ltd."      ) ? kMino
+               : buf.strequals("OLYMPUS IMAGING CORP.  ") ? kOlym
                : maker_
                ;
         setMaker(maker_);
@@ -1165,8 +1169,10 @@ public:
     , next_   (next)
     {};
 
-    void     accept         (Visitor& visitor,const TagDict& tagDict=tiffDict);
+    void     accept        (Visitor& visitor,const TagDict& tagDict=tiffDict);
     void     visitMakerNote(Visitor& visitor,DataBuf& buf,uint64_t count,uint64_t offset);
+    void     setIo         (Io& io) { io_ = io; }
+    void     setStart      (uint64_t start) { start_ = start; }
 
     Visits&  visits()    { return image_.visits()  ; }
     maker_e  maker()     { return image_.maker_    ; }
@@ -1221,8 +1227,8 @@ public:
 
             uint16_t bytesize = bigtiff_ ? getShort(header,4,endian_) : 8;
             uint16_t version  = bigtiff_ ? getShort(header,6,endian_) : 0;
-
-            valid_ =  (magic_==42||magic_==43||magic_==85) && (c == C) && (c=='I'||c=='M') && bytesize == 8 && version == 0;
+                                             // Pano       Olym
+            valid_ =  (magic_==42||magic_==43||magic_==85||magic_==0x4f52) && (c == C) && (c=='I'||c=='M') && bytesize == 8 && version == 0;
             // Panosonic have augmented tiffDict with their keys
             if ( magic_ == 85 ) {
                 setMaker(kPano);
@@ -2242,6 +2248,13 @@ void IFD::visitMakerNote(Visitor& visitor,DataBuf& buf,uint64_t count,uint64_t o
     } else if ( image_.maker_ == kMino ) {
         ImageEndianSaver save(image_,keBig);  // Always bigEndian
         IFD makerNote(image_,offset,false);
+        makerNote.accept(visitor,makerDict());
+    } else if ( image_.maker_ == kOlym ) {
+        size_t punt = 8+4;
+        IFD makerNote(image_,offset+punt,false);
+        Io subIo(image_.io(),offset,count);
+        makerNote.setIo(subIo);
+        makerNote.setStart(punt);
         makerNote.accept(visitor,makerDict());
     } else {
         bool   bNext = maker()  != kSony;                                        // Sony no trailing next
