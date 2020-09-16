@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-09-04</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-09-16</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -231,7 +231,7 @@ The good news however is that file formats come in families which are:
 
 | Family  | Description                                                                          | Examples |
 |:--      |:---                                                                                  |:--       |
-| TIFF    | You must learn Tiff thoroughly to understand metadata                | TIFF, DNG, NEF, ICC, CR2 |
+| TIFF    | You must learn Tiff thoroughly to understand metadata           | TIFF, DNG, NEF, ICC, CR2, ORF |
 | JIFF    | JPEG Image File Format<br>Linked list of 64k segments                               | JPEG, EXV |
 | PNG     | Another popular format<br>Linked list of chunks                                           | PNG |
 | CIFF    | Camera Image File Format.  Dave Coffin parse.c decodes CRW                                | CRW |
@@ -1358,7 +1358,158 @@ There is information about this format here: [http://www.dalibor.cz/software/min
 <div id="ORF"/>
 ## ORF Olympus Raw Format
 
-To be written.
+This is a member of the TIFF family of formats.
+
+```bash
+.../book 509 rmills@rmillsmbp:~/gnu/exiv2/team/book $ dmpf count=40 width=20 endian=0 hex=1 bs=2 ~/ORF.ORF 
+       0        0: IIRO.___.__.._.___..  ->  4949 4f52    8    0   15  100    4    1    0 1004
+                                               II magic   offset   E#  tag   type   count value
+    0x14       20: __..._.___..__..._._  ->     0  101    4    1    0  c0c    0  102    3    1
+.../book $ 
+```
+
+The following is a typical dump:
+
+```bash
+STRUCTURE OF TIFF FILE (II): /Users/rmills/ORF.ORF
+ address |    tag                              |      type |    count |    offset | value
+      10 | 0x0100 Exif.Image.ImageWidth        |      LONG |        1 |           | 4100
+      22 | 0x0101 Exif.Image.ImageLength       |      LONG |        1 |           | 3084
+      34 | 0x0102 Exif.Image.BitsPerSample     |     SHORT |        1 |           | 16
+...
+     238 | 0x8769 Exif.Image.ExifTag           |      LONG |        1 |           | 266
+  STRUCTURE OF TIFF FILE (II): /Users/rmills/ORF.ORF
+   address |    tag                              |      type |    count |    offset | value
+       268 | 0x829a Exif.Photo.ExposureTime      |  RATIONAL |        1 |      3332 | 1/400
+       280 | 0x829d Exif.Photo.FNumber           |  RATIONAL |        1 |      3372 | 100/10
+...
+       424 | 0x927c Exif.Photo.MakerNote         | UNDEFINED |  1452144 |      3472 | OLYMPUS_II._.__.._..__..___.._.___.. +++
+    STRUCTURE OF  FILE (II): /Users/rmills/ORF.ORF:3472->1452144
+          14 | 0x0100 Exif.Olympus.ThumbnailImage  | UNDEFINED |     4892 |     11792 | ...._._............................. +++
+          26 | 0x0200 Exif.Olympus.SpecialMode     |      LONG |        3 |      4256 | 0 0 0
+          50 | 0x2010 Exif.Olympus.Equipment       |       IFD |        1 |           | 114
+      STRUCTURE OF  FILE (II): /Users/rmills/ORF.ORF:3472->1452144
+           116 | 000000 Exif.OlympusEQ.Version       | UNDEFINED |        4 |           | 0100
+           128 | 0x0100 Exif.OlympusEQ.CameraType    |     ASCII |        6 |      4304 | S0030
+           140 | 0x0101 Exif.OlympusEQ.SerialNumber  |     ASCII |       32 |      4310 | H78503777                      
+           152 | 0x0102 Exif.OlympusEQ.InternalSer.. |     ASCII |       32 |      4342 | 4080910003247001               
+      END: /Users/rmills/ORF.ORF:3472->1452144
+      STRUCTURE OF  FILE (II): /Users/rmills/ORF.ORF:3472->1452144
+           410 | 000000 Exif.OlympusCS.Version       | UNDEFINED |        4 |           | 0100
+           422 | 0x0100 Exif.OlympusCS.PreviewImag.. |      LONG |        1 |           | 1
+           434 | 0x0101 Exif.OlympusCS.PreviewImag.. |      LONG |        1 |           | 29296
+           446 | 0x0102 Exif.OlympusCS.PreviewImag.. |      LONG |        1 |           | 1073154
+           458 | 0x0200 Exif.OlympusCS.ExposureMode  |     SHORT |        1 |           | 1
+      END: /Users/rmills/ORF.ORF:3472->1452144
+      STRUCTURE OF  FILE (II): /Users/rmills/ORF.ORF:3472->1452144
+          1076 | 000000 Exif.OlymRawDev.Version      | UNDEFINED |        4 |           | 0100
+          1088 | 0x0100 Exif.OlymRawDev.ExposureBi.. | SRATIONAL |        1 |      5304 | 0/1
+          1100 | 0x0101 Exif.OlymRawDev.WhiteBalan.. |     SHORT |        1 |           | 0
+          1112 | 0x0102 Exif.OlymRawDev.WBFineAdju.. |    SSHORT |        1 |           | 0
+          1124 | 0x0103 Exif.OlymRawDev.GrayPoint    |     SHORT |        3 |      5316 | 0 0 0
+      END: /Users/rmills/ORF.ORF:3472->1452144
+      STRUCTURE OF  FILE (II): /Users/rmills/ORF.ORF:3472->1452144
+          1250 | 000000 Exif.OlymImgProc.Version     | UNDEFINED |        4 |           | 0112
+          1262 | 0x0100 Exif.OlymImgProc.WB_RBLevels |     SHORT |        4 |      5354 | 474 330 256 256
+      END: /Users/rmills/ORF.ORF:3472->1452144
+      STRUCTURE OF  FILE (II): /Users/rmills/ORF.ORF:3472->1452144
+          3488 | 000000 Exif.OlymFocusInfo.Version   | UNDEFINED |        4 |           | 0100
+          3596 | 0x0209 Exif.OlymFocusInfo.AutoFocus |     SHORT |        1 |           | 0
+          3680 | 0x0210 Exif.OlymFocusInfo.SceneDe.. |     SHORT |        1 |           | 0
+          3692 | 0x0211 Exif.OlymFocusInfo.SceneArea |      LONG |        8 |      8040 | 0 0 0 0 0 0 0 1912604423
+      END: /Users/rmills/ORF.ORF:3472->1452144
+    END: /Users/rmills/ORF.ORF:3472->1452144
+       436 | 0x9286 Exif.Photo.UserComment       | UNDEFINED |      125 |      3164 | ________                             +++
+       448 | 0xa000 Exif.Photo.FlashpixVersion   | UNDEFINED |        4 |           | 0100
+       460 | 0xa001 Exif.Photo.ColorSpace        |     SHORT |        1 |           | 1
+...
+  END: /Users/rmills/ORF.ORF
+END: /Users/rmills/ORF.ORF
+```
+
+The MakerNote contains almost all the data in the file:
+
+```
+ 424 | 0x927c Exif.Photo.MakerNote         | UNDEFINED |  1452144 |      3472 | OLYMPUS_II._.__.._..__..___.._.___.. +++
+```
+
+It consists of and single IFD as follows:
+
+```bash
+$ dmpf skip=3472 count=20 bs=2 endian=0 hex=1 ~/ORF.ORF
+   0xd90     3472: OLYMPUS_II._.__.._..              ->  4c4f 4d59 5550   53 4949    3    8  100    7 131c
+                                                                              II  unknown E# tag  type count ...
+```
+
+The offsets in this IFD are relative to the start of the MakeNote.
+
+Reading this is easy:
+
+```cpp
+    } else if ( image_.maker_ == kOlym ) {
+        Io     io(io_,offset,count);
+        TiffImage makerNote(io,image_.maker_);
+        makerNote.start_ = 12  ; // "OLYMPUS\0II\0x3\0x0"E#
+        makerNote.valid_ = true; // Valid without magic=42
+        makerNote.accept(visitor,makerDict());
+    }
+```
+
+We treat it has a TiffImage (although invalid), set the start_ and valid_ variables and `accept()` parses the makernote effortlessly.
+
+One of the interesting features of the ORF is the use of Tag Type IFD.  These are used to introduce more families of data for ImageProcession, FocalInformation and other collections.  Each of these IFDs requires a dictionary and these are defined in tvisitor.cpp.  You recursively descend into those dictionaries as follows in IFD::accept():
+
+```cpp
+            if ( type == kttIfd ) {
+                for ( uint64_t i = 0 ; i < count ; i++ ) {
+                    offset = get4or8 (buff,0,i,endian);
+                    IFD(image_,offset,false).accept(visitor,ifdDict(image_.maker_,tag,makerDict()));
+                }
+            } else switch ( tag ) {
+                case ktGps       : IFD(image_,offset,false).accept(visitor,gpsDict );break;
+                case ktExif      : IFD(image_,offset,false).accept(visitor,exifDict);break;
+                case ktMakerNote :         visitMakerNote(visitor,buff,count,offset);break;
+                default          : /* do nothing                                  */;break;
+            }
+```
+
+The appropriate dictionary is selected with the code:
+
+```cpp
+TagDict& ifdDict(maker_e maker,uint16_t tag,TagDict& makerDict)
+{
+    TagDict& result = makerDict ;
+    if ( maker == kOlym ) switch ( tag ) {
+        case 0x2010 : result = olymEQDict ; break;
+        case 0x2020 : result = olymCSDict ; break;
+        case 0x2030 : result = olymRDDict ; break;
+        case 0x2031 : result = olymR2Dict ; break;
+        case 0x2040 : result = olymIPDict ; break;
+        case 0x2050 : result = olymFIDict ; break;
+        case 0x3000 : result = olymRoDict ; break;
+        default     : /* do nothing */    ; break;
+    }
+    return result;
+}
+```
+
+There are many tags defined for the ORF file in Exiv2.  Only a few have been defined in tvisitor.cpp for illustration purpose.  To see unknown tags:
+
+```bash
+.../book $ build/tvisitor -pU ~/ORF.ORF 
+...
+      STRUCTURE OF  FILE (II): /Users/rmills/ORF.ORF:3472->1452144
+           116 | 000000 Exif.OlympusEQ.Version       | UNDEFINED |        4 |           | 0100
+           128 | 0x0100 Exif.OlympusEQ.CameraType    |     ASCII |        6 |      4304 | S0030
+           140 | 0x0101 Exif.OlympusEQ.SerialNumber  |     ASCII |       32 |      4310 | H78503777                      
+           152 | 0x0102 Exif.OlympusEQ.InternalSer.. |     ASCII |       32 |      4342 | 4080910003247001               
+           164 | 0x0103 Exif.OlympusEQ.0x103         |  RATIONAL |        1 |      4376 | 2160/100
+           176 | 0x0104 Exif.OlympusEQ.0x104         |      LONG |        1 |           | 4099
+           188 | 0x0201 Exif.OlympusEQ.0x201         |     UBYTE |        6 |      4394 | 0 0 35 0 1 0
+           200 | 0x0202 Exif.OlympusEQ.0x202         |     ASCII |       32 |      4400 | 212950660
+           212 | 0x0203 Exif.OlympusEQ.0x203         |     ASCII |       32 |      4432 | OLYMPUS 14-42mm Lens
+...
+```
 
 [TOC](#TOC)
 <div id="PGF"/>
