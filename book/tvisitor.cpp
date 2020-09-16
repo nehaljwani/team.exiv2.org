@@ -635,6 +635,13 @@ TagDict olymDict  ;
 TagDict gpsDict   ;
 TagDict crwDict   ;
 TagDict psdDict   ;
+TagDict olymCSDict;
+TagDict olymEQDict;
+TagDict olymRDDict;
+TagDict olymR2Dict;
+TagDict olymIPDict;
+TagDict olymFIDict;
+TagDict olymRoDict;
 
 enum ktSpecial
 {   ktMakerNote = 0x927c
@@ -652,6 +659,22 @@ std::map<uint16_t,TagDict> iptcDicts;
 TagDict iptc0 ;
 TagDict iptcEnvelope;
 TagDict iptcApplication;
+
+TagDict& ifdDict(maker_e maker,uint16_t tag,TagDict& makerDict)
+{
+    TagDict& result = makerDict ;
+    if ( maker == kOlym ) switch ( tag ) {
+        case 0x2010 : result = olymEQDict ; break;
+        case 0x2020 : result = olymCSDict ; break;
+        case 0x2030 : result = olymRDDict ; break;
+        case 0x2031 : result = olymR2Dict ; break;
+        case 0x2040 : result = olymIPDict ; break;
+        case 0x2050 : result = olymFIDict ; break;
+        case 0x3000 : result = olymRoDict ; break;
+        default     : /* do nothing */    ; break;
+    }
+    return result;
+}
 
 bool tagKnown(uint16_t tag,const TagDict& tagDict)
 {
@@ -2250,11 +2273,10 @@ void IFD::visitMakerNote(Visitor& visitor,DataBuf& buf,uint64_t count,uint64_t o
         IFD makerNote(image_,offset,false);
         makerNote.accept(visitor,makerDict());
     } else if ( image_.maker_ == kOlym ) {
-        size_t punt = 8+4;
-        IFD makerNote(image_,offset+punt,false);
-        Io subIo(image_.io(),offset,count);
-        makerNote.setIo(subIo);
-        makerNote.setStart(punt);
+        Io     io(io_,offset,count);
+        TiffImage makerNote(io,image_.maker_);
+        makerNote.start_ = 12  ; // "OLYMPUS\0II\0x3\0x0"E#
+        makerNote.valid_ = true; // Valid without magic=42
         makerNote.accept(visitor,makerDict());
     } else {
         bool   bNext = maker()  != kSony;                                        // Sony no trailing next
@@ -2325,18 +2347,16 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
                 }
             }
 
-            if ( isTypeIFD(type) ) tag  = ktSubIFD;
-            switch ( tag ) {
+            if ( type == kttIfd ) {
+                for ( uint64_t i = 0 ; i < count ; i++ ) {
+                    offset = get4or8 (buff,0,i,endian);
+                    IFD(image_,offset,false).accept(visitor,ifdDict(image_.maker_,tag,makerDict()));
+                }
+            } else switch ( tag ) {
                 case ktGps       : IFD(image_,offset,false).accept(visitor,gpsDict );break;
                 case ktExif      : IFD(image_,offset,false).accept(visitor,exifDict);break;
-                case ktMakerNote :          visitMakerNote(visitor,buff,count,offset);break;
-                case ktSubIFD    :
-                     for ( uint64_t i = 0 ; i < count ; i++ ) {
-                         offset = get4or8 (buff,0,i,endian);
-                         IFD(image_,offset,false).accept(visitor,tagDict);
-                     }
-                break;
-                default: /* do nothing */ ; break;
+                case ktMakerNote :         visitMakerNote(visitor,buff,count,offset);break;
+                default          : /* do nothing                                  */;break;
             }
         } // for i < nEntries
 
@@ -2999,7 +3019,67 @@ void init()
     minoDict  [ 0x0010 ] = "AutoFocus";
     minoDict  [ 0x0040 ] = "ImageSize";
     minoDict  [ 0x0081 ] = "Thumbnail";
-
+    
+    olymDict  [ktGroup ] = "Olympus";
+    olymDict  [ 0x0100 ] = "ThumbnailImage";
+    olymDict  [ 0x0104 ] = "BodyFirmwareVersion";
+    olymDict  [ 0x0200 ] = "SpecialMode";
+    olymDict  [ 0x0201 ] = "Quality";
+    olymDict  [ 0x0202 ] = "Macro";
+    olymDict  [ 0x0203 ] = "BWMode";
+    olymDict  [ 0x0204 ] = "DigitalZoom";
+    // Olympus IFDs
+    olymDict  [ 0x2010 ] = "Equipment";  // see ifdDict()
+    olymDict  [ 0x2020 ] = "CameraSettings";
+    olymDict  [ 0x2030 ] = "RawDevelopment";
+    olymDict  [ 0x2031 ] = "RawDevelopment2";
+    olymDict  [ 0x2040 ] = "ImageProcessing";
+    olymDict  [ 0x2050 ] = "FocusInfo";
+    olymDict  [ 0x3000 ] = "RawInfo";
+    
+    olymCSDict[ktGroup ] = "OlympusCS";
+    olymCSDict[ 0x0000 ] = "Version";
+    olymCSDict[ 0x0100 ] = "PreviewImageValid";
+    olymCSDict[ 0x0101 ] = "PreviewImageStart";
+    olymCSDict[ 0x0102 ] = "PreviewImageLength";
+    olymCSDict[ 0x0200 ] = "ExposureMode";
+    
+    olymEQDict[ktGroup ] = "OlympusEQ";
+    olymEQDict[ 0x0000 ] = "Version";
+    olymEQDict[ 0x0100 ] = "CameraType";
+    olymEQDict[ 0x0101 ] = "SerialNumber";
+    olymEQDict[ 0x0102 ] = "InternalSerialNumber";
+    
+    olymRDDict[ktGroup ] = "OlymRawDev";
+    olymRDDict[ 0x0000 ] = "Version";
+    olymRDDict[ 0x0100 ] = "ExposureBiasValue";
+    olymRDDict[ 0x0101 ] = "WhiteBalanceValue";
+    olymRDDict[ 0x0102 ] = "WBFineAdjustment";
+    olymRDDict[ 0x0103 ] = "GrayPoint";
+    
+    olymR2Dict[ktGroup ] = "OlymRawDev2";
+    olymR2Dict[ 0x0000 ] = "Version";
+    olymR2Dict[ 0x0100 ] = "ExposureBiasValue";
+    olymR2Dict[ 0x0101 ] = "WhiteBalance";
+    olymR2Dict[ 0x0102 ] = "WhiteBalanceValue";
+    olymR2Dict[ 0x0103 ] = "WBFineAdjustment";
+    olymR2Dict[ 0x0104 ] = "GrayPoint";
+    
+    olymIPDict[ktGroup ] = "OlymImgProc";
+    olymIPDict[ 0x0000 ] = "Version";
+    olymIPDict[ 0x0100 ] = "WB_RBLevels";
+    
+    olymFIDict[ktGroup ] = "OlymFocusInfo";
+    olymFIDict[ 0x0000 ] = "Version";
+    olymFIDict[ 0x0209 ] = "AutoFocus";
+    olymFIDict[ 0x0210 ] = "SceneDetect";
+    olymFIDict[ 0x0211 ] = "SceneArea";
+    
+    olymRoDict[ktGroup ] = "OlymRawInfo";
+    olymRoDict[ 0x0000 ] = "Version";
+    olymRoDict[ 0x0100 ] = "WB_RBLevelsUsed";
+    olymRoDict[ 0x0110 ] = "WB_RBLevelsAuto";
+    
     crwDict   [ktGroup ] = "CRW";
     crwDict   [ 0x0032 ] = "CanonColorInfo1";
     crwDict   [ 0x0805 ] = "CanonFileDescription";
