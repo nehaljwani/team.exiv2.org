@@ -1,4 +1,5 @@
 #ifdef  _MSC_VER
+bool bVisualStudio = true;
 #define _CRT_SECURE_NO_WARNINGS
 #define  FSEEK_LONG  long
 #pragma  warning(disable : 4996)
@@ -7,6 +8,9 @@
 #include <fcntl.h>
 #include <windows.h>
 #define  fileno      _fileno
+#define  vsnprint    _vsnprintf
+#else
+bool bVisualStudio = true;
 #endif
 
 #include <iostream>
@@ -1512,8 +1516,8 @@ public:
 
 void C8BIM::accept(Visitor& visitor)
 {
-    if ( !valid_ ) valid();
-    if (  valid_ ) {
+    if (!valid_) valid();
+    if (valid_ && !bVisualStudio) { // TODO: this code hangs in VisualStudio
         visitor.visitBegin((*this)); // tell the visitor
 
         IoSave  restore(io(),start_);
