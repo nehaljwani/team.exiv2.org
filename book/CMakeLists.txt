@@ -15,6 +15,13 @@ if(WIN32)
   find_library(WS2_32_ LIBRARY ws2_32)
   target_link_libraries(parse    wsock32 ws2_32)
   target_link_libraries(tvisitor wsock32 ws2_32)
+else()
+    set(SANITIZER_FLAGS "-fno-omit-frame-pointer -fsanitize=address,undefined -fno-sanitize-recover=all")
+    # ASAN does not work on Windows
+    if ( NOT CYGWIN AND NOT MINGW AND NOT MSYS )
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SANITIZER_FLAGS}")
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${SANITIZER_FLAGS}")
+   endif()
 endif()
 
 # This is intentionally commented off

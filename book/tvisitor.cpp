@@ -10,7 +10,7 @@ bool bVisualStudio = true;
 #define  fileno      _fileno
 #define  vsnprint    _vsnprintf
 #else
-bool bVisualStudio = true;
+bool bVisualStudio = false;
 #endif
 
 #include <iostream>
