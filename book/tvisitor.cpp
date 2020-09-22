@@ -1,5 +1,4 @@
 #ifdef  _MSC_VER
-bool bVisualStudio = true;
 #define _CRT_SECURE_NO_WARNINGS
 #define  FSEEK_LONG  long
 #pragma  warning(disable : 4996)
@@ -9,8 +8,6 @@ bool bVisualStudio = true;
 #include <windows.h>
 #define  fileno      _fileno
 #define  vsnprint    _vsnprintf
-#else
-bool bVisualStudio = false;  // true == disable C8BIM::accept()
 #endif
 
 #include <iostream>
@@ -283,7 +280,7 @@ uint32_t getLong(byte b[],size_t offset,endian_e endian)
 DataBuf getPascalString(DataBuf& buff,uint32_t offset)
 {
     uint8_t  L = buff.pData_[offset];  // #abc
-    uint16_t l = L==0  ? 3
+    uint16_t l = L==0  ? 2
                : L % 2 ? L + 1
                : L     ;
     DataBuf result (l);
@@ -1517,7 +1514,7 @@ public:
 void C8BIM::accept(Visitor& visitor)
 {
     if (!valid_) valid();
-    if (valid_ && !bVisualStudio) { // TODO: this code hangs in VisualStudio
+    if ( valid_) {
         visitor.visitBegin((*this)); // tell the visitor
 
         IoSave  restore(io(),start_);
@@ -1532,7 +1529,7 @@ void C8BIM::accept(Visitor& visitor)
             uint32_t pad  = len%2?1:0;
             uint32_t data = (uint32_t)(4+2+4+name.size_); // "8BIM" + short (kind) + name + long (len)
             DataBuf  b(len);
-            memcpy(b.pData_,buff.pData_+offset+data,len);
+            memcpy(b.pData_,buff.pData_+offset+data,len-data);
             visitor.visit8BIM(io(),*this,offset,kind,name,len,data,pad,b);
             if ( visitor.option() & kpsRecursive && kind == 0x0404) {
                 Io   stream(io(),offset+data,len);
@@ -1544,7 +1541,6 @@ void C8BIM::accept(Visitor& visitor)
         visitor.visitEnd((*this)); // tell the visitor
     }
 }
-
 
 class PsdImage : public Image
 {
@@ -2714,10 +2710,11 @@ void ReportVisitor::visit8BIM(Io& io,Image& image,uint32_t offset
 {
     std::string tag = ::tagName(kind,psdDict,40,"PSD");
     if ( printTag(tag) ) {
-        out() << indent() << stringFormat("   %8d | %#06x | %-28s | %4s | %8d | %2d+%1d | "
+        out() << indent()
+              << stringFormat("   %8d | %#06x | %-28s | %4s | %8d | %2d+%1d | "
                             ,offset,kind,tag.c_str(),(char*)name.pData_,len,data,pad)
-        <<        b.binaryToString(0,(len>40)||(len+data+pad>40)?40:len+data+pad)
-        << std::endl;
+              << b.binaryToString()
+              << std::endl;
     }
 }
 
