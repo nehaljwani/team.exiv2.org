@@ -277,17 +277,13 @@ uint32_t getLong(byte b[],size_t offset,endian_e endian)
     return (uint32_t) byteSwap(b+offset,bSwap,2);
 }
 
-DataBuf getPascalString(DataBuf& buff,uint32_t offset)
+uint16_t getPascalStringLength(DataBuf& buff,uint32_t offset)
 {
     uint8_t  L = buff.pData_[offset];  // #abc
     uint16_t l = L==0  ? 2
                : L % 2 ? L + 1
                : L     ;
-    DataBuf result (l);
-    for ( uint16_t i = 0 ; i < L ; i++ ) {
-        result.pData_[i] = buff.pData_[offset+i+1];
-    }
-    return result;
+    return l;
 }
 
 uint16_t getShort(const DataBuf& buf,size_t offset,endian_e endian)
@@ -956,7 +952,7 @@ public:
 
     virtual void visitResource(Io& io,Image& image,uint64_t address)                 { return ; }
     virtual void visit8BIM    (Io& io,Image& image,uint32_t offset
-                              ,uint16_t kind,DataBuf& name,uint32_t len
+                              ,uint16_t kind,uint32_t len
                               ,uint32_t data,uint32_t pad ,DataBuf& b)               { return ; }
     virtual void visitRiff    (uint64_t address,std::string chunk
                               ,uint32_t length,DataBuf& data)                        { return ; }
@@ -1503,7 +1499,7 @@ public:
             DataBuf bim(4);
             memcpy(bim.pData_,"8BIM",4);
             valid_  = io().getLong(endian_) == ::getLong(bim,0,endian_);
-            header_ = "     offset |   kind | tagName                      | name |      len | data | " ;
+            header_ = "     offset |   kind | tagName                      |  len | data | " ;
             format_ = "8BIM";
             start_  = 0;
         }
@@ -1523,14 +1519,14 @@ void C8BIM::accept(Visitor& visitor)
     //  out() << indent() << buff.toString(kttUByte) << std::endl;
         uint32_t offset = 0  ;
         while ( offset+4 < buff.size_ ) {
-            uint16_t kind = getShort       (buff,offset+4           ,endian_);
-            DataBuf  name = getPascalString(buff,offset+6);
-            uint32_t len  = getLong        (buff,offset+6+name.size_,endian_);
+            uint16_t kind = getShort             (buff,offset+4     ,endian_);
+            uint16_t name = getPascalStringLength(buff,offset+6);
+            uint32_t len  = getLong              (buff,offset+6+name,endian_);
             uint32_t pad  = len%2?1:0;
-            uint32_t data = (uint32_t)(4+2+4+name.size_); // "8BIM" + short (kind) + name + long (len)
+            uint32_t data = (uint32_t)(4+2+4+name); // "8BIM" + short (kind) + name + long (len)
             DataBuf  b(len);
             memcpy(b.pData_,buff.pData_+offset+data,len-data);
-            visitor.visit8BIM(io(),*this,offset,kind,name,len,data,pad,b);
+            visitor.visit8BIM(io(),*this,offset,kind,len,data,pad,b);
             if ( visitor.option() & kpsRecursive && kind == 0x0404) {
                 Io   stream(io(),offset+data,len);
                 IPTC iptc(stream);
@@ -2156,7 +2152,7 @@ public:
                       ,DataBuf& buff,uint32_t offset);
     void visitResource(Io& io,Image& image,uint64_t address);
     void visit8BIM    (Io& io,Image& image,uint32_t offset
-                      ,uint16_t kind,DataBuf& name,uint32_t len
+                      ,uint16_t kind,uint32_t len
                       ,uint32_t data,uint32_t pad,DataBuf& b);
     void visitRiff    (uint64_t address,std::string chunk
                       ,uint32_t length,DataBuf& data);
@@ -2706,13 +2702,13 @@ void ReportVisitor::visitResource(Io& io,Image& image,uint64_t address)
 }
 
 void ReportVisitor::visit8BIM(Io& io,Image& image,uint32_t offset
-                ,uint16_t kind,DataBuf& name,uint32_t len,uint32_t data,uint32_t pad,DataBuf& b)
+                ,uint16_t kind,uint32_t len,uint32_t data,uint32_t pad,DataBuf& b)
 {
     std::string tag = ::tagName(kind,psdDict,40,"PSD");
     if ( printTag(tag) ) {
         out() << indent()
-              << stringFormat("   %8d | %#06x | %-28s | %4s | %8d | %2d+%1d | "
-                            ,offset,kind,tag.c_str(),(char*)name.pData_,len,data,pad)
+              << stringFormat("   %8d | %#06x | %-28s | %4d | %2d+%1d | "
+                            ,offset,kind,tag.c_str(),len,data,pad)
               << b.binaryToString()
               << std::endl;
     }

@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-09-20</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-09-22</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -1660,18 +1660,16 @@ void ReportVisitor::visitResource(Io& io,Image& image,uint64_t address)
 And to complete the story, the reporter for 8BIM is quite simple.
 
 ```cpp
-void ReportVisitor::visit8BIM(Io& io,Image& image,uint64_t address,uint32_t offset
-                ,uint16_t kind,DataBuf& name,uint32_t len,uint32_t data,uint32_t pad)
+void ReportVisitor::visit8BIM(Io& io,Image& image,uint32_t offset
+                ,uint16_t kind,uint32_t len,uint32_t data,uint32_t pad,DataBuf& b)
 {
-    IoSave   restore(io,address+4+offset);
-    if ( address == 0 ) {
-        out() << indent() << "    offset  |   kind | name |      len | data | " << std::endl;
-    } else {
-        DataBuf  b(len+12);
-        io.read(b);
-        out() << indent() << stringFormat("   %8d | %#06x | %4s | %8d | %2d+%1d | ",offset,kind,(char*)name.pData_,len,data,pad)
-        <<        b.binaryToString(0,len>40?40:len+data+pad)
-        << std::endl;
+    std::string tag = ::tagName(kind,psdDict,40,"PSD");
+    if ( printTag(tag) ) {
+        out() << indent()
+              << stringFormat("   %8d | %#06x | %-28s | %4d | %2d+%1d | "
+                            ,offset,kind,tag.c_str(),len,data,pad)
+              << b.binaryToString()
+              << std::endl;
     }
 }
 ```
