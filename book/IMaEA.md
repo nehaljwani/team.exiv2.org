@@ -14,7 +14,7 @@ _First, my wife Alison, who has been my loyal support since the day we met in Hi
 
 _Secondly, Andreas Huggel the founder of the project and Luis and Dan who have worked tirelessly with me since 2017._
 
-_Exiv2 contributors (in alphabetical order): Abhinav, Alan, Andreas (both of them), Ben, Gilles, Kevin, Mahesh, Michal, Nehal, Neils, Phil, Sridhar, Thomas, Tuan .... and others who have contributed to Exiv2._
+_Exiv2 contributors (in alphabetical order): Abhinav, Alan, Andreas (both of them), Arnold, Ben, Gilles, Kevin, Mahesh, Michal, Nehal, Neils, Phil, Rosen, Sridhar, Thomas, Tuan .... and others who have contributed to Exiv2._
 
 _File Detectives:  Phil Harvey, Dave Coffin, Laurent Cl&eacute;vy._
 
@@ -1669,7 +1669,7 @@ void ReportVisitor::visit8BIM(Io& io,Image& image,uint64_t address,uint32_t offs
     } else {
         DataBuf  b(len+12);
         io.read(b);
-        out() << indent() << stringFormat("   %8d | %06#x | %4s | %8d | %2d+%1d | ",offset,kind,(char*)name.pData_,len,data,pad)
+        out() << indent() << stringFormat("   %8d | %#06x | %4s | %8d | %2d+%1d | ",offset,kind,(char*)name.pData_,len,data,pad)
         <<        b.binaryToString(0,len>40?40:len+data+pad)
         << std::endl;
     }

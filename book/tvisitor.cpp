@@ -10,7 +10,7 @@ bool bVisualStudio = true;
 #define  fileno      _fileno
 #define  vsnprint    _vsnprintf
 #else
-bool bVisualStudio = false;
+bool bVisualStudio = false;  // true == disable C8BIM::accept()
 #endif
 
 #include <iostream>
@@ -283,7 +283,7 @@ uint32_t getLong(byte b[],size_t offset,endian_e endian)
 DataBuf getPascalString(DataBuf& buff,uint32_t offset)
 {
     uint8_t  L = buff.pData_[offset];  // #abc
-    uint16_t l = L==0  ? 2
+    uint16_t l = L==0  ? 3
                : L % 2 ? L + 1
                : L     ;
     DataBuf result (l);
@@ -2224,7 +2224,7 @@ void CIFF::accept(Visitor& visitor)
         uint32_t    Offset= tag&kStg_InRecordEntry && kount <= 8 ? 12345678 : offset;
         std::string offst = kount > 8 ? stringFormat("%6d",offset) : stringFormat("%6s","");
         bool        bLF   = true ; // line ending needed
-        std::cout << ::indent(depth)<< stringFormat(" %6#x | %-4s | %4d | %-30s | %6d | %s | ",tag,mask.c_str(),code,tagName(tag,crwDict,28).c_str(),kount,offst.c_str()) ;
+        std::cout << ::indent(depth)<< stringFormat(" %#6x | %-4s | %4d | %-30s | %6d | %s | ",tag,mask.c_str(),code,tagName(tag,crwDict,28).c_str(),kount,offst.c_str()) ;
 
         if ( tag == 0x2008 )        {  // ThumbnailImage
             std::cout << std::endl;
@@ -2714,9 +2714,9 @@ void ReportVisitor::visit8BIM(Io& io,Image& image,uint32_t offset
 {
     std::string tag = ::tagName(kind,psdDict,40,"PSD");
     if ( printTag(tag) ) {
-        out() << indent() << stringFormat("   %8d | %06#x | %-28s | %4s | %8d | %2d+%1d | "
+        out() << indent() << stringFormat("   %8d | %#06x | %-28s | %4s | %8d | %2d+%1d | "
                             ,offset,kind,tag.c_str(),(char*)name.pData_,len,data,pad)
-        <<        b.binaryToString(0,len>40?40:len+data+pad)
+        <<        b.binaryToString(0,(len>40)||(len+data+pad>40)?40:len+data+pad)
         << std::endl;
     }
 }
