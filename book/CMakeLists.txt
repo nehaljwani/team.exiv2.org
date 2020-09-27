@@ -1,8 +1,14 @@
 cmake_minimum_required(VERSION 3.8)
 project(book VERSION 0.0.1 LANGUAGES CXX)
+include(CheckCXXCompilerFlag)
 
 set(CMAKE_CXX_STANDARD   11)
 set(CMAKE_CXX_EXTENSIONS ON)
+
+if("${CMAKE_SIZEOF_VOID_P}" STREQUAL "4")
+    message(FATAL_ERROR "32 bit build is not supported")  
+    error()
+endif()
 
 option( EXIV2_TEAM_USE_SANITIZERS     "Enable ASAN and UBSAN when available"                  OFF )
 
@@ -21,11 +27,23 @@ endif()
 
 # ASAN 
 if ( EXIV2_TEAM_USE_SANITIZERS ) 
-  # does not work on Windows
+  #I do not support this on Windows
   if ( NOT CYGWIN AND NOT MINGW AND NOT MSYS AND NOT MSVC )
-    set(SANITIZER_FLAGS "-fno-omit-frame-pointer -fsanitize=address,undefined -fno-sanitize-recover=all")
-    set(CMAKE_CXX_FLAGS        "${CMAKE_CXX_FLAGS}        ${SANITIZER_FLAGS}")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${SANITIZER_FLAGS}")
+    check_cxx_compiler_flag(                                -fno-omit-frame-pointer       HAS_NO_EMIT)
+    if(HAS_NO_EMIT)
+      add_compile_options(                                  -fno-omit-frame-pointer )
+      set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fno-omit-frame-pointer")
+    endif()
+    check_cxx_compiler_flag(                                -fsanitize=address,undefined  HAS_FSAU)
+    if(HAS_FSAU)
+      add_compile_options(                                  -fsanitize=address,undefined )
+      set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address,undefined")
+    endif()
+    check_cxx_compiler_flag(                                -fno-sanitize-recover=all     HAS_FSRA)
+    if(HAS_FSRA)
+      add_compile_options(                                  -fno-sanitize-recover=all )
+      set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fno-sanitize-recover=all")
+    endif()
   endif()
 endif()
 
