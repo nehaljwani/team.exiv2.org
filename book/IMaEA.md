@@ -14,7 +14,7 @@ _First, my wife Alison, who has been my loyal support since the day we met in Hi
 
 _Secondly, Andreas Huggel the founder of the project and Luis and Dan who have worked tirelessly with me since 2017._
 
-_Exiv2 contributors (in alphabetical order): Abhinav, Alan, Andreas (both of them), Arnold, Ben, Gilles, Kevin, Mahesh, Michal, Nehal, Neils, Phil, Rosen, Sridhar, Thomas, Tuan .... and others who have contributed to Exiv2._
+_Exiv2 contributors (in alphabetical order): Abhinav, Alan, Andreas (both of them), Arnold, Ben, Gilles, Kevin, Leo, Mahesh, Michal, Nehal, Neils, Phil, Rosen, Sridhar, Thomas, Tuan .... and others who have contributed to Exiv2._
 
 _File Detectives:  Phil Harvey, Dave Coffin, Laurent Cl&eacute;vy._
 
