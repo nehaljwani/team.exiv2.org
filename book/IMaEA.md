@@ -568,6 +568,8 @@ Adobe have implemented transparency in JPEG by storing a PostScript clippath in 
 ## PNG Portable Network Graphics
 ![png](png.png)
 
+The PNG specification is available [https://www.w3.org/TR/2003/REC-PNG-20031110/](https://www.w3.org/TR/2003/REC-PNG-20031110/).
+
 PNG is always bigEndian encoded.   PNG has an 8 byte fixed header followed by a linked list of chunks.  A chunk is 12 or more bytes and has a uint32\_t length, char[4] chunk identifier, followed by binary data. The chunk data is trailed by a uint32\_t checksum calculated by the zlib compression library.
 
 We validate a PNG with the following code:
@@ -648,9 +650,9 @@ void Visitor::visitChunk(Io& io,Image& image
 
 ### PNG ICC Profiles and XMP
 
-As PNG chunks have a 32 bit length field, they are a single chunk.  I believe the ICC profile is normally zlib compressed.   Read the code in Exiv2 for more information.  XMP is normally stored as a iTXt/uncompressed or zTXt/compressed block.  There is a uncompressed signature at the start of the chunk for easy identification.
+As PNG chunks have a 32 bit length field, they can be stored as a single chunk.  We don't need the messy arrangements used in JPEG to distribute data into multiple segments of less than 64k.  XMP is normally stored as a iTXt/uncompressed or zTXt/compressed block.  The signature at the start of the chunk is never compressed.
 
-An ICC profile is optionally present in the iCCP chunk.
+When an ICC profile is required, it is stored as an iCCP chunk.  The signature is "ICC Profile".  The profile is always compressed.
 
 ```bash
 1174 rmills@rmillsmbp:~/gnu/github/exiv2/0.27-maintenance $ exiv2 -pS test/data/ReaganLargePng.png 
@@ -661,7 +663,7 @@ STRUCTURE OF PNG FILE: test/data/ReaganLargePng.png
     8506 | zTXt  |     636 | Raw profile type iptc..x..TKn. | 0x4e5178d3
     9154 | iTXt  |    7156 | XML:com.adobe.xmp.....<?xpacke | 0x8d6d70ba
    16322 | gAMA  |       4 | ....                           | 0x0bfc6105
-   16338 | iCCP  | 1151535 | ICC profile..x...UP.........!! | 0x11f49e31
+   16338 | iCCP  | 1151535 | ICC profile__x...UP.........!! | 0x11f49e31
  1167885 | bKGD  |       6 | ......                         | 0xa0bda793
  1167903 | pHYs  |       9 | ...#...#.                      | 0x78a53f76
  1167924 | tIME  |       7 | ......2                        | 0x582d32e4
@@ -677,19 +679,21 @@ STRUCTURE OF PNG FILE: test/data/ReaganLargePng.png
 
 ### PNG and the Zlib compression library
 
-PNG usually compresses chunked data using Flate (lossless) compression.  You can build tvisitor.cpp with/without the Zlib compression flag using the cmake opion -DEXIV2_ENABLE_PNG.  This converts into the compiler define HAVE_LIBZ when enables additional code.
+Some PNG chunks are flate compressed (lossless).  You can build tvisitor.cpp with/without the Zlib compression flag using the cmake option -DEXIV2\_ENABLE\_PNG.  This becomes the compiler define HAVE\_LIBZ which enables additional code.
 
-I'm very pleased to say that neither the Exiv2 or XMP metadata in the image book/png.png have been compressed and can be easily reported by tvisitor.cpp.  It's very satisfying to  use images from this book as test data for the code in this book.
+I'm very pleased to say that neither the Exiv2 or XMP metadata in the image book/png.png have been compressed and can be easily reported by tvisitor.cpp.  It's very satisfying to use images from this book as test data for the code in this book.
 
-Several chunks are always compressed.  For example, zTXt and iCCP.  The payload of zTXt normally comprises a nul-terminated signature, a one single byte (always zero) to indicate the kind compression and then compressed data.  Like this:
+Several chunks are always compressed.  For example, zTXt and iCCP.  The payload of zTXt normally comprises a nul-terminated signature, a one byte compression flag (always zero) followed by compressed data.  For example:
 
 ```bash
-   16338 |  iCCP | 1151535 | 0x11f49e31 | ICC profile__x...UP......._.!!B....a.qwW | _.. APPL..__prtrRGB Lab .._._._._._)acsp | 
+ address | chunk |  length |   checksum | data                                     | decompressed                            
+   16338 |  iCCP | 1151535 | 0x11f49e31 | ICC profile__x...UP......._.!!B....a.qwW | _.. APPL..__prtrRGB Lab .._._._._._)acsp 
+                                          <signature>__compressed data             = decompressed
 ```
 
-The flate ICC profile follows the "ICC Profile__" signature.
+The flate compressed ICC profile follows the "ICC Profile__" signature.
 
-The signatures: "Raw profile type iptc__" and "Raw profile type exif__" introduce a compressed block which when expanded is a an ascii string with the following format:
+The signatures: "Raw profile type iptc" and "Raw profile type exif" introduce a compressed block which when expanded is an ascii string with the following format.  The number is count of hex code bytes.  This is redundant and does not need to be decoded.
 
 ```txt
 \n
@@ -699,14 +703,16 @@ hexEncodedBinary\n
 ....
 ```
 
+
 This data is revealed by tvisitor as follows:
 
 ```bash
-   33 |  zTXt | 8461 | 0x91fbf6a0 | Raw profile type exif__x...iv. | .exif.    8414.457869660000 | Exif__II*_.___._._
- 8506 |  zTXt |  636 | 0x4e5178d3 | Raw profile type iptc__x..TKn. | .iptc.     778.3842494d0404 | 8BIM..____....Z_..%G.
+ addr | chunk | length |   checksum | data                           | decompressed                | dehexed
+   33 |  zTXt | 8461   | 0x91fbf6a0 | Raw profile type exif__x...iv. | .exif.    8414.457869660000 | Exif__II*_.___._._
+ 8506 |  zTXt |  636   | 0x4e5178d3 | Raw profile type iptc__x..TKn. | .iptc.     778.3842494d0404 | 8BIM..____....Z_..%G.
 ```
 
-Converting hex encoded binary is straight-forward.  Hex encoded binary is always longer than the data being encoded, so the result is in the buffer.
+Converting hex encoded binary is straight-forward.  Because hex encoded binary is always longer than the data, decoding updates the input buffer and returns the updated length.
 
 ```cpp
 static int hexToString(char buff[],int length)
@@ -746,6 +752,43 @@ static int hexToString(char buff[],int length)
     return r;
 }
 ```
+
+---------------
+
+Here is an important section of the standard concerning textual metadata:
+
+**11.3.4 Textual information**
+
+_11.3.4.1 Introduction_
+
+PNG provides the tEXt, iTXt, and zTXt chunks for storing text strings associated with the image, such as an image description or copyright notice. Keywords are used to indicate what each text string represents. Any number of such text chunks may appear, and more than one with the same keyword is permitted.
+
+_11.3.4.2 Keywords and text strings_
+
+The following keywords are predefined and should be used where appropriate.
+
+| Title | Short (one line) title or caption for image |
+|:-- |:-- |
+| Author | Name of image's creator |
+| Description | Description of image (possibly long) |
+| Copyright | Copyright notice |
+| Creation Time | Time of original image creation |
+| Software | Software used to create the image |
+| Disclaimer | Legal disclaimer |
+| Warning | Warning of nature of content |
+| Source | Device used to create the image |
+| Comment | Miscellaneous comment |
+
+Other keywords may be defined for other purposes. Keywords of general interest can be registered with the PNG Registration Authority. It is also permitted to use private unregistered keywords.
+
+---------------
+
+As tvisitor displays the chunks and decompressed data, no further processing is necessary to see this data.  However, cannot display this data apart from the zTXt/Description Chunk described below.  To support this in Exiv2 requires a new "Family" of metadata with keys such as: Png.zTXt.Author.  Adding a new "Family" is a considerable undertaking.  The project to have a "unified" metadata container should be undertaken first.
+
+
+### Exiv2 Comment zTXt/Description Chunk
+
+There's an option `$ exiv2 -c abcdefg foo.jpg` which will set the "Comment" in a JPEG file.  You can print the comment with `$ exiv2 -pc foo`.  A "Comment" in a JPEG is a top level COM segment in the JPEG.  Somebody decided to use those commands on a PNG to update an iTXt chunk with the signature "Description".  
 
 [TOC](#TOC)
 <div id="JP2"/>

@@ -2740,7 +2740,6 @@ void ReportVisitor::visitChunk(Io& io,Image& image,uint64_t address
             IoSave  restore(io);
             DataBuf block(length);
             io.read(block);
-            DataBuf decompressed(2*1024*1024); // allocate a buffer
 
             // hunt for two null bytes
             uint32_t    s = 0 ;
@@ -2753,7 +2752,10 @@ void ReportVisitor::visitChunk(Io& io,Image& image,uint64_t address
                 p++;
                 s++;
             }
+            
+            // uncompress data
             uLongf uncLen;
+            DataBuf decompressed(length*4);       // allocate buffer
             if ( uncompress((Bytef*)decompressed.pData_,&uncLen,block.pData_+s , length-s) == Z_OK ) {
                 uint32_t len = uncLen > 40 ? 40 : uncLen ;
                 out() << " | " << decompressed.binaryToString(0,len);
@@ -2766,10 +2768,9 @@ void ReportVisitor::visitChunk(Io& io,Image& image,uint64_t address
                         if ( *p == '\n' ) n++ ;
                         s++ ; p++ ;
                         if ( n == 3 ) {
-                            int  x = uncLen - s;
-                            if ( x > 80 ) x = 80 ;
+                            int x = uncLen - s;
                             int r = hexToString(p,x);
-                            out() << decompressed.binaryToString(s,r);
+                            out() << decompressed.binaryToString(s,r>40?40:r);
                             break;
                         }
                     }
