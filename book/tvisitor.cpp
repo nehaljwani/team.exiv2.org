@@ -33,6 +33,10 @@
 #define  FSEEK_LONG uint64_t
 #endif
 
+#ifdef HAVE_LIBZ
+#include <zlib.h>
+#endif
+
 typedef std::set<uint64_t> Visits;
 
 // types of data in Exif Specification
@@ -176,6 +180,15 @@ public:
         }
         if ( bForce ) size_ = 0;
         return result;
+    }
+    void alloc(uint64_t size)
+    {
+        empty(true);
+        pData_ = (byte*) std::malloc(size_);
+        if ( pData_ ) {
+            size_  = size ;
+            ::memset(pData_,0,size_);
+        }
     }
 
     void read (Io& io,uint64_t offset,uint64_t size) ;
@@ -876,6 +889,10 @@ public:
     : io_     (io)
     , restore_(io.tell())
     { io_.seek(address); }
+    IoSave(Io& io)
+    : io_     (io)
+    , restore_(io.tell())
+    {}
     virtual ~IoSave() {io_.seek(restore_);}
 private:
     Io&      io_;
@@ -1422,6 +1439,10 @@ public:
             endian_ = keBig   ;
             format_ = "PNG"   ;
             header_  = "  address | chunk |  length |   checksum | data " ;
+#ifdef HAVE_LIBZ
+            header_ += "                                    | decompressed" ;
+            header_ += "                             | dehexed";
+#endif
         }
         return valid_ ;
     }
@@ -2665,16 +2686,101 @@ void ReportVisitor::visitExif(Io& io)
     }
 }
 
+static int hexToString(char buff[],int length)
+{
+    int  r     = 0   ; // resulting length
+    int  t     = 0   ; // temporary
+    bool first = true;
+    bool valid[256];
+    int  value[256];
+    for ( int i =  0  ; i < 256 ; i++ ) valid[i] = false;
+    for ( int i = '0' ; i <= '9' ; i++ ) {
+        valid[i] = true;
+        value[i] = i - '0';
+    }
+    for ( int i = 'a' ; i <= 'f' ; i++ ) {
+        valid[i] = true;
+        value[i] = 10 + i - 'a';
+    }
+    for ( int i = 'A' ; i <= 'F' ; i++ ) {
+        valid[i] = true;
+        value[i] = 10 + i - 'A';
+    }
+
+    for (int i = 0; i < length ; i++ )
+    {
+        char x = buff[i];
+        if ( valid[x]  ) {
+            if ( first ) {
+                t     = value[x] << 4;
+                first = false ;
+            } else  {
+                first  = true;
+                buff[r++] = t + value[x];
+            }
+        }
+    }
+    return r;
+}
+
 void ReportVisitor::visitChunk(Io& io,Image& image,uint64_t address
                         ,char* chunk,uint32_t length,uint32_t chksum)
 {
     IoSave save(io,address+8);
     if ( option() & (kpsBasic | kpsRecursive) ) {
-        DataBuf   data(length > 40 ? 40 : length ); // read enougth data for reporting purposes
-        io.read(data);
-        out() << indent() << stringFormat(" %8d |  %s | %7d | %#10x | ",address,chunk,length,chksum);
-        out() << data.toString(kttUndefined,data.size_,image.endian()) << std::endl;
+        {   IoSave    restore(io);
+            DataBuf   data(length > 40 ? 40 : length ); // read enougth data for reporting purposes
+            io.read(data);
+            out() << indent() << stringFormat(" %8d |  %s | %7d | %#10x | ",address,chunk,length,chksum);
+            out() << data.toString(kttUndefined,data.size_,image.endian());
+        }
+#ifdef HAVE_LIBZ
+        // decompress and report
+        if ( (std::strcmp(chunk,"zTXt")==0 || std::strcmp(chunk,"iCCP")==0) && length>20 ) {
+            IoSave  restore(io);
+            DataBuf block(length);
+            io.read(block);
+            DataBuf decompressed(2*1024*1024); // allocate a buffer
+
+            // hunt for two null bytes
+            uint32_t    s = 0 ;
+            char* p = (char*) block.pData_;
+            while ( s < length-2 ) {
+                if ( *p == 0 && *(p+1) == 0 ) {
+                    s+=2 ;
+                    break;
+                }
+                p++;
+                s++;
+            }
+            uLongf uncLen;
+            if ( uncompress((Bytef*)decompressed.pData_,&uncLen,block.pData_+s , length-s) == Z_OK ) {
+                uint32_t len = uncLen > 40 ? 40 : uncLen ;
+                out() << " | " << decompressed.binaryToString(0,len);
+                out() << " | " ;
+                if ( strstr((char*)block.pData_, "Raw profile type")!=NULL ) {
+                    p = (char*) decompressed.pData_;
+                    int n = 0;
+                        s = 0 ;
+                    while ( n < 3 && s < uncLen ) {
+                        if ( *p == '\n' ) n++ ;
+                        s++ ; p++ ;
+                        if ( n == 3 ) {
+                            int  x = uncLen - s;
+                            if ( x > 80 ) x = 80 ;
+                            int r = hexToString(p,x);
+                            out() << decompressed.binaryToString(s,r);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+#endif
+        out() << std::endl;
     }
+    
 
     if ( option() & kpsRecursive && std::strcmp(chunk,"eXIf") == 0 ) {
         DataBuf   data(length);  // read the whole chunk

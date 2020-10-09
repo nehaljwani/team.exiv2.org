@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-09-22</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-10-09</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -154,7 +154,7 @@ This book is copyright and licensed under GNU GPLv2. [https://www.gnu.org/licens
 
 ### Disclaimer
 
-Attention is drawn to the possibility that some elements of this document may be the subject of patent rights. Robin Mills or the Exiv2 Project or Exiv2 Contributors shall not be held responsible for identifying any or all such patent rights.
+Attention is drawn to the possibility that some elements of this document may be the subject of patent rights. Robin Mills and/or the Exiv2 Project and/or the Exiv2 Contributors shall not be held responsible for identifying any or all such patent rights.
 
 [TOC](#TOC)
 <div id="making"/>
@@ -675,12 +675,77 @@ STRUCTURE OF PNG FILE: test/data/ReaganLargePng.png
 1175 rmills@rmillsmbp:~/gnu/github/exiv2/0.27-maintenance $ 
 ```
 
-
 ### PNG and the Zlib compression library
 
-PNG usually compresses chunked data using Flate (lossless) compression.  For simplicity tvisitor.cpp does not link zlib and therefore cannot decompress these chunks.  tvisitor.cpp is unable to verify that the checksums are correct.  Exiv2 is normally linked with zlib to perform those tasks.  I recommend that you read the Exiv2 library code if you want to learn about using zlib and metadata.
+PNG usually compresses chunked data using Flate (lossless) compression.  You can build tvisitor.cpp with/without the Zlib compression flag using the cmake opion -DEXIV2_ENABLE_PNG.  This converts into the compiler define HAVE_LIBZ when enables additional code.
 
 I'm very pleased to say that neither the Exiv2 or XMP metadata in the image book/png.png have been compressed and can be easily reported by tvisitor.cpp.  It's very satisfying to  use images from this book as test data for the code in this book.
+
+Several chunks are always compressed.  For example, zTXt and iCCP.  The payload of zTXt normally comprises a nul-terminated signature, a one single byte (always zero) to indicate the kind compression and then compressed data.  Like this:
+
+```bash
+   16338 |  iCCP | 1151535 | 0x11f49e31 | ICC profile__x...UP......._.!!B....a.qwW | _.. APPL..__prtrRGB Lab .._._._._._)acsp | 
+```
+
+The flate ICC profile follows the "ICC Profile__" signature.
+
+The signatures: "Raw profile type iptc__" and "Raw profile type exif__" introduce a compressed block which when expanded is a an ascii string with the following format:
+
+```txt
+\n
+exif\n
+    number\n
+hexEncodedBinary\n
+....
+```
+
+This data is revealed by tvisitor as follows:
+
+```bash
+   33 |  zTXt | 8461 | 0x91fbf6a0 | Raw profile type exif__x...iv. | .exif.    8414.457869660000 | Exif__II*_.___._._
+ 8506 |  zTXt |  636 | 0x4e5178d3 | Raw profile type iptc__x..TKn. | .iptc.     778.3842494d0404 | 8BIM..____....Z_..%G.
+```
+
+Converting hex encoded binary is straight-forward.  Hex encoded binary is always longer than the data being encoded, so the result is in the buffer.
+
+```cpp
+static int hexToString(char buff[],int length)
+{
+    int  r     = 0   ; // resulting length
+    int  t     = 0   ; // temporary
+    bool first = true;
+    bool valid[256];
+    int  value[256];
+    for ( int i =  0  ; i < 256 ; i++ ) valid[i] = false;
+    for ( int i = '0' ; i <= '9' ; i++ ) {
+        valid[i] = true;
+        value[i] = i - '0';
+    }
+    for ( int i = 'a' ; i <= 'f' ; i++ ) {
+        valid[i] = true;
+        value[i] = 10 + i - 'a';
+    }
+    for ( int i = 'A' ; i <= 'F' ; i++ ) {
+        valid[i] = true;
+        value[i] = 10 + i - 'A';
+    }
+
+    for (int i = 0; i < length ; i++ )
+    {
+        char x = buff[i];
+        if ( valid[x]  ) {
+            if ( first ) {
+                t     = value[x] << 4;
+                first = false ;
+            } else  {
+                first  = true;
+                buff[r++] = t + value[x];
+            }
+        }
+    }
+    return r;
+}
+```
 
 [TOC](#TOC)
 <div id="JP2"/>
