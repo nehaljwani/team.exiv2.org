@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-10-09</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-10-19</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -14,7 +14,7 @@ _First, my wife Alison, who has been my loyal support since the day we met in Hi
 
 _Secondly, Andreas Huggel the founder of the project and Luis and Dan who have worked tirelessly with me since 2017._
 
-_Exiv2 contributors (in alphabetical order): Abhinav, Alan, Andreas (both of them), Arnold, Ben, Gilles, Kevin, Leo, Mahesh, Michal, Nehal, Neils, Phil, Rosen, Sridhar, Thomas, Tuan .... and others who have contributed to Exiv2._
+_Exiv2 contributors (in alphabetical order): Abhinav, Alan, Andreas (both of them), Arnold, Ben, Gilles, Kevin, Leo, Leonardo, Mahesh, Michal, Nehal, Neils, Phil, Rosen, Sridhar, Thomas, Tuan .... and others who have contributed to Exiv2._
 
 _File Detectives:  Phil Harvey, Dave Coffin, Laurent Cl&eacute;vy._
 
@@ -3726,7 +3726,7 @@ In writing this book, I want to avoid duplicating information between Exiv2 docu
 <div id="10-1"/>
 # 10.1 Bash Tests
 
-As the name implies, these tests were originally implemented as bash scripts.
+As the name implies, these tests were originally implemented as bash scripts.  They started life as series of independant scripts which were written by different engineers.  Although they all shared to goal of executing a command and comparing the output to a referenced file, there was no shared code.  About 2012, I refactored the tests and put common code into test/functions.source.  All bash tests begin by sourcing this file which performs environment checks, initialises bash variables and sets up bash functions such as copyTestFiles, runTest and reportTest.
 
 ```bash
 #!/usr/bin/env bash
@@ -3757,7 +3757,22 @@ reportTest
 
 ```
 
-I intend to re-write the bash tests in python.  This will be done because running bash scripts on windows is painful for most windows users.
+The bash tests have been rewritten in python.  This was done because running bash scripts on windows is painful for most Visual Studio users.  The following script is a prototype in the project proposal to replace the bash scripts.  The implementation in tests/bash_tests/utils.py is considerably more complex as it has to emulate several system utilities including diff, md5sum, grep, xmllint and others.  I am very grateful to Leo for the hard work he performed to port bash_tests to python.  Thank You, Leo.
+
+The decision to convert bash scripts such as icc_test.sh to python was taken to achieve the following goals:
+
+1. Cross Platform.
+2. Simpler design than tests/system_tests.py.
+3. Can be introduced as time permits.
+4. No documentation changes!
+5. We know the test is identical because we do not touch data/test.out.
+6. Eliminate line-ending issues.
+7. Eliminate diff, dos2unix, tr, pipes and other unix hackery.
+8. Binary output support.
+
+The project proposal is:  https://github.com/Exiv2/exiv2/issues/1215
+
+Here's the prototype in the proposal:
 
 ```python
 #!/usr/bin/env python3
@@ -3893,7 +3908,80 @@ reportTest(r,t)
 <div id="10-2"/>
 # 10.2 Python Tests
 
-To be written.
+Before we proceed to discuss the python tests, I want to thank Dan for his work on this.  His framework has been in service for more than 2 years without issue. The code is robust and flexible.  In addition to inventing the framework, Dan also converted hundreds of bash scripts into python scripts.  Thank You, Dan for doing such a wonderful job. 
+
+Here is a typical python test.  See [https://github.com/Exiv2/exiv2/pull/992](https://github.com/Exiv2/exiv2/pull/992).  The user provided a test python file tests/bugfixes/github/test_pr_992.py
+
+```python
+# -*- coding: utf-8 -*-
+
+import system_tests
+
+class NikonSigmaLens_APO_MACRO_180_F35_EX_DG_HSM(metaclass=system_tests.CaseMeta):
+    url = "https://github.com/Exiv2/exiv2/pull/992"
+    
+    filename = "$data_path/Sigma_APO_MACRO_180_F3.5_EX_DG_HSM.exv"
+    commands = ["$exiv2 -pa --grep lensid/i $filename"]
+    stderr = [""]
+    stdout = [""
+        """Exif.NikonLd3.LensIDNumber                   Byte        1  Sigma APO Macro 180mm F3.5 EX DG HSM
+"""
+]
+    retval = [0]
+```
+
+The test file is test/data/Sigma_APO_MACRO_180_F3.5_EX_DG_HSM.exv.  The tests executes the program `exiv2 -pa --grep lensid/i foo.exv` and compares the output to stdout.  That's it.
+
+In this case, there is only one exiv2 command being executed on a single file.  Most tests are more involved.  You'll notice that the variables, commands, stderr, stdout and retval are arrays to make it easy to execute several commands in a single test.  The most common program to run is exiv2, however other programs from build/bin or system commands can be invoked.  You may not pipe data between commands, however you can redefine stdin/stdout filter decode_output if required.
+
+The system_test class provides useful decorators including class CopyFiles, CopyTmpFiles and DeleteFiles to manage files.
+
+There are two test suites:
+
+1. test/ are written in bash 
+test/*.sh are the bash scripts<br>
+test/data are reference files<br>
+test/tmp is used to store script output (for comparison to reference output)<br>
+
+2. tests/ are written in python
+the tests are run with the command `python3 runner.py`<br>
+tests/bugfixes/ has python scripts containing code and reference output<br>
+tests/bash_tests has python scripts which will replace test/*.sh in Exiv2 v0.27.4 and v0.28
+
+```bash
+541 rmills@rmillsmbp:~/gnu/github/exiv2/0.27-maintenance/tests $ python3 runner.py --help
+usage: runner.py [-h] [--config_file CONFIG_FILE] [--verbose] [--debug] [dir_or_file]
+
+The system test suite
+
+positional arguments:
+  dir_or_file           root directory under which the testsuite searches for tests or asingle file which tests are run (defaults to the config
+                        file'slocation)
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --config_file CONFIG_FILE
+                        Path to the suite's configuration file
+  --verbose, -v         verbosity level
+  --debug               enable debugging output
+542 rmills@rmillsmbp:~/gnu/github/exiv2/0.27-maintenance/tests $ 
+```
+
+When you add a test, you should choose a class for your test that is unique.  You can debug it with Visual Studio Code (and probably other python debuggers).  Test it from the terminal with:
+
+```
+$ cd tests
+$ python3 runner.py --verbose bugfixes/github/sigma_18_35_DC_HSM.py
+```
+
+When you're confident that it's working, run the complete test suite.
+
+```bash
+$ cd build
+$ make tests  # VERBOSE=1 will create more output
+```
+
+The command: `$ make tests` executes the command `$ cd tests ; python3 runner.py` which recursively searches bugfixes and executes every python file.
 
 [TOC](#TOC)
 <div id="10-3"/>
