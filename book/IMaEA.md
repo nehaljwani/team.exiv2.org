@@ -3720,7 +3720,7 @@ Exiv2 has several different elements in the test suite. They are:
 3. Unit Test
 4. Version Test
 
-In writing this book, I want to avoid duplicating information between Exiv2 documentation and this book.  This book is intended to provide an engineering explanation of how the code works and why various design decisions were chosen.  However, you will find that this book doesn't explain how to use Exiv2. How to use execute the test suite is documented in [README.md](README.md).
+In writing this book, I want to avoid duplicating information from the Exiv2 documentation into this book.  This book is intended to provide an engineering explanation of how the code works and why various design decisions were chosen.  However, this book doesn't explain how to use Exiv2. How to use execute the test suite is documented in [README.md](README.md).
 
 [TOC](#TOC)
 <div id="10-1"/>
@@ -3757,12 +3757,12 @@ reportTest
 
 ```
 
-The bash tests have been rewritten in python.  This was done because running bash scripts on windows is painful for most Visual Studio users.  The following script is a prototype in the project proposal to replace the bash scripts.  The implementation in tests/bash_tests/utils.py is considerably more complex as it has to emulate several system utilities including diff, md5sum, grep, xmllint and others.  I am very grateful to Leo for the hard work he performed to port bash_tests to python.  Thank You, Leo.
+The bash tests have been rewritten in python.  This was done because running bash scripts on windows is painful for most Visual Studio users.  The following script is a prototype in the project proposal to replace the bash scripts.  The implementation in tests/bash\_tests/utils.py is considerably more complex as it emulates several system utilities including diff, md5sum, grep, xmllint and others.  I am very grateful to Leo for the hard work he performed to port bash\_tests to python.  Thank You, Leo.
 
-The decision to convert bash scripts such as icc_test.sh to python was taken to achieve the following goals:
+The decision to convert bash scripts such as icc\_test.sh to python was taken to achieve the following goals:
 
 1. Cross Platform.
-2. Simpler design than tests/system_tests.py.
+2. Simpler design than tests/system\_tests.py.
 3. Can be introduced as time permits.
 4. No documentation changes!
 5. We know the test is identical because we do not touch data/test.out.
@@ -3930,7 +3930,7 @@ class NikonSigmaLens_APO_MACRO_180_F35_EX_DG_HSM(metaclass=system_tests.CaseMeta
     retval = [0]
 ```
 
-The test file is test/data/Sigma_APO_MACRO_180_F3.5_EX_DG_HSM.exv.  The tests executes the program `exiv2 -pa --grep lensid/i foo.exv` and compares the output to stdout.  That's it.
+The test file is test/data/Sigma\_APO\_MACRO\_180\_F3.5\_EX\_DG\_HSM.exv.  The tests executes the program `exiv2 -pa --grep lensid/i foo.exv` and compares the output to stdout.  That's it.
 
 In this case, there is only one exiv2 command being executed on a single file.  Most tests are more involved.  You'll notice that the variables, commands, stderr, stdout and retval are arrays to make it easy to execute several commands in a single test.  The most common program to run is exiv2, however other programs from build/bin or system commands can be invoked.  You may not pipe data between commands, however you can redefine stdin/stdout filter decode_output if required.
 
@@ -3946,7 +3946,7 @@ test/tmp is used to store script output (for comparison to reference output)<br>
 2. tests/ are written in python
 the tests are run with the command `python3 runner.py`<br>
 tests/bugfixes/ has python scripts containing code and reference output<br>
-tests/bash_tests has python scripts which will replace test/*.sh in Exiv2 v0.27.4 and v0.28
+tests/bash\_tests has python scripts which will replace test/*.sh in Exiv2 v0.27.4 and v0.28
 
 ```bash
 541 rmills@rmillsmbp:~/gnu/github/exiv2/0.27-maintenance/tests $ python3 runner.py --help
