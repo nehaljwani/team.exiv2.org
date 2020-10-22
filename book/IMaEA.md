@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-10-19</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-10-22</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -2566,7 +2566,80 @@ I will write more about this subject later.
 <div id="5"/>
 # 5 Lens Recognition
 
-To be written.
+The lens problem is difficult. The lens isn't stored in the metadata. Different manufacturers use different ways to deal with the lens and it's very common that a number such as "368" is used to represent several lenses. Then we have to examine other metadata to make a guess about which lens is being used.  Lens recognition has been time sink on the engineering resources of Team Exiv2. So, I introduced the ~/.exiv2 "Configuration File" in 0.26 to save lots of work and give users an instant way to recognise their lens. You don't need to wait on the release cycles of exiv2 and your distribution. You get it fixed instantly.
+
+In the introduction to this book, I have discussed my proposal for _**M2Lscript**_ (pronounce MillsScript).  This is my proposal to solve the lens problem.  [Future Exiv2 Projects](#future)
+
+
+### The Configuration File
+
+The configuration file ~/.exiv2 (or %USERPROFILE\\exiv2.ini for Visual Studio Users) may be used to define a lens.  For example:
+
+```ini
+[nikon]
+146=Robin's Sigma Lens
+```
+
+If uncertain, exiv2 can display the path:
+
+```bash
+696 rmills@rmillsmbp:~/gnu/exiv2/team/book $ exiv2 -vVg config_path  # --verbose --version --grep
+exiv2 0.27.3
+config_path=/Users/rmills/.exiv2
+697 rmills@rmillsmbp:~/gnu/exiv2/team/book $ 
+```
+
+Most manufacturers store the LensID (an integer) in their maker notes:
+
+```bash
+703 rmills@rmillsmbp:~/gnu/exiv2/team/book $ taglist ALL | grep Lens | grep -ie number -ie id -ie type
+Photo.LensSpecification,	42034,	0xa432,	Photo,	Exif.Photo.LensSpecification,	Rational,	This ...
+Photo.LensModel,	42036,	0xa434,	Photo,	Exif.Photo.LensModel,	Ascii,	This tag records the lens's model name and model number as an ASCII string.
+Photo.LensSerialNumber,	42037,	0xa435,	Photo,	Exif.Photo.LensSerialNumber,	Ascii,	This tag records the serial number of the interchangeable lens that was used in photography as an ASCII string.
+CanonCs.LensType,	22,	0x0016,	CanonCs,	Exif.CanonCs.LensType,	SShort,	Lens type
+Minolta.LensID,	268,	0x010c,	Minolta,	Exif.Minolta.LensID,	Long,	Lens identifier
+Nikon3.LensType,	131,	0x0083,	Nikon3,	Exif.Nikon3.LensType,	Byte,	Lens type
+NikonLd1.LensIDNumber,	6,	0x0006,	NikonLd1,	Exif.NikonLd1.LensIDNumber,	Byte,	Lens ID number
+NikonLd2.LensIDNumber,	11,	0x000b,	NikonLd2,	Exif.NikonLd2.LensIDNumber,	Byte,	Lens ID number
+NikonLd3.LensIDNumber,	12,	0x000c,	NikonLd3,	Exif.NikonLd3.LensIDNumber,	Byte,	Lens ID number
+OlympusEq.LensType,	513,	0x0201,	OlympusEq,	Exif.OlympusEq.LensType,	Byte,	Lens type
+OlympusEq.LensSerialNumber,	514,	0x0202,	OlympusEq,	Exif.OlympusEq.LensSerialNumber,	Ascii,	Lens serial number
+Panasonic.LensType,	81,	0x0051,	Panasonic,	Exif.Panasonic.LensType,	Ascii,	Lens type
+Panasonic.LensSerialNumber,	82,	0x0052,	Panasonic,	Exif.Panasonic.LensSerialNumber,	Ascii,	Lens serial number
+PentaxDng.LensType,	63,	0x003f,	Pentax,	Exif.Pentax.LensType,	Byte,	Lens type
+Pentax.LensType,	63,	0x003f,	Pentax,	Exif.Pentax.LensType,	Byte,	Lens type
+Samsung2.LensType,	40963,	0xa003,	Samsung2,	Exif.Samsung2.LensType,	Short,	Lens type
+Sony1.LensID,	45095,	0xb027,	Sony1,	Exif.Sony1.LensID,	Long,	Lens identifier
+Sony2.LensID,	45095,	0xb027,	Sony1,	Exif.Sony1.LensID,	Long,	Lens identifier
+SonyMinolta.LensID,	268,	0x010c,	Minolta,	Exif.Minolta.LensID,	Long,	Lens identifier
+Sony2010e.LensType2,	6291,	0x1893,	Sony2010e,	Exif.Sony2010e.LensType2,	Short,	LensType2
+Sony2010e.LensType,	6294,	0x1896,	Sony2010e,	Exif.Sony2010e.LensType,	Short,	LensType
+704 rmills@rmillsmbp:~/gnu/exiv2/team/book 
+```
+
+| Manufacturer | Config Section | Metadata |
+|:--   |:-- |:-- |
+| Canon | [canon] | Exif.CanonCs.LensType |
+| Minolta | [minolta] | Exif.Minolta.LensID |
+| Nikon | [nikon] | Exif.NikonLd{1\|2\|3}.LensIDNumber |
+| Olympus | [olympus] | OlympusEq.LensType |
+| Panasonic | [panasonic] | Exif.Panasonic.LensType |
+| Pentax | [canon] | Exif.Pentax.LensType |
+| Sony   | [sony] | Exif.Sony2010e.LensType<br>Exif.Sony2010e.LensType2 |
+
+## Lens in Exif 
+
+There are a couple of Exif tags defined in Exif 2.2:
+
+| Tag  | Type | Description |
+|:--   |:--    |:--         |
+| Exif.Photo.LensSpecification | Rational | Focal length min, max |
+| Exif.Photo.LensModel | Ascii |  |
+| Exif.Photo.LensSerialNumber | Ascii |  |
+
+## C++ Lens Recognition
+
+For a discussion about Nikon see: [https://github.com/Exiv2/exiv2/issues/743#issuecomment-473409909](https://github.com/Exiv2/exiv2/issues/743#issuecomment-473409909)
 
 [TOC](#TOC)
 <div id="7"/>
@@ -3987,7 +4060,52 @@ The command: `$ make tests` executes the command `$ cd tests ; python3 runner.py
 <div id="10-3"/>
 # 10.3 Unit Test
 
-To be written.
+The unit tests are very useful for testing C++ functions with a well defined input and output.  In Chemistry, we have elements and compounds.  The unit tests are good for testing elements of the software.  The unit tests are written in C++ and use the Google Test library.  Here's a typical test progam, extracted from unitTests/test_futils.cpp
+
+```cpp
+#include <exiv2/exiv2.hpp>
+#include <exiv2/futils.hpp>
+
+// Auxiliary headers
+#include <fstream>
+#include <cstdio>
+#include <cerrno>
+#include <stdexcept>
+
+#include "gtestwrapper.h"
+
+using namespace Exiv2;
+
+TEST(base64decode, decodesValidString)
+{
+    const std::string original ("VGhpcyBpcyBhIHVuaXQgdGVzdA==");
+    const std::string expected ("This is a unit test");
+    char * result = new char [original.size()];
+    ASSERT_EQ(static_cast<long>(expected.size()+1),
+              base64decode(original.c_str(), result, original.size()));
+    ASSERT_STREQ(expected.c_str(), result);
+    delete [] result;
+}
+```
+
+The output is:
+
+```
+[----------] 1 test from base64decode
+[ RUN      ] base64decode.decodesValidString
+[       OK ] base64decode.decodesValidString (0 ms)
+[----------] 1 test from base64decode (0 ms total)
+```
+
+To build and execute unit tests:
+
+```bash
+$ cmake .. -DEXIV2_BUILD_UNIT_TESTS=1
+$ cmake --build . --config Release --target unit_tests # or make unit_tests
+$ cmake --build . --config Release --target unit_test  # or make unit_tests
+```
+
+The unit tests are built into a single executable bin/unit_tests(.exe)
 
 [TOC](#TOC)
 <div id="10-4"/>
@@ -4171,7 +4289,110 @@ To be written.
 <div id="11"/>
 # 11 API/ABI Compatibility
 
-To be written.
+This is discussed: [https://github.com/Exiv2/exiv2/issues/890](https://github.com/Exiv2/exiv2/issues/890)
+
+I believe there are tools to help with this, however I haven't successfully use them.  Let's define a couple of terms:
+
+| Acronym | Meaning   | Description |
+|:--      |:-- |:--          |
+| API     | Application Program Interface | How exiv2 appears to its user.<br>Defined in include/exiv2/exiv2.hpp |
+| ABI     | Application Binary Interface | What libexiv2 requires from the system |
+
+## Tools to reveal API and ABI
+
+To reveal the API, list all the entry points defined in the library:
+
+```bash
+00000000002576c0 T _WXMPIterator_DecrementRefCount_1
+0000000000257610 T _WXMPIterator_IncrementRefCount_1
+0000000000257800 T _WXMPIterator_Next_1
+...
+000000000002a8f0 T std::__1::basic_istream<char, std::__1::char_traits<char> >&...
+000000000008ccd0 T _ini_parse
+000000000008cc80 T _ini_parse_file
+000000000008c610 T _ini_parse_stream
+```
+
+To reveal the ABI, list all the unsatisfied entry points:
+
+```bash
+                 U _XML_Parse
+                 U _XML_ParserCreateNS
+...
+                 U _time
+                 U _uncompress
+                 U _vsnprintf
+                 U dyld_stub_binder
+```
+
+To reveal the libraries to be dynamically loaded (on macOS):
+
+```bash
+726 rmills@rmillsmbp:~/gnu/github/exiv2/0.27-maintenance/build $ otool -L lib/libexiv2.dylib 
+lib/libexiv2.dylib:
+	@rpath/libexiv2.27.dylib (compatibility version 27.0.0, current version 0.27.3)
+	/usr/local/lib/libz.1.dylib (compatibility version 1.0.0, current version 1.2.11)
+	/usr/local/lib/libintl.8.dylib (compatibility version 10.0.0, current version 10.2.0)
+	@rpath/libexpat.1.dylib (compatibility version 1.0.0, current version 1.6.11)
+	/usr/lib/libiconv.2.dylib (compatibility version 7.0.0, current version 7.0.0)
+	/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 902.1.0)
+	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1281.100.1)
+727 rmills@rmillsmbp:~/gnu/github/exiv2/0.27-maintenance/build $ 
+```
+
+Shared object dependencies on Linux/Unix/Cygwin/MinGW can be inspected with ldd.  Visual Studio Users can use dumpbin.exe.
+
+```bash
+34 rmills@ubuntu:~/gnu/github/exiv2/0.27-maintenance/build $ ldd lib/libexiv2.so
+    linux-vdso.so.1 (0x00007ffca47e9000)
+	libz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007f0efd778000)
+	libexpat.so.1 => /lib/x86_64-linux-gnu/libexpat.so.1 (0x00007f0efd74a000)
+	libpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007f0efd727000)
+	libstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007f0efd546000)
+	libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f0efd3f7000)
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f0efd205000)
+	libgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007f0efd1e8000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007f0efdb99000)
+35 rmills@ubuntu:~/gnu/github/exiv2/0.27-maintenance/build $
+```
+
+To discover which libraries are loaded at run-time:
+
+```bash
+727 rmills@rmillsmbp:~/gnu/github/exiv2/0.27-maintenance/build $ bin/exiv2 -vVg library
+exiv2 0.27.3
+library=/Users/rmills/gnu/github/exiv2/0.27-maintenance/build/lib/libexiv2.0.27.3.dylib
+library=/usr/local/lib/libintl.8.dylib
+library=/usr/lib/libc++.1.dylib
+library=/usr/lib/libSystem.B.dylib
+library=/usr/local/lib/libz.1.dylib
+library=/usr/local/lib/libexpat.1.6.11.dylib
+...
+library=/usr/lib/libicucore.A.dylib
+library=/usr/lib/libz.1.dylib
+728 rmills@rmillsmbp:~/gnu/github/exiv2/0.27-maintenance/build $ 
+```
+
+## Changing the API
+
+This should be done with great caution.  If an application requires an entry point that is not defined, it will usually refuse to launch the application.  You should therefore never remove an entry point from a library.  Changing the signature of an API is effectively to remove and entry point and introduced a new entry point.
+
+If an library offers an entry point which is not used by an application, the library will be loaded and the application will launch.
+
+So, the rules are:
+1. Never remove an entry point.
+2. Never change the signature of an entry point.
+3. It's OK to add new entries.
+
+## Testing for DLL compatibility
+
+For Exiv2 v0.27 "dots", I:
+
+1.  Built v0.27 and test
+2.  Build v0.27.X and test
+3.  Over-write the v0.27 library with v0.27.X library and test v0.27
+
+There will of course be test exceptions, however the test suite should run without crashing.  [https://github.com/Exiv2/exiv2/issues/890#issuecomment-613611192](https://github.com/Exiv2/exiv2/issues/890#issuecomment-613611192)
 
 [TOC](#TOC)
 <div id="12"/>
