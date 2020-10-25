@@ -3983,7 +3983,7 @@ reportTest(r,t)
 
 Before we proceed to discuss the python tests, I want to thank Dan for his work on this.  His framework has been in service for more than 2 years without issue. The code is robust and flexible.  In addition to inventing the framework, Dan also converted hundreds of bash scripts into python scripts.  Thank You, Dan for doing such a wonderful job. 
 
-Here is a typical python test.  See [https://github.com/Exiv2/exiv2/pull/992](https://github.com/Exiv2/exiv2/pull/992).  The user provided a test python file tests/bugfixes/github/test_pr_992.py
+Here is a typical python test.  See [https://github.com/Exiv2/exiv2/pull/992](https://github.com/Exiv2/exiv2/pull/992).  The user provided a test python file tests/bugfixes/github/test\_pr\_992.py
 
 ```python
 # -*- coding: utf-8 -*-
@@ -4657,7 +4657,7 @@ I have been very disappointed by the appreciation shown by users to my attention
 
 I have wondered if the users who behave this way believe that I am a business and have let them down in some way.  Open source is a community.  In reporting a bug, they are participating in the development process.  I usually thank users for reporting issues.  It's sad that they seldom have the courtesy to thank me for fixing the issue.
 
-A member of my family is the Principal of a College.  We were discussing the behaviour of parents of students.  She said _the you must never use with a parent is **No**_.  It's about the same with open source users.  It's pointless to say _**No**_ because it makes them angry and very aggressive.  A good example is Lens Recognition.  The configuration file was added in 0.26 to enable users to fix lens recognition issues by updating an ascii file.  Many users have demanded that I fix their lens in C++ to save them a minute to update ~/.exiv2.  Saying _**No**_ is pointless.
+A member of my family is the Principal of a College.  We were discussing the behaviour of parents of students.  She said _the one word you must never use with a parent is **No**_.  It's the same with open source users.  It's pointless to say _**No**_ because it makes them angry and very aggressive.  A good example is Lens Recognition.  The configuration file was added in 0.26 to enable users to fix lens recognition issues by updating an ascii file.  Many users demand that I fix their lens in C++ to save them a minute to update ~/.exiv2.  Saying _**No**_ is pointless.
 
 On a more positive note about dealing with users, I have enjoyed many on-line discussions with frequent visitors to exiv2.org.  For sure, I include Arnold, Mikayel, Alan and Steve in this group and there are many more.  If you are courteous, I am always pleased to hear from you.  We are a community with a shared vision of working together.  Thank You for participating. 
 
@@ -4665,11 +4665,11 @@ On a more positive note about dealing with users, I have enjoyed many on-line di
 <div id="13-8"/>
 ### 13.8 Bug Tracking
 
-Exiv2 has used three bug tracking systems during its 17 year life.  In the early days, issues were stored on a forum hosted by yahoo.  (Who?).  About the time that I joined the project (2008), used Redmine to track issues on exiv2.org.  I was very happy with Redmine.  It has a nice UI with searching, good cross referencing, and reporting tools.  I very much appreciated the API to query and download data in JSON format.  I had a script to generate various report to manage release progress.
+Exiv2 has used three bug tracking systems during its 17 year life.  In the early days, issues were stored on a forum hosted by yahoo.  (Who?).  About the time that I joined the project (2008), Redmine was installed to track issues on exiv2.org.  I really like Redmine.  It has a nice UI with good search, cross referencing, and reporting tools.  I very much appreciated the API to query and download data in JSON format.  I had a script to generate various report to monitor release progress.
 
-We moved the code to GitHub when released Exiv2 v0.27 in April 2017.  I didn't know that GitHub provided issue tracking and many other project management tools.  We could even consider closing exiv2.org in future and 
+We moved the code to GitHub when Exiv2 v0.26 was released in April 2017.  I didn't know that GitHub provided issue tracking and many other project management tools.  We could even consider closing exiv2.org in future and providing all project resources from GitHub.
 
-I believe GitHub Rest API provides a mechanism which could generate reports which would be similar to my python/RedMine/JSON code. 
+I believe the GitHub Rest API provides a mechanism with which we could collect data.  I could use that to generate report similar to my Remine/python/JSON code. 
 
 I'm pleased with GitHub.  For sure, it's a "one stop shop" for a project.  They provide good tools.  The best aspect of GitHub is that I met Luis and Dan on GitHub.  And numerous other frequent contributors (acknowledged on page 2 of this book).  For sure GitHub has brought more order to the world of open-source.
 
