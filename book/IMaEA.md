@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-10-24</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-10-25</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -4589,7 +4589,24 @@ This is discussed in detail here: [11 Security](#11).
 <div id="13-4"/>
 ### 13.4 Documentation
 
-To be written.
+The following types of documents used in Exiv2.  They are:
+
+|    | Documents | Creator | Comment |
+|:-- |:--        |:--      |:--      |
+| 1 | The exiv2 man page exiv2.1 | man, man2html | Unix mark up syntax |
+| 2 | Markdown Documents such as README.md | Manual | User Documentation | 
+| 3 | API Documentation                    | Doxygen | From .cpp and .hpp files |
+| 4 | Web site pages                       | (mostly) script generated | |
+| 5 | Release Notes                        | Manual | |
+| 6 | GitHub Wiki Pages                    | Manual | https://github.com/Exiv2/exiv2.wiki.git |
+
+Life would be simpler with a single way to define all documents and scripts to _**propagate**_ changes to their destination.  In some ways, this has been done.  However the nature and format of the document classes are different, and the current arrangements are will not yield to much more simplification.
+
+I'm very pleased by Markdown.  Perhaps one day, the utility **man** will support this format as that would simplify the maintenance of exiv2.1.
+
+The API documents are generated from comments in the C++ code.  Doxygen generates UML diagrams of the class hierarchy, table of contents, navigation links and more.  It does a very nice job with modest effort from Team Exiv2.
+
+Creating release notes takes quite a lot of time and effort.  When Exiv2 v0.28 is released, the GitHub tools will probably do an adequate job.  However while 0.27-maintenance and master are both developed, I feel manually creating the release notes is a better approach.  The Release procedure is discussed here:  [13.9 Release Engineering](#13-9)
 
 [TOC](#TOC)
 <div id="13-5"/>
