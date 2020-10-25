@@ -4585,7 +4585,6 @@ Regrettably there are users who look to Team Exiv2 to support every possible con
 
 This is discussed in detail here: [11 Security](#11).
 
-[TOC](#TOC)
 <div id="13-4"/>
 ### 13.4 Documentation
 
@@ -4593,14 +4592,14 @@ The following types of documents used in Exiv2.  They are:
 
 |    | Documents | Creator | Comment |
 |:-- |:--        |:--      |:--      |
-| 1 | The exiv2 man page exiv2.1 | man, man2html | Unix mark up syntax |
-| 2 | Markdown Documents such as README.md | Manual | User Documentation | 
-| 3 | API Documentation                    | Doxygen | From .cpp and .hpp files |
-| 4 | Web site pages                       | (mostly) script generated | |
-| 5 | Release Notes                        | Manual | |
-| 6 | GitHub Wiki Pages                    | Manual | https://github.com/Exiv2/exiv2.wiki.git |
+| 1 | The exiv2 man page exiv2.1           | man, man2html        | Unix mark up syntax      |
+| 2 | User Manuals                         | Markdown             | User Documentation       | 
+| 3 | API Documentation                    | Doxygen              | From .cpp and .hpp files |
+| 4 | Web site pages                       | Scripted _(mostly)_  |                          |
+| 5 | Release Notes                        | Markdown             | GitHub PRs               |
+| 6 | GitHub Wiki Pages                    | Markdown             | https://github.com/Exiv2/exiv2.wiki.git |
 
-Life would be simpler with a single way to define all documents and scripts to _**propagate**_ changes to their destination.  In some ways, this has been done.  However the nature and format of the document classes are different, and the current arrangements are will not yield to much more simplification.
+Life would be simpler with a single way to define documents and scripts to _**propagate**_ changes to their destination.  In some ways, this has been done.  However the nature and format of the document classes are different, and the current arrangements are will not yield to much further simplification.
 
 I'm very pleased by Markdown.  Perhaps one day, the utility **man** will support this format as that would simplify the maintenance of exiv2.1.
 
@@ -4610,15 +4609,13 @@ Creating release notes takes quite a lot of time and effort.  When Exiv2 v0.28 i
 
 [TOC](#TOC)
 <div id="13-5"/>
-### 13.5 Testing
+### 13.5 Testing.
 
 This is discussed in detail here: [10 Testing](#10).
-
-[TOC](#TOC)
 <div id="13-6"/>
 ### 13.6 Sample programs
 
-Exiv2 has sample applications which have their own documentation: [README-SAMPLES.md](README-SAMPLES.html).  In Exiv2 v0.27.3, there are 17 samples applications and 19 test programs.  The test programs are intended for use by the test suite and are not installed on the user's computer.
+Exiv2 has sample applications which have their own documentation: [README-SAMPLES.md](README-SAMPLES.md).  In Exiv2 v0.27.3, there are 17 samples applications and 19 test programs.  The test programs are intended for use by the test suite and are not installed on the user's computer.
 
 The following programs are built and installed in /usr/local/bin.
 
@@ -4652,13 +4649,29 @@ Exiv2 has always resisted the temptation to provide a GUI version of the program
 <div id="13-7"/>
 ### 13.7 User Support
 
-To be written.
+This is very time consuming.  I prioritise working with users as the most important aspect of the project.  Occasionally, in the run-up to a release, I will ask a user to wait.  However, my default is to deal with users as quickly as possible.  I try to acknowledge and confirm their report within 24 hours and to fix/close issues in one week.
+
+The reason to give them priority is the importance of users to the project.  Without users, the project is dead.  Without support, users will not use the code.  I know this is true because I have taken some sabbaticals to deal with other matters in my life.  When I am not active, the number of user reports and requests falls quickly.  When I return from my break, the number of user report immediately increases.
+
+I have been very disappointed by the appreciation shown by users to my attention to their questions.  Very few people have the courtesy to use words like "Please" and "Thank You".  Why is this?  I don't know.  Moreover, I am astonished by the abuse I have encountered.  The on-line behaviour of some users is unacceptable.  I have encountered this behaviour from our OEM Engineers when I worked on Adobe PostScript.  However, I could refer that to management at Adobe and at the OEM and the matter would settle.  With open-source, I have to ignore and accept this awful behaviour.
+
+I have wondered if the users who behave this way believe that I am a business and have let them down in some way.  Open source is a community.  In reporting a bug, they are participating in the development process.  I usually thank users for reporting issues.  It's sad that they seldom have the courtesy to thank me for fixing the issue.
+
+A member of my family is the Principal of a College.  We were discussing the behaviour of parents of students.  She said _the you must never use with a parent is **No**_.  It's about the same with open source users.  It's pointless to say _**No**_ because it makes them angry and very aggressive.  A good example is Lens Recognition.  The configuration file was added in 0.26 to enable users to fix lens recognition issues by updating an ascii file.  Many users have demanded that I fix their lens in C++ to save them a minute to update ~/.exiv2.  Saying _**No**_ is pointless.
+
+On a more positive note about dealing with users, I have enjoyed many on-line discussions with frequent visitors to exiv2.org.  For sure, I include Arnold, Mikayel, Alan and Steve in this group and there are many more.  If you are courteous, I am always pleased to hear from you.  We are a community with a shared vision of working together.  Thank You for participating. 
 
 [TOC](#TOC)
 <div id="13-8"/>
 ### 13.8 Bug Tracking
 
-To be written.
+Exiv2 has used three bug tracking systems during its 17 year life.  In the early days, issues were stored on a forum hosted by yahoo.  (Who?).  About the time that I joined the project (2008), used Redmine to track issues on exiv2.org.  I was very happy with Redmine.  It has a nice UI with searching, good cross referencing, and reporting tools.  I very much appreciated the API to query and download data in JSON format.  I had a script to generate various report to manage release progress.
+
+We moved the code to GitHub when released Exiv2 v0.27 in April 2017.  I didn't know that GitHub provided issue tracking and many other project management tools.  We could even consider closing exiv2.org in future and 
+
+I believe GitHub Rest API provides a mechanism which could generate reports which would be similar to my python/RedMine/JSON code. 
+
+I'm pleased with GitHub.  For sure, it's a "one stop shop" for a project.  They provide good tools.  The best aspect of GitHub is that I met Luis and Dan on GitHub.  And numerous other frequent contributors (acknowledged on page 2 of this book).  For sure GitHub has brought more order to the world of open-source.
 
 [TOC](#TOC)
 <div id="13-9"/>
@@ -4851,11 +4864,14 @@ I really admire the code in samples/JZon.cpp.  The Swedish Engineer who created 
 
 Localisation is documented in [README.md](README.md).
 
-[TOC](#TOC)
 <div id="13-12"/>
 ### 13.12 Build Server
 
 At different times, we have used different build server technologies.
+
+1. Appveyor, Travis and GitLab
+2. My build script ./build.sh
+3. Jenkins and buildbot
 
 #### Appveyor, Travis and GitLab
 
@@ -4868,7 +4884,6 @@ To be written.
 #### Jenkins and buildbot
 
 To be written.
-
 
 [TOC](#TOC)
 <div id="13-13"/>
@@ -4885,6 +4900,13 @@ To be written.
 [TOC](#TOC)
 <div id="13-15"/>
 ### 13.15 Project Servers (apache, SVN, GitHub, Redmine)
+
+We use several servers:
+
+1. Apache (https://exiv2.org and https://pre-release.exiv2.org)
+2. Subversion (svn://dev.exiv2.org/svn/)
+3. GitHub (https://github.com/exiv2/exiv2)
+4. Redmine (https://redmine.exiv2.org)
 
 To be written.
 
