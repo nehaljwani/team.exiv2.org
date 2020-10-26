@@ -108,7 +108,7 @@ I personally found working with the students to be enjoyable and interesting.  I
 
 After v0.26 was released in 2017, Luis and Dan started making contributions.  They have made many important contributions in the areas of security, test and build.  In 2019, Kevin joined us.  He discovered and fixed some security issues.
 
-The current release of Exiv2 is v0.27.3 and was released on 2020-06-30.  I hope v0.28 will ship in 2020.  Further "dot" releases of v0.27 may be published for security fixes in future.
+The current release of Exiv2 is v0.27.3 and shipped on 2020-06-30.  I hope v0.28 will be released in 2021.  Further "dot" releases of v0.27 may be published for security fixes in future.
 
 The Libre Graphics Meeting is scheduled to take place in May 2021 in Rennes, France.  I intend to conduct a workshop on **Image Metadata _and_ Exiv2 Architecture**.  This book is being written to be used in that presentation.
 
@@ -4583,7 +4583,7 @@ Regrettably there are users who look to Team Exiv2 to support every possible con
 <div id="13-3"/>
 ### 13.3 Security
 
-This is discussed in detail here: [11 Security](#11).
+This is discussed in detail here: [12 Security](#12).
 
 <div id="13-4"/>
 ### 13.4 Documentation
@@ -4657,7 +4657,7 @@ I have been very disappointed by the appreciation shown by users to my attention
 
 I have wondered if the users who behave this way believe that I am a business and have let them down in some way.  Open source is a community.  In reporting a bug, they are participating in the development process.  I usually thank users for reporting issues.  It's sad that they seldom have the courtesy to thank me for fixing the issue.
 
-A member of my family is the Principal of a College.  We were discussing the behaviour of parents of students.  She said _the one word you must never use with a parent is **No**_.  It's the same with open source users.  It's pointless to say _**No**_ because it makes them angry and very aggressive.  A good example is Lens Recognition.  The configuration file was added in 0.26 to enable users to fix lens recognition issues by updating an ascii file.  Many users demand that I fix their lens in C++ to save them a minute to update ~/.exiv2.  Saying _**No**_ is pointless.
+A member of my family is the Principal of a College.  We were discussing the behaviour of parents of students.  She said _the one word you must never use with a parent is **No**_.  It's the same with open source users.  It's pointless to say _**No**_ because they will not accept this.  A good example is Lens Recognition.  The configuration file was added in 0.26 to enable users to fix lens recognition issues by updating an ascii file.  Many users demand that I fix their lens in C++ to save them a minute to update ~/.exiv2.  Saying _**No**_ is pointless.
 
 On a more positive note about dealing with users, I have enjoyed many on-line discussions with frequent visitors to exiv2.org.  For sure, I include Arnold, Mikayel, Alan and Steve in this group and there are many more.  If you are courteous, I am always pleased to hear from you.  We are a community with a shared vision of working together.  Thank You for participating. 
 
@@ -4920,33 +4920,88 @@ Localisation is documented in [README.md](README.md).
 
 At different times, we have used different build server technologies.
 
-1. Appveyor, Travis and GitLab
+1. Appveyor, Travis, GitLab and CodeCov
 2. My build script ./build.sh
 3. Jenkins and buildbot
 
-#### Appveyor, Travis and GitLab
+#### Appveyor, Travis, GitLab and CodeCov
 
-To be written.
+Those build systems are provided by GitHub and work very well.  To use them, you have to check the appropriate box in the GitHub Branch Settings and add a configuration file to the branch.  Exiv2 uses:
+
+| CI       | Configuration  | Comment |
+|:--       |:--             |:--      |
+| GitLib   | .gitlab-ci.yml | Linux and UNIX  |
+| Travis   | .travis.yml    | Linux, macOS and UNIX  |
+| Appveyor | appveyor.yml   | Visual Studio |
+| Code Cov | codecov.yml    | Linux Code Coverage |
 
 #### My build script ./build.sh
 
-To be written.
+```bash
+503 rmills@rmillsmm-local:~/gnu/exiv2/team/contrib/buildserver $ svn info build.sh
+URL: svn://dev.exiv2.org/svn/team/contrib/buildserver/build.sh
+...
+504 rmills@rmillsmm-local:~/gnu/exiv2/team/contrib/buildserver $ ./build.sh 
+usage: ./build.sh  { --help | -? | -h | platform  | switch | option     | location value }+ 
+
+platform:    all[32] | msvc[32] | linux[32]  | macos      | cygwin | mingw | unix | freebsd | netbsd | solaris
+switch:     --source | --debug  | --static   | --clang    | --background
+options:   --[no]nls | --video  | --asan     | --status   | --[no]unit     | --[no]publish | --[no]webready
+msvc:         --2019 | --2017   | --2015     | --2013     | --2012         | --2010  | --2008
+location: --server B | --user C | --builds D | --cpp  {98 | 11 | 14 | 17}  | --stamp stamp 
+           --github {rmillsmm,github,E}      | {--tag tag | --branch branch}
+505 rmills@rmillsmm-local:~/gnu/exiv2/team/contrib/buildserver $ 
+```
+
+I abandoned Jenkins for several reasons:
+
+1. It was insecure on the MacMini and could be hacked.
+2. As configured by me, it was invoking a complicated ssh script.
+3. I didn't understand how to trigger Jenkins from GitHub.
+4. I didn't like the Cygwin ssh server which runs the bash shell.
+
+I decided to forget about Jenkins and focus on the ssh script.  So build.sh, parses its command arguments, writes the build script and transfers it by ssh to the appropriate VM.  On the machine, rmillsmm, I have VM such as rmillsmm-w10, rmillsmm-ubuntu, rmillsmm-solaris and so on.  On Windows, I use the excellant bitvise ssh server and the native server on other platforms.
+
+Bitvise is a very solid server.  https://www.bitvise.com/ssh-server.  It can be configured for a variety of shells.  I use cmd.exe to build on Visual Studio or Cygwin/64 or MinGW/msys2/mingw64.  ./build.sh invokes the batch files cmd64.bat, cygwin64.bat or msys64.bat to configure the environment on the build machine.  These scripts are discussed and documented in README.md.
 
 #### Jenkins and buildbot
 
-To be written.
+There are "out of the box" build servers.  I evaluated both in 2013.
+
+I didn't like Google's buildbot.
+
+I used Jenkins for several years before deciding that it was not working well for me.  Please understand that I have not criticism of Jenkins itself, my unhappiness was caused by my complicated Cygwin bash script.  That script has to invoke cmd.exe to build Visual Studio, then return to bash to run the test scripts.
 
 [TOC](#TOC)
 <div id="13-13"/>
 ### 13.13 Source Code Management
 
-To be written.
+The source code for Exiv2 resides on GitHub [https://github.com/exiv2/exiv2](https://github.com/exiv2/exiv2)
+
+There are team resources stored on subversion:  svn://dev.exiv2.org/svn/team.
+
+Here are most (but not all) team directories:
+
+```bash
+731 rmills@rmillsmbp:~/gnu/exiv2/team $ ls -l
+drwxr-xr-x+ 73 rmills  staff  2336 25 Oct 16:52 book               this book
+drwxr-xr-x+  6 rmills  staff   192  4 Apr  2020 contrib            contributions (including build.sh)
+drwxr-xr-x+ 11 rmills  staff   352  8 Jun 12:02 drawings           miscellaneous artwork
+drwxr-xr-x+  7 rmills  staff   224  3 Dec  2018 license            license discussions
+drwxr-xr-x+ 24 rmills  staff   768 23 Jul 19:11 logo_files         artwork and fonts
+drwxr-xr-x+  7 rmills  staff   224 21 Mar  2019 meetings           meeting minutes
+drwxr-xr-x+ 98 rmills  staff  3136  8 Jul 11:26 releases           released source and binary builds
+drwxr-xr-x+  4 rmills  staff   128 19 May 12:03 rmills             my home-made scripts
+drwxr-xr-x+ 15 rmills  staff   480  8 Jul 11:31 website            source for web site and release scripts
+732 rmills@rmillsmbp:~/gnu/exiv2/team $ 
+```
+
 
 [TOC](#TOC)
 <div id="13-14"/>
 ### 13.14 Project Web Site
 
-To be written.
+The website source and release procedures are store in subversion.  svn://dev.exiv2.org/svn/team.  The release process is discussed in detail here: [13.9 Release Engineering](#13-9)
 
 [TOC](#TOC)
 <div id="13-15"/>
@@ -4958,20 +5013,28 @@ We use several servers:
 2. Subversion (svn://dev.exiv2.org/svn/)
 3. GitHub (https://github.com/exiv2/exiv2)
 4. Redmine (https://redmine.exiv2.org)
+5. SSH on the buildserver
 
-To be written.
+I am pleased to say that the management of exiv2.org is undertaken my Nehal.  I don't think it's an onerous task, however I appreciate having this taken off my back.
 
 [TOC](#TOC)
 <div id="13-16"/>
 ### 13.16 API Management
 
-To be written.
+This is discussed in detail here: [11. API/ABI Compatibility](#11)
 
-[TOC](#TOC)
 <div id="13-17"/>
 ### 13.17 Recruiting Contributors
 
-To be written.
+It's very difficult to recruit people to work on open source.  In fact, it's so difficult that I wonder if open source can survive in future.  Lots of people have made small contributions to Exiv2, however only a hand-full have made a sustained effort.  Furthermore, contributors can disappear for months with no indication of their intention.  I'm not criticising anybody for how they behave, however it's simply impossible to plan or schedule.  When folks are paid in the office, you can reasonably expect that they will turn up regularly and can be assigned tasks.  This model is invalid in open source.
+
+I believe the large open source projects such as Apache, Clang and Mozilla employ engineers to undertake the work.  I don't know how they are funded.  However, when pay-checks are offered, recruitment is possible in the market.
+
+A modest project such as Exiv2 has no money.  In fact, I pay for the modest expenses such as hosting the web-site and running a build server on a Mac Mini.
+
+The only major success I have had with recruitment is when Dan and Luis arrived in summer 2017.  We adopted GitHub in April 2017 when Exiv2 v0.26 was released.  I wondered if the move to GitHub had increased the project visibility and Dan and Luis would be the first of many contributors.  More than 3 years later, we have enjoyed contributions from Kevin, Leo and Rosen. 
+
+So, how are contributors recruited?  The answer is _**I don't know**_.
 
 [TOC](#TOC)
 <div id="13-18"/>
@@ -5137,7 +5200,9 @@ Final words about this.  I didn't undertake a PhD.  Instead I have spent 10,000 
 <div id="13-19"/>
 ### 13.19 Enhancement Requests
 
-To be written.
+I'm not sure there is anything very interesting to be said about this.  There are really different types of requests.  For example, adding recognition for one lens may only require one line of C++, a test file and a 10-line python test script.  This is straightforward and can be fixed within hours.  At the other extreme is the request to support ISOBMFF files including HEIF and CR3.  This project involves research, code, test, build and documentation changes.  And to make it even more difficult, the Community have challenged the legality of providing the feature.  This feature will take years to complete.
+
+In principle, anybody can develop a feature and submit a PR.  In reality, this seldom happens.  When this does happen, the effort required by me and the developer is often about the same.  So, being offered code in a PR often doubles my work-load.
 
 [TOC](#TOC)
 <div id="13-20"/>
