@@ -4970,7 +4970,11 @@ There are "out of the box" build servers.  I evaluated both in 2013.
 
 I didn't like Google's buildbot.
 
-I used Jenkins for several years before deciding that it was not working well for me.  Please understand that I have not criticism of Jenkins itself, my unhappiness was caused by my complicated Cygwin bash script.  That script has to invoke cmd.exe to build Visual Studio, then return to bash to run the test scripts.
+I used Jenkins for several years before deciding that it was not working well for me.  Please understand that I have no criticism of Jenkins, my unhappiness was caused by my complicated Cygwin bash script.  That script has to invoke cmd.exe to build Visual Studio, then launch bash to run the test scripts.
+
+I am glad to say that in Exiv2 v0.27.3, I studied the test environment and documented how to execute the bash scripts from cmd.exe on Windows.  The 0.27-maintenance branch now has python code which makes it possible to remove bash from the test.  So much of my unhappiness with Jenkins involved running the test suite and perhaps it's easier to configure Jenkins.
+
+However, as GitHub provides good CI support, we don't need Jenkins.
 
 [TOC](#TOC)
 <div id="13-13"/>
@@ -4980,7 +4984,7 @@ The source code for Exiv2 resides on GitHub [https://github.com/exiv2/exiv2](htt
 
 There are team resources stored on subversion:  svn://dev.exiv2.org/svn/team.
 
-Here are most (but not all) team directories:
+Here are most _(but not all)_ of the team directories:
 
 ```bash
 731 rmills@rmillsmbp:~/gnu/exiv2/team $ ls -l
