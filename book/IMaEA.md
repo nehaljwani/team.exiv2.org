@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-10-25</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-10-26</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -4560,13 +4560,13 @@ The documentation about using Conan with Exiv2 is in [README-CONAN.md](README-CO
 
 There are numerous build options provided for Exiv2.  The documentation for this is in [README.md](README.md).  Most of the options concern dependencies, the configuration:
 
-| Description | Choices |
-|:--          |:--      |
-| build_type | debug or release  |
-| kind       | static or shared  |
+| Description   | Choices |
+|:--            |:--      |
+| build_type    | debug or release  |
+| kind          | static or shared  |
 | configuration | 32 or 64  |
-| run-time       | shared or static |
-| compiler  |  GCC or Clang or 2008 ... 2019  |
+| C-runtime     | shared or static |
+| compiler      |  GCC or Clang or 2008 ... 2019  |
 | language standard | 98 or 11 or 14 or 17  |
 
 And we have not considered the selection of build dependencies required by the user.  For example, support for PNG, XMP, Localisation, Web Protocols and Character Conversions.
@@ -4725,11 +4725,11 @@ For example, to safely call image->setIccProfile(), this is compile time safe an
 <div id="13-10"/>
 ### 13.10 Platform Support
 
-There are several parts of Exiv2 which are platform specific.  Additionally the platform dependent function _getopt()_ is never used.
+There are several parts of Exiv2 which are platform specific.  Additionally the platform dependent function _getopt()_ in the C-runtime library is never used.
 
 #### src/getopt.cpp
 
-The command-line handler getopt() is use by the exiv2 command-line program and by samples/metacopy.cpp, samples/getopt-test.cpp and samples/toexv.cpp.  In the early days of Exiv2, getopt() was provided by the C-runtime library.  When support for msvc was added, the code in src/getopt.cpp was added.  Relying on the C-runtime library revealed differences between platforms and between platforms and src/getopt.cpp.  It was decided to ensure consistent behaviour to use src/getopt.cpp on all platforms.
+The command-line handler getopt() is used by the exiv2 command-line program and by samples/metacopy.cpp, samples/getopt-test.cpp and samples/toexv.cpp.  In the early days of Exiv2, getopt() was provided by the C-runtime library.  When support for msvc was added, the code in src/getopt.cpp was added.  Relying on the C-runtime library revealed differences between platforms and between platforms and src/getopt.cpp.  It was decided to ensure consistent behaviour to use src/getopt.cpp on all platforms.
 
 #### src/version.cpp
 
@@ -4851,7 +4851,58 @@ Exiv2::PreviewImage::writeFile
 
 #### Character Set Encoding
 
-To be written.
+This is discussed here: [https://github.com/Exiv2/exiv2/issues/1258](https://github.com/Exiv2/exiv2/issues/1258)
+
+Being a native English speaker, I find it difficult to understand the use of other character sets.  I understand the importance of this to users, however I have no experience of typing anything other than 7-bit ascii.
+
+The Exif specification for ASCII states:
+
+_**2 = ASCII An 8-bit byte containing one 7-bit ASCII code. The final byte is terminated with NULL.**_
+
+Exiv2 does not enforce the 7-bit condition.  You can read/write any 8-bit value, including NUL.  This is discussed: [https://github.com/Exiv2/exiv2/issues/1279#issuecomment-689053734](https://github.com/Exiv2/exiv2/issues/1279#issuecomment-689053734)
+
+You can use charset= on the 'Comment' tags which are:
+
+```bash
+714 rmills@rmillsmbp:~/gnu/github/exiv2/0.27-maintenance/build $ taglist ALL | grep '\tComment,' | cut -d, -f -6
+Photo.UserComment,	37510,	0x9286,	Photo,	Exif.Photo.UserComment,	Comment
+GPSInfo.GPSProcessingMethod,	27,	0x001b,	GPSInfo,	Exif.GPSInfo.GPSProcessingMethod,	Comment
+GPSInfo.GPSAreaInformation,	28,	0x001c,	GPSInfo,	Exif.GPSInfo.GPSAreaInformation,	Comment
+715 rmills@rmillsmbp:~/gnu/github/exiv2/0.27-maintenance/build $ 
+```
+
+The format of Exif Comment values include an optional charset specification at the beginning.  Comments are stored  as  Undefined  tags  with  an  8-byte encoding definition follow by the encoded data. The charset is specified as follows:
+
+```bash
+[charset=Ascii|Jis|Unicode|Undefined] comment
+charset=Undefined is the default
+
+$ exiv2 -M'set Exif.Photo.UserComment charset=Ascii My photo' x.jpg
+$ exiv2 -pa --grep UserComment x.jpg
+Exif.Photo.UserComment	     Undefined	16  My photo
+$ exiv2 -pv --grep UserComment x.jpg
+0x9286 Photo	 UserComment Undefined	16  charset=Ascii My photo
+
+$ exiv2 -M'set Exif.Photo.UserComment charset=Unicode \u0052\u006f\u0062\u0069\u006e' x.jpg
+$ exiv2 -pa --grep UserComment x.jpg
+Exif.Photo.UserComment			   Undefined  18  Robin
+$ exiv2 -pv --grep UserComment x.jpg
+0x9286 Photo	  UserComment		      Undefined  18  charset=Unicode Robin
+
+$ exiv2 -M'set Exif.GPSInfo.GPSProcessingMethod HYBRID-FIX' x.jpg
+$ exiv2 -pa --grep ProcessingMethod	 x.jpg
+Exif.GPSInfo.GPSProcessingMethod		   Undefined  18  HYBRID-FIX
+$ exiv2 -pv --grep ProcessingMethod	 x.jpg
+0x001b GPSInfo	 GPSProcessingMethod	   Undefined  18  HYBRID-FIX
+```
+
+#### Exif Comments and characters outside the Basic Multilingual Plane
+ 
+See: https://github.com/Exiv2/exiv2/issues/1279#issuecomment-689053734
+
+#### IPTC and CharSet
+
+IPTC Data Section 1 (Envelope) may have a Record 90 (CharacterSet).  I know nothing about this record. It was briefly discussed here: [https://github.com/Exiv2/exiv2/issues/1203](https://github.com/Exiv2/exiv2/issues/1203)
 
 #### JSON Support
 
