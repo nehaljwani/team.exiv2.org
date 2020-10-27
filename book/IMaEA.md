@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-10-26</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-10-27</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -47,7 +47,7 @@ _And our cat Lizzie._
 | [8.7 Tag Decoder](#8-7)                               | 59 | [BMP Windows Bitmap](#BMP)            | 30 | [13.15 Project Servers ](#13-15)        | 81 |
 | [8.8 Jpeg::Image accept()](#8-8)                      | 61 | [GIF Graphical Interchange Format](#GIF) | 31 | [13.16 API Management](#13-16)       | 81 |
 | [9. Image Previews](#9)                               | 63 | _**Other Sections**_                  |    | [13.17 Recruiting Contributors](#13-17) | 81 |
-| [10. Test Suite and Build](#10)                       | 63 | [Dedication](#dedication)             |  2 | [13.18 Project Scheduling](#13-18)      | 82 |
+| [10. Test Suite](#10)                                 | 63 | [Dedication](#dedication)             |  2 | [13.18 Project Scheduling](#13-18)      | 82 |
 | [10.1 Bash Tests](#10-1)                              | 68 | [About this book](#about)             |  4 | [13.19 Enhancement Requests](#13-19)    | 82 |
 | [10.2 Python Tests](#10-2)                            | 69 | [How did I get interested ?](#begin)  |  4 | [13.20 Tools](#13-20)                   | 82 |
 | [10.3 Unit Tests](#10-3)                              | 70 | [2012 - 2017](#2012)                  |  5 | [13.21 Licensing](#13-21)               | 82 |
@@ -3784,7 +3784,7 @@ dmpf.cpp finds it.  So, we know it is 4448 bytes into the file and the Exif Tiff
 
 [TOC](#TOC)
 <div id="10"/>
-# 10 Test Suite and Build
+# 10 Test Suite
 
 Exiv2 has several different elements in the test suite. They are:
 
@@ -3799,7 +3799,7 @@ In writing this book, I want to avoid duplicating information from the Exiv2 doc
 <div id="10-1"/>
 # 10.1 Bash Tests
 
-As the name implies, these tests were originally implemented as bash scripts.  They started life as series of independant scripts which were written by different engineers.  Although they all shared to goal of executing a command and comparing the output to a referenced file, there was no shared code.  About 2012, I refactored the tests and put common code into test/functions.source.  All bash tests begin by sourcing this file which performs environment checks, initialises bash variables and sets up bash functions such as copyTestFiles, runTest and reportTest.
+As the name implies, these tests were originally implemented as bash scripts.  They started life as a collection of independant scripts which were written by different contributors.  Although they all shared the goal of executing a command and comparing the output to a referenced file, there was no shared code.  About 2012, I refactored the tests and put common code into test/functions.source.  All bash tests begin by sourcing this file which performs environment checks, initialises bash variables and sets up bash functions such as copyTestFiles, runTest and reportTest.
 
 ```bash
 #!/usr/bin/env bash
@@ -3827,7 +3827,6 @@ reportTest
 
 # That's all Folks!
 ##
-
 ```
 
 The bash tests have been rewritten in python.  This was done because running bash scripts on windows is painful for most Visual Studio users.  The following script is a prototype in the project proposal to replace the bash scripts.  The implementation in tests/bash\_tests/utils.py is considerably more complex as it emulates several system utilities including diff, md5sum, grep, xmllint and others.  I am very grateful to Leo for the hard work he performed to port bash\_tests to python.  Thank You, Leo.
@@ -4240,7 +4239,7 @@ I have not investigated the message _TIFFScanlineSize64: Computed scanline size 
 
 ### 10.5.1 PIL (python imaging library)
 
-PIL is the Python Imaging Library.  The clone Pillow is well maintained and documented.  It's very impressive.  Interestingly, PIL has some metadata capability to deal with Exif, XMP, ICC and IPTC data.  I'll investigate this as time permits.
+PIL is the Python Imaging Library.  The clone Pillow is well maintained and documented.  It's very impressive.  Interestingly, PIL has some metadata capability to deal with Exif, XMP, ICC and IPTC data.
 
 For the moment, I've started a little python program to create images.  I'll add options to this.  At the moment, you use it like this:
 
@@ -4283,7 +4282,57 @@ if __name__ == '__main__':
 ```
 ### 10.5.3 FreeImage
 
-To be written.
+This library is a wrapper for several open source graphics libraries and can generate PNG, JPEG and other formats.  Regrettably, it appears to be no longer supported and has not been updated since 2018.
+
+The code is available here:  [https://freeimage.sourceforge.io/download.html](https://freeimage.sourceforge.io/download.html)
+
+I have successfully built this with Visual Studio and on Linux.  I couldn't get it to build on macOS, although I think it will build with a little more effort.
+
+I've found API documentation here: [https://mirrors.dotsrc.org/exherbo/FreeImage3170.pdf](https://mirrors.dotsrc.org/exherbo/FreeImage3170.pdf)
+
+I've found a user guide here: [http://graphics.stanford.edu/courses/cs148-10-summer/docs/UsingFreeImage.pdf](http://graphics.stanford.edu/courses/cs148-10-summer/docs/UsingFreeImage.pdf)
+
+I wrote an example program:
+
+```cpp
+// g++ example.cpp -o example -lfreeimage -L.
+#include <iostream>
+#include <FreeImage.h>
+#define   WIDTH 600
+#define  HEIGHT 800
+#define     BPP  24
+
+using namespace std ;
+
+int main(int argc,const char* argv[])
+{
+    FreeImage_Initialise();
+    
+    FIBITMAP* bitmap = FreeImage_Allocate(WIDTH, HEIGHT, BPP);
+    if (bitmap) {  
+      for (int i=0; i<WIDTH; i++) {
+        for (int j=0; j<HEIGHT; j++) {
+            RGBQUAD color ;
+            color.rgbRed   = 0;
+            color.rgbGreen = (double) i /  WIDTH * 255.0 ;
+            color.rgbBlue  = (double) j / HEIGHT * 255.0 ;
+            FreeImage_SetPixelColor(bitmap,i,j,&color);
+      } }
+      const char* image = "example.png";
+      if (FreeImage_Save(FIF_PNG, bitmap, image, 0)) { 
+         cout << "Image successfully saved: " << image << endl; 
+      } else {
+         cerr << "Unable to save image!" << endl;
+      }   
+    } else {
+      cerr << "Unable to create bitmap!" << endl;
+    }
+    
+    FreeImage_DeInitialise (); //Cleanup!
+}
+```
+
+The largest file I produced with freeimage was 1.8gb.  I suspect the framebuffer is limited to 32bits (3.2gb).  FreeImage has metadata support to read/write metadata blocks and possibly list key/value pairs.
 
 [TOC](#TOC)
 <div id="11"/>
@@ -4291,7 +4340,7 @@ To be written.
 
 This is discussed: [https://github.com/Exiv2/exiv2/issues/890](https://github.com/Exiv2/exiv2/issues/890)
 
-I believe there are tools to help with this, however I haven't successfully use them.  Let's define a couple of terms:
+I believe there are tools to help with this, however I haven't successfully used them.  Let's define a couple of terms:
 
 | Acronym | Meaning   | Description |
 |:--      |:-- |:--          |
@@ -4380,17 +4429,20 @@ This should be done with great caution.  If an application requires an entry poi
 If an library offers an entry point which is not used by an application, the library will be loaded and the application will launch.
 
 So, the rules are:
-1. Never remove an entry point.
-2. Never change the signature of an entry point.
-3. It's OK to add new entries.
+
+1. Never remove an entry point or data structure.
+2. Never change the signature of an entry point or data structure.
+3. It is OK to add new entry points and data structures.
+
+_**Caution:**_  When you add a new entry points or data structure, applications compiled with the new library will be unable to "downgrade" to an earlier version of the library.  Best practice is to never changes the API.  
 
 ## Testing for DLL compatibility
 
 For Exiv2 v0.27 "dots", I:
 
-1.  Built v0.27 and test
+1.  Build v0.27 and test
 2.  Build v0.27.X and test
-3.  Over-write the v0.27 library with v0.27.X library and test v0.27
+3.  Over-write the v0.27 library with the v0.27.X library and test v0.27
 
 There will of course be test exceptions, however the test suite should run without crashing.  [https://github.com/Exiv2/exiv2/issues/890#issuecomment-613611192](https://github.com/Exiv2/exiv2/issues/890#issuecomment-613611192)
 
@@ -4898,11 +4950,11 @@ $ exiv2 -pv --grep ProcessingMethod	 x.jpg
 
 #### Exif Comments and characters outside the Basic Multilingual Plane
  
-See: https://github.com/Exiv2/exiv2/issues/1279#issuecomment-689053734
+See: [https://github.com/Exiv2/exiv2/issues/1279#issuecomment-689053734](https://github.com/Exiv2/exiv2/issues/1279#issuecomment-689053734)
 
-#### IPTC and CharSet
+#### IPTC and CharacterSet
 
-IPTC Data Section 1 (Envelope) may have a Record 90 (CharacterSet).  I know nothing about this record. It was briefly discussed here: [https://github.com/Exiv2/exiv2/issues/1203](https://github.com/Exiv2/exiv2/issues/1203)
+IPTC Data Section 1 (Envelope) may include a Record 90 (CharacterSet).  I know nothing about this record. It was briefly discussed here: [https://github.com/Exiv2/exiv2/issues/1203](https://github.com/Exiv2/exiv2/issues/1203)
 
 #### JSON Support
 
