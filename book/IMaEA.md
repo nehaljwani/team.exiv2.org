@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-10-27</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-10-28</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -55,7 +55,7 @@ _And our cat Lizzie._
 | [10.5 Generating HUGE images](#10-5)                  | 73 | [Current Priorities](#current)        |  6 | [13.23 Other OSS projects](#13-23)      | 82 |
 | [11. API/ABI Compatibility](#11)                      | 74 | [Future Projects](#future)            |  6 | [13.24 Software Development](#13-24)    | 85 |
 | [12. Security](#12)                                   | 75 | [Scope of Book](#scope)               |  7 | [14. Code discussed in this book](#14) | 130 |                                      
-| [12.2 How we deal with security issues](12-2)         | 80 | [Making this book](#making)           |  8 | [The Last Word](#finally)              | 131 |
+| [12.1 Security Policy](#12-2)                         | 80 | [Making this book](#making)           |  8 | [The Last Word](#finally)              | 131 |
 
 <div id="about"/>
 ## About this book
@@ -4451,7 +4451,22 @@ There will of course be test exceptions, however the test suite should run witho
 # 12 Security
 
 <div id="12-1"/>
-## 12.1 The Fuzzing Police
+## 12.1 Security Policy
+
+GitHub provides a "Security" tab in the User Interface.  You can define a file SECURITY.md to define your security policy.  [https://github.com/Exiv2/exiv2/security/policy](https://github.com/Exiv2/exiv2/security/policy) There are other tabs below security which deal with Notifications of different kinds.  I don't understand most of the GitHub Security Machinery.
+
+Security alerts are published here:  [https://cve.mitre.org/cgi-bin/cvekey.cgi?keyword=Exiv2](https://cve.mitre.org/cgi-bin/cvekey.cgi?keyword=Exiv2)  We open an issue with the label "Security" on GitHub and fix it.  It doesn't get special treatment and the fix will be included in the next release of the branch.
+
+Exiv2 does not back-port security (or any other fix) to earlier releases of the code.  An engineer at SUSE has patched and fixed some security releases for Exiv2 v0.26 and Exiv2 v0.25 in branches 0.26 and 0.25.
+
+The Exiv2 "dot" releases such as v0.27.2 include security fixes, bug fixes and minor feature and documentation updates.  Exiv2 has never issued a "security release" which would be an existing release PLUS one _or more_ security PRs.  The version numbering scheme is explained here: [13.9 Release Engineering](#13-9).  The design includes provision for a security release.
+
+I was very impressed by the libssh security process which has provision to issue security notices to third parties.  Exiv2 is not sufficiently resourced to support this capability.  If the community decide that Exiv2 must strengthen its security process, the community will have to provide the necessary resources.
+
+[TOC](#TOC)
+
+<div id="12-2"/>
+## 12.2 The Fuzzing Police
 
 We received our first CVE from the fuzzing police in July 2017.  Not a pleasant experience.  It was delivered in a blog post demanding that we re-write Exiv2 as it was "unsafe".   Needless to say, no resources were being offered for the re-write, no justification was offered and no explanation why a re-write of 100,000 lines of code would fix anything.
 
@@ -4466,20 +4481,6 @@ I must also mention that the fuzzing police use special tools that build and ins
 Everything is treated as urgent.  All their reports are assigned very high levels of vulnerability.  In short, those people are a pain in the butt and waste enormous amounts of Team Exiv2 engineering resources.
 
 As the fuzzing police maintain their own CVE data base, the number and frequency of security issues is tracked and published.  Their mission in life is negative.  I don't have a good word to say about those peple.
-
-[TOC](#TOC)
-<div id="12-2"/>
-## 12.2 How we deal with security issues
-
-GitHub provides a "Security" tab in the User Interface.  You can define a file SECURITY.md to define your security policy.  [https://github.com/Exiv2/exiv2/security/policy](https://github.com/Exiv2/exiv2/security/policy) There are other tabs below security which deal with Notifications of different kinds.  I don't understand most of the GitHub Security Machinery.
-
-Security alerts are published here:  [https://cve.mitre.org/cgi-bin/cvekey.cgi?keyword=Exiv2](https://cve.mitre.org/cgi-bin/cvekey.cgi?keyword=Exiv2)  We open an issue with the label "Security" on GitHub and fix it.  It doesn't get special treatment and the fix will be included in the next release of the branch.
-
-Exiv2 does not back-port security (or any other fix) to earlier releases of the code.  An engineer at SUSE has patched and fixed some security releases for Exiv2 v0.26 and Exiv2 v0.25 in branches 0.26 and 0.25.
-
-The Exiv2 "dot" releases such as v0.27.2 include security fixes, bug fixes and minor feature and documentation updates.  Exiv2 has never issued a "security release" which would be an existing release PLUS one _or more_ security PRs.  The version numbering scheme is explained here: [13.9 Release Engineering](#13-9).  The design includes provision for a security release.
-
-I was very impressed by the libssh security process which has provision to issue security notices to third parties.  Exiv2 is not sufficiently resourced to support this capability.  If the community decide that Exiv2 must strengthen its security process, the community will have to provide the necessary resources.
 
 [TOC](#TOC)
 <div id="13"/>
@@ -4536,7 +4537,7 @@ When we adopted Git, it took me 2 years to figure out how to submit a PR.  I pur
 
 The funny brown marks were added by our cat Lizzie.  I'd just written this card when she arrived in my office fresh from a hunt in the garden.  I don't know what she did to the card.  She's never done anything like this before or since.  She expressed her opinion of git.
 
-Another flavour is the **AAB** which I reserve for the fuzzing police.  The **A** stands for **Aggressive**.  I've discussed my dislike of these people here:  [12.1 The Fuzzing Police](#12)
+Another flavour is the **AAB** which I reserve for the fuzzing police.  The **A** stands for **Aggressive**.  I've discussed my dislike of these people here:  [12.2 The Fuzzing Police](#12-2)
 
 Or there's the review mechanism which I'll dub **RAB**  You insist:
 
