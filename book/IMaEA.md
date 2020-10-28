@@ -50,7 +50,7 @@ _And our cat Lizzie._
 | [10. Test Suite](#10)                                 | 63 | [Dedication](#dedication)             |  2 | [13.18 Project Scheduling](#13-18)      | 82 |
 | [10.1 Bash Tests](#10-1)                              | 68 | [About this book](#about)             |  4 | [13.19 Enhancement Requests](#13-19)    | 82 |
 | [10.2 Python Tests](#10-2)                            | 69 | [How did I get interested ?](#begin)  |  4 | [13.20 Tools](#13-20)                   | 82 |
-| [10.3 Unit Tests](#10-3)                              | 70 | [2012 - 2017](#2012)                  |  5 | [13.21 Licensing](#13-21)               | 82 |
+| [10.3 Unit Tests](#10-3)                              | 70 | [2012 - 2017](#2012)                  |  5 | [13.21 Licensing and Legal](#13-21)               | 82 |
 | [10.4 Version Test](#10-4)                            | 71 | [2017 - Present](#2017)               |  5 | [13.22 Back-porting](#13-22)            | 82 |
 | [10.5 Generating HUGE images](#10-5)                  | 73 | [Current Priorities](#current)        |  6 | [13.23 Other OSS projects](#13-23)      | 82 |
 | [11. API/ABI Compatibility](#11)                      | 74 | [Future Projects](#future)            |  6 | [13.24 Software Development](#13-24)    | 85 |
@@ -4450,6 +4450,7 @@ There will of course be test exceptions, however the test suite should run witho
 <div id="12"/>
 # 12 Security
 
+<div id="12-1"/>
 ## 12.1 The Fuzzing Police
 
 We received our first CVE from the fuzzing police in July 2017.  Not a pleasant experience.  It was delivered in a blog post demanding that we re-write Exiv2 as it was "unsafe".   Needless to say, no resources were being offered for the re-write, no justification was offered and no explanation why a re-write of 100,000 lines of code would fix anything.
@@ -4470,7 +4471,15 @@ As the fuzzing police maintain their own CVE data base, the number and frequency
 <div id="12-2"/>
 ## 12.2 How we deal with security issues
 
-To be written.
+GitHub provides a "Security" tab in the User Interface.  You can define a file SECURITY.md to define your security policy.  [https://github.com/Exiv2/exiv2/security/policy](https://github.com/Exiv2/exiv2/security/policy) There are other tabs below security which deal with Notifications of different kinds.  I don't understand most of the GitHub Security Machinery.
+
+Security alerts are published here:  [https://cve.mitre.org/cgi-bin/cvekey.cgi?keyword=Exiv2](https://cve.mitre.org/cgi-bin/cvekey.cgi?keyword=Exiv2)  We open an issue with the label "Security" on GitHub and fix it.  It doesn't get special treatment and the fix will be included in the next release of the branch.
+
+Exiv2 does not back-port security (or any other fix) to earlier releases of the code.  An engineer at SUSE has patched and fixed some security releases for Exiv2 v0.26 and Exiv2 v0.25 in branches 0.26 and 0.25.
+
+The Exiv2 "dot" releases such as v0.27.2 include security fixes, bug fixes and minor feature and documentation updates.  Exiv2 has never issued a "security release" which would be an existing release PLUS one _or more_ security PRs.  The version numbering scheme is explained here: [13.9 Release Engineering](#13-9).  The design includes provision for a security release.
+
+I was very impressed by the libssh security process which has provision to issue security notices to third parties.  Exiv2 is not sufficiently resourced to support this capability.  If the community decide that Exiv2 must strengthen its security process, the community will have to provide the necessary resources.
 
 [TOC](#TOC)
 <div id="13"/>
@@ -4735,14 +4744,15 @@ However the time involved in updating the release notes, determining the content
 
 Moreover, I like to publish release candidates.  I never make code changes between the final release candidate the Golden Master.  Let me define the terminology and the version numbering scheme.
 
-| Version    | Name             | Status      | Purpose |
-|:--         |:--               |:--          |:--      |
-| 0.27.7.3   | Exiv2 v0.27.3    | GM          | Golden Master.  This is the final and official release. |
-| 0.27.3.2   | Exiv2 v0.27.3.2  | RC2         | Release Candidate 2.                             |
-| v0.27.3.20 | Exiv2 v0.27.3.2  | RC2 Preview | Dry-run for release candidate.  For team review. |
-| v0.27.3.29 | Exiv2 v0.27.3.29 | Development | Should never be installed for production. |
-| v0.27.4.9  | Exiv2 v0.27.4.9  | Development | Should never be installed for production. |
-| v0.27.99   | Exiv2 v0.28      | Development | Should never be installed for production. |
+| Version    | Name             | Status       | Purpose |
+|:--         |:--               |:--           |:--      |
+| 0.27.7.3   | Exiv2 v0.27.3    | GM           | Golden Master.  This is the final and official release. |
+| 0.27.3.2   | Exiv2 v0.27.3.2  | RC2          | Release Candidate 2.                                    |
+| v0.27.3.20 | Exiv2 v0.27.3.2  | RC2 Preview  | Dry-run for release candidate.  For team review.        |
+| v0.27.3.81 | Exiv2 v0.27.3    | Security Fix | Security Release                          | 
+| v0.27.3.29 | Exiv2 v0.27.3.29 | Development  | Should never be installed for production. |
+| v0.27.4.9  | Exiv2 v0.27.4.9  | Development  | Should never be installed for production. |
+| v0.27.99   | Exiv2 v0.28      | Development  | Should never be installed for production. |
 
 The release procedure is documented here:  svn://dev.exiv2.org/svn/team/website/Checklist.txt
 
@@ -5282,11 +5292,17 @@ There is one recent tool which has surprised and pleased me.  I have written thi
 
 [TOC](#TOC)
 <div id="13-21"/>
-### 13.21 Licensing
+### 13.21 Licensing and Legal
 
-This is simply a legal minefield.  Exiv2 is licensed under GPLv2.  Until Exiv2 v0.26, Andreas offered a commercial license for Exiv2.   The contract between Andreas and users is not the concern of the Exiv2 open-source project. 
+Licensing is a legal minefield.  Exiv2 is licensed under GPLv2.  Until Exiv2 v0.26, Andreas offered a commercial license for Exiv2.   The contract between Andreas and users is not the concern of the Exiv2 open-source project. 
 
 In the days of the Commercial license, I made no distinction between open-source and commercial license users when it came to dealing with support and other requests.  I felt that the commercial license freed the user from the obligations of GPL.  However, it did not provide priority support, enhancement requests or any other benefit.
+
+The general subject of the legality of Exiv2 hasn't been explored.  There has been an enormous discussion about the legality of reading ISOBMFF files.  See [https://github.com/Exiv2/exiv2/issues/1229](https://github.com/Exiv2/exiv2/issues/1229#issuecomment-705350266).
+
+The ISOBMFF issue has caused me to wonder if Exiv2 is legal at all.  I also wonder if any open source is legal!  What makes something legal or illegal?  Is everything legal until there is a law which declares it as illegal, or everything illegal until permitted by legislation?  I suspect everything is legal until there is a legal precedent _legislation or court ruling_ to the contrary.
+
+Dealing with legal matters is not like reporting a bug.  Exiv2 is an open-source project and we get a regular stream of issues reported on https://github.com/exiv2/exiv2.  I acknowledge, investigate, reply and close the issue.  By design, the process is focused on resolution.  Legal processes are very different.  When you ask for legal advice, you are instigating an open-ended process which will endlessly expand. 
 
 [TOC](#TOC)
 <div id="13-22"/>
