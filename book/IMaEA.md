@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-10-28</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-10-30</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -381,7 +381,7 @@ There are tags in Tiff such as _**ImageWidth**_ which cannot be modified without
 
 ### Intrusive and NonIntrusive Editing
 
-Exiv2 has a write method to determine how to rewrite TIFF.  I will have to conduct more research concerning this matter.
+Exiv2 has a write method to determine how to rewrite TIFF.  More research needed.
 
 [TOC](#TOC)
 <div id="JPEG"/>
@@ -2680,7 +2680,7 @@ The reason for using memory mapped files was for the convenience of converting o
 
 ### Writing Files
 
-Exiv2 is very reliable at writing files which conform to standards.  Andreas has done a wonderful job to ensure that we never damage or corrupt a file.  I believe he uses a "double blind" technique to write the file in memory and verify it before updating the file on disk.  More research is required into this important subject.
+Exiv2 is very reliable at writing files which conform to standards.  Andreas has done a wonderful job to ensure that we never damage or corrupt a file.  I believe he uses a "double blind" technique to write the file in memory and verify it before updating the file on disk.  More research needed.
 
 [TOC](#TOC)
 <div id="8"/>
@@ -3089,7 +3089,7 @@ Exiv2 has an abstract TiffVisitor class, and the following concrete visitors:
 | class TiffEncoder | TiffVisitor | Encodes metadata |
 | class TiffReader  | TiffVisitor | Reads metadata into memory |
 
-I need to do more research into this complex design.
+More research needed.
 
 [TOC](#TOC)
 <div id="8-5"/>
@@ -3772,7 +3772,7 @@ STRUCTURE OF JPEG FILE: ./Stonehenge-preview1.jpg
 ```
 
 
-dmpf.cpp finds it.  So, we know it is 4448 bytes into the file and the Exif Tiff is 15288 bytes and begins at 12.  So it's in there, but where?  I don't know.  More research necessary.
+dmpf.cpp finds it.  So, we know it is 4448 bytes into the file and the Exif Tiff is 15288 bytes and begins at 12.  So it's in there, but where?  I don't know.  More research needed.
 
 ```bash
 .../book/build $ ./dmpf ~/temp/foo/Stonehenge-preview1.jpg | head -1
@@ -4639,7 +4639,7 @@ An interesting option is BUILD\_WITH\_CCACHE.  This option can dramatically spee
 
 While lots of effort has been invested in the CMakeLists.txt and *.cmake files, some users may want something that has never been investigated by Team Exiv2.  For example, we do not support building for ARM processors.  It's highly likely that Exiv2 can be successfully built for those machines and the recommended way is to use options such as -DCMAKE\_CXX\_FLAGS to introduce the necessary compiler and linker options.  Other examples of "possible, yet not supported" are to request Visual Studio to use Clang, or its own CMake support, or its own Package Manager.
 
-Regrettably there are users who look to Team Exiv2 to support every possible configuration.  This is impossible.  The essential thing is that we have built and tested our code and many platforms.  Users will always think of novel ways in which to build and deploy. 
+Regrettably there are users who look to Team Exiv2 to support every possible configuration.  This is impossible.  The essential thing is that we have built and tested our code on many platforms.  Users will always think of novel ways in which to build and deploy.  I worked with a user to build Exiv2 on OS/2.  I had no idea that OS/2 is alive and well.  The user did not say "Thank You" for about 5 hours of my time.
 
 [TOC](#TOC)
 <div id="13-3"/>
@@ -4739,9 +4739,11 @@ I'm pleased with GitHub.  For sure, it's a "one stop shop" for a project.  They 
 <div id="13-9"/>
 ### 13.9 Release Engineering
 
+Releases (both RCs and GMs) are published on GitHub.  Users can receive notifications by subscribing an RSS reader to: https://github.com/exiv2/exiv2/releases.atom.  There is a summary of releases here: [https://github.com/Exiv2/exiv2/releases](https://github.com/Exiv2/exiv2/releases).  All releases (both RCs and GMs) are available from exiv2.org at: [https://exiv2.org/archive.html](https://exiv2.org/archive.html)
+
 Making a new release is very time-consuming.  The business of performing the builds and updating the web-site is straightforward.  It is totally scripted and easy to perform.
 
-However the time involved in updating the release notes, determining the contents of the release, submitting all the PRs, testing and documenting is considerable.
+However the time involved in determining the contents of the release, updating the release notes, submitting all the PRs, testing and documenting is considerable.
 
 Moreover, I like to publish release candidates.  I never make code changes between the final release candidate the Golden Master.  Let me define the terminology and the version numbering scheme.
 
