@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-10-30</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-11-04</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -29,33 +29,35 @@ _And our cat Lizzie._
 
 | Section                                             | Page | Image Formats                       | Page | Project Management                    | Page | 
 |:--                                                    | --:|:--                                    | --:|:--                                      | --:|
-| [1. Image File Formats](#1)                           |  9 | [TIFF and BigTiff](#TIFF)             | 10 | [13. Project Management](#13)           | 77 |
-| [2. Metadata Standards](#2)                           | 32 | [JPEG and EXV](#JPEG)                 | 12 | [13.1 C++ Code](#13-1)                  | 78 |
-| [2.1 Exif Metadata](#Exif)                            | 35 | [PNG Portable Network Graphics](#PNG) | 17 | [13.2 Build](#13-2)                     | 79 |
-| [2.2 XMP Metadata](#XMP)                              | 36 | [JP2 Jpeg 2000](#JP2)                 | 18 | [13.3 Security](#13-3)                  | 80 |
-| [2.3 IPTC Metadata](#IPTC)                            | 37 | [ISOBMFF, CR3, HEIF, AVIF](#ISOBMFF)  | 19 | [13.4 Documentation](#13-4)             | 80 |
-| [2.5 MakerNotes](#MakerNotes)                         | 38 | [CRW Canon Raw](#CRW)                 | 20 | [13.5 Testing](#13-5)                   | 80 |
-| [5. Lens Recognition](#5)                             | 39 | [ICC Profile](#ICC)                   | 21 | [13.6 Sample programs](#13-6)           | 80 |
-| [7. I/O in Exiv2](#7)                                 | 41 | [RIFF Resource Interchange File Format](#RIFF) | 22 | [13.7 User Support](#13-7)     | 80 |
-| [8. Exiv2 Architecture](#8)                           | 41 | [MRW Minolta Raw](#MRW)               | 23 | [13.8 Bug Tracking](#13-8)              | 81 |
-| [8.1 Extracting metadata using dd](#8-1)              | 42 | [ORF Olympus Raw Format](#ORF)        | 24 | [13.9 Release Engineering](#13-9)       | 81 |
-| [8.2 Tag Names in Exiv2](#8-2)                        | 44 | [PGF Progressive Graphics File](#PGF) | 25 | [13.10 Platform Support](#13-10)        | 81 |
-| [8.3 TagInfo](#8-3)                                   | 44 | [PSD PhotoShop Document](#PSD)        | 26 | [13.11 Localisation](#13-11)            | 81 |
-| [8.4 Visitor Design Pattern](#8-4)                    | 48 | [RAF Fujifilm RAW](#RAF)              | 27 | [13.12 Build Server](#13-12)            | 81 |
-| [8.5 IFD:accept() and TiffImage::accept() ](#8-5)     | 53 | [RW2 Panasonic RAW](#RW2)             | 28 | [13.13 Source Code Management](#13-13)  | 81 |
-| [8.6 Presenting data with visitTag()](#8-6)           | 57 | [TGA Truevision Targa](#TGA)          | 29 | [13.14 Project Web Site](#13-14)        | 81 |
-| [8.7 Tag Decoder](#8-7)                               | 59 | [BMP Windows Bitmap](#BMP)            | 30 | [13.15 Project Servers ](#13-15)        | 81 |
-| [8.8 Jpeg::Image accept()](#8-8)                      | 61 | [GIF Graphical Interchange Format](#GIF) | 31 | [13.16 API Management](#13-16)       | 81 |
-| [9. Image Previews](#9)                               | 63 | _**Other Sections**_                  |    | [13.17 Recruiting Contributors](#13-17) | 81 |
-| [10. Test Suite](#10)                                 | 63 | [Dedication](#dedication)             |  2 | [13.18 Project Scheduling](#13-18)      | 82 |
-| [10.1 Bash Tests](#10-1)                              | 68 | [About this book](#about)             |  4 | [13.19 Enhancement Requests](#13-19)    | 82 |
-| [10.2 Python Tests](#10-2)                            | 69 | [How did I get interested ?](#begin)  |  4 | [13.20 Tools](#13-20)                   | 82 |
-| [10.3 Unit Tests](#10-3)                              | 70 | [2012 - 2017](#2012)                  |  5 | [13.21 Licensing and Legal](#13-21)               | 82 |
-| [10.4 Version Test](#10-4)                            | 71 | [2017 - Present](#2017)               |  5 | [13.22 Back-porting](#13-22)            | 82 |
-| [10.5 Generating HUGE images](#10-5)                  | 73 | [Current Priorities](#current)        |  6 | [13.23 Other OSS projects](#13-23)      | 82 |
-| [11. API/ABI Compatibility](#11)                      | 74 | [Future Projects](#future)            |  6 | [13.24 Software Development](#13-24)    | 85 |
-| [12. Security](#12)                                   | 75 | [Scope of Book](#scope)               |  7 | [14. Code discussed in this book](#14) | 130 |                                      
-| [12.1 Security Policy](#12-2)                         | 80 | [Making this book](#making)           |  8 | [The Last Word](#finally)              | 131 |
+| [1. Image File Formats](#1)                           |  9 | [TIFF and BigTiff](#TIFF)             | 10 | [11. Project Management](#11)           | 77 |
+| [2. Metadata Standards](#2)                           | 32 | [JPEG and EXV](#JPEG)                 | 12 | [11.1 C++ Code](#11-1)                  | 78 |
+| [2.1 Exif Metadata](#Exif)                            | 35 | [PNG Portable Network Graphics](#PNG) | 17 | [11.2 Build](#11-2)                     | 79 |
+| [2.2 XMP Metadata](#XMP)                              | 36 | [JP2 Jpeg 2000](#JP2)                 | 18 | [11.3 Security](#11-3)                  | 80 |
+| [2.3 IPTC Metadata](#IPTC)                            | 37 | [ISOBMFF, CR3, HEIF, AVIF](#ISOBMFF)  | 19 | [11.4 Documentation](#11-4)             | 80 |
+| [2.5 MakerNotes](#MakerNotes)                         | 38 | [CRW Canon Raw](#CRW)                 | 20 | [11.5 Testing](#11-5)                   | 80 |
+| [2.6 Metadata Convertors](#MakerNotes)                | 38 | [ICC Profile](#ICC)                   | 21 | [11.6 Sample programs](#11-6)           | 80 |
+| [3. Exiv2 APIs](#3)                                   | 38 | [RIFF Resource Interchange File Format](#RIFF) | 22 | [11.7 User Support](#11-7)     | 80 |
+| [4. Lens Recognition](#4)                             | 39 | [MRW Minolta Raw](#MRW)               | 23 | [11.8 Bug Tracking](#11-8)              | 81 | 
+| [5. I/O in Exiv2](#5)                                 | 41 | [ORF Olympus Raw Format](#ORF)        | 24 | [11.9 Release Engineering](#11-9)       | 81 |
+| [6. Exiv2 Architecture](#6)                           | 41 | [PGF Progressive Graphics File](#PGF) | 25 | [11.10 Platform Support](#11-10)        | 81 |
+| [6.1 Extracting metadata using dd](#6-1)              | 42 | [PSD PhotoShop Document](#PSD)        | 26 | [11.11 Localisation](#11-11)            | 81 |
+| [6.2 Tag Names in Exiv2](#6-2)                        | 44 | [RAF Fujifilm RAW](#RAF)              | 27 | [11.12 Build Server](#11-12)            | 81 |
+| [6.3 TagInfo](#6-3)                                   | 44 | [RW2 Panasonic RAW](#RW2)             | 28 | [11.11 Source Code Management](#11-11)  | 81 |
+| [6.4 Visitor Design Pattern](#6-4)                    | 48 | [TGA Truevision Targa](#TGA)          | 29 | [11.14 Project Web Site](#11-14)        | 81 |
+| [6.5 IFD:accept() and TiffImage::accept() ](#6-5)     | 53 | [BMP Windows Bitmap](#BMP)            | 30 | [11.15 Project Servers ](#11-15)        | 81 |
+| [6.6 Presenting data with visitTag()](#6-6)           | 57 | [GIF Graphical Interchange Format](#GIF) | 31 | [11.16 API Management](#11-16)       | 81 |
+| [6.7 Tag Decoder](#6-7)                               | 59 |                                       |    | [11.17 Recruiting Contributors](#11-17) | 81 |
+| [6.8 Jpeg::Image accept()](#6-8)                      | 61 |                                       |    | [11.18 Project Scheduling](#11-18)      | 82 |
+| [7. Image Previews](#7)                               | 63 | _**Other Sections**_                  |    | [11.19 Enhancement Requests](#11-19)    | 82 |
+| [8. Test Suite](#8)                                   | 63 | [Dedication](#dedication)             |  2 | [11.20 Tools](#11-20)                   | 82 |
+| [8.1 Bash Tests](#8-1)                                | 68 | [About this book](#about)             |  4 | [11.21 Licensing and Legal](#11-21)     | 82 |
+| [8.2 Python Tests](#8-2)                              | 69 | [How did I get interested ?](#begin)  |  4 | [11.22 Back-porting](#11-22)            | 82 |
+| [8.3 Unit Tests](#8-3)                                | 70 | [2012 - 2017](#2012)                  |  5 | [11.23 Other OSS projects](#11-23)      | 82 |
+| [8.4 Version Test](#8-4)                              | 71 | [2017 - Present](#2017)               |  5 | [11.24 Software Development](#11-24)    | 85 |
+| [8.5 Generating HUGE images](#8-5)                    | 73 | [Current Priorities](#current)        |  6 |                                         |    |
+| [9. API/ABI Compatibility](#9)                        | 74 | [Future Projects](#future)            |  6 |                                         |    |
+| [10. Security](#10)                                   | 75 | [Scope of Book](#scope)               |  7 | [12. Code discussed in this book](#12) | 110 |                                      
+| [10.1 Security Policy](#10-2)                         | 80 | [Making this book](#making)           |  8 | [The Last Word](#finally)              | 111 |
 
 <div id="about"/>
 ## About this book
@@ -371,7 +373,7 @@ When we update a Makernote, we should "edit in place" and always avoid relocatin
 
 In principle, a Tiff can be garbage collected with a block-map.  If we set up a block-map with one bit for every thousand bytes, we can run the IFDs and mark all the blocks in use.  When we rewrite the TIFF (well IFD0 actually), we can inspect the block-map to determine a "hole" in the file at which to write.  I would not do this.  It's unsafe to over-write anything in a Tiff with the exception of IFD0 and the header offset.  The situation with JPEG is more serious.  It's impossible to rewrite the JPEG in place.
 
-The concept of using a block-map to track known data is used in RemoteIo.  We use a block-map to avoid excessive remote I/O by reading data into a cache.  We never read data twice.  We do not need contiguous memory for the file. This is discussed in [7. I/O in Exiv2](#7)
+The concept of using a block-map to track known data is used in RemoteIo.  We use a block-map to avoid excessive remote I/O by reading data into a cache.  We never read data twice.  We do not need contiguous memory for the file. This is discussed in [5. I/O in Exiv2](#5)
 
 I would like to express my dismay with the design of most image containers.  There is a much simpler design used by macOS and that is a bundle.  A bundle is a directory of files which includes the file Info.plist.  It appears in the Finder to be a simple entity like a file.  The terminal command _**ditto**_  is provided to copy them.  All programming languages can manipulte files.  The metadata in an image should be a little Tiff or sidecar in a bundle.  In principle, a container such as Tiff is a collection of streams that are both relocatable and never reference external data.  Sadly, TIFF and JPEG make it very easy to break both rules.  The design of JPEG makes it almost impossible to edit anything without relocating all the data.  The situation with video is even more serious as the files are huge.  In the PDF format, the file maintains a directory of objects.  The objects can be safely relocated because objects reference each other by name and not the file offset.
 
@@ -2560,16 +2562,21 @@ void IFD::visitMakerNote(Visitor& visitor,DataBuf& buf,uint16_t count,uint32_t o
 } // visitMakerNote
 ```
 
-I will write more about this subject later.
+To be written.
 
 [TOC](#TOC)
-<div id="5"/>
-# 5 Lens Recognition
+<div id="3"/>
+# 3 Exiv2 APIs
+
+To be written.
+
+[TOC](#TOC)
+<div id="4"/>
+# 4 Lens Recognition
 
 The lens problem is difficult. The lens isn't stored in the metadata. Different manufacturers use different ways to deal with the lens and it's very common that a number such as "368" is used to represent several lenses. Then we have to examine other metadata to make a guess about which lens is being used.  Lens recognition has been time sink on the engineering resources of Team Exiv2. So, I introduced the ~/.exiv2 "Configuration File" in 0.26 to save lots of work and give users an instant way to recognise their lens. You don't need to wait on the release cycles of exiv2 and your distribution. You get it fixed instantly.
 
 In the introduction to this book, I have discussed my proposal for _**M2Lscript**_ (pronounce MillsScript).  This is my proposal to solve the lens problem.  [Future Exiv2 Projects](#future)
-
 
 ### The Configuration File
 
@@ -2642,8 +2649,8 @@ There are a couple of Exif tags defined in Exif 2.2:
 For a discussion about Nikon see: [https://github.com/Exiv2/exiv2/issues/743#issuecomment-473409909](https://github.com/Exiv2/exiv2/issues/743#issuecomment-473409909)
 
 [TOC](#TOC)
-<div id="7"/>
-# 7 I/O in Exiv2
+<div id="5"/>
+# 5 I/O in Exiv2
 
 I/O in Exiv2 is achieved using the class BasicIo and derived classes which are:
 
@@ -3252,7 +3259,7 @@ void ReportVisitor::visitExif(Io& io)
 
 He creates a TiffImage with the stream and calls TiffImage::accept(visitor).  Software seldom gets simpler, as beautiful, or more elegant than this.
 
-Just to remind you, BasicIo supports http/ssh and other protocols.  This code will recursively descend into a remote file without copying it locally.  And he does it with great efficiency.  This is discussed in section [7 I/O in Exiv2](#7)
+Just to remind you, BasicIo supports http/ssh and other protocols.  This code will recursively descend into a remote file without copying it locally.  And he does it with great efficiency.  This is discussed in section [5 I/O in Exiv2](#5)
 
 <center><img src="Exiv2CloudVision.png" width="600" style="border:2px solid #23668F;"/></center>
 
@@ -4132,7 +4139,7 @@ source ./functions.source
 ##
 ```
 
-The implementation of the command _$ exiv2 --verbose --version_ and the version number scheme is discussed in detail: [13.9 Release Engineering](#13-9).
+The implementation of the command _$ exiv2 --verbose --version_ and the version number scheme is discussed in detail: [13.9 Release Engineering](#11-9).
 
 <div id="10-5"/>
 ## 10.5 Generating HUGE images
@@ -4447,11 +4454,11 @@ For Exiv2 v0.27 "dots", I:
 There will of course be test exceptions, however the test suite should run without crashing.  [https://github.com/Exiv2/exiv2/issues/890#issuecomment-613611192](https://github.com/Exiv2/exiv2/issues/890#issuecomment-613611192)
 
 [TOC](#TOC)
-<div id="12"/>
-# 12 Security
+<div id="10"/>
+# 10 Security
 
-<div id="12-1"/>
-## 12.1 Security Policy
+<div id="10-1"/>
+## 10.1 Security Policy
 
 GitHub provides a "Security" tab in the User Interface.  You can define a file SECURITY.md to define your security policy.  [https://github.com/Exiv2/exiv2/security/policy](https://github.com/Exiv2/exiv2/security/policy) There are other tabs below security which deal with Notifications of different kinds.  I don't understand most of the GitHub Security Machinery.
 
@@ -4459,14 +4466,14 @@ Security alerts are published here:  [https://cve.mitre.org/cgi-bin/cvekey.cgi?k
 
 Exiv2 does not back-port security (or any other fix) to earlier releases of the code.  An engineer at SUSE has patched and fixed some security releases for Exiv2 v0.26 and Exiv2 v0.25 in branches 0.26 and 0.25.
 
-The Exiv2 "dot" releases such as v0.27.2 include security fixes, bug fixes and minor feature and documentation updates.  Exiv2 has never issued a "security release" which would be an existing release PLUS one _or more_ security PRs.  The version numbering scheme is explained here: [13.9 Release Engineering](#13-9).  The design includes provision for a security release.
+The Exiv2 "dot" releases such as v0.27.2 include security fixes, bug fixes and minor feature and documentation updates.  Exiv2 has never issued a "security release" which would be an existing release PLUS one _or more_ security PRs.  The version numbering scheme is explained here: [13.9 Release Engineering](#11-9).  The design includes provision for a security release.
 
 I was very impressed by the libssh security process which has provision to issue security notices to third parties.  Exiv2 is not sufficiently resourced to support this capability.  If the community decide that Exiv2 must strengthen its security process, the community will have to provide the necessary resources.
 
 [TOC](#TOC)
 
-<div id="12-2"/>
-## 12.2 The Fuzzing Police
+<div id="10-2"/>
+## 10.2 The Fuzzing Police
 
 We received our first CVE from the fuzzing police in July 2017.  Not a pleasant experience.  It was delivered in a blog post demanding that we re-write Exiv2 as it was "unsafe".   Needless to say, no resources were being offered for the re-write, no justification was offered and no explanation why a re-write of 100,000 lines of code would fix anything.
 
@@ -4483,7 +4490,7 @@ Everything is treated as urgent.  All their reports are assigned very high level
 As the fuzzing police maintain their own CVE data base, the number and frequency of security issues is tracked and published.  Their mission in life is negative.  I don't have a good word to say about those peple.
 
 [TOC](#TOC)
-<div id="13"/>
+<div id="11"/>
 # 13 Project Management
 
 <center>![open-source-cartoon.png](open-source-cartoon.png)</center>
@@ -4537,7 +4544,7 @@ When we adopted Git, it took me 2 years to figure out how to submit a PR.  I pur
 
 The funny brown marks were added by our cat Lizzie.  I'd just written this card when she arrived in my office fresh from a hunt in the garden.  I don't know what she did to the card.  She's never done anything like this before or since.  She expressed her opinion of git.
 
-Another flavour is the **AAB** which I reserve for the fuzzing police.  The **A** stands for **Aggressive**.  I've discussed my dislike of these people here:  [12.2 The Fuzzing Police](#12-2)
+Another flavour is the **AAB** which I reserve for the fuzzing police.  The **A** stands for **Aggressive**.  I've discussed my dislike of these people here:  [10.2 The Fuzzing Police](#10-2)
 
 Or there's the review mechanism which I'll dub **RAB**  You insist:
 
@@ -4573,8 +4580,8 @@ While there is no sanction for a stakeholder being unreasonable, bad behaviour w
 _**Will the Community do something about on-line abuse?**_
 
 [TOC](#TOC)
-<div id="13-1"/>
-### 13.1 C++ Code
+<div id="11-1"/>
+### 11.1 C++ Code
 
 Exiv2 is written in C++.  Prior to v0.28, the code was written to the C++ 1998 Standard and makes considerable use of STL containers such as vector, map, set, string and many others.  The code started life as a 32-bit library on Unix and today builds on 32 and 64 bit systems running Linux, Unix, macOS and Windows (Cygwin, MinGW, and 7 editions of Visual Studio).  It can be build by GCC or Clang.  Although the Exiv2 project has never supported Mobile Platforms or Embedded Systems, it should be possible to build for other platforms with modest effort.
 
@@ -4583,8 +4590,8 @@ The code has taken a great deal of inspiration from the book [Design Patterns: E
 Starting with Exiv2 v0.28, the code requires a C++11 Compiler.  Exiv2 v0.28 is a major refactoring of the code and provides a new API.  The project maintains a series of v0.27 "dot" releases for security updates.  These releases are intended to ease the transition of existing applications in adapting to the new v0.28 API.
 
 [TOC](#TOC)
-<div id="13-2"/>
-### 13.2 Build
+<div id="11-2"/>
+### 11.2 Build
 
 The build code in Exiv2 is implemented using CMake: cross platform make.  This system enables the code to be built on many different platforms in a consistant manner.  CMake recursively reads the files CMakeLists.txt in the source tree and generates build environments for different build systems.  For Exiv2, we actively support using CMake to build on Unix type plaforms (Linux, macOS, Cygwin, MinGW, NetBSD, Solaris and FreeBSD), and several editions of Visual Studio.  CMake can generate project files for Xcode and other popular IDEs.
 
@@ -4642,13 +4649,13 @@ While lots of effort has been invested in the CMakeLists.txt and *.cmake files, 
 Regrettably there are users who look to Team Exiv2 to support every possible configuration.  This is impossible.  The essential thing is that we have built and tested our code on many platforms.  Users will always think of novel ways in which to build and deploy.  I worked with a user to build Exiv2 on OS/2.  I had no idea that OS/2 is alive and well.  The user did not say "Thank You" for about 5 hours of my time.
 
 [TOC](#TOC)
-<div id="13-3"/>
-### 13.3 Security
+<div id="11-3"/>
+### 11.3 Security
 
-This is discussed in detail here: [12 Security](#12).
+This is discussed in detail here: [10 Security](#10).
 
-<div id="13-4"/>
-### 13.4 Documentation
+<div id="11-4"/>
+### 11.4 Documentation
 
 The following types of documents used in Exiv2.  They are:
 
@@ -4667,15 +4674,15 @@ I'm very pleased by Markdown.  Perhaps one day, the utility **man** will support
 
 The API documents are generated from comments in the C++ code.  Doxygen generates UML diagrams of the class hierarchy, table of contents, navigation links and more.  It does a very nice job with modest effort from Team Exiv2.
 
-Creating release notes takes quite a lot of time and effort.  When Exiv2 v0.28 is released, the GitHub tools will probably do an adequate job.  However while 0.27-maintenance and master are both developed, I feel manually creating the release notes is a better approach.  The Release procedure is discussed here:  [13.9 Release Engineering](#13-9)
+Creating release notes takes quite a lot of time and effort.  When Exiv2 v0.28 is released, the GitHub tools will probably do an adequate job.  However while 0.27-maintenance and master are both developed, I feel manually creating the release notes is a better approach.  The Release procedure is discussed here:  [13.9 Release Engineering](#11-9)
 
 [TOC](#TOC)
-<div id="13-5"/>
-### 13.5 Testing.
+<div id="11-5"/>
+### 11.5 Testing.
 
 This is discussed in detail here: [10 Testing](#10).
-<div id="13-6"/>
-### 13.6 Sample programs
+<div id="11-6"/>
+### 11.6 Sample programs
 
 Exiv2 has sample applications which have their own documentation: [README-SAMPLES.md](README-SAMPLES.md).  In Exiv2 v0.27.3, there are 17 samples applications and 19 test programs.  The test programs are intended for use by the test suite and are not installed on the user's computer.
 
@@ -4708,8 +4715,8 @@ The Exiv2 command-line program _**exiv2**_ enables users to manipulate metadata 
 Exiv2 has always resisted the temptation to provide a GUI version of the program as that would involve considerable cross-platform development and user interface skills.  As Andreas Huggel summarised: _Exiv2 does depth, not breadth_.  Providing a GUI would lead the project away from metadata into the world of the _User Experience_.
 
 [TOC](#TOC)
-<div id="13-7"/>
-### 13.7 User Support
+<div id="11-7"/>
+### 11.7 User Support
 
 This is very time consuming.  I prioritise working with users as the most important aspect of the project.  Occasionally, in the run-up to a release, I will ask a user to wait.  However, my default is to deal with users as quickly as possible.  I try to acknowledge and confirm their report within 24 hours and to fix/close issues in one week.
 
@@ -4724,8 +4731,8 @@ A member of my family is the Principal of a College.  We were discussing the beh
 On a more positive note about dealing with users, I have enjoyed many on-line discussions with frequent visitors to exiv2.org.  For sure, I include Arnold, Mikayel, Alan and Steve in this group and there are many more.  If you are courteous, I am always pleased to hear from you.  We are a community with a shared vision of working together.  Thank You for participating. 
 
 [TOC](#TOC)
-<div id="13-8"/>
-### 13.8 Bug Tracking
+<div id="11-8"/>
+### 11.8 Bug Tracking
 
 Exiv2 has used three bug tracking systems during its 17 year life.  In the early days, issues were stored on a forum hosted by yahoo.  (Who?).  About the time that I joined the project (2008), Redmine was installed to track issues on exiv2.org.  I really like Redmine.  It has a nice UI with good search, cross referencing, and reporting tools.  I very much appreciated the API to query and download data in JSON format.  I had a script to generate various report to monitor release progress.
 
@@ -4736,8 +4743,8 @@ I believe the GitHub Rest API provides a mechanism with which we could collect d
 I'm pleased with GitHub.  For sure, it's a "one stop shop" for a project.  They provide good tools.  The best aspect of GitHub is that I met Luis and Dan on GitHub.  And numerous other frequent contributors (acknowledged on page 2 of this book).  For sure GitHub has brought more order to the world of open-source.
 
 [TOC](#TOC)
-<div id="13-9"/>
-### 13.9 Release Engineering
+<div id="11-9"/>
+### 11.9 Release Engineering
 
 Releases (both RCs and GMs) are published on GitHub.  Users can receive notifications by subscribing an RSS reader to: https://github.com/exiv2/exiv2/releases.atom.  There is a summary of releases here: [https://github.com/Exiv2/exiv2/releases](https://github.com/Exiv2/exiv2/releases).  All releases (both RCs and GMs) are available from exiv2.org at: [https://exiv2.org/archive.html](https://exiv2.org/archive.html)
 
@@ -4787,8 +4794,8 @@ For example, to safely call image->setIccProfile(), this is compile time safe an
 ``` 
 
 [TOC](#TOC)
-<div id="13-10"/>
-### 13.10 Platform Support
+<div id="11-10"/>
+### 11.10 Platform Support
 
 There are several parts of Exiv2 which are platform specific.  Additionally the platform dependent function _getopt()_ in the C-runtime library is never used.
 
@@ -4975,13 +4982,13 @@ I really admire the code in samples/JZon.cpp.  The Swedish Engineer who created 
 
 
 [TOC](#TOC)
-<div id="13-11"/>
-### 13.11 Localisation
+<div id="11-11"/>
+### 11.11 Localisation
 
 Localisation is documented in [README.md](README.md).
 
-<div id="13-12"/>
-### 13.12 Build Server
+<div id="11-12"/>
+### 11.12 Build Server
 
 At different times, we have used different build server technologies.
 
@@ -5042,8 +5049,8 @@ I am glad to say that in Exiv2 v0.27.3, I studied the test environment and docum
 However, as GitHub provides good CI support, we don't need Jenkins.
 
 [TOC](#TOC)
-<div id="13-13"/>
-### 13.13 Source Code Management
+<div id="11-13"/>
+### 11.13 Source Code Management
 
 The source code for Exiv2 resides on GitHub [https://github.com/exiv2/exiv2](https://github.com/exiv2/exiv2)
 
@@ -5067,14 +5074,14 @@ drwxr-xr-x+ 15 rmills  staff   480  8 Jul 11:31 website            source for we
 
 
 [TOC](#TOC)
-<div id="13-14"/>
-### 13.14 Project Web Site
+<div id="11-14"/>
+### 11.14 Project Web Site
 
-The website source and release procedures are store in subversion.  svn://dev.exiv2.org/svn/team.  The release process is discussed in detail here: [13.9 Release Engineering](#13-9)
+The website source and release procedures are store in subversion.  svn://dev.exiv2.org/svn/team.  The release process is discussed in detail here: [13.9 Release Engineering](#11-9)
 
 [TOC](#TOC)
-<div id="13-15"/>
-### 13.15 Project Servers (apache, SVN, GitHub, Redmine)
+<div id="11-15"/>
+### 11.15 Project Servers (apache, SVN, GitHub, Redmine)
 
 We use several servers:
 
@@ -5087,13 +5094,13 @@ We use several servers:
 I am pleased to say that the management of exiv2.org is undertaken my Nehal.  I don't think it's an onerous task, however I appreciate having this taken off my back.
 
 [TOC](#TOC)
-<div id="13-16"/>
-### 13.16 API Management
+<div id="11-16"/>
+### 11.16 API Management
 
 This is discussed in detail here: [11. API/ABI Compatibility](#11)
 
-<div id="13-17"/>
-### 13.17 Recruiting Contributors
+<div id="11-17"/>
+### 11.17 Recruiting Contributors
 
 It's very difficult to recruit people to work on open source.  In fact, it's so difficult that I wonder if open source can survive in future.  Lots of people have made small contributions to Exiv2, however only a hand-full have made a sustained effort.  Furthermore, contributors can disappear for months with no indication of their intention.  I'm not criticising anybody for how they behave, however it's simply impossible to plan or schedule.  When folks are paid in the office, you can reasonably expect that they will turn up regularly and can be assigned tasks.  This model is invalid in open source.
 
@@ -5106,8 +5113,8 @@ The only major success I have had with recruitment is when Dan and Luis arrived 
 So, how are contributors recruited?  The answer is _**I don't know**_.
 
 [TOC](#TOC)
-<div id="13-18"/>
-### 13.18 Project Management and Scheduling
+<div id="11-18"/>
+### 11.18 Project Management and Scheduling
 
 This is a major and important topic.  Apart from writing code, I've spent more time thinking about project scheduling than any other aspect of Software Engineering.  
 
@@ -5266,16 +5273,16 @@ One thing is certain, getting a better approach to project estimation is of enor
 Final words about this.  I didn't undertake a PhD.  Instead I have spent 10,000 hours working on Exiv2.  This book is my  thesis.  The presentation at LGM in Rennes is my defence.  My reward is to know that I've done my best.
 
 [TOC](#TOC)
-<div id="13-19"/>
-### 13.19 Enhancement Requests
+<div id="11-19"/>
+### 11.19 Enhancement Requests
 
 I'm not sure there is anything very interesting to be said about this.  There are really different types of requests.  For example, adding recognition for one lens may only require one line of C++, a test file and a 10-line python test script.  This is straightforward and can be fixed within hours.  At the other extreme is the request to support ISOBMFF files including HEIF and CR3.  This project involves research, code, test, build and documentation changes.  And to make it even more difficult, the Community have challenged the legality of providing the feature.  This feature will take years to complete.
 
 In principle, anybody can develop a feature and submit a PR.  In reality, this seldom happens.  When this does happen, the effort required by me and the developer is often about the same.  So, being offered code in a PR often doubles my work-load.
 
 [TOC](#TOC)
-<div id="13-20"/>
-### 13.20 Tools
+<div id="11-20"/>
+### 11.20 Tools
 
 Every year brings new/different tools.  For example: cmake, git, MarkDown, conan and C++11.  One of the remarkable properties of tools you have never used is that they are perfect and solve all known issues, _until you use them_.   Tools you have never used are bug free and perfect.  Or so I am told.
 
@@ -5294,8 +5301,8 @@ Please understand that I have nothing against using new tools.  However most of 
 There is one recent tool which has surprised and pleased me.  I have written this book using markdown and very pleased with the experience.  As Americans say "your mileage may differ!".
 
 [TOC](#TOC)
-<div id="13-21"/>
-### 13.21 Licensing and Legal
+<div id="11-21"/>
+### 11.21 Licensing and Legal
 
 Licensing is a legal minefield.  Exiv2 is licensed under GPLv2.  Until Exiv2 v0.26, Andreas offered a commercial license for Exiv2.   The contract between Andreas and users is not the concern of the Exiv2 open-source project. 
 
@@ -5308,22 +5315,22 @@ The ISOBMFF issue has caused me to wonder if Exiv2 is legal at all.  I also wond
 Dealing with legal matters is not like reporting a bug.  Exiv2 is an open-source project and we get a regular stream of issues reported on https://github.com/exiv2/exiv2.  I acknowledge, investigate, reply and close the issue.  By design, the process is focused on resolution.  Legal processes are very different.  When you ask for legal advice, you are instigating an open-ended process which will endlessly expand. 
 
 [TOC](#TOC)
-<div id="13-22"/>
-### 13.22 Back-porting fixes to earlier releases
+<div id="11-22"/>
+### 11.22 Back-porting fixes to earlier releases
 
 I believe there are some folks maintaining back-ports of Exiv2.  Our friend Pascal works on **darktable** and has back-ported many features and fixes.  Thank You, Pascal for undertaking that chore.
 
 I have to say that the inertia of the Linux Distros is considerable.  It can take several years for new releases to arrive on the platform.  I don't know anything about the distros and I'm not going to judge why it is so sluggish.
 
 [TOC](#TOC)
-<div id="13-23"/>
-### 13.23 Other projects demanding support and changes
+<div id="11-23"/>
+### 11.23 Other projects demanding support and changes
 
 Without question, dealing with this has been very difficult.  Folks who have adopted Exiv2 in their product may feel they are entitled to make enhancement requests, demand fixes, superior support and other privileges.  In a nutshell, they feel entitled.  They are not.  They are entitled to the same as all other stakeholders.  No more.  No less.
 
 [TOC](#TOC)
-<div id="13-24"/>
-### 13.24 Software Development
+<div id="11-24"/>
+### 11.24 Software Development
 
 As this is the first and last book I will ever write, I'd like to close the discussion of _**Project Management**_ with some thoughts and opinions about how software is developed.  Management have been searching for the silver bullet that will cause projects to deliver on time, to budget, with great performance, few bugs and low cost maintenance.  This search has been proceeding for more than 50 years.  We've made some progress.  However system complexity out-strips our management and control tools.  The challenges are immense.
 
@@ -5342,8 +5349,8 @@ Another method that I believe is very effective is prototyping.  Working in a sa
 If you have good folks on the team, the development will be enjoyable and the results will be good.  However, Software Development in large teams is Russian Roulette with a bullet in every chamber.  Mostly, the experience is horrible.  Good Luck.  I'm happy to be retired.
 
 [TOC](#TOC)
-<div id="14"/>
-# 14 Code discussed in this book
+<div id="12"/>
+# 12 Code discussed in this book
 
 The latest version of this book and the programs discussed are available for download from:
 
