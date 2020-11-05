@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-11-04</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-11-05</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -4675,6 +4675,22 @@ I'm very pleased by Markdown.  Perhaps one day, the utility **man** will support
 The API documents are generated from comments in the C++ code.  Doxygen generates UML diagrams of the class hierarchy, table of contents, navigation links and more.  It does a very nice job with modest effort from Team Exiv2.
 
 Creating release notes takes quite a lot of time and effort.  When Exiv2 v0.28 is released, the GitHub tools will probably do an adequate job.  However while 0.27-maintenance and master are both developed, I feel manually creating the release notes is a better approach.  The Release procedure is discussed here:  [13.9 Release Engineering](#11-9)
+
+I don't like the man page because it's in UNIX man page troff syntax which is arcane and unfamiliar.  However man pages are very useful and valuable for users.  The man page is stored in man/man1/exiv2.1  When editing the man pages, I inspect the changes with commands such as:
+
+```bash
+$ cd \<exiv2dir\>
+$ env MANPATH=$PWD/man:$MANPATH man exiv2 | grep EXIV2
+EXIV2(1)                                                              EXIV2(1)
+                                  Nov 6, 2020                         EXIV2(1)
+$ 
+```
+
+The man pages are converted with man2html for display on [https://exiv2.org/manpage.html](https://exiv2.org/manpage.html).  In the release scripts, man page is converted to PostScript and then to PDF as follows:
+
+```
+$ env MANPATH=$EXIV2HOME/man:$MANPATH man -t p | ps2pdf
+```
 
 [TOC](#TOC)
 <div id="11-5"/>
