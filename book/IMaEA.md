@@ -2568,7 +2568,178 @@ To be written.
 <div id="3"/>
 # 3 Exiv2 APIs
 
-To be written.
+The Exiv2 API is documented here: [https://exiv2.org/doc/](https://exiv2.org/doc/)  The API is in the Namespace Exiv2.  The Namespace Exiv2::Internal should never be used by application programs.  There are several hundred classes and 3000+ entry points, it's not possible to discuss the API in detail here.  Instead I will discuss a typical short application: samples/exifprint.cpp.
+
+```cpp
+// ***************************************************************** -*- C++ -*-
+// exifprint.cpp
+// Sample program to print the Exif metadata of an image
+
+#include <exiv2/exiv2.hpp>
+
+#include <iostream>
+#include <iomanip>
+#include <cassert>
+
+int main(int argc, const char* argv[])
+{
+	try {
+		Exiv2::XmpParser::initialize();
+		::atexit(Exiv2::XmpParser::terminate);
+
+		const char* prog = argv[0];
+		const char* path = argv[1];
+
+		if (argc != 2) {
+			std::cout << "Usage: " << prog << " [ path | --version | --version-test ]" << std::endl;
+			return 1;
+		}
+
+		if ( strcmp(file,("--version") == 0 ) {
+			exv_grep_keys_t keys;
+			Exiv2::dumpLibraryInfo(std::cout,keys);
+			return 0;
+		} else if ( strcmp(file,"--version-test") == 0 ) {
+			// verifies/test macro EXIV2_TEST_VERSION
+			// described in include/exiv2/version.hpp
+			std::cout << "EXV_PACKAGE_VERSION             " << EXV_PACKAGE_VERSION             << std::endl
+					  << "Exiv2::version()                " << Exiv2::version()                << std::endl
+					  << "strlen(Exiv2::version())        " << ::strlen(Exiv2::version())      << std::endl
+					  << "Exiv2::versionNumber()          " << Exiv2::versionNumber()          << std::endl
+					  << "Exiv2::versionString()          " << Exiv2::versionString()          << std::endl
+					  << "Exiv2::versionNumberHexString() " << Exiv2::versionNumberHexString() << std::endl
+					  ;
+
+			// Test the Exiv2 version available at runtime but compile the if-clause only if
+			// the compile-time version is at least 0.15. Earlier versions didn't have a
+			// testVersion() function:
+			#if EXIV2_TEST_VERSION(0,15,0)
+				if (Exiv2::testVersion(0,13,0)) {
+				  std::cout << "Available Exiv2 version is equal to or greater than 0.13\n";
+				} else {
+				  std::cout << "Installed Exiv2 version is less than 0.13\n";
+				}
+			#else
+				  std::cout << "Compile-time Exiv2 version doesn't have Exiv2::testVersion()\n";
+			#endif
+			return 0;
+		}
+
+		Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(path);
+		assert(image.get() != 0);
+		image->readMetadata();
+
+		Exiv2::ExifData &exifData = image->exifData();
+		if (exifData.empty()) {
+			std::string error("No Exif data found in file");
+			throw Exiv2::Error(Exiv2::kerErrorMessage, error);
+		}
+
+		Exiv2::ExifData::const_iterator end = exifData.end();
+		for (Exiv2::ExifData::const_iterator i = exifData.begin(); i != end; ++i) {
+			const char* tn = i->typeName();
+			std::cout << std::setw(44) << std::setfill(' ') << std::left
+					  << i->key() << " "
+					  << "0x" << std::setw(4) << std::setfill('0') << std::right
+					  << std::hex << i->tag() << " "
+					  << std::setw(9) << std::setfill(' ') << std::left
+					  << (tn ? tn : "Unknown") << " "
+					  << std::dec << std::setw(3)
+					  << std::setfill(' ') << std::right
+					  << i->count() << "  "
+					  << std::dec << i->toString()
+					  << "\n";
+		}
+
+		return 0;
+	}
+	catch (Exiv2::Error& e) {
+		std::cout << "Caught Exiv2 exception '" << e.what() << "'\n";
+		return -1;
+	}
+}
+
+```
+
+## Include file
+
+Only include the file <exiv2/exiv2.hpp>.  Do not include individual exiv2 include files because Team Exiv2 may remove or add include files from release to release.  By only including <exiv2/exiv2.hpp>, you are insulated from changes to the dependency and existence of individual include files.
+
+```cpp
+#include <exiv2/exiv2.hpp>
+
+#include <iostream>
+#include <iomanip>
+#include <cassert>
+```
+
+## Initializing the library
+
+You do not need to initialize the exiv2 library.  However you have to initialize XMPsdk.
+
+```cpp
+		Exiv2::XmpParser::initialize();
+		::atexit(Exiv2::XmpParser::terminate);
+```
+
+## Opening an image to read metadata
+
+Use the ImageFactory to open the image on a path.  Verify that the image is good, then call readMetadata()
+
+```cpp
+		Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(path);
+		assert(image.get() != 0);
+		image->readMetadata();
+
+		Exiv2::ExifData &exifData = image->exifData();
+		if (exifData.empty()) {
+			std::string error("No Exif data found in file");
+			throw Exiv2::Error(Exiv2::kerErrorMessage, error);
+		}
+```
+
+## Stepping through the metadata
+
+The metadata is stored in an STL vector which you can step in the conventional way:
+
+```cpp
+		for (Exiv2::ExifData::const_iterator i = exifData.begin(); i != exifData.end(); ++i) {
+			const char* tn = i->typeName();
+			std::cout << i->tag() << " -> " << i->toString() << std::endl;
+		}
+```
+
+Each enumerated item is of the Exiv2::Exifdatum: [https://exiv2.org/doc/classExiv2_1_1Exifdatum.html](https://exiv2.org/doc/classExiv2_1_1Exifdatum.html) for which there are many getter functions such as key(), familyName(), count() and toString().
+
+
+## Making Changes to the Metadata
+
+The application samples/addmodel.cpp _(add modify delete)_ illustrates how to manipulate metadata: [https://exiv2.org/doc/addmoddel_8cpp-example.html](https://exiv2.org/doc/addmoddel_8cpp-example.html).  Frequently, you can add/modify metadata directly with code such as:
+
+```cpp
+        exifData["Exif.Image.Model"] = "Test 1"
+```
+
+To delete metadata, you have to locate in the ExifData vector and erase it.
+
+```cpp
+    // Delete the metadatum at iterator position pos
+    key = Exiv2::ExifKey("Exif.Image.PrimaryChromaticities");
+    pos = exifData.findKey(key);
+    if (pos == exifData.end()) throw Exiv2::Error(Exiv2::kerErrorMessage, "Key not found");
+    exifData.erase(pos);
+    std::cout << "Deleted key \"" << key << "\"\n";
+```
+
+## Writing modified metada
+
+When you modify metadata using the variable _image_, you are only changing it in memory.  You commit the changes to storage when you call image->writeMetadata().
+
+```cpp
+      image->writeMetadata()
+```
+
+The image will be automatically closed when image goes out of scope.
 
 [TOC](#TOC)
 <div id="4"/>
@@ -2690,11 +2861,11 @@ The reason for using memory mapped files was for the convenience of converting o
 Exiv2 is very reliable at writing files which conform to standards.  Andreas has done a wonderful job to ensure that we never damage or corrupt a file.  I believe he uses a "double blind" technique to write the file in memory and verify it before updating the file on disk.  More research needed.
 
 [TOC](#TOC)
-<div id="8"/>
-# 8 Exiv2 Architecture
+<div id="6"/>
+# 6 Exiv2 Architecture
 
-<div id="8-1"/>
-### 8.1 Extracting metadata using dd
+<div id="6-1"/>
+### 6.1 Extracting metadata using dd
 
 The exiv2 option _**-pS**_ prints the structure of an image.
 
@@ -2770,8 +2941,8 @@ You may be interested to discover that option _**-pS**_ which arrived with Exiv2
 
 [TOC](#TOC)
 
-<div id="8-2"/>
-### 8.2 Tags in Exiv2
+<div id="6-2"/>
+### 6.2 Tags in Exiv2
 
 The following test program is very useful for understanding tags:
 
@@ -2882,8 +3053,8 @@ So, Minolta have 6 "sub-records".  Other manufacturers have more.  Let's say 10 
 
 [TOC](#TOC)
 
-<div id="8-3"/>
-### 8.3 TagInfo
+<div id="6-3"/>
+### 6.3 TagInfo
 
 Another matter to appreciate is that tag definitions are not constant.  A tag is simply an uint16\_t.  The Tiff Standard specifies about 50 tags.  Anybody creating an IFD can use the same tag number for different purposes.  The Tiff Specification says _"TIFF readers must safely skip over these fields if they do not understand or do not wish to use the information."_.  We do have to understand every tag.  In a tiff file, the pixels are located using the tag StripOffsets.  We report StripOffsets, however we don't read pixel data.
 
@@ -2921,8 +3092,8 @@ As we can see, tag == 1 in the Nikon MakerNotes is Version.  In Canon MakerNotes
 
 [TOC](#TOC)
 
-<div id="8-4"/>
-### 8.4 Visitor Design Pattern
+<div id="6-4"/>
+### 6.4 Visitor Design Pattern
 
 The tiff visitor code is based on the visitor pattern in [Design Patterns: Elements of Reusable Object=Oriented Software](https://www.oreilly.com/library/view/design-patterns-elements/0201633612/).  Before we discuss tiff visitor, let's review the visitor pattern.
 
@@ -3099,8 +3270,8 @@ Exiv2 has an abstract TiffVisitor class, and the following concrete visitors:
 More research needed.
 
 [TOC](#TOC)
-<div id="8-5"/>
-### 8.5 IFD::accept() and TiffImage::accept()
+<div id="6-5"/>
+### 6.5 IFD::accept() and TiffImage::accept()
 
 The TiffVisitor is ingenious.  It's also difficult to understand.  Exiv2 has two tiff parsers - TiffVisitor and Image::printIFDStructure().  TiffVisitor was written by Andreas Huggel.  It's very robust and has been almost bug free for 15 years.  I wrote the parser in Image::printIFDStructure() to try to understand the structure of a tiff file.  The code in Image::printIFDStructure() is easier to understand.
 
@@ -3340,8 +3511,8 @@ Please be aware that there are two ways in which IFDs can occur in the file.  Th
 Another important detail is that although the Tiff Specification expects the IFD to end with a uint32\_t offset == 0, Sony (and other) maker notes do not.  The IFD begins with a uint32\_t to define length, followed by 12 byte tags.  There is no trailing null uint32\_t.
 
 [TOC](#TOC)
-<div id="8-6"/>
-### 8.6 Presenting the data with visitTag()
+<div id="6-6"/>
+### 6.6 Presenting the data with visitTag()
 
 I added support in tvisitor.cpp for one binary tag which is Nikon Picture Control tag = 0x0023.  You'll see from the output of tvisitor that it's 58 bytes.
 
@@ -3551,8 +3722,8 @@ Could this be even better?  Of course.  As always reader, I leave you to send me
 3. You're welcome to suggest other magic!
 
 [TOC](#TOC)
-<div id="8-7"/>
-### 8.7 Tag Decoder
+<div id="6-7"/>
+### 6.7 Tag Decoder
 
 This is a story in two parts.  Firstly, we have to find metadata which is formatted as a Tiff Entry and I call that the _**Metadata Decoder**_.  Some tags are encoded in binary which must be decoded.  I call that the _**Binary Tag Decoder**_.
 
@@ -3656,8 +3827,8 @@ This function understands how to decode byte-by-byte from `const ArrayDef` into 
 
 
 [TOC](#TOC)
-<div id="8-8"/>
-## 8.8 JpegImage::accept()
+<div id="6-8"/>
+## 6.8 JpegImage::accept()
 
 ```cpp
 void JpegImage::accept(Visitor& visitor)
@@ -3753,8 +3924,8 @@ The way in which extended JPEG is managed is quite simple.  A DataBuf is used an
 ![jpeg](jpeg.png)
 
 [TOC](#TOC)
-<div id="9"/>
-# 9 Image Previews
+<div id="7"/>
+# 7 Image Previews
 
 I don't know much about the image previews.  Previews are usually JPEG encoded and have no metadata.  Exiv2 has no code to edit previews in images.  About all that I know about previews is that the library finds them and creates a vector of thumbnails.  Like most of Andreas' code, the Preview code works well and has seldom required attention.
 
@@ -3790,8 +3961,8 @@ dmpf.cpp finds it.  So, we know it is 4448 bytes into the file and the Exif Tiff
 ```
 
 [TOC](#TOC)
-<div id="10"/>
-# 10 Test Suite
+<div id="8"/>
+# 8 Test Suite
 
 Exiv2 has several different elements in the test suite. They are:
 
@@ -3803,8 +3974,8 @@ Exiv2 has several different elements in the test suite. They are:
 In writing this book, I want to avoid duplicating information from the Exiv2 documentation into this book.  This book is intended to provide an engineering explanation of how the code works and why various design decisions were chosen.  However, this book doesn't explain how to use Exiv2. How to use execute the test suite is documented in [README.md](README.md).
 
 [TOC](#TOC)
-<div id="10-1"/>
-# 10.1 Bash Tests
+<div id="8-1"/>
+# 8.1 Bash Tests
 
 As the name implies, these tests were originally implemented as bash scripts.  They started life as a collection of independant scripts which were written by different contributors.  Although they all shared the goal of executing a command and comparing the output to a referenced file, there was no shared code.  About 2012, I refactored the tests and put common code into test/functions.source.  All bash tests begin by sourcing this file which performs environment checks, initialises bash variables and sets up bash functions such as copyTestFiles, runTest and reportTest.
 
@@ -3984,8 +4155,8 @@ reportTest(r,t)
 ```
 
 [TOC](#TOC)
-<div id="10-2"/>
-# 10.2 Python Tests
+<div id="8-2"/>
+# 8.2 Python Tests
 
 Before we proceed to discuss the python tests, I want to thank Dan for his work on this.  His framework has been in service for more than 2 years without issue. The code is robust and flexible.  In addition to inventing the framework, Dan also converted hundreds of bash scripts into python scripts.  Thank You, Dan for doing such a wonderful job. 
 
@@ -4063,8 +4234,8 @@ $ make tests  # VERBOSE=1 will create more output
 The command: `$ make tests` executes the command `$ cd tests ; python3 runner.py` which recursively searches bugfixes and executes every python file.
 
 [TOC](#TOC)
-<div id="10-3"/>
-# 10.3 Unit Test
+<div id="8-3"/>
+# 8.3 Unit Test
 
 The unit tests are very useful for testing C++ functions with a well defined input and output.  In Chemistry, we have elements and compounds.  The unit tests are good for testing elements of the software.  The unit tests are written in C++ and use the Google Test library.  Here's a typical test progam, extracted from unitTests/test_futils.cpp
 
@@ -4114,8 +4285,8 @@ $ cmake --build . --config Release --target unit_test  # or make unit_tests
 The unit tests are built into a single executable bin/unit_tests(.exe)
 
 [TOC](#TOC)
-<div id="10-4"/>
-# 10.4 Version Test
+<div id="8-4"/>
+# 8.4 Version Test
 
 The version test is _more-or-less_ the output of the command _$ exiv2 --verbose --version_ which produces about 150 lines of output.  About 60 lines of the output are a list of pre-registed XMP namespaces and of little interest.  So, the script test/version-test.sh counts and filters out the XMP namespaces.
 
@@ -4141,8 +4312,8 @@ source ./functions.source
 
 The implementation of the command _$ exiv2 --verbose --version_ and the version number scheme is discussed in detail: [13.9 Release Engineering](#11-9).
 
-<div id="10-5"/>
-## 10.5 Generating HUGE images
+<div id="8-5"/>
+## 8.5 Generating HUGE images
 
 Before getting into a discussion about this, I'd like to thank several collaborators who have contributed to this part of the book. Joris Van Damme of AWare Systems maintains the BigTiff web-site and was very helpful on email.  This topic was also discussed at: [https://github.com/Exiv2/exiv2/issues/1248](https://github.com/Exiv2/exiv2/issues/1248) and I wish to thank LeoHsiao1 and kolt54321 for their input.
 
@@ -4342,8 +4513,8 @@ int main(int argc,const char* argv[])
 The largest file I produced with freeimage was 1.8gb.  I suspect the framebuffer is limited to 32bits (3.2gb).  FreeImage has metadata support to read/write metadata blocks and possibly list key/value pairs.
 
 [TOC](#TOC)
-<div id="11"/>
-# 11 API/ABI Compatibility
+<div id="9"/>
+# 9 API/ABI Compatibility
 
 This is discussed: [https://github.com/Exiv2/exiv2/issues/890](https://github.com/Exiv2/exiv2/issues/890)
 
@@ -4491,7 +4662,7 @@ As the fuzzing police maintain their own CVE data base, the number and frequency
 
 [TOC](#TOC)
 <div id="11"/>
-# 13 Project Management
+# 11 Project Management
 
 <center>![open-source-cartoon.png](open-source-cartoon.png)</center>
 
@@ -4661,20 +4832,30 @@ The following types of documents used in Exiv2.  They are:
 
 |    | Documents | Creator | Comment |
 |:-- |:--        |:--      |:--      |
-| 1 | The exiv2 man page exiv2.1           | man, man2html        | Unix mark up syntax      |
-| 2 | User Manuals                         | Markdown             | User Documentation       | 
-| 3 | API Documentation                    | Doxygen              | From .cpp and .hpp files |
-| 4 | Web site pages                       | Scripted _(mostly)_  |                          |
-| 5 | Release Notes                        | Markdown             | GitHub PRs               |
+| 1 | The exiv2 man page exiv2.1           | man, man2html        | Unix mark up syntax (troff) |
+| 2 | User Manuals                         | Markdown             | User Documentation          | 
+| 3 | API Documentation                    | Doxygen              | From .cpp and .hpp files    |
+| 4 | Web site pages                       | Scripted _(mostly)_  |                             |
+| 5 | Release Notes                        | Markdown             | GitHub PRs                  |
 | 6 | GitHub Wiki Pages                    | Markdown             | https://github.com/Exiv2/exiv2.wiki.git |
 
 Life would be simpler with a single way to define documents and scripts to _**propagate**_ changes to their destination.  In some ways, this has been done.  However the nature and format of the document classes are different, and the current arrangements are will not yield to much further simplification.
 
+#### Markdown 
+
 I'm very pleased by Markdown.  Perhaps one day, the utility **man** will support this format as that would simplify the maintenance of exiv2.1.
+
+This book has been written in markdown, and the User Documentation in the release.  Markdown is also used extensively on GitHub for discussion and the project Wiki pages.
+
+#### Doxygen generated API Documentation 
 
 The API documents are generated from comments in the C++ code.  Doxygen generates UML diagrams of the class hierarchy, table of contents, navigation links and more.  It does a very nice job with modest effort from Team Exiv2.
 
+#### Release Documentation
+
 Creating release notes takes quite a lot of time and effort.  When Exiv2 v0.28 is released, the GitHub tools will probably do an adequate job.  However while 0.27-maintenance and master are both developed, I feel manually creating the release notes is a better approach.  The Release procedure is discussed here:  [13.9 Release Engineering](#11-9)
+
+#### Exiv2 man page
 
 I don't like the man page because it's in UNIX man page troff syntax which is arcane and unfamiliar.  However man pages are very useful and valuable for users.  The man page is stored in man/man1/exiv2.1  When editing the man pages, I inspect the changes with commands such as:
 
