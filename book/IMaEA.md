@@ -122,7 +122,7 @@ I started working on Exiv2 to implement GeoTagging.  As the years have passed, I
 
 In July 2017 we received our first security CVE.  Not a pleasant experience.  The security folks started hitting us with fuzzed files. These are files which violate format specifications and can cause the code to crash. We responded with v0.27 which will have regular "dot" releases to provide security fixes.  Managing frequent releases and user correspondence consumes lots of my time.
 
-In parallel with "the dots", major work is being carried to prepare Exiv2 for the future. Dan and Luis are working on v0.28 which will be released in 2020. This is a considerable reworking of the code into C++11.
+In parallel with "the dots", major work is being carried to prepare Exiv2 for the future. Luis, Dan and Rosen are working on v0.28 which will be released in 2021. This is a considerable reworking of the code into C++11.
 
 I'm delighted by the work done by Dan, Luis and Kevin to deal with the assault of the security people. I believe we are responding effectively to security issues. None-the-less, they have dominated the development of Exiv2 for at least two years and many ideas could not be pursued because security consumed our engineering resources.
 
@@ -130,7 +130,7 @@ I'm delighted by the work done by Dan, Luis and Kevin to deal with the assault o
 <div id="future"/>
 ### Future Development Projects
 
-The code is in good shape, our release process is solid and we have comprehensive user documentation.  As photography develops, there will be many new cameras and more image formats such as CR3, HEIF and BigTiff.   Exiv2 Video support is weak and was deprecated in v0.27.  It will be removed in 0.28.  It would be great to re-engineer the video code.
+The code is in good shape, our release process is solid and we have comprehensive user documentation.  As photography develops, there will be many new cameras and more image formats such as CR3, HEIF and BigTiff.   Exiv2 Video support is weak and was deprecated in v0.27.  It will be removed in 0.28.  One day a contributor will re-engineer the video code.
 
 A long standing project for Exiv2 is a **unified metadata container**.  There is an implementation of this in the SVN repository.  Currently we have three containers for Exif, Iptc and Xmp.  This is clumsy.  We also have a restriction of one image per file.  Perhaps both restrictions have a common solution.
 
@@ -4867,7 +4867,7 @@ An interesting option is BUILD\_WITH\_CCACHE.  This option can dramatically spee
 
 While lots of effort has been invested in the CMakeLists.txt and *.cmake files, some users may want something that has never been investigated by Team Exiv2.  For example, we do not support building for ARM processors.  It's highly likely that Exiv2 can be successfully built for those machines and the recommended way is to use options such as -DCMAKE\_CXX\_FLAGS to introduce the necessary compiler and linker options.  Other examples of "possible, yet not supported" are to request Visual Studio to use Clang, or its own CMake support, or its own Package Manager.
 
-Regrettably there are users who look to Team Exiv2 to support every possible configuration.  This is impossible.  The essential thing is that we have built and tested our code on many platforms.  Users will always think of novel ways in which to build and deploy.  I worked with a user to build Exiv2 on OS/2.  I had no idea that OS/2 is alive and well.  The user did not say "Thank You" for about 5 hours of my time.
+Regrettably there are users who look to Team Exiv2 to support every possible configuration.  This is impossible.  The essential thing is that we have built and tested our code on many platforms.  Users will always think of novel ways in which to build and deploy.  I worked with a user to build Exiv2 on OS/2.  I had no idea that OS/2 is alive and well.
 
 [TOC](#TOC)
 <div id="11-3"/>
@@ -4889,7 +4889,7 @@ The following types of documents used in Exiv2.  They are:
 | 5 | Release Notes                        | Markdown             | GitHub PRs                  |
 | 6 | GitHub Wiki Pages                    | Markdown             | https://github.com/Exiv2/exiv2.wiki.git |
 
-Life would be simpler with a single way to define documents and scripts to _**propagate**_ changes to their destination.  In some ways, this has been done.  However the nature and format of the document classes are different, and the current arrangements are will not yield to much further simplification.
+Life would be simpler with a single way to define documents and scripts to _**propagate**_ changes to their destination.  In some ways, this has been done.  However the nature and format of the document classes are different, and the current arrangements will not yield to much more simplification.
 
 #### Markdown 
 
