@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-11-05</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-11-06</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -2568,12 +2568,15 @@ To be written.
 <div id="3"/>
 # 3 Exiv2 APIs
 
-The Exiv2 API is documented here: [https://exiv2.org/doc/](https://exiv2.org/doc/)  The API is in the Namespace Exiv2.  The Namespace Exiv2::Internal should never be used by application programs.  There are several hundred classes and 3000+ entry points, it's not possible to discuss the API in detail here.  Instead I will discuss a typical short application: samples/exifprint.cpp.
+The Exiv2 API is documented here: [https://exiv2.org/doc/](https://exiv2.org/doc/)  The API is in the Namespace Exiv2.  The Namespace Exiv2::Internal should never be used by application programs and is not revealed to user applications via \<exiv2/exiv2.hpp\>.  There are several hundred classes and 3000+ entry points, it's not possible to discuss the API in detail here.  Instead I will discuss a typical short application: samples/exifprint.cpp.
+
+## 3.1 Typical Sample Application
 
 ```cpp
 // ***************************************************************** -*- C++ -*-
 // exifprint.cpp
 // Sample program to print the Exif metadata of an image
+// g++ -std=c++98 exifprint.cpp -I/usr/local/include -L/usr/local/lib -lexiv2 -o exifprint
 
 #include <exiv2/exiv2.hpp>
 
@@ -2583,155 +2586,114 @@ The Exiv2 API is documented here: [https://exiv2.org/doc/](https://exiv2.org/doc
 
 int main(int argc, const char* argv[])
 {
-	try {
-		Exiv2::XmpParser::initialize();
-		::atexit(Exiv2::XmpParser::terminate);
+    try {
+        Exiv2::XmpParser::initialize();
+        ::atexit(Exiv2::XmpParser::terminate);
 
-		const char* prog = argv[0];
-		const char* path = argv[1];
+        const char* prog = argv[0];
+        const char* path = argv[1];
 
-		if (argc != 2) {
-			std::cout << "Usage: " << prog << " [ path | --version | --version-test ]" << std::endl;
-			return 1;
-		}
+        if (argc != 2) {
+            std::cout << "Usage: " << prog << " [ path | --version ]" << std::endl;
+            return 1;
+        }
 
-		if ( strcmp(file,("--version") == 0 ) {
-			exv_grep_keys_t keys;
-			Exiv2::dumpLibraryInfo(std::cout,keys);
-			return 0;
-		} else if ( strcmp(file,"--version-test") == 0 ) {
-			// verifies/test macro EXIV2_TEST_VERSION
-			// described in include/exiv2/version.hpp
-			std::cout << "EXV_PACKAGE_VERSION             " << EXV_PACKAGE_VERSION             << std::endl
-					  << "Exiv2::version()                " << Exiv2::version()                << std::endl
-					  << "strlen(Exiv2::version())        " << ::strlen(Exiv2::version())      << std::endl
-					  << "Exiv2::versionNumber()          " << Exiv2::versionNumber()          << std::endl
-					  << "Exiv2::versionString()          " << Exiv2::versionString()          << std::endl
-					  << "Exiv2::versionNumberHexString() " << Exiv2::versionNumberHexString() << std::endl
-					  ;
+        if ( strcmp(path,"--version") == 0 ) {
+            exv_grep_keys_t keys;
+            Exiv2::dumpLibraryInfo(std::cout,keys);
+            return 0;
+        }
 
-			// Test the Exiv2 version available at runtime but compile the if-clause only if
-			// the compile-time version is at least 0.15. Earlier versions didn't have a
-			// testVersion() function:
-			#if EXIV2_TEST_VERSION(0,15,0)
-				if (Exiv2::testVersion(0,13,0)) {
-				  std::cout << "Available Exiv2 version is equal to or greater than 0.13\n";
-				} else {
-				  std::cout << "Installed Exiv2 version is less than 0.13\n";
-				}
-			#else
-				  std::cout << "Compile-time Exiv2 version doesn't have Exiv2::testVersion()\n";
-			#endif
-			return 0;
-		}
+        Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(path);
+        assert(image.get() != 0);
+        image->readMetadata();
 
-		Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(path);
-		assert(image.get() != 0);
-		image->readMetadata();
+        Exiv2::ExifData &exifData = image->exifData();
+        if (exifData.empty()) {
+            std::string error("No Exif data found in file");
+            throw Exiv2::Error(Exiv2::kerErrorMessage, error);
+        }
 
-		Exiv2::ExifData &exifData = image->exifData();
-		if (exifData.empty()) {
-			std::string error("No Exif data found in file");
-			throw Exiv2::Error(Exiv2::kerErrorMessage, error);
-		}
+        for (Exiv2::ExifData::const_iterator i = exifData.begin(); i != exifData.end(); ++i) {
+            std::cout << i->key() << " -> " << i->toString() << std::endl;
+        }
 
-		Exiv2::ExifData::const_iterator end = exifData.end();
-		for (Exiv2::ExifData::const_iterator i = exifData.begin(); i != end; ++i) {
-			const char* tn = i->typeName();
-			std::cout << std::setw(44) << std::setfill(' ') << std::left
-					  << i->key() << " "
-					  << "0x" << std::setw(4) << std::setfill('0') << std::right
-					  << std::hex << i->tag() << " "
-					  << std::setw(9) << std::setfill(' ') << std::left
-					  << (tn ? tn : "Unknown") << " "
-					  << std::dec << std::setw(3)
-					  << std::setfill(' ') << std::right
-					  << i->count() << "  "
-					  << std::dec << i->toString()
-					  << "\n";
-		}
-
-		return 0;
-	}
-	catch (Exiv2::Error& e) {
-		std::cout << "Caught Exiv2 exception '" << e.what() << "'\n";
-		return -1;
-	}
+        return 0;
+    } catch (Exiv2::Error& e) {
+        std::cout << "Caught Exiv2 exception '" << e.what() << "'\n";
+        return -1;
+    }
 }
-
 ```
 
-## Include file
+#### Include file
 
-Only include the file <exiv2/exiv2.hpp>.  Do not include individual exiv2 include files because Team Exiv2 may remove or add include files from release to release.  By only including <exiv2/exiv2.hpp>, you are insulated from changes to the dependency and existence of individual include files.
+Only include the file \<exiv2/exiv2.hpp\>.  Do not include individual exiv2 include files because Team Exiv2 may remove or add include files.  By only including \<exiv2/exiv2.hpp\>, you are insulated from changes to the dependency and existence of individual include files.
 
 ```cpp
 #include <exiv2/exiv2.hpp>
 
 #include <iostream>
-#include <iomanip>
-#include <cassert>
+...
 ```
 
-## Initializing the library
+#### Initializing the library
 
 You do not need to initialize the exiv2 library.  However you have to initialize XMPsdk.
 
 ```cpp
-		Exiv2::XmpParser::initialize();
-		::atexit(Exiv2::XmpParser::terminate);
+      Exiv2::XmpParser::initialize();
+      ::atexit(Exiv2::XmpParser::terminate);
 ```
 
-## Opening an image to read metadata
+#### Opening an image to read metadata
 
 Use the ImageFactory to open the image on a path.  Verify that the image is good, then call readMetadata()
 
 ```cpp
-		Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(path);
-		assert(image.get() != 0);
-		image->readMetadata();
+      Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(path);
+      assert(image.get() != 0);
+      image->readMetadata();
 
-		Exiv2::ExifData &exifData = image->exifData();
-		if (exifData.empty()) {
-			std::string error("No Exif data found in file");
-			throw Exiv2::Error(Exiv2::kerErrorMessage, error);
-		}
+      Exiv2::ExifData &exifData = image->exifData();
+      if (exifData.empty()) {
+          std::string error("No Exif data found in file");
+          throw Exiv2::Error(Exiv2::kerErrorMessage, error);
+      }
 ```
 
-## Stepping through the metadata
+#### Stepping through the metadata
 
 The metadata is stored in an STL vector which you can step in the conventional way:
 
 ```cpp
-		for (Exiv2::ExifData::const_iterator i = exifData.begin(); i != exifData.end(); ++i) {
-			const char* tn = i->typeName();
-			std::cout << i->tag() << " -> " << i->toString() << std::endl;
-		}
+      for (Exiv2::ExifData::const_iterator i = exifData.begin(); i != exifData.end(); ++i) {
+          std::cout << i->tag() << " -> " << i->toString() << std::endl;
+      }
 ```
 
 Each enumerated item is of the Exiv2::Exifdatum: [https://exiv2.org/doc/classExiv2_1_1Exifdatum.html](https://exiv2.org/doc/classExiv2_1_1Exifdatum.html) for which there are many getter functions such as key(), familyName(), count() and toString().
 
-
-## Making Changes to the Metadata
+#### Making Changes to the Metadata
 
 The application samples/addmodel.cpp _(add modify delete)_ illustrates how to manipulate metadata: [https://exiv2.org/doc/addmoddel_8cpp-example.html](https://exiv2.org/doc/addmoddel_8cpp-example.html).  Frequently, you can add/modify metadata directly with code such as:
 
 ```cpp
-        exifData["Exif.Image.Model"] = "Test 1"
+      exifData["Exif.Image.Model"] = "Test 1"
 ```
 
-To delete metadata, you have to locate in the ExifData vector and erase it.
+To delete metadata, you have to locate the key in the ExifData vector and erase it from the vector.
 
 ```cpp
-    // Delete the metadatum at iterator position pos
-    key = Exiv2::ExifKey("Exif.Image.PrimaryChromaticities");
-    pos = exifData.findKey(key);
-    if (pos == exifData.end()) throw Exiv2::Error(Exiv2::kerErrorMessage, "Key not found");
-    exifData.erase(pos);
-    std::cout << "Deleted key \"" << key << "\"\n";
+      Exiv2::ExifKey            key("Exif.Photo.DateTimeOriginal");
+      Exiv2::ExifData::iterator pos = exifData.findKey(key);
+      if (pos == exifData.end()) {
+          throw Exiv2::Error(Exiv2::kerErrorMessage, "Key not found");
+      }
+      exifData.erase(pos);
 ```
 
-## Writing modified metada
+#### Writing modified metada to storage
 
 When you modify metadata using the variable _image_, you are only changing it in memory.  You commit the changes to storage when you call image->writeMetadata().
 
@@ -2741,17 +2703,103 @@ When you modify metadata using the variable _image_, you are only changing it in
 
 The image will be automatically closed when image goes out of scope.
 
+## 3.2 The EasyAccess API
+
+Exiv2 provides a collection of functions to simplify searching for Exif metadata.  This is described in detail here: [https://github.com/Exiv2/exiv2/wiki/EasyAccess-API](https://github.com/Exiv2/exiv2/wiki/EasyAccess-API)
+
+A typical use case is:
+
+```cpp
+Exiv2::ExifData::const_iterator metadata = Exiv2::whiteBalance(exifData);
+if ( metadata != exifData.end() ) {
+    metadata->write(std::cout, &exifData);
+}
+```
+
+The following EasyAccess Selector Functions are provided:
+
+| a-e | e-f | i-m | m-s | s-w |
+|:--  |:--  |:--  |:--  |:--  |
+| afPoint<br>apertureValue<br>brightnessValue<br>contrast<br>dateTimeOriginal<br>exposureBiasValue<br>exposureIndex | exposureMode<br>exposureTime<br>flash<br>flashBias<br>flashEnergy<br>fNumber<br>focalLength | imageQuality<br>isoSpeed<br>lensName<br>lightSource<br>macroMode<br>make<br>maxApertureValue |meteringMode<br>model<br>orientation<br>saturation<br>sceneCaptureType<br>sceneMode<br>sensingMethod | serialNumber<br>sharpness<br>shutterSpeedValue<br>subjectArea<br>subjectDistance<br>whiteBalance<br>&nbsp; |
+
+
+## 3.3 Listing the API
+
+You can get a list of the API with a command such as:
+
+```bash
+$ nm -g --demangle build/lib/libexiv2.dylib | grep ' T ' | grep Exiv2
+```
+
+You can refine that further to discover all the "free" functions of the library which are:
+
+```bash
+$ nm -g --demangle build/lib/libexiv2.dylib | grep ' T ' | grep Exiv2 | grep -v trait | grep -v :__ | grep  -v Internal | grep -v operator | grep -v "::.*::"
+0000000000073050 T enforce(bool, Exiv2::ErrorCode)
+0000000000107750 T Exiv2::exvGettext(char const*)
+000000000012c360 T Exiv2::testVersion(int, int, int)
+0000000000072190 T Exiv2::base64decode(char const*, char*, unsigned long)
+0000000000071dc0 T Exiv2::base64encode(void const*, unsigned long, char*, unsigned long)
+000000000012bd00 T Exiv2::versionNumber()
+000000000012bd10 T Exiv2::versionString()
+0000000000073fc0 T Exiv2::getProcessPath()
+00000000001057f0 T Exiv2::floatToRationalCast(float)
+000000000012bfd0 T Exiv2::versionNumberHexString()
+0000000000108460 T int Exiv2::gcd<int>(int, int)
+0000000000052d80 T Exiv2::errMsg(int)
+0000000000071750 T Exiv2::getEnv(int)
+00000000000718b0 T Exiv2::to_hex(char)
+000000000012c340 T Exiv2::version()
+00000000001075f0 T Exiv2::exifTime(char const*, tm*)
+00000000000718e0 T Exiv2::from_hex(char)
+0000000000072d10 T Exiv2::strError()
+0000000000071b80 T Exiv2::urldecode(char const*)
+0000000000071980 T Exiv2::urlencode(char const*)
+```
+
+You could refine that to reveal the members of class Exiv2::ExifKey:
+
+```bash
+$ nm -g --demangle build/lib/libexiv2.dylib | grep ' T ' | grep ' Exiv2::ExifKey' | grep -v Impl
+00000000000f9f30 T Exiv2::ExifKey::setIdx(int)
+00000000000f9a70 T Exiv2::ExifKey::ExifKey(Exiv2::TagInfo const&)
+00000000000f9ba0 T Exiv2::ExifKey::ExifKey(std::__1::basic_string...
+00000000000f9d00 T Exiv2::ExifKey::ExifKey(Exiv2::ExifKey const&)
+00000000000f97f0 T Exiv2::ExifKey::ExifKey(unsigned short, std::__1::basic_string...
+00000000000f9830 T Exiv2::ExifKey::ExifKey(Exiv2::TagInfo const&)
+00000000000f9aa0 T Exiv2::ExifKey::ExifKey(std::__1::basic_string<char...
+00000000000f9bd0 T Exiv2::ExifKey::ExifKey(Exiv2::ExifKey const&)
+00000000000f94b0 T Exiv2::ExifKey::ExifKey(unsigned short, std::__1::basic_string...
+00000000000f9da0 T Exiv2::ExifKey::~ExifKey()
+00000000000f9d80 T Exiv2::ExifKey::~ExifKey()
+00000000000f9d30 T Exiv2::ExifKey::~ExifKey()
+00000000000f9e00 T Exiv2::ExifKey::operator=(Exiv2::ExifKey const&)
+00000000000f9fd0 T Exiv2::ExifKey::familyName() const
+00000000000fa240 T Exiv2::ExifKey::defaultTypeId() const
+00000000000fa4a0 T Exiv2::ExifKey::idx() const
+00000000000f9f70 T Exiv2::ExifKey::key() const
+00000000000fa2b0 T Exiv2::ExifKey::tag() const
+00000000000fa2e0 T Exiv2::ExifKey::clone() const
+00000000000f7880 T Exiv2::ExifKey::ifdId() const
+00000000000fa430 T Exiv2::ExifKey::clone_() const
+00000000000fa180 T Exiv2::ExifKey::tagDesc() const
+00000000000fa070 T Exiv2::ExifKey::tagName() const
+00000000000fa0c0 T Exiv2::ExifKey::tagLabel() const
+00000000000fa010 T Exiv2::ExifKey::groupName() const
+$ 
+```
+
 [TOC](#TOC)
 <div id="4"/>
 # 4 Lens Recognition
 
-The lens problem is difficult. The lens isn't stored in the metadata. Different manufacturers use different ways to deal with the lens and it's very common that a number such as "368" is used to represent several lenses. Then we have to examine other metadata to make a guess about which lens is being used.  Lens recognition has been time sink on the engineering resources of Team Exiv2. So, I introduced the ~/.exiv2 "Configuration File" in 0.26 to save lots of work and give users an instant way to recognise their lens. You don't need to wait on the release cycles of exiv2 and your distribution. You get it fixed instantly.
+Lens Recognition is a difficult problem. The lens isn't stored in the metadata. Different manufacturers use different ways to deal with the lens and it's very common that a number such as "368" is used to represent several lenses. Then we have to examine other metadata to make a guess about which lens is being used.  Lens recognition has been time sink on the engineering resources of Team Exiv2. So, I introduced the ~/.exiv2 "Configuration File" in 0.26 to save lots of work and give users an instant way to recognise their lens. You don't need to wait on the release cycles of exiv2 and your distribution. You get it fixed instantly.
 
 In the introduction to this book, I have discussed my proposal for _**M2Lscript**_ (pronounce MillsScript).  This is my proposal to solve the lens problem.  [Future Exiv2 Projects](#future)
 
 ### The Configuration File
 
-The configuration file ~/.exiv2 (or %USERPROFILE\\exiv2.ini for Visual Studio Users) may be used to define a lens.  For example:
+The configuration file ~/.exiv2 (or %USERPROFILE%\\exiv2.ini for Visual Studio Users) may be used to define a lens.  For example:
 
 ```ini
 [nikon]
