@@ -2570,7 +2570,7 @@ To be written.
 
 ![exiv2arch](exiv2arch.png)
 
-The Exiv2 API is documented here: [https://exiv2.org/doc/](https://exiv2.org/doc/)  The API is in the Namespace Exiv2.  The Namespace Exiv2::Internal should never be used by application programs and is not revealed to user applications via \<exiv2/exiv2.hpp\>.  There are several hundred classes and 3000+ entry points, it's not possible to discuss the API in detail here.  Instead I will discuss a typical short application: samples/exifprint.cpp.
+The Exiv2 API is documented here: [https://exiv2.org/doc/](https://exiv2.org/doc/)  The API is in the Namespace Exiv2.  The Namespace Exiv2::Internal should never be used by application programs and is not revealed to via \<exiv2/exiv2.hpp\>.  As there are around 300 classes and 3000+ entry points, it's not possible to discuss the API in detail here.  Instead I will discuss a typical short application: samples/exifprint.cpp.  My aim here is to explain how to use the exiv2 library and provide a high-level overview of how the library operates.  The doxygen generated API Documentation is very good and the code is well laid out and documented.
 
 ## 3.1 Typical Sample Application
 
