@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-11-06</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-11-08</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -2477,6 +2477,7 @@ As with Exif metdata, the IPTC data block can exceed 64k byte and this cannot be
 ### IPTC in Tiff and other formats.
 
 In Tiff, IPTC data is contained in the following tag:
+
 ```bash
 $ taglist ALL | grep Image.IPTCNAA | head -1
 Image.IPTCNAA,	33723,	0x83bb,	Image,	Exif.Image.IPTCNAA,	Long,	Contains an IPTC/NAA record
@@ -2572,7 +2573,41 @@ To be written.
 
 The Exiv2 API is documented here: [https://exiv2.org/doc/](https://exiv2.org/doc/)  The API is in the Namespace Exiv2.  The Namespace Exiv2::Internal should never be used by application programs and is not revealed to via \<exiv2/exiv2.hpp\>.  As there are around 300 classes and 3000+ entry points, it's not possible to discuss the API in detail here.  Instead I will discuss a typical short application: samples/exifprint.cpp.  My aim here is to explain how to use the exiv2 library and provide a high-level overview of how the library operates.  The doxygen generated API Documentation is very good and the code is well laid out and documented.
 
-## 3.1 Typical Sample Application
+## 3.1 API Overview
+
+1) The Image Handlers
+
+This code understands the structure of image files.  The structure is explained in Chapter 1 of this book.
+
+2) The MetaData parsers
+
+This code understands the structure of the different metadata standards.  The structure is explained in Chapter 2 of this book.
+
+3) Manufacturer's MakerNote handlers
+
+All the manufacturers use variations of the TIFF/IFD format in their makernote.  The maker note is parsed by the TiffParser.  The presentation and interpretation of the makenote is handled here.  In particular the lens recognition and preview image handling is dealt with in this code.  Lens Recognition is discussed in Chapter 4 of this book.  Image Previews are discussed in Chapter 7 of this book.
+
+4) TagInfo
+
+This code has definitions for thousands of Exif tags and about 50 IPTC Tags.  Xmp metadata is handled by the XMPsdk.  As XMP is Extensible, it doesn't have a database of known tags.  Tags are discussed in detail in Chapter 6 of this book.
+
+5) BasicIo
+
+This code is responsible for all I/O and is explained in Chapter 5 of this book.
+
+6) Utility and Platform Code
+
+There are utility functions such as ascii 64 encode/decode.  There are platform specific functions which manage interaction with the platform operating system.
+
+7) The Image Object and Image Factory
+
+Applications obtain access to an image object via the Image Factory.  The application is expected to call readMetadata() which causes the image handler to locate metadata and passes it to the metadata handlers for conversion to a metadatum vector.  Metadatum elements are key/value pairs.  Metadatum can be manipulated in memory or presented to the user.  If the metadata has been modified, the application should call writeMetadata() which will cause the reading process to be reversed.  The metadatum vector is serialized and the file is rewritten by the Image Handler.
+
+8) Sample Code and Test Harness
+
+This is discussed in Chapter 11 of this book.
+
+## 3.2 Typical Sample Application
 
 ```cpp
 // ***************************************************************** -*- C++ -*-
@@ -2705,7 +2740,7 @@ When you modify metadata using the variable _image_, you are only changing it in
 
 The image will be automatically closed when image goes out of scope.
 
-## 3.2 The EasyAccess API
+## 3.3 The EasyAccess API
 
 Exiv2 provides a collection of functions to simplify searching for Exif metadata.  This is described in detail here: [https://github.com/Exiv2/exiv2/wiki/EasyAccess-API](https://github.com/Exiv2/exiv2/wiki/EasyAccess-API)
 
@@ -2725,7 +2760,7 @@ The following EasyAccess Selector Functions are provided:
 | afPoint<br>apertureValue<br>brightnessValue<br>contrast<br>dateTimeOriginal<br>exposureBiasValue<br>exposureIndex | exposureMode<br>exposureTime<br>flash<br>flashBias<br>flashEnergy<br>fNumber<br>focalLength | imageQuality<br>isoSpeed<br>lensName<br>lightSource<br>macroMode<br>make<br>maxApertureValue |meteringMode<br>model<br>orientation<br>saturation<br>sceneCaptureType<br>sceneMode<br>sensingMethod | serialNumber<br>sharpness<br>shutterSpeedValue<br>subjectArea<br>subjectDistance<br>whiteBalance<br>&nbsp; |
 
 
-## 3.3 Listing the API
+## 3.4 Listing the API
 
 You can get a list of the API with a command such as:
 
