@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-11-08</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-11-10</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -14,7 +14,7 @@ _First, my wife Alison, who has been my loyal support since the day we met in Hi
 
 _Secondly, Andreas Huggel the founder of the project and Luis and Dan who have worked tirelessly with me since 2017._
 
-_Exiv2 contributors (in alphabetical order): Abhinav, Alan, Andreas (both of them), Arnold, Ben, Gilles, Kevin, Leo, Leonardo, Mahesh, Micha&lstrok;, Milo&scaron;, Nehal, Neils, Phil, Rosen, Sridhar, Thomas, Tuan .... and others who have contributed to Exiv2._
+_Exiv2 contributors (in alphabetical order): Abhinav, Alan, Andreas (both of them), Arnold, Ben, Gilles, Kevin, Leo, Leonardo, Mahesh, Micha&lstrok;, Milo&scaron;, Mikayel, Nehal, Neils, Phil, Rosen, Sridhar, Thomas, Tuan .... and others who have contributed to Exiv2._
 
 _File Detectives:  Phil Harvey, Dave Coffin, Laurent Cl&eacute;vy._
 
@@ -380,10 +380,6 @@ I would like to express my dismay with the design of most image containers.  The
 ### Metadata that cannot be edited
 
 There are tags in Tiff such as _**ImageWidth**_ which cannot be modified without rewriting the pixels in the image.  Exif protects those tags in the functions **TiffHeader::isImageTag()** and **Cr2Header::isImageTag()**.
-
-### Intrusive and NonIntrusive Editing
-
-Exiv2 has a write method to determine how to rewrite TIFF.  More research needed.
 
 [TOC](#TOC)
 <div id="JPEG"/>
@@ -2312,7 +2308,7 @@ $ exiv2 -pX Stonehenge.jpg | xmllint -pretty 1 -
 
 ### Adobe XMPsdk
 
-The Adobe XMPsdk is available here:  https://github.com/adobe/XMP-Toolkit-SDK.git.  In addition to the code, there is documentation, CMake build scripts and sample applications.  The current documentation is:
+The Adobe XMPsdk is available here:  [https://github.com/adobe/XMP-Toolkit-SDK.git](https://github.com/adobe/XMP-Toolkit-SDK.git).  In addition to the code, there is documentation, CMake build scripts and sample applications.  The current documentation is:
 
 ```bash
 550 rmills@rmillsmbp:~/gnu/github $ ls -l ~/Google\ Drive/PDFs/XMP/
@@ -2328,11 +2324,13 @@ total 9536
 
 Adobe XMPsdk creates two libraries XMPFiles and XMPCore.  XMPFiles implements extracting/inserting XMP into various file many formats such as JPEG, PNG and TIFF.  These are specified in XMPSpecificationPart3.  From an Exiv2 point of view, the file handling library is of little interest as Exiv2 has its own file handlers.
 
-The program tvisitor can extract XMP from image files.  However it doesn't use XMPsdk for several reasons.  Firstly, tvisitor knows how to navigate images and extract XMP without using library XMPFiles.  Secondly, I want tvisitor.cpp to be a "one file" application with no dependencies.  Thirdly, I have not studied XMPCore to any depth and there haven't thought about to use it from tvisitor.
+The program tvisitor can extract XMP from image files.  However it doesn't use XMPsdk for several reasons.  Firstly, tvisitor knows how to navigate images and extract XMP without using the library XMPFiles.  Secondly, I want tvisitor.cpp to be a "one file" application with no dependencies.  Thirdly, I have not studied XMPCore and do not need to use it in tvisitor.cpp.
 
-#### Building Adobe XMPsdk
+#### Building Adobe XMPsdk using Adobe's build environments
 
-I have never built Adobe XMPsdk with Visual Studio.  I have build the libraries on macOS and given up trying to build the samples.  Here's how I have built it on Ubuntu 20.04 with GCC 9.3.0
+I have never built Adobe XMPsdk with Visual Studio, Cygwin, MinGW or UNIX.  On macOS, I can build the libraries, but not the samples.
+
+Here's how I have built XMPsdk on Ubuntu 20.04 with GCC 9.3.0
 
 1. git clone https://github.com/adobe/XMP-TOOLKIT-SDK.git
 2. git clone https://github.com/libexpat/libexpat.git
@@ -2341,11 +2339,12 @@ I have never built Adobe XMPsdk with Visual Studio.  I have build the libraries 
 5. mkdir -p XMP-TOOLKIT-SDK/third-party/expat/lib ; cp -v libexpat/expat/lib/*.? XMP-TOOLKIT-SDK/third-party/expat/lib 
 6. EDIT XMP-TOOLKIT-SDK/third-party/expat/lib/xmlparse.c and insert the line `#define XML_POOR_ENTROPY` at the top of the file
 7. mkdir -p XMP-TOOLKIT-SDK/tools/cmake/bin ; ln -s $(which cmake) XMP-TOOLKIT-SDK/tools/cmake/bin/cmake
-8. Apply the 2 fixes in https://github.com/adobe/XMP-Toolkit-SDK/issues/8
-9. cd XML-TOOLKIT_SDK/build ; make DynamicRelease64 
-10. cd ../samples/build ; make DynamicRelease64 
+8. Apply the 2 fixes in [https://github.com/adobe/XMP-Toolkit-SDK/issues/8](https://github.com/adobe/XMP-Toolkit-SDK/issues/8)
+9. $ cd XML-TOOLKIT_SDK/build ; make DynamicRelease64
+10. $ cd ../samples/build ; make DynamicRelease64
 
-The following build artefacts have been created:
+
+The following build artefacts are created on Linux.
 
 ```bash
 rmills@ubuntu:~/gnu/github/XMP-TOOLKIT-SDK$ find public/ -type f
@@ -2373,6 +2372,31 @@ samples/target/i80386linux_x64/release/DumpMainXMP
 rmills@ubuntu:~/gnu/github/XMP-TOOLKIT-SDK$
 ```
 
+**If using macOS** to build the libraries, follow steps 1..7 above then use build/GenerateXMPToolkitSDK_mac.sh to create the .xcodeproj files. You should be able to build the libraries with the following command:
+
+```bash
+$ xcodebuild -project xcode/dynamic/intel_64_libcpp/XMPToolkitSDK64.xcodeproj -configuration Release -target ALL_BUILD
+```
+
+I was unable to get to work with Xcode 12.1 because it complained about the SDK and absense of Command line tools.
+
+You can also build using the Xcode IDE by opening on of the generated projects such as xcode/dynamic/intel_64_libcpp/XMPToolkitSDK64.xcodeproj.  The default build is "Debug" and you can change that to "Release" by editing the scheme which is presumably obvious to Xcode experts.
+
+I had to manually download and install the Xcode command line tools for Xcode 12.1 and download and install /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk
+
+Although it build from the Xcode IDE, I never succeeded in getting to build with the xcodebuild command.
+
+The following libraries are built:
+
+```bash
+$ cd XMP-Toolkit-SDK/public/libraries/macintosh/intel_64_libcpp/Release 
+$ ls -l
+drwxr-xr-x+ 5 rmills  staff       160 10 Nov 11:32 XMPCore.framework
+drwxr-xr-x+ 5 rmills  staff       160 10 Nov 11:32 XMPFiles.framework
+-rw-r--r--+ 1 rmills  staff  26254464 10 Nov 11:21 libXMPCoreStatic.a
+-rw-r--r--+ 1 rmills  staff  34108944 10 Nov 11:21 libXMPFilesStatic.a
+```
+
 #### Using Adobe XMPsdk sample applications
 
 There is a example in XMPProgrammersGuide.pdf page 73 of "Modifying XMP" in which the sample application operates on samples/testfiles/Image1.jpg
@@ -2387,9 +2411,9 @@ Xmp.dc.subject                               XmpBag      4  XMP, SDK, Test, File
 558 rmills@rmillsmbp:~/gnu/github/XMP-Toolkit-SDK $ 
 ```
 
-### Working with Adobe XMPsdk as an external library.
+#### Building Adobe XMPsdk with Exiv2.
 
-This is discussed in README-CONAN.md
+Exiv2 has a copy of XMPsdk included in the code base and builds easily.  Exiv2 uses Conan to build and link other versions of XMPsdk.  See [README-CONAN.md](README-CONAN.md)
 
 [TOC](#TOC)
 <div id="IPTC"/>
@@ -2943,7 +2967,27 @@ The reason for using memory mapped files was for the convenience of converting o
 
 ### Writing Files
 
-Exiv2 is very reliable at writing files which conform to standards.  Andreas has done a wonderful job to ensure that we never damage or corrupt a file.  I believe he uses a "double blind" technique to write the file in memory and verify it before updating the file on disk.  More research needed.
+Exiv2 is very reliable at writing files which conform to standards.  The way in which this is achieved is to by calling image->writeMetata() which delegates to the handlers writeMetata().
+
+Because the handler understands the structure of the image, he writes a temporary in memory copy of the image.  It proceeds to parse the image and copy the data to the temporary file.  When it arrives at each of the four metadata blocks (Exif, ICC, IPTC and XMP) it calls the serializer to create a buffer of data which is injected into the temporary image.  When it arrives the EOF on the original file, if no error has been detected it calls io->transfer() on the temporary image.  The operation transfer() copies the bytes from the temporary stream to the permanent file.
+
+This method is very robust and reliable.  For very very files (for example, 100GB medical imaging file), this places huge demands on memory.  For remote file, it requires every byte from the remote location to be copied to the temporary file and subsequently transferred back to the remote location.  One day a project will be undertaken to stress test remote IO on HUGE files and more will be understood about the performance and optimisation that can be undertaken.
+
+### Intrusive and NonIntrusive Write Mode
+
+When Exiv2 rewrites an image, it determines the writeMode to determines the writeMode which are:
+
+1. Non-intrusive
+The metadata is updated in-place.  For performance reasons, this the default as it means that metadata can be updated by modifying a bytes in the original file.  For example, a common metadata edit is to change the date in Exif.Image.DateTime.  Non-intrusive write mode is designed to ensure this is performed very quickly.
+
+2. Intrusive
+The metadata is totally re-written in memory.  This always occurs if there are any changes in the makernote.  It will always occur if any tag edited tag requires more storage than in the original file.
+
+Write Mode is really clever, however it's scope is limited to writing Tiff images (and therefore similar Raw formats such as DNG, CR2 and NEF), only a small part of the file is written as a Tiff (the Exif metadata) and the image handler must use the io()->transfer() mechanism discussed above.
+
+### Using a Block Map to track changes to the file.
+
+In Chapter 5, I discuss the use of a block map to track small areas of the file which are in use.  I'm confident that architecture could be developed to vastly reduce the I/O involved in updating the metadata in a file.  [5. I/O in Exiv2](#5)
 
 [TOC](#TOC)
 <div id="6"/>
