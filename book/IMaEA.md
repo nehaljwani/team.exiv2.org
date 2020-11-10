@@ -2548,7 +2548,7 @@ END: /Users/rmills/jp2.jp2
 
 [TOC](#TOC)
 <div id="4-4"/>
-##2.4 Metadata Convertors
+## 2.4 Metadata Convertors
 
 Exiv2 has code to convert data between different Metdata standards.  Generally when you update Exif metadata, equivalent modifications will be performed on the IPTC and XMP metadata.  I can't explain why this code was added to Exiv2 and, while it may be convenient and invisible in its operation, it also has undesirable side effects.
 
@@ -2556,7 +2556,7 @@ If Exiv2 is ever rewritten, the decision to keep this capability should be caref
 
 [TOC](#TOC)
 <div id="MakerNotes"/>
-# 2.5 MakerNotes
+## 2.5 MakerNotes
 
 [https://exiv2.org/makernote.html](https://exiv2.org/makernote.html)
 
@@ -2958,6 +2958,8 @@ Exiv2 has an abstract RemoteIo object which can read/write on the internet.  For
 The MemIo class enables memory to be used as a stream.  This is fast and convenient for small temporary files.  When memory mapped files are available, FileIo uses that in preference to FILE*.  When the project started in 2004, memory-mapped files were not provided on some legacy platforms such as DOS.  Today, all operating systems provide memory mapped files.  I've never heard of Exiv2 being used in an embedded controller, however I'm confident that this is feasible.  I've worked on embedded controllers with no operating system and only a standard "C" io library.  Exiv2 can be built for such a device.
 
 Most camera manufacturers are large corporations.  I'm sure they have their own firmware to handle Exif metadata.  However, the world of photography has an ever growing band of start-ups making amazing devices such as Go-Pro.  One day I'll hear that somebody is cycling around on top of Mt Everest with Exiv2 running on top of their head!  One of our users is an astronomer at NASA.  I've never heard that Exiv2 has flown in space, however one day it might.  I will say with pride that Exiv2 is out of this world!
+
+![blockmap](blockmap.png)
 
 ### Using memory mapped files
 
