@@ -14,7 +14,7 @@ _First, my wife Alison, who has been my loyal support since the day we met in Hi
 
 _Secondly, Andreas Huggel the founder of the project and Luis and Dan who have worked tirelessly with me since 2017._
 
-_Exiv2 contributors (in alphabetical order): Abhinav, Alan, Andreas (both of them), Arnold, Ben, Gilles, Kevin, Leo, Leonardo, Mahesh, Micha&lstrok;, Milo&scaron;, Mikayel, Nehal, Neils, Phil, Rosen, Sridhar, Thomas, Tuan .... and others who have contributed to Exiv2._
+_Exiv2 contributors (in alphabetical order): Abhinav, Alan, Andreas (both of them), Arnold, Ben, Gilles, Kevin, Leo, Leonardo, Mahesh, Micha&lstrok;, Mikayel, Milo&scaron;, Nehal, Neils, Phil, Rosen, Sridhar, Thomas, Tuan .... and others who have contributed to Exiv2._
 
 _File Detectives:  Phil Harvey, Dave Coffin, Laurent Cl&eacute;vy._
 
@@ -2597,6 +2597,8 @@ To be written.
 
 The Exiv2 API is documented here: [https://exiv2.org/doc/](https://exiv2.org/doc/)  The API is in the Namespace Exiv2.  The Namespace Exiv2::Internal should never be used by application programs and is not revealed to via \<exiv2/exiv2.hpp\>.  As there are around 300 classes and 3000+ entry points, it's not possible to discuss the API in detail here.  Instead I will discuss a typical short application: samples/exifprint.cpp.  My aim here is to explain how to use the exiv2 library and provide a high-level overview of how the library operates.  The doxygen generated API Documentation is very good and the code is well laid out and documented.
 
+[TOC](#TOC)
+<div id="3-1"/>
 ## 3.1 API Overview
 
 1) The Image Handlers
@@ -2631,6 +2633,8 @@ Applications obtain access to an image object via the Image Factory.  The applic
 
 This is discussed in Chapter 11 of this book.
 
+[TOC](#TOC)
+<div id="3-2"/>
 ## 3.2 Typical Sample Application
 
 ```cpp
@@ -2764,6 +2768,8 @@ When you modify metadata using the variable _image_, you are only changing it in
 
 The image will be automatically closed when image goes out of scope.
 
+[TOC](#TOC)
+<div id="3-3"/>
 ## 3.3 The EasyAccess API
 
 Exiv2 provides a collection of functions to simplify searching for Exif metadata.  This is described in detail here: [https://github.com/Exiv2/exiv2/wiki/EasyAccess-API](https://github.com/Exiv2/exiv2/wiki/EasyAccess-API)
@@ -2784,6 +2790,8 @@ The following EasyAccess Selector Functions are provided:
 | afPoint<br>apertureValue<br>brightnessValue<br>contrast<br>dateTimeOriginal<br>exposureBiasValue<br>exposureIndex | exposureMode<br>exposureTime<br>flash<br>flashBias<br>flashEnergy<br>fNumber<br>focalLength | imageQuality<br>isoSpeed<br>lensName<br>lightSource<br>macroMode<br>make<br>maxApertureValue |meteringMode<br>model<br>orientation<br>saturation<br>sceneCaptureType<br>sceneMode<br>sensingMethod | serialNumber<br>sharpness<br>shutterSpeedValue<br>subjectArea<br>subjectDistance<br>whiteBalance<br>&nbsp; |
 
 
+[TOC](#TOC)
+<div id="3-4"/>
 ## 3.4 Listing the API
 
 You can get a list of the API with a command such as:
@@ -2854,7 +2862,7 @@ $
 <div id="4"/>
 # 4 Lens Recognition
 
-Lens Recognition is a difficult problem. The lens isn't stored in the metadata. Different manufacturers use different ways to deal with the lens and it's very common that a number such as "368" is used to represent several lenses. Then we have to examine other metadata to make a guess about which lens is being used.  Lens recognition has been time sink on the engineering resources of Team Exiv2. So, I introduced the ~/.exiv2 "Configuration File" in 0.26 to save lots of work and give users an instant way to recognise their lens. You don't need to wait on the release cycles of exiv2 and your distribution. You get it fixed instantly.
+Lens Recognition is a difficult problem. The lens isn't stored in the metadata. Different manufacturers use different ways to deal with the lens and it's very common that a number such as "368" is used to represent several lenses. Then we have to examine other metadata to make a guess about which lens is being used.  Lens recognition has been a time sink on the engineering resources of Team Exiv2. So, I introduced the ~/.exiv2 "Configuration File" in 0.26 to save lots of work and give users an instant way to recognise their lens. You don't need to wait on the release cycles of exiv2 and your distribution. You get it fixed instantly.
 
 In the introduction to this book, I have discussed my proposal for _**M2Lscript**_ (pronounce MillsScript).  This is my proposal to solve the lens problem.  [Future Exiv2 Projects](#future)
 
@@ -5179,7 +5187,7 @@ build>cmake --build . --config Release
 When the build finishes, you can inspect the setting and read the export table of _**ImageFactory::open()**_ functions as follows.  The output presented here has been simplified for presentation in this book.
 
 ```cmd
->cd \<exiv2dir\>
+>cd <exiv2dir>
 >mkdir build && cd build
 build>bin\exiv2 -vVg unicode
 exiv2 0.27.3
@@ -5456,7 +5464,7 @@ There we have it.  Nothing is ever late, nothing is more difficult than expected
 
 I also had the misfortune to work at a company where the boss was an expert in planning.  He explained to me that the only challenge in Software Engineering is to get the schedule right.  Everything else was trivial.
 
-So, if you live in the perfect world, you'll not find anything interesting or useful in this part of the book, because I'm talking the less than perfect world in which I live.  I usually call it "Reality".
+So, if you live in the perfect world, you'll not find anything interesting or useful in this part of the book, because I'm talking about the less than perfect world in which I live.  I usually call it "Reality".
 
 Another challenge is that many users are perfect and live in this other world where everything works.  So users seldom understand that the open-source project may be populated by people who live in the depressing world of "Reality".
 
@@ -5579,7 +5587,7 @@ There are serious limitations with PERT.  I only intend to investigate the use o
 | Many projects cannot be quantified.  | Why isn't PERT used:<br>1. In crime investigation.<br>2. In medical treatment.<br>3.  In investment management. |
 | You will do abortive work and encounter road blocks. | Program Managers never plan time for this.<br>Every innovative project has abortive work. |
 | People are not interchangeable. | People leave, or are assigned to other projects.  New team members require time to come up to speed with the project. |
-| Some tasks have a gestation period | If you are having a baby, more women won't reduce the 9 month wait.<br>Adding people is often counter-productive.  |
+| Some tasks have a gestation period. | If you are having a baby, more women won't reduce the 9 month wait.<br>Adding people is often counter-productive.  |
 | Management, and other project stakeholders, change goals and objectives. | The circumstances surrounding the project can change and have major implications for the project. |
 
 Because of the recursive nature of projects, there are serious limitations hiding inside these limitations.
