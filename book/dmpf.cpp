@@ -180,8 +180,8 @@ int main(int argc, char* argv[])
                 for ( size_t i = 0 ; i < nRead; i += bs ) {
                     uint64_t* p = (uint64_t*) &buff[i] ;
                     uint64_t  v = swap(p, options["endian"]!=platformEndian() );
-                    l += options["hex"] ? sprintf(line+l," %16llx" ,v )
-                                        : sprintf(line+l," %20lld" ,v )
+                    l += options["hex"] ? sprintf(line+l," %16llx" ,(long long int)v )
+                                        : sprintf(line+l," %20lld" ,(long long int)v )
                     ;
                 }
             break;
