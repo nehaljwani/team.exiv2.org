@@ -1193,7 +1193,7 @@ public:
 private:
     Image&   image_  ;
     Io       vector_ ; // the CIFF directory vector_.seek(0); length=victor_.getShort(image.endian()); size = 2 + length*10;
-    Io       parent_ ; // the parent io object
+    Io&      parent_ ; // the parent io object
 
     friend class CrwImage ;
 };
@@ -2893,7 +2893,7 @@ std::unique_ptr<Image> ImageFactory(std::string path)
 {
     TiffImage tiff(path); if ( tiff.valid() ) return std::unique_ptr<Image> (new TiffImage(path));
     JpegImage jpeg(path); if ( jpeg.valid() ) return std::unique_ptr<Image> (new JpegImage(path));
-//  CrwImage  crw (path); if (  crw.valid() ) return std::unique_ptr<Image> (new  CrwImage(path)); //TODO fix double-free on Linux
+    CrwImage  crw (path); if (  crw.valid() ) return std::unique_ptr<Image> (new  CrwImage(path));
     PngImage  png (path); if (  png.valid() ) return std::unique_ptr<Image> (new  PngImage(path));
     Jp2Image  jp2 (path); if (  jp2.valid() ) return std::unique_ptr<Image> (new  Jp2Image(path));
     ICC       icc (path); if (  icc.valid() ) return std::unique_ptr<Image> (new  ICC     (path));
