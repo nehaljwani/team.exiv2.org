@@ -657,14 +657,15 @@ TagDict olymFIDict;
 TagDict olymRoDict;
 
 enum ktSpecial
-{   ktMakerNote = 0x927c
+{   ktMN        = 0x927c
 ,   ktGps       = 0x8825
 ,   ktExif      = 0x8769
+,   ktIOP       = 0xa005
 ,   ktSubIFD    = 0x014a
 ,   ktMake      = 0x010f
-,   ktXMLPacket = 0x02bc
-,   ktIPTCNAA   = 0x83bb
-,   ktICCProfile= 0x8773
+,   ktXML       = 0x02bc
+,   ktIPTC      = 0x83bb
+,   ktICC       = 0x8773
 ,   ktGroup     = 0xffff
 };
 
@@ -1105,7 +1106,7 @@ protected:
 
     bool isPrintXMP(uint16_t type, PSOption option)
     {
-        return type == ktXMLPacket && option & kpsXMP;
+        return type == ktXML && option & kpsXMP;
     }
     friend class ImageEndianSaver;
 
@@ -2361,9 +2362,9 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
             if ( tagDict == tiffDict ) {
                 Io       io(io_,offset,count);
                 switch ( tag ) {
-                    case ktXMLPacket  : visitor.visitXMP(buff)   ; break;
-                    case ktICCProfile : ICC (io).accept(visitor) ; break;
-                    case ktIPTCNAA    : IPTC(io).accept(visitor) ; break;
+                    case ktXML  : visitor.visitXMP(buff)   ; break;
+                    case ktICC  : ICC (io).accept(visitor) ; break;
+                    case ktIPTC : IPTC(io).accept(visitor) ; break;
                 }
             }
 
@@ -2373,10 +2374,10 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
                     IFD(image_,offset,false).accept(visitor,ifdDict(image_.maker_,tag,makerDict()));
                 }
             } else switch ( tag ) {
-                case ktGps       : IFD(image_,offset,false).accept(visitor,gpsDict );break;
-                case ktExif      : IFD(image_,offset,false).accept(visitor,exifDict);break;
-                case ktMakerNote :         visitMakerNote(visitor,buff,count,offset);break;
-                default          : /* do nothing                                  */;break;
+                case ktGps  : IFD(image_,offset,false).accept(visitor,gpsDict );break;
+                case ktExif : IFD(image_,offset,false).accept(visitor,exifDict);break;
+                case ktMN   :         visitMakerNote(visitor,buff,count,offset);break;
+                default     : /* do nothing                                  */;break;
             }
         } // for i < nEntries
 
@@ -2947,10 +2948,12 @@ void init()
     if ( tiffDict.size() ) return; // don't do this twice!
 
     tiffDict  [ktGroup ] = "Image";
-    tiffDict  [ 0x83bb ] = "IPTCNAA";
-    tiffDict  [ 0x02bc ] = "XMLPacket";
-    tiffDict  [ 0x8773 ] = "InterColorProfile";
-    tiffDict  [ 0x8769 ] = "ExifTag";
+    tiffDict  [ ktExif ] = "ExifTag";
+    tiffDict  [ ktGps  ] = "GPSTag";
+    tiffDict  [ ktMake ] = "Make";
+    tiffDict  [ ktIPTC ] = "IPTCNAA";
+    tiffDict  [ ktXML  ] = "XMLPacket";
+    tiffDict  [ ktICC  ] = "InterColorProfile";
     tiffDict  [ 0x014a ] = "SubIFD";
     tiffDict  [ 0x00fe ] = "NewSubfileType";
     tiffDict  [ 0x0100 ] = "ImageWidth";
@@ -2959,7 +2962,6 @@ void init()
     tiffDict  [ 0x0103 ] = "Compression";
     tiffDict  [ 0x0106 ] = "PhotometricInterpretation";
     tiffDict  [ 0x010e ] = "ImageDescription";
-    tiffDict  [ 0x010f ] = "Make";
     tiffDict  [ 0x0110 ] = "Model";
     tiffDict  [ 0x0111 ] = "StripOffsets";
     tiffDict  [ 0x0112 ] = "Orientation";
@@ -2995,8 +2997,11 @@ void init()
     dngDict   [ 0xc7a6 ] = "DefaultBlackRender";
 
     exifDict  [ktGroup ] = "Photo";
+    exifDict  [ ktMN   ] = "MakerNote";
+    exifDict  [ ktIOP  ] = "InteropTag";
+    exifDict  [ 0x0001 ] = "InteropIndex";
+    exifDict  [ 0x0002 ] = "InteropVersion";
     exifDict  [ 0x9286 ] = "UserComment";
-    exifDict  [ 0x927c ] = "MakerNote";
     exifDict  [ 0x829a ] = "ExposureTime";
     exifDict  [ 0x829d ] = "FNumber";
     exifDict  [ 0x8822 ] = "ExposureProgram";
@@ -3017,9 +3022,6 @@ void init()
     exifDict  [ 0xa001 ] = "ColorSpace";
     exifDict  [ 0xa002 ] = "PixelXDimension";
     exifDict  [ 0xa003 ] = "PixelYDimension";
-    exifDict  [ 0xa005 ] = "InteropTag";
-    exifDict  [ 0x0001 ] = "InteropIndex";
-    exifDict  [ 0x0002 ] = "InteropVersion";
     exifDict  [ 0xa300 ] = "FileSource";
     exifDict  [ 0xa301 ] = "SceneType";
     exifDict  [ 0xa401 ] = "CustomRendered";
