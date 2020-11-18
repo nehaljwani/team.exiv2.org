@@ -635,6 +635,7 @@ enum kCanonType
 typedef std::map<uint16_t,std::string> TagDict;
 TagDict emptyDict ;
 TagDict tiffDict  ;
+TagDict dngDict   ;
 TagDict exifDict  ;
 TagDict canonDict ;
 TagDict nikonDict ;
@@ -704,12 +705,13 @@ std::string groupName(const TagDict& tagDict,std::string family="Exif" )
 
 std::string tagName(uint16_t tag,const TagDict& tagDict,const size_t max=0,std::string family="Exif")
 {
-    std::string name = tagKnown(tag,tagDict)
-                     ? tagDict.find(tag)->second
+    // prioritize dngDict above tiffDict
+    bool bTagDict    = ! (tagKnown(tag,dngDict) && tagDict == tiffDict);
+    std::string name = tagKnown(tag,bTagDict?tagDict:dngDict)
+                     ? (bTagDict?tagDict.find(tag)->second:dngDict.find(tag)->second)
                      : stringFormat("%#x",tag)
                      ;
-
-    name =  groupName(tagDict,family) + "." + name;
+    name =  groupName(bTagDict?tagDict:dngDict,family) + "." + name;
     if ( max && name.size() > max ){
         name = name.substr(0,max-2)+"..";
     }
@@ -921,7 +923,6 @@ typedef uint16_t PSOption;
 #define kpsUnknown   8
 #define kpsIcc      16
 #define kpsIptc     32
-
 
 // 1.  declare types
 class   Image; // forward
@@ -1233,7 +1234,7 @@ private:
     Io&      io_     ;
 };
 
-// Concrete Images with an accept() method which calles the Vistor virtual functions (visitBegin/End, visitTag etc.)
+// Concrete Images with an accept() method which calls Vistor virtual functions (visitBegin/End, visitTag etc.)
 class TiffImage : public Image
 {
 public:
@@ -1266,8 +1267,8 @@ public:
 
             uint16_t bytesize = bigtiff_ ? getShort(header,4,endian_) : 8;
             uint16_t version  = bigtiff_ ? getShort(header,6,endian_) : 0;
-                                             // Pano       Olym
-            valid_ =  (magic_==42||magic_==43||magic_==85||magic_==0x4f52) && (c == C) && (c=='I'||c=='M') && bytesize == 8 && version == 0;
+                                             // Pano     // Olym         // DCP
+            valid_ =  (magic_==42||magic_==43||magic_==85||magic_==0x4f52||magic_==0x4352) && (c == C) && (c=='I'||c=='M') && bytesize == 8 && version == 0;
             // Panosonic have augmented tiffDict with their keys
             if ( magic_ == 85 ) {
                 setMaker(kPano);
@@ -2639,7 +2640,7 @@ void ReportVisitor::visitTag
 
         std::string    name = tagName(tag,tagDict,28);
         std::string   value = buf.toString(type,count,image.endian_);
-
+        
         if ( printTag(name) ) {
             out() << indent()
                   << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
@@ -2973,6 +2974,25 @@ void init()
     tiffDict  [ 0x0132 ] = "DateTime";
     tiffDict  [ 0x013b ] = "Artist";
     tiffDict  [ 0x0213 ] = "YCbCrPositioning";
+    // DNG Tags
+    dngDict   [ktGroup ] = "DNG";
+    dngDict   [ 0xc614 ] = "UniqueCameraModel";
+    dngDict   [ 0xc621 ] = "ColorMatrix1";
+    dngDict   [ 0xc622 ] = "ColorMatrix2";
+    dngDict   [ 0xc65a ] = "CalibrationIlluminant1";
+    dngDict   [ 0xc65b ] = "CalibrationIlluminant2";
+    dngDict   [ 0xc6f4 ] = "ProfileCalibrationSignature";
+    dngDict   [ 0xc6f8 ] = "ProfileName";
+    dngDict   [ 0xc6fc ] = "ProfileToneCurve";
+    dngDict   [ 0xc6fd ] = "ProfileEmbedPolicy";
+    dngDict   [ 0xc6fe ] = "ProfileCopyright";
+    dngDict   [ 0xc714 ] = "ForwardMatrix1";
+    dngDict   [ 0xc715 ] = "ForwardMatrix2";
+    dngDict   [ 0xc725 ] = "ProfileLookTableDims";
+    dngDict   [ 0xc726 ] = "ProfileLookTableData";
+    dngDict   [ 0xc7a4 ] = "ProfileLookTableEncoding";
+    dngDict   [ 0xc7a5 ] = "BaselineExposureOffset";
+    dngDict   [ 0xc7a6 ] = "DefaultBlackRender";
 
     exifDict  [ktGroup ] = "Photo";
     exifDict  [ 0x9286 ] = "UserComment";
@@ -3185,7 +3205,7 @@ void init()
     olymRoDict[ 0x0000 ] = "Version";
     olymRoDict[ 0x0100 ] = "WB_RBLevelsUsed";
     olymRoDict[ 0x0110 ] = "WB_RBLevelsAuto";
-    
+
     crwDict   [ktGroup ] = "CRW";
     crwDict   [ 0x0032 ] = "CanonColorInfo1";
     crwDict   [ 0x0805 ] = "CanonFileDescription";

@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-11-10</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-11-18</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -46,7 +46,7 @@ _And our cat Lizzie._
 | [6.4 Visitor Design Pattern](#6-4)                    | 48 | [TGA Truevision Targa](#TGA)          | 29 | [11.14 Project Web Site](#11-14)        | 81 |
 | [6.5 IFD:accept() and TiffImage::accept() ](#6-5)     | 53 | [BMP Windows Bitmap](#BMP)            | 30 | [11.15 Project Servers ](#11-15)        | 81 |
 | [6.6 Presenting data with visitTag()](#6-6)           | 57 | [GIF Graphical Interchange Format](#GIF) | 31 | [11.16 API Management](#11-16)       | 81 |
-| [6.7 Tag Decoder](#6-7)                               | 59 |                                       |    | [11.17 Recruiting Contributors](#11-17) | 81 |
+| [6.7 Tag Decoder](#6-7)                               | 59 | [SIDECAR Xmp Sidecars](#SIDECAR)      | 32 | [11.17 Recruiting Contributors](#11-17) | 81 |
 | [6.8 Jpeg::Image accept()](#6-8)                      | 61 |                                       |    | [11.18 Project Scheduling](#11-18)      | 82 |
 | [7. Image Previews](#7)                               | 63 | _**Other Sections**_                  |    | [11.19 Enhancement Requests](#11-19)    | 82 |
 | [8. Test Suite](#8)                                   | 63 | [Dedication](#dedication)             |  2 | [11.20 Tools](#11-20)                   | 82 |
@@ -233,7 +233,7 @@ The good news however is that file formats come in families which are:
 
 | Family  | Description                                                                          | Examples |
 |:--      |:---                                                                                  |:--       |
-| TIFF    | You must learn Tiff thoroughly to understand metadata      | TIFF, DNG, NEF, ICC, CR2, ORF, RAW |
+| TIFF    | You must learn Tiff thoroughly to understand metadata | TIFF, DNG, NEF, ICC, CR2, ORF, RAW, DCP |
 | JIFF    | JPEG Image File Format<br>Linked list of 64k segments                               | JPEG, EXV |
 | PNG     | Another popular format<br>Linked list of chunks                                           | PNG |
 | CIFF    | Camera Image File Format.  Dave Coffin parse.c decodes CRW                                | CRW |
@@ -295,7 +295,7 @@ $
 
 ### NEF, DNG and CR2
 
-These are tiff files.  There must be some subtle matters to be handled in these formats, however tvisitor has no trouble running over the files.  Allow me to quote directly from Adobe's document: [https://www.adobe.com/content/dam/acom/en/products/photoshop/pdfs/dng\_spec\_1.4.0.0.pdf](dng_spec_1.4.0.0.pdf)
+These are tiff files.  There must be some subtle matters to be handled in these formats, however tvisitor has no trouble running over the files.  Allow me to quote directly from Adobe's document: [https://wwwimages2.adobe.com/content/dam/acom/en/products/photoshop/pdfs/dng_spec_1.5.0.0.pdf](dng_spec_1.5.0.0.pdf)
 
 _**A Standard Format**_
 
@@ -380,6 +380,38 @@ I would like to express my dismay with the design of most image containers.  The
 ### Metadata that cannot be edited
 
 There are tags in Tiff such as _**ImageWidth**_ which cannot be modified without rewriting the pixels in the image.  Exif protects those tags in the functions **TiffHeader::isImageTag()** and **Cr2Header::isImageTag()**.
+
+### DCP Camera Profiles
+
+The Adobe Camera Raw Convertor installs CameraProfiles .dcp files in /Library/Application Support/Adobe/CameraRaw/CameraProfiles/ (on macOS).  Camera Profiles are defined in the Adobe DNG Specification.  They are a modified TIFF format which has the Signature "IIRClong".  Example:
+
+```bash
+569 rmills@rmillsmm-local:~/gnu/exiv2/team/book $ dmpf count=40 files/NikonD5300.dcp 
+       0        0: IIRC.___._..._.___.___!.._.___._  ->  49 49 52 43 08 00 00 00 11 00 14 c6 02 00 0c 00 00 00 da 00 00 00 21 c6 0a 00 09 00 00 00 e6 00
+    0x20       32: __".._._                          ->  00 00 22 c6 0a 00 09 00
+570 rmills@rmillsmm-local:~/gnu/exiv2/team/book $ build/tvisitor files/NikonD5300.dcp 
+STRUCTURE OF TIFF FILE (II): files/NikonD5300.dcp
+ address |    tag                              |      type |    count |    offset | value
+      10 | 0xc614 Exif.DNG.UniqueCameraModel   |     ASCII |       12 |       218 | Nikon D5300
+      22 | 0xc621 Exif.DNG.ColorMatrix1        | SRATIONAL |        9 |       230 | 9672/10000 4294963143/10000 64/10000 +++
+      34 | 0xc622 Exif.DNG.ColorMatrix2        | SRATIONAL |        9 |       302 | 6988/10000 4294965912/10000 42949665 +++
+      46 | 0xc65a Exif.DNG.CalibrationIllumi.. |     SHORT |        1 |           | 17
+      58 | 0xc65b Exif.DNG.CalibrationIllumi.. |     SHORT |        1 |           | 21
+      70 | 0xc6f4 Exif.DNG.ProfileCalibratio.. |     ASCII |       10 |       374 | com.adobe
+      82 | 0xc6f8 Exif.DNG.ProfileName         |     ASCII |       17 |       384 | Camera Landscape
+      94 | 0xc6fc Exif.DNG.ProfileToneCurve    |     FLOAT |      128 |       402 | 0 0 983631792 989550973 992020400 99 +++
+     106 | 0xc6fd Exif.DNG.ProfileEmbedPolicy  |      LONG |        1 |           | 1
+     118 | 0xc6fe Exif.DNG.ProfileCopyright    |     ASCII |       35 |       914 | Copyright 2012 Adobe Systems, Inc.
+     130 | 0xc714 Exif.DNG.ForwardMatrix1      | SRATIONAL |        9 |       950 | 7978/10000 1352/10000 313/10000 2880 +++
+     142 | 0xc715 Exif.DNG.ForwardMatrix2      | SRATIONAL |        9 |      1022 | 7978/10000 1352/10000 313/10000 2880 +++
+     154 | 0xc725 Exif.DNG.ProfileLookTableD.. |      LONG |        3 |      1094 | 90 16 16
+     166 | 0xc726 Exif.DNG.ProfileLookTableD.. |     FLOAT |    69120 |      1106 | 0 1065353216 1065353216 1109273108 1 +++
+     178 | 0xc7a4 Exif.DNG.ProfileLookTableE.. |      LONG |        1 |           | 1
+     190 | 0xc7a5 Exif.DNG.BaselineExposureO.. | SRATIONAL |        1 |    277586 | 4294967261/100
+     202 | 0xc7a6 Exif.DNG.DefaultBlackRender  |      LONG |        1 |           | 1
+END: files/NikonD5300.dcp
+571 rmills@rmillsmm-local:~/gnu/exiv2/team/book $ 
+```
 
 [TOC](#TOC)
 <div id="JPEG"/>
@@ -1925,6 +1957,14 @@ Exif is the most important of the metadata containers.  However others exist and
 | Xmp  | Extensible Metadata Platform | Adobe Standard |
 | ICC  | International Color Consortium | Industry Consortium for Color Handling Standards |
 | ImageMagick/PNG | Portable Network Graphics | Not implemented in Exiv2 |
+
+[TOC](#TOC)
+<div id="SIDECAR"/>
+## SIDECAR Xmp Sidecars
+
+Sidecar files are "Raw" XMP.  They are used for several purposes such as to provide XMP support for files for which there is no define standard encoding.  For example, if you use less common legacy formats such as Sun Raster, the simplest way to provide XMP support is to use a sidecar.  Conventionally for a file such as foo.ras, sidecar will have the foo.xmp  
+
+Sidecar files are sometimes used to store application data. For example, the Adobe Camera Raw Convertor installs LensProfiles .lcp files in /Library/Application Support/Adobe/CameraRaw/LensProfiles/ (on macOS).
 
 [TOC](#TOC)
 <div id="Exif"/>
