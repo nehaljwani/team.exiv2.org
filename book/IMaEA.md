@@ -1979,37 +1979,29 @@ In order to understand the Exif Standard, it's useful to understand its relation
 | Name     | Description | URL |
 |:--       |:--          |:--  |
 | TIFF&nbsp;6.0 | This is an Adobe Standard.  It defines the structure of a Tiff File (the IFD) and tags for image properties such as ImageWidth and ImageHeight | [TIFF6.pdf](https://www.adobe.io/content/dam/udp/en/open/standards/tiff/TIFF6.pdf) |
-| TIFF&#8209;EP  | This is TIFF for Electronic Photographs and extends TIFF&nbsp;6 to provide tags for Photographs.  For example: IPTC/NAA and ISOSpeedRatings | [TAG2000-22\_DIS12234-2.pdf](http://www.barrypearson.co.uk/top2009/downloads/TAG2000-22_DIS12234-2.pdf) |
+| TIFF&#8209;EP  | This is TIFF for Electronic Photographs and extends TIFF&nbsp;6 to provide tags for Photographs.  For example: IPTC/NAA and ISOSpeedRatings | [TAG2000-22\_DIS12234-2.pdf](https://clanmills.com/exiv2/TAG2000-22_DIS12234-2.pdf) |
 | DNG            | This is an Adobe Standard of which TIFF-EP is a subset.  Tags are defined for Camera Raw Processing.  For example: CameraCalibration  | [dng\_spec\_1.5.0.0.pdf](https://wwwimages2.adobe.com/content/dam/acom/en/products/photoshop/pdfs/dng_spec_1.5.0.0.pdf) |
 | Exif         | This is the JEITA standard  | [CIPA\_DC\_008\_EXIF\_2019.pdf](https://fotomagazin.hu/wp-content/uploads/2020/05/CIPA_DC_008_EXIF_2019.pdf) |
 | XMP          | This is an Adobe Standard and written in XML.  For now, we're only concerned with embedding this in Tiff. | [XMPSpecificationPart3.pdf](https://www.adobe.io/content/dam/udp/en/open/standards/tiff/TIFF6.pdf) |
-| ICC Profile  | This is Inter Color Consortium Specification | [icc32.pdf](http://www.barrypearson.co.uk/top2009/downloads/TAG2000-22_DIS12234-2.pdf) |
-
-The embedding of the Exif (and other metadata) is discussed in the embedding specifications which are:
-
-
-| Name         | Description | URL |
-|:--           |:--          |:--  |
-| IPTC         | This is defined in the TIFF&#8209;EP Tags are defined for Camera Raw Processing.  For example: CameraCalibration  | [dng\_spec\_1.5.0.0.pdf](https://wwwimages2.adobe.com/content/dam/acom/en/products/photoshop/pdfs/dng_spec_1.5.0.0.pdf) |
-
+| ICC Profile  | This is Inter Color Consortium Specification | [ICC1v43\_2010-12.pdf](http://www.color.org/specification/ICC1v43_2010-12.pdf) |
 
 ### Exif Standard Tags
 
 | Specification | IFD         | Sub-sections | Examples |
 |:--            |:--          |:--  |:--       |
 | 4.6.4         | IFD0        | Image data structure<br>Offset to Exif IFD<br>Offset to GPS IFD<br>Make<br>Image data location<br>Image data characteristics<br>Other Tags | ImageWidth, ImageHeight<br>ExifTag<br>GPSTag<br>Make<br>StripOffsets, RowsPerStrip<br>TransferFunction, WhitePoint<br>ImageDescription, DateTime | 
-| ICC<br>XMP<br>TIFF&#8209;EP      | IFD0        | ICC Profile<br>XMP<br>IPTC | InterColorProfile<br>XMLPacket<br>IPTCNAA |
+| ICC<br>XMP<br>TIFF&#8209;EP      | IFD0        | ICC Profile<br>XMP<br>IPTC/NAA | InterColorProfile<br>XMLPacket<br>IPTCNAA |
 | 4.6.5         | Exif IFD | Exif Version<br>Image Data Characteristics<br>Image Configuration<br>User or Manufacturer Information<br>Related File Information<br>Date and Time<br>Picture Conditions<br>Shooting Situation<br>Other<br>| ExifVersion<br>ColorSpace, Gamma<br>ComponentsConfiguration, CompressedBitsPerPixel<br>UserComment, MakerNote<br>RelatedSoundFile<br>DateTimeOriginal<br>Aperture, FocalLength<br>Temperature, CameraElevationAngle<br>LensSpecification, CameraOwnerName |
 | 4.6.6         | GPS IFD  | Gps Data | GPSSatellites, GPSLatitude |
 | 4.6.7         | Interop  | | |
 
-The standard says: _The Interoperability structure of Interoperability IFD is same as TIFF defined IFD structure but does not contain the image data characteristically compared with normal TIFF IFD._
+The Exif standard says: _The Interoperability structure of Interoperability IFD is same as TIFF defined IFD structure but does not contain the image data characteristically compared with normal TIFF IFD._
 
-The standard does not define the structure of the MakerNote.  In practice, all manufacturers store their private data as a short header followed by an IFD or embedded TIFF file. The contents of the makernote headers are documented: [https://exiv2.org/makernote.html](https://exiv2.org/makernote.html).  
+The Exif standard does not define the structure of the MakerNote.  In practice, all manufacturers store their private data as a short header followed by an IFD or embedded TIFF file. The contents of the makernote headers are documented: [https://exiv2.org/makernote.html](https://exiv2.org/makernote.html).  
 
 There is an index to all the Exif (and IPTC and XMP and MakerNote) tags on exiv2.org at [https://exiv2.org/metadata.html](https://exiv2.org/metadata.html).  For example the Canon MakerNote is documented: [https://exiv2.org/tags-canon.html](https://exiv2.org/tags-canon.html).
 
-The embedded tags InterColorProfile, XMLPacket and IPTCNAA are usually only found in Tiff files.  Other formats such as JPEG, PNG, JP2 use different mechanisms to embed the data.  These are discussed in the Image File Formats in Chapter 1.
+The tags InterColorProfile, XMLPacket and IPTCNAA are usually only found in Tiff files.  Other formats such as JPEG, PNG, JP2 use different mechanisms to embed the data.  How the data is embedded in discussed in the Image File Formats in Chapter 1.
 
 ### Structure of Exif Metadata
 

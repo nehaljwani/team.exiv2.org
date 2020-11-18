@@ -665,6 +665,7 @@ enum ktSpecial
 ,   ktMake      = 0x010f
 ,   ktXML       = 0x02bc
 ,   ktIPTC      = 0x83bb
+,   ktIPTCPS    = 0x0404
 ,   ktICC       = 0x8773
 ,   ktGroup     = 0xffff
 };
@@ -1550,7 +1551,7 @@ void C8BIM::accept(Visitor& visitor)
             DataBuf  b(len);
             memcpy(b.pData_,buff.pData_+offset+data,len-data);
             visitor.visit8BIM(io(),*this,offset,kind,len,data,pad,b);
-            if ( visitor.option() & kpsRecursive && kind == 0x0404) {
+            if ( visitor.option() & kpsRecursive && kind == ktIPTCPS) {
                 Io   stream(io(),offset+data,len);
                 IPTC iptc(stream);
                 iptc.accept(visitor);
@@ -3291,8 +3292,8 @@ void init()
     iptcDicts[1]             = iptcEnvelope;
     iptcDicts[2]             = iptcApplication ;
 
-    psdDict        [ktGroup] = "8BIM"          ;
-    psdDict        [ 0x0404] = "IPTCNAA"       ;
+    psdDict        [ktGroup ]= "8BIM"          ;
+    psdDict        [ktIPTCPS]= "IPTCNAA"       ;
     psdDict        [ 0x040C] = "Thumbnail"     ;
     psdDict        [ 0x040F] = "ICCProfile"    ;
     psdDict        [ 0x0421] = "Version"       ;
