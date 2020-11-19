@@ -1551,7 +1551,7 @@ void C8BIM::accept(Visitor& visitor)
             DataBuf  b(len);
             memcpy(b.pData_,buff.pData_+offset+data,len-data);
             visitor.visit8BIM(io(),*this,offset,kind,len,data,pad,b);
-            if ( visitor.option() & kpsRecursive && kind == ktIPTCPS) {
+            if ( (visitor.option() & kpsRecursive) && (kind == ktIPTCPS)) {
                 Io   stream(io(),offset+data,len);
                 IPTC iptc(stream);
                 iptc.accept(visitor);
@@ -2087,7 +2087,7 @@ void JpegImage::accept(Visitor& visitor)
                 uint16_t start = 2+14 ; // "\mark\length\ICC_PROFILE\0\C\Z" = \C: 1 byte chunk. \Z: 1 byte chunks.
                 ICC.read(io_,address+2+start,length - start); // read the XMP from the stream
             }
-            if ( signature.find("Photoshop 3.0") == 0 && visitor.option() & kpsRecursive) {
+            if ( (signature.find("Photoshop 3.0") == 0) && (visitor.option() & kpsRecursive)) {
                 uint16_t start = 2+2+14 ; // "\mark\length\Photoshop 3.0\08BIM..."
                 Io    bim(io_,address+start,length-start);
                 C8BIM c8bim(bim);
@@ -2186,7 +2186,7 @@ public:
 
     void visitEnd(Image& image)
     {
-        if ( option() & kpsBasic || option() & kpsRecursive ) {
+        if ( (option() & kpsBasic) || (option() & kpsRecursive) ) {
             out() << indent() << "END: " << image.path() << std::endl;
         }
         indent_--;
@@ -2360,7 +2360,7 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
             visitor.visitTag(io_,image_,address,tag,type,count,offset,buff,tagDict);  // Tell the visitor
 
             // recursion anybody?
-            if ( tagDict == tiffDict ) {
+            if ( (visitor.option() & kpsRecursive) & (tagDict == tiffDict) ) {
                 Io       io(io_,offset,count);
                 switch ( tag ) {
                     case ktXML  : visitor.visitXMP(buff)   ; break;
@@ -2375,10 +2375,11 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
                     IFD(image_,offset,false).accept(visitor,ifdDict(image_.maker_,tag,makerDict()));
                 }
             } else switch ( tag ) {
-                case ktGps  : IFD(image_,offset,false).accept(visitor,gpsDict );break;
-                case ktExif : IFD(image_,offset,false).accept(visitor,exifDict);break;
-                case ktMN   :         visitMakerNote(visitor,buff,count,offset);break;
-                default     : /* do nothing                                  */;break;
+                case ktSubIFD : IFD(image_,offset,false).accept(visitor,tagDict );break;
+                case ktGps    : IFD(image_,offset,false).accept(visitor,gpsDict );break;
+                case ktExif   : IFD(image_,offset,false).accept(visitor,exifDict);break;
+                case ktMN     :         visitMakerNote(visitor,buff,count,offset);break;
+                default       : /* do nothing                                  */;break;
             }
         } // for i < nEntries
 
@@ -2554,7 +2555,7 @@ void Jp2Image::accept(class Visitor& v)
                 jp2.valid_=true;
                 jp2.accept(v);
             }
-        } else if ( boxName(box) == "mdat" && (v.option() & kpsRecursive) && exifID_ ) {
+        } else if ( (boxName(box) == "mdat") && (v.option() & kpsRecursive) && exifID_ ) {
             // TODO:  We're not storing exifOffset_/exifLength_ correctly
             Io t1(io(),exifOffset_+10,exifLength_-10);
             Io t2(io(),exifOffset_+ 4,exifLength_ -4);
@@ -2955,8 +2956,9 @@ void init()
     tiffDict  [ ktIPTC ] = "IPTCNAA";
     tiffDict  [ ktXML  ] = "XMLPacket";
     tiffDict  [ ktICC  ] = "InterColorProfile";
-    tiffDict  [ 0x014a ] = "SubIFD";
+    tiffDict  [ ktSubIFD]= "SubIFD";
     tiffDict  [ 0x00fe ] = "NewSubfileType";
+    tiffDict  [ 0x00ff ] = "SubfileType";
     tiffDict  [ 0x0100 ] = "ImageWidth";
     tiffDict  [ 0x0101 ] = "ImageLength";
     tiffDict  [ 0x0102 ] = "BitsPerSample";
