@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-11-18</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-11-19</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -303,8 +303,6 @@ _The lack of a standard format for camera raw files creates additional work for 
 
 _To address these problems, Adobe has defined a new non-proprietary format for camera raw files. The format, called Digital Negative or DNG, can be used by a wide range of hardware and software developers to provide a more flexible raw processing and archiving workflow. End users may also use DNG as an intermediate format for storing images that were originally captured using a proprietary camera raw format._
 
-The document then proceeds to say that DNG and TIFF are identical.  I believe there are some Tiff Tags in DNG which are not in the Tiff6 Specification.  I discuss this again below.
-
 _**TIFF Compatible**_
 
 _DNG is an extension of the TIFF 6.0 format, and is compatible with the TIFF-EP standard. It is possible (but not required) for a DNG file to simultaneously comply with both the Digital Negative specification and the TIFF-EP standard._
@@ -356,8 +354,6 @@ END: /Users/rmills/temp/Raw/DSC_0003.dng
 I was a little surprised that Adobe have removed the MakerNote.
 
 I believe the "undefined" tags which are listed in the format: Exif.Image.0xc761 and defined in the specification.  C761.H is "Noise Profile" for which the mathematics are explained by Adobe!
-
-A curiosity about the DNG Standard is how to know that these tags are valid when reading a DNG.  Of course the DNG's tag Exif.Image.Software is "Adobe DNG Converter 12.3", however I believe most image editors would overwrite that when the file is modified.  Perhaps it's better to consider tags such as 0xc761 to be part of the "Core" Tiff Specification.
 
 #### CR2 and NEF will require more investigation.
 
@@ -1945,6 +1941,14 @@ fbe0
 This is supported by Gif89a files and documented by Adobe in XMPSpecificationPart3.pdf on page 17 of the 2010 edition.  At present I don't have a sample GIF with embedded XMP.  I don't know if Exiv2 supports GIF/XML.
 
 [TOC](#TOC)
+<div id="SIDECAR"/>
+## SIDECAR Xmp Sidecars
+
+Sidecar files are "Raw" XMP.  They are used for several purposes such as to provide XMP support for files for which there is no define standard encoding.  For example, if you use less common legacy formats such as Sun Raster, the simplest way to provide XMP support is to use a sidecar.  Conventionally for a file such as foo.ras, sidecar will have the foo.xmp  
+
+Sidecar files are sometimes used to store application data. For example, the Adobe Camera Raw Convertor installs LensProfiles .lcp files in /Library/Application Support/Adobe/CameraRaw/LensProfiles/ (on macOS).
+
+[TOC](#TOC)
 <div id="2"/>
 # 2 Metadata Standards
 
@@ -1956,58 +1960,48 @@ Exif is the most important of the metadata containers.  However others exist and
 | IPTC | International Press Telecommunications Council  | Press Industry Standard |
 | Xmp  | Extensible Metadata Platform | Adobe Standard |
 | ICC  | International Color Consortium | Industry Consortium for Color Handling Standards |
-| ImageMagick/PNG | Portable Network Graphics | Not implemented in Exiv2 |
-
-[TOC](#TOC)
-<div id="SIDECAR"/>
-## SIDECAR Xmp Sidecars
-
-Sidecar files are "Raw" XMP.  They are used for several purposes such as to provide XMP support for files for which there is no define standard encoding.  For example, if you use less common legacy formats such as Sun Raster, the simplest way to provide XMP support is to use a sidecar.  Conventionally for a file such as foo.ras, sidecar will have the foo.xmp  
-
-Sidecar files are sometimes used to store application data. For example, the Adobe Camera Raw Convertor installs LensProfiles .lcp files in /Library/Application Support/Adobe/CameraRaw/LensProfiles/ (on macOS).
 
 [TOC](#TOC)
 <div id="Exif"/>
 ## 2.1 Exif Metadata
 
-EXIF = Exchangeable image file format. Exif is the largest and most commonly used metadata standard.  The standard is defined by JEITA which is the Japanese Association of Camera Manufacturers.  Exif metadata is embedded in almost all images captured by cameras, phones and other "smart" devices.  Exif has tags for Maker, Model, Aperture and many other settings.  Exiv2 supports the Exif 2.32 Standard.  Exiv2 knows the definition of about 6000 tags.  Exif however is not extensible.  Over the years, features such as GPS, Lens and Time Zone have been added.
+EXIF = Exchangeable image file format. Exif is the largest and most commonly used metadata standard.  The standard is defined by JEITA which is the Japanese Association of Camera Manufacturers.  Exif metadata is embedded in almost all images captured by cameras, phones and other "smart" devices.  Exif has tags for Maker, Model, Aperture and many other settings.  Exiv2 supports the Exif 2.32 Standard.  Exiv2 knows the definition of about 6000 tags.  Exif however is not extensible.  Over the years, tags have been added for topics such as GPS, Lens and Time Zone.
 
-To enable the manufacturer to store both proprietary and non-standard data, the MakerNote Tag is defined.  Usually the Manufacturer will write a TIFF Encoded record into the MakerNote.  Exiv2 can reliably read and rewrite Manufacturer's MakerNotes.  The implementation of this in Exiv2 is the outstanding work by Andreas Huggel.
+To enable the manufacturer to store both proprietary and non-standard data, the MakerNote Tag is defined.  Usually the Manufacturer will write a TIFF Encoded record into the MakerNote.  Exiv2 can reliably read and rewrite Manufacturer's MakerNotes.  The implementation of this in Exiv2 is the outstanding work of Andreas Huggel.
 
 In order to understand the Exif Standard, it's useful to understand its relationship with other standards:
 
-| Name     | Description | URL |
-|:--       |:--          |:--  |
-| TIFF&nbsp;6.0 | This is an Adobe Standard.  It defines the structure of a Tiff File (the IFD) and tags for image properties such as ImageWidth and ImageHeight | [TIFF6.pdf](https://www.adobe.io/content/dam/udp/en/open/standards/tiff/TIFF6.pdf) |
-| TIFF&#8209;EP  | This is TIFF for Electronic Photographs and extends TIFF&nbsp;6 to provide tags for Photographs.  For example: IPTC/NAA and ISOSpeedRatings | [TAG2000-22\_DIS12234-2.pdf](https://clanmills.com/exiv2/TAG2000-22_DIS12234-2.pdf) |
-| DNG            | This is an Adobe Standard of which TIFF-EP is a subset.  Tags are defined for Camera Raw Processing.  For example: CameraCalibration  | [dng\_spec\_1.5.0.0.pdf](https://wwwimages2.adobe.com/content/dam/acom/en/products/photoshop/pdfs/dng_spec_1.5.0.0.pdf) |
-| Exif         | This is the JEITA standard  | [CIPA\_DC\_008\_EXIF\_2019.pdf](https://fotomagazin.hu/wp-content/uploads/2020/05/CIPA_DC_008_EXIF_2019.pdf) |
-| XMP          | This is an Adobe Standard and written in XML.  For now, we're only concerned with embedding this in Tiff. | [XMPSpecificationPart3.pdf](https://www.adobe.io/content/dam/udp/en/open/standards/tiff/TIFF6.pdf) |
-| ICC Profile  | This is Inter Color Consortium Specification | [ICC1v43\_2010-12.pdf](http://www.color.org/specification/ICC1v43_2010-12.pdf) |
+| Name             | Description | URL |
+|:--               |:--          |:--  |
+| TIFF&nbsp;6.0    | Adobe Standard.  It defines the structure of a Tiff File (the IFD) and tags for image properties such as ImageWidth and ImageHeight | [TIFF6.pdf](https://www.adobe.io/content/dam/udp/en/open/standards/tiff/TIFF6.pdf) |
+| TIFF&#8209;EP    | ISO Standard.  TIFF for Electronic Photographs extends TIFF&nbsp;6 to provide tags for Photographs.  For example: IPTC/NAA and ISOSpeedRatings | [TAG2000-22\_DIS12234-2.pdf](https://clanmills.com/exiv2/TAG2000-22_DIS12234-2.pdf) |
+| DNG              | Adobe Standard. DNG extends TIFF-EP with tags for Camera Raw Processing.  For example: CameraCalibration  | [dng\_spec\_1.5.0.0.pdf](https://wwwimages2.adobe.com/content/dam/acom/en/products/photoshop/pdfs/dng_spec_1.5.0.0.pdf) |
+| Exif             | JEITA Standard.  | [CIPA\_DC\_008\_EXIF\_2019.pdf](https://fotomagazin.hu/wp-content/uploads/2020/05/CIPA_DC_008_EXIF_2019.pdf) |
+| XMP              | Adobe Standard. XMP is written in XML.  For now, we're only concerned with embedding this in Tiff. | [XMPSpecificationPart3.pdf](https://www.adobe.io/content/dam/udp/en/open/standards/tiff/TIFF6.pdf) |
+| ICC&nbsp;Profile | International Color Consortium Standard.  The specification defines both the ICC Profile Format and embedding standards. | [ICC1v43\_2010-12.pdf](http://www.color.org/specification/ICC1v43_2010-12.pdf) |
+| IPTC             | ITPC Standard. | [IPTC-PhotoMetadata-201407_1.pdf](https://www.iptc.org/std/photometadata/specification/IPTC-PhotoMetadata-201407_1.pdf)
 
 ### Exif Standard Tags
 
-| Specification | IFD         | Sub-sections | Examples |
-|:--            |:--          |:--  |:--       |
-| 4.6.4         | IFD0        | Image data structure<br>Offset to Exif IFD<br>Offset to GPS IFD<br>Make<br>Image data location<br>Image data characteristics<br>Other Tags | ImageWidth, ImageHeight<br>ExifTag<br>GPSTag<br>Make<br>StripOffsets, RowsPerStrip<br>TransferFunction, WhitePoint<br>ImageDescription, DateTime | 
-| ICC<br>XMP<br>TIFF&#8209;EP      | IFD0        | ICC Profile<br>XMP<br>IPTC/NAA | InterColorProfile<br>XMLPacket<br>IPTCNAA |
-| 4.6.5         | Exif IFD | Exif Version<br>Image Data Characteristics<br>Image Configuration<br>User or Manufacturer Information<br>Related File Information<br>Date and Time<br>Picture Conditions<br>Shooting Situation<br>Other<br>| ExifVersion<br>ColorSpace, Gamma<br>ComponentsConfiguration, CompressedBitsPerPixel<br>UserComment, MakerNote<br>RelatedSoundFile<br>DateTimeOriginal<br>Aperture, FocalLength<br>Temperature, CameraElevationAngle<br>LensSpecification, CameraOwnerName |
-| 4.6.6         | GPS IFD  | Gps Data | GPSSatellites, GPSLatitude |
-| 4.6.7         | Interop  | | |
+| Specification               | IFD         | Sub-sections | Examples |
+|:--                          |:--          |:--           |:--       |
+| Exif 4.6.4                  | IFD0        | Image data structure<br>Offset to Exif IFD<br>Offset to GPS IFD<br>Make<br>Image data location<br>Image data characteristics<br>Other Tags | ImageWidth, ImageHeight<br>ExifTag<br>GPSTag<br>Make<br>StripOffsets, RowsPerStrip<br>TransferFunction, WhitePoint<br>ImageDescription, DateTime | 
+| ICC<br>XMP<br>TIFF&#8209;EP | IFD0        | ICC Profile<br>XMP<br>IPTC/NAA<br>_**See**_ **ICC/XMP/IPTC** _**Below**_ | InterColorProfile<br>XMLPacket<br>IPTCNAA<br>&nbsp; |
+| Exif 4.6.5                  | Exif IFD    | Exif Version<br>Image Data Characteristics<br>Image Configuration<br>User or Manufacturer Information<br>Related File Information<br>Date and Time<br>Picture Conditions<br>Shooting Situation<br>Other<br>| ExifVersion<br>ColorSpace, Gamma<br>ComponentsConfiguration, CompressedBitsPerPixel<br>UserComment, MakerNote _**See**_ **MakerNote** _**Below**_<br>RelatedSoundFile<br>DateTimeOriginal<br>Aperture, FocalLength<br>Temperature, CameraElevationAngle<br>LensSpecification, CameraOwnerName |
+| Exif 4.6.6                  | GPS IFD     | GPS Data | GPSSatellites, GPSLatitude |
+| Exif 4.6.7                  | Interop     | _**See**_ **Interop** _**Below**_ |  |
 
-The Exif standard says: _The Interoperability structure of Interoperability IFD is same as TIFF defined IFD structure but does not contain the image data characteristically compared with normal TIFF IFD._
+**Interop** The Exif standard says: _The Interoperability structure of Interoperability IFD is same as TIFF defined IFD structure but does not contain the image data characteristically compared with normal TIFF IFD._
 
-The Exif standard does not define the structure of the MakerNote.  In practice, all manufacturers store their private data as a short header followed by an IFD or embedded TIFF file. The contents of the makernote headers are documented: [https://exiv2.org/makernote.html](https://exiv2.org/makernote.html).  
+**MakerNote** The Exif standard does not define the structure of the MakerNote.  In practice, all manufacturers store their private data as a short header followed by an IFD or embedded TIFF file. The contents of the makernote headers are documented: [https://exiv2.org/makernote.html](https://exiv2.org/makernote.html).   There is an index to every Exif (and IPTC and XMP and MakerNote) tag supported by Exiv2 at [https://exiv2.org/metadata.html](https://exiv2.org/metadata.html).  For example the Canon MakerNote is documented: [https://exiv2.org/tags-canon.html](https://exiv2.org/tags-canon.html).
 
-There is an index to all the Exif (and IPTC and XMP and MakerNote) tags on exiv2.org at [https://exiv2.org/metadata.html](https://exiv2.org/metadata.html).  For example the Canon MakerNote is documented: [https://exiv2.org/tags-canon.html](https://exiv2.org/tags-canon.html).
-
-The tags InterColorProfile, XMLPacket and IPTCNAA are usually only found in Tiff files.  Other formats such as JPEG, PNG, JP2 use different mechanisms to embed the data.  How the data is embedded in discussed in the Image File Formats in Chapter 1.
+**ICC/XMP/IPTC** The tags InterColorProfile, XMLPacket and IPTCNAA are usually only found in Tiff files.  Other formats such as JPEG, PNG, JP2 use different mechanisms to embed the data.  How the data is embedded is defined in the ICC&nbsp;Profile Specification and discussed in the Image File Formats in Chapter 1.
 
 ### Structure of Exif Metadata
 
 ![exif](exif.png)
 
-Exif metadata is stored as an embedded TIFF.  So, every tag has an array of values.  The array is homogeneous.  Every element of the array is of the same time.  So, there can be an array of ASCII values _(for strings)_, or an array of Shorts _(for image dimensions)_.  Foreign data such as IPTC, ICC Profiles and MakerNotes are typically an array of "UNDEFINED" which are binary data.
+Exif metadata is stored as an embedded TIFF.  So, every tag has an array of values.  The array is homogeneous.  Every element of the array is of the same type.  So, there can be an array of ASCII values _(for strings)_, or an array of Shorts _(for image dimensions)_.  Foreign data such as IPTC, ICC Profiles and MakerNotes are typically an array of "UNDEFINED" which are binary data.
 
 There are 3 types of single-byte arrays in Exif.  An array of ASCII values should by 7-bit ascii values with a trailing null.  An array of UNDEFINED is usually use to define binary data.  An array of BYTE values is a byte-stream of uint8\_t and typically used by XMPPacket to store XML.  
 
@@ -2023,7 +2017,7 @@ GPSInfo.GPSAreaInformation,	28,	0x001c,	GPSInfo,	Exif.GPSInfo.GPSAreaInformation
 574 rmills@rmillsmm-local:~/gnu/exiv2/team/book $ 
 ```
 
-The structure of those tags is defined on path34 of the Exiv2-2 Specification.  Three standards are supported by the Specification and they are "ASCII, JIS and UNICODE".  Provision is a made for "Undefined" which presumably leaves it to the application to interpret the data.
+The structure of those tags is defined on page34 of the Exiv2-2 Specification.  Three standards are supported by the Specification and they are "ASCII, JIS and UNICODE".  Provision is a made for "Undefined" which presumably leaves it to the application to interpret the data.
 
 These tags are discussed and explained in the Exiv2 man page.  The code in tvisitor.cpp does not deal with CharSet decoding and reports the binary values of the bytes.
 
