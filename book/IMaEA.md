@@ -3647,8 +3647,6 @@ The code in _**tvisitor.cpp**_ implements the visitor pattern and three visitors
 | $ ./tvisitor I path   | $ exiv2 -pi path | Print IPTC data |
 | $ ./tvisitor U path   | $ exiv2 -pa --undefined path | Show unknown tags |
 
-There's a deliberate bug in the code in tvisitor.cpp.  The class Tiff does not know how to recover the XMP/xml.  You the reader, can investigate a fix.  You will find the solution in the code in the Exiv2 library.
-
 Let's see the recursive version in action:
 
 ```bash
@@ -4117,7 +4115,7 @@ void JpegImage::accept(Visitor& visitor)
 }  // JpegImage::visitTiff
 ```
 
-This function is more complex than TiffImage::accept().  It navigates the chain of segments and calls the visitor appropriately.  The function is complicated to deal with Extended JPEG. There are two schemes for dealing with Exif metadata that span more than a single segment.
+This function is not as simple as TiffImage::accept().  It navigates the chain of segments and calls the visitor appropriately.  The function is complicated to deal with Extended JPEG. There are two schemes for dealing with Exif metadata that span more than a single segment.
 
 For the benefit of clarity, I haven't shown the code here which handles Extended XMP.  In Exiv2, there is also code to handle ICC profiles which can also span multiple segments.
 
@@ -4209,7 +4207,7 @@ reportTest
 ##
 ```
 
-The bash tests have been rewritten in python.  This was done because running bash scripts on windows is painful for most Visual Studio users.  The following script is a prototype in the project proposal to replace the bash scripts.  The implementation in tests/bash\_tests/utils.py is considerably more complex as it emulates several system utilities including diff, md5sum, grep, xmllint and others.  I am very grateful to Leo for the hard work he performed to port bash\_tests to python.  Thank You, Leo.
+The bash tests have been rewritten in python.  This was done because running bash scripts on windows is painful for most Visual Studio users.  The following script is a prototype in the project proposal to replace the bash scripts.  The implementation in tests/bash\_tests/utils.py is considerably more complicated as it emulates several system utilities including diff, md5sum, grep, xmllint and others.  I am very grateful to Leo for the hard work he performed to port bash\_tests to python.  Thank You, Leo.
 
 The decision to convert bash scripts such as icc\_test.sh to python was taken to achieve the following goals:
 
@@ -5741,11 +5739,11 @@ Before I retired, the circus started adopting Scrum.  Loads of meetings.  The pr
 
 In the last 10 years we have seen AI move out of the lab and into our homes, cars and phones.  Probably 50% of code development time is spent on test related activity.  Perhaps in future, AI will undertake more of that work.  Remember it works 7x24, never takes a vacation and works very quickly.  I have high hopes that AI can be used to automate testing in future.  However, all coins have two sides and the AI may drown the engineer with very obscure bugs.  In some way, we see this with CVEs discovered by automatic fuzzing libraries.
 
-There is a method of developing code that works for me and that's to do everything myself.   This model doesn't scale.  However it is effective.  Do I create bugs?  Of course, I do.  However I find and fix them.  Many of the best people with whom I worked in Silicon Valley use this approach.  And when I think about it, that's exactly how Andreas created Exiv2.
+There is a method of developing code that works for me and that's _to do everything myself_.   This model doesn't scale.  However it is effective.  Do I create bugs?  Of course, I do.  However I find and fix them.  Many of the best people with whom I worked in Silicon Valley use this approach.  And when I think about it, that's exactly how Andreas created Exiv2.
 
 Another method that I believe is very effective is prototyping.  Working in a sand-box with a small amount of code can be very effective to explore and learn.  I can say with certainty that I have learned more about metadata in 12 weeks by writing this book than I discovered by working on the Exiv2 code for 12 years.  Program Management people hate prototyping because it doesn't have a specification, milestones, deliverables or schedule.  
 
-If you have good folks on the team, the development will be enjoyable and the results will be good.  However, Software Development in large teams is Russian Roulette with a bullet in every chamber.  Mostly, the experience is horrible.  Good Luck.  I'm happy to be retired.
+If you have good folks on the team, the development will be enjoyable and the results will be good.  However, Software Development in large chaotic company such as _West Anchors_ is Russian Roulette with a bullet in every chamber.  Good Luck.  I'm happy to be retired.
 
 [TOC](#TOC)
 <div id="12"/>
