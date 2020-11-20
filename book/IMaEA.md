@@ -27,37 +27,38 @@ _And our cat Lizzie._
 ## <center>TABLE of CONTENTS</center>
 <div id="TOC"/>
 
-| Section                                             | Page | Image Formats                       | Page | Project Management                    | Page | 
-|:--                                                    | --:|:--                                    | --:|:--                                      | --:|
-| [1. Image File Formats](#1)                           |  9 | [TIFF and BigTiff](#TIFF)             | 10 | [11. Project Management](#11)           | 77 |
-| [2. Metadata Standards](#2)                           | 32 | [JPEG and EXV](#JPEG)                 | 12 | [11.1 C++ Code](#11-1)                  | 78 |
-| [2.1 Exif Metadata](#Exif)                            | 35 | [PNG Portable Network Graphics](#PNG) | 17 | [11.2 Build](#11-2)                     | 79 |
-| [2.2 XMP Metadata](#XMP)                              | 36 | [JP2 Jpeg 2000](#JP2)                 | 18 | [11.3 Security](#11-3)                  | 80 |
-| [2.3 IPTC Metadata](#IPTC)                            | 37 | [ISOBMFF, CR3, HEIF, AVIF](#ISOBMFF)  | 19 | [11.4 Documentation](#11-4)             | 80 |
-| [2.5 MakerNotes](#MakerNotes)                         | 38 | [CRW Canon Raw](#CRW)                 | 20 | [11.5 Testing](#11-5)                   | 80 |
-| [2.6 Metadata Convertors](#MakerNotes)                | 38 | [ICC Profile](#ICC)                   | 21 | [11.6 Sample programs](#11-6)           | 80 |
-| [3. Exiv2 APIs](#3)                                   | 38 | [RIFF Resource Interchange File Format](#RIFF) | 22 | [11.7 User Support](#11-7)     | 80 |
-| [4. Lens Recognition](#4)                             | 39 | [MRW Minolta Raw](#MRW)               | 23 | [11.8 Bug Tracking](#11-8)              | 81 | 
-| [5. I/O in Exiv2](#5)                                 | 41 | [ORF Olympus Raw Format](#ORF)        | 24 | [11.9 Release Engineering](#11-9)       | 81 |
-| [6. Exiv2 Architecture](#6)                           | 41 | [PGF Progressive Graphics File](#PGF) | 25 | [11.10 Platform Support](#11-10)        | 81 |
-| [6.1 Extracting metadata using dd](#6-1)              | 42 | [PSD PhotoShop Document](#PSD)        | 26 | [11.11 Localisation](#11-11)            | 81 |
-| [6.2 Tag Names in Exiv2](#6-2)                        | 44 | [RAF Fujifilm RAW](#RAF)              | 27 | [11.12 Build Server](#11-12)            | 81 |
-| [6.3 TagInfo](#6-3)                                   | 44 | [RW2 Panasonic RAW](#RW2)             | 28 | [11.11 Source Code Management](#11-11)  | 81 |
-| [6.4 Visitor Design Pattern](#6-4)                    | 48 | [TGA Truevision Targa](#TGA)          | 29 | [11.14 Project Web Site](#11-14)        | 81 |
-| [6.5 IFD:accept() and TiffImage::accept() ](#6-5)     | 53 | [BMP Windows Bitmap](#BMP)            | 30 | [11.15 Project Servers ](#11-15)        | 81 |
-| [6.6 Presenting data with visitTag()](#6-6)           | 57 | [GIF Graphical Interchange Format](#GIF) | 31 | [11.16 API Management](#11-16)       | 81 |
-| [6.7 Tag Decoder](#6-7)                               | 59 | [SIDECAR Xmp Sidecars](#SIDECAR)      | 32 | [11.17 Contributors](#11-17) | 81 |
-| [6.8 Jpeg::Image accept()](#6-8)                      | 61 |                                       |    | [11.18 Project Scheduling](#11-18)      | 82 |
-| [7. Image Previews](#7)                               | 63 | _**Other Sections**_                  |    | [11.19 Enhancement Requests](#11-19)    | 82 |
-| [8. Test Suite](#8)                                   | 63 | [Dedication](#dedication)             |  2 | [11.20 Tools](#11-20)                   | 82 |
-| [8.1 Bash Tests](#8-1)                                | 68 | [About this book](#about)             |  4 | [11.21 Licensing and Legal](#11-21)     | 82 |
-| [8.2 Python Tests](#8-2)                              | 69 | [How did I get interested ?](#begin)  |  4 | [11.22 Back-porting](#11-22)            | 82 |
-| [8.3 Unit Tests](#8-3)                                | 70 | [2012 - 2017](#2012)                  |  5 | [11.23 Other OSS projects](#11-23)      | 82 |
-| [8.4 Version Test](#8-4)                              | 71 | [2017 - Present](#2017)               |  5 | [11.24 Software Development](#11-24)    | 85 |
-| [8.5 Generating HUGE images](#8-5)                    | 73 | [Current Priorities](#current)        |  6 |                                         |    |
-| [9. API/ABI Compatibility](#9)                        | 74 | [Future Projects](#future)            |  6 |                                         |    |
-| [10. Security](#10)                                   | 75 | [Scope of Book](#scope)               |  7 | [12. Code discussed in this book](#12) | 110 |                                      
-| [10.1 Security Policy](#10-2)                         | 80 | [Making this book](#making)           |  8 | [The Last Word](#finally)              | 111 |
+| Section                                             | Page | Image Formats                         | Page | Project Management                    | Page | 
+|:--                                                    | --:|:--                                      | --:|:--                                      | --:|
+| [1. Image File Formats](#1)                           |  9 | [TIFF and BigTiff](#TIFF)               | 10 | [11. Project Management](#11)           | 77 |
+| [2. Metadata Standards](#2)                           | 32 | [JPEG and EXV](#JPEG)                   | 12 | [11.1 C++ Code](#11-1)                  | 78 |
+| [2.1 Exif Metadata](#Exif)                            | 35 | [PNG Portable Network Graphics](#PNG)   | 17 | [11.2 Build](#11-2)                     | 79 |
+| [2.2 XMP Metadata](#XMP)                              | 36 | [JP2 Jpeg 2000](#JP2)                   | 18 | [11.3 Security](#11-3)                  | 80 |
+| [2.3 IPTC Metadata](#IPTC)                            | 37 | [ISOBMFF, CR3, HEIF, AVIF](#ISOBMFF)    | 19 | [11.4 Documentation](#11-4)             | 80 |
+| [2.4 ICC Profile](#ICC)                               | 37 | [CRW Canon Raw](#CRW)                   | 20 | [11.5 Testing](#11-5)                   | 80 |
+| [2.5 MakerNotes](#MakerNotes)                         | 38 | [RIFF Resource Interchange File Format](#RIFF) | 20 | [11.6 Samples](#11-6)            | 80 |
+| [2.6 Metadata Convertors](#MakerNotes)                | 38 | [MRW Minolta Raw](#MRW)                 | 21 | [11.7 Users](#11-7)                     | 80 |
+| [3. Exiv2 APIs](#3)                                   | 38 | [ORF Olympus Raw Format](#ORF)          | 22 | [11.8 Bugs](#11-8)                      | 80 |
+| [4. Lens Recognition](#4)                             | 39 | [PGF Progressive Graphics File](#PGF)   | 23 | [11.9 Releases](#11-9)                  | 81 | 
+| [5. I/O in Exiv2](#5)                                 | 41 | [PSD PhotoShop Document](#PSD)          | 24 | [11.10 Platforms](#11-10)               | 81 |
+| [6. Exiv2 Architecture](#6)                           | 41 | [RAF Fujifilm RAW](#RAF)                | 25 | [11.11 Localisation](#11-11)            | 81 |
+| [6.1 Extracting metadata using dd](#6-1)              | 42 | [RW2 Panasonic RAW](#RW2)               | 26 | [11.12 Build Server](#11-12)            | 81 |
+| [6.2 Tag Names in Exiv2](#6-2)                        | 44 | [TGA Truevision Targa](#TGA)            | 27 | [11.11 Source Code](#11-11)             | 81 |
+| [6.3 TagInfo](#6-3)                                   | 44 | [BMP Windows Bitmap](#BMP)              | 28 | [11.14 Web Site](#11-14)                | 81 |
+| [6.4 Visitor Design Pattern](#6-4)                    | 48 | [GIF Graphical Interchange Format](#GIF)| 29 | [11.15 Servers](#11-15)                 | 81 |
+| [6.5 IFD:accept() and TiffImage::accept() ](#6-5)     | 53 | [SIDECAR Xmp Sidecars](#SIDECAR)        | 30 | [11.16 API](#11-16)                     | 81 |
+| [6.6 Presenting data with visitTag()](#6-6)           | 57 |                                         |    | [11.17 Contributors](#11-17)            | 81 |
+| [6.7 Tag Decoder](#6-7)                               | 59 |                                         |    | [11.18 Scheduling](#11-18)              | 81 |
+| [6.8 Jpeg::Image accept()](#6-8)                      | 61 |                                         |    | [11.19 Enhancements](#11-19)            | 82 |
+| [7. Image Previews](#7)                               | 63 | _**Other Sections**_                    |    | [11.20 Tools](#11-20)                   | 82 |
+| [8. Test Suite](#8)                                   | 63 | [Dedication](#dedication)               |  2 | [11.21 Licensing](#11-21)               | 82 |
+| [8.1 Bash Tests](#8-1)                                | 68 | [About this book](#about)               |  4 | [11.22 Back-porting](#11-22)            | 82 |
+| [8.2 Python Tests](#8-2)                              | 69 | [How did I get interested ?](#begin)    |  4 | [11.23 Partners](#11-23)                | 82 |
+| [8.3 Unit Tests](#8-3)                                | 70 | [2012 - 2017](#2012)                    |  5 | [11.24 Development](#11-24)             | 82 |
+| [8.4 Version Test](#8-4)                              | 71 | [2017 - Present](#2017)                 |  5 |                                         |    |
+| [8.5 Generating HUGE images](#8-5)                    | 73 | [Current Priorities](#current)          |  6 |                                         |    |
+| [9. API/ABI Compatibility](#9)                        | 74 | [Future Projects](#future)              |  6 |                                         |    |
+| [10. Security](#10)                                   | 75 | [Scope of Book](#scope)                 |  7 | [12. Code discussed in this book](#12) | 110 |                                      
+| [10.1 Security Policy](#10-2)                         | 80 | [Making this book](#making)             |  8 | [The Last Word](#finally)              | 111 |
 
 <div id="about"/>
 ## About this book
@@ -1383,95 +1384,6 @@ END: /Users/rmills/Downloads/IMG_3578.HEIC
 The specification is here: [CIFFspecV1R04.pdf](https://web.archive.org/web/20081230095207/http://xyrion.org/ciff/CIFFspecV1R04.pdf)
 
 [TOC](#TOC)
-<div id="ICC"/>
-## ICC Profile
-![icc](icc.png)
-
-The ICC Profile isn't an image format.  It's a data stream that is present in many images.  The purpose of the ICC profile is to provide additional color data about the image.  Most colour images are encoded as RGB or CMYK.   When these are rendered on a device, it's necessary to know the actual colour of Red is in the image and on the output device.  The Colour Management System (CMS) attempts to render the image to be the same on different devices.  This is of course impossible, however the aim of the ICC Profile is enable the software achieve good colour fidelity when printing on different devices.
-
-The ICC Profile is a member of the "TIFF" family of image standards.  It has a header, a directory of "tags" and values for the tags.
-
-Exiv2 has not code to inspect or modify the contents of the ICC Profile.  The data is treated as a binary "blob". You can insert/delete/add/replace the ICC Colour Profile in several image formats including JPEG, JP2, PNG and TIFF.
-
-The code which accompanies this book can inspect the contents of the ICC profile.
-
-The specification is available here: [http://www.color.org/icc_specs2.xalter](http://www.color.org/icc_specs2.xalter).  I believe the current ICC Profile Specification is: ICC.2-2016-7.pdf
-
-[TOC](#TOC)
-<div id="RIFF"/>
-## RIFF Resource Interchange File Format
-![riff](riff.png)
-
-This file format is used by WEBP, AVI and WAV files.  RIFF was introduced in 1991 by Microsoft and IBM.  There is a discussion of the format here: [https://en.wikipedia.org/wiki/Resource\_Interchange\_File\_Format](https://en.wikipedia.org/wiki/Resource_Interchange_File_Format)
-
-
-Testing for validity is easy:
-
-```cpp
-bool valid()
-{
-    if ( !valid_ ) {
-        IoSave  restore(io(),0);
-        DataBuf header(12);
-        io().read(header);
-        fileLength_   = ::getLong(header,4,endian_);
-        valid_        =  header.begins("RIFF") && fileLength_ <= io().size();
-        char             signature[5];
-        format_       =  header.getChars(8,4,signature);
-        header_       = " address | chunk |   length |   offset | data " ;
-    }
-    return valid_;
-}
-```
-
-Reporting the data in the file is straight-forward:
-
-```cpp
-void RiffImage::accept(class Visitor& visitor)
-{
-    if ( !valid_ ) valid();
-    if (  valid_ ) {
-        visitor.visitBegin((*this)); // tell the visitor
-
-        IoSave   restore(io(),start_);
-        uint64_t address = start_;
-        DataBuf  riff(8);
-        DataBuf  data(40);  // buffer to pass data to visitRiff()
-        while (  address < fileLength_ ) {
-            visit(address);
-            io().seek(address);
-            io().read(riff);
-            
-            char        signature[5];
-            std::string chunk   = riff.getChars(0,4,signature);
-            uint32_t    length  = ::getLong(riff,4,endian_) ;
-            uint64_t    pad     = length % 2 ? 1 : 0        ; // pad if length is odd
-            uint64_t    next    = io().tell() + length +pad ;
-            if ( next > fileLength_ ) Error(kerCorruptedMetadata);
-            
-            data.zero();
-            io().read(data.pData_,length < data.size_?length:data.size_);
-            visitor.visitRiff(address,chunk,length,data);
-
-            if ( chunk == "XMP " || chunk == "ICCP" ) {
-                DataBuf    Data(length);
-                io().seek(address+8);
-                io().read(Data);
-                if ( chunk == "XMP "    ) visitor.visitXMP(Data);
-                if ( chunk == "ICCP"    ) visitor.visitICC(Data);
-            }
-            if ( chunk == "EXIF" ) {
-                Io tiff(io(),address+8,length);
-                visitor.visitExif(tiff);
-            }
-            address = next ;
-        }
-        visitor.visitEnd((*this)); // tell the visitor
-    }
-}
-```
-
-[TOC](#TOC)
 <div id="MRW"/>
 ## MRW Minolta Raw Format
 
@@ -2611,8 +2523,97 @@ END: /Users/rmills/jp2.jp2
 ```
 
 [TOC](#TOC)
-<div id="4-4"/>
-## 2.4 Metadata Convertors
+<div id="ICC"/>
+## ICC Profile
+![icc](icc.png)
+
+The ICC Profile is a standand alone file that can be embedded verbatim in many image formats.  The purpose of the ICC profile is to provide additional color data about the image.  Most colour images are encoded as RGB or CMYK.   When these are rendered on a device, it's necessary to know the actual colour of Red in the image and on the output device.  The Colour Management System (CMS) attempts to render the image to be the same on different devices.  This is of course impossible, however the aim of the ICC Profile is enable the software to achieve good colour fidelity when printing or displaying on different devices.
+
+The ICC Profile is a member of the TIFF family of image standards.  It has a header, a directory of "tags" and values for the tags.
+
+Exiv2 has no code to inspect or modify the contents of the ICC Profile.  The data is treated as a binary "blob". You can insert/delete/add/replace the ICC Colour Profile in several image formats including JPEG, JP2, PNG and TIFF.
+
+The code which accompanies this book can inspect the contents of an ICC profile.
+
+The specification is available here: [http://www.color.org/icc_specs2.xalter](http://www.color.org/icc_specs2.xalter).  I believe the current ICC Profile Specification is: ICC.2-2016-7.pdf
+
+[TOC](#TOC)
+<div id="RIFF"/>
+## RIFF Resource Interchange File Format
+![riff](riff.png)
+
+This file format is used by WEBP, AVI and WAV files.  RIFF was introduced in 1991 by Microsoft and IBM.  There is a discussion of the format here: [https://en.wikipedia.org/wiki/Resource\_Interchange\_File\_Format](https://en.wikipedia.org/wiki/Resource_Interchange_File_Format)
+
+
+Testing for validity is easy:
+
+```cpp
+bool valid()
+{
+    if ( !valid_ ) {
+        IoSave  restore(io(),0);
+        DataBuf header(12);
+        io().read(header);
+        fileLength_   = ::getLong(header,4,endian_);
+        valid_        =  header.begins("RIFF") && fileLength_ <= io().size();
+        char             signature[5];
+        format_       =  header.getChars(8,4,signature);
+        header_       = " address | chunk |   length |   offset | data " ;
+    }
+    return valid_;
+}
+```
+
+Reporting the data in the file is straight-forward:
+
+```cpp
+void RiffImage::accept(class Visitor& visitor)
+{
+    if ( !valid_ ) valid();
+    if (  valid_ ) {
+        visitor.visitBegin((*this)); // tell the visitor
+
+        IoSave   restore(io(),start_);
+        uint64_t address = start_;
+        DataBuf  riff(8);
+        DataBuf  data(40);  // buffer to pass data to visitRiff()
+        while (  address < fileLength_ ) {
+            visit(address);
+            io().seek(address);
+            io().read(riff);
+            
+            char        signature[5];
+            std::string chunk   = riff.getChars(0,4,signature);
+            uint32_t    length  = ::getLong(riff,4,endian_) ;
+            uint64_t    pad     = length % 2 ? 1 : 0        ; // pad if length is odd
+            uint64_t    next    = io().tell() + length +pad ;
+            if ( next > fileLength_ ) Error(kerCorruptedMetadata);
+            
+            data.zero();
+            io().read(data.pData_,length < data.size_?length:data.size_);
+            visitor.visitRiff(address,chunk,length,data);
+
+            if ( chunk == "XMP " || chunk == "ICCP" ) {
+                DataBuf    Data(length);
+                io().seek(address+8);
+                io().read(Data);
+                if ( chunk == "XMP "    ) visitor.visitXMP(Data);
+                if ( chunk == "ICCP"    ) visitor.visitICC(Data);
+            }
+            if ( chunk == "EXIF" ) {
+                Io tiff(io(),address+8,length);
+                visitor.visitExif(tiff);
+            }
+            address = next ;
+        }
+        visitor.visitEnd((*this)); // tell the visitor
+    }
+}
+```
+
+[TOC](#TOC)
+<div id="2-5"/>
+## 2.5 Metadata Convertors
 
 Exiv2 has code to convert data between different Metdata standards.  Generally when you update Exif metadata, equivalent modifications will be performed on the IPTC and XMP metadata.  I can't explain why this code was added to Exiv2 and, while it may be convenient and invisible in its operation, it also has undesirable side effects.
 
@@ -4511,7 +4512,7 @@ source ./functions.source
 ##
 ```
 
-The implementation of the command _$ exiv2 --verbose --version_ and the version number scheme is discussed in detail: [13.9 Release Engineering](#11-9).
+The implementation of the command _$ exiv2 --verbose --version_ and the version number scheme is discussed in detail: [13.9 Releases](#11-9).
 
 <div id="8-5"/>
 ## 8.5 Generating HUGE images
@@ -4838,7 +4839,7 @@ Security alerts are published here:  [https://cve.mitre.org/cgi-bin/cvekey.cgi?k
 
 Exiv2 does not back-port security (or any other fix) to earlier releases of the code.  An engineer at SUSE has patched and fixed some security releases for Exiv2 v0.26 and Exiv2 v0.25 in branches 0.26 and 0.25.
 
-The Exiv2 "dot" releases such as v0.27.2 include security fixes, bug fixes and minor feature and documentation updates.  Exiv2 has never issued a "security release" which would be an existing release PLUS one _or more_ security PRs.  The version numbering scheme is explained here: [13.9 Release Engineering](#11-9).  The design includes provision for a security release.
+The Exiv2 "dot" releases such as v0.27.2 include security fixes, bug fixes and minor feature and documentation updates.  Exiv2 has never issued a "security release" which would be an existing release PLUS one _or more_ security PRs.  The version numbering scheme is explained here: [13.9 Releases](#11-9).  The design includes provision for a security release.
 
 I was very impressed by the libssh security process which has provision to issue security notices to third parties.  Exiv2 is not sufficiently resourced to support this capability.  If the community decide that Exiv2 must strengthen its security process, the community will have to provide the necessary resources.
 
@@ -5054,7 +5055,7 @@ The API documents are generated from comments in the C++ code.  Doxygen generate
 
 #### Release Documentation
 
-Creating release notes takes quite a lot of time and effort.  When Exiv2 v0.28 is released, the GitHub tools will probably do an adequate job.  However while 0.27-maintenance and master are both developed, I feel manually creating the release notes is a better approach.  The Release procedure is discussed here:  [13.9 Release Engineering](#11-9)
+Creating release notes takes quite a lot of time and effort.  When Exiv2 v0.28 is released, the GitHub tools will probably do an adequate job.  However while 0.27-maintenance and master are both developed, I feel manually creating the release notes is a better approach.  The Release procedure is discussed here:  [13.9 Releases](#11-9)
 
 #### Exiv2 man page
 
@@ -5080,7 +5081,7 @@ $ env MANPATH=$EXIV2HOME/man:$MANPATH man -t p | ps2pdf
 
 This is discussed in detail here: [10 Testing](#10).
 <div id="11-6"/>
-### 11.6 Sample programs
+### 11.6 Samples
 
 Exiv2 has sample applications which have their own documentation: [README-SAMPLES.md](README-SAMPLES.md).  In Exiv2 v0.27.3, there are 17 samples applications and 19 test programs.  The test programs are intended for use by the test suite and are not installed on the user's computer.
 
@@ -5114,9 +5115,9 @@ Exiv2 has always resisted the temptation to provide a GUI version of the program
 
 [TOC](#TOC)
 <div id="11-7"/>
-### 11.7 User Support
+### 11.7 Users
 
-This is very time consuming.  I prioritise working with users as the most important aspect of the project.  Occasionally, in the run-up to a release, I will ask a user to wait.  However, my default is to deal with users as quickly as possible.  I try to acknowledge and confirm their report within 24 hours and to fix/close issues in one week.
+User Support is very time consuming.  I prioritise working with users as the most important aspect of the project.  Occasionally, in the run-up to a release, I will ask a user to wait.  However, my default is to deal with users as quickly as possible.  I try to acknowledge and confirm their report within 24 hours and to fix/close issues in one week.
 
 The reason to give them priority is the importance of users to the project.  Without users, the project is dead.  Without support, users will not use the code.  I know this is true because I have taken some sabbaticals to deal with other matters in my life.  When I am not active, the number of user reports and requests falls quickly.  When I return from my break, the number of user report immediately increases.
 
@@ -5130,7 +5131,7 @@ On a more positive note about dealing with users, I have enjoyed many on-line di
 
 [TOC](#TOC)
 <div id="11-8"/>
-### 11.8 Bug Tracking
+### 11.8 Bugs
 
 Exiv2 has used three bug tracking systems during its 17 year life.  In the early days, issues were stored on a forum hosted by yahoo.  (Who?).  About the time that I joined the project (2008), Redmine was installed to track issues on exiv2.org.  I really like Redmine.  It has a nice UI with good search, cross referencing, and reporting tools.  I very much appreciated the API to query and download data in JSON format.  I had a script to generate various report to monitor release progress.
 
@@ -5142,7 +5143,7 @@ I'm pleased with GitHub.  For sure, it's a "one stop shop" for a project.  They 
 
 [TOC](#TOC)
 <div id="11-9"/>
-### 11.9 Release Engineering
+### 11.9 Releases
 
 Releases (both RCs and GMs) are published on GitHub.  Users can receive notifications by subscribing an RSS reader to: https://github.com/exiv2/exiv2/releases.atom.  There is a summary of releases here: [https://github.com/Exiv2/exiv2/releases](https://github.com/Exiv2/exiv2/releases).  All releases (both RCs and GMs) are available from exiv2.org at: [https://exiv2.org/archive.html](https://exiv2.org/archive.html)
 
@@ -5193,7 +5194,7 @@ For example, to safely call image->setIccProfile(), this is compile time safe an
 
 [TOC](#TOC)
 <div id="11-10"/>
-### 11.10 Platform Support
+### 11.10 Platforms
 
 There are several parts of Exiv2 which are platform specific.  Additionally the platform dependent function _getopt()_ in the C-runtime library is never used.
 
@@ -5386,7 +5387,7 @@ I really admire the code in samples/JZon.cpp.  The Swedish Engineer who created 
 Localisation is documented in [README.md](README.md).
 
 <div id="11-12"/>
-### 11.12 Build Server
+### 11.12 Build Servers
 
 At different times, we have used different build server technologies.
 
@@ -5448,7 +5449,7 @@ However, as GitHub provides good CI support, we don't need Jenkins.
 
 [TOC](#TOC)
 <div id="11-13"/>
-### 11.13 Source Code Management
+### 11.13 Source Code
 
 The source code for Exiv2 resides on GitHub [https://github.com/exiv2/exiv2](https://github.com/exiv2/exiv2)
 
@@ -5473,13 +5474,13 @@ drwxr-xr-x+ 15 rmills  staff   480  8 Jul 11:31 website            source for we
 
 [TOC](#TOC)
 <div id="11-14"/>
-### 11.14 Project Web Site
+### 11.14 Web Site
 
-The website source and release procedures are store in subversion.  svn://dev.exiv2.org/svn/team.  The release process is discussed in detail here: [13.9 Release Engineering](#11-9)
+The website source and release procedures are store in subversion.  svn://dev.exiv2.org/svn/team.  The release process is discussed in detail here: [13.9 Releases](#11-9)
 
 [TOC](#TOC)
 <div id="11-15"/>
-### 11.15 Project Servers (apache, SVN, GitHub, Redmine)
+### 11.15 Servers
 
 We use several servers:
 
@@ -5493,7 +5494,7 @@ I am pleased to say that the management of exiv2.org is undertaken my Nehal.  I 
 
 [TOC](#TOC)
 <div id="11-16"/>
-### 11.16 API Management
+### 11.16 API
 
 This is discussed in detail here: [9. API/ABI Compatibility](#9)
 
@@ -5510,18 +5511,19 @@ The only major success I have had with recruitment is when Dan and Luis arrived 
 
 I find the data on OpenHub very interesting: [https://www.openhub.net/p/exiv2](https://www.openhub.net/p/exiv2).
 
-<center><img src="openhub_contributors.png" width="635"/></center>
+<center><img src="openhub_contributors.png" width="800"/></center>
 
 You can spot trends and events in the history:
 
-| Event                  | Comment                | Event           | Comment                  | Event           | Comment           |
-|:--                     |:--                     |:--              |:--                       |:--              |:--                |
-| 2014&#8209;2020        | Growing                | 2004&#8209;2008 | Andreas mostly alone     | 2009&#8209;2012 | Andreas and Robin |
-| 2012&#8209;2016        | Robin and Neils        | 2013&#8209;14   | I retired and moved home | 2016&#8209;2017 | Robin and Ben    |
-| 2017                   | Moved to GitHub        | 2017            | Dan and Luis Joined      | 2019            | I retired and contributors spiked |
-| 2018&#8209;2019        | Robin, Luis and Dan    | 2020            | Exiv2 v0.27.3            | 2020            | Project Improving  | 
 
-The report below is also interesting.  Andreas remains the top contributor although I am catching him fast.
+| Period                 | Comment                | Period          | Comment                  | Period          | Comment                           |
+|:--                     |:--                     |:--              |:--                       |:--              |:--                                |
+| 2014&#8209;2020        | Growing                | 2013&#8209;14   | I retired and moved home | 2018&#8209;2019 | Robin, Luis and Dan               |
+| 2004&#8209;2008        | Andreas                | 2016&#8209;2017 | Robin and Ben            | 2019            | I retired and contributors spiked |
+| 2009&#8209;2012        | Andreas and Robin      | 2017            | Moved to GitHub          | 2020            | I returned for Exiv2 v0.27.3      |
+| 2012&#8209;2015        | Robin and Neils        | 2017            | Dan and Luis Joined      | 2020            | I wrote this book                 | 
+
+The report provides interesting insight.  Andreas remains the top contributor although I am catching him fast.  We don't monitor the book or release script maintenance on OpenHub.  My contributes to that put me well ahead of Andreas.
 
 A boss once asked me "Do you know the **80/20** rule?  **80%** of the project is done by **20%** of the people!".  For sure, this is true in Open Source.
 
@@ -5531,7 +5533,7 @@ So, how are contributors recruited?  The answer is _**I don't know**_.  For sure
 
 [TOC](#TOC)
 <div id="11-18"/>
-### 11.18 Project Management and Scheduling
+### 11.18 Scheduling
 
 This is a major and important topic.  Apart from writing code, I've spent more time thinking about project scheduling than any other aspect of Software Engineering.  
 
@@ -5691,7 +5693,7 @@ Final words about this.  I didn't undertake a PhD.  Instead I have spent 10,000 
 
 [TOC](#TOC)
 <div id="11-19"/>
-### 11.19 Enhancement Requests
+### 11.19 Enhancements
 
 I'm not sure there is anything very interesting to be said about this.  There are really different types of requests.  For example, adding recognition for one lens may only require one line of C++, a test file and a 10-line python test script.  This is straightforward and can be fixed within hours.  At the other extreme is the request to support ISOBMFF files including HEIF and CR3.  This project involves research, code, test, build and documentation changes.  And to make it even more difficult, the Community have challenged the legality of providing the feature.  This feature will take years to complete.
 
@@ -5719,7 +5721,7 @@ There is one recent tool which has surprised and pleased me.  I have written thi
 
 [TOC](#TOC)
 <div id="11-21"/>
-### 11.21 Licensing and Legal
+### 11.21 Licensing
 
 Licensing is a legal minefield.  Exiv2 is licensed under GPLv2.  Until Exiv2 v0.26, Andreas offered a commercial license for Exiv2.   The contract between Andreas and users is not the concern of the Exiv2 open-source project. 
 
@@ -5733,7 +5735,7 @@ Dealing with legal matters is not like reporting a bug.  Exiv2 is an open-source
 
 [TOC](#TOC)
 <div id="11-22"/>
-### 11.22 Back-porting fixes to earlier releases
+### 11.22 Back-porting
 
 I believe there are some folks maintaining back-ports of Exiv2.  Our friend Pascal works on **darktable** and has back-ported many features and fixes.  Thank You, Pascal for undertaking that chore.
 
@@ -5741,13 +5743,13 @@ I have to say that the inertia of the Linux Distros is considerable.  It can tak
 
 [TOC](#TOC)
 <div id="11-23"/>
-### 11.23 Other projects demanding support and changes
+### 11.23 Partners
 
-Without question, dealing with this has been very difficult.  Folks who have adopted Exiv2 in their product may feel they are entitled to make enhancement requests, demand fixes, superior support and other privileges.  In a nutshell, they feel entitled.  They are not.  They are entitled to the same as all other stakeholders.  No more.  No less.
+Without question, dealing with some other projects which use Exiv2 has been very difficult.  Folks who have adopted Exiv2 in their product may feel they are entitled to make enhancement requests, demand fixes, superior support and other privileges.  In a nutshell, they feel entitled.  They are not.  They are entitled to the same as all other stakeholders.  No more.  No less.
 
 [TOC](#TOC)
 <div id="11-24"/>
-### 11.24 Software Development
+### 11.24 Development
 
 As this is the first and last book I will ever write, I'd like to close the discussion of _**Project Management**_ with some thoughts and opinions about how software is developed.  Management have been searching for the silver bullet that will cause projects to deliver on time, to budget, with great performance, few bugs and low cost maintenance.  This search has been proceeding for more than 50 years.  We've made some progress.  However system complexity out-strips our management and control tools.  The challenges are immense.
 
