@@ -46,7 +46,7 @@ _And our cat Lizzie._
 | [6.4 Visitor Design Pattern](#6-4)                    | 48 | [TGA Truevision Targa](#TGA)          | 29 | [11.14 Project Web Site](#11-14)        | 81 |
 | [6.5 IFD:accept() and TiffImage::accept() ](#6-5)     | 53 | [BMP Windows Bitmap](#BMP)            | 30 | [11.15 Project Servers ](#11-15)        | 81 |
 | [6.6 Presenting data with visitTag()](#6-6)           | 57 | [GIF Graphical Interchange Format](#GIF) | 31 | [11.16 API Management](#11-16)       | 81 |
-| [6.7 Tag Decoder](#6-7)                               | 59 | [SIDECAR Xmp Sidecars](#SIDECAR)      | 32 | [11.17 Recruiting Contributors](#11-17) | 81 |
+| [6.7 Tag Decoder](#6-7)                               | 59 | [SIDECAR Xmp Sidecars](#SIDECAR)      | 32 | [11.17 Contributors](#11-17) | 81 |
 | [6.8 Jpeg::Image accept()](#6-8)                      | 61 |                                       |    | [11.18 Project Scheduling](#11-18)      | 82 |
 | [7. Image Previews](#7)                               | 63 | _**Other Sections**_                  |    | [11.19 Enhancement Requests](#11-19)    | 82 |
 | [8. Test Suite](#8)                                   | 63 | [Dedication](#dedication)             |  2 | [11.20 Tools](#11-20)                   | 82 |
@@ -5498,7 +5498,7 @@ I am pleased to say that the management of exiv2.org is undertaken my Nehal.  I 
 This is discussed in detail here: [11. API/ABI Compatibility](#11)
 
 <div id="11-17"/>
-### 11.17 Recruiting Contributors
+### 11.17 Contributors
 
 It's very difficult to recruit people to work on open source.  In fact, it's so difficult that I wonder if open source can survive in future.  Lots of people have made small contributions to Exiv2, however only a hand-full have made a sustained effort.  Furthermore, contributors can disappear for months with no indication of their intention.  I'm not criticising anybody for how they behave, however it's simply impossible to plan or schedule.  When folks are paid in the office, you can reasonably expect that they will turn up regularly and can be assigned tasks.  This model is invalid in open source.
 
@@ -5508,7 +5508,26 @@ A modest project such as Exiv2 has no money.  In fact, I pay for the modest expe
 
 The only major success I have had with recruitment is when Dan and Luis arrived in summer 2017.  We adopted GitHub in April 2017 when Exiv2 v0.26 was released.  I wondered if the move to GitHub had increased the project visibility and Dan and Luis would be the first of many contributors.  More than 3 years later, we have enjoyed contributions from Kevin, Leo and Rosen. 
 
-So, how are contributors recruited?  The answer is _**I don't know**_.
+I find the data on OpenHub very interesting: [https://www.openhub.net/p/exiv2](https://www.openhub.net/p/exiv2).
+
+<center><img src="openhub_contributors.png" width="635"/></center>
+
+You can spot trends and events in the history:
+
+| Event                  | Comment                | Event           | Comment                  | Event           | Comment           |
+|:--                     |:--                     |:--              |:--                       |:--              |:--                |
+| 2014&#8209;2020        | Growing                | 2004&#8209;2008 | Andreas mostly alone     | 2009&#8209;2012 | Andreas and Robin |
+| 2012&#8209;2016        | Robin and Neils        | 2013&#8209;14   | I retired and moved home | 2016&#8209;2017 | Robin and Ben    |
+| 2017                   | Moved to GitHub        | 2017            | Dan and Luis Joined      | 2019            | I retired and contributors spiked |
+| 2018&#8209;2019        | Robin, Luis and Dan    | 2020            | Exiv2 v0.27.3            | 2020            | Project Improving  | 
+
+The report below is also interesting.  Andreas remains the top contributor although I am catching him fast.
+
+A boss once asked me "Do you know the **80/20** rule?  **80%** of the project is done by **20%** of the people!".  For sure, this is true in Open Source.
+
+<center><img src="openhub_contributors2.png" width="800"/></center>
+
+So, how are contributors recruited?  The answer is _**I don't know**_.  For sure, I appreciate the work done by Andreas, Luis, Dan, Neils and about 20 other wonderful people.  Curiously, I'm not aware of any lady contributors.  I only recall one support question asked by a lady.
 
 [TOC](#TOC)
 <div id="11-18"/>
