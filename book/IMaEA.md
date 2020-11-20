@@ -4813,7 +4813,7 @@ So, the rules are:
 2. Never change the signature of an entry point or data structure.
 3. It is OK to add new entry points and data structures.
 
-_**Caution:**_  When you add a new entry point or data structure, applications compiled with the new library will be unable to "downgrade" to an earlier version of the library.  Best practice is to never changes the API.  
+_**Caution:**_  When you add a new entry point or data structure, applications compiled with the new library will be unable to "downgrade" to an earlier version of the library.  Best practice is to never change the API.  
 
 ## Testing for DLL compatibility
 
