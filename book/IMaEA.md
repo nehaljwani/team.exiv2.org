@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-11-19</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-11-20</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -4803,9 +4803,9 @@ library=/usr/lib/libz.1.dylib
 
 ## Changing the API
 
-This should be done with great caution.  If an application requires an entry point that is not defined, it will usually refuse to launch the application.  You should therefore never remove an entry point from a library.  Changing the signature of an API is effectively to remove and entry point and introduced a new entry point.
+This should be done with great caution.  If an application requires an entry point that is not defined, it will usually refuse to launch the application.  You should therefore never remove an entry point from a library.  Changing the signature of an API is effectively to remove an entry point and introduced a new entry point.
 
-If an library offers an entry point which is not used by an application, the library will be loaded and the application will launch.
+If a library offers an entry point which is not used by an application, the library will be loaded and the application will launch.
 
 So, the rules are:
 
@@ -4813,7 +4813,7 @@ So, the rules are:
 2. Never change the signature of an entry point or data structure.
 3. It is OK to add new entry points and data structures.
 
-_**Caution:**_  When you add a new entry points or data structure, applications compiled with the new library will be unable to "downgrade" to an earlier version of the library.  Best practice is to never changes the API.  
+_**Caution:**_  When you add a new entry point or data structure, applications compiled with the new library will be unable to "downgrade" to an earlier version of the library.  Best practice is to never changes the API.  
 
 ## Testing for DLL compatibility
 
@@ -5495,7 +5495,7 @@ I am pleased to say that the management of exiv2.org is undertaken my Nehal.  I 
 <div id="11-16"/>
 ### 11.16 API Management
 
-This is discussed in detail here: [11. API/ABI Compatibility](#11)
+This is discussed in detail here: [9. API/ABI Compatibility](#9)
 
 <div id="11-17"/>
 ### 11.17 Contributors
