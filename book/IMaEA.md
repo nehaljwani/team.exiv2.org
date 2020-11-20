@@ -1983,13 +1983,14 @@ In order to understand the Exif Standard, it's useful to understand its relation
 
 ### Exif Standard Tags
 
-| Specification               | IFD         | Sub-sections | Examples |
+| Specification               | IFD         | Section | Tag Examples |
 |:--                          |:--          |:--           |:--       |
-| Exif 4.6.4                  | IFD0        | Image data structure<br>Offset to Exif IFD<br>Offset to GPS IFD<br>Make<br>Image data location<br>Image data characteristics<br>Other Tags | ImageWidth, ImageHeight<br>ExifTag<br>GPSTag<br>Make<br>StripOffsets, RowsPerStrip<br>TransferFunction, WhitePoint<br>ImageDescription, DateTime | 
-| ICC<br>XMP<br>TIFF&#8209;EP | IFD0        | ICC Profile<br>XMP<br>IPTC/NAA<br>_**See**_ **ICC/XMP/IPTC** _**Below**_ | InterColorProfile<br>XMLPacket<br>IPTCNAA<br>&nbsp; |
-| Exif 4.6.5                  | Exif IFD    | Exif Version<br>Image Data Characteristics<br>Image Configuration<br>User or Manufacturer Information<br>Related File Information<br>Date and Time<br>Picture Conditions<br>Shooting Situation<br>Other<br>| ExifVersion<br>ColorSpace, Gamma<br>ComponentsConfiguration, CompressedBitsPerPixel<br>UserComment, MakerNote _**See**_ **MakerNote** _**Below**_<br>RelatedSoundFile<br>DateTimeOriginal<br>Aperture, FocalLength<br>Temperature, CameraElevationAngle<br>LensSpecification, CameraOwnerName |
+| Exif 4.6.3                  | IFD0        | Offset to Exif and GPS IFDs | ExifTag, GPSTag | 
+| Exif 4.6.4                  | IFD0        | Image data structure<br>Make<br>Image data location<br>Image data characteristics<br>Other Tags | ImageWidth, ImageHeight<br>Make<br>StripOffsets, RowsPerStrip<br>TransferFunction, WhitePoint<br>ImageDescription, DateTime | 
+| ICC<br>XMP<br>TIFF&#8209;EP | IFD0        | ICC Profile<br>XMP<br>IPTC/NAA<br>_See_ **ICC/XMP/IPTC** _below_ | InterColorProfile<br>XMLPacket<br>IPTCNAA<br>&nbsp; |
+| Exif 4.6.5                  | Exif IFD    | Exif Version<br>Image Data Characteristics<br>Image Configuration<br>User or Manufacturer Information<br>Related File Information<br>Date and Time<br>Picture Conditions<br>Shooting Situation<br>Other<br>| ExifVersion<br>ColorSpace, Gamma<br>ComponentsConfiguration, CompressedBitsPerPixel<br>UserComment, MakerNote _See_ **MakerNote** _below_<br>RelatedSoundFile<br>DateTimeOriginal<br>Aperture, FocalLength<br>Temperature, CameraElevationAngle<br>LensSpecification, CameraOwnerName |
 | Exif 4.6.6                  | GPS IFD     | GPS Data | GPSSatellites, GPSLatitude |
-| Exif 4.6.7                  | Interop     | _**See**_ **Interop** _**Below**_ |  |
+| Exif 4.6.7                  | Interop IFD | _See_ **Interop** _below_ |  |
 
 **Interop** The Exif standard says: _The Interoperability structure of Interoperability IFD is same as TIFF defined IFD structure but does not contain the image data characteristically compared with normal TIFF IFD._
 
