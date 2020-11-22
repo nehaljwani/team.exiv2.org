@@ -20,7 +20,7 @@ _File Detectives:  Phil Harvey, Dave Coffin, Laurent Cl&eacute;vy._
 
 _And our cat Lizzie._
 
-<center><img src="MusicRoom.jpg" width="500" style="border:2px solid #23668F;"/></center>
+<center><img src="MusicRoom.jpg" width="500" style="border:2px solid #21668F;"/></center>
 
 [TOC](#TOC)  
 
@@ -4512,7 +4512,7 @@ source ./functions.source
 ##
 ```
 
-The implementation of the command _$ exiv2 --verbose --version_ and the version number scheme is discussed in detail: [13.9 Releases](#11-9).
+The implementation of the command _$ exiv2 --verbose --version_ and the version number scheme is discussed in detail: [11.9 Releases](#11-9).
 
 <div id="8-5"/>
 ## 8.5 Generating HUGE images
@@ -4839,7 +4839,7 @@ Security alerts are published here:  [https://cve.mitre.org/cgi-bin/cvekey.cgi?k
 
 Exiv2 does not back-port security (or any other fix) to earlier releases of the code.  An engineer at SUSE has patched and fixed some security releases for Exiv2 v0.26 and Exiv2 v0.25 in branches 0.26 and 0.25.
 
-The Exiv2 "dot" releases such as v0.27.2 include security fixes, bug fixes and minor feature and documentation updates.  Exiv2 has never issued a "security release" which would be an existing release PLUS one _or more_ security PRs.  The version numbering scheme is explained here: [13.9 Releases](#11-9).  The design includes provision for a security release.
+The Exiv2 "dot" releases such as v0.27.2 include security fixes, bug fixes and minor feature and documentation updates.  Exiv2 has never issued a "security release" which would be an existing release PLUS one _or more_ security PRs.  The version numbering scheme is explained here: [11.9 Releases](#11-9).  The design includes provision for a security release.
 
 I was very impressed by the libssh security process which has provision to issue security notices to third parties.  Exiv2 is not sufficiently resourced to support this capability.  If the community decide that Exiv2 must strengthen its security process, the community will have to provide the necessary resources.
 
@@ -5055,7 +5055,7 @@ The API documents are generated from comments in the C++ code.  Doxygen generate
 
 #### Release Documentation
 
-Creating release notes takes quite a lot of time and effort.  When Exiv2 v0.28 is released, the GitHub tools will probably do an adequate job.  However while 0.27-maintenance and master are both developed, I feel manually creating the release notes is a better approach.  The Release procedure is discussed here:  [13.9 Releases](#11-9)
+Creating release notes takes quite a lot of time and effort.  When Exiv2 v0.28 is released, the GitHub tools will probably do an adequate job.  However while 0.27-maintenance and master are both developed, I feel manually creating the release notes is a better approach.  The Release procedure is discussed here:  [11.9 Releases](#11-9)
 
 #### Exiv2 man page
 
@@ -5476,7 +5476,7 @@ drwxr-xr-x+ 15 rmills  staff   480  8 Jul 11:31 website            source for we
 <div id="11-14"/>
 ### 11.14 Web Site
 
-The website source and release procedures are store in subversion.  svn://dev.exiv2.org/svn/team.  The release process is discussed in detail here: [13.9 Releases](#11-9)
+The website source and release procedures are store in subversion.  svn://dev.exiv2.org/svn/team.  The release process is discussed in detail here: [11.9 Releases](#11-9)
 
 [TOC](#TOC)
 <div id="11-15"/>
