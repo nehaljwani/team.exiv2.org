@@ -2428,7 +2428,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2020-11-23 11:49:18 +0000</string>
+	<string>2020-11-23 12:19:40 +0000</string>
 	<key>Modifier</key>
 	<string>Robin Mills</string>
 	<key>NotesVisible</key>
@@ -27617,10 +27617,10 @@ END: /Users/rmills/mrw.mrw\
 					<integer>327</integer>
 					<key>Points</key>
 					<array>
-						<string>{35.5, 119.05511475529259}</string>
-						<string>{21.925197017568301, 119.05511475529259}</string>
-						<string>{21.925197017568301, 174.5}</string>
-						<string>{35.625, 174.65250100009584}</string>
+						<string>{47.5, 120.80511475529259}</string>
+						<string>{33.925197017568301, 120.80511475529259}</string>
+						<string>{33.925197017568301, 174.5}</string>
+						<string>{47.625, 174.65250100009584}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -27642,7 +27642,42 @@ END: /Users/rmills/mrw.mrw\
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{18.924420112619309, 132.86665463184974}, {7.6535430914115636, 9.6377950039998836}}</string>
+					<string>{{32.131888837176049, 149.13582256199808}, {3.6527656235619901, 9.6377950039998836}}</string>
+					<key>Class</key>
+					<string>ShapedGraphic</string>
+					<key>ID</key>
+					<integer>450</integer>
+					<key>Style</key>
+					<dict>
+						<key>fill</key>
+						<dict>
+							<key>Color</key>
+							<dict>
+								<key>b</key>
+								<real>1</real>
+								<key>g</key>
+								<real>1</real>
+								<key>r</key>
+								<real>1</real>
+								<key>space</key>
+								<string>srgb</string>
+							</dict>
+						</dict>
+						<key>shadow</key>
+						<dict>
+							<key>Draws</key>
+							<string>NO</string>
+						</dict>
+						<key>stroke</key>
+						<dict>
+							<key>Draws</key>
+							<string>NO</string>
+						</dict>
+					</dict>
+				</dict>
+				<dict>
+					<key>Bounds</key>
+					<string>{{32.174808291098884, 132.86665463184974}, {3.6527656235619901, 9.6377950039998836}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -27652,7 +27687,7 @@ END: /Users/rmills/mrw.mrw\
 						<key>ID</key>
 						<integer>446</integer>
 						<key>Position</key>
-						<real>0.14494585412854755</real>
+						<real>0.15307857946604628</real>
 						<key>RotationType</key>
 						<integer>0</integer>
 					</dict>
@@ -27698,10 +27733,10 @@ END: /Users/rmills/mrw.mrw\
 					<integer>446</integer>
 					<key>Points</key>
 					<array>
-						<string>{36.118109461960834, 137.68555213384968}</string>
-						<string>{16.543306479529136, 137.68555213384968}</string>
-						<string>{16.543306479529136, 190.38043737855702}</string>
-						<string>{36.493109461960834, 190.53293837865286}</string>
+						<string>{48.118109461960834, 137.68555213384968}</string>
+						<string>{28.543306479529136, 137.68555213384968}</string>
+						<string>{28.543306479529136, 190.38043737855702}</string>
+						<string>{48.493109461960834, 190.53293837865286}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -27723,7 +27758,7 @@ END: /Users/rmills/mrw.mrw\
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{13.776037697940858, 148.40157064940988}, {12.801925506090015, 9.6377950039998836}}</string>
+					<string>{{26.637565479595381, 149.65157064940988}, {3.6527656235619901, 9.6377950039998836}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>ID</key>
@@ -27733,7 +27768,7 @@ END: /Users/rmills/mrw.mrw\
 						<key>ID</key>
 						<integer>447</integer>
 						<key>Position</key>
-						<real>0.17751184478233009</real>
+						<real>0.18867574952171048</real>
 						<key>RotationType</key>
 						<integer>0</integer>
 					</dict>
@@ -27779,10 +27814,10 @@ END: /Users/rmills/mrw.mrw\
 					<integer>447</integer>
 					<key>Points</key>
 					<array>
-						<string>{36.236219610313739, 153.22046815140982}</string>
-						<string>{10.661416627882037, 153.22046815140982}</string>
-						<string>{10.661416627882037, 207.41535339611715}</string>
-						<string>{35.861219610313739, 207.56785439621297}</string>
+						<string>{47.986219610313739, 154.47046815140982}</string>
+						<string>{22.661416627882037, 154.47046815140982}</string>
+						<string>{22.661416627882037, 207.41535339611715}</string>
+						<string>{47.861219610313739, 207.56785439621297}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -27804,7 +27839,7 @@ END: /Users/rmills/mrw.mrw\
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{36.058069867646608, 207.4960571449385}, {365.79626319887115, 17.007874592458165}}</string>
+					<string>{{48.058069867646608, 207.4960571449385}, {365.79626319887115, 17.007874592458165}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -27852,7 +27887,7 @@ END: /Users/rmills/mrw.mrw\
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{36.058069867646608, 190.48818255248034}, {155.31203082527651, 17.007874592458165}}</string>
+					<string>{{48.058069867646608, 190.48818255248034}, {155.31203082527651, 17.007874592458165}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -27900,7 +27935,7 @@ END: /Users/rmills/mrw.mrw\
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{149.19882379419448, 77.100132375203643}, {28.346456527709961, 17.007874592458165}}</string>
+					<string>{{161.19882379419448, 77.100132375203643}, {28.346456527709961, 17.007874592458165}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -27948,7 +27983,7 @@ END: /Users/rmills/mrw.mrw\
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{64.425691884662143, 144.96935353666254}, {28.346456527709961, 17.007874592458165}}</string>
+					<string>{{76.425691884662143, 144.96935353666254}, {28.346456527709961, 17.007874592458165}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -27996,7 +28031,7 @@ END: /Users/rmills/mrw.mrw\
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{36.079235356952182, 144.96935353666254}, {28.346456527709961, 17.007874592458165}}</string>
+					<string>{{48.079235356952182, 144.96935353666254}, {28.346456527709961, 17.007874592458165}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -28044,7 +28079,7 @@ END: /Users/rmills/mrw.mrw\
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{64.425691884662143, 127.96147894420437}, {28.346456527709961, 17.007874592458165}}</string>
+					<string>{{76.425691884662143, 127.96147894420437}, {28.346456527709961, 17.007874592458165}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -28092,7 +28127,7 @@ END: /Users/rmills/mrw.mrw\
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{36.079235356952182, 127.96147894420437}, {28.346456527709961, 17.007874592458165}}</string>
+					<string>{{48.079235356952182, 127.96147894420437}, {28.346456527709961, 17.007874592458165}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -28140,7 +28175,7 @@ END: /Users/rmills/mrw.mrw\
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{64.425691884662143, 110.95360435174621}, {28.346456527709961, 17.007874592458165}}</string>
+					<string>{{76.425691884662143, 110.95360435174621}, {28.346456527709961, 17.007874592458165}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -28188,7 +28223,7 @@ END: /Users/rmills/mrw.mrw\
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{36.079235356952175, 110.95360435174622}, {28.346456527709961, 17.007874592458165}}</string>
+					<string>{{48.079235356952175, 110.95360435174622}, {28.346456527709961, 17.007874592458165}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -28236,7 +28271,7 @@ END: /Users/rmills/mrw.mrw\
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{64.39763591011679, 94.108006967661808}, {141.7322826385498, 17.007874592458165}}</string>
+					<string>{{76.39763591011679, 94.108006967661808}, {141.7322826385498, 17.007874592458165}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -28284,7 +28319,7 @@ END: /Users/rmills/mrw.mrw\
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{232.74139460844162, 77.100132375203643}, {226.77165222167969, 17.007874592458165}}</string>
+					<string>{{244.74139460844162, 77.100132375203643}, {226.77165222167969, 17.007874592458165}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -28332,7 +28367,7 @@ END: /Users/rmills/mrw.mrw\
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{36.079235356952182, 94.195729759288071}, {28.346456527709961, 17.007874592458165}}</string>
+					<string>{{48.079235356952182, 94.195729759288071}, {28.346456527709961, 17.007874592458165}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -28380,7 +28415,7 @@ END: /Users/rmills/mrw.mrw\
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{36.079235356952175, 77.100132375203643}, {113.38582611083984, 17.007874592458165}}</string>
+					<string>{{48.079235356952175, 77.100132375203643}, {113.38582611083984, 17.007874592458165}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -28428,7 +28463,7 @@ END: /Users/rmills/mrw.mrw\
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{36.079235356952182, 173.48030796002217}, {173.73722784284482, 17.007874592458165}}</string>
+					<string>{{48.079235356952182, 173.48030796002217}, {173.73722784284482, 17.007874592458165}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -28476,7 +28511,7 @@ END: /Users/rmills/mrw.mrw\
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{36.058069867646623, 234.09663668243149}, {328.19390194120365, 128}}</string>
+					<string>{{48.058069867646623, 234.09663668243149}, {328.19390194120365, 128}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -28648,7 +28683,7 @@ STRUCTURE OF RAF FILE: /Users/rmills/Downloads/sample1.raf\
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{177.79675105854255, 77.100132375203643}, {56.692913055419922, 17.007874592458165}}</string>
+					<string>{{189.79675105854255, 77.100132375203643}, {56.692913055419922, 17.007874592458165}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -28696,7 +28731,7 @@ STRUCTURE OF RAF FILE: /Users/rmills/Downloads/sample1.raf\
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{36.058069867646608, 56.692911788234568}, {90, 23}}</string>
+					<string>{{48.058069867646608, 56.692911788234568}, {90, 23}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -37662,9 +37697,9 @@ etc..}</string>
 		<key>TopSlabHeight</key>
 		<real>33</real>
 		<key>VisibleRegion</key>
-		<string>{{0, 0}, {541, 400.5}}</string>
+		<string>{{0, 14}, {270.5, 200.25}}</string>
 		<key>Zoom</key>
-		<real>2</real>
+		<real>4</real>
 		<key>ZoomValues</key>
 		<array>
 			<array>
@@ -37753,9 +37788,9 @@ etc..}</string>
 				<real>1</real>
 			</array>
 			<array>
-				<string>MRW 2</string>
+				<string>RAF</string>
+				<real>4</real>
 				<real>2</real>
-				<real>1</real>
 			</array>
 		</array>
 	</dict>
