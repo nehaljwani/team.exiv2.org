@@ -573,6 +573,7 @@ enum maker_e
 ,   kApple
 ,   kPano
 ,   kMino
+,   kFuji
 ,   kOlym
 };
 
@@ -644,6 +645,7 @@ TagDict agfaDict  ;
 TagDict appleDict ;
 TagDict panoDict  ;
 TagDict minoDict  ;
+TagDict fujiDict  ;
 TagDict olymDict  ;
 TagDict gpsDict   ;
 TagDict crwDict   ;
@@ -1046,6 +1048,7 @@ public:
             case kApple : makerDict_ = appleDict ; break;
             case kPano  : makerDict_ = panoDict  ; break;
             case kMino  : makerDict_ = minoDict  ; break;
+            case kFuji  : makerDict_ = fujiDict  ; break;
             case kOlym  : makerDict_ = olymDict  ; break;
             default : /* do nothing */           ; break;
         }
@@ -1061,6 +1064,7 @@ public:
                : buf.strequals("Panasonic")         ? kPano
                : buf.strequals("Minolta Co., Ltd."      ) ? kMino
                : buf.strequals("OLYMPUS IMAGING CORP.  ") ? kOlym
+               : buf.strequals("FUJIFILM"         ) ? kFuji
                : maker_
                ;
         setMaker(maker_);
@@ -1963,6 +1967,106 @@ void MrwImage::accept(class Visitor& visitor)
         visitor.visitEnd((*this)); // tell the visitor
     }
 }
+
+class RafImage : public Image
+{
+public:
+    RafImage(std::string path)
+    : Image(path)
+    {}
+    RafImage(Io& io,maker_e maker=kFuji)
+    : Image(io)
+    {}
+
+
+    void accept(class Visitor& visitor);
+
+    bool valid()
+    {
+        if ( !valid_ ) {
+            IoSave restore(io(),0);
+            endian_ = keBig ;
+            format_ = "RAF" ;
+            start_  = 0     ;
+            DataBuf header(108);
+            io().read(header);
+            jpeg_ = header.getLong( 84,endian_);
+            jlen_ = header.getLong( 88,endian_);
+            tiff_ = header.getLong(100,endian_);
+            tlen_ = header.getLong(104,endian_);
+            
+            header_ = "  address |   length | data ";
+            valid_  =  header.begins("FUJIFILMCCD-RAW") && ((jpeg_+jlen_) <= io().size()) && ((tiff_+tlen_) <= io().size());
+        }
+        return valid_;
+    }
+private:
+    uint32_t jpeg_  ; // first byte of jpeg image
+    uint32_t jlen_  ; // length of jpeg image
+    uint32_t tiff_  ; // first byte of tiff image
+    uint32_t tlen_  ; // length of tiff image
+};
+
+void RafImage::accept(class Visitor& visitor)
+{
+    if ( !valid_ ) valid();
+    if (  valid_ ) {
+        visitor.visitBegin((*this)); // tell the visitor
+        IoSave restore(io(),0);
+        DataBuf header(108);
+        io().read(header);
+        
+        size_t address = 0 ;
+        size_t len     = 0 ;
+
+        address += len ; len = 16 ; visitor.out() << visitor.indent() << stringFormat(" %8u | %8u | ",address,len) << "  magic : " << header.binaryToString(address,len) << std::endl;
+        address += len ; len =  4 ; visitor.out() << visitor.indent() << stringFormat(" %8u | %8u | ",address,len) << "  data1 : " << header.binaryToString(address,len) << std::endl;
+/*
+visitor.out() << "" 
+<< "        0 |       16 |       magic : FUJIFILMCCD-RAW " << std::endl
+<< "       16 |        4 |       data1 : 0201" << std::endl
+<< "       20 |        8 |       data2 : FF159501" << std::endl
+<< "       28 |       32 |      camera : X-T3" << std::endl
+<< "       60 |        4 |     version : 0100" << std::endl
+<< "       64 |       20 |     unknown : ..................." << std::endl
+<< "       84 |        4 | JPEG Offset : 148" << std::endl
+<< "       88 |        4 | JPEG Length : 2993767" << std::endl
+<< "       92 |        4 |  CFA Offset : 2994088" << std::endl
+<< "       96 |        4 |  CFA Length : 22104" << std::endl
+<< "      100 |        4 | TIFF Offset : 3016192" << std::endl
+<< "      104 |        4 | TIFF Length : 53397824" << std::endl
+<< "      148 |  2993767 |        JPEG : ......Exif..II*" << std::endl
+<< "  2994088 |    22104 |         CFA : .........V......" << std::endl
+<< "  3016192 | 53397824 |        TIFF : II*............" << std::endl
+;
+*/
+#if 0        
+        DataBuf image(40);
+        IoSave restore(io(),image_+8);
+        io().read(image);
+        visitor.visitRaf(io(),*this,0,"MRM",image_,image);
+
+        io().seek(start_);
+        uint64_t    address = io().tell() ;
+        while ( io().tell() < image_ ) {
+            DataBuf     block(8);
+            io().read  (block);
+            
+            uint32_t    length  = block.getLong(4,endian_);
+            char        signature[4];
+            std::string chunk = block.getChars(1,3,signature);
+            
+            DataBuf     data(length < 40 ? length : 40 );
+            io().read(data);
+            visitor.visitRaf(io(),*this,address,chunk,length,data);
+            address += 8+length;
+            io().seek(address);
+        }
+#endif        
+        visitor.visitEnd((*this)); // tell the visitor
+    }
+}
+
 
 void JpegImage::accept(Visitor& visitor)
 {
@@ -2905,6 +3009,7 @@ std::unique_ptr<Image> ImageFactory(std::string path)
     PgfImage  pgf (path); if (  pgf.valid() ) return std::unique_ptr<Image> (new  PgfImage(path));
     MrwImage  mrw (path); if (  mrw.valid() ) return std::unique_ptr<Image> (new  MrwImage(path));
     RiffImage riff(path); if ( riff.valid() ) return std::unique_ptr<Image> (new RiffImage(path));
+    RafImage  raf (path); if (  raf.valid() ) return std::unique_ptr<Image> (new  RafImage(path));
     return NULL;
 }
 
@@ -3150,6 +3255,13 @@ void init()
     minoDict  [ 0x0010 ] = "AutoFocus";
     minoDict  [ 0x0040 ] = "ImageSize";
     minoDict  [ 0x0081 ] = "Thumbnail";
+
+    fujiDict  [ktGroup ] = "Fuji";
+    fujiDict  [ 0x0000 ] = "Version";
+    fujiDict  [ 0x0010 ] = "SerialNumber";
+    fujiDict  [ 0x1000 ] = "Quality";
+    fujiDict  [ 0x1001 ] = "Sharpness";
+    fujiDict  [ 0x1002 ] = "WhiteBalance";
     
     olymDict  [ktGroup ] = "Olympus";
     olymDict  [ 0x0100 ] = "ThumbnailImage";

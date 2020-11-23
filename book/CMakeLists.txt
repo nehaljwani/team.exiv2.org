@@ -16,6 +16,11 @@ add_executable(tvisitor    tvisitor.cpp   )
 add_executable(args        args.cpp       )
 add_executable(dmpf        dmpf.cpp       )
 
+set(CMAKE_OSX_DEPLOYMENT_TARGET "10.13.0")
+set(CMAKE_OSX_ARCHITECTURES     "x86_64" )
+set(CMAKE_XCODE_ARCHS           "x86_64" )
+
+
 option( EXIV2_TEAM_USE_SANITIZERS     "Enable ASAN when available"                     OFF )
 if ( MSVC ) 
    option( EXIV2_ENABLE_PNG              "Build compressed/png support (requires libz)"   OFF )
