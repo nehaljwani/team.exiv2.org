@@ -2428,7 +2428,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2020-11-23 12:19:40 +0000</string>
+	<string>2020-11-23 20:39:46 +0000</string>
 	<key>Modifier</key>
 	<string>Robin Mills</string>
 	<key>NotesVisible</key>
@@ -28458,7 +28458,7 @@ END: /Users/rmills/mrw.mrw\
 {\*\expandedcolortbl;;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc\partightenfactor0
 
-\f0\fs20 \cf0 0FUJIFILMCCD-RAW}</string>
+\f0\fs20 \cf0 FUJIFILMCCD-RAWsp}</string>
 					</dict>
 				</dict>
 				<dict>
@@ -28566,7 +28566,7 @@ END: /Users/rmills/mrw.mrw\
 \f0\fs10 \cf0 591 rmills@rmillsmm-local:~/gnu/github/exiv2/0.27-maintenance/build $ bin/exiv2 -pS ~/Downloads/sample1.raf \
 STRUCTURE OF RAF FILE: /Users/rmills/Downloads/sample1.raf\
   Address |   Length | Payload\
-        0 |       16 |       magic : 0FUJIFILMCCD-RAW \
+        0 |       16 |       magic : FUJIFILMCCD-RAW \
        16 |        4 |       data1 : 0201\
        20 |        8 |       data2 : FF159501\
        28 |       32 |      camera : X-T3\
@@ -37697,7 +37697,7 @@ etc..}</string>
 		<key>TopSlabHeight</key>
 		<real>33</real>
 		<key>VisibleRegion</key>
-		<string>{{0, 14}, {270.5, 200.25}}</string>
+		<string>{{0, 157.25}, {270.5, 200.25}}</string>
 		<key>Zoom</key>
 		<real>4</real>
 		<key>ZoomValues</key>
