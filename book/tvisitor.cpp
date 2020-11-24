@@ -1992,6 +1992,8 @@ public:
             io().read(header);
             jpeg_ = header.getLong( 84,endian_);
             jlen_ = header.getLong( 88,endian_);
+            cfa_  = header.getLong( 92,endian_);
+            clen_ = header.getLong( 96,endian_);
             tiff_ = header.getLong(100,endian_);
             tlen_ = header.getLong(104,endian_);
             
@@ -2003,6 +2005,8 @@ public:
 private:
     uint32_t jpeg_  ; // first byte of jpeg image
     uint32_t jlen_  ; // length of jpeg image
+    uint32_t cfa_   ; // first byte of CFA (Color filter array)
+    uint32_t clen_  ; // length of CFA
     uint32_t tiff_  ; // first byte of tiff image
     uint32_t tlen_  ; // length of tiff image
 };
@@ -2014,55 +2018,37 @@ void RafImage::accept(class Visitor& visitor)
         visitor.visitBegin((*this)); // tell the visitor
         IoSave restore(io(),0);
         DataBuf header(108);
+        DataBuf buff(20);
+        
         io().read(header);
         
         size_t address = 0 ;
         size_t len     = 0 ;
 
-        address += len ; len = 16 ; visitor.out() << visitor.indent() << stringFormat(" %8u | %8u | ",address,len) << "  magic : " << header.binaryToString(address,len) << std::endl;
-        address += len ; len =  4 ; visitor.out() << visitor.indent() << stringFormat(" %8u | %8u | ",address,len) << "  data1 : " << header.binaryToString(address,len) << std::endl;
-/*
-visitor.out() << "" 
-<< "        0 |       16 |       magic : FUJIFILMCCD-RAW " << std::endl
-<< "       16 |        4 |       data1 : 0201" << std::endl
-<< "       20 |        8 |       data2 : FF159501" << std::endl
-<< "       28 |       32 |      camera : X-T3" << std::endl
-<< "       60 |        4 |     version : 0100" << std::endl
-<< "       64 |       20 |     unknown : ..................." << std::endl
-<< "       84 |        4 | JPEG Offset : 148" << std::endl
-<< "       88 |        4 | JPEG Length : 2993767" << std::endl
-<< "       92 |        4 |  CFA Offset : 2994088" << std::endl
-<< "       96 |        4 |  CFA Length : 22104" << std::endl
-<< "      100 |        4 | TIFF Offset : 3016192" << std::endl
-<< "      104 |        4 | TIFF Length : 53397824" << std::endl
-<< "      148 |  2993767 |        JPEG : ......Exif..II*" << std::endl
-<< "  2994088 |    22104 |         CFA : .........V......" << std::endl
-<< "  3016192 | 53397824 |        TIFF : II*............" << std::endl
-;
-*/
-#if 0        
-        DataBuf image(40);
-        IoSave restore(io(),image_+8);
-        io().read(image);
-        visitor.visitRaf(io(),*this,0,"MRM",image_,image);
-
-        io().seek(start_);
-        uint64_t    address = io().tell() ;
-        while ( io().tell() < image_ ) {
-            DataBuf     block(8);
-            io().read  (block);
-            
-            uint32_t    length  = block.getLong(4,endian_);
-            char        signature[4];
-            std::string chunk = block.getChars(1,3,signature);
-            
-            DataBuf     data(length < 40 ? length : 40 );
-            io().read(data);
-            visitor.visitRaf(io(),*this,address,chunk,length,data);
-            address += 8+length;
-            io().seek(address);
+        address += len ; len = 16 ; visitor.out() << visitor.indent() << stringFormat(" %8u | %8u |       magic: ",address,len) << header.binaryToString(address,len) << std::endl;
+        address += len ; len =  4 ; visitor.out() << visitor.indent() << stringFormat(" %8u | %8u |       data1: ",address,len) << header.binaryToString(address,len) << std::endl;
+        address += len ; len =  8 ; visitor.out() << visitor.indent() << stringFormat(" %8u | %8u |       data2: ",address,len) << header.binaryToString(address,len) << std::endl;
+        address += len ; len = 32 ; visitor.out() << visitor.indent() << stringFormat(" %8u | %8u |      camera: ",address,len) << header.binaryToString(address,len) << std::endl;
+        address += len ; len =  4 ; visitor.out() << visitor.indent() << stringFormat(" %8u | %8u |     version: ",address,len) << header.binaryToString(address,len) << std::endl;
+        address += len ; len = 20 ; visitor.out() << visitor.indent() << stringFormat(" %8u | %8u |     unknown: ",address,len) << header.binaryToString(address,len) << std::endl;
+        address += len ; len =  4 ; visitor.out() << visitor.indent() << stringFormat(" %8u | %8u | JPEG Offset: ",address,len) << header.getLong(address,endian_)    << std::endl;
+        address += len ; len =  4 ; visitor.out() << visitor.indent() << stringFormat(" %8u | %8u | JPEG Length: ",address,len) << header.getLong(address,endian_)    << std::endl;
+        address += len ; len =  4 ; visitor.out() << visitor.indent() << stringFormat(" %8u | %8u |  CFA Offset: ",address,len) << header.getLong(address,endian_)    << std::endl;
+        address += len ; len =  4 ; visitor.out() << visitor.indent() << stringFormat(" %8u | %8u |  CFA Length: ",address,len) << header.getLong(address,endian_)    << std::endl;
+        address += len ; len =  4 ; visitor.out() << visitor.indent() << stringFormat(" %8u | %8u | TIFF Offset: ",address,len) << header.getLong(address,endian_)    << std::endl;
+        address += len ; len =  4 ; visitor.out() << visitor.indent() << stringFormat(" %8u | %8u | TIFF Length: ",address,len) << header.getLong(address,endian_)    << std::endl;
+        
+        io().seek(jpeg_) ; io().read(buff) ; visitor.out() << visitor.indent() << stringFormat(" %8u | %8u | ",jpeg_,jlen_) << buff.binaryToString() << std::endl;
+        if (visitor.option() & kpsRecursive) JpegImage(io(),jpeg_,jlen_).accept(visitor);
+        io().seek(cfa_ ) ; io().read(buff) ; visitor.out() << visitor.indent() << stringFormat(" %8u | %8u | ",cfa_ ,clen_) << buff.binaryToString() << std::endl;
+        io().seek(tiff_) ; io().read(buff) ; visitor.out() << visitor.indent() << stringFormat(" %8u | %8u | ",tiff_,tlen_) << buff.binaryToString() << std::endl;
+        if (visitor.option() & kpsRecursive) {
+            Io             t(io(),tiff_,tlen_); // TODO fix this (Tiff Constructor) and tiff1, tiff2 and makernote
+            TiffImage tiff(t);
+            tiff.setMaker(kFuji);
+            tiff.accept(visitor);
         }
-#endif        
+
         visitor.visitEnd((*this)); // tell the visitor
     }
 }
@@ -2404,6 +2390,12 @@ void IFD::visitMakerNote(Visitor& visitor,DataBuf& buf,uint64_t count,uint64_t o
         makerNote.start_ = 12  ; // "OLYMPUS\0II\0x3\0x0"E#
         makerNote.valid_ = true; // Valid without magic=42
         makerNote.accept(visitor,makerDict());
+    } else if ( image_.maker_ == kFuji ) {
+        // TODO: fix punt
+        //Io     io(io_,offset,count);
+        //size_t punt = 16           ; // "FUJIFILM"
+        //IFD makerNote(image_,offset+punt,false);
+        //makerNote.accept(visitor);
     } else {
         bool   bNext = maker()  != kSony;                                        // Sony no trailing next
         size_t punt  = maker()  == kSony && buf.strequals("SONY DSC ") ? 12 : 0; // Sony 12 byte punt
@@ -3262,7 +3254,20 @@ void init()
     fujiDict  [ 0x1000 ] = "Quality";
     fujiDict  [ 0x1001 ] = "Sharpness";
     fujiDict  [ 0x1002 ] = "WhiteBalance";
-    
+    fujiDict  [ 0xf000 ] = "FujiIFD";
+    fujiDict  [ 0xf001 ] = "RawFullWidth";
+    fujiDict  [ 0xf002 ] = "RawFullHeight";
+    fujiDict  [ 0xf003 ] = "BitPerSample";
+    fujiDict  [ 0xf007 ] = "StripOffsets";
+    fujiDict  [ 0xf008 ] = "StripByteCounts";
+    fujiDict  [ 0xf00a ] = "BlackLevel";
+    fujiDict  [ 0xf00b ] = "GeometricDistortionParams";
+    fujiDict  [ 0xf00c ] = "WB_GRBLevelsStandard";
+    fujiDict  [ 0xf00d ] = "WB_GRBLevelsAuto";
+    fujiDict  [ 0xf00e ] = "WB_GRBLevels";
+    fujiDict  [ 0xf00f ] = "ChromaticAberrationParams";
+    fujiDict  [ 0xf010 ] = "VignettingParams";
+
     olymDict  [ktGroup ] = "Olympus";
     olymDict  [ 0x0100 ] = "ThumbnailImage";
     olymDict  [ 0x0104 ] = "BodyFirmwareVersion";

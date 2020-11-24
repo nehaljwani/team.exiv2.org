@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-11-23</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-11-24</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -1726,7 +1726,7 @@ I haven't bothered to implement options -pX (XMP), -pC (ICC Color Profile) or -p
 ## RAF Fujifilm RAW
 ![raf](raf.png)<br>
 
-I found this useful description: [https://libopenraw.freedesktop.org/formats/raf](https://libopenraw.freedesktop.org/formats/raf/)
+I found this useful description: [https://libopenraw.freedesktop.org/formats/raf](https://libopenraw.freedesktop.org/formats/raf/).  I don't recognise the format of the embedded CFA.  I believe CFA is Color Filter Array. 
 
 
 [TOC](#TOC)
