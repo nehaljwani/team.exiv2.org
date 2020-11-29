@@ -1055,16 +1055,16 @@ public:
     }
     void setMaker(DataBuf& buf)
     {
-        maker_ = buf.strequals("Canon"            ) ? kCanon
+        maker_ = buf.strequals("Canon")             ? kCanon
                : buf.strequals("NIKON CORPORATION") ? kNikon
-               : buf.strequals("NIKON"            ) ? kNikon
+               : buf.strequals("NIKON")             ? kNikon
                : buf.strequals("SONY")              ? kSony
                : buf.strequals("AGFAPHOTO")         ? kAgfa
                : buf.strequals("Apple")             ? kApple
                : buf.strequals("Panasonic")         ? kPano
-               : buf.strequals("Minolta Co., Ltd."      ) ? kMino
+               : buf.strequals("Minolta Co., Ltd.") ? kMino
                : buf.strequals("OLYMPUS IMAGING CORP.  ") ? kOlym
-               : buf.strequals("FUJIFILM"         ) ? kFuji
+               : buf.strequals("FUJIFILM")          ? kFuji
                : maker_
                ;
         setMaker(maker_);
@@ -2391,11 +2391,8 @@ void IFD::visitMakerNote(Visitor& visitor,DataBuf& buf,uint64_t count,uint64_t o
         makerNote.valid_ = true; // Valid without magic=42
         makerNote.accept(visitor,makerDict());
     } else if ( image_.maker_ == kFuji ) {
-        // TODO: fix punt
-        //Io     io(io_,offset,count);
-        //size_t punt = 16           ; // "FUJIFILM"
-        //IFD makerNote(image_,offset+punt,false);
-        //makerNote.accept(visitor);
+        size_t punt      = 12 ; // "FUJIFILM" 0x0c000000
+        IFD(image_,offset+punt,false).accept(visitor,makerDict());
     } else {
         bool   bNext = maker()  != kSony;                                        // Sony no trailing next
         size_t punt  = maker()  == kSony && buf.strequals("SONY DSC ") ? 12 : 0; // Sony 12 byte punt
@@ -2455,7 +2452,24 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
             if ( tagDict == tiffDict && tag == ktMake ) image_.setMaker(buff);
             visitor.visitTag(io_,image_,address,tag,type,count,offset,buff,tagDict);  // Tell the visitor
 
-            // recursion anybody?
+            if ( type == kttIfd  ) {
+                for ( uint64_t i = 0 ; i < count ; i++ ) {
+                    offset = get4or8 (buff,0,i,endian);
+                    IFD(image_,offset,false).accept(visitor,ifdDict(image_.maker_,tag,makerDict()));
+                }
+            } else if ( tag == ktSubIFD  ) {
+                for ( uint64_t i = 0 ; i < count ; i++ ) {
+                    offset = get4or8 (buff,0,i,endian);
+                    IFD(image_,offset,false).accept(visitor,tagDict);
+                }
+            } else switch ( tag ) {
+                case ktGps    : IFD(image_,offset,false).accept(visitor,gpsDict );break;
+                case ktExif   : IFD(image_,offset,false).accept(visitor,exifDict);break;
+                case ktMN     :         visitMakerNote(visitor,buff,count,offset);break;
+                default       : /* do nothing                                  */;break;
+            }
+
+            // recursion into embedded formats
             if ( (visitor.option() & kpsRecursive) & (tagDict == tiffDict) ) {
                 Io       io(io_,offset,count);
                 switch ( tag ) {
@@ -2465,18 +2479,7 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
                 }
             }
 
-            if ( type == kttIfd ) {
-                for ( uint64_t i = 0 ; i < count ; i++ ) {
-                    offset = get4or8 (buff,0,i,endian);
-                    IFD(image_,offset,false).accept(visitor,ifdDict(image_.maker_,tag,makerDict()));
-                }
-            } else switch ( tag ) {
-                case ktSubIFD : IFD(image_,offset,false).accept(visitor,tagDict );break;
-                case ktGps    : IFD(image_,offset,false).accept(visitor,gpsDict );break;
-                case ktExif   : IFD(image_,offset,false).accept(visitor,exifDict);break;
-                case ktMN     :         visitMakerNote(visitor,buff,count,offset);break;
-                default       : /* do nothing                                  */;break;
-            }
+
         } // for i < nEntries
 
         start = 0; // !stop
