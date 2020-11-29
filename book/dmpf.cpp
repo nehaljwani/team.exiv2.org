@@ -104,7 +104,7 @@ std::vector<std::string> splitter (const std::string &s, char delim)
 bool file(const char* arg,std::string& stub,uint32_t& skip)
 {
     std::string path(arg);
-    if ( path == terminal ) return true ;
+    if ( path == terminal ) { stub = terminal ; return true ; }
     
     // parse path/to/file[:number+length]+
     std::vector<std::string> paths = ::splitter(path,':');
@@ -165,6 +165,8 @@ int main(int argc, char* argv[])
         size_t  count  = options["count"];
         size_t  width  = options["width"];
         size_t  start  = options["start"];
+        
+        std::cout << "path = " << path << std::endl;
 
         if ( path != terminal ) {
             f     = fopen(path.c_str(),"rb");
