@@ -2391,8 +2391,11 @@ void IFD::visitMakerNote(Visitor& visitor,DataBuf& buf,uint64_t count,uint64_t o
         makerNote.valid_ = true; // Valid without magic=42
         makerNote.accept(visitor,makerDict());
     } else if ( image_.maker_ == kFuji ) {
-        size_t punt      = 12 ; // "FUJIFILM" 0x0c000000
-        IFD(image_,offset+punt,false).accept(visitor,makerDict());
+        Io     io(io_,offset,count);
+        TiffImage makerNote(io,image_.maker_);
+        makerNote.start_ = 12  ; // // "FUJIFILM" 0x0c000000
+        makerNote.valid_ = true; // Valid without magic=42
+        makerNote.accept(visitor,makerDict());
     } else {
         bool   bNext = maker()  != kSony;                                        // Sony no trailing next
         size_t punt  = maker()  == kSony && buf.strequals("SONY DSC ") ? 12 : 0; // Sony 12 byte punt
