@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-11-24</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-11-29</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -1728,6 +1728,9 @@ I haven't bothered to implement options -pX (XMP), -pC (ICC Color Profile) or -p
 
 I found this useful description: [https://libopenraw.freedesktop.org/formats/raf](https://libopenraw.freedesktop.org/formats/raf/).  I don't recognise the format of the embedded CFA.  I believe CFA is Color Filter Array. 
 
+Most of the metadata is contained in the embedded JPEG.  However there is metadata in the embedded TIFF.  This is discussed here: [https://github.com/Exiv2/exiv2/issues/1402](https://github.com/Exiv2/exiv2/issues/1402).
+
+The MakerNote in the embedded JPEG in a RAF has a 12 byte header followed by an IFD.  The 12 bytes header is the ascii string FUJIFILM followed by the bytes 0x0c 0 0 0.  Perhaps it's a coincidence that that 0x0c00000000 is bigEndian '12'.  It's possible that the header is "FUJIFILM"long and long is the offset to the IFD.  As RAF is a big endian file, that's possible.  The code in both Exiv2 and tvisitor however simply skips the 12 byte header and reads the IFD. 
 
 [TOC](#TOC)
 <div id="RW2"/>
@@ -2926,6 +2929,137 @@ $
 ```
 
 [TOC](#TOC)
+## 3.5 Exiv2 Internals.
+
+
+#### The IfdId enumerator
+
+This is a collection of more than 100 values which are used to track the groups in the MetaData.  For example ifdIdNotSet is an initial defined state (with no metadata), ifd0Id represents IFD0, exifId the Exif IFD and so on.  There are over one hundred groups (as explained in the man page) to deal with every maker and there binary encoded metadata.
+
+#### Function Selectors
+
+A common pattern in the Exiv2 code is the table/function pattern. 
+
+| Fuction         | Purpose | 
+|:--              |:--      |
+| cfgSelFct       | determine which cfg + def of a corresponding array-set to use. |
+| ConvertFct      | Convert between two keys |
+| CrwEncodeFct<br>CrwDecode  | Encoding/Decoding for CRW |
+| CryptFct        | Cipher/Decipher Data     |
+| EncoderFct<br>DecoderFct      | Encoding/Decoding functions for<br>Exif, Iptc and XMP data |
+| EasyAccessFct   | See 3.3 |
+| InstanceFct     | Creates new Image instances |
+| LensIdFct       | Convert lens ID to lens name |
+| NewMnFct        | Makernote create function fors image and groups |
+| NewTiffCompFct  | Creates TiffGroupStruct's |
+| PrintFct        | Print the "translated" value of data | |
+| TagListFct      | Get a function to return an array of tags | |
+
+It's not really clear to me why this is done and it feels like C++ being implemented in C.
+
+#### Tiff Parser State Tables and Functions.
+
+**TiffCreator::tiffTreeStruct_**
+
+```cpp
+    /*
+      This table lists for each group in a tree, its parent group and tag.
+      Root identifies the root of a TIFF tree, as there is a need for multiple
+      trees. Groups are the nodes of a TIFF tree. A group is an IFD or any
+      other composite component.
+
+      With this table, it is possible, for a given group (and tag) to find a
+      path, i.e., a list of groups and tags, from the root to that group (tag).
+    */
+    const TiffTreeStruct TiffCreator::tiffTreeStruct_[] = {
+        // root      group             parent group      parent tag
+        //---------  ----------------- ----------------- ----------
+        { Tag::root, ifdIdNotSet,      ifdIdNotSet,      Tag::root },
+        { Tag::root, ifd0Id,           ifdIdNotSet,      Tag::root },
+```
+
+**TiffCreator::tiffGroupStruct_**
+
+```cpp
+    /*
+      This table describes the layout of each known TIFF group (including
+      non-standard structures and IFDs only seen in RAW images).
+
+      The key of the table consists of the first two attributes, (extended) tag
+      and group. Tag is the TIFF tag or one of a few extended tags, group
+      identifies the IFD or any other composite component.
+
+      Each entry of the table defines for a particular tag and group combination
+      the corresponding TIFF component create function.
+     */
+#define ignoreTiffComponent 0
+    const TiffGroupStruct TiffCreator::tiffGroupStruct_[] = {
+        // ext. tag  group             create function
+        //---------  ----------------- -----------------------------------------
+        // Root directory
+        { Tag::root, ifdIdNotSet,      newTiffDirectory<ifd0Id>                  },
+
+        // IFD0
+        {    0x8769, ifd0Id,           newTiffSubIfd<exifId>                     },
+```
+
+This is a state table used to navigate the metadata heirachy.  For example, starting at root, the first IFD wil create a new TiffDirectory and sets the state to ifd0Id.  When tag 0x8769 is encountered, the parser will create new TiffDirectory and the state becomes exifId.
+
+This table also enable the parsing of binary metadata.  For example the following entry directs the parser to treat tag 0x0004 in canonId as a binary structure of canonSiCfg: 
+
+```cpp
+        { Tag::root, ifd0Id,           ifdIdNotSet,      Tag::root },
+        { Tag::root, exifId,           ifd0Id,           0x8769    },        
+        { Tag::root, nikon3Id,         exifId,           0x927c    },
+        { Tag::root, nikonPcId,        nikon3Id,         0x0023    },
+```
+
+This causes the manufacture of an nikonPcId using newTiffElement.  This is a simple binary.
+
+```cpp
+        // Nikon3 picture control
+        {  Tag::all, nikonPcId,        newTiffBinaryElement                      },
+```
+
+nikonPcCfg is defined as:
+
+```cpp
+    //! Nikon Picture Control binary array - configuration
+    extern const ArrayCfg nikonPcCfg = {
+        nikonPcId,        // Group for the elements
+        invalidByteOrder, // Use byte order from parent
+        ttUndefined,      // Type for array entry
+        notEncrypted,     // Not encrypted
+        false,            // No size element
+        true,             // Write all tags
+        true,             // Concatenate gaps
+        { 0, ttUnsignedByte,  1 }
+    };
+    //! Nikon Picture Control binary array - definition
+    extern const ArrayDef nikonPcDef[] = {
+        {  0, ttUndefined,     4 }, // Version
+        {  4, ttAsciiString,  20 },
+        { 24, ttAsciiString,  20 },
+...
+        { 57, ttUnsignedByte,  1 }  // The array contains 58 bytes
+    };
+```
+
+The tags associated with nikonPcId are:
+
+```cpp
+    // Nikon3 Picture Control Tag Info
+    const TagInfo Nikon3MakerNote::tagInfoPc_[] = {
+        TagInfo( 0, "Version", N_("Version"), N_("Version"), nikonPcId, makerTags, undefined, 4, printExifVersion),
+        TagInfo( 4, "Name", N_("Name"), N_("Name"), nikonPcId, makerTags, asciiString, 20, printValue),
+        TagInfo(24, "Base", N_("Base"), N_("Base"), nikonPcId, makerTags, asciiString, 20, printValue),
+...
+    };
+```
+
+This is a very flexible design.  Not easy to understand.  We will discuss my much simpler design used by tvisitor.cpp in [6.6 Presenting the data with visitTag()](#6-6).
+
+[TOC](#TOC)
 <div id="4"/>
 # 4 Lens Recognition
 
@@ -3465,15 +3599,13 @@ In tvisitor.cpp, we only have a single Visitor called ReportVisitor.  When you c
 
 Exiv2 has an abstract TiffVisitor class, and the following concrete visitors:
 
-| _Class_ | _Derived from_ | Purpose |
-|:--                |:--                  |:---- |
-| class TiffFinder  | TiffVisitor    | Searching |
-| class TiffCopier  | TiffVisitor  | Visits a file and copies to a new file |
-| class TiffDecoder | TiffVisitor | Decodes metadata |
-| class TiffEncoder | TiffVisitor | Encodes metadata |
-| class TiffReader  | TiffVisitor | Reads metadata into memory |
-
-More research needed.
+| _Class_           | _Derived from_ | Purpose                              | Description |
+|:--                |:--             |:----                                 |:--          |
+| class TiffReader  | TiffVisitor    | Reads metadata into memory           | image->readMetadata() |
+| class TiffFinder  | TiffVisitor    | Search an IFD                        | Finds the "Make" tag 0x010f in IFD0 |
+| class TiffDecoder | TiffVisitor    | Decodes metadata                     | Unknown |
+| class TiffEncoder | TiffVisitor    | Encodes metadata                     | Unknown |
+| class TiffCopier  | TiffVisitor    | Visits file and copies to a new file | image->writeMetadata() |
 
 [TOC](#TOC)
 <div id="6-5"/>
