@@ -1,16 +1,19 @@
 // g++ --std=c++11 dmpf.cpp
 #include <stdio.h>
+#include <map>
 #include <string.h>
 #include <vector>
 #include <string>
-#include <map>
-#include <iostream>
 #include <cstring>
+#include <iostream>
+#include <sstream>
+
 #ifdef _MSC_VER
 #pragma warning(disable : 4996)
 #endif
 
-std::vector      <const char*> paths;
+std::vector      <std::string> paths;
+std::string                    terminal("-");
 std::map<std::string,uint32_t> options;
 
 static enum error_e
@@ -24,10 +27,12 @@ uint8_t print(uint8_t c) { return c >= 32 && c < 127 ? c : c==0 ? '_' : '.' ; }
 void printOptions(error_e e)
 {
     if ( options["verbose"] || e == errorSyntax ) {
+        size_t count=0;
         for ( auto option : options ) {
-            std::cout << option.first << " = " << option.second << std::endl;
+            std::cout << (count++?" ":"") << option.first << "=" << option.second << "" ;
         }
     }
+    std::cout << std::endl;
     error = e;
 }
 
@@ -83,12 +88,34 @@ uint16_t swap(uint16_t* value,bool bSwap)
     return result;
 }
 
-bool file(const char* arg)
+std::vector<std::string> splitter (const std::string &s, char delim)
 {
-    if ( std::string("-") == std::string(arg) ) return true ;
-    FILE*  f      = ::fopen(arg,"rb");
+    std::vector<std::string> result;
+    std::stringstream        ss (s);
+    std::string              item;
+
+    while (getline (ss, item, delim)) {
+        result.push_back (item);
+    }
+
+    return result;
+}
+
+bool file(const char* arg,std::string& stub,uint32_t& skip)
+{
+    std::string path(arg);
+    if ( path == terminal ) return true ;
+    
+    // parse path/to/file[:number+length]+
+    std::vector<std::string> paths = ::splitter(path,':');
+    for ( size_t i = 1 ; i < paths.size() ; i++ ) {
+        std::vector<std::string> numbers = splitter(paths[i],'+');
+        skip += ::atoi(numbers[0].c_str());
+    }
+    FILE*  f      = ::fopen(paths[0].c_str(),"rb");
     bool   result = f != NULL ;
     if     (f) fclose(f);
+    stub=paths[0];
     return result;
 } //file
 
@@ -101,6 +128,7 @@ int main(int argc, char* argv[])
     options["hex"    ] =  1;
     options["skip"   ] =  0;
     options["verbose"] =  0;
+    options["start"  ] =  0; // set by file[:start->length]+
 
     // parse arguments
     if ( argc < 2 ) {
@@ -108,15 +136,16 @@ int main(int argc, char* argv[])
     } else for ( int i = 1 ; i < argc ; i++ ) {
         const char* arg = argv[i];
         std::string key;
+        std::string stub;
         uint32_t    value ;
         bool        bClaimed = false;
         if ( split(argv[i],key,value) ) {
             if ( options.find(key) != options.end() ) {
-                options[key]=value;
+                options[key]+=value;
                 bClaimed = true ;
             }
-        } else if ( file(arg) ) {
-            paths.push_back(arg);
+        } else if ( file(arg,stub,options["start"]) ) {
+            paths.push_back(stub);
             bClaimed = true;
         }
         if ( !bClaimed ) {
@@ -135,17 +164,18 @@ int main(int argc, char* argv[])
         size_t  skip   = options["skip" ];
         size_t  count  = options["count"];
         size_t  width  = options["width"];
-        
-        if ( path != std::string("-") ) {
-            f     = fopen(path,"rb");
+        size_t  start  = options["start"];
+
+        if ( path != terminal ) {
+            f     = fopen(path.c_str(),"rb");
             fseek(f,0,SEEK_END);
             size  = ftell(f);
         } else {
             f      = stdin   ;
             size   = 256*1024;
         }
-        if ( !count ) count = size - skip;
-        if ( !f || (skip+count) > size ) {
+        if ( !count ) count = size - skip-start;
+        if ( !f || (skip+count+start) > size ) {
             std::cerr << path << " insufficient data" << std::endl;
             error = errorProcessing;
         }
@@ -156,7 +186,7 @@ int main(int argc, char* argv[])
         size_t  nRead  = 0 ; // bytes actually read
         size_t  remain = count ; // how many bytes still to read
         if ( width > sizeof buff ) width = sizeof(buff);
-        fseek(f,(long)skip,SEEK_SET);
+        fseek(f,(long)skip+start,SEEK_SET);
         
         if ( !error ) while ( remain && (nRead = fread(buff,1,remain>width?width:remain,f)) > 0 ) {
             // line number
@@ -216,7 +246,7 @@ int main(int argc, char* argv[])
             std::cout << line << std::endl;
             reads++;
             remain -= nRead;
-            if ( f == stdin ) size += nRead;
+            if ( path == terminal ) size += nRead;
         } // while remains && nRead
 
         if ( f != stdin ) {
