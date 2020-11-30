@@ -1,9 +1,9 @@
-<br><br><br><br>
+#8<br><br><br><br>
 <center><img src="exiv2-large.png" width="600"/></center>
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-11-29</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-11-30</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -27,38 +27,48 @@ _And our cat Lizzie._
 ## <center>TABLE of CONTENTS</center>
 <div id="TOC"/>
 
-| Section                                             | Page | Image Formats                         | Page | Project Management                    | Page | 
-|:--                                                    | --:|:--                                      | --:|:--                                      | --:|
-| [1. Image File Formats](#1)                           |  9 | [TIFF and BigTiff](#TIFF)               | 10 | [11. Project Management](#11)           | 77 |
-| [2. Metadata Standards](#2)                           | 32 | [JPEG and EXV](#JPEG)                   | 12 | [11.1 C++ Code](#11-1)                  | 78 |
-| [2.1 Exif Metadata](#Exif)                            | 35 | [PNG Portable Network Graphics](#PNG)   | 17 | [11.2 Build](#11-2)                     | 79 |
-| [2.2 XMP Metadata](#XMP)                              | 36 | [JP2 Jpeg 2000](#JP2)                   | 18 | [11.3 Security](#11-3)                  | 80 |
-| [2.3 IPTC Metadata](#IPTC)                            | 37 | [ISOBMFF, CR3, HEIF, AVIF](#ISOBMFF)    | 19 | [11.4 Documentation](#11-4)             | 80 |
-| [2.4 ICC Profile](#ICC)                               | 37 | [CRW Canon Raw](#CRW)                   | 20 | [11.5 Testing](#11-5)                   | 80 |
-| [2.5 MakerNotes](#MakerNotes)                         | 38 | [RIFF Resource Interchange File Format](#RIFF) | 20 | [11.6 Samples](#11-6)            | 80 |
-| [2.6 Metadata Convertors](#MakerNotes)                | 38 | [MRW Minolta Raw](#MRW)                 | 21 | [11.7 Users](#11-7)                     | 80 |
-| [3. Exiv2 APIs](#3)                                   | 38 | [ORF Olympus Raw Format](#ORF)          | 22 | [11.8 Bugs](#11-8)                      | 80 |
-| [4. Lens Recognition](#4)                             | 39 | [PGF Progressive Graphics File](#PGF)   | 23 | [11.9 Releases](#11-9)                  | 81 | 
-| [5. I/O in Exiv2](#5)                                 | 41 | [PSD PhotoShop Document](#PSD)          | 24 | [11.10 Platforms](#11-10)               | 81 |
-| [6. Exiv2 Architecture](#6)                           | 41 | [RAF Fujifilm RAW](#RAF)                | 25 | [11.11 Localisation](#11-11)            | 81 |
-| [6.1 Extracting metadata using dd](#6-1)              | 42 | [RW2 Panasonic RAW](#RW2)               | 26 | [11.12 Build Server](#11-12)            | 81 |
-| [6.2 Tag Names in Exiv2](#6-2)                        | 44 | [TGA Truevision Targa](#TGA)            | 27 | [11.11 Source Code](#11-11)             | 81 |
-| [6.3 TagInfo](#6-3)                                   | 44 | [BMP Windows Bitmap](#BMP)              | 28 | [11.14 Web Site](#11-14)                | 81 |
-| [6.4 Visitor Design Pattern](#6-4)                    | 48 | [GIF Graphical Interchange Format](#GIF)| 29 | [11.15 Servers](#11-15)                 | 81 |
-| [6.5 IFD:accept() and TiffImage::accept() ](#6-5)     | 53 | [SIDECAR Xmp Sidecars](#SIDECAR)        | 30 | [11.16 API](#11-16)                     | 81 |
-| [6.6 Presenting data with visitTag()](#6-6)           | 57 |                                         |    | [11.17 Contributors](#11-17)            | 81 |
-| [6.7 Tag Decoder](#6-7)                               | 59 |                                         |    | [11.18 Scheduling](#11-18)              | 81 |
-| [6.8 Jpeg::Image accept()](#6-8)                      | 61 |                                         |    | [11.19 Enhancements](#11-19)            | 82 |
-| [7. Image Previews](#7)                               | 63 | _**Other Sections**_                    |    | [11.20 Tools](#11-20)                   | 82 |
-| [8. Test Suite](#8)                                   | 63 | [Dedication](#dedication)               |  2 | [11.21 Licensing](#11-21)               | 82 |
-| [8.1 Bash Tests](#8-1)                                | 68 | [About this book](#about)               |  4 | [11.22 Back-porting](#11-22)            | 82 |
-| [8.2 Python Tests](#8-2)                              | 69 | [How did I get interested ?](#begin)    |  4 | [11.23 Partners](#11-23)                | 82 |
-| [8.3 Unit Tests](#8-3)                                | 70 | [2012 - 2017](#2012)                    |  5 | [11.24 Development](#11-24)             | 82 |
-| [8.4 Version Test](#8-4)                              | 71 | [2017 - Present](#2017)                 |  5 |                                         |    |
-| [8.5 Generating HUGE images](#8-5)                    | 73 | [Current Priorities](#current)          |  6 |                                         |    |
-| [9. API/ABI Compatibility](#9)                        | 74 | [Future Projects](#future)              |  6 |                                         |    |
-| [10. Security](#10)                                   | 75 | [Scope of Book](#scope)                 |  7 | [12. Code discussed in this book](#12) | 110 |                                      
-| [10.1 Security Policy](#10-2)                         | 80 | [Making this book](#making)             |  8 | [The Last Word](#finally)              | 111 |
+| Section                                             | Page | Image Formats                          | Page | Project Management                    | Page | 
+|:--                                                    | --:|:--                                       | --:|:--                                      | --:|
+| [1. Image File Formats](#1)                           |  9 | [TIFF and BigTiff](#TIFF)                | 10 | [11. Project Management](#11)           | 77 |
+| [2. Metadata Standards](#2)                           | 32 | [JPEG and EXV](#JPEG)                    | 12 | [11.1 C++ Code](#11-1)                  | 78 |
+| [2.1 Exif Metadata](#Exif)                            | 35 | [PNG Portable Network Graphics](#PNG)    | 17 | [11.2 Build](#11-2)                     | 79 |
+| [2.2 XMP Metadata](#XMP)                              | 36 | [JP2 Jpeg 2000](#JP2)                    | 18 | [11.3 Security](#11-3)                  | 80 |
+| [2.3 IPTC/IMM Metadata](#IPTC)                        | 37 | [ISOBMFF, CR3, HEIF, AVIF](#ISOBMFF)     | 19 | [11.4 Documentation](#11-4)             | 80 |
+| [2.4 ICC Profile](#ICC)                               | 37 | [CRW Canon Raw](#CRW)                    | 20 | [11.5 Testing](#11-5)                   | 80 |
+| [2.5 MakerNotes](#MakerNotes)                         | 38 | [RIFF Resource Ichange File Fmt](#RIFF)  | 20 | [11.6 Samples](#11-6)                   | 80 |
+| [2.6 Metadata Convertors](#Convertors)                | 38 | [MRW Minolta Raw](#MRW)                  | 21 | [11.7 Users](#11-7)                     | 80 |
+| [3. Reading Metadata](#3)                             |    | [ORF Olympus Raw Format](#ORF)           | 22 | [11.8 Bugs](#11-8)                      | 80 |
+| [3.1 Extracting metadata using dd](#3-1)              |    | [PGF Progressive Graphics File](#PGF)    |    | [11.9 Releases](#11-9)                  |    |
+| [3.2 Tags](#3-2)                                      |    | [PSD PhotoShop Document](#PSD)           |    | [11.10 Platforms](#11-10)               |    |
+| [3.3 Visitor Design Pattern](#3-3)                    |    | [RAF Fujifilm RAW](#RAF)                 |    | [11.11 Localisation](#11-11)            |    |
+| [3.4 IFD::accept() and TiffImage::accept() ](#3-4)    |    | [RW2 Panasonic RAW](#RW2)                |    | [11.12 Build Server](#11-12)            |    |
+| [3.5 Presenting data with visitTag()](#3-5)           |    | [TGA Truevision Targa](#TGA)             |    | [11.11 Source Code](#11-11)             |    |
+| [3.6 Tag Decoder](#3-6)                               |    | [BMP Windows Bitmap](#BMP)               |    | [11.14 Web Site](#11-14)                |    |
+| [3.7 Jpeg::Image accept()](#3-7)                      |    | [GIF Graphical Interchange Format](#GIF) |    | [11.15 Servers](#11-15)                 |    |
+| [4. Lens Recognition](#4)                             |    | [SIDECAR Xmp Sidecars](#SIDECAR)         |    | [11.16 API](#11-16)                     |    |
+| [5. I/O in Exiv2](#5)                                 |    |                                          |    | [11.17 Contributors](#11-17)            |    |
+| [6. Image Previews](#6)                               | 38 |                                          | 22 | [11.18 Scheduling](#11-18)              | 80 |
+|                                                       | 39 |                                          | 23 | [11.19 Enhancements](#11-19)            | 81 | 
+|                                                       | 41 |                                          | 24 | [11.20 Tools](#11-20)                   | 81 |
+|                                                       | 41 |                                          | 25 | [11.21 Licensing](#11-21)               | 81 |
+| [7. Exiv2 Architecture](#7)                           | 42 |                                          | 26 | [11.22 Back-porting](#11-22)            | 81 |
+| [7.1 API Overview](#7-1)                              | 44 |                                          | 27 | [11.23 Partners](#11-23)                | 81 |
+| [7.2 Typical Sample Application](#7-2)                | 44 |                                          | 28 | [11.24 Development](#11-24)             | 81 |
+| [7.3 The EasyAccess API](#7-3)                        | 48 |                                          | 29 |                                         | 81 |
+| [7.4 Listing the API](#7-4)                           | 53 |                                          | 30 |                                         | 81 |
+| [7.5 Tags in Exiv2](#7-5)                             | 57 |                                          |    |                                         | 81 |
+| [7.6 TagInfo](#7-6)                                   | 59 |                                          |    |                                         | 81 |
+| [7.7 TiffVisitor](#7-7)                               | 61 |                                          |    |                                         | 82 |
+|                                                       | 63 | _**Other Sections**_                     |    |                                         | 82 |
+| [8. Test Suite](#8)                                   | 63 | [Dedication](#dedication)                |  2 |                                         | 82 |
+| [8.1 Bash Tests](#8-1)                                | 68 | [About this book](#about)                |  4 |                                         | 82 |
+| [8.2 Python Tests](#8-2)                              | 69 | [How did I get interested ?](#begin)     |  4 |                                         | 82 |
+| [8.3 Unit Tests](#8-3)                                | 70 | [2012 - 2017](#2012)                     |  5 |                                         | 82 |
+| [8.4 Version Test](#8-4)                              | 71 | [2017 - Present](#2017)                  |  5 |                                         |    |
+| [8.5 Generating HUGE images](#8-5)                    | 73 | [Current Priorities](#current)           |  6 |                                         |    |
+| [9. API/ABI Compatibility](#9)                        | 74 | [Future Projects](#future)               |  6 |                                         |    |
+| [10. Security](#10)                                   | 75 | [Scope of Book](#scope)                  |  7 | [12. Code discussed in this book](#12) | 110 |                                      
+| [10.1 Security Policy](#10-2)                         | 80 | [Making this book](#making)              |  8 | [The Last Word](#finally)              | 111 |
 
 <div id="about"/>
 ## About this book
@@ -551,7 +561,7 @@ END: /Users/rmills/Agfa.jpg
 .../book/build $ 
 ```
 
-The Agfa MakerNote contains an IFD which is preceded by **ABC_II#E** where #E is number of entries in the IFD.  This is discussed in [3 MakerNotes](#3)
+The Agfa MakerNote contains an IFD which is preceded by **ABC_II#E** where #E is number of entries in the IFD.  This is discussed in [2.5 MakerNotes](#MakerNotes)
 
 #### ICC Profile data > 64k in JPEG
 
@@ -1384,6 +1394,81 @@ END: /Users/rmills/Downloads/IMG_3578.HEIC
 The specification is here: [CIFFspecV1R04.pdf](https://web.archive.org/web/20081230095207/http://xyrion.org/ciff/CIFFspecV1R04.pdf)
 
 [TOC](#TOC)
+<div id="RIFF"/>
+## RIFF Resource Interchange File Format
+![riff](riff.png)
+
+This file format is used by WEBP, AVI and WAV files.  RIFF was introduced in 1991 by Microsoft and IBM.  There is a discussion of the format here: [https://en.wikipedia.org/wiki/Resource\_Interchange\_File\_Format](https://en.wikipedia.org/wiki/Resource_Interchange_File_Format)
+
+
+Testing for validity is easy:
+
+```cpp
+bool valid()
+{
+    if ( !valid_ ) {
+        IoSave  restore(io(),0);
+        DataBuf header(12);
+        io().read(header);
+        fileLength_   = ::getLong(header,4,endian_);
+        valid_        =  header.begins("RIFF") && fileLength_ <= io().size();
+        char             signature[5];
+        format_       =  header.getChars(8,4,signature);
+        header_       = " address | chunk |   length |   offset | data " ;
+    }
+    return valid_;
+}
+```
+
+Reporting the data in the file is straight-forward:
+
+```cpp
+void RiffImage::accept(class Visitor& visitor)
+{
+    if ( !valid_ ) valid();
+    if (  valid_ ) {
+        visitor.visitBegin((*this)); // tell the visitor
+
+        IoSave   restore(io(),start_);
+        uint64_t address = start_;
+        DataBuf  riff(8);
+        DataBuf  data(40);  // buffer to pass data to visitRiff()
+        while (  address < fileLength_ ) {
+            visit(address);
+            io().seek(address);
+            io().read(riff);
+            
+            char        signature[5];
+            std::string chunk   = riff.getChars(0,4,signature);
+            uint32_t    length  = ::getLong(riff,4,endian_) ;
+            uint64_t    pad     = length % 2 ? 1 : 0        ; // pad if length is odd
+            uint64_t    next    = io().tell() + length +pad ;
+            if ( next > fileLength_ ) Error(kerCorruptedMetadata);
+            
+            data.zero();
+            io().read(data.pData_,length < data.size_?length:data.size_);
+            visitor.visitRiff(address,chunk,length,data);
+
+            if ( chunk == "XMP " || chunk == "ICCP" ) {
+                DataBuf    Data(length);
+                io().seek(address+8);
+                io().read(Data);
+                if ( chunk == "XMP "    ) visitor.visitXMP(Data);
+                if ( chunk == "ICCP"    ) visitor.visitICC(Data);
+            }
+            if ( chunk == "EXIF" ) {
+                Io tiff(io(),address+8,length);
+                visitor.visitExif(tiff);
+            }
+            address = next ;
+        }
+        visitor.visitEnd((*this)); // tell the visitor
+    }
+}
+```
+
+
+[TOC](#TOC)
 <div id="MRW"/>
 ## MRW Minolta Raw Format
 
@@ -1506,17 +1591,17 @@ We treat it has a TiffImage (although invalid), set the start_ and valid_ variab
 One of the interesting features of the ORF is the use of Tag Type IFD.  These are used to introduce more families of data for ImageProcession, FocalInformation and other collections.  Each of these IFDs requires a dictionary and these are defined in tvisitor.cpp.  You recursively descend into those dictionaries as follows in IFD::accept():
 
 ```cpp
-            if ( type == kttIfd ) {
-                for ( uint64_t i = 0 ; i < count ; i++ ) {
-                    offset = get4or8 (buff,0,i,endian);
-                    IFD(image_,offset,false).accept(visitor,ifdDict(image_.maker_,tag,makerDict()));
-                }
-            } else switch ( tag ) {
-                case ktGps       : IFD(image_,offset,false).accept(visitor,gpsDict );break;
-                case ktExif      : IFD(image_,offset,false).accept(visitor,exifDict);break;
-                case ktMakerNote :         visitMakerNote(visitor,buff,count,offset);break;
-                default          : /* do nothing                                  */;break;
-            }
+    if ( type == kttIfd ) {
+        for ( uint64_t i = 0 ; i < count ; i++ ) {
+            offset = get4or8 (buff,0,i,endian);
+            IFD(image_,offset,false).accept(visitor,ifdDict(image_.maker_,tag,makerDict()));
+        }
+    } else switch ( tag ) {
+        case ktGps       : IFD(image_,offset,false).accept(visitor,gpsDict );break;
+        case ktExif      : IFD(image_,offset,false).accept(visitor,exifDict);break;
+        case ktMakerNote :         visitMakerNote(visitor,buff,count,offset);break;
+        default          : /* do nothing                                  */;break;
+    }
 ```
 
 The appropriate dictionary is selected with the code:
@@ -1722,6 +1807,7 @@ void ReportVisitor::visit8BIM(Io& io,Image& image,uint32_t offset
 
 I haven't bothered to implement options -pX (XMP), -pC (ICC Color Profile) or -pI (IPTC) although it's very simple to implement.
 
+[TOC](#TOC)
 <div id="RAF"/>
 ## RAF Fujifilm RAW
 ![raf](raf.png)<br>
@@ -2529,7 +2615,7 @@ END: /Users/rmills/jp2.jp2
 
 [TOC](#TOC)
 <div id="ICC"/>
-## ICC Profile
+## 2.4 ICC Profile
 ![icc](icc.png)
 
 The ICC Profile is a standand alone file that can be embedded verbatim in many image formats.  The purpose of the ICC profile is to provide additional color data about the image.  Most colour images are encoded as RGB or CMYK.   When these are rendered on a device, it's necessary to know the actual colour of Red in the image and on the output device.  The Colour Management System (CMS) attempts to render the image to be the same on different devices.  This is of course impossible, however the aim of the ICC Profile is enable the software to achieve good colour fidelity when printing or displaying on different devices.
@@ -2541,88 +2627,6 @@ Exiv2 has no code to inspect or modify the contents of the ICC Profile.  The dat
 The code which accompanies this book can inspect the contents of an ICC profile.
 
 The specification is available here: [http://www.color.org/icc_specs2.xalter](http://www.color.org/icc_specs2.xalter).  I believe the current ICC Profile Specification is: ICC.2-2016-7.pdf
-
-[TOC](#TOC)
-<div id="RIFF"/>
-## RIFF Resource Interchange File Format
-![riff](riff.png)
-
-This file format is used by WEBP, AVI and WAV files.  RIFF was introduced in 1991 by Microsoft and IBM.  There is a discussion of the format here: [https://en.wikipedia.org/wiki/Resource\_Interchange\_File\_Format](https://en.wikipedia.org/wiki/Resource_Interchange_File_Format)
-
-
-Testing for validity is easy:
-
-```cpp
-bool valid()
-{
-    if ( !valid_ ) {
-        IoSave  restore(io(),0);
-        DataBuf header(12);
-        io().read(header);
-        fileLength_   = ::getLong(header,4,endian_);
-        valid_        =  header.begins("RIFF") && fileLength_ <= io().size();
-        char             signature[5];
-        format_       =  header.getChars(8,4,signature);
-        header_       = " address | chunk |   length |   offset | data " ;
-    }
-    return valid_;
-}
-```
-
-Reporting the data in the file is straight-forward:
-
-```cpp
-void RiffImage::accept(class Visitor& visitor)
-{
-    if ( !valid_ ) valid();
-    if (  valid_ ) {
-        visitor.visitBegin((*this)); // tell the visitor
-
-        IoSave   restore(io(),start_);
-        uint64_t address = start_;
-        DataBuf  riff(8);
-        DataBuf  data(40);  // buffer to pass data to visitRiff()
-        while (  address < fileLength_ ) {
-            visit(address);
-            io().seek(address);
-            io().read(riff);
-            
-            char        signature[5];
-            std::string chunk   = riff.getChars(0,4,signature);
-            uint32_t    length  = ::getLong(riff,4,endian_) ;
-            uint64_t    pad     = length % 2 ? 1 : 0        ; // pad if length is odd
-            uint64_t    next    = io().tell() + length +pad ;
-            if ( next > fileLength_ ) Error(kerCorruptedMetadata);
-            
-            data.zero();
-            io().read(data.pData_,length < data.size_?length:data.size_);
-            visitor.visitRiff(address,chunk,length,data);
-
-            if ( chunk == "XMP " || chunk == "ICCP" ) {
-                DataBuf    Data(length);
-                io().seek(address+8);
-                io().read(Data);
-                if ( chunk == "XMP "    ) visitor.visitXMP(Data);
-                if ( chunk == "ICCP"    ) visitor.visitICC(Data);
-            }
-            if ( chunk == "EXIF" ) {
-                Io tiff(io(),address+8,length);
-                visitor.visitExif(tiff);
-            }
-            address = next ;
-        }
-        visitor.visitEnd((*this)); // tell the visitor
-    }
-}
-```
-
-[TOC](#TOC)
-<div id="2-5"/>
-## 2.5 Metadata Convertors
-
-Exiv2 has code to convert data between different Metdata standards.  Generally when you update Exif metadata, equivalent modifications will be performed on the IPTC and XMP metadata.  I can't explain why this code was added to Exiv2 and, while it may be convenient and invisible in its operation, it also has undesirable side effects.
-
-If Exiv2 is ever rewritten, the decision to keep this capability should be carefully reviewed.  I think it would be better to not have this at all and leave library users to provide this in their application code.
 
 [TOC](#TOC)
 <div id="MakerNotes"/>
@@ -2660,552 +2664,20 @@ void IFD::visitMakerNote(Visitor& visitor,DataBuf& buf,uint16_t count,uint32_t o
 To be written.
 
 [TOC](#TOC)
+<div id="2-6"/>
+## 2.6 Metadata Convertors
+
+Exiv2 has code to convert data between different Metdata standards.  Generally when you update Exif metadata, equivalent modifications will be performed on the IPTC and XMP metadata.  I can't explain why this code was added to Exiv2 and, while it may be convenient and invisible in its operation, it also has undesirable side effects.
+
+If Exiv2 is ever rewritten, the decision to keep this capability should be carefully reviewed.  I think it would be better to not have this at all and leave library users to provide this in their application code.
+
+[TOC](#TOC)
 <div id="3"/>
-# 3 Exiv2 APIs
+## 3 Reading Metadata
 
-![exiv2arch](exiv2arch.png)
 
-The Exiv2 API is documented here: [https://exiv2.org/doc/](https://exiv2.org/doc/)  The API is in the Namespace Exiv2.  The Namespace Exiv2::Internal should never be used by application programs and is not revealed to via \<exiv2/exiv2.hpp\>.  As there are around 300 classes and 3000+ entry points, it's not possible to discuss the API in detail here.  Instead I will discuss a typical short application: samples/exifprint.cpp.  My aim here is to explain how to use the exiv2 library and provide a high-level overview of how the library operates.  The doxygen generated API Documentation is very good and the code is well laid out and documented.
-
-[TOC](#TOC)
 <div id="3-1"/>
-## 3.1 API Overview
-
-1) The Image Handlers
-
-This code understands the structure of image files.  The structure is explained in Chapter 1 of this book.
-
-2) The MetaData parsers
-
-This code understands the structure of the different metadata standards.  The structure is explained in Chapter 2 of this book.
-
-3) Manufacturer's MakerNote handlers
-
-All the manufacturers use variations of the TIFF/IFD format in their makernote.  The maker note is parsed by the TiffParser.  The presentation and interpretation of the makenote is handled here.  In particular the lens recognition and preview image handling is dealt with in this code.  Lens Recognition is discussed in Chapter 4 of this book.  Image Previews are discussed in Chapter 7 of this book.
-
-4) TagInfo
-
-This code has definitions for thousands of Exif tags and about 50 IPTC Tags.  Xmp metadata is handled by the XMPsdk.  As XMP is Extensible, it doesn't have a database of known tags.  Tags are discussed in detail in Chapter 6 of this book.
-
-5) BasicIo
-
-This code is responsible for all I/O and is explained in Chapter 5 of this book.
-
-6) Utility and Platform Code
-
-There are utility functions such as ascii 64 encode/decode.  There are platform specific functions which manage interaction with the platform operating system.
-
-7) The Image Object and Image Factory
-
-Applications obtain access to an image object via the Image Factory.  The application is expected to call readMetadata() which causes the image handler to locate metadata and passes it to the metadata handlers for conversion to a metadatum vector.  Metadatum elements are key/value pairs.  Metadatum can be manipulated in memory or presented to the user.  If the metadata has been modified, the application should call writeMetadata() which will cause the reading process to be reversed.  The metadatum vector is serialized and the file is rewritten by the Image Handler.
-
-8) Sample Code and Test Harness
-
-This is discussed in Chapter 11 of this book.
-
-[TOC](#TOC)
-<div id="3-2"/>
-## 3.2 Typical Sample Application
-
-```cpp
-// ***************************************************************** -*- C++ -*-
-// exifprint.cpp
-// Sample program to print the Exif metadata of an image
-// g++ -std=c++98 exifprint.cpp -I/usr/local/include -L/usr/local/lib -lexiv2 -o exifprint
-
-#include <exiv2/exiv2.hpp>
-
-#include <iostream>
-#include <iomanip>
-#include <cassert>
-
-int main(int argc, const char* argv[])
-{
-    try {
-        Exiv2::XmpParser::initialize();
-        ::atexit(Exiv2::XmpParser::terminate);
-
-        const char* prog = argv[0];
-        const char* path = argv[1];
-
-        if (argc != 2) {
-            std::cout << "Usage: " << prog << " [ path | --version ]" << std::endl;
-            return 1;
-        }
-
-        if ( strcmp(path,"--version") == 0 ) {
-            exv_grep_keys_t keys;
-            Exiv2::dumpLibraryInfo(std::cout,keys);
-            return 0;
-        }
-
-        Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(path);
-        assert(image.get() != 0);
-        image->readMetadata();
-
-        Exiv2::ExifData &exifData = image->exifData();
-        if (exifData.empty()) {
-            std::string error("No Exif data found in file");
-            throw Exiv2::Error(Exiv2::kerErrorMessage, error);
-        }
-
-        for (Exiv2::ExifData::const_iterator i = exifData.begin(); i != exifData.end(); ++i) {
-            std::cout << i->key() << " -> " << i->toString() << std::endl;
-        }
-
-        return 0;
-    } catch (Exiv2::Error& e) {
-        std::cout << "Caught Exiv2 exception '" << e.what() << "'\n";
-        return -1;
-    }
-}
-```
-
-#### Include file
-
-Only include the file \<exiv2/exiv2.hpp\>.  Do not include individual exiv2 include files because Team Exiv2 may remove or add include files.  By only including \<exiv2/exiv2.hpp\>, you are insulated from changes to the dependency and existence of individual include files.
-
-```cpp
-#include <exiv2/exiv2.hpp>
-
-#include <iostream>
-...
-```
-
-#### Initializing the library
-
-You do not need to initialize the exiv2 library.  However you have to initialize XMPsdk.
-
-```cpp
-      Exiv2::XmpParser::initialize();
-      ::atexit(Exiv2::XmpParser::terminate);
-```
-
-#### Opening an image to read metadata
-
-Use the ImageFactory to open the image on a path.  Verify that the image is good, then call readMetadata()
-
-```cpp
-      Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(path);
-      assert(image.get() != 0);
-      image->readMetadata();
-
-      Exiv2::ExifData &exifData = image->exifData();
-      if (exifData.empty()) {
-          std::string error("No Exif data found in file");
-          throw Exiv2::Error(Exiv2::kerErrorMessage, error);
-      }
-```
-
-#### Stepping through the metadata
-
-The metadata is stored in an STL vector which you can step in the conventional way:
-
-```cpp
-      for (Exiv2::ExifData::const_iterator i = exifData.begin(); i != exifData.end(); ++i) {
-          std::cout << i->tag() << " -> " << i->toString() << std::endl;
-      }
-```
-
-Each enumerated item is of the Exiv2::Exifdatum: [https://exiv2.org/doc/classExiv2_1_1Exifdatum.html](https://exiv2.org/doc/classExiv2_1_1Exifdatum.html) for which there are many getter functions such as key(), familyName(), count() and toString().
-
-#### Making Changes to the Metadata
-
-The application samples/addmodel.cpp _(add modify delete)_ illustrates how to manipulate metadata: [https://exiv2.org/doc/addmoddel_8cpp-example.html](https://exiv2.org/doc/addmoddel_8cpp-example.html).  Frequently, you can add/modify metadata directly with code such as:
-
-```cpp
-      exifData["Exif.Image.Model"] = "Test 1"
-```
-
-To delete metadata, you have to locate the key in the ExifData vector and erase it from the vector.
-
-```cpp
-      Exiv2::ExifKey            key("Exif.Photo.DateTimeOriginal");
-      Exiv2::ExifData::iterator pos = exifData.findKey(key);
-      if (pos == exifData.end()) {
-          throw Exiv2::Error(Exiv2::kerErrorMessage, "Key not found");
-      }
-      exifData.erase(pos);
-```
-
-#### Writing modified metada to storage
-
-When you modify metadata using the variable _image_, you are only changing it in memory.  You commit the changes to storage when you call image->writeMetadata().
-
-```cpp
-      image->writeMetadata()
-```
-
-The image will be automatically closed when image goes out of scope.
-
-[TOC](#TOC)
-<div id="3-3"/>
-## 3.3 The EasyAccess API
-
-Exiv2 provides a collection of functions to simplify searching for Exif metadata.  This is described in detail here: [https://github.com/Exiv2/exiv2/wiki/EasyAccess-API](https://github.com/Exiv2/exiv2/wiki/EasyAccess-API)
-
-A typical use case is:
-
-```cpp
-Exiv2::ExifData::const_iterator metadata = Exiv2::whiteBalance(exifData);
-if ( metadata != exifData.end() ) {
-    metadata->write(std::cout, &exifData);
-}
-```
-
-The following EasyAccess Selector Functions are provided:
-
-| a-e | e-f | i-m | m-s | s-w |
-|:--  |:--  |:--  |:--  |:--  |
-| afPoint<br>apertureValue<br>brightnessValue<br>contrast<br>dateTimeOriginal<br>exposureBiasValue<br>exposureIndex | exposureMode<br>exposureTime<br>flash<br>flashBias<br>flashEnergy<br>fNumber<br>focalLength | imageQuality<br>isoSpeed<br>lensName<br>lightSource<br>macroMode<br>make<br>maxApertureValue |meteringMode<br>model<br>orientation<br>saturation<br>sceneCaptureType<br>sceneMode<br>sensingMethod | serialNumber<br>sharpness<br>shutterSpeedValue<br>subjectArea<br>subjectDistance<br>whiteBalance<br>&nbsp; |
-
-
-[TOC](#TOC)
-<div id="3-4"/>
-## 3.4 Listing the API
-
-You can get a list of the API with a command such as:
-
-```bash
-$ nm -g --demangle build/lib/libexiv2.dylib | grep ' T ' | grep Exiv2
-```
-
-You can refine that further to discover all the "free" functions of the library which are:
-
-```bash
-$ nm -g --demangle build/lib/libexiv2.dylib | grep ' T ' | grep Exiv2 | grep -v trait | grep -v :__ | grep  -v Internal | grep -v operator | grep -v "::.*::"
-0000000000073050 T enforce(bool, Exiv2::ErrorCode)
-0000000000107750 T Exiv2::exvGettext(char const*)
-000000000012c360 T Exiv2::testVersion(int, int, int)
-0000000000072190 T Exiv2::base64decode(char const*, char*, unsigned long)
-0000000000071dc0 T Exiv2::base64encode(void const*, unsigned long, char*, unsigned long)
-000000000012bd00 T Exiv2::versionNumber()
-000000000012bd10 T Exiv2::versionString()
-0000000000073fc0 T Exiv2::getProcessPath()
-00000000001057f0 T Exiv2::floatToRationalCast(float)
-000000000012bfd0 T Exiv2::versionNumberHexString()
-0000000000108460 T int Exiv2::gcd<int>(int, int)
-0000000000052d80 T Exiv2::errMsg(int)
-0000000000071750 T Exiv2::getEnv(int)
-00000000000718b0 T Exiv2::to_hex(char)
-000000000012c340 T Exiv2::version()
-00000000001075f0 T Exiv2::exifTime(char const*, tm*)
-00000000000718e0 T Exiv2::from_hex(char)
-0000000000072d10 T Exiv2::strError()
-0000000000071b80 T Exiv2::urldecode(char const*)
-0000000000071980 T Exiv2::urlencode(char const*)
-```
-
-You could refine that to reveal the members of class Exiv2::ExifKey:
-
-```bash
-$ nm -g --demangle build/lib/libexiv2.dylib | grep ' T ' | grep ' Exiv2::ExifKey' | grep -v Impl
-00000000000f9f30 T Exiv2::ExifKey::setIdx(int)
-00000000000f9a70 T Exiv2::ExifKey::ExifKey(Exiv2::TagInfo const&)
-00000000000f9ba0 T Exiv2::ExifKey::ExifKey(std::__1::basic_string...
-00000000000f9d00 T Exiv2::ExifKey::ExifKey(Exiv2::ExifKey const&)
-00000000000f97f0 T Exiv2::ExifKey::ExifKey(unsigned short, std::__1::basic_string...
-00000000000f9830 T Exiv2::ExifKey::ExifKey(Exiv2::TagInfo const&)
-00000000000f9aa0 T Exiv2::ExifKey::ExifKey(std::__1::basic_string<char...
-00000000000f9bd0 T Exiv2::ExifKey::ExifKey(Exiv2::ExifKey const&)
-00000000000f94b0 T Exiv2::ExifKey::ExifKey(unsigned short, std::__1::basic_string...
-00000000000f9da0 T Exiv2::ExifKey::~ExifKey()
-00000000000f9d80 T Exiv2::ExifKey::~ExifKey()
-00000000000f9d30 T Exiv2::ExifKey::~ExifKey()
-00000000000f9e00 T Exiv2::ExifKey::operator=(Exiv2::ExifKey const&)
-00000000000f9fd0 T Exiv2::ExifKey::familyName() const
-00000000000fa240 T Exiv2::ExifKey::defaultTypeId() const
-00000000000fa4a0 T Exiv2::ExifKey::idx() const
-00000000000f9f70 T Exiv2::ExifKey::key() const
-00000000000fa2b0 T Exiv2::ExifKey::tag() const
-00000000000fa2e0 T Exiv2::ExifKey::clone() const
-00000000000f7880 T Exiv2::ExifKey::ifdId() const
-00000000000fa430 T Exiv2::ExifKey::clone_() const
-00000000000fa180 T Exiv2::ExifKey::tagDesc() const
-00000000000fa070 T Exiv2::ExifKey::tagName() const
-00000000000fa0c0 T Exiv2::ExifKey::tagLabel() const
-00000000000fa010 T Exiv2::ExifKey::groupName() const
-$ 
-```
-
-[TOC](#TOC)
-## 3.5 Exiv2 Internals.
-
-
-#### The IfdId enumerator
-
-This is a collection of more than 100 values which are used to track the groups in the MetaData.  For example ifdIdNotSet is an initial defined state (with no metadata), ifd0Id represents IFD0, exifId the Exif IFD and so on.  There are over one hundred groups (as explained in the man page) to deal with every maker and there binary encoded metadata.
-
-#### Function Selectors
-
-A common pattern in the Exiv2 code is the table/function pattern. 
-
-| Fuction         | Purpose | 
-|:--              |:--      |
-| cfgSelFct       | determine which cfg + def of a corresponding array-set to use. |
-| ConvertFct      | Convert between two keys |
-| CrwEncodeFct<br>CrwDecode  | Encoding/Decoding for CRW |
-| CryptFct        | Cipher/Decipher Data     |
-| EncoderFct<br>DecoderFct      | Encoding/Decoding functions for<br>Exif, Iptc and XMP data |
-| EasyAccessFct   | See 3.3 |
-| InstanceFct     | Creates new Image instances |
-| LensIdFct       | Convert lens ID to lens name |
-| NewMnFct        | Makernote create function fors image and groups |
-| NewTiffCompFct  | Creates TiffGroupStruct's |
-| PrintFct        | Print the "translated" value of data | |
-| TagListFct      | Get a function to return an array of tags | |
-
-It's not really clear to me why this is done and it feels like C++ being implemented in C.
-
-#### Tiff Parser State Tables and Functions.
-
-**TiffCreator::tiffTreeStruct_**
-
-```cpp
-    /*
-      This table lists for each group in a tree, its parent group and tag.
-      Root identifies the root of a TIFF tree, as there is a need for multiple
-      trees. Groups are the nodes of a TIFF tree. A group is an IFD or any
-      other composite component.
-
-      With this table, it is possible, for a given group (and tag) to find a
-      path, i.e., a list of groups and tags, from the root to that group (tag).
-    */
-    const TiffTreeStruct TiffCreator::tiffTreeStruct_[] = {
-        // root      group             parent group      parent tag
-        //---------  ----------------- ----------------- ----------
-        { Tag::root, ifdIdNotSet,      ifdIdNotSet,      Tag::root },
-        { Tag::root, ifd0Id,           ifdIdNotSet,      Tag::root },
-```
-
-**TiffCreator::tiffGroupStruct_**
-
-```cpp
-    /*
-      This table describes the layout of each known TIFF group (including
-      non-standard structures and IFDs only seen in RAW images).
-
-      The key of the table consists of the first two attributes, (extended) tag
-      and group. Tag is the TIFF tag or one of a few extended tags, group
-      identifies the IFD or any other composite component.
-
-      Each entry of the table defines for a particular tag and group combination
-      the corresponding TIFF component create function.
-     */
-#define ignoreTiffComponent 0
-    const TiffGroupStruct TiffCreator::tiffGroupStruct_[] = {
-        // ext. tag  group             create function
-        //---------  ----------------- -----------------------------------------
-        // Root directory
-        { Tag::root, ifdIdNotSet,      newTiffDirectory<ifd0Id>                  },
-
-        // IFD0
-        {    0x8769, ifd0Id,           newTiffSubIfd<exifId>                     },
-```
-
-This is a state table used to navigate the metadata heirachy.  For example, starting at root, the first IFD wil create a new TiffDirectory and sets the state to ifd0Id.  When tag 0x8769 is encountered, the parser will create new TiffDirectory and the state becomes exifId.
-
-This table also enable the parsing of binary metadata.  For example the following entry directs the parser to treat tag 0x0004 in canonId as a binary structure of canonSiCfg: 
-
-```cpp
-        { Tag::root, ifd0Id,           ifdIdNotSet,      Tag::root },
-        { Tag::root, exifId,           ifd0Id,           0x8769    },        
-        { Tag::root, nikon3Id,         exifId,           0x927c    },
-        { Tag::root, nikonPcId,        nikon3Id,         0x0023    },
-```
-
-This causes the manufacture of an nikonPcId using newTiffElement.  This is a simple binary.
-
-```cpp
-        // Nikon3 picture control
-        {  Tag::all, nikonPcId,        newTiffBinaryElement                      },
-```
-
-nikonPcCfg is defined as:
-
-```cpp
-    //! Nikon Picture Control binary array - configuration
-    extern const ArrayCfg nikonPcCfg = {
-        nikonPcId,        // Group for the elements
-        invalidByteOrder, // Use byte order from parent
-        ttUndefined,      // Type for array entry
-        notEncrypted,     // Not encrypted
-        false,            // No size element
-        true,             // Write all tags
-        true,             // Concatenate gaps
-        { 0, ttUnsignedByte,  1 }
-    };
-    //! Nikon Picture Control binary array - definition
-    extern const ArrayDef nikonPcDef[] = {
-        {  0, ttUndefined,     4 }, // Version
-        {  4, ttAsciiString,  20 },
-        { 24, ttAsciiString,  20 },
-...
-        { 57, ttUnsignedByte,  1 }  // The array contains 58 bytes
-    };
-```
-
-The tags associated with nikonPcId are:
-
-```cpp
-    // Nikon3 Picture Control Tag Info
-    const TagInfo Nikon3MakerNote::tagInfoPc_[] = {
-        TagInfo( 0, "Version", N_("Version"), N_("Version"), nikonPcId, makerTags, undefined, 4, printExifVersion),
-        TagInfo( 4, "Name", N_("Name"), N_("Name"), nikonPcId, makerTags, asciiString, 20, printValue),
-        TagInfo(24, "Base", N_("Base"), N_("Base"), nikonPcId, makerTags, asciiString, 20, printValue),
-...
-    };
-```
-
-This is a very flexible design.  Not easy to understand.  We will discuss my much simpler design used by tvisitor.cpp in [6.6 Presenting the data with visitTag()](#6-6).
-
-[TOC](#TOC)
-<div id="4"/>
-# 4 Lens Recognition
-
-Lens Recognition is a difficult problem. The lens isn't stored in the metadata. Different manufacturers use different ways to deal with the lens and it's very common that a number such as "368" is used to represent several lenses. Then we have to examine other metadata to make a guess about which lens is being used.  Lens recognition has been a time sink on the engineering resources of Team Exiv2. So, I introduced the ~/.exiv2 "Configuration File" in 0.26 to save lots of work and give users an instant way to recognise their lens. You don't need to wait on the release cycles of exiv2 and your distribution. You get it fixed instantly.
-
-In the introduction to this book, I have discussed my proposal for _**M2Lscript**_ (pronounce MillsScript).  This is my proposal to solve the lens problem.  [Future Exiv2 Projects](#future)
-
-### The Configuration File
-
-The configuration file ~/.exiv2 (or %USERPROFILE%\\exiv2.ini for Visual Studio Users) may be used to define a lens.  For example:
-
-```ini
-[nikon]
-146=Robin's Sigma Lens
-```
-
-If uncertain, exiv2 can display the path:
-
-```bash
-696 rmills@rmillsmbp:~/gnu/exiv2/team/book $ exiv2 -vVg config_path  # --verbose --version --grep
-exiv2 0.27.3
-config_path=/Users/rmills/.exiv2
-697 rmills@rmillsmbp:~/gnu/exiv2/team/book $ 
-```
-
-Most manufacturers store the LensID (an integer) in their maker notes:
-
-```bash
-703 rmills@rmillsmbp:~/gnu/exiv2/team/book $ taglist ALL | grep Lens | grep -ie number -ie id -ie type
-Photo.LensSpecification,	42034,	0xa432,	Photo,	Exif.Photo.LensSpecification,	Rational,	This ...
-Photo.LensModel,	42036,	0xa434,	Photo,	Exif.Photo.LensModel,	Ascii,	This tag records the lens's model name and model number as an ASCII string.
-Photo.LensSerialNumber,	42037,	0xa435,	Photo,	Exif.Photo.LensSerialNumber,	Ascii,	This tag records the serial number of the interchangeable lens that was used in photography as an ASCII string.
-CanonCs.LensType,	22,	0x0016,	CanonCs,	Exif.CanonCs.LensType,	SShort,	Lens type
-Minolta.LensID,	268,	0x010c,	Minolta,	Exif.Minolta.LensID,	Long,	Lens identifier
-Nikon3.LensType,	131,	0x0083,	Nikon3,	Exif.Nikon3.LensType,	Byte,	Lens type
-NikonLd1.LensIDNumber,	6,	0x0006,	NikonLd1,	Exif.NikonLd1.LensIDNumber,	Byte,	Lens ID number
-NikonLd2.LensIDNumber,	11,	0x000b,	NikonLd2,	Exif.NikonLd2.LensIDNumber,	Byte,	Lens ID number
-NikonLd3.LensIDNumber,	12,	0x000c,	NikonLd3,	Exif.NikonLd3.LensIDNumber,	Byte,	Lens ID number
-OlympusEq.LensType,	513,	0x0201,	OlympusEq,	Exif.OlympusEq.LensType,	Byte,	Lens type
-OlympusEq.LensSerialNumber,	514,	0x0202,	OlympusEq,	Exif.OlympusEq.LensSerialNumber,	Ascii,	Lens serial number
-Panasonic.LensType,	81,	0x0051,	Panasonic,	Exif.Panasonic.LensType,	Ascii,	Lens type
-Panasonic.LensSerialNumber,	82,	0x0052,	Panasonic,	Exif.Panasonic.LensSerialNumber,	Ascii,	Lens serial number
-PentaxDng.LensType,	63,	0x003f,	Pentax,	Exif.Pentax.LensType,	Byte,	Lens type
-Pentax.LensType,	63,	0x003f,	Pentax,	Exif.Pentax.LensType,	Byte,	Lens type
-Samsung2.LensType,	40963,	0xa003,	Samsung2,	Exif.Samsung2.LensType,	Short,	Lens type
-Sony1.LensID,	45095,	0xb027,	Sony1,	Exif.Sony1.LensID,	Long,	Lens identifier
-Sony2.LensID,	45095,	0xb027,	Sony1,	Exif.Sony1.LensID,	Long,	Lens identifier
-SonyMinolta.LensID,	268,	0x010c,	Minolta,	Exif.Minolta.LensID,	Long,	Lens identifier
-Sony2010e.LensType2,	6291,	0x1893,	Sony2010e,	Exif.Sony2010e.LensType2,	Short,	LensType2
-Sony2010e.LensType,	6294,	0x1896,	Sony2010e,	Exif.Sony2010e.LensType,	Short,	LensType
-704 rmills@rmillsmbp:~/gnu/exiv2/team/book 
-```
-
-| Manufacturer | Config Section | Metadata |
-|:--   |:-- |:-- |
-| Canon | [canon] | Exif.CanonCs.LensType |
-| Minolta | [minolta] | Exif.Minolta.LensID |
-| Nikon | [nikon] | Exif.NikonLd{1\|2\|3}.LensIDNumber |
-| Olympus | [olympus] | OlympusEq.LensType |
-| Panasonic | [panasonic] | Exif.Panasonic.LensType |
-| Pentax | [canon] | Exif.Pentax.LensType |
-| Sony   | [sony] | Exif.Sony2010e.LensType<br>Exif.Sony2010e.LensType2 |
-
-## Lens in Exif 
-
-There are a couple of Exif tags defined in Exif 2.2:
-
-| Tag  | Type | Description |
-|:--   |:--    |:--         |
-| Exif.Photo.LensSpecification | Rational | Focal length min, max |
-| Exif.Photo.LensModel | Ascii |  |
-| Exif.Photo.LensSerialNumber | Ascii |  |
-
-## C++ Lens Recognition
-
-For a discussion about Nikon see: [https://github.com/Exiv2/exiv2/issues/743#issuecomment-473409909](https://github.com/Exiv2/exiv2/issues/743#issuecomment-473409909)
-
-[TOC](#TOC)
-<div id="5"/>
-# 5 I/O in Exiv2
-
-I/O in Exiv2 is achieved using the class BasicIo and derived classes which are:
-
-| _Name_ | _Purpose_ | _Description_ |
-|:--     |:--        |:-- |
-| BasicIo | Abstract | Defines methods such as open(), read(), seek() and others |
-| FileIo  | FILE*    | Operates on a FILE or memory-mapped file |
-| MemIo   | DataBuf_t | Operates on a memory buffer |
-| RemoteIo | Abstract | provides support for url parsing |
-| HttpIo   | http:  | Simple http 1.1 non-chunked support |
-| FtpIo    | ftp:,ftps: | Requires CurlIo |
-| CurlIo   | http:,https: | Comprehensive remote I/O support |
-| SshIo    | server:path | Requires libssh |
-| StdinIo    | - | Read from std-in |
-| Base64Io   | data:..... | Decodes ascii encoded binary |
-
-You will find a simplified version of BasicIo in tvisitor.cpp in the code that accompanies this book.  Io has several constructors.  The obvious one is **Io(std::string)** which calls **fopen()**.  More subtle is **Io(io,from,size)** which creates a sub-file on an existing stream.  This design deals with embedded files.  Most metadata is written in a format designated by the standards body and embedded in the file.  For example, Exif metadata data is written in Tiff Format and embedded in the file.
-
-The constructor **Io(DataBuf&)** is used to create an in-memory I/O stream.  _**DataBuf**_ has a **read()** method to binary copy from a stream into memory.  As we will see, some subfiles are not contiguous in the image and "chunked" by the image format.  For example, JPEG is always chunked into segments of 64k or less.  When a subfile has been chunked it is convenient to copy bytes into a buffer from which we can create an Io source.
-
-Other metadata standards use a similar design.  XMP is embedded XML, an Icc Profile is a major block of technology.  Exiv2 knows how to extract, insert, delete and replace an Icc Profile.  It knows nothing about the contents of the Icc Profile.  With Xmp, Exiv2 uses Adobe's XMPsdk to enable the Xmp data to be modified.
-
-Exiv2 has an abstract RemoteIo object which can read/write on the internet.  For http, there is a basic implementation of the http protocol in src/http.cpp.  For production use, Exiv2 should be linked with libcurl.  The reason for providing a "no thrills" implementation of http was two fold.  Firstly, it enabled the project to proceed rapidly without learning the curl API.  Secondly, I wanted all versions of the exiv2 command-line to have http support as I thought it would be useful for testing as we could store video and other large files remotely.
-
-The MemIo class enables memory to be used as a stream.  This is fast and convenient for small temporary files.  When memory mapped files are available, FileIo uses that in preference to FILE*.  When the project started in 2004, memory-mapped files were not provided on some legacy platforms such as DOS.  Today, all operating systems provide memory mapped files.  I've never heard of Exiv2 being used in an embedded controller, however I'm confident that this is feasible.  I've worked on embedded controllers with no operating system and only a standard "C" io library.  Exiv2 can be built for such a device.
-
-Most camera manufacturers are large corporations.  I'm sure they have their own firmware to handle Exif metadata.  However, the world of photography has an ever growing band of start-ups making amazing devices such as Go-Pro.  One day I'll hear that somebody is cycling around on top of Mt Everest with Exiv2 running on top of their head!  One of our users is an astronomer at NASA.  I've never heard that Exiv2 has flown in space, however one day it might.  I will say with pride that Exiv2 is out of this world!
-
-![blockmap](blockmap.png)
-
-### Using memory mapped files
-
-When available, Exiv2 uses memory mapped files.  This is not a good idea for several reasons.  Firstly, image editing applications can sit for days with a file open. For example, a GIMP user may open a file on Monday and it may be still be open several days later.  In the meanwhile things have changed on the network.  Secondly, memory mapped files on Windows are locked by the operating system.  This causes problems with the virus checker.  Thirdly, it's possible for another application to modify a file which is memory mapped.  Exiv2 has copied the metadata into memory and can have stale/obsolete data.
-
-The reason for using memory mapped files was for the convenience of converting offsets into memory addresses.  Imperial College have 90GByte Tiffs from medical imaging products.  We have to map 90GBytes.  And it gets worse, some file handlers allocate and copy the file before processing.  As we can see in tvisitor.cpp, it's possible to navigate the metadata in huge files with very little I/O.  Memory Mapped files for metadata processing have turned out to have sad consequences.
-
-### Writing Files
-
-Exiv2 is very reliable at writing files which conform to standards.  The way in which this is achieved is to by calling image->writeMetata() which delegates to the handlers writeMetata().
-
-Because the handler understands the structure of the image, he writes a temporary in memory copy of the image.  It proceeds to parse the image and copy the data to the temporary file.  When it arrives at each of the four metadata blocks (Exif, ICC, IPTC and XMP) it calls the serializer to create a buffer of data which is injected into the temporary image.  When it arrives the EOF on the original file, if no error has been detected it calls io->transfer() on the temporary image.  The operation transfer() copies the bytes from the temporary stream to the permanent file.
-
-This method is very robust and reliable.  For very very files (for example, 100GB medical imaging file), this places huge demands on memory.  For remote file, it requires every byte from the remote location to be copied to the temporary file and subsequently transferred back to the remote location.  One day a project will be undertaken to stress test remote IO on HUGE files and more will be understood about the performance and optimisation that can be undertaken.
-
-### Intrusive and NonIntrusive Write Mode
-
-When Exiv2 rewrites an image, it determines the writeMode to determines the writeMode which are:
-
-1. Non-intrusive
-The metadata is updated in-place.  For performance reasons, this the default as it means that metadata can be updated by modifying a bytes in the original file.  For example, a common metadata edit is to change the date in Exif.Image.DateTime.  Non-intrusive write mode is designed to ensure this is performed very quickly.
-
-2. Intrusive
-The metadata is totally re-written in memory.  This always occurs if there are any changes in the makernote.  It will always occur if any tag edited tag requires more storage than in the original file.
-
-Write Mode is really clever, however it's scope is limited to writing Tiff images (and therefore similar Raw formats such as DNG, CR2 and NEF), only a small part of the file is written as a Tiff (the Exif metadata) and the image handler must use the io()->transfer() mechanism discussed above.
-
-### Using a Block Map to track changes to the file.
-
-In Chapter 5, I discuss the use of a block map to track small areas of the file which are in use.  I'm confident that architecture could be developed to vastly reduce the I/O involved in updating the metadata in a file.  [5. I/O in Exiv2](#5)
-
-[TOC](#TOC)
-<div id="6"/>
-# 6 Exiv2 Architecture
-
-<div id="6-1"/>
-### 6.1 Extracting metadata using dd
+### 3.1 Extracting metadata using dd
 
 The exiv2 option _**-pS**_ prints the structure of an image.
 
@@ -3277,163 +2749,17 @@ Exif.Image.Orientation                       Short       1  top, left
 $
 ```
 
-You may be interested to discover that option _**-pS**_ which arrived with Exiv2 v0.25 was joined in Exiv2 v0.26 by _**-pR**_.  This is a "recursive" version of _**-pS**_.  It dumps the structure not only of the file, but also subfiles (such as IFDs and JPEG/thumbnails).  This is discussed in detail here: [8.5 IFD:accept() and TiffImage::accept()](#8-5).
+You may be interested to discover that option _**-pS**_ which arrived with Exiv2 v0.25 was joined in Exiv2 v0.26 by _**-pR**_.  This is a "recursive" version of _**-pS**_.  It dumps the structure not only of the file, but also subfiles (such as IFDs and JPEG/thumbnails).  This is discussed in detail here: [3.4 IFD::accept() and TiffImage::accept()](#3-4).
 
 [TOC](#TOC)
+<div id="3-3"/>
+### 3.2 Tags
 
-<div id="6-2"/>
-### 6.2 Tags in Exiv2
-
-The following test program is very useful for understanding tags:
-
-```bash
-$ taglist --help
-Usage: taglist [--help]
-           [--group name|
-            Groups|Exif|Canon|CanonCs|CanonSi|CanonCf|Fujifilm|Minolta|Nikon1|Nikon2|Nikon3|Olympus|
-            Panasonic|Pentax|Sigma|Sony|Iptc|
-            dc|xmp|xmpRights|xmpMM|xmpBJ|xmpTPg|xmpDM|pdf|photoshop|crs|tiff|exif|aux|iptc|all|ALL
-           ]
-Print Exif tags, MakerNote tags, or Iptc datasets
-```
-
-How Tags are organised:
-
-| Element | Definition           | Example |
-|:--      |:--                   |:--      |
-| Tag     | Family.Group.TagName | Exif.Image.Model |
-| Family  | Exif or Iptc or  Xmp |  |
-| Group   | There are 106 groups<br>Further discussed below. | Minolta<br>MinoltaCs5D... |
-| TagName | Can be almost anything | TagName is a sub-part of a Group |
-
-
-```bash
-$ taglist MinoltaCsNew
-ExposureMode,	1,	0x0001,	MinoltaCsNew,	Exif.MinoltaCsNew.ExposureMode,	Long,	Exposure mode
-FlashMode,	2,	0x0002,	MinoltaCsNew,	Exif.MinoltaCsNew.FlashMode,	Long,	Flash mode
-...
-FlashMetering,	63,	0x003f,	MinoltaCsNew,	Exif.MinoltaCsNew.FlashMetering,	Long,	Flash metering
-$
-```
-
-There isn't a tag Exif.MinoltaCsNew.ISOSpeed.  There is a Exif.MinoltaCSNew.ISO
-
-```bash
-$ taglist all | grep ISOSpeed$         $ taglist all | grep \\.ISO$
-Photo.ISOSpeed                         Casio.ISO
-PanasonicRaw.ISOSpeed                  Casio2.ISO
-CanonCs.ISOSpeed                       MinoltaCsOld.ISO
-CanonSi.ISOSpeed                       MinoltaCsNew.ISO
-Casio2.ISOSpeed                        NikonIi.ISO
-MinoltaCs5D.ISOSpeed                   NikonSiD300a.ISO
-MinoltaCs7D.ISOSpeed                   NikonSiD300b.ISO
-Nikon1.ISOSpeed                        NikonSi02xx.ISO
-Nikon2.ISOSpeed                        NikonSi01xx.ISO
-Nikon3.ISOSpeed                        PentaxDng.ISO
-Olympus.ISOSpeed                       Pentax.ISO
-Olympus2.ISOSpeed                      Samsung2.ISO
-Sony1MltCs7D.ISOSpeed                  Sony1MltCsOld.ISO
-                                       Sony1MltCsNew.ISO
-
-```
-
-You can use the program exifvalue to look for a tag in a file.  If the tag doesn't exist in the file, it will report "value not set":
-
-```bash
-$ exifvalue ~/Stonehenge.jpg Exif.MinoltaCsNew.ISO
-Caught Exiv2 exception 'Value not set'
-$
-```
-
-If the tag is not known, it will report 'Invalid tag':
-
-```bash
-$ exifvalue ~/Stonehenge.jpg Exif.MinoltaCsNew.ISOSpeed
-Caught Exiv2 exception 'Invalid tag name or ifdId `ISOSpeed', ifdId 37'
-$
-```
-
-Is there a way to report every tag known to exiv2?  Yes.  There are 5430 known tags:
-
-```bash
-$ for group in $(taglist Groups); do for tag in $(taglist $group | cut -d, -f 1) ; do echo $group.$tag ; done; done
-Image.ProcessingSoftware
-Image.NewSubfileType
-Image.SubfileType
-Image.ImageWidth
-...
-$ for group in $(taglist Groups); do for tag in $(taglist $group | cut -d, -f 1) ; do echo $group.$tag ; done; done | wc
-    5430    5430  130555
-$
-```
-
-Let's discuss why there are 106 groups.  There are about 10 camera manufacturers (Canon, Minolta, Nikon etc) and they use the tag Exif.Photo.MakerNote to store data in a myriad of different (and proprietary standards).
-
-```bash
-$ exifvalue ~/Stonehenge.jpg Exif.Photo.MakerNote
-78 105 107 111 110 0 2 ...
-```
-
-Exiv2 has code to read/modify/write makernotes.  All achieved by reverse engineering.  References on the web site. [https://exiv2.org/makernote.html](https://exiv2.org/makernote.html)
-
-The MakerNote usually isn't a simple structure.  The manufacturer usually has "sub-records" for Camera Settings (Cs), AutoFocus (Af) and so on.  Additionally, the format of the sub-records can evolve and change with different models from the manufacturer.  For example (as above):
-
-```bash
-$ taglist Groups | grep Minolta
-Minolta
-MinoltaCs5D
-MinoltaCs7D
-MinoltaCsOld
-MinoltaCsNew
-SonyMinolta
-$
-```
-
-So, Minolta have 6 "sub-records".  Other manufacturers have more.  Let's say 10 manufacturers have an average of 10 "sub-records".  That's 100 groups.
+To be written.
 
 [TOC](#TOC)
-
-<div id="6-3"/>
-### 6.3 TagInfo
-
-Another matter to appreciate is that tag definitions are not constant.  A tag is simply an uint16\_t.  The Tiff Standard specifies about 50 tags.  Anybody creating an IFD can use the same tag number for different purposes.  The Tiff Specification says _"TIFF readers must safely skip over these fields if they do not understand or do not wish to use the information."_.  We do have to understand every tag.  In a tiff file, the pixels are located using the tag StripOffsets.  We report StripOffsets, however we don't read pixel data.
-
-If the user wishes to recover data such as the pixels, it is possible to do this with the utility dd.  This is discussed here: [8.1 Extracting metadata using dd](#8-1). 
-
-```cpp
-const TagInfo Nikon1MakerNote::tagInfo_[] = {
-    TagInfo(0x0001, "Version", N_("Version"),
-            N_("Nikon Makernote version"),
-               nikon1Id, makerTags, undefined, -1, printValue),
-    TagInfo(0x0002, "ISOSpeed", N_("ISO Speed"),
-            N_("ISO speed setting"),
-            nikon1Id, makerTags, unsignedShort, -1, print0x0002),
-
-const TagInfo CanonMakerNote::tagInfo_[] = {
-        TagInfo(0x0000, "0x0000", "0x0000", N_("Unknown"), canonId, makerTags, unsignedShort, -1, printValue),
-        TagInfo(0x0001, "CameraSettings", N_("Camera Settings"), N_("Various camera settings"), canonId, makerTags, unsignedShort, -1, printValue),
-        TagInfo(0x0002, "FocalLength", N_("Focal Length"), N_("Focal length"), canonId, makerTags, unsignedShort, -1, printFocalLength),
-
-const TagInfo gpsTagInfo[] = {
-    TagInfo(0x0000, "GPSVersionID", N_("GPS Version ID"),
-            N_("Indicates the version of <GPSInfoIFD>. The version is given "
-            "as 2.0.0.0. This tag is mandatory when <GPSInfo> tag is "
-            "present. (Note: The <GPSVersionID> tag is given in bytes, "
-            "unlike the <ExifVersion> tag. When the version is "
-            "2.0.0.0, the tag value is 02000000.H)."),
-            gpsId, gpsTags, unsignedByte, 4, print0x0000),
-    TagInfo(0x0001, "GPSLatitudeRef", N_("GPS Latitude Reference"),
-            N_("Indicates whether the latitude is north or south latitude. The "
-            "ASCII value 'N' indicates north latitude, and 'S' is south latitude."),
-            gpsId, gpsTags, asciiString, 2, EXV_PRINT_TAG(exifGPSLatitudeRef)),
-```
-
-As we can see, tag == 1 in the Nikon MakerNotes is Version.  In Canon MakerNotes, it is CameraSettings.  IN GPSInfo it is GPSLatitudeRef.  We need to use the appropriate tag dictionary for the IFD being parsed.  The tag 0xffff in the tagDict in tvisitor.cpp store the group name of the tags.
-
-[TOC](#TOC)
-
-<div id="6-4"/>
-### 6.4 Visitor Design Pattern
+<div id="3-3"/>
+### 3.3 Visitor Design Pattern
 
 The tiff visitor code is based on the visitor pattern in [Design Patterns: Elements of Reusable Object=Oriented Software](https://www.oreilly.com/library/view/design-patterns-elements/0201633612/).  Before we discuss tiff visitor, let's review the visitor pattern.
 
@@ -3597,21 +2923,11 @@ In a JPEG, we have a linked list of segments.  So tvisitor.cpp has a visitSegmen
 
 In tvisitor.cpp, we only have a single Visitor called ReportVisitor.  When you create him, you specify options which are Basic, Recursive, XMP.  The ReportVisitor effectively performs the same options as _**$ exiv2 -pS**_, or _**$ exiv2 -pR**_, or _**$ exiv2 -pX**_.  We could easily create a new class Exiv2Visitor which would create Exiv2::ExifData.  It's also possible to create a class Exiv2Writer which would output a new file with modified metadata.
 
-Exiv2 has an abstract TiffVisitor class, and the following concrete visitors:
-
-| _Class_           | _Derived from_ | Purpose                              | Description |
-|:--                |:--             |:----                                 |:--          |
-| class TiffReader  | TiffVisitor    | Reads metadata into memory           | image->readMetadata() |
-| class TiffFinder  | TiffVisitor    | Search an IFD                        | Finds the "Make" tag 0x010f in IFD0 |
-| class TiffDecoder | TiffVisitor    | Decodes metadata                     | Unknown |
-| class TiffEncoder | TiffVisitor    | Encodes metadata                     | Unknown |
-| class TiffCopier  | TiffVisitor    | Visits file and copies to a new file | image->writeMetadata() |
-
 [TOC](#TOC)
-<div id="6-5"/>
-### 6.5 IFD::accept() and TiffImage::accept()
+<div id="3-4"/>
+### 3.4 IFD::accept() and TiffImage::accept()
 
-The TiffVisitor is ingenious.  It's also difficult to understand.  Exiv2 has two tiff parsers - TiffVisitor and Image::printIFDStructure().  TiffVisitor was written by Andreas Huggel.  It's very robust and has been almost bug free for 15 years.  I wrote the parser in Image::printIFDStructure() to try to understand the structure of a tiff file.  The code in Image::printIFDStructure() is easier to understand.
+Exiv2 has two tiff parsers - TiffVisitor and Image::printIFDStructure().  TiffVisitor was written by Andreas Huggel.  It's very robust and has been almost bug free for 15 years.  I wrote the parser in Image::printIFDStructure() to try to understand the structure of a tiff file.  The code in Image::printIFDStructure() is easier to understand.
 
 The code which accompanies this book has a simplified version of Image::printIFDStructure() called IFD::accept() and that's what will be discussed here.  The code that accompanies this book is explained here: [Code discussed in this book](#14)
 
@@ -3708,7 +3024,7 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
 } // IFD::accept
 ```
 
-The MakerNote is thorny. Every manufacturer has similar ideas with different details.  This is discussed in detail: [3. MakerNotes](#3)
+The MakerNote is thorny. Every manufacturer has similar ideas with different details.  This is discussed in detail: [2.5 MakerNotes](#MakerNotes)
 
 To complete the story, here's TiffImage::valid() and TiffImage::accept().  We need two flavours of accept.  The default assumes tiffDict.  The makernote handlers pass their TagDict to accept().
 
@@ -3847,8 +3163,8 @@ Please be aware that there are two ways in which IFDs can occur in the file.  Th
 Another important detail is that although the Tiff Specification expects the IFD to end with a uint32\_t offset == 0, Sony (and other) maker notes do not.  The IFD begins with a uint32\_t to define length, followed by 12 byte tags.  There is no trailing null uint32\_t.
 
 [TOC](#TOC)
-<div id="6-6"/>
-### 6.6 Presenting the data with visitTag()
+<div id="3-5"/>
+### 3.5 Presenting the data with visitTag()
 
 I added support in tvisitor.cpp for one binary tag which is Nikon Picture Control tag = 0x0023.  You'll see from the output of tvisitor that it's 58 bytes.
 
@@ -4058,8 +3374,8 @@ Could this be even better?  Of course.  As always reader, I leave you to send me
 3. You're welcome to suggest other magic!
 
 [TOC](#TOC)
-<div id="6-7"/>
-### 6.7 Tag Decoder
+<div id="3-6"/>
+### 3.6 Tag Decoder
 
 This is a story in two parts.  Firstly, we have to find metadata which is formatted as a Tiff Entry and I call that the _**Metadata Decoder**_.  Some tags are encoded in binary which must be decoded.  I call that the _**Binary Tag Decoder**_.
 
@@ -4163,8 +3479,8 @@ This function understands how to decode byte-by-byte from `const ArrayDef` into 
 
 
 [TOC](#TOC)
-<div id="6-8"/>
-## 6.8 JpegImage::accept()
+<div id="3-7"/>
+## 3.7 JpegImage::accept()
 
 ```cpp
 void JpegImage::accept(Visitor& visitor)
@@ -4260,8 +3576,149 @@ The way in which extended JPEG is managed is quite simple.  A DataBuf is used an
 ![jpeg](jpeg.png)
 
 [TOC](#TOC)
-<div id="7"/>
-# 7 Image Previews
+<div id="4"/>
+# 4 Lens Recognition
+
+Lens Recognition is a difficult problem. The lens isn't stored in the metadata. Different manufacturers use different ways to deal with the lens and it's very common that a number such as "368" is used to represent several lenses. Then we have to examine other metadata to make a guess about which lens is being used.  Lens recognition has been a time sink on the engineering resources of Team Exiv2. So, I introduced the ~/.exiv2 "Configuration File" in 0.26 to save lots of work and give users an instant way to recognise their lens. You don't need to wait on the release cycles of exiv2 and your distribution. You get it fixed instantly.
+
+In the introduction to this book, I have discussed my proposal for _**M2Lscript**_ (pronounce MillsScript).  This is my proposal to solve the lens problem.  [Future Exiv2 Projects](#future)
+
+### The Configuration File
+
+The configuration file ~/.exiv2 (or %USERPROFILE%\\exiv2.ini for Visual Studio Users) may be used to define a lens.  For example:
+
+```ini
+[nikon]
+146=Robin's Sigma Lens
+```
+
+If uncertain, exiv2 can display the path:
+
+```bash
+696 rmills@rmillsmbp:~/gnu/exiv2/team/book $ exiv2 -vVg config_path  # --verbose --version --grep
+exiv2 0.27.3
+config_path=/Users/rmills/.exiv2
+697 rmills@rmillsmbp:~/gnu/exiv2/team/book $ 
+```
+
+Most manufacturers store the LensID (an integer) in their maker notes:
+
+```bash
+703 rmills@rmillsmbp:~/gnu/exiv2/team/book $ taglist ALL | grep Lens | grep -ie number -ie id -ie type
+Photo.LensSpecification,	42034,	0xa432,	Photo,	Exif.Photo.LensSpecification,	Rational,	This ...
+Photo.LensModel,	42036,	0xa434,	Photo,	Exif.Photo.LensModel,	Ascii,	This tag records the lens's model name and model number as an ASCII string.
+Photo.LensSerialNumber,	42037,	0xa435,	Photo,	Exif.Photo.LensSerialNumber,	Ascii,	This tag records the serial number of the interchangeable lens that was used in photography as an ASCII string.
+CanonCs.LensType,	22,	0x0016,	CanonCs,	Exif.CanonCs.LensType,	SShort,	Lens type
+Minolta.LensID,	268,	0x010c,	Minolta,	Exif.Minolta.LensID,	Long,	Lens identifier
+Nikon3.LensType,	131,	0x0083,	Nikon3,	Exif.Nikon3.LensType,	Byte,	Lens type
+NikonLd1.LensIDNumber,	6,	0x0006,	NikonLd1,	Exif.NikonLd1.LensIDNumber,	Byte,	Lens ID number
+NikonLd2.LensIDNumber,	11,	0x000b,	NikonLd2,	Exif.NikonLd2.LensIDNumber,	Byte,	Lens ID number
+NikonLd3.LensIDNumber,	12,	0x000c,	NikonLd3,	Exif.NikonLd3.LensIDNumber,	Byte,	Lens ID number
+OlympusEq.LensType,	513,	0x0201,	OlympusEq,	Exif.OlympusEq.LensType,	Byte,	Lens type
+OlympusEq.LensSerialNumber,	514,	0x0202,	OlympusEq,	Exif.OlympusEq.LensSerialNumber,	Ascii,	Lens serial number
+Panasonic.LensType,	81,	0x0051,	Panasonic,	Exif.Panasonic.LensType,	Ascii,	Lens type
+Panasonic.LensSerialNumber,	82,	0x0052,	Panasonic,	Exif.Panasonic.LensSerialNumber,	Ascii,	Lens serial number
+PentaxDng.LensType,	63,	0x003f,	Pentax,	Exif.Pentax.LensType,	Byte,	Lens type
+Pentax.LensType,	63,	0x003f,	Pentax,	Exif.Pentax.LensType,	Byte,	Lens type
+Samsung2.LensType,	40963,	0xa003,	Samsung2,	Exif.Samsung2.LensType,	Short,	Lens type
+Sony1.LensID,	45095,	0xb027,	Sony1,	Exif.Sony1.LensID,	Long,	Lens identifier
+Sony2.LensID,	45095,	0xb027,	Sony1,	Exif.Sony1.LensID,	Long,	Lens identifier
+SonyMinolta.LensID,	268,	0x010c,	Minolta,	Exif.Minolta.LensID,	Long,	Lens identifier
+Sony2010e.LensType2,	6291,	0x1893,	Sony2010e,	Exif.Sony2010e.LensType2,	Short,	LensType2
+Sony2010e.LensType,	6294,	0x1896,	Sony2010e,	Exif.Sony2010e.LensType,	Short,	LensType
+704 rmills@rmillsmbp:~/gnu/exiv2/team/book 
+```
+
+| Manufacturer | Config Section | Metadata |
+|:--   |:-- |:-- |
+| Canon | [canon] | Exif.CanonCs.LensType |
+| Minolta | [minolta] | Exif.Minolta.LensID |
+| Nikon | [nikon] | Exif.NikonLd{1\|2\|3}.LensIDNumber |
+| Olympus | [olympus] | OlympusEq.LensType |
+| Panasonic | [panasonic] | Exif.Panasonic.LensType |
+| Pentax | [canon] | Exif.Pentax.LensType |
+| Sony   | [sony] | Exif.Sony2010e.LensType<br>Exif.Sony2010e.LensType2 |
+
+## Lens in Exif 
+
+There are a couple of Exif tags defined in Exif 2.2:
+
+| Tag  | Type | Description |
+|:--   |:--    |:--         |
+| Exif.Photo.LensSpecification | Rational | Focal length min, max |
+| Exif.Photo.LensModel | Ascii |  |
+| Exif.Photo.LensSerialNumber | Ascii |  |
+
+## C++ Lens Recognition
+
+For a discussion about Nikon see: [https://github.com/Exiv2/exiv2/issues/743#issuecomment-473409909](https://github.com/Exiv2/exiv2/issues/743#issuecomment-473409909)
+
+[TOC](#TOC)
+<div id="5"/>
+# 5 I/O in Exiv2
+
+I/O in Exiv2 is achieved using the class BasicIo and derived classes which are:
+
+| _Name_ | _Purpose_ | _Description_ |
+|:--     |:--        |:-- |
+| BasicIo | Abstract | Defines methods such as open(), read(), seek() and others |
+| FileIo  | FILE*    | Operates on a FILE or memory-mapped file |
+| MemIo   | DataBuf_t | Operates on a memory buffer |
+| RemoteIo | Abstract | provides support for url parsing |
+| HttpIo   | http:  | Simple http 1.1 non-chunked support |
+| FtpIo    | ftp:,ftps: | Requires CurlIo |
+| CurlIo   | http:,https: | Comprehensive remote I/O support |
+| SshIo    | server:path | Requires libssh |
+| StdinIo    | - | Read from std-in |
+| Base64Io   | data:..... | Decodes ascii encoded binary |
+
+You will find a simplified version of BasicIo in tvisitor.cpp in the code that accompanies this book.  Io has several constructors.  The obvious one is **Io(std::string)** which calls **fopen()**.  More subtle is **Io(io,from,size)** which creates a sub-file on an existing stream.  This design deals with embedded files.  Most metadata is written in a format designated by the standards body and embedded in the file.  For example, Exif metadata data is written in Tiff Format and embedded in the file.
+
+The constructor **Io(DataBuf&)** is used to create an in-memory I/O stream.  _**DataBuf**_ has a **read()** method to binary copy from a stream into memory.  As we will see, some subfiles are not contiguous in the image and "chunked" by the image format.  For example, JPEG is always chunked into segments of 64k or less.  When a subfile has been chunked it is convenient to copy bytes into a buffer from which we can create an Io source.
+
+Other metadata standards use a similar design.  XMP is embedded XML, an Icc Profile is a major block of technology.  Exiv2 knows how to extract, insert, delete and replace an Icc Profile.  It knows nothing about the contents of the Icc Profile.  With Xmp, Exiv2 uses Adobe's XMPsdk to enable the Xmp data to be modified.
+
+Exiv2 has an abstract RemoteIo object which can read/write on the internet.  For http, there is a basic implementation of the http protocol in src/http.cpp.  For production use, Exiv2 should be linked with libcurl.  The reason for providing a "no thrills" implementation of http was two fold.  Firstly, it enabled the project to proceed rapidly without learning the curl API.  Secondly, I wanted all versions of the exiv2 command-line to have http support as I thought it would be useful for testing as we could store video and other large files remotely.
+
+The MemIo class enables memory to be used as a stream.  This is fast and convenient for small temporary files.  When memory mapped files are available, FileIo uses that in preference to FILE*.  When the project started in 2004, memory-mapped files were not provided on some legacy platforms such as DOS.  Today, all operating systems provide memory mapped files.  I've never heard of Exiv2 being used in an embedded controller, however I'm confident that this is feasible.  I've worked on embedded controllers with no operating system and only a standard "C" io library.  Exiv2 can be built for such a device.
+
+Most camera manufacturers are large corporations.  I'm sure they have their own firmware to handle Exif metadata.  However, the world of photography has an ever growing band of start-ups making amazing devices such as Go-Pro.  One day I'll hear that somebody is cycling around on top of Mt Everest with Exiv2 running on top of their head!  One of our users is an astronomer at NASA.  I've never heard that Exiv2 has flown in space, however one day it might.  I will say with pride that Exiv2 is out of this world!
+
+![blockmap](blockmap.png)
+
+### Using memory mapped files
+
+When available, Exiv2 uses memory mapped files.  This is not a good idea for several reasons.  Firstly, image editing applications can sit for days with a file open. For example, a GIMP user may open a file on Monday and it may be still be open several days later.  In the meanwhile things have changed on the network.  Secondly, memory mapped files on Windows are locked by the operating system.  This causes problems with the virus checker.  Thirdly, it's possible for another application to modify a file which is memory mapped.  Exiv2 has copied the metadata into memory and can have stale/obsolete data.
+
+The reason for using memory mapped files was for the convenience of converting offsets into memory addresses.  Imperial College have 90GByte Tiffs from medical imaging products.  We have to map 90GBytes.  And it gets worse, some file handlers allocate and copy the file before processing.  As we can see in tvisitor.cpp, it's possible to navigate the metadata in huge files with very little I/O.  Memory Mapped files for metadata processing have turned out to have sad consequences.
+
+### Writing Files
+
+Exiv2 is very reliable at writing files which conform to standards.  The way in which this is achieved is to by calling image->writeMetata() which delegates to the handlers writeMetata().
+
+Because the handler understands the structure of the image, he writes a temporary in memory copy of the image.  It proceeds to parse the image and copy the data to the temporary file.  When it arrives at each of the four metadata blocks (Exif, ICC, IPTC and XMP) it calls the serializer to create a buffer of data which is injected into the temporary image.  When it arrives the EOF on the original file, if no error has been detected it calls io->transfer() on the temporary image.  The operation transfer() copies the bytes from the temporary stream to the permanent file.
+
+This method is very robust and reliable.  For very very files (for example, 100GB medical imaging file), this places huge demands on memory.  For remote file, it requires every byte from the remote location to be copied to the temporary file and subsequently transferred back to the remote location.  One day a project will be undertaken to stress test remote IO on HUGE files and more will be understood about the performance and optimisation that can be undertaken.
+
+### Intrusive and NonIntrusive Write Mode
+
+When Exiv2 rewrites an image, it determines the writeMode to determines the writeMode which are:
+
+1. Non-intrusive
+The metadata is updated in-place.  For performance reasons, this the default as it means that metadata can be updated by modifying a bytes in the original file.  For example, a common metadata edit is to change the date in Exif.Image.DateTime.  Non-intrusive write mode is designed to ensure this is performed very quickly.
+
+2. Intrusive
+The metadata is totally re-written in memory.  This always occurs if there are any changes in the makernote.  It will always occur if any tag edited tag requires more storage than in the original file.
+
+Write Mode is really clever, however it's scope is limited to writing Tiff images (and therefore similar Raw formats such as DNG, CR2 and NEF), only a small part of the file is written as a Tiff (the Exif metadata) and the image handler must use the io()->transfer() mechanism discussed above.
+
+### Using a Block Map to track changes to the file.
+
+In Chapter 5, I discuss the use of a block map to track small areas of the file which are in use.  I'm confident that architecture could be developed to vastly reduce the I/O involved in updating the metadata in a file.  [5. I/O in Exiv2](#5)
+
+[TOC](#TOC)
+<div id="6"/>
+# 6 Image Previews
 
 I don't know much about the image previews.  Previews are usually JPEG encoded and have no metadata.  Exiv2 has no code to edit previews in images.  About all that I know about previews is that the library finds them and creates a vector of thumbnails.  Like most of Andreas' code, the Preview code works well and has seldom required attention.
 
@@ -4295,6 +3752,571 @@ dmpf.cpp finds it.  So, we know it is 4448 bytes into the file and the Exif Tiff
   0x1160     4448: __.___...._._...................  ->  00 00 01 00 00 00 ff d8 ff db 00 ..
 .../book/build $ 
 ```
+
+[TOC](#TOC)
+<div id="7"/>
+# 7 Exiv2 Architecture
+
+![exiv2arch](exiv2arch.png)
+
+The Exiv2 API is documented here: [https://exiv2.org/doc/](https://exiv2.org/doc/)  The API is in the Namespace Exiv2.  The Namespace Exiv2::Internal should never be used by application programs and is not revealed to via \<exiv2/exiv2.hpp\>.  As there are around 300 classes and 3000+ entry points, it's not possible to discuss the API in detail here.  Instead I will discuss a typical short application: samples/exifprint.cpp.  My aim here is to explain how to use the exiv2 library and provide a high-level overview of how the library operates.  The doxygen generated API Documentation is very good and the code is well laid out and documented.
+
+[TOC](#TOC)
+<div id="7-1"/>
+## 7.1 API Overview
+
+1) The Image Handlers
+
+This code understands the structure of image files.  The structure is explained in Chapter 1 of this book.
+
+2) The MetaData parsers
+
+This code understands the structure of the different metadata standards.  The structure is explained in Chapter 2 of this book.
+
+3) Manufacturer's MakerNote handlers
+
+All the manufacturers use variations of the TIFF/IFD format in their makernote.  The maker note is parsed by the TiffParser.  The presentation and interpretation of the makenote is handled here.  In particular the lens recognition and preview image handling is dealt with in this code.  Lens Recognition is discussed in Chapter 4 of this book.  Image Previews are discussed in Chapter 7 of this book.
+
+4) TagInfo
+
+This code has definitions for thousands of Exif tags and about 50 IPTC Tags.  Xmp metadata is handled by the XMPsdk.  As XMP is Extensible, it doesn't have a database of known tags.  Tags are discussed in detail in Chapter 6 of this book.
+
+5) BasicIo
+
+This code is responsible for all I/O and is explained in Chapter 5 of this book.
+
+6) Utility and Platform Code
+
+There are utility functions such as ascii 64 encode/decode.  There are platform specific functions which manage interaction with the platform operating system.
+
+7) The Image Object and Image Factory
+
+Applications obtain access to an image object via the Image Factory.  The application is expected to call readMetadata() which causes the image handler to locate metadata and passes it to the metadata handlers for conversion to a metadatum vector.  Metadatum elements are key/value pairs.  Metadatum can be manipulated in memory or presented to the user.  If the metadata has been modified, the application should call writeMetadata() which will cause the reading process to be reversed.  The metadatum vector is serialized and the file is rewritten by the Image Handler.
+
+8) Sample Code and Test Harness
+
+This is discussed in Chapter 11 of this book.
+
+[TOC](#TOC)
+<div id="7-2"/>
+## 7.2 Typical Sample Application
+
+```cpp
+// ***************************************************************** -*- C++ -*-
+// exifprint.cpp
+// Sample program to print the Exif metadata of an image
+// g++ -std=c++98 exifprint.cpp -I/usr/local/include -L/usr/local/lib -lexiv2 -o exifprint
+
+#include <exiv2/exiv2.hpp>
+
+#include <iostream>
+#include <iomanip>
+#include <cassert>
+
+int main(int argc, const char* argv[])
+{
+    try {
+        Exiv2::XmpParser::initialize();
+        ::atexit(Exiv2::XmpParser::terminate);
+
+        const char* prog = argv[0];
+        const char* path = argv[1];
+
+        if (argc != 2) {
+            std::cout << "Usage: " << prog << " [ path | --version ]" << std::endl;
+            return 1;
+        }
+
+        if ( strcmp(path,"--version") == 0 ) {
+            exv_grep_keys_t keys;
+            Exiv2::dumpLibraryInfo(std::cout,keys);
+            return 0;
+        }
+
+        Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(path);
+        assert(image.get() != 0);
+        image->readMetadata();
+
+        Exiv2::ExifData &exifData = image->exifData();
+        if (exifData.empty()) {
+            std::string error("No Exif data found in file");
+            throw Exiv2::Error(Exiv2::kerErrorMessage, error);
+        }
+
+        for (Exiv2::ExifData::const_iterator i = exifData.begin(); i != exifData.end(); ++i) {
+            std::cout << i->key() << " -> " << i->toString() << std::endl;
+        }
+
+        return 0;
+    } catch (Exiv2::Error& e) {
+        std::cout << "Caught Exiv2 exception '" << e.what() << "'\n";
+        return -1;
+    }
+}
+```
+
+#### Include file
+
+Only include the file \<exiv2/exiv2.hpp\>.  Do not include individual exiv2 include files because Team Exiv2 may remove or add include files.  By only including \<exiv2/exiv2.hpp\>, you are insulated from changes to the dependency and existence of individual include files.
+
+```cpp
+#include <exiv2/exiv2.hpp>
+
+#include <iostream>
+...
+```
+
+#### Initializing the library
+
+You do not need to initialize the exiv2 library.  However you have to initialize XMPsdk.
+
+```cpp
+      Exiv2::XmpParser::initialize();
+      ::atexit(Exiv2::XmpParser::terminate);
+```
+
+#### Opening an image to read metadata
+
+Use the ImageFactory to open the image on a path.  Verify that the image is good, then call readMetadata()
+
+```cpp
+      Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(path);
+      assert(image.get() != 0);
+      image->readMetadata();
+
+      Exiv2::ExifData &exifData = image->exifData();
+      if (exifData.empty()) {
+          std::string error("No Exif data found in file");
+          throw Exiv2::Error(Exiv2::kerErrorMessage, error);
+      }
+```
+
+#### Stepping through the metadata
+
+The metadata is stored in an STL vector which you can step in the conventional way:
+
+```cpp
+      for (Exiv2::ExifData::const_iterator i = exifData.begin(); i != exifData.end(); ++i) {
+          std::cout << i->tag() << " -> " << i->toString() << std::endl;
+      }
+```
+
+Each enumerated item is of the Exiv2::Exifdatum: [https://exiv2.org/doc/classExiv2_1_1Exifdatum.html](https://exiv2.org/doc/classExiv2_1_1Exifdatum.html) for which there are many getter functions such as key(), familyName(), count() and toString().
+
+#### Making Changes to the Metadata
+
+The application samples/addmodel.cpp _(add modify delete)_ illustrates how to manipulate metadata: [https://exiv2.org/doc/addmoddel_8cpp-example.html](https://exiv2.org/doc/addmoddel_8cpp-example.html).  Frequently, you can add/modify metadata directly with code such as:
+
+```cpp
+      exifData["Exif.Image.Model"] = "Test 1"
+```
+
+To delete metadata, you have to locate the key in the ExifData vector and erase it from the vector.
+
+```cpp
+      Exiv2::ExifKey            key("Exif.Photo.DateTimeOriginal");
+      Exiv2::ExifData::iterator pos = exifData.findKey(key);
+      if (pos == exifData.end()) {
+          throw Exiv2::Error(Exiv2::kerErrorMessage, "Key not found");
+      }
+      exifData.erase(pos);
+```
+
+#### Writing modified metada to storage
+
+When you modify metadata using the variable _image_, you are only changing it in memory.  You commit the changes to storage when you call image->writeMetadata().
+
+```cpp
+      image->writeMetadata()
+```
+
+The image will be automatically closed when image goes out of scope.
+
+[TOC](#TOC)
+<div id="7-3"/>
+## 7.3 The EasyAccess API
+
+Exiv2 provides a collection of functions to simplify searching for Exif metadata.  This is described in detail here: [https://github.com/Exiv2/exiv2/wiki/EasyAccess-API](https://github.com/Exiv2/exiv2/wiki/EasyAccess-API)
+
+A typical use case is:
+
+```cpp
+Exiv2::ExifData::const_iterator metadata = Exiv2::whiteBalance(exifData);
+if ( metadata != exifData.end() ) {
+    metadata->write(std::cout, &exifData);
+}
+```
+
+The following EasyAccess Selector Functions are provided:
+
+| a-e | e-f | i-m | m-s | s-w |
+|:--  |:--  |:--  |:--  |:--  |
+| afPoint<br>apertureValue<br>brightnessValue<br>contrast<br>dateTimeOriginal<br>exposureBiasValue<br>exposureIndex | exposureMode<br>exposureTime<br>flash<br>flashBias<br>flashEnergy<br>fNumber<br>focalLength | imageQuality<br>isoSpeed<br>lensName<br>lightSource<br>macroMode<br>make<br>maxApertureValue |meteringMode<br>model<br>orientation<br>saturation<br>sceneCaptureType<br>sceneMode<br>sensingMethod | serialNumber<br>sharpness<br>shutterSpeedValue<br>subjectArea<br>subjectDistance<br>whiteBalance<br>&nbsp; |
+
+
+[TOC](#TOC)
+<div id="7-4"/>
+## 7.4 Listing the API
+
+You can get a list of the API with a command such as:
+
+```bash
+$ nm -g --demangle build/lib/libexiv2.dylib | grep ' T ' | grep Exiv2
+```
+
+You can refine that further to discover all the "free" functions of the library which are:
+
+```bash
+$ nm -g --demangle build/lib/libexiv2.dylib | grep ' T ' | grep Exiv2 | grep -v trait | grep -v :__ | grep  -v Internal | grep -v operator | grep -v "::.*::"
+0000000000073050 T enforce(bool, Exiv2::ErrorCode)
+0000000000107750 T Exiv2::exvGettext(char const*)
+000000000012c360 T Exiv2::testVersion(int, int, int)
+0000000000072190 T Exiv2::base64decode(char const*, char*, unsigned long)
+0000000000071dc0 T Exiv2::base64encode(void const*, unsigned long, char*, unsigned long)
+000000000012bd00 T Exiv2::versionNumber()
+000000000012bd10 T Exiv2::versionString()
+0000000000073fc0 T Exiv2::getProcessPath()
+00000000001057f0 T Exiv2::floatToRationalCast(float)
+000000000012bfd0 T Exiv2::versionNumberHexString()
+0000000000108460 T int Exiv2::gcd<int>(int, int)
+0000000000052d80 T Exiv2::errMsg(int)
+0000000000071750 T Exiv2::getEnv(int)
+00000000000718b0 T Exiv2::to_hex(char)
+000000000012c340 T Exiv2::version()
+00000000001075f0 T Exiv2::exifTime(char const*, tm*)
+00000000000718e0 T Exiv2::from_hex(char)
+0000000000072d10 T Exiv2::strError()
+0000000000071b80 T Exiv2::urldecode(char const*)
+0000000000071980 T Exiv2::urlencode(char const*)
+```
+
+You could refine that to reveal the members of class Exiv2::ExifKey:
+
+```bash
+$ nm -g --demangle build/lib/libexiv2.dylib | grep ' T ' | grep ' Exiv2::ExifKey' | grep -v Impl
+00000000000f9f30 T Exiv2::ExifKey::setIdx(int)
+00000000000f9a70 T Exiv2::ExifKey::ExifKey(Exiv2::TagInfo const&)
+00000000000f9ba0 T Exiv2::ExifKey::ExifKey(std::__1::basic_string...
+00000000000f9d00 T Exiv2::ExifKey::ExifKey(Exiv2::ExifKey const&)
+00000000000f97f0 T Exiv2::ExifKey::ExifKey(unsigned short, std::__1::basic_string...
+00000000000f9830 T Exiv2::ExifKey::ExifKey(Exiv2::TagInfo const&)
+00000000000f9aa0 T Exiv2::ExifKey::ExifKey(std::__1::basic_string<char...
+00000000000f9bd0 T Exiv2::ExifKey::ExifKey(Exiv2::ExifKey const&)
+00000000000f94b0 T Exiv2::ExifKey::ExifKey(unsigned short, std::__1::basic_string...
+00000000000f9da0 T Exiv2::ExifKey::~ExifKey()
+00000000000f9d80 T Exiv2::ExifKey::~ExifKey()
+00000000000f9d30 T Exiv2::ExifKey::~ExifKey()
+00000000000f9e00 T Exiv2::ExifKey::operator=(Exiv2::ExifKey const&)
+00000000000f9fd0 T Exiv2::ExifKey::familyName() const
+00000000000fa240 T Exiv2::ExifKey::defaultTypeId() const
+00000000000fa4a0 T Exiv2::ExifKey::idx() const
+00000000000f9f70 T Exiv2::ExifKey::key() const
+00000000000fa2b0 T Exiv2::ExifKey::tag() const
+00000000000fa2e0 T Exiv2::ExifKey::clone() const
+00000000000f7880 T Exiv2::ExifKey::ifdId() const
+00000000000fa430 T Exiv2::ExifKey::clone_() const
+00000000000fa180 T Exiv2::ExifKey::tagDesc() const
+00000000000fa070 T Exiv2::ExifKey::tagName() const
+00000000000fa0c0 T Exiv2::ExifKey::tagLabel() const
+00000000000fa010 T Exiv2::ExifKey::groupName() const
+$ 
+```
+
+[TOC](#TOC)
+[TOC](#TOC)
+<div id="7-5"/>
+### 7.5 Tags in Exiv2
+
+The following test program is very useful for understanding tags:
+
+```bash
+$ taglist --help
+Usage: taglist [--help]
+           [--group name|
+            Groups|Exif|Canon|CanonCs|CanonSi|CanonCf|Fujifilm|Minolta|Nikon1|Nikon2|Nikon3|Olympus|
+            Panasonic|Pentax|Sigma|Sony|Iptc|
+            dc|xmp|xmpRights|xmpMM|xmpBJ|xmpTPg|xmpDM|pdf|photoshop|crs|tiff|exif|aux|iptc|all|ALL
+           ]
+Print Exif tags, MakerNote tags, or Iptc datasets
+```
+
+How Tags are organised:
+
+| Element | Definition           | Example |
+|:--      |:--                   |:--      |
+| Tag     | Family.Group.TagName | Exif.Image.Model |
+| Family  | Exif or Iptc or  Xmp |  |
+| Group   | There are 106 groups<br>Further discussed below. | Minolta<br>MinoltaCs5D... |
+| TagName | Can be almost anything | TagName is a sub-part of a Group |
+
+
+```bash
+$ taglist MinoltaCsNew
+ExposureMode,	1,	0x0001,	MinoltaCsNew,	Exif.MinoltaCsNew.ExposureMode,	Long,	Exposure mode
+FlashMode,	2,	0x0002,	MinoltaCsNew,	Exif.MinoltaCsNew.FlashMode,	Long,	Flash mode
+...
+FlashMetering,	63,	0x003f,	MinoltaCsNew,	Exif.MinoltaCsNew.FlashMetering,	Long,	Flash metering
+$
+```
+
+There isn't a tag Exif.MinoltaCsNew.ISOSpeed.  There is a Exif.MinoltaCSNew.ISO
+
+```bash
+$ taglist all | grep ISOSpeed$         $ taglist all | grep \\.ISO$
+Photo.ISOSpeed                         Casio.ISO
+PanasonicRaw.ISOSpeed                  Casio2.ISO
+CanonCs.ISOSpeed                       MinoltaCsOld.ISO
+CanonSi.ISOSpeed                       MinoltaCsNew.ISO
+Casio2.ISOSpeed                        NikonIi.ISO
+MinoltaCs5D.ISOSpeed                   NikonSiD300a.ISO
+MinoltaCs7D.ISOSpeed                   NikonSiD300b.ISO
+Nikon1.ISOSpeed                        NikonSi02xx.ISO
+Nikon2.ISOSpeed                        NikonSi01xx.ISO
+Nikon3.ISOSpeed                        PentaxDng.ISO
+Olympus.ISOSpeed                       Pentax.ISO
+Olympus2.ISOSpeed                      Samsung2.ISO
+Sony1MltCs7D.ISOSpeed                  Sony1MltCsOld.ISO
+                                       Sony1MltCsNew.ISO
+
+```
+
+You can use the program exifvalue to look for a tag in a file.  If the tag doesn't exist in the file, it will report "value not set":
+
+```bash
+$ exifvalue ~/Stonehenge.jpg Exif.MinoltaCsNew.ISO
+Caught Exiv2 exception 'Value not set'
+$
+```
+
+If the tag is not known, it will report 'Invalid tag':
+
+```bash
+$ exifvalue ~/Stonehenge.jpg Exif.MinoltaCsNew.ISOSpeed
+Caught Exiv2 exception 'Invalid tag name or ifdId `ISOSpeed', ifdId 37'
+$
+```
+
+Is there a way to report every tag known to exiv2?  Yes.  There are 5430 known tags:
+
+```bash
+$ for group in $(taglist Groups); do for tag in $(taglist $group | cut -d, -f 1) ; do echo $group.$tag ; done; done
+Image.ProcessingSoftware
+Image.NewSubfileType
+Image.SubfileType
+Image.ImageWidth
+...
+$ for group in $(taglist Groups); do for tag in $(taglist $group | cut -d, -f 1) ; do echo $group.$tag ; done; done | wc
+    5430    5430  130555
+$
+```
+
+Let's discuss why there are 106 groups.  There are about 10 camera manufacturers (Canon, Minolta, Nikon etc) and they use the tag Exif.Photo.MakerNote to store data in a myriad of different (and proprietary standards).
+
+```bash
+$ exifvalue ~/Stonehenge.jpg Exif.Photo.MakerNote
+78 105 107 111 110 0 2 ...
+```
+
+Exiv2 has code to read/modify/write makernotes.  All achieved by reverse engineering.  References on the web site. [https://exiv2.org/makernote.html](https://exiv2.org/makernote.html)
+
+The MakerNote usually isn't a simple structure.  The manufacturer usually has "sub-records" for Camera Settings (Cs), AutoFocus (Af) and so on.  Additionally, the format of the sub-records can evolve and change with different models from the manufacturer.  For example (as above):
+
+```bash
+$ taglist Groups | grep Minolta
+Minolta
+MinoltaCs5D
+MinoltaCs7D
+MinoltaCsOld
+MinoltaCsNew
+SonyMinolta
+$
+```
+
+So, Minolta have 6 "sub-records".  Other manufacturers have more.  Let's say 10 manufacturers have an average of 10 "sub-records".  That's 100 groups.
+
+[TOC](#TOC)
+<div id="7-6"/>
+### 7.6 TagInfo
+
+Another matter to appreciate is that tag definitions are not constant.  A tag is simply an uint16\_t.  The Tiff Standard specifies about 50 tags.  Anybody creating an IFD can use the same tag number for different purposes.  The Tiff Specification says _"TIFF readers must safely skip over these fields if they do not understand or do not wish to use the information."_.  We do have to understand every tag.  In a tiff file, the pixels are located using the tag StripOffsets.  We report StripOffsets, however we don't read pixel data.
+
+If the user wishes to recover data such as the pixels, it is possible to do this with the utility dd.  This is discussed here: [3.1 Extracting metadata using dd](#3-1). 
+
+```cpp
+const TagInfo Nikon1MakerNote::tagInfo_[] = {
+    TagInfo(0x0001, "Version", N_("Version"),
+            N_("Nikon Makernote version"),
+               nikon1Id, makerTags, undefined, -1, printValue),
+    TagInfo(0x0002, "ISOSpeed", N_("ISO Speed"),
+            N_("ISO speed setting"),
+            nikon1Id, makerTags, unsignedShort, -1, print0x0002),
+
+const TagInfo CanonMakerNote::tagInfo_[] = {
+        TagInfo(0x0000, "0x0000", "0x0000", N_("Unknown"), canonId, makerTags, unsignedShort, -1, printValue),
+        TagInfo(0x0001, "CameraSettings", N_("Camera Settings"), N_("Various camera settings"), canonId, makerTags, unsignedShort, -1, printValue),
+        TagInfo(0x0002, "FocalLength", N_("Focal Length"), N_("Focal length"), canonId, makerTags, unsignedShort, -1, printFocalLength),
+
+const TagInfo gpsTagInfo[] = {
+    TagInfo(0x0000, "GPSVersionID", N_("GPS Version ID"),
+            N_("Indicates the version of <GPSInfoIFD>. The version is given "
+            "as 2.0.0.0. This tag is mandatory when <GPSInfo> tag is "
+            "present. (Note: The <GPSVersionID> tag is given in bytes, "
+            "unlike the <ExifVersion> tag. When the version is "
+            "2.0.0.0, the tag value is 02000000.H)."),
+            gpsId, gpsTags, unsignedByte, 4, print0x0000),
+    TagInfo(0x0001, "GPSLatitudeRef", N_("GPS Latitude Reference"),
+            N_("Indicates whether the latitude is north or south latitude. The "
+            "ASCII value 'N' indicates north latitude, and 'S' is south latitude."),
+            gpsId, gpsTags, asciiString, 2, EXV_PRINT_TAG(exifGPSLatitudeRef)),
+```
+
+As we can see, tag == 1 in the Nikon MakerNotes is Version.  In Canon MakerNotes, it is CameraSettings.  IN GPSInfo it is GPSLatitudeRef.  We need to use the appropriate tag dictionary for the IFD being parsed.  The tag 0xffff in the tagDict in tvisitor.cpp store the group name of the tags.
+
+
+[TOC](#TOC)
+<div id="7-7"/>
+## 7.7 Tiff Visitor
+
+Exiv2 has an abstract TiffVisitor class, and the following concrete visitors:
+
+| _Class_           | _Derived from_ | Purpose                              | Description            |
+|:--                |:--             |:----                                 |:--                     |
+| class TiffReader  | TiffVisitor    | Reads metadata into memory           | image->readMetadata()  |
+| class TiffFinder  | TiffVisitor    | Search an IFD                        | Finds the "Make" tag 0x010f in IFD0 |
+| class TiffDecoder | TiffVisitor    | Decodes metadata                     | To be written          |
+| class TiffEncoder | TiffVisitor    | Encodes metadata                     | To be written          |
+| class TiffCopier  | TiffVisitor    | Visits file and copies to a new file | image->writeMetadata() |
+
+TiffVisitor is the "beating heart" of Exiv2.  It is both ingeneous and very difficult to understand.  Although I've worked on the Exiv2 code for more than 12 years, it is only in the process of writing this book that I have come to an (_incomplete)_ understanding of its design.  
+
+TiffVisito is actually a state machine with a stack.  The code pushes an initial object on the stack and procedes to process the element on top of stack until empty.  Some tags, such as a makernote push objects on the stack.  Reaching the end of an object, pops the stack.  There is a "go" flag to enable the visitor to abort.  The TiffReader creates a vector of objects which are post-processed to create the metadata.
+
+#### The IfdId enumerator
+
+This is a collection of more than 100 values which are used to track the groups in the MetaData.  For example ifdIdNotSet is an initial defined state (with no metadata), ifd0Id represents IFD0, exifId the Exif IFD and so on.  There are over one hundred groups (as explained in the man page) to deal with every maker and there binary encoded metadata.
+
+#### Function Selectors
+
+A common pattern in the Exiv2 code is the table/function pattern. 
+
+| Fuction         | Purpose | 
+|:--              |:--      |
+| cfgSelFct       | determine which cfg + def of a corresponding array-set to use. |
+| ConvertFct      | Convert between two keys |
+| CrwEncodeFct<br>CrwDecode  | Encoding/Decoding for CRW |
+| CryptFct        | Cipher/Decipher Data     |
+| EncoderFct<br>DecoderFct      | Encoding/Decoding functions for<br>Exif, Iptc and XMP data |
+| EasyAccessFct   | See [7.3 The EasyAccess API](#7-3)  |
+| InstanceFct     | Creates new Image instances |
+| LensIdFct       | Convert lens ID to lens name |
+| NewMnFct        | Makernote create function fors image and groups |
+| NewTiffCompFct  | Creates TiffGroupStruct's |
+| PrintFct        | Print the "translated" value of data | |
+| TagListFct      | Get a function to return an array of tags | |
+
+It's not really clear to me why this is done and it feels like C++ being implemented in C.
+
+#### Tiff Parser State Tables and Functions.
+
+**TiffCreator::tiffTreeStruct_**
+
+```cpp
+    /*
+      This table lists for each group in a tree, its parent group and tag.
+      Root identifies the root of a TIFF tree, as there is a need for multiple
+      trees. Groups are the nodes of a TIFF tree. A group is an IFD or any
+      other composite component.
+
+      With this table, it is possible, for a given group (and tag) to find a
+      path, i.e., a list of groups and tags, from the root to that group (tag).
+    */
+    const TiffTreeStruct TiffCreator::tiffTreeStruct_[] = {
+        // root      group             parent group      parent tag
+        //---------  ----------------- ----------------- ----------
+        { Tag::root, ifdIdNotSet,      ifdIdNotSet,      Tag::root },
+        { Tag::root, ifd0Id,           ifdIdNotSet,      Tag::root },
+```
+
+**TiffCreator::tiffGroupStruct_**
+
+```cpp
+    /*
+      This table describes the layout of each known TIFF group (including
+      non-standard structures and IFDs only seen in RAW images).
+
+      The key of the table consists of the first two attributes, (extended) tag
+      and group. Tag is the TIFF tag or one of a few extended tags, group
+      identifies the IFD or any other composite component.
+
+      Each entry of the table defines for a particular tag and group combination
+      the corresponding TIFF component create function.
+     */
+#define ignoreTiffComponent 0
+    const TiffGroupStruct TiffCreator::tiffGroupStruct_[] = {
+        // ext. tag  group             create function
+        //---------  ----------------- -----------------------------------------
+        // Root directory
+        { Tag::root, ifdIdNotSet,      newTiffDirectory<ifd0Id>                  },
+
+        // IFD0
+        {    0x8769, ifd0Id,           newTiffSubIfd<exifId>                     },
+```
+
+This is a state table used to navigate the metadata heirachy.  For example, starting at root, the first IFD wil create a new TiffDirectory and sets the state to ifd0Id.  When tag 0x8769 is encountered, the parser will create new TiffDirectory and the state becomes exifId.
+
+This table also enable the parsing of binary metadata.  For example the following entry directs the parser to treat tag 0x0004 in canonId as a binary structure of canonSiCfg: 
+
+```cpp
+        { Tag::root, ifd0Id,           ifdIdNotSet,      Tag::root },
+        { Tag::root, exifId,           ifd0Id,           0x8769    },        
+        { Tag::root, nikon3Id,         exifId,           0x927c    },
+        { Tag::root, nikonPcId,        nikon3Id,         0x0023    },
+```
+
+This causes the manufacture of an nikonPcId using newTiffElement.  This is a simple binary.
+
+```cpp
+        // Nikon3 picture control
+        {  Tag::all, nikonPcId,        newTiffBinaryElement                      },
+```
+
+nikonPcCfg is defined as:
+
+```cpp
+    //! Nikon Picture Control binary array - configuration
+    extern const ArrayCfg nikonPcCfg = {
+        nikonPcId,        // Group for the elements
+        invalidByteOrder, // Use byte order from parent
+        ttUndefined,      // Type for array entry
+        notEncrypted,     // Not encrypted
+        false,            // No size element
+        true,             // Write all tags
+        true,             // Concatenate gaps
+        { 0, ttUnsignedByte,  1 }
+    };
+    //! Nikon Picture Control binary array - definition
+    extern const ArrayDef nikonPcDef[] = {
+        {  0, ttUndefined,     4 }, // Version
+        {  4, ttAsciiString,  20 },
+        { 24, ttAsciiString,  20 },
+...
+        { 57, ttUnsignedByte,  1 }  // The array contains 58 bytes
+    };
+```
+
+The tags associated with nikonPcId are:
+
+```cpp
+    // Nikon3 Picture Control Tag Info
+    const TagInfo Nikon3MakerNote::tagInfoPc_[] = {
+        TagInfo( 0, "Version", N_("Version"), N_("Version"), nikonPcId, makerTags, undefined, 4, printExifVersion),
+        TagInfo( 4, "Name", N_("Name"), N_("Name"), nikonPcId, makerTags, asciiString, 20, printValue),
+        TagInfo(24, "Base", N_("Base"), N_("Base"), nikonPcId, makerTags, asciiString, 20, printValue),
+...
+    };
+```
+
+This is a very flexible design.  Not easy to understand.  The design used by tvisitor.cpp  is simpler [3.5 Presenting the data with visitTag()](#3-5).
 
 [TOC](#TOC)
 <div id="8"/>
