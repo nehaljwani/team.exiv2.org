@@ -1,4 +1,4 @@
-#8<br><br><br><br>
+<br><br><br><br>
 <center><img src="exiv2-large.png" width="600"/></center>
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
@@ -39,7 +39,7 @@ _And our cat Lizzie._
 | [2.6 Metadata Convertors](#Convertors)                | 38 | [MRW Minolta Raw](#MRW)                  | 21 | [11.7 Users](#11-7)                     | 80 |
 | [3. Reading Metadata](#3)                             |    | [ORF Olympus Raw Format](#ORF)           | 22 | [11.8 Bugs](#11-8)                      | 80 |
 | [3.1 Extracting metadata using dd](#3-1)              |    | [PGF Progressive Graphics File](#PGF)    |    | [11.9 Releases](#11-9)                  |    |
-| [3.2 Tags](#3-2)                                      |    | [PSD PhotoShop Document](#PSD)           |    | [11.10 Platforms](#11-10)               |    |
+| [3.2 Tags and TagNames](#3-2)                         |    | [PSD PhotoShop Document](#PSD)           |    | [11.10 Platforms](#11-10)               |    |
 | [3.3 Visitor Design Pattern](#3-3)                    |    | [RAF Fujifilm RAW](#RAF)                 |    | [11.11 Localisation](#11-11)            |    |
 | [3.4 IFD::accept() and TiffImage::accept() ](#3-4)    |    | [RW2 Panasonic RAW](#RW2)                |    | [11.12 Build Server](#11-12)            |    |
 | [3.5 Presenting data with visitTag()](#3-5)           |    | [TGA Truevision Targa](#TGA)             |    | [11.11 Source Code](#11-11)             |    |
@@ -2752,16 +2752,22 @@ $
 You may be interested to discover that option _**-pS**_ which arrived with Exiv2 v0.25 was joined in Exiv2 v0.26 by _**-pR**_.  This is a "recursive" version of _**-pS**_.  It dumps the structure not only of the file, but also subfiles (such as IFDs and JPEG/thumbnails).  This is discussed in detail here: [3.4 IFD::accept() and TiffImage::accept()](#3-4).
 
 [TOC](#TOC)
-<div id="3-3"/>
-### 3.2 Tags
+<div id="3-2"/>
+### 3.2 Tags and TagNames
 
-To be written.
+A tag is the unit of data storage in a tiff entry.  It has a tag (uint16\_t), type (uint16\_t), count (uint32\_t) and value (uint32\_t)_  The meaning of the 16-bit tag is defined by the standard to which the IFD has been written.  These are discussed here: [2.1 Exif Metadata](#Exif).  The TIFF-EP specification defines tags in the IFD0 (the "top-level" IFD) such as Make (0x010f) and ExifTag (0x8769).  The tag ExifTag introduces a new IFD in which tags of interest to the Exif Committee are defined.  Examples are DateTimeOriginal (0x9003) and MakerNote (0x927c), GpsTag (ktGps).  Tags such as MakerNote and GpsTag define new IFDs.  The meaning for the tags in the IFD referenced by GpsTag is defined by the Exif Committee.  The meaning of the tags in the IFD referenced by a MakerNote have been discovered by reverse engineering.
+
+It's important to appreciate that when you visit an IFD, you need a dictionary of tag->name to know the meaning of the tag.  That dictionary is not a constant, it depends on the IFD that is being read.  In the case of the MakerNote, the dictionary of tag->name depends on the Manufacturer.  The tvisitor.cpp program invokes code to set the makerDict when it reads the Make (0x010f) in the "top-level" IFD.
+
+Exiv2 (and tvisitor.cpp) report tags with the syntax such as Exif.Image.Make. Exif.Photo.DateTimeOriginal.  This syntax is of the format:  Family.Group.Tagname.  There are three Families in Exiv2 which are Exif, IPTC and Xmp.  The group Image implies that the tag was read in IFD0, the group Photo implies that the tag was read in the the Exif IFD.  tvisitor.cpp has about 10 groups (Image, Photo, GPS, Nikon, Apple, Canon etc).  Exiv2 has 106 groups as each of about 10 manufacturers have about 10 sub groups.
+
+For simplicity, tvisitor.cpp only supports the family Exif, however it has code to decode and present IPTC, ICC and Xmp metadata.
 
 [TOC](#TOC)
 <div id="3-3"/>
 ### 3.3 Visitor Design Pattern
 
-The tiff visitor code is based on the visitor pattern in [Design Patterns: Elements of Reusable Object=Oriented Software](https://www.oreilly.com/library/view/design-patterns-elements/0201633612/).  Before we discuss tiff visitor, let's review the visitor pattern.
+The code in tvisitor.cpp code is based on the visitor pattern in [Design Patterns: Elements of Reusable Object=Oriented Software](https://www.oreilly.com/library/view/design-patterns-elements/0201633612/).  Before we discuss tvisitor.cpp, let's review the visitor pattern.
 
 The concept in the visitor pattern is to separate the data in an object from the code which that has an interest in the object.  In the following code, we have a vector of students and every student has a name and an age.  We have several visitors.  The French Visitor translates the names of the students.  The AverageAgeVisitor calculates the average age of the visitor.  Two points to recognise in the pattern:
 
@@ -3795,7 +3801,7 @@ Applications obtain access to an image object via the Image Factory.  The applic
 
 8) Sample Code and Test Harness
 
-This is discussed in Chapter 11 of this book.
+This is discussed here: [8. Test Suite](#8)
 
 [TOC](#TOC)
 <div id="7-2"/>
@@ -4023,7 +4029,6 @@ $
 ```
 
 [TOC](#TOC)
-[TOC](#TOC)
 <div id="7-5"/>
 ### 7.5 Tags in Exiv2
 
@@ -4189,11 +4194,11 @@ Exiv2 has an abstract TiffVisitor class, and the following concrete visitors:
 
 TiffVisitor is the "beating heart" of Exiv2.  It is both ingeneous and very difficult to understand.  Although I've worked on the Exiv2 code for more than 12 years, it is only in the process of writing this book that I have come to an (_incomplete)_ understanding of its design.  
 
-TiffVisito is actually a state machine with a stack.  The code pushes an initial object on the stack and procedes to process the element on top of stack until empty.  Some tags, such as a makernote push objects on the stack.  Reaching the end of an object, pops the stack.  There is a "go" flag to enable the visitor to abort.  The TiffReader creates a vector of objects which are post-processed to create the metadata.
+TiffVisitor is actually a state machine with a stack.  The code pushes an initial object on the stack and procedes to process the element on top of stack until empty.  Some tags, such as a makernote push objects on the stack.  Reaching the end of an object, pops the stack.  There is a "go" flag to enable the visitor to abort.  The TiffReader creates a vector of objects which are post-processed to create the metadata.
 
 #### The IfdId enumerator
 
-This is a collection of more than 100 values which are used to track the groups in the MetaData.  For example ifdIdNotSet is an initial defined state (with no metadata), ifd0Id represents IFD0, exifId the Exif IFD and so on.  There are over one hundred groups (as explained in the man page) to deal with every maker and there binary encoded metadata.
+This is a collection of more than 100 values which are used to track the groups in the MetaData.  For example ifdIdNotSet is an initial defined state (with no metadata), ifd0Id represents IFD0, exifId the Exif IFD and so on.  There are over one hundred groups (as explained in the man page) to deal with every maker and their binary encoded metadata.
 
 #### Function Selectors
 
