@@ -260,7 +260,7 @@ The Metadata is defined by standards which also define how to embed the data in 
 | Standard  | Description                                                      |
 |:--        |:---                                                              |
 | Exif      | EXchangeable Image Format.<br>This is encoded as a TIFF sub-file |
-| IPTC      | Interpress Trade Consortium                                      |
+| IPTC      | International Press Telecommunications Council                   |
 | ICC       | Internation Colour Consortium<br>The ICC Profile is similar to TIFF<br>The ICC Profile is an ICC sub-file. |
 | XMP       | Adobe XMP is encoded as an XML sub-file                          | 
 
@@ -4462,10 +4462,10 @@ if (exifData.findKey(key) != exifData.end()) {
     std::cout << exifData.findKey(key)->toString() << std::endl;
 }
 ```
-d
+
 To simplify accessing Exif properties which could be defined in various location in the metadata, an easyaccess API is provide.  This is described: [7.3 The EasyAccess API](#7-3)
 
-The Image Parsers are required to provide both decode() and encode() methods which are called by image->readMetadata().  For example:
+The Image Parsers are required to provide both decode() and encode() methods which are called by image->readMetadata() and image->writeMetadata().  For example:
 
 ```cpp
 void OrfImage::readMetadata()
