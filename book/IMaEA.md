@@ -59,7 +59,8 @@ _And our cat Lizzie._
 | [7.5 Tags in Exiv2](#7-5)                             | 57 |                                          |    |                                         | 81 |
 | [7.6 TagInfo](#7-6)                                   | 59 |                                          |    |                                         | 81 |
 | [7.7 TiffVisitor](#7-7)                               | 61 |                                          |    |                                         | 82 |
-|                                                       | 63 | _**Other Sections**_                     |    |                                         | 82 |
+| [7.8 Other Exiv2 Classes](#7-8)                       | 63 |                                          |    |                                         |    |
+| [7.9 Encrypt/Decrypt and Ciphers](#7-9)               | 63 | _**Other Sections**_                     |    |                                         | 82 |
 | [8. Test Suite](#8)                                   | 63 | [Dedication](#dedication)                |  2 |                                         | 82 |
 | [8.1 Bash Tests](#8-1)                                | 68 | [About this book](#about)                |  4 |                                         | 82 |
 | [8.2 Python Tests](#8-2)                              | 69 | [How did I get interested ?](#begin)     |  4 |                                         | 82 |
@@ -68,7 +69,7 @@ _And our cat Lizzie._
 | [8.5 Generating HUGE images](#8-5)                    | 73 | [Current Priorities](#current)           |  6 |                                         |    |
 | [9. API/ABI Compatibility](#9)                        | 74 | [Future Projects](#future)               |  6 |                                         |    |
 | [10. Security](#10)                                   | 75 | [Scope of Book](#scope)                  |  7 | [12. Code discussed in this book](#12) | 110 |                                      
-| [10.1 Security Policy](#10-2)                         | 80 | [Making this book](#making)              |  8 | [The Last Word](#finally)              | 111 |
+| [10.2 The Fuzzing Police](#10-2)                      | 80 | [Making this book](#making)              |  8 | [The Last Word](#finally)              | 111 |
 
 <div id="about"/>
 ## About this book
@@ -2748,7 +2749,7 @@ Exif.Image.Orientation                       Short       1  top, left
 $
 ```
 
-You may be interested to discover that option _**-pS**_ which arrived with Exiv2 v0.25 was joined in Exiv2 v0.26 by _**-pR**_.  This is a "recursive" version of _**-pS**_.  It dumps the structure not only of the file, but also subfiles (such as IFDs and JPEG/thumbnails).  This is discussed in detail here: [3.4 IFD::accept() and TiffImage::accept()](#3-4).
+You may be interested to discover that option _**-pS**_ which arrived with Exiv2 v0.25 was joined in Exiv2 v0.26 by _**-pR**_.  This is a _**recursive**_ version of _**-pS**_.  It dumps the structure not only of the file, but also subfiles (such as IFDs and JPEG/thumbnails and ICC profiles).  This is discussed in detail here: [3.4 IFD::accept() and TiffImage::accept()](#3-4).
 
 [TOC](#TOC)
 <div id="3-2"/>
@@ -4179,7 +4180,7 @@ As we can see, tag == 1 in the Nikon MakerNotes is Version.  In Canon MakerNotes
 
 [TOC](#TOC)
 <div id="7-7"/>
-## 7.7 Tiff Visitor
+## 7.7 TiffVisitor
 
 Exiv2 has an abstract TiffVisitor class, and the following concrete visitors:
 
@@ -4195,9 +4196,15 @@ TiffVisitor is the "beating heart" of Exiv2.  It is both ingeneous and very diff
 
 TiffVisitor is actually a state machine with a stack.  The code pushes an initial object on the stack and procedes to process the element on top of stack until empty.  Some tags, such as a makernote push objects on the stack.  Reaching the end of an object, pops the stack.  There is a "go" flag to enable the visitor to abort.  The TiffReader creates a vector of objects which are post-processed to create the metadata.
 
-#### The IfdId enumerator
+The code in tvisitor.cpp uses the run-time stack to maintain state.  It simply recursively invokes the code necessary to decode a tag.  Much simpler and easier to understand.  When debugging, you can examine the stack to understand how/why you arrived at a metadata key/value.  TiffVisitor does invoked code recursively and that can be seen in the debugger.  However, the branching is achieved using Function Selectors and much more difficult to understand.
 
-This is a collection of more than 100 values which are used to track the groups in the MetaData.  For example ifdIdNotSet is an initial defined state (with no metadata), ifd0Id represents IFD0, exifId the Exif IFD and so on.  There are over one hundred groups (as explained in the man page) to deal with every maker and their binary encoded metadata.
+#### IfdId and Group
+
+This is a collection of more than 100 values which are used to track the groups in the MetaData.  For example ifdIdNotSet is an initial defined state (with no metadata), ifd0Id represents IFD0, exifId the Exif IFD and so on.  There are over one hundred groups (as explained in the man page) to deal with every maker and their binary encoded metadata.  The GroupID is a subset of IfdId.
+
+#### Tag and ExtendedTag
+
+A tag is a 16 bit uint16\_t.  An Extended tag is a 32 bit uint32_t.  It's really a pair of uint16_t.  The extTag & 0xffff 16 == tag.  The high bytes extTag & 0xffff0000 are the extension.  It's usually 0x20000 which represents the root.
 
 #### Function Selectors
 
@@ -4211,116 +4218,257 @@ A common pattern in the Exiv2 code is the table/function pattern.
 | CryptFct        | Cipher/Decipher Data     |
 | EncoderFct<br>DecoderFct      | Encoding/Decoding functions for<br>Exif, Iptc and XMP data |
 | EasyAccessFct   | See [7.3 The EasyAccess API](#7-3)  |
-| InstanceFct     | Creates new Image instances |
+| InstanceFct     | See [Other Exiv2 Classes](7-8)<br>Creates new Image instances |
 | LensIdFct       | Convert lens ID to lens name |
-| NewMnFct        | Makernote create function fors image and groups |
+| NewMnFct        | Makernote create function for images and groups |
 | NewTiffCompFct  | Creates TiffGroupStruct's |
 | PrintFct        | Print the "translated" value of data | |
 | TagListFct      | Get a function to return an array of tags | |
 
 It's not really clear to me why this is done and it feels like C++ being implemented in C.
 
-#### Tiff Parser State Tables and Functions.
+#### TiffVisitor State Tables and Functions
 
-**TiffCreator::tiffTreeStruct_**
+**TiffCreator::tiffGroupStruct**
+
+The purpose of this table is to generate new objects to be pushed on the TiffVisitor stack.
 
 ```cpp
-    /*
-      This table lists for each group in a tree, its parent group and tag.
-      Root identifies the root of a TIFF tree, as there is a need for multiple
-      trees. Groups are the nodes of a TIFF tree. A group is an IFD or any
-      other composite component.
+/*
+  This table describes the layout of each known TIFF group (including
+  non-standard structures and IFDs only seen in RAW images).
 
-      With this table, it is possible, for a given group (and tag) to find a
-      path, i.e., a list of groups and tags, from the root to that group (tag).
-    */
-    const TiffTreeStruct TiffCreator::tiffTreeStruct_[] = {
-        // root      group             parent group      parent tag
-        //---------  ----------------- ----------------- ----------
-        { Tag::root, ifdIdNotSet,      ifdIdNotSet,      Tag::root },
-        { Tag::root, ifd0Id,           ifdIdNotSet,      Tag::root },
+  The key of the table consists of the first two attributes, (extended) tag
+  and group. Tag is the TIFF tag or one of a few extended tags, group
+  identifies the IFD or any other composite component.
+
+  Each entry of the table defines for a particular tag and group combination
+  the corresponding TIFF component create function.
+ */
+#define ignoreTiffComponent 0
+const TiffGroupStruct TiffCreator::tiffGroupStruct_[] = {
+    // ext. tag  group             create function
+    //---------  ----------------- -----------------------------------------
+    // Root directory
+    { Tag::root, ifdIdNotSet,      newTiffDirectory<ifd0Id>                  },
+
+    // IFD0
+    {    0x8769, ifd0Id,           newTiffSubIfd<exifId>                     },
 ```
 
-**TiffCreator::tiffGroupStruct_**
+
+**TiffCreator::tiffTreeStruct**
+
+This is the state transition table.  
 
 ```cpp
-    /*
-      This table describes the layout of each known TIFF group (including
-      non-standard structures and IFDs only seen in RAW images).
+/*
+  This table lists for each group in a tree, its parent group and tag.
+  Root identifies the root of a TIFF tree, as there is a need for multiple
+  trees. Groups are the nodes of a TIFF tree. A group is an IFD or any
+  other composite component.
 
-      The key of the table consists of the first two attributes, (extended) tag
-      and group. Tag is the TIFF tag or one of a few extended tags, group
-      identifies the IFD or any other composite component.
-
-      Each entry of the table defines for a particular tag and group combination
-      the corresponding TIFF component create function.
-     */
-#define ignoreTiffComponent 0
-    const TiffGroupStruct TiffCreator::tiffGroupStruct_[] = {
-        // ext. tag  group             create function
-        //---------  ----------------- -----------------------------------------
-        // Root directory
-        { Tag::root, ifdIdNotSet,      newTiffDirectory<ifd0Id>                  },
-
-        // IFD0
-        {    0x8769, ifd0Id,           newTiffSubIfd<exifId>                     },
+  With this table, it is possible, for a given group (and tag) to find a
+  path, i.e., a list of groups and tags, from the root to that group (tag).
+*/
+const TiffTreeStruct TiffCreator::tiffTreeStruct_[] = {
+    // root      group             parent group      parent tag
+    //---------  ----------------- ----------------- ----------
+    { Tag::root, ifdIdNotSet,      ifdIdNotSet,      Tag::root },
+    { Tag::root, ifd0Id,           ifdIdNotSet,      Tag::root },
 ```
 
 This is a state table used to navigate the metadata heirachy.  For example, starting at root, the first IFD wil create a new TiffDirectory and sets the state to ifd0Id.  When tag 0x8769 is encountered, the parser will create new TiffDirectory and the state becomes exifId.
 
-This table also enable the parsing of binary metadata.  For example the following entry directs the parser to treat tag 0x0004 in canonId as a binary structure of canonSiCfg: 
+The "route" from the start of parsing (ifdIdNotSet), via the Tiff-EP tags (ifd0Id), via ExifTag/0x8769, to the MakerNote/0x927c, to the NikonPicture control is:
 
 ```cpp
-        { Tag::root, ifd0Id,           ifdIdNotSet,      Tag::root },
-        { Tag::root, exifId,           ifd0Id,           0x8769    },        
-        { Tag::root, nikon3Id,         exifId,           0x927c    },
-        { Tag::root, nikonPcId,        nikon3Id,         0x0023    },
+{ Tag::root, ifd0Id,           ifdIdNotSet,      Tag::root },
+{ Tag::root, exifId,           ifd0Id,           0x8769    },        
+{ Tag::root, nikon3Id,         exifId,           0x927c    },
+{ Tag::root, nikonPcId,        nikon3Id,         0x0023    },
 ```
 
-This causes the manufacture of an nikonPcId using newTiffElement.  This is a simple binary.
+When the state machine reaches nikonPcId, it manufactures a newTiffBinaryElement to decode it.  This is a simple binary.
 
 ```cpp
-        // Nikon3 picture control
-        {  Tag::all, nikonPcId,        newTiffBinaryElement                      },
+// Nikon3 picture control
+{  Tag::all, nikonPcId,        newTiffBinaryElement        },
 ```
 
 nikonPcCfg is defined as:
 
 ```cpp
-    //! Nikon Picture Control binary array - configuration
-    extern const ArrayCfg nikonPcCfg = {
-        nikonPcId,        // Group for the elements
-        invalidByteOrder, // Use byte order from parent
-        ttUndefined,      // Type for array entry
-        notEncrypted,     // Not encrypted
-        false,            // No size element
-        true,             // Write all tags
-        true,             // Concatenate gaps
-        { 0, ttUnsignedByte,  1 }
-    };
-    //! Nikon Picture Control binary array - definition
-    extern const ArrayDef nikonPcDef[] = {
-        {  0, ttUndefined,     4 }, // Version
-        {  4, ttAsciiString,  20 },
-        { 24, ttAsciiString,  20 },
+//! Nikon Picture Control binary array - configuration
+extern const ArrayCfg nikonPcCfg = {
+    nikonPcId,        // Group for the elements
+    invalidByteOrder, // Use byte order from parent
+    ttUndefined,      // Type for array entry
+    notEncrypted,     // Not encrypted
+    false,            // No size element
+    true,             // Write all tags
+    true,             // Concatenate gaps
+    { 0, ttUnsignedByte,  1 }
+};
+//! Nikon Picture Control binary array - definition
+extern const ArrayDef nikonPcDef[] = {
+    {  0, ttUndefined,     4 }, // Version
+    {  4, ttAsciiString,  20 },
+    { 24, ttAsciiString,  20 },
 ...
-        { 57, ttUnsignedByte,  1 }  // The array contains 58 bytes
-    };
+    { 57, ttUnsignedByte,  1 }  // The array contains 58 bytes
+};
 ```
 
 The tags associated with nikonPcId are:
 
 ```cpp
-    // Nikon3 Picture Control Tag Info
-    const TagInfo Nikon3MakerNote::tagInfoPc_[] = {
-        TagInfo( 0, "Version", N_("Version"), N_("Version"), nikonPcId, makerTags, undefined, 4, printExifVersion),
-        TagInfo( 4, "Name", N_("Name"), N_("Name"), nikonPcId, makerTags, asciiString, 20, printValue),
-        TagInfo(24, "Base", N_("Base"), N_("Base"), nikonPcId, makerTags, asciiString, 20, printValue),
+// Nikon3 Picture Control Tag Info
+const TagInfo Nikon3MakerNote::tagInfoPc_[] = {
+    TagInfo( 0, "Version", N_("Version"), N_("Version"), nikonPcId, makerTags, undefined, 4, printExifVersion),
+    TagInfo( 4, "Name", N_("Name"), N_("Name"), nikonPcId, makerTags, asciiString, 20, printValue),
+    TagInfo(24, "Base", N_("Base"), N_("Base"), nikonPcId, makerTags, asciiString, 20, printValue),
 ...
-    };
+};
 ```
 
-This is a very flexible design.  Not easy to understand.  The design used by tvisitor.cpp  is simpler [3.5 Presenting the data with visitTag()](#3-5).
+This is a very flexible design.  Not easy to understand.  The design used by tvisitor.cpp is simpler [3.5 Presenting the data with visitTag()](#3-5).
+
+[TOC](#TOC)
+<div id="7-8"/>
+## 7.8 Other Exiv2 Classes
+
+#### The Metadatum and Key classes
+
+The metadata consists of a key and data.
+
+There are three derived classes of Metadatum: Exifdatum, Xmpdatum and Iptcdatum.  These classes hold the actual data value.  For example, in an Exifdatum, it contains the type/count/array from the Tiff Record.  There are three derived classes of Key: ExifKey, XmpKey and IptcKey.  
+
+#### The MetaData Classes: ExifData, XmpData and IptcData
+
+These are vector of the Key/Metadatum pairs.  For example ExifData is std::vector<Exifdatum>.  The following snippet from 7.2 Typical Sample Application](#7-2) shows how those are obtained and navigated:
+
+```cpp
+Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(path);
+assert(image.get() != 0);
+image->readMetadata();
+
+Exiv2::ExifData &exifData = image->exifData();
+if (exifData.empty()) {
+    std::string error("No Exif data found in file");
+    throw Exiv2::Error(Exiv2::kerErrorMessage, error);
+}
+
+for (Exiv2::ExifData::const_iterator i = exifData.begin(); i != exifData.end(); ++i) {
+    std::cout << i->key() << " -> " << i->toString() << std::endl;
+}
+```
+
+#### The Task Factory
+
+This is implemented using _**Command**_ in [Design Patterns](https://www.oreilly.com/library/view/design-patterns-elements/0201633612/))
+
+The Task Factory is used by the command-line utility exiv2 which supports sub-commands such as print, adjust, rename and extract.   The TaskFactory returns an object with the Task Interface.  The TaskFactory has to be created than then called to find the task runner.  There is no equivalent in tvisitor.cpp.
+
+#### The Image Factory
+
+The Image Factory is based on the Factory Pattern in [Design Patterns](https://www.oreilly.com/library/view/design-patterns-elements/0201633612/).
+
+The purpose of the Image Factory is to create and BasicIo object and image handler and return this as an Image.  Every image handler is required to define two global functions isImageFormatType() and newImageFormat().  For example: isJpegType() and newJpegInstance().  There is a table called the registry which defines the priority of image handlers and if isImageFormatType() returns true, his companion newImageFormat() is invoked to create the image object.
+
+The implementation in tvisitor.cpp is simpler and requires no static functions and no static registry.
+
+```cpp
+std::unique_ptr<Image> ImageFactory(std::string path)
+{
+    TiffImage tiff(path); if ( tiff.valid() ) return std::unique_ptr<Image> (new TiffImage(path));
+    JpegImage jpeg(path); if ( jpeg.valid() ) return std::unique_ptr<Image> (new JpegImage(path));
+    CrwImage  crw (path); if (  crw.valid() ) return std::unique_ptr<Image> (new  CrwImage(path));
+    PngImage  png (path); if (  png.valid() ) return std::unique_ptr<Image> (new  PngImage(path));
+    Jp2Image  jp2 (path); if (  jp2.valid() ) return std::unique_ptr<Image> (new  Jp2Image(path));
+    ICC       icc (path); if (  icc.valid() ) return std::unique_ptr<Image> (new  ICC     (path));
+    PsdImage  psd (path); if (  psd.valid() ) return std::unique_ptr<Image> (new  PsdImage(path));
+    PgfImage  pgf (path); if (  pgf.valid() ) return std::unique_ptr<Image> (new  PgfImage(path));
+    MrwImage  mrw (path); if (  mrw.valid() ) return std::unique_ptr<Image> (new  MrwImage(path));
+    RiffImage riff(path); if ( riff.valid() ) return std::unique_ptr<Image> (new RiffImage(path));
+    RafImage  raf (path); if (  raf.valid() ) return std::unique_ptr<Image> (new  RafImage(path));
+    return NULL;
+}
+
+```
+
+#### The Image Object and Image Parsers
+
+I normally refer to the Image objects as Image Handlers.  For example: JpegImage, TiffImage, PngImage.  These are derived from the _abstract_ Image class which offers an interface to the metadata engine.   The most commonly used functions of the Image class are readMetadata() and writeMetadata().  There are various functions such as pixelWidth() and pixelWidth() which provide easy access properties of the image.  Accessing this information in the MetaData is a little tedious:
+
+```
+Exiv2::ExifKey key("Exif.Photo.PixelXDimension");
+if (exifData.findKey(key) != exifData.end()) {
+    std::cout << exifData.findKey(key)->toString() << std::endl;
+}
+```
+d
+To simplify accessing Exif properties which could be defined in various location in the metadata, an easyaccess API is provide.  This is described: [7.3 The EasyAccess API](#7-3)
+
+The Image Parsers are required to provide both decode() and encode() methods which are called by image->readMetadata().  For example:
+
+```cpp
+void OrfImage::readMetadata()
+{
+    if (io_->open() != 0) {
+        throw Error(kerDataSourceOpenFailed, io_->path(), strError());
+    }
+    IoCloser closer(*io_);
+    // Ensure that this is the correct image type
+    if (!isOrfType(*io_, false)) {
+        if (io_->error() || io_->eof()) throw Error(kerFailedToReadImageData);
+        throw Error(kerNotAnImage, "ORF");
+    }
+    clearMetadata();
+    ByteOrder bo = OrfParser::decode(exifData_,
+                                     iptcData_,
+                                     xmpData_,
+                                     io_->mmap(),
+                                     (uint32_t) io_->size());
+    setByteOrder(bo);
+} // OrfImage::readMetadata
+```
+
+[TOC](#TOC)
+<div id="7-9"/>
+## 7.9 Encrypt/Decrypt and Ciphers
+
+Exiv2 does not decrypt and encrypt any data.  The sony tag 0x9402 is used to store FocusPosition and the data is ciphered.  It's a simple cipher and the code was provided by Phil Harvey.  The code is discussed in the detail in the issue referenced in the code below.
+
+The ArrayCfg structure allows any tag to be decrypted by readMetadata() andn encrypted by writeMetadata().  I believe sony tag 0x9402 is the only tag that takes advantage of this feature of the TiffVisitor.
+
+```cpp
+// https://github.com/Exiv2/exiv2/pull/906#issuecomment-504338797
+static DataBuf sonyTagCipher(uint16_t /* tag */, const byte* bytes, uint32_t size, TiffComponent* const /*object*/, bool bDecipher)
+{
+    DataBuf b(bytes,size); // copy the data
+
+    // initialize the code table
+    byte  code[256];
+    for ( uint32_t i = 0 ; i < 249 ; i++ ) {
+        if ( bDecipher ) {
+            code[(i * i * i) % 249] = i ;
+        } else {
+            code[i] = (i * i * i) % 249 ;
+        }
+    }
+    for ( uint32_t i = 249 ; i < 256 ; i++ ) {
+        code[i] = i;
+    }
+
+    // code byte-by-byte
+    for ( uint32_t i = 0 ; i < size ; i++ ) {
+        b.pData_[i] = code[bytes[i]];
+    }
+
+    return b;
+}
+```     
 
 [TOC](#TOC)
 <div id="8"/>
