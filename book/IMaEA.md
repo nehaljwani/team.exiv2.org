@@ -56,11 +56,11 @@ _And our cat Lizzie._
 | [7.2 Typical Sample Application](#7-2)                | 44 |                                          | 28 | [11.24 Development](#11-24)             | 81 |
 | [7.3 The EasyAccess API](#7-3)                        | 48 |                                          | 29 |                                         | 81 |
 | [7.4 Listing the API](#7-4)                           | 53 |                                          | 30 |                                         | 81 |
-| [7.5 Tags in Exiv2](#7-5)                             | 57 |                                          |    |                                         | 81 |
-| [7.6 TagInfo](#7-6)                                   | 59 |                                          |    |                                         | 81 |
+| [7.5 Function Selectors](#7-5)                        | 57 |                                          |    |                                         | 81 |
+| [7.6 Tags in Exiv2](#7-6)                             | 59 |                                          |    |                                         | 81 |
 | [7.7 TiffVisitor](#7-7)                               | 61 |                                          |    |                                         | 82 |
 | [7.8 Other Exiv2 Classes](#7-8)                       | 63 |                                          |    |                                         |    |
-| [7.9 Encrypt/Decrypt and Ciphers](#7-9)               | 63 | _**Other Sections**_                     |    |                                         | 82 |
+|                                                       | 63 | _**Other Sections**_                     |    |                                         | 82 |
 | [8. Test Suite](#8)                                   | 63 | [Dedication](#dedication)                |  2 |                                         | 82 |
 | [8.1 Bash Tests](#8-1)                                | 68 | [About this book](#about)                |  4 |                                         | 82 |
 | [8.2 Python Tests](#8-2)                              | 69 | [How did I get interested ?](#begin)     |  4 |                                         | 82 |
@@ -4028,9 +4028,33 @@ $ nm -g --demangle build/lib/libexiv2.dylib | grep ' T ' | grep ' Exiv2::ExifKey
 $ 
 ```
 
+
 [TOC](#TOC)
 <div id="7-5"/>
-### 7.5 Tags in Exiv2
+## 7.5 Function Selectors
+
+A common pattern in the Exiv2 code is the table/function pattern. 
+
+| Fuction         | Purpose | 
+|:--              |:--      |
+| cfgSelFct       | determine which cfg + def of a corresponding array-set to use. |
+| ConvertFct      | Convert between two keys |
+| CrwEncodeFct<br>CrwDecode  | Encoding/Decoding for CRW |
+| CryptFct        | Cipher/Decipher Data     |
+| EncoderFct<br>DecoderFct      | Encoding/Decoding functions for<br>Exif, Iptc and XMP data |
+| EasyAccessFct   | See [7.3 The EasyAccess API](#7-3)  |
+| InstanceFct     | See [Other Exiv2 Classes](7-8)<br>Creates new Image instances |
+| LensIdFct       | Convert lens ID to lens name |
+| NewMnFct        | Makernote create function for images and groups |
+| NewTiffCompFct  | Creates TiffGroupStruct's |
+| PrintFct        | Print the "translated" value of data | |
+| TagListFct      | Get a function to return an array of tags | |
+
+It's not really clear to me why this is done and it feels like C++ being implemented in C.
+
+[TOC](#TOC)
+<div id="7-6"/>
+## 7.6 Tags in Exiv2
 
 The following test program is very useful for understanding tags:
 
@@ -4140,12 +4164,29 @@ $
 So, Minolta have 6 "sub-records".  Other manufacturers have more.  Let's say 10 manufacturers have an average of 10 "sub-records".  That's 100 groups.
 
 [TOC](#TOC)
-<div id="7-6"/>
-### 7.6 TagInfo
+### TagInfo
 
-Another matter to appreciate is that tag definitions are not constant.  A tag is simply an uint16\_t.  The Tiff Standard specifies about 50 tags.  Anybody creating an IFD can use the same tag number for different purposes.  The Tiff Specification says _"TIFF readers must safely skip over these fields if they do not understand or do not wish to use the information."_.  We do have to understand every tag.  In a tiff file, the pixels are located using the tag StripOffsets.  We report StripOffsets, however we don't read pixel data.
+Tag definitions are not constant.  A tag is simply an uint16\_t.  The Tiff Standard specifies about 50 tags.  Anybody creating an IFD can use the same tag number for different purposes.  The Tiff Specification says _"TIFF readers must safely skip over these fields if they do not understand or do not wish to use the information."_.
+
+Exif has to recognise every tag, however it does not need to understand it.  In a tiff file, the pixels are located using the tag StripOffsets.  We report StripOffsets, however we don't read pixel data.  When you execute the exiv2 command-line utility with the argument --unknown, they will be listed.  For example:
+
+```bash
+$ exiv2 --unknown -pe ~/Stonehenge.jpg
+...
+Exif.Nikon3.0x002d                           Short       3  512 0 0
+...
+$ tvisitor -pUR ~/Stonehenge.jpg  
+...
+           346 | 0x002d Exif.Nikon.0x2d              |     SHORT |        3 |      1499 | 512 0 0
+...
+$ 
+
+Most MakerNotes contain tags which are unknown to Exiv2. 
+
 
 If the user wishes to recover data such as the pixels, it is possible to do this with the utility dd.  This is discussed here: [3.1 Extracting metadata using dd](#3-1). 
+
+The known tags in Exiv2 are defined in the TagInfo structure.
 
 ```cpp
 const TagInfo Nikon1MakerNote::tagInfo_[] = {
@@ -4175,7 +4216,42 @@ const TagInfo gpsTagInfo[] = {
             gpsId, gpsTags, asciiString, 2, EXV_PRINT_TAG(exifGPSLatitudeRef)),
 ```
 
-As we can see, tag == 1 in the Nikon MakerNotes is Version.  In Canon MakerNotes, it is CameraSettings.  IN GPSInfo it is GPSLatitudeRef.  We need to use the appropriate tag dictionary for the IFD being parsed.  The tag 0xffff in the tagDict in tvisitor.cpp store the group name of the tags.
+As we can see, tag == 1 in the Nikon MakerNotes is Version.  In Canon MakerNotes, it is CameraSettings.  IN GPSInfo it is GPSLatitudeRef.  We need to use the appropriate tag dictionary for the IFD being parsed.  The tag 0xffff in tagDict in tvisitor.cpp stores the group name of the tags.
+
+[TOC](#TOC)
+### Tag Encryption
+
+Exiv2 does not decrypt or encrypt any data.  The sony tag 0x9402 is used to store FocusPosition and the data is ciphered.  It's a simple cipher and the code was provided by Phil Harvey.  The code is discussed in the detail in the issue referenced in the code below.
+
+The ArrayCfg structure allows any tag to be decrypted by readMetadata() andn encrypted by writeMetadata().  I believe sony tag 0x9402 is the only tag that takes advantage of this feature of the TiffVisitor.
+
+```cpp
+// https://github.com/Exiv2/exiv2/pull/906#issuecomment-504338797
+static DataBuf sonyTagCipher(uint16_t /* tag */, const byte* bytes, uint32_t size, TiffComponent* const /*object*/, bool bDecipher)
+{
+    DataBuf b(bytes,size); // copy the data
+
+    // initialize the code table
+    byte  code[256];
+    for ( uint32_t i = 0 ; i < 249 ; i++ ) {
+        if ( bDecipher ) {
+            code[(i * i * i) % 249] = i ;
+        } else {
+            code[i] = (i * i * i) % 249 ;
+        }
+    }
+    for ( uint32_t i = 249 ; i < 256 ; i++ ) {
+        code[i] = i;
+    }
+
+    // code byte-by-byte
+    for ( uint32_t i = 0 ; i < size ; i++ ) {
+        b.pData_[i] = code[bytes[i]];
+    }
+
+    return b;
+}
+```     
 
 
 [TOC](#TOC)
@@ -4205,27 +4281,6 @@ This is a collection of more than 100 values which are used to track the groups 
 #### Tag and ExtendedTag
 
 A tag is a 16 bit uint16\_t.  An Extended tag is a 32 bit uint32_t.  It's really a pair of uint16_t.  The extTag & 0xffff 16 == tag.  The high bytes extTag & 0xffff0000 are the extension.  It's usually 0x20000 which represents the root.
-
-#### Function Selectors
-
-A common pattern in the Exiv2 code is the table/function pattern. 
-
-| Fuction         | Purpose | 
-|:--              |:--      |
-| cfgSelFct       | determine which cfg + def of a corresponding array-set to use. |
-| ConvertFct      | Convert between two keys |
-| CrwEncodeFct<br>CrwDecode  | Encoding/Decoding for CRW |
-| CryptFct        | Cipher/Decipher Data     |
-| EncoderFct<br>DecoderFct      | Encoding/Decoding functions for<br>Exif, Iptc and XMP data |
-| EasyAccessFct   | See [7.3 The EasyAccess API](#7-3)  |
-| InstanceFct     | See [Other Exiv2 Classes](7-8)<br>Creates new Image instances |
-| LensIdFct       | Convert lens ID to lens name |
-| NewMnFct        | Makernote create function for images and groups |
-| NewTiffCompFct  | Creates TiffGroupStruct's |
-| PrintFct        | Print the "translated" value of data | |
-| TagListFct      | Get a function to return an array of tags | |
-
-It's not really clear to me why this is done and it feels like C++ being implemented in C.
 
 #### TiffVisitor State Tables and Functions
 
@@ -4433,42 +4488,6 @@ void OrfImage::readMetadata()
     setByteOrder(bo);
 } // OrfImage::readMetadata
 ```
-
-[TOC](#TOC)
-<div id="7-9"/>
-## 7.9 Encrypt/Decrypt and Ciphers
-
-Exiv2 does not decrypt and encrypt any data.  The sony tag 0x9402 is used to store FocusPosition and the data is ciphered.  It's a simple cipher and the code was provided by Phil Harvey.  The code is discussed in the detail in the issue referenced in the code below.
-
-The ArrayCfg structure allows any tag to be decrypted by readMetadata() andn encrypted by writeMetadata().  I believe sony tag 0x9402 is the only tag that takes advantage of this feature of the TiffVisitor.
-
-```cpp
-// https://github.com/Exiv2/exiv2/pull/906#issuecomment-504338797
-static DataBuf sonyTagCipher(uint16_t /* tag */, const byte* bytes, uint32_t size, TiffComponent* const /*object*/, bool bDecipher)
-{
-    DataBuf b(bytes,size); // copy the data
-
-    // initialize the code table
-    byte  code[256];
-    for ( uint32_t i = 0 ; i < 249 ; i++ ) {
-        if ( bDecipher ) {
-            code[(i * i * i) % 249] = i ;
-        } else {
-            code[i] = (i * i * i) % 249 ;
-        }
-    }
-    for ( uint32_t i = 249 ; i < 256 ; i++ ) {
-        code[i] = i;
-    }
-
-    // code byte-by-byte
-    for ( uint32_t i = 0 ; i < size ; i++ ) {
-        b.pData_[i] = code[bytes[i]];
-    }
-
-    return b;
-}
-```     
 
 [TOC](#TOC)
 <div id="8"/>
