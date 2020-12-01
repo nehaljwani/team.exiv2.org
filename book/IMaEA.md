@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-11-30</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-12-01</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -123,7 +123,7 @@ After v0.26 was released in 2017, Luis and Dan started making contributions.  Th
 
 The current release of Exiv2 is v0.27.3 and shipped on 2020-06-30.  I hope v0.28 will be released in 2021.  Further "dot" releases of v0.27 may be published for security fixes in future.
 
-The Libre Graphics Meeting is scheduled to take place in May 2021 in Rennes, France.  I intend to conduct a workshop on **Image Metadata _and_ Exiv2 Architecture**.  This book is being written to be used in that presentation.
+The Libre Graphics Meeting was scheduled to take place in May 2020 in Rennes, France.  I intended to conduct a workshop on **Image Metadata _and_ Exiv2 Architecture**.  This book was being written to be used in that presentation.  Regretfully, the Covid-19 crisis caused the postponement of LGM.  
 
 I started working on Exiv2 to implement GeoTagging.  As the years have passed, I've explored most of the code.  I've added new capability such as support for ICC profiles, metadata-piping and file-debugging.  I've done lots of work on the build, test suite and documentation.  I've talked to users all over the world and closed several hundred issues and feature requests.  Over the years, I've met users in India, Singapore, Armenia, the USA and the UK.  I've attended 2 Open-Source Conferences. It's been an adventure and mostly rewarding.  It's remarkable how seldom users express appreciation.
 
@@ -149,11 +149,11 @@ The toolset used in Software Engineering evolves with time.  C++ has been around
 
 The most common issue raised by users concerns lens recognition.  For v0.26, I added the _**Configuration File**_ feature to enable users to modify lens recognition on their computer.  While this is helpful, many users would like Exiv2 to deal with this perfectly, both now and in the future.
 
-I intend to make a proposal at LGM in Rennes in May 2021 concerning this matter. Both Exiv2 and ExifTool can extract metadata from an image into a .EXV file. I will propose to implement a program to read the .EXV and return the Lens. That program will have an embedded programming language with the rules to identify the lens. The scripts will be ascii files which can be updated. It will be called M2Lscript (MetaData to Lens Script), pronounced _**"MillsScript"**_. The M2Lscript interpreter will be available as a command-line program, a perl module (for ExifTool), a C++ library (for linking into exiv2) and perhaps a python module.
+I intended to make a proposal at LGM in Rennes in May 2020 concerning this matter. Both Exiv2 and ExifTool can extract metadata from an image into a .EXV file. I would propose to implement a program to read the .EXV and return the Lens. That program will have an embedded programming language with the rules to identify the lens. The scripts will be ascii files which can be updated. It will be called M2Lscript (MetaData to Lens Script), pronounced _**"MillsScript"**_. The M2Lscript interpreter will be available as a command-line program, a perl module (for ExifTool), a C++ library (for linking into exiv2) and perhaps a python module.
 
 In this way, new lens definitions can be written in M2Lscript without touching anything in Exiv2 or ExifTool.
 
-I will not be able to work on both Exiv2 and M2Lscript simulateously.  When a new maintainer takes responsibility for Exiv2, I will retire.  M2Lscript will be my swansong technology project.
+I will not be able to work on both Exiv2 and M2Lscript simulateously.  When a new maintainer takes responsibility for Exiv2, I will retire.  M2Lscript would be my swansong technology project.  However, the C-19 crisis postponed LGM in 2020.  I don't have the energy to continue with open-source. This book is my final contribution.
 
 [TOC](#TOC)
 <div id="scope"/>
@@ -252,7 +252,6 @@ The good news however is that file formats come in families which are:
 | RIFF    | Resource Interchange File Format                                                    | WEBP, AVI |
 | GIF     | Graphics Image Format                                                                     | GIF | 
 | BMP     | Windows BMP never has XMP, IPTC or Exif metadata.<br>Version5 may include an ICC profile. | BMP |
-| COS     | Adobe PDF Format.  This is a very flexible container<br>Exiv2 does not support this. | PDF, JDF |
 | EPS     | Adobe Encapsulated PostScript<br>The code in Exiv2 to deal with this is deprecated    | EPS, AI |
 
 The Metadata is defined by standards which also define how to embed the data in the image.
@@ -3781,7 +3780,7 @@ This code understands the structure of the different metadata standards.  The st
 
 3) Manufacturer's MakerNote handlers
 
-All the manufacturers use variations of the TIFF/IFD format in their makernote.  The maker note is parsed by the TiffParser.  The presentation and interpretation of the makenote is handled here.  In particular the lens recognition and preview image handling is dealt with in this code.  Lens Recognition is discussed in Chapter 4 of this book.  Image Previews are discussed in Chapter 7 of this book.
+All the manufacturers use variations of the TIFF/IFD format in their makernote.  The maker note is parsed by the TiffParser.  The presentation and interpretation of the makenote is handled here.  In particular the lens recognition and preview image handling is dealt with in this code.  [4. Lens Recognition](#4).  [6. Image Previews](#6)
 
 4) TagInfo
 
