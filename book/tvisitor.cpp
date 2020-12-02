@@ -3017,31 +3017,35 @@ int main(int argc,const char* argv[])
 {
     init();
 
-    int rc = 0;
-    if ( argc == 2 || argc == 3 ) {
+    int rc  = 0;
+    int arg = 1; // argument of interest
+    if ( argc >= 2 ) {
         // Parse the visitor options
         PSOption option = kpsBasic;
-        if ( argc == 3 ) {
-            std::string arg(argv[1]);
-            option  = arg.find("R") != std::string::npos ? kpsRecursive
-                    : arg.find("X") != std::string::npos ? kpsXMP
-                    : arg.find("S") != std::string::npos ? kpsBasic
-                    : arg.find("C") != std::string::npos ? kpsIcc
+        if ( argv[arg][0] == '-' ) { // argument starts with - 
+            std::string a(argv[arg++]);
+            option  = a.find("R") != std::string::npos ? kpsRecursive
+                    : a.find("X") != std::string::npos ? kpsXMP
+                    : a.find("S") != std::string::npos ? kpsBasic
+                    : a.find("C") != std::string::npos ? kpsIcc
                     : option
                     ;
-            if ( arg.find("U") != std::string::npos ) option |= kpsUnknown;
-            if ( arg.find("I") != std::string::npos ) option |= kpsIptc   ;
+            if ( a.find("U") != std::string::npos ) option |= kpsUnknown;
+            if ( a.find("I") != std::string::npos ) option |= kpsIptc   ;
         }
-
+        // create the visitor
         ReportVisitor visitor(std::cout,option);
-
-        // Open the image
-        std::string             path  = argv[argc-1];
-        std::unique_ptr<Image> pImage = ImageFactory(path);
-        if (   pImage ) pImage->accept(visitor);
-        else            Error(kerUnknownFormat,path);
+        
+        // step path arguments
+        while ( arg < argc ) {
+            // Open the image
+            std::string             path  = argv[arg++];
+            std::unique_ptr<Image> pImage = ImageFactory(path);
+            if (   pImage ) pImage->accept(visitor);
+            else            Error(kerUnknownFormat,path);
+        }
     } else {
-        std::cout << "usage: " << argv[0] << " [ { U | S | R | X | C | I } ] path" << std::endl;
+        std::cout << "usage: " << argv[0]  << " -{ U | S | R | X | C | I }+ path+" << std::endl;
         rc = 1;
     }
     return rc;
