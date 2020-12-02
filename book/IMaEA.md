@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-12-01</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-12-02</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -38,11 +38,11 @@ _And our cat Lizzie._
 | [2.5 MakerNotes](#MakerNotes)                         | 38 | [RIFF Resource Ichange File Fmt](#RIFF)  | 20 | [11.6 Samples](#11-6)                   | 80 |
 | [2.6 Metadata Convertors](#Convertors)                | 38 | [MRW Minolta Raw](#MRW)                  | 21 | [11.7 Users](#11-7)                     | 80 |
 | [3. Reading Metadata](#3)                             |    | [ORF Olympus Raw Format](#ORF)           | 22 | [11.8 Bugs](#11-8)                      | 80 |
-| [3.1 Extracting metadata using dd](#3-1)              |    | [PGF Progressive Graphics File](#PGF)    |    | [11.9 Releases](#11-9)                  |    |
+| [3.1 Read metadata with dd](#3-1)                     |    | [PGF Progressive Graphics File](#PGF)    |    | [11.9 Releases](#11-9)                  |    |
 | [3.2 Tags and TagNames](#3-2)                         |    | [PSD PhotoShop Document](#PSD)           |    | [11.10 Platforms](#11-10)               |    |
 | [3.3 Visitor Design Pattern](#3-3)                    |    | [RAF Fujifilm RAW](#RAF)                 |    | [11.11 Localisation](#11-11)            |    |
-| [3.4 IFD::accept() and TiffImage::accept() ](#3-4)    |    | [RW2 Panasonic RAW](#RW2)                |    | [11.12 Build Server](#11-12)            |    |
-| [3.5 Presenting data with visitTag()](#3-5)           |    | [TGA Truevision Targa](#TGA)             |    | [11.11 Source Code](#11-11)             |    |
+| [3.4 IFD::accept()](#3-4)                             |    | [RW2 Panasonic RAW](#RW2)                |    | [11.12 Build Server](#11-12)            |    |
+| [3.5 ReportVisitor::visitTag()](#3-5)                 |    | [TGA Truevision Targa](#TGA)             |    | [11.11 Source Code](#11-11)             |    |
 | [3.6 Tag Decoder](#3-6)                               |    | [BMP Windows Bitmap](#BMP)               |    | [11.14 Web Site](#11-14)                |    |
 | [3.7 Jpeg::Image accept()](#3-7)                      |    | [GIF Graphical Interchange Format](#GIF) |    | [11.15 Servers](#11-15)                 |    |
 | [4. Lens Recognition](#4)                             |    | [SIDECAR Xmp Sidecars](#SIDECAR)         |    | [11.16 API](#11-16)                     |    |
@@ -2677,7 +2677,7 @@ If Exiv2 is ever rewritten, the decision to keep this capability should be caref
 
 
 <div id="3-1"/>
-### 3.1 Extracting metadata using dd
+### 3.1 Read metadata with dd
 
 The exiv2 option _**-pS**_ prints the structure of an image.
 
@@ -2749,7 +2749,7 @@ Exif.Image.Orientation                       Short       1  top, left
 $
 ```
 
-You may be interested to discover that option _**-pS**_ which arrived with Exiv2 v0.25 was joined in Exiv2 v0.26 by _**-pR**_.  This is a _**recursive**_ version of _**-pS**_.  It dumps the structure not only of the file, but also subfiles (such as IFDs and JPEG/thumbnails and ICC profiles).  This is discussed in detail here: [3.4 IFD::accept() and TiffImage::accept()](#3-4).
+You may be interested to discover that option _**-pS**_ which arrived with Exiv2 v0.25 was joined in Exiv2 v0.26 by _**-pR**_.  This is a _**recursive**_ version of _**-pS**_.  It dumps the structure not only of the file, but also subfiles (such as IFDs and JPEG/thumbnails and ICC profiles).  This is discussed in detail here: [3.4 IFD::accept()](#3-4).
 
 [TOC](#TOC)
 <div id="3-2"/>
@@ -2767,7 +2767,7 @@ For simplicity, tvisitor.cpp only supports the family Exif, however it has code 
 <div id="3-3"/>
 ### 3.3 Visitor Design Pattern
 
-The code in tvisitor.cpp code is based on the visitor pattern in [Design Patterns: Elements of Reusable Object=Oriented Software](https://www.oreilly.com/library/view/design-patterns-elements/0201633612/).  Before we discuss tvisitor.cpp, let's review the visitor pattern.
+This is implemented using _**Visitor**_ in [Design Patterns](https://www.oreilly.com/library/view/design-patterns-elements/0201633612/))
 
 The concept in the visitor pattern is to separate the data in an object from the code which that has an interest in the object.  In the following code, we have a vector of students and every student has a name and an age.  We have several visitors.  The French Visitor translates the names of the students.  The AverageAgeVisitor calculates the average age of the visitor.  Two points to recognise in the pattern:
 
@@ -3162,7 +3162,7 @@ $ dd if=~/Stonehenge.jpg bs=1 skip=$((12+924+10+8)) count=4 2>/dev/null ; echo
 $ 
 ```
 
-Using dd to extract metadata is discussed in more detail here: [8.1 Extracting metadata using dd](#8-1).
+Using dd to extract metadata is discussed in more detail here: [8.1 Read metadata with dd](#8-1).
 
 Please be aware that there are two ways in which IFDs can occur in the file.  They can be an embedded TIFF which is complete with the **II*\_long** or **MM\_*long** 8-byte header and the offset leads to the IFD.   Or the IFD can be in the file without the header.  IFD::visit(visitor) knows that the tags such as GpsTag and ExifTag are IFDs and recursively calls IFD::visit(visitor).  For the embedded TIFF (such as Nikon MakerNote), IFD::visit(visitor) creates a TiffImage and calls TiffImages.accept(visitor) which validates the header and calls IFD::visit(visitor).
 
@@ -3170,7 +3170,7 @@ Another important detail is that although the Tiff Specification expects the IFD
 
 [TOC](#TOC)
 <div id="3-5"/>
-### 3.5 Presenting the data with visitTag()
+### 3.5 ReportVisitor::visitTag()
 
 I added support in tvisitor.cpp for one binary tag which is Nikon Picture Control tag = 0x0023.  You'll see from the output of tvisitor that it's 58 bytes.
 
@@ -4184,7 +4184,7 @@ $
 Most MakerNotes contain tags which are unknown to Exiv2. 
 
 
-If the user wishes to recover data such as the pixels, it is possible to do this with the utility dd.  This is discussed here: [3.1 Extracting metadata using dd](#3-1). 
+If the user wishes to recover data such as the pixels, it is possible to do this with the utility dd.  This is discussed here: [3.1 Read metadata with dd](#3-1). 
 
 The known tags in Exiv2 are defined in the TagInfo structure.
 
@@ -4427,7 +4427,7 @@ The Task Factory is used by the command-line utility exiv2 which supports sub-co
 
 #### The Image Factory
 
-The Image Factory is based on the Factory Pattern in [Design Patterns](https://www.oreilly.com/library/view/design-patterns-elements/0201633612/).
+This is implemented using _**Factory**_ in [Design Patterns](https://www.oreilly.com/library/view/design-patterns-elements/0201633612/))
 
 The purpose of the Image Factory is to create and BasicIo object and image handler and return this as an Image.  Every image handler is required to define two global functions isImageFormatType() and newImageFormat().  For example: isJpegType() and newJpegInstance().  There is a table called the registry which defines the priority of image handlers and if isImageFormatType() returns true, his companion newImageFormat() is invoked to create the image object.
 
