@@ -1,0 +1,6 @@
+Image.ProcessingSoftware,11,0x000b,Image,Exif.Image.ProcessingSoftware,Ascii,"The name and version of the software used to post-process the picture."
+Image.NewSubfileType,254,0x00fe,Image,Exif.Image.NewSubfileType,Long,"A general indication of the kind of data contained in this subfile."
+Image.SubfileType,255,0x00ff,Image,Exif.Image.SubfileType,Short,"A general indication of the kind of data contained in this subfile. This field is deprecated. The NewSubfileType field should be used instead."
+Image.ImageWidth,256,0x0100,Image,Exif.Image.ImageWidth,Long,"The number of columns of image data, equal to the number of pixels per row. In JPEG compressed data a JPEG marker is used instead of this tag."
+Image.ImageLength,257,0x0101,Image,Exif.Image.ImageLength,Long,"The number of rows of image data. In JPEG compressed data a JPEG marker is used instead of this tag."
+Image.BitsPerSample,258,0x0102,Image,Exif.Image.BitsPerSample,Short,"The number of bits per image component. In this standard each component of the image is 8 bits, so the value for this tag is 8. See also <SamplesPerPixel>. In JPEG compressed data a JPEG marker is used instead of this tag."

@@ -15,6 +15,7 @@ add_executable(parse       parse.cpp      )
 add_executable(tvisitor    tvisitor.cpp   )
 add_executable(args        args.cpp       )
 add_executable(dmpf        dmpf.cpp       )
+add_executable(csv         csv.cpp       )
 
 set(CMAKE_OSX_DEPLOYMENT_TARGET "10.13.0")
 set(CMAKE_OSX_ARCHITECTURES     "x86_64" )

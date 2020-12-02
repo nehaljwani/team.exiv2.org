@@ -35,7 +35,7 @@ _And our cat Lizzie._
 | [2.2 XMP Metadata](#XMP)                              | 36 | [JP2 Jpeg 2000](#JP2)                    | 18 | [11.3 Security](#11-3)                  | 80 |
 | [2.3 IPTC/IMM Metadata](#IPTC)                        | 37 | [ISOBMFF, CR3, HEIF, AVIF](#ISOBMFF)     | 19 | [11.4 Documentation](#11-4)             | 80 |
 | [2.4 ICC Profile](#ICC)                               | 37 | [CRW Canon Raw](#CRW)                    | 20 | [11.5 Testing](#11-5)                   | 80 |
-| [2.5 MakerNotes](#MakerNotes)                         | 38 | [RIFF Resource Ichange File Fmt](#RIFF)  | 20 | [11.6 Samples](#11-6)                   | 80 |
+| [2.5 MakerNotes](#MakerNotes)                         | 38 | [RIFF Resource I'change File Fmt](#RIFF) | 20 | [11.6 Samples](#11-6)                   | 80 |
 | [2.6 Metadata Convertors](#Convertors)                | 38 | [MRW Minolta Raw](#MRW)                  | 21 | [11.7 Users](#11-7)                     | 80 |
 | [3. Reading Metadata](#3)                             |    | [ORF Olympus Raw Format](#ORF)           | 22 | [11.8 Bugs](#11-8)                      | 80 |
 | [3.1 Read metadata with dd](#3-1)                     |    | [PGF Progressive Graphics File](#PGF)    |    | [11.9 Releases](#11-9)                  |    |
@@ -43,8 +43,8 @@ _And our cat Lizzie._
 | [3.3 Visitor Design Pattern](#3-3)                    |    | [RAF Fujifilm RAW](#RAF)                 |    | [11.11 Localisation](#11-11)            |    |
 | [3.4 IFD::accept()](#3-4)                             |    | [RW2 Panasonic RAW](#RW2)                |    | [11.12 Build Server](#11-12)            |    |
 | [3.5 ReportVisitor::visitTag()](#3-5)                 |    | [TGA Truevision Targa](#TGA)             |    | [11.11 Source Code](#11-11)             |    |
-| [3.6 Tag Decoder](#3-6)                               |    | [BMP Windows Bitmap](#BMP)               |    | [11.14 Web Site](#11-14)                |    |
-| [3.7 Jpeg::Image accept()](#3-7)                      |    | [GIF Graphical Interchange Format](#GIF) |    | [11.15 Servers](#11-15)                 |    |
+| [3.6 Jpeg::Image accept()](#3-6)                      |    | [BMP Windows Bitmap](#BMP)               |    | [11.14 Web Site](#11-14)                |    |
+|                                                       |    | [GIF Graphical Interchange Format](#GIF) |    | [11.15 Servers](#11-15)                 |    |
 | [4. Lens Recognition](#4)                             |    | [SIDECAR Xmp Sidecars](#SIDECAR)         |    | [11.16 API](#11-16)                     |    |
 | [5. I/O in Exiv2](#5)                                 |    |                                          |    | [11.17 Contributors](#11-17)            |    |
 | [6. Image Previews](#6)                               | 38 |                                          | 22 | [11.18 Scheduling](#11-18)              | 80 |
@@ -58,9 +58,9 @@ _And our cat Lizzie._
 | [7.4 Listing the API](#7-4)                           | 53 |                                          | 30 |                                         | 81 |
 | [7.5 Function Selectors](#7-5)                        | 57 |                                          |    |                                         | 81 |
 | [7.6 Tags in Exiv2](#7-6)                             | 59 |                                          |    |                                         | 81 |
-| [7.7 TiffVisitor](#7-7)                               | 61 |                                          |    |                                         | 82 |
-| [7.8 Other Exiv2 Classes](#7-8)                       | 63 |                                          |    |                                         |    |
-|                                                       | 63 | _**Other Sections**_                     |    |                                         | 82 |
+| [7.7 Tag Decoder](#7-6)                               | 61 |                                          |    |                                         | 82 |
+| [7.8 TiffVisitor](#7-8)                               | 63 |                                          |    |                                         |    |
+| [7.9 Other Exiv2 Classes](#7-9)                       | 63 | _**Other Sections**_                     |    |                                         | 82 |
 | [8. Test Suite](#8)                                   | 63 | [Dedication](#dedication)                |  2 |                                         | 82 |
 | [8.1 Bash Tests](#8-1)                                | 68 | [About this book](#about)                |  4 |                                         | 82 |
 | [8.2 Python Tests](#8-2)                              | 69 | [How did I get interested ?](#begin)     |  4 |                                         | 82 |
@@ -298,9 +298,10 @@ It's important to understand that Endian can change as we descend into the file.
 These are defined in the following tags:
 
 ```bash
-$ taglist ALL | grep -e ^Image\.InterColorProfile  -e ^Image.XMLPacket
-Image.XMLPacket,	700,	0x02bc,	Image,	Exif.Image.XMLPacket,	Byte,	XMP Metadata (Adobe technote 9-14-02)
-Image.InterColorProfile,	34675,	0x8773,	Image,	Exif.Image.InterColorProfile,	Undefined,	Contains an InterColor Consortium (ICC) format color space characterization/profile
+$ taglist ALL | grep -e ^Image\.InterColorProfile  -e ^Image.XMLPacket | csv -
+[Image.XMLPacket]	[700]	[0x02bc]	[Image]	[Exif.Image.XMLPacket]	[Byte]	[XMP Metadata (Adobe technote 9-14-02)]	
+[Image.InterColorProfile]	[34675]	[0x8773]	[Image]	[Exif.Image.InterColorProfile]	[Undefined]	[...]	
+693 rmills@rmillsmm-local:~/gnu/exiv2/team/book $ 
 $ 
 ```
 
@@ -2014,11 +2015,11 @@ There are 3 types of single-byte arrays in Exif.  An array of ASCII values shoul
 There are only 3 types of string in Exif which use CharSet encoding.  They are UserComment, GPSAreaInformation and GPSProcessingMethod
 
 ```
-573 rmills@rmillsmm-local:~/gnu/exiv2/team/book $ taglist ALL | grep '\tComment,'
-Photo.UserComment,	37510,	0x9286,	Photo,	Exif.Photo.UserComment,	Comment,	
-GPSInfo.GPSProcessingMethod,	27,	0x001b,	GPSInfo,	Exif.GPSInfo.GPSProcessingMethod,	Comment,
-GPSInfo.GPSAreaInformation,	28,	0x001c,	GPSInfo,	Exif.GPSInfo.GPSAreaInformation,	Comment,
-574 rmills@rmillsmm-local:~/gnu/exiv2/team/book $ 
+$ taglist ALL | csv - | grep '\[Comment\]'
+[Photo.UserComment]	[37510]	[0x9286]	[Photo]	[Exif.Photo.UserComment]	[Comment]	[A tag ...]	
+[GPSInfo.GPSProcessingMethod]	[27]	[0x001b]	[GPSInfo]	[Exif.GPSInfo.GPSProcessingMethod]	[Comment]	[A ...]	
+[GPSInfo.GPSAreaInformation]	[28]	[0x001c]	[GPSInfo]	[Exif.GPSInfo.GPSAreaInformation]	[Comment]	[A ...]	
+$ 
 ```
 
 The structure of those tags is defined on page34 of the Exiv2-2 Specification.  Three standards are supported by the Specification and they are "ASCII, JIS and UNICODE".  Provision is a made for "Undefined" which presumably leaves it to the application to interpret the data.
@@ -2570,8 +2571,8 @@ As with Exif metdata, the IPTC data block can exceed 64k byte and this cannot be
 In Tiff, IPTC data is contained in the following tag:
 
 ```bash
-$ taglist ALL | grep Image.IPTCNAA | head -1
-Image.IPTCNAA,	33723,	0x83bb,	Image,	Exif.Image.IPTCNAA,	Long,	Contains an IPTC/NAA record
+$ taglist ALL | grep Image.IPTCNAA | head -1 | csv -
+[Image.IPTCNAA]	[33723]	[0x83bb]	[Image]	[Exif.Image.IPTCNAA]	[Long]	[Contains an IPTC/NAA record]
 $ 
 ```
 
@@ -2935,7 +2936,7 @@ In tvisitor.cpp, we only have a single Visitor called ReportVisitor.  When you c
 
 Exiv2 has two tiff parsers - TiffVisitor and Image::printIFDStructure().  TiffVisitor was written by Andreas Huggel.  It's very robust and has been almost bug free for 15 years.  I wrote the parser in Image::printIFDStructure() to try to understand the structure of a tiff file.  The code in Image::printIFDStructure() is easier to understand.
 
-The code which accompanies this book has a simplified version of Image::printIFDStructure() called IFD::accept() and that's what will be discussed here.  The code that accompanies this book is explained here: [Code discussed in this book](#14)
+The code which accompanies this book has a simplified version of Image::printIFDStructure() called IFD::accept() and that's what will be discussed here.  The code that accompanies this book is explained here: [Code discussed in this book](#12)
 
 It is important to realise that metadata is defined recursively.  In a Tiff File, there will be a Tiff Record containing the Exif data (written in Tiff Format).  Within, that record, there will be a MakerNote which is usually written in TIFF Format.  TIFF Format is referred to as an IFD - an Image File Directory.
 
@@ -3190,21 +3191,21 @@ Beautifully documented as follows:
 The Exiv2 website is generated by reading the tag definitions in the code-base:
 
 ```bash
-.../book/build $ taglist ALL | grep NikonPc
-NikonPc.Version,	0,	0x0000,	NikonPc,	Exif.NikonPc.Version,	Undefined,	Version
-NikonPc.Name,	4,	0x0004,	NikonPc,	Exif.NikonPc.Name,	Ascii,	Name
-NikonPc.Base,	24,	0x0018,	NikonPc,	Exif.NikonPc.Base,	Ascii,	Base
-NikonPc.Adjust,	48,	0x0030,	NikonPc,	Exif.NikonPc.Adjust,	Byte,	Adjust
-NikonPc.QuickAdjust,	49,	0x0031,	NikonPc,	Exif.NikonPc.QuickAdjust,	Byte,	Quick adjust
-NikonPc.Sharpness,	50,	0x0032,	NikonPc,	Exif.NikonPc.Sharpness,	Byte,	Sharpness
-NikonPc.Contrast,	51,	0x0033,	NikonPc,	Exif.NikonPc.Contrast,	Byte,	Contrast
-NikonPc.Brightness,	52,	0x0034,	NikonPc,	Exif.NikonPc.Brightness,	Byte,	Brightness
-NikonPc.Saturation,	53,	0x0035,	NikonPc,	Exif.NikonPc.Saturation,	Byte,	Saturation
-NikonPc.HueAdjustment,	54,	0x0036,	NikonPc,	Exif.NikonPc.HueAdjustment,	Byte,	Hue adjustment
-NikonPc.FilterEffect,	55,	0x0037,	NikonPc,	Exif.NikonPc.FilterEffect,	Byte,	Filter effect
-NikonPc.ToningEffect,	56,	0x0038,	NikonPc,	Exif.NikonPc.ToningEffect,	Byte,	Toning effect
-NikonPc.ToningSaturation,	57,	0x0039,	NikonPc,	Exif.NikonPc.ToningSaturation,	Byte,	Toning saturation
-.../book/build $ 
+$ taglist ALL | grep NikonPc | csv -
+[NikonPc.Version]	[0]	[0x0000]	[NikonPc]	[Exif.NikonPc.Version]	[Undefined]	[Version]	
+[NikonPc.Name]	[4]	[0x0004]	[NikonPc]	[Exif.NikonPc.Name]	[Ascii]	[Name]	
+[NikonPc.Base]	[24]	[0x0018]	[NikonPc]	[Exif.NikonPc.Base]	[Ascii]	[Base]	
+[NikonPc.Adjust]	[48]	[0x0030]	[NikonPc]	[Exif.NikonPc.Adjust]	[Byte]	[Adjust]	
+[NikonPc.QuickAdjust]	[49]	[0x0031]	[NikonPc]	[Exif.NikonPc.QuickAdjust]	[Byte]	[Quick adjust]	
+[NikonPc.Sharpness]	[50]	[0x0032]	[NikonPc]	[Exif.NikonPc.Sharpness]	[Byte]	[Sharpness]	
+[NikonPc.Contrast]	[51]	[0x0033]	[NikonPc]	[Exif.NikonPc.Contrast]	[Byte]	[Contrast]	
+[NikonPc.Brightness]	[52]	[0x0034]	[NikonPc]	[Exif.NikonPc.Brightness]	[Byte]	[Brightness]	
+[NikonPc.Saturation]	[53]	[0x0035]	[NikonPc]	[Exif.NikonPc.Saturation]	[Byte]	[Saturation]	
+[NikonPc.HueAdjustment]	[54]	[0x0036]	[NikonPc]	[Exif.NikonPc.HueAdjustment]	[Byte]	[Hue adjustment]	
+[NikonPc.FilterEffect]	[55]	[0x0037]	[NikonPc]	[Exif.NikonPc.FilterEffect]	[Byte]	[Filter effect]	
+[NikonPc.ToningEffect]	[56]	[0x0038]	[NikonPc]	[Exif.NikonPc.ToningEffect]	[Byte]	[Toning effect]	
+[NikonPc.ToningSaturation]	[57]	[0x0039]	[NikonPc]	[Exif.NikonPc.ToningSaturation]	[Byte]	[Toning saturation]
+$ 
 ```
 
 I've decided to call a binary element a Field.  So we have a class, and vector of fields for a tag, and a map to hold the definitions:
@@ -3381,112 +3382,7 @@ Could this be even better?  Of course.  As always reader, I leave you to send me
 
 [TOC](#TOC)
 <div id="3-6"/>
-### 3.6 Tag Decoder
-
-This is a story in two parts.  Firstly, we have to find metadata which is formatted as a Tiff Entry and I call that the _**Metadata Decoder**_.  Some tags are encoded in binary which must be decoded.  I call that the _**Binary Tag Decoder**_.
-
-#### Metadata Decoder
-Please read: [#988](https://github.com/Exiv2/exiv2/pull/988)
-
-This PR uses a decoder listed in TiffMappingInfo to decode Exif.Canon.AFInfo. The decoding function "manufactures" Exif tags such as Exif.Canon.AFNumPoints from the data in Exif.Canon.AFInfo. These tags must never be written to file and are removed from the metadata in exif.cpp/ExifParser::encode().
-
-Three of the tags created (AFPointsInFocus,AFPointsSelected, AFPrimaryPoint) are bitmasks. As the camera can have up to 64 focus points, the tags are a 64 bit mask to say which points are active. The function printBitmask() reports data such as 1,2,3 or (none).
-
-This decoding function decodeCanonAFInfo() added to TiffMappingInfo manufactures the new tags. Normally, tags are processed by the binary tag decoder and that approach was taken in branch fix981_canonAf. However, the binary tag decoder cannot deal with AFInfo because the size of some metadata arrays cannot be determined at compile time.
-
-We should support decoding AFInfo in 0.28, however we should NOT auto-port this PR. We can avoid having to explicitly delete tags from the metadata before writing by adding a "read-only" flag to TagInfo. This would break the Exiv2 v0.27 API and has been avoided. There is an array in decodeCanonAFInfo() which lists the "manufactured" tags such as Exif.Canon.AFNumPoints. In the Exiv2 v0.28 architecture, a way might be designed to generate that data at run-time.
-
-#### Binary Tag Decoder
-
-Please read: [#900](https://github.com/Exiv2/exiv2/pull/900)
-
-There is a long discussion in [#646](https://github.com/Exiv2/exiv2/pull/646) about this issue and my investigation into how the makernotes are decoded.
-
-### History
-
-The tag for Nikon's AutoFocus data is 0x00b7
-
-Nikon encode their version of tag in the first 4 bytes.  There was a 40 byte version of AutoFocus which decodes as Exif.NikonAf2.XXX.  This new version (1.01) is 84 bytes in length and decoded as Exif.NikonAf22.XXX.
-
-The two versions (NikonAF2 and NikonAF22) are now encoded as a set with the selector in tiffimage_int.cpp
-
-```cpp
-    extern const ArraySet nikonAf2Set[] = {
-        { nikonAf21Cfg, nikonAf21Def, EXV_COUNTOF(nikonAf21Def) },
-        { nikonAf22Cfg, nikonAf22Def, EXV_COUNTOF(nikonAf22Def) },
-    };
-```
-
-The binary layout of the record is defined in tiff image_int.cpp.  For example, AF22 is:
-
-```cpp
-    extern const ArrayCfg nikonAf22Cfg = {
-        nikonAf22Id,      // Group for the elements
-        littleEndian,     // Byte order
-        ttUndefined,      // Type for array entry
-        notEncrypted,     // Not encrypted
-        false,            // No size element
-        true,             // Write all tags
-        true,            // Concatenate gaps
-        { 0, ttUnsignedByte,  1 }
-    };
-    //! Nikon Auto Focus 22 binary array - definition
-    extern const ArrayDef nikonAf22Def[] = {
-        {  0, ttUndefined,     4 }, // Version
-        {  4, ttUnsignedByte,  1 }, // ContrastDetectAF
-        {  5, ttUnsignedByte,  1 }, // AFAreaMode
-        {  6, ttUnsignedByte,  1 }, // PhaseDetectAF
-        {  7, ttUnsignedByte,  1 }, // PrimaryAFPoint
-        {  8, ttUnsignedByte,  7 }, // AFPointsUsed
-        { 70, ttUnsignedShort, 1 }, // AFImageWidth
-        { 72, ttUnsignedShort, 1 }, // AFImageHeight
-        { 74, ttUnsignedShort, 1 }, // AFAreaXPosition
-        { 76, ttUnsignedShort, 1 }, // AFAreaYPosition
-        { 78, ttUnsignedShort, 1 }, // AFAreaWidth
-        { 80, ttUnsignedShort, 1 }, // AFAreaHeight
-    };
-```
-
-The two versions of the data are encoded in tiffimage_int.cpp
-
-```cpp
-        { Tag::root, nikonAf21Id,      nikon3Id,         0x00b7    },
-        { Tag::root, nikonAf22Id,      nikon3Id,         0x00b7    },
-```
-
-### Binary Selector
-
-The code to determine which version is decoded is in tiffimage_int.cpp
-
-```cpp
-       {    0x00b7, nikon3Id,         EXV_COMPLEX_BINARY_ARRAY(nikonAf2Set, nikonAf2Selector) },
-```
-
-When the tiffvisitor encounters 0x00b7, he calls nikonAf2Selector() to return the index of the binary array to be used.  By default it returns 0 (the existing `nikonAf21Id`).  If the tag length is 84, he returns 1 for `nikonAf21Id`
-
-```cpp
-    int nikonAf2Selector(uint16_t tag, const byte* /*pData*/, uint32_t size, TiffComponent* const /*pRoot*/)
-    {
-        int result = tag == 0x00b7 ? 0 : -1 ;
-        if (result > -1 && size == 84 ) {
-            result = 1;
-        }
-        return result;
-    }
-```
-
-### The decoder
-
-```cpp
-EXV_CALL_MEMBER_FN(*this, decoderFct)(object);
-```
-
-This function understands how to decode byte-by-byte from `const ArrayDef` into the Exiv2 tag/values such as Exif.NikonAF22.AFAreaYPosition which it stores in the ExifData vector.
-
-
-[TOC](#TOC)
-<div id="3-7"/>
-## 3.7 JpegImage::accept()
+## 3.6 JpegImage::accept()
 
 ```cpp
 void JpegImage::accept(Visitor& visitor)
@@ -3610,29 +3506,29 @@ config_path=/Users/rmills/.exiv2
 Most manufacturers store the LensID (an integer) in their maker notes:
 
 ```bash
-703 rmills@rmillsmbp:~/gnu/exiv2/team/book $ taglist ALL | grep Lens | grep -ie number -ie id -ie type
-Photo.LensSpecification,	42034,	0xa432,	Photo,	Exif.Photo.LensSpecification,	Rational,	This ...
-Photo.LensModel,	42036,	0xa434,	Photo,	Exif.Photo.LensModel,	Ascii,	This tag records the lens's model name and model number as an ASCII string.
-Photo.LensSerialNumber,	42037,	0xa435,	Photo,	Exif.Photo.LensSerialNumber,	Ascii,	This tag records the serial number of the interchangeable lens that was used in photography as an ASCII string.
-CanonCs.LensType,	22,	0x0016,	CanonCs,	Exif.CanonCs.LensType,	SShort,	Lens type
-Minolta.LensID,	268,	0x010c,	Minolta,	Exif.Minolta.LensID,	Long,	Lens identifier
-Nikon3.LensType,	131,	0x0083,	Nikon3,	Exif.Nikon3.LensType,	Byte,	Lens type
-NikonLd1.LensIDNumber,	6,	0x0006,	NikonLd1,	Exif.NikonLd1.LensIDNumber,	Byte,	Lens ID number
-NikonLd2.LensIDNumber,	11,	0x000b,	NikonLd2,	Exif.NikonLd2.LensIDNumber,	Byte,	Lens ID number
-NikonLd3.LensIDNumber,	12,	0x000c,	NikonLd3,	Exif.NikonLd3.LensIDNumber,	Byte,	Lens ID number
-OlympusEq.LensType,	513,	0x0201,	OlympusEq,	Exif.OlympusEq.LensType,	Byte,	Lens type
-OlympusEq.LensSerialNumber,	514,	0x0202,	OlympusEq,	Exif.OlympusEq.LensSerialNumber,	Ascii,	Lens serial number
-Panasonic.LensType,	81,	0x0051,	Panasonic,	Exif.Panasonic.LensType,	Ascii,	Lens type
-Panasonic.LensSerialNumber,	82,	0x0052,	Panasonic,	Exif.Panasonic.LensSerialNumber,	Ascii,	Lens serial number
-PentaxDng.LensType,	63,	0x003f,	Pentax,	Exif.Pentax.LensType,	Byte,	Lens type
-Pentax.LensType,	63,	0x003f,	Pentax,	Exif.Pentax.LensType,	Byte,	Lens type
-Samsung2.LensType,	40963,	0xa003,	Samsung2,	Exif.Samsung2.LensType,	Short,	Lens type
-Sony1.LensID,	45095,	0xb027,	Sony1,	Exif.Sony1.LensID,	Long,	Lens identifier
-Sony2.LensID,	45095,	0xb027,	Sony1,	Exif.Sony1.LensID,	Long,	Lens identifier
-SonyMinolta.LensID,	268,	0x010c,	Minolta,	Exif.Minolta.LensID,	Long,	Lens identifier
-Sony2010e.LensType2,	6291,	0x1893,	Sony2010e,	Exif.Sony2010e.LensType2,	Short,	LensType2
-Sony2010e.LensType,	6294,	0x1896,	Sony2010e,	Exif.Sony2010e.LensType,	Short,	LensType
-704 rmills@rmillsmbp:~/gnu/exiv2/team/book 
+$ taglist ALL | grep Lens | grep -ie number -ie id -ie type | csv -
+[Photo.LensSpecification]	[42034]	[0xa432]	[Photo]	[Exif.Photo.LensSpecification]	[Rational]	[This tag notes minimum focal length, maximum focal length, minimum F number in the minimum focal length, and minimum F number in the maximum focal length, which are specification information for the lens that was used in photography. When the minimum F number is unknown, the notation is 0/0]	
+[Photo.LensModel]	[42036]	[0xa434]	[Photo]	[Exif.Photo.LensModel]	[Ascii]	[This tag records the lens's model name and model number as an ASCII string.]	
+[Photo.LensSerialNumber]	[42037]	[0xa435]	[Photo]	[Exif.Photo.LensSerialNumber]	[Ascii]	[This tag records the serial number of the interchangeable lens that was used in photography as an ASCII string.]	
+[CanonCs.LensType]	[22]	[0x0016]	[CanonCs]	[Exif.CanonCs.LensType]	[SShort]	[Lens type]	
+[Minolta.LensID]	[268]	[0x010c]	[Minolta]	[Exif.Minolta.LensID]	[Long]	[Lens identifier]	
+[Nikon3.LensType]	[131]	[0x0083]	[Nikon3]	[Exif.Nikon3.LensType]	[Byte]	[Lens type]	
+[NikonLd1.LensIDNumber]	[6]	[0x0006]	[NikonLd1]	[Exif.NikonLd1.LensIDNumber]	[Byte]	[Lens ID number]	
+[NikonLd2.LensIDNumber]	[11]	[0x000b]	[NikonLd2]	[Exif.NikonLd2.LensIDNumber]	[Byte]	[Lens ID number]	
+[NikonLd3.LensIDNumber]	[12]	[0x000c]	[NikonLd3]	[Exif.NikonLd3.LensIDNumber]	[Byte]	[Lens ID number]	
+[OlympusEq.LensType]	[513]	[0x0201]	[OlympusEq]	[Exif.OlympusEq.LensType]	[Byte]	[Lens type]	
+[OlympusEq.LensSerialNumber]	[514]	[0x0202]	[OlympusEq]	[Exif.OlympusEq.LensSerialNumber]	[Ascii]	[Lens serial number]	
+[Panasonic.LensType]	[81]	[0x0051]	[Panasonic]	[Exif.Panasonic.LensType]	[Ascii]	[Lens type]	
+[Panasonic.LensSerialNumber]	[82]	[0x0052]	[Panasonic]	[Exif.Panasonic.LensSerialNumber]	[Ascii]	[Lens serial number]	
+[PentaxDng.LensType]	[63]	[0x003f]	[Pentax]	[Exif.Pentax.LensType]	[Byte]	[Lens type]	
+[Pentax.LensType]	[63]	[0x003f]	[Pentax]	[Exif.Pentax.LensType]	[Byte]	[Lens type]	
+[Samsung2.LensType]	[40963]	[0xa003]	[Samsung2]	[Exif.Samsung2.LensType]	[Short]	[Lens type]	
+[Sony1.LensID]	[45095]	[0xb027]	[Sony1]	[Exif.Sony1.LensID]	[Long]	[Lens identifier]	
+[Sony2.LensID]	[45095]	[0xb027]	[Sony1]	[Exif.Sony1.LensID]	[Long]	[Lens identifier]	
+[SonyMinolta.LensID]	[268]	[0x010c]	[Minolta]	[Exif.Minolta.LensID]	[Long]	[Lens identifier]	
+[Sony2010e.LensType2]	[6291]	[0x1893]	[Sony2010e]	[Exif.Sony2010e.LensType2]	[Short]	[LensType2]	
+[Sony2010e.LensType]	[6294]	[0x1896]	[Sony2010e]	[Exif.Sony2010e.LensType]	[Short]	[LensType]	
+$
 ```
 
 | Manufacturer | Config Section | Metadata |
@@ -4080,12 +3976,12 @@ How Tags are organised:
 
 
 ```bash
-$ taglist MinoltaCsNew
-ExposureMode,	1,	0x0001,	MinoltaCsNew,	Exif.MinoltaCsNew.ExposureMode,	Long,	Exposure mode
-FlashMode,	2,	0x0002,	MinoltaCsNew,	Exif.MinoltaCsNew.FlashMode,	Long,	Flash mode
+$ taglist MinoltaCsNew | csv -
+[ExposureMode]	[1]	[0x0001]	[MinoltaCsNew]	[Exif.MinoltaCsNew.ExposureMode]	[Long]	[Exposure mode]	
+[FlashMode]	[2]	[0x0002]	[MinoltaCsNew]	[Exif.MinoltaCsNew.FlashMode]	[Long]	[Flash mode]	
 ...
-FlashMetering,	63,	0x003f,	MinoltaCsNew,	Exif.MinoltaCsNew.FlashMetering,	Long,	Flash metering
-$
+[FlashMetering]	[63]	[0x003f]	[MinoltaCsNew]	[Exif.MinoltaCsNew.FlashMetering]	[Long]	[Flash metering]	
+$ 
 ```
 
 There isn't a tag Exif.MinoltaCsNew.ISOSpeed.  There is a Exif.MinoltaCSNew.ISO
@@ -4253,10 +4149,113 @@ static DataBuf sonyTagCipher(uint16_t /* tag */, const byte* bytes, uint32_t siz
 }
 ```     
 
-
 [TOC](#TOC)
 <div id="7-7"/>
-## 7.7 TiffVisitor
+### 7.7 Tag Decoder
+
+This is a story in two parts.  Firstly, we have to find metadata which is formatted as a Tiff Entry and I call that the _**Metadata Decoder**_.  Some tags are encoded in binary which must be decoded.  I call that the _**Binary Tag Decoder**_.
+
+#### Metadata Decoder
+Please read: [#988](https://github.com/Exiv2/exiv2/pull/988)
+
+This PR uses a decoder listed in TiffMappingInfo to decode Exif.Canon.AFInfo. The decoding function "manufactures" Exif tags such as Exif.Canon.AFNumPoints from the data in Exif.Canon.AFInfo. These tags must never be written to file and are removed from the metadata in exif.cpp/ExifParser::encode().
+
+Three of the tags created (AFPointsInFocus,AFPointsSelected, AFPrimaryPoint) are bitmasks. As the camera can have up to 64 focus points, the tags are a 64 bit mask to say which points are active. The function printBitmask() reports data such as 1,2,3 or (none).
+
+This decoding function decodeCanonAFInfo() added to TiffMappingInfo manufactures the new tags. Normally, tags are processed by the binary tag decoder and that approach was taken in branch fix981_canonAf. However, the binary tag decoder cannot deal with AFInfo because the size of some metadata arrays cannot be determined at compile time.
+
+We should support decoding AFInfo in 0.28, however we should NOT auto-port this PR. We can avoid having to explicitly delete tags from the metadata before writing by adding a "read-only" flag to TagInfo. This would break the Exiv2 v0.27 API and has been avoided. There is an array in decodeCanonAFInfo() which lists the "manufactured" tags such as Exif.Canon.AFNumPoints. In the Exiv2 v0.28 architecture, a way might be designed to generate that data at run-time.
+
+#### Binary Tag Decoder
+
+Please read: [#900](https://github.com/Exiv2/exiv2/pull/900)
+
+There is a long discussion in [#646](https://github.com/Exiv2/exiv2/pull/646) about this issue and my investigation into how the makernotes are decoded.
+
+### History
+
+The tag for Nikon's AutoFocus data is 0x00b7
+
+Nikon encode their version of tag in the first 4 bytes.  There was a 40 byte version of AutoFocus which decodes as Exif.NikonAf2.XXX.  This new version (1.01) is 84 bytes in length and decoded as Exif.NikonAf22.XXX.
+
+The two versions (NikonAF2 and NikonAF22) are now encoded as a set with the selector in tiffimage_int.cpp
+
+```cpp
+    extern const ArraySet nikonAf2Set[] = {
+        { nikonAf21Cfg, nikonAf21Def, EXV_COUNTOF(nikonAf21Def) },
+        { nikonAf22Cfg, nikonAf22Def, EXV_COUNTOF(nikonAf22Def) },
+    };
+```
+
+The binary layout of the record is defined in tiff image_int.cpp.  For example, AF22 is:
+
+```cpp
+    extern const ArrayCfg nikonAf22Cfg = {
+        nikonAf22Id,      // Group for the elements
+        littleEndian,     // Byte order
+        ttUndefined,      // Type for array entry
+        notEncrypted,     // Not encrypted
+        false,            // No size element
+        true,             // Write all tags
+        true,            // Concatenate gaps
+        { 0, ttUnsignedByte,  1 }
+    };
+    //! Nikon Auto Focus 22 binary array - definition
+    extern const ArrayDef nikonAf22Def[] = {
+        {  0, ttUndefined,     4 }, // Version
+        {  4, ttUnsignedByte,  1 }, // ContrastDetectAF
+        {  5, ttUnsignedByte,  1 }, // AFAreaMode
+        {  6, ttUnsignedByte,  1 }, // PhaseDetectAF
+        {  7, ttUnsignedByte,  1 }, // PrimaryAFPoint
+        {  8, ttUnsignedByte,  7 }, // AFPointsUsed
+        { 70, ttUnsignedShort, 1 }, // AFImageWidth
+        { 72, ttUnsignedShort, 1 }, // AFImageHeight
+        { 74, ttUnsignedShort, 1 }, // AFAreaXPosition
+        { 76, ttUnsignedShort, 1 }, // AFAreaYPosition
+        { 78, ttUnsignedShort, 1 }, // AFAreaWidth
+        { 80, ttUnsignedShort, 1 }, // AFAreaHeight
+    };
+```
+
+The two versions of the data are encoded in tiffimage_int.cpp
+
+```cpp
+        { Tag::root, nikonAf21Id,      nikon3Id,         0x00b7    },
+        { Tag::root, nikonAf22Id,      nikon3Id,         0x00b7    },
+```
+
+### Binary Selector
+
+The code to determine which version is decoded is in tiffimage_int.cpp
+
+```cpp
+       {    0x00b7, nikon3Id,         EXV_COMPLEX_BINARY_ARRAY(nikonAf2Set, nikonAf2Selector) },
+```
+
+When the tiffvisitor encounters 0x00b7, he calls nikonAf2Selector() to return the index of the binary array to be used.  By default it returns 0 (the existing `nikonAf21Id`).  If the tag length is 84, he returns 1 for `nikonAf21Id`
+
+```cpp
+    int nikonAf2Selector(uint16_t tag, const byte* /*pData*/, uint32_t size, TiffComponent* const /*pRoot*/)
+    {
+        int result = tag == 0x00b7 ? 0 : -1 ;
+        if (result > -1 && size == 84 ) {
+            result = 1;
+        }
+        return result;
+    }
+```
+
+### The decoder
+
+```cpp
+EXV_CALL_MEMBER_FN(*this, decoderFct)(object);
+```
+
+This function understands how to decode byte-by-byte from `const ArrayDef` into the Exiv2 tag/values such as Exif.NikonAF22.AFAreaYPosition which it stores in the ExifData vector.
+
+[TOC](#TOC)
+<div id="7-8"/>
+## 7.8 TiffVisitor
 
 Exiv2 has an abstract TiffVisitor class, and the following concrete visitors:
 
@@ -4390,8 +4389,8 @@ const TagInfo Nikon3MakerNote::tagInfoPc_[] = {
 This is a very flexible design.  Not easy to understand.  The design used by tvisitor.cpp is simpler [3.5 Presenting the data with visitTag()](#3-5).
 
 [TOC](#TOC)
-<div id="7-8"/>
-## 7.8 Other Exiv2 Classes
+<div id="7-9"/>
+## 7.9 Other Exiv2 Classes
 
 #### The Metadatum and Key classes
 
@@ -6136,6 +6135,87 @@ int main(int argc, char* argv[])
     return 0 ;
 }
 ```
+#### csv.cpp
+
+The purpose of this program is to "pretty print" csv files. 
+
+```cpp
+// http://www.zedwood.com/article/cpp-csv-parser
+#include <string>
+#include <vector>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <istream>
+ 
+std::vector<std::string> read(std::istream &in, char delimiter)
+{
+    std::stringstream ss;
+    bool inquotes = false;
+    bool bEnd     = false;
+    char Q = '"'  ; // quote character
+    char L = '\n' ; // line-feed
+    char C = '\r' ; // carriage-return
+
+    std::vector<std::string> row;
+    
+    while(in.good() && !bEnd) {
+        char c = in.get();
+        if (!inquotes && c==Q) { 
+            inquotes=true;
+        } else if (inquotes && c==Q) { 
+            if ( in.peek() == Q) { //2 consecutive quotes resolve to 1
+                ss << (char)in.get();
+            } else { //endquotechar
+                inquotes=false;
+            }
+        } else if (!inquotes && c==delimiter) { //end of field
+            row.push_back( ss.str() );
+            ss.str("");
+        } else if (!inquotes && (c==C || c==L) ) {
+            if(in.peek()==L) { in.get(); }
+            row.push_back( ss.str() );
+            bEnd = true;
+        } else {
+          ss << c;
+        }
+    }
+    return row;
+}
+ 
+int main(int argc, char *argv[])
+{
+    if ( argc != 2 ) {
+        std::cerr << "usage: " << argv[0] << " { path | - }" << std::endl;
+        return 1;
+    }
+    
+    // open file and connect to std::cin
+    std::string   path(argv[1]);
+    std::ifstream file(path);     
+    if ( path != "-" ) {
+        if ( file.is_open() ) {
+            std::cin.rdbuf(file.rdbuf());
+        } else if ( argc > 1 ) { 
+            std::cerr << "file did not open: " << path << std::endl;
+            return 2;
+        }
+    }
+    
+    // parse input line by line
+    while( std::cin.good() )
+    {
+        std::vector<std::string> row = read(std::cin , ',');
+        for(int i=0, leng=row.size(); i<leng; i++)
+            std::cout << "[" << row[i] << "]" << "\t";
+        std::cout << std::endl;
+    }
+    
+    file.close();
+    return 0;
+}
+```
+
 
 #### dmpf.cpp
 
@@ -6144,18 +6224,25 @@ The purpose of this program is to inspect files.  It's _**od**_ on steroids.
 ```cpp
 // g++ --std=c++11 dmpf.cpp
 #include <stdio.h>
+#include <map>
 #include <string.h>
 #include <vector>
 #include <string>
-#include <map>
-#include <iostream>
 #include <cstring>
+#include <iostream>
+#include <sstream>
 
-std::vector      <const char*> paths;
+#ifdef _MSC_VER
+#pragma warning(disable : 4996)
+#endif
+
+std::vector      <std::string> paths;
+std::string                    terminal("-");
 std::map<std::string,uint32_t> options;
+
 static enum error_e
-{   errorOK = 0
-,   errorSyntax
+{    errorOK = 0
+,     errorSyntax
 ,   errorProcessing
 }   error = errorOK ;
 
@@ -6164,10 +6251,12 @@ uint8_t print(uint8_t c) { return c >= 32 && c < 127 ? c : c==0 ? '_' : '.' ; }
 void printOptions(error_e e)
 {
     if ( options["verbose"] || e == errorSyntax ) {
+        size_t count=0;
         for ( auto option : options ) {
-            std::cout << option.first << " = " << option.second << std::endl;
+            std::cout << (count++?" ":"") << option.first << "=" << option.second << "" ;
         }
     }
+    std::cout << std::endl;
     error = e;
 }
 
@@ -6194,7 +6283,8 @@ bool isPlatformBigEndian()
     union { uint32_t i; char c[4]; } e = { 0x01000000 };
     return e.c[0]?true:false;
 }
-bool     platformEndian() { return isPlatformBigEndian() ? true : false; }
+
+uint32_t platformEndian() { return isPlatformBigEndian() ? 1 : 0; }
 void swap(void* from,void* to,size_t n)
 {
     uint8_t*     v = reinterpret_cast<uint8_t *>(from);
@@ -6221,12 +6311,35 @@ uint16_t swap(uint16_t* value,bool bSwap)
     if ( bSwap ) swap(value,&result,sizeof result);
     return result;
 }
-bool file(const char* arg)
+
+std::vector<std::string> splitter (const std::string &s, char delim)
 {
-    if ( std::string("-") == std::string(arg) ) return true ;
-    FILE*  f      = ::fopen(arg,"rb");
+    std::vector<std::string> result;
+    std::stringstream        ss (s);
+    std::string              item;
+
+    while (getline (ss, item, delim)) {
+        result.push_back (item);
+    }
+
+    return result;
+}
+
+bool file(const char* arg,std::string& stub,uint32_t& skip)
+{
+    std::string path(arg);
+    if ( path == terminal ) { stub = terminal ; return true ; }
+    
+    // parse path/to/file[:number+length]+
+    std::vector<std::string> paths = ::splitter(path,':');
+    for ( size_t i = 1 ; i < paths.size() ; i++ ) {
+        std::vector<std::string> numbers = splitter(paths[i],'+');
+        skip += ::atoi(numbers[0].c_str());
+    }
+    FILE*  f      = ::fopen(paths[0].c_str(),"rb");
     bool   result = f != NULL ;
     if     (f) fclose(f);
+    stub=paths[0];
     return result;
 } //file
 
@@ -6239,6 +6352,7 @@ int main(int argc, char* argv[])
     options["hex"    ] =  1;
     options["skip"   ] =  0;
     options["verbose"] =  0;
+    options["start"  ] =  0; // set by file[:start->length]+
 
     // parse arguments
     if ( argc < 2 ) {
@@ -6246,15 +6360,16 @@ int main(int argc, char* argv[])
     } else for ( int i = 1 ; i < argc ; i++ ) {
         const char* arg = argv[i];
         std::string key;
+        std::string stub;
         uint32_t    value ;
         bool        bClaimed = false;
         if ( split(argv[i],key,value) ) {
             if ( options.find(key) != options.end() ) {
-                options[key]=value;
+                options[key]+=value;
                 bClaimed = true ;
             }
-        } else if ( file(arg) ) {
-            paths.push_back(arg);
+        } else if ( file(arg,stub,options["start"]) ) {
+            paths.push_back(stub);
             bClaimed = true;
         }
         if ( !bClaimed ) {
@@ -6262,10 +6377,10 @@ int main(int argc, char* argv[])
             error = errorProcessing;
         }
     }
-
+            
     // report arguments
     if ( options["verbose"] ) printOptions(error) ;
-
+    
     // process
     if ( !error  ) for ( auto path : paths ) {
         FILE* f = NULL  ;
@@ -6273,32 +6388,35 @@ int main(int argc, char* argv[])
         size_t  skip   = options["skip" ];
         size_t  count  = options["count"];
         size_t  width  = options["width"];
+        size_t  start  = options["start"];
+        
+        std::cout << "path = " << path << std::endl;
 
-        if ( path != std::string("-") ) {
-            f     = fopen(path,"rb");
+        if ( path != terminal ) {
+            f     = fopen(path.c_str(),"rb");
             fseek(f,0,SEEK_END);
             size  = ftell(f);
         } else {
             f      = stdin   ;
             size   = 256*1024;
         }
-        if ( !count ) count = size - skip;
-        if ( !f || (skip+count) > size ) {
+        if ( !count ) count = size - skip-start;
+        if ( !f || (skip+count+start) > size ) {
             std::cerr << path << " insufficient data" << std::endl;
             error = errorProcessing;
         }
-
+        
         char    line[1000]  ;
         char    buff[64]    ;
         size_t  reads  = 0 ; // count the reads
         size_t  nRead  = 0 ; // bytes actually read
         size_t  remain = count ; // how many bytes still to read
         if ( width > sizeof buff ) width = sizeof(buff);
-        fseek(f,skip,SEEK_SET);
-
+        fseek(f,(long)skip+start,SEEK_SET);
+        
         if ( !error ) while ( remain && (nRead = fread(buff,1,remain>width?width:remain,f)) > 0 ) {
             // line number
-            int l = sprintf(line,"%#8lx %8ld: ",skip+reads*width,skip+reads*width ) ;
+            int l = sprintf(line,"%#8lx %8ld: ",(unsigned long)(skip+reads*width), (unsigned long)(skip+reads*width) ) ;
 
             // ascii print
             for ( int i = 0 ; i < nRead ; i++ ) {
@@ -6311,15 +6429,15 @@ int main(int argc, char* argv[])
                 l += sprintf(line+l," ") ;
             }
             l += sprintf(line+l,"  -> ") ;
-
+            
             size_t   bs = options["bs"];
             switch ( bs ) {
             case 8 :
                 for ( size_t i = 0 ; i < nRead; i += bs ) {
                     uint64_t* p = (uint64_t*) &buff[i] ;
-                    uint64_t  v = swap(p,  options["endian"]!=platformEndian());
-                    l += options["hex"] ? sprintf(line+l," %16llx" ,v )
-                                        : sprintf(line+l," %20lld" ,v )
+                    uint64_t  v = swap(p, options["endian"]!=platformEndian() );
+                    l += options["hex"] ? sprintf(line+l," %16llx" ,(long long int)v )
+                                        : sprintf(line+l," %20lld" ,(long long int)v )
                     ;
                 }
             break;
@@ -6344,7 +6462,7 @@ int main(int argc, char* argv[])
             default:
                 for ( int i = 0 ; i < nRead ; i++ ) { // bs == 1
                     uint8_t v = buff[i];
-                    l += options["hex"] ? sprintf(line+l," %2x" ,v )
+                    l += options["hex"] ? sprintf(line+l," %02x" ,v )
                                     : sprintf(line+l," %3d" ,v )
                     ;
                 }
@@ -6354,7 +6472,7 @@ int main(int argc, char* argv[])
             std::cout << line << std::endl;
             reads++;
             remain -= nRead;
-            if ( f == stdin ) size += nRead;
+            if ( path == terminal ) size += nRead;
         } // while remains && nRead
 
         if ( f != stdin ) {
@@ -6362,6 +6480,7 @@ int main(int argc, char* argv[])
         }
         f = NULL;
     }
+
     return error ;
 } // main
 ```
