@@ -985,6 +985,7 @@ public:
     PSOption      option() { return option_ ; }
     std::ostream& out()    { return out_    ; }
     std::string   indent() { return ::indent(indent_);}
+    bool          isRecursive() { return (option_ & kpsRecursive)?true:false;}
 protected:
     uint32_t      indent_ ;
     PSOption      option_;
@@ -1555,7 +1556,7 @@ void C8BIM::accept(Visitor& visitor)
             DataBuf  b(len);
             memcpy(b.pData_,buff.pData_+offset+data,len-data);
             visitor.visit8BIM(io(),*this,offset,kind,len,data,pad,b);
-            if ( (visitor.option() & kpsRecursive) && (kind == ktIPTCPS)) {
+            if ( visitor.isRecursive() && kind == ktIPTCPS ) {
                 Io   stream(io(),offset+data,len);
                 IPTC iptc(stream);
                 iptc.accept(visitor);
@@ -1701,6 +1702,22 @@ void PgfImage::accept(Visitor& visitor)
     visitor.visitEnd  (*this); // tell the visitor
 }
 
+class IlocExt {
+public:
+    IlocExt(uint32_t ID,uint32_t start,uint32_t length)
+    : ID_     (ID)
+    , start_  (start )
+    , length_ (length)
+    {}
+    uint32_t    ID_     ;
+    uint32_t    start_  ;
+    uint32_t    length_ ;
+    std::string toString() {
+        return stringFormat("ID = %d from,length = %d,%d", ID_,start_,length_);
+    }
+};
+typedef std::vector<IlocExt> IlocExts ;
+
 class Jp2Image : public Image
 {
 public:
@@ -1745,10 +1762,9 @@ public:
         std::string uuid = data.toUuidString();
         return uuids_.find(uuid) != uuids_.end() ? uuids_[uuid]  : "";
     }
-    std::string brand_      ;
-    uint16_t    exifID_     ;
-    uint32_t    exifOffset_ ;
-    uint32_t    exifLength_ ;
+    std::string  brand_   ;
+    uint16_t     exifID_  ;
+    IlocExts     ilocExts ;
 
     void init()
     {
@@ -1756,8 +1772,6 @@ public:
         format_     = "JP2"  ;
         brand_      = "jp2"  ;
         exifID_     = 0      ;
-        exifLength_ = 0      ;
-        exifOffset_ = 0      ;
 
         const char*  kJp2UuidExif  = "4a706754-6966-6645-7869-662d3e4a5032" ; // "JpgTiffExif->JP2";
         const char*  kJp2UuidIptc  = "33c7a4d2-b81d-4723-a0ba-f1a3e097ad38" ;
@@ -2039,10 +2053,10 @@ void RafImage::accept(class Visitor& visitor)
         address += len ; len =  4 ; visitor.out() << visitor.indent() << stringFormat(" %8u | %8u | TIFF Length: ",address,len) << header.getLong(address,endian_)    << std::endl;
         
         io().seek(jpeg_) ; io().read(buff) ; visitor.out() << visitor.indent() << stringFormat(" %8u | %8u | ",jpeg_,jlen_) << buff.binaryToString() << std::endl;
-        if (visitor.option() & kpsRecursive) JpegImage(io(),jpeg_,jlen_).accept(visitor);
+        if ( visitor.isRecursive() ) JpegImage(io(),jpeg_,jlen_).accept(visitor);
         io().seek(cfa_ ) ; io().read(buff) ; visitor.out() << visitor.indent() << stringFormat(" %8u | %8u | ",cfa_ ,clen_) << buff.binaryToString() << std::endl;
         io().seek(tiff_) ; io().read(buff) ; visitor.out() << visitor.indent() << stringFormat(" %8u | %8u | ",tiff_,tlen_) << buff.binaryToString() << std::endl;
-        if (visitor.option() & kpsRecursive) {
+        if ( visitor.isRecursive() ) {
             Io             t(io(),tiff_,tlen_); // TODO fix this (Tiff Constructor) and tiff1, tiff2 and makernote
             TiffImage tiff(t);
             tiff.setMaker(kFuji);
@@ -2177,7 +2191,7 @@ void JpegImage::accept(Visitor& visitor)
                 uint16_t start = 2+14 ; // "\mark\length\ICC_PROFILE\0\C\Z" = \C: 1 byte chunk. \Z: 1 byte chunks.
                 ICC.read(io_,address+2+start,length - start); // read the XMP from the stream
             }
-            if ( (signature.find("Photoshop 3.0") == 0) && (visitor.option() & kpsRecursive)) {
+            if ( (signature.find("Photoshop 3.0") == 0) && visitor.isRecursive() ) {
                 uint16_t start = 2+2+14 ; // "\mark\length\Photoshop 3.0\08BIM..."
                 Io    bim(io_,address+start,length-start);
                 C8BIM c8bim(bim);
@@ -2276,7 +2290,7 @@ public:
 
     void visitEnd(Image& image)
     {
-        if ( (option() & kpsBasic) || (option() & kpsRecursive) ) {
+        if ( (option() & kpsBasic) || isRecursive() ) {
             out() << indent() << "END: " << image.path() << std::endl;
         }
         indent_--;
@@ -2473,7 +2487,7 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
             }
 
             // recursion into embedded formats
-            if ( (visitor.option() & kpsRecursive) & (tagDict == tiffDict) ) {
+            if ( visitor.isRecursive() & tagDict == tiffDict ) {
                 Io       io(io_,offset,count);
                 switch ( tag ) {
                     case ktXML  : visitor.visitXMP(buff)   ; break;
@@ -2594,10 +2608,8 @@ void Jp2Image::accept(class Visitor& v)
                     uint32_t offset = getLong(data,skip+step-8,keBig);
                     uint32_t ldata  = getLong(data,skip+step-4,keBig);
                     v.out() << v.indent() << stringFormat("%8d | %8d |  ext | %4d | %6d,%6d",address+skip,step,ID,offset,ldata) << std::endl;
-                    if ( ID == exifID_ ) {
-                        exifLength_ = ldata ;
-                        exifOffset_ = offset ;
-                    }
+                    // IlocExt startLength(ID,offset,ldata);
+                    ilocExts.push_back(IlocExt(ID,offset,ldata));// startLength);
                 }
             }
         }
@@ -2607,7 +2619,7 @@ void Jp2Image::accept(class Visitor& v)
             uint16_t   ID =  getShort(data,skip,keBig) ; skip+=2;
                              getShort(data,skip,keBig) ; skip+=2; // protection
             std::string name((const char*)data.pData_+skip);
-            if ( name == "Exif" ) {
+            if ( name.find("Exif")== 0 ) { // "Exif" or "ExifExif"
                 exifID_ = ID ;
             }
         }
@@ -2636,15 +2648,12 @@ void Jp2Image::accept(class Visitor& v)
             if ( bRecurse ) {
                 Jp2Image jp2(io(),io().tell(),length-8-skip);
                 jp2.valid_=true;
-                jp2.exifID_ = exifID_;
                 jp2.accept(v);
-                if ( jp2.exifID_ ) {
-                    exifID_     = jp2.exifID_;
+                // copy the exifID data from jp2
+                for ( size_t i = 0 ; i <    jp2.ilocExts.size() ; i++ ) {
+                    ilocExts.push_back(jp2.ilocExts[i]);
                 }
-                if ( jp2.exifLength_ || jp2.exifOffset_ ) {
-                    exifLength_ = jp2.exifLength_;
-                    exifOffset_ = jp2.exifOffset_;
-                }
+                if ( jp2.exifID_ ) exifID_ = jp2.exifID_;
             }
         }
 
@@ -2657,14 +2666,36 @@ void Jp2Image::accept(class Visitor& v)
                 jp2.valid_=true;
                 jp2.accept(v);
             }
-        } else if ( (boxName(box) == "mdat") && (v.option() & kpsRecursive) && exifID_ ) {
-            // TODO:  We're not storing exifOffset_/exifLength_ correctly
-            Io t1(io(),exifOffset_+10,exifLength_-10);
-            Io t2(io(),exifOffset_+ 4,exifLength_ -4);
-            TiffImage tiff1(t1);
-            TiffImage tiff2(t2);
-            if ( tiff1.valid() ) tiff1.accept(v);
-            if ( tiff2.valid() ) tiff2.accept(v);
+        }
+        
+        // before leaving the meta box, process any discovered Exif metadata
+        if ( boxName(box) == kJp2Box_meta && exifID_ && ilocExts.size() && v.isRecursive() ) {
+            uint32_t exifOffset = 0 ;
+            uint32_t exifLength = 0 ;
+            for ( size_t i = 0 ; i < ilocExts.size(); i++) {
+                if ( ilocExts[i].ID_ == exifID_ ) {
+                    exifOffset = ilocExts[i].start_ ;
+                    exifLength = ilocExts[i].length_;
+                }
+            }
+            if ( exifOffset && exifLength ) {
+                io().seek(exifOffset);
+                DataBuf   head(20);
+                io().read(head);
+                
+                // hunt for "II" or "MM"
+                size_t punt = 0 ;
+                for ( size_t i = 0 ; i < head.size_ && !punt ; i++) {
+                    if ( head.pData_[i] == head.pData_[i+1] )
+                        if ( head.pData_[i] == 'I' || head.pData_[i] == 'M' )
+                            punt = i;
+                }
+                Io             t_io(io(),exifOffset+punt,exifLength-punt);
+                TiffImage tiff(t_io);
+                if ( tiff.valid() ) tiff.accept(v);
+            }
+            exifID_ = 0 ;
+            ilocExts.clear();
         }
         address = (boxName(box) == kJp2Box_jp2c
                ||  boxName(box) == kJp2Box_mdat) ? io().size()
@@ -2786,7 +2817,7 @@ void ReportVisitor::visitICC(DataBuf& icc)
 
 void ReportVisitor::visitExif(Io& io)
 {
-    if ( option() & kpsRecursive ) {
+    if ( isRecursive() ) {
         // Beautiful.  io is a tiff file, call TiffImage::accept(visitor)
         TiffImage(io).accept(*this);
     }
@@ -2889,7 +2920,7 @@ void ReportVisitor::visitChunk(Io& io,Image& image,uint64_t address
     }
     
 
-    if ( option() & kpsRecursive && std::strcmp(chunk,"eXIf") == 0 ) {
+    if ( isRecursive() && std::strcmp(chunk,"eXIf") == 0 ) {
         DataBuf   data(length);  // read the whole chunk
         io.read(data);
         Io        tiff(io,address+8,length);
