@@ -217,7 +217,6 @@ public:
     uint8_t  getByte (uint64_t offset                ) { return ::getByte (*this,offset)       ; }
     uint16_t getShort(uint64_t offset,endian_e endian) { return ::getShort(*this,offset,endian); }
     uint32_t getLong (uint64_t offset,endian_e endian) { return ::getLong (*this,offset,endian); }
-
     uint32_t search(uint32_t start,const char* s)
     {
         uint64_t l = ::strlen(s);
@@ -228,7 +227,13 @@ public:
         while ( ! begins(s,found) && found < max ) found++;
         return found;
     }
-
+    bool hasNull()
+    {
+        for (size_t i = 0 ; i < size_ ; i++ )
+            if ( !pData_[i] )
+                return true ;
+        return false;
+    }
     void copy(void* src,uint64_t size,uint64_t offset=0)
     {
         memcpy(pData_+offset,src,size);
@@ -236,7 +241,6 @@ public:
     void copy(uint32_t v,uint64_t offset=0) { copy(&v,4,offset); }
     void copy(DataBuf& src,uint64_t size) { if (size <= src.size_ && size <= size_) copy(src.pData_,size);}
     std::string path() { return path_; }
-
     std::string toString(type_e type,uint64_t count,endian_e endian,uint64_t offset=0);
     std::string binaryToString(uint64_t start,uint64_t size);
     std::string toUuidString() ;
@@ -252,7 +256,6 @@ bool isPlatformBigEndian()
         uint32_t i;
         char c[4];
     } e = { 0x01000000 };
-
     return e.c[0]?true:false;
 }
 bool   isPlatformLittleEndian() { return !isPlatformBigEndian(); }
@@ -563,7 +566,7 @@ std::string DataBuf::toUuidString()
     return result ;
 } // DataBuf::toUuidString
 
-// Camera manufacturers
+// Camera makers
 enum maker_e
 {   kUnknown
 ,   kCanon
@@ -575,7 +578,9 @@ enum maker_e
 ,   kMino
 ,   kFuji
 ,   kOlym
+,   kPentax
 };
+std::map<std::string,maker_e> maker;
 
 // Canon magic
 enum kCanonHeap
@@ -657,6 +662,7 @@ TagDict olymR2Dict;
 TagDict olymIPDict;
 TagDict olymFIDict;
 TagDict olymRoDict;
+TagDict pentaxDict;
 
 enum ktSpecial
 {   ktMN        = 0x927c
@@ -669,6 +675,7 @@ enum ktSpecial
 ,   ktIPTC      = 0x83bb
 ,   ktIPTCPS    = 0x0404
 ,   ktICC       = 0x8773
+,   ktMNP       = 0xc634 // Pentax MakerNote
 ,   ktGroup     = 0xffff
 };
 
@@ -1039,6 +1046,7 @@ public:
 
     maker_e     maker_;
     TagDict&    makerDict_;
+
     void setMaker(maker_e maker) {
         maker_ = maker;
         switch ( maker_ ) {
@@ -1051,24 +1059,18 @@ public:
             case kMino  : makerDict_ = minoDict  ; break;
             case kFuji  : makerDict_ = fujiDict  ; break;
             case kOlym  : makerDict_ = olymDict  ; break;
+            case kPentax: makerDict_ = pentaxDict; break;
             default : /* do nothing */           ; break;
         }
     }
+
     void setMaker(DataBuf& buf)
     {
-        maker_ = buf.strequals("Canon")             ? kCanon
-               : buf.strequals("NIKON CORPORATION") ? kNikon
-               : buf.strequals("NIKON")             ? kNikon
-               : buf.strequals("SONY")              ? kSony
-               : buf.strequals("AGFAPHOTO")         ? kAgfa
-               : buf.strequals("Apple")             ? kApple
-               : buf.strequals("Panasonic")         ? kPano
-               : buf.strequals("Minolta Co., Ltd.") ? kMino
-               : buf.strequals("OLYMPUS IMAGING CORP.  ") ? kOlym
-               : buf.strequals("FUJIFILM")          ? kFuji
-               : maker_
-               ;
-        setMaker(maker_);
+        if ( buf.hasNull() ) {
+            const char* make = (const char*) buf.pData_ ;
+            maker_           = maker.find(make)!= maker.end() ? maker[make] : maker_;
+            setMaker(maker_);
+        }
     } // setMaker
 
     bool superBox(uint32_t box)
@@ -1966,18 +1968,18 @@ void MrwImage::accept(class Visitor& visitor)
         while ( io().tell() < image_ ) {
             DataBuf     block(8);
             io().read  (block);
-            
+
             uint32_t    length  = block.getLong(4,endian_);
             char        signature[4];
             std::string chunk = block.getChars(1,3,signature);
-            
+
             DataBuf     data(length < 40 ? length : 40 );
             io().read(data);
             visitor.visitMrw(io(),*this,address,chunk,length,data);
             address += 8+length;
             io().seek(address);
         }
-        
+
         visitor.visitEnd((*this)); // tell the visitor
     }
 }
@@ -2010,7 +2012,7 @@ public:
             clen_ = header.getLong( 96,endian_);
             tiff_ = header.getLong(100,endian_);
             tlen_ = header.getLong(104,endian_);
-            
+
             header_ = "  address |   length | data ";
             valid_  =  header.begins("FUJIFILMCCD-RAW") && ((jpeg_+jlen_) <= io().size()) && ((tiff_+tlen_) <= io().size());
         }
@@ -2033,9 +2035,9 @@ void RafImage::accept(class Visitor& visitor)
         IoSave restore(io(),0);
         DataBuf header(108);
         DataBuf buff(20);
-        
+
         io().read(header);
-        
+
         size_t address = 0 ;
         size_t len     = 0 ;
 
@@ -2051,7 +2053,7 @@ void RafImage::accept(class Visitor& visitor)
         address += len ; len =  4 ; visitor.out() << visitor.indent() << stringFormat(" %8u | %8u |  CFA Length: ",address,len) << header.getLong(address,endian_)    << std::endl;
         address += len ; len =  4 ; visitor.out() << visitor.indent() << stringFormat(" %8u | %8u | TIFF Offset: ",address,len) << header.getLong(address,endian_)    << std::endl;
         address += len ; len =  4 ; visitor.out() << visitor.indent() << stringFormat(" %8u | %8u | TIFF Length: ",address,len) << header.getLong(address,endian_)    << std::endl;
-        
+
         io().seek(jpeg_) ; io().read(buff) ; visitor.out() << visitor.indent() << stringFormat(" %8u | %8u | ",jpeg_,jlen_) << buff.binaryToString() << std::endl;
         if ( visitor.isRecursive() ) JpegImage(io(),jpeg_,jlen_).accept(visitor);
         io().seek(cfa_ ) ; io().read(buff) ; visitor.out() << visitor.indent() << stringFormat(" %8u | %8u | ",cfa_ ,clen_) << buff.binaryToString() << std::endl;
@@ -2379,18 +2381,18 @@ void CIFF::accept(Visitor& visitor)
 void IFD::visitMakerNote(Visitor& visitor,DataBuf& buf,uint64_t count,uint64_t offset)
 {
     if ( image_.maker_ == kNikon ) {
-        // Nikon MakerNote is embeded tiff `II*_....` 10 bytes into the data!
+        // MakerNote is embeded tiff `II*_....` 10 bytes into the data!
         size_t punt = buf.strequals("Nikon") ? 10 : 0 ;
         Io     io(io_,offset+punt,count-punt);
         TiffImage makerNote(io,image_.maker_);
         makerNote.accept(visitor,makerDict());
     } else if ( image_.maker_ == kAgfa && buf.strequals("ABC") ) {
-        // Agfa  MakerNote is an IFD `ABC_IIdL...`  6 bytes into the data!
+        // MakerNote is an IFD `ABC_IIdL...`  6 bytes into the data!
         ImageEndianSaver save(image_,keLittle);
         IFD makerNote(image_,offset+6,false);
         makerNote.accept(visitor,makerDict());
     } else if ( image_.maker_ == kApple && buf.strequals("Apple iOS")) {
-        // Apple  MakerNote is an IFD `Apple iOS__.MM_._._.___.___._._.__..`  26 bytes into the data!
+        // IFD `Apple iOS__.MM_._._.___.___._._.__..`  26 bytes into the data!
         ImageEndianSaver save(image_,keBig);
         IFD makerNote(image_,offset+26,false);
         makerNote.accept(visitor,makerDict());
@@ -2409,6 +2411,11 @@ void IFD::visitMakerNote(Visitor& visitor,DataBuf& buf,uint64_t count,uint64_t o
         TiffImage makerNote(io,image_.maker_);
         makerNote.start_ = 12  ; // // "FUJIFILM" 0x0c000000
         makerNote.valid_ = true; // Valid without magic=42
+        makerNote.accept(visitor,makerDict());
+    } else if ( image_.maker_ == kPentax ) {
+        // IFD "PENTAX \0MM"  10 bytes into the data!
+        ImageEndianSaver save(image_,keBig);
+        IFD makerNote(image_,offset+10,false);
         makerNote.accept(visitor,makerDict());
     } else {
         bool   bNext = maker()  != kSony;                                        // Sony no trailing next
@@ -2483,6 +2490,8 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
                 case ktGps    : IFD(image_,offset,false).accept(visitor,gpsDict );break;
                 case ktExif   : IFD(image_,offset,false).accept(visitor,exifDict);break;
                 case ktMN     :         visitMakerNote(visitor,buff,count,offset);break;
+                case ktMNP    : if ( maker() == kPentax )
+                                        visitMakerNote(visitor,buff,count,offset);break;
                 default       : /* do nothing                                  */;break;
             }
 
@@ -2589,14 +2598,14 @@ void Jp2Image::accept(class Visitor& v)
             uint16_t u          = getByte(data,skip) ; skip++;
             uint16_t offsetSize = u >> 4  ;
             uint16_t lengthSize = u & 0xF ;
-            
+
             uint16_t indexSize  = 0       ;
                      u          = getByte(data,skip) ; skip++ ;
             if ( version == 1 || version == 2 ) {
                 indexSize = u & 0xF ;
             }
             // uint16_t baseOffsetSize = u >> 4;
-            
+
             uint32_t itemCount  = version < 2 ? getShort(data,skip,keBig) : getLong(data,skip,keBig);
             skip               += version < 2 ?               2           :         4               ;
             if ( offsetSize == 4 && lengthSize == 4 && ((length-16) % itemCount) == 0 ) {
@@ -2667,7 +2676,7 @@ void Jp2Image::accept(class Visitor& v)
                 jp2.accept(v);
             }
         }
-        
+
         // before leaving the meta box, process any discovered Exif metadata
         if ( boxName(box) == kJp2Box_meta && exifID_ && ilocExts.size() && v.isRecursive() ) {
             uint32_t exifOffset = 0 ;
@@ -2682,10 +2691,10 @@ void Jp2Image::accept(class Visitor& v)
                 io().seek(exifOffset);
                 DataBuf   head(20);
                 io().read(head);
-                
+
                 // hunt for "II" or "MM"
                 size_t punt = 0 ;
-                for ( size_t i = 0 ; i < head.size_ && !punt ; i++) {
+                for ( size_t i = 0 ; i < head.size_ && !punt ; i+=2) {
                     if ( head.pData_[i] == head.pData_[i+1] )
                         if ( head.pData_[i] == 'I' || head.pData_[i] == 'M' )
                             punt = i;
@@ -2776,7 +2785,7 @@ void ReportVisitor::visitTag
 
         std::string    name = tagName(tag,tagDict,28);
         std::string   value = buf.toString(type,count,image.endian_);
-        
+
         if ( printTag(name) ) {
             out() << indent()
                   << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
@@ -2889,7 +2898,7 @@ void ReportVisitor::visitChunk(Io& io,Image& image,uint64_t address
                 p++;
                 s++;
             }
-            
+
             // uncompress data
             uLongf uncLen;
             DataBuf decompressed(length*4);       // allocate buffer
@@ -2918,7 +2927,7 @@ void ReportVisitor::visitChunk(Io& io,Image& image,uint64_t address
 #endif
         out() << std::endl;
     }
-    
+
 
     if ( isRecursive() && std::strcmp(chunk,"eXIf") == 0 ) {
         DataBuf   data(length);  // read the whole chunk
@@ -2974,7 +2983,7 @@ void ReportVisitor::visitMrw(Io& io,Image& image,uint64_t address,std::string ch
         out() << indent() << stringFormat("%8d | %4s | %8d | ",address,chunk.c_str(),length)
               << snip(data.binaryToString(),length) << std::endl;
     }
-    
+
     if ( kpsRecursive && chunk == "TTW" ) {
         Io tiff(io,address+8,length);
         visitExif(tiff);
@@ -3066,7 +3075,7 @@ int main(int argc,const char* argv[])
         }
         // create the visitor
         ReportVisitor visitor(std::cout,option);
-        
+
         // step path arguments
         while ( arg < argc ) {
             // Open the image
@@ -3086,6 +3095,18 @@ int main(int argc,const char* argv[])
 void init()
 {
     if ( tiffDict.size() ) return; // don't do this twice!
+
+    maker["Canon"]                         = kCanon;
+    maker["NIKON CORPORATION"]             = kNikon;
+    maker["NIKON"]                         = kNikon;
+    maker["SONY"]                          = kSony ;
+    maker["AGFAPHOTO"]                     = kAgfa ;
+    maker["Apple"]                         = kApple;
+    maker["Panasonic"]                     = kPano ;
+    maker["Minolta Co., Ltd."]             = kMino ;
+    maker["OLYMPUS IMAGING CORP.  "]       = kOlym ;
+    maker["FUJIFILM"]                      = kFuji ;
+    maker["RICOH IMAGING COMPANY, LTD.  "] = kPentax;
 
     tiffDict  [ktGroup ] = "Image";
     tiffDict  [ ktExif ] = "ExifTag";
@@ -3139,6 +3160,7 @@ void init()
 
     exifDict  [ktGroup ] = "Photo";
     exifDict  [ ktMN   ] = "MakerNote";
+    exifDict  [ ktMNP  ] = "MakerNotePentax";
     exifDict  [ ktIOP  ] = "InteropTag";
     exifDict  [ 0x0001 ] = "InteropIndex";
     exifDict  [ 0x0002 ] = "InteropVersion";
@@ -3325,27 +3347,27 @@ void init()
     olymDict  [ 0x2040 ] = "ImageProcessing";
     olymDict  [ 0x2050 ] = "FocusInfo";
     olymDict  [ 0x3000 ] = "RawInfo";
-    
+
     olymCSDict[ktGroup ] = "OlympusCS";
     olymCSDict[ 0x0000 ] = "Version";
     olymCSDict[ 0x0100 ] = "PreviewImageValid";
     olymCSDict[ 0x0101 ] = "PreviewImageStart";
     olymCSDict[ 0x0102 ] = "PreviewImageLength";
     olymCSDict[ 0x0200 ] = "ExposureMode";
-    
+
     olymEQDict[ktGroup ] = "OlympusEQ";
     olymEQDict[ 0x0000 ] = "Version";
     olymEQDict[ 0x0100 ] = "CameraType";
     olymEQDict[ 0x0101 ] = "SerialNumber";
     olymEQDict[ 0x0102 ] = "InternalSerialNumber";
-    
+
     olymRDDict[ktGroup ] = "OlymRawDev";
     olymRDDict[ 0x0000 ] = "Version";
     olymRDDict[ 0x0100 ] = "ExposureBiasValue";
     olymRDDict[ 0x0101 ] = "WhiteBalanceValue";
     olymRDDict[ 0x0102 ] = "WBFineAdjustment";
     olymRDDict[ 0x0103 ] = "GrayPoint";
-    
+
     olymR2Dict[ktGroup ] = "OlymRawDev2";
     olymR2Dict[ 0x0000 ] = "Version";
     olymR2Dict[ 0x0100 ] = "ExposureBiasValue";
@@ -3353,21 +3375,35 @@ void init()
     olymR2Dict[ 0x0102 ] = "WhiteBalanceValue";
     olymR2Dict[ 0x0103 ] = "WBFineAdjustment";
     olymR2Dict[ 0x0104 ] = "GrayPoint";
-    
+
     olymIPDict[ktGroup ] = "OlymImgProc";
     olymIPDict[ 0x0000 ] = "Version";
     olymIPDict[ 0x0100 ] = "WB_RBLevels";
-    
+
     olymFIDict[ktGroup ] = "OlymFocusInfo";
     olymFIDict[ 0x0000 ] = "Version";
     olymFIDict[ 0x0209 ] = "AutoFocus";
     olymFIDict[ 0x0210 ] = "SceneDetect";
     olymFIDict[ 0x0211 ] = "SceneArea";
-    
+
     olymRoDict[ktGroup ] = "OlymRawInfo";
     olymRoDict[ 0x0000 ] = "Version";
     olymRoDict[ 0x0100 ] = "WB_RBLevelsUsed";
     olymRoDict[ 0x0110 ] = "WB_RBLevelsAuto";
+
+    pentaxDict[ktGroup ] = "Pentax";
+    pentaxDict[ 0x0000 ] = "Version";
+    pentaxDict[ 0x0001 ] = "Mode";
+    pentaxDict[ 0x0002 ] = "PreviewResolution";
+    pentaxDict[ 0x0003 ] = "PreviewLength";
+    pentaxDict[ 0x0004 ] = "PreviewOffset";
+    pentaxDict[ 0x0005 ] = "ModelID";
+    pentaxDict[ 0x0006 ] = "Date";
+    pentaxDict[ 0x0007 ] = "Time";
+    pentaxDict[ 0x0008 ] = "Quality";
+    pentaxDict[ 0x0009 ] = "Size";
+    pentaxDict[ 0x000e ] = "Flash";
+    pentaxDict[ 0x000d ] = "Focus";
 
     crwDict   [ktGroup ] = "CRW";
     crwDict   [ 0x0032 ] = "CanonColorInfo1";
