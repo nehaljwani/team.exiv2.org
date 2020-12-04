@@ -664,6 +664,9 @@ TagDict olymFIDict;
 TagDict olymRoDict;
 TagDict pentaxDict;
 
+std::map<maker_e,TagDict*> makerDicts;
+
+
 enum ktSpecial
 {   ktMN        = 0x927c
 ,   ktGps       = 0x8825
@@ -1049,18 +1052,8 @@ public:
 
     void setMaker(maker_e maker) {
         maker_ = maker;
-        switch ( maker_ ) {
-            case kCanon : makerDict_ = canonDict ; break;
-            case kNikon : makerDict_ = nikonDict ; break;
-            case kSony  : makerDict_ = sonyDict  ; break;
-            case kAgfa  : makerDict_ = agfaDict  ; break;
-            case kApple : makerDict_ = appleDict ; break;
-            case kPano  : makerDict_ = panoDict  ; break;
-            case kMino  : makerDict_ = minoDict  ; break;
-            case kFuji  : makerDict_ = fujiDict  ; break;
-            case kOlym  : makerDict_ = olymDict  ; break;
-            case kPentax: makerDict_ = pentaxDict; break;
-            default : /* do nothing */           ; break;
+        if ( makerDicts.find(maker) != makerDicts.end() ) {
+            makerDict_ = *makerDicts[maker];
         }
     }
 
@@ -3096,17 +3089,17 @@ void init()
 {
     if ( tiffDict.size() ) return; // don't do this twice!
 
-    maker["Canon"]                         = kCanon;
-    maker["NIKON CORPORATION"]             = kNikon;
-    maker["NIKON"]                         = kNikon;
-    maker["SONY"]                          = kSony ;
-    maker["AGFAPHOTO"]                     = kAgfa ;
-    maker["Apple"]                         = kApple;
-    maker["Panasonic"]                     = kPano ;
-    maker["Minolta Co., Ltd."]             = kMino ;
-    maker["OLYMPUS IMAGING CORP.  "]       = kOlym ;
-    maker["FUJIFILM"]                      = kFuji ;
-    maker["RICOH IMAGING COMPANY, LTD.  "] = kPentax;
+    maker["Canon"]                         = kCanon ; makerDicts[kCanon] = &canonDict;
+    maker["NIKON CORPORATION"]             = kNikon ; makerDicts[kNikon] = &nikonDict;
+    maker["NIKON"]                         = kNikon ; makerDicts[kCanon] = &nikonDict;
+    maker["SONY"]                          = kSony  ; makerDicts[kCanon] = &sonyDict;
+    maker["AGFAPHOTO"]                     = kAgfa  ; makerDicts[kCanon] = &agfaDict;
+    maker["Apple"]                         = kApple ; makerDicts[kCanon] = &appleDict;
+    maker["Panasonic"]                     = kPano  ; makerDicts[kCanon] = &panoDict;
+    maker["Minolta Co., Ltd."]             = kMino  ; makerDicts[kCanon] = &minoDict;
+    maker["OLYMPUS IMAGING CORP.  "]       = kOlym  ; makerDicts[kCanon] = &olymDict;
+    maker["FUJIFILM"]                      = kFuji  ; makerDicts[kCanon] = &fujiDict;
+    maker["RICOH IMAGING COMPANY, LTD.  "] = kPentax; makerDicts[kCanon] = &pentaxDict;
 
     tiffDict  [ktGroup ] = "Image";
     tiffDict  [ ktExif ] = "ExifTag";
