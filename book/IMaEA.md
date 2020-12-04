@@ -5408,7 +5408,7 @@ $ env MANPATH=$EXIV2HOME/man:$MANPATH man -t p | ps2pdf
 <div id="11-5"/>
 ### 11.5 Testing.
 
-This is discussed in detail here: [10 Testing](#10).
+This is discussed in detail here: [8 Test Suite](#8).
 <div id="11-6"/>
 ### 11.6 Samples
 
@@ -6121,6 +6121,99 @@ I strongly encourage you to download, build and install Exiv2.  The current (and
 There is substantial documentation provided with the Exiv2 project.  This book does not duplicate the project documentation, but compliments it by explaining how and why the code works. 
 
 The following two programs args.cpp and dmpf.cpp are based on similar utility programs on the Apollo Workstatation on which I worked during the 1980s.
+
+#### make test
+
+The code in the book has a simple test harness in test/run.sh.  When you build, you can run the tests with the command:
+
+```bash
+586 rmills@rmillsmbp:~/gnu/exiv2/team/book/build $ make tests
+Scanning dependencies of target tests
+20200717_221452.avif passed
+args passed
+avi.avi passed
+avif.avif passed
+Canon.cr2 passed
+Canon.crw passed
+Canon.jpg passed
+cr3.cr3 passed
+csv passed
+dmpf passed
+heic.heic passed
+IMG1.HEIC passed
+IMG_3578.HEIC passed
+mrw.mrw passed
+NEF.NEF passed
+NikonD5300.dcp passed
+ORF.ORF passed
+Stonehenge.jpg passed
+Stonehenge.tiff passed
+webp.webp passed
+-------------------
+Passed 20 Failed 0
+-------------------
+Built target tests
+587 rmills@rmillsmbp:~/gnu/exiv2/team/book/build $ 
+```
+
+The code to implement the tests is in test/run.sh
+
+```bash
+#!/usr/bin/env bash
+
+pass=0
+fail=0
+
+# Create reference and tmp directories
+if [ ! -e ../test/data ]; then mkdir ../test/data ; fi
+if [ ! -e ../test/tmp  ]; then mkdir ../test/tmp  ; fi
+
+report()
+{
+    stub=$1
+    # if there's no reference file, create one
+    # (make it easy to add tests or delete and rewrite all reference files)
+    if [ ! -e "../test/data/$stub" ]; then
+        cp "../test/tmp/$stub" ../test/data
+    fi
+    
+    diff -q "../test/tmp/$stub" "../test/data/$stub" >/dev/null 
+    if [ "$?" == "0" ]; then
+        echo "$stub passed";
+        pass=$((pass+1))
+    else
+        echo "$stub failed"
+        fail=$((fail+1))
+    fi
+}
+
+# test every file in ../files
+for i in $( ls ../files/* | sort --ignore-case ) ; do
+    stub=$(basename $i)
+    # dmpf and csv are utility tests
+    if [ $stub == dmpf -o $stub == csv -o $stub == args ]; then
+        ./$stub ../files/$stub 2>&1 > "../test/tmp/$stub"
+    else 
+        ./tvisitor -pRU "$i"   2&>1 > "../test/tmp/$stub"
+    fi
+    report $stub
+done
+
+echo -------------------
+echo Passed $pass Failed $fail
+echo -------------------
+
+# That's all Folks
+##
+```
+
+The CMake code in CMakeLists.txt is:
+
+```cmake
+# Test harness (in ../test)
+add_custom_target(test  COMMAND ../test/run.sh )
+add_custom_target(tests COMMAND ../test/run.sh )
+```
 
 #### args.cpp
 
