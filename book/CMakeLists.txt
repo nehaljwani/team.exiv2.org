@@ -63,6 +63,11 @@ if ( EXIV2_TEAM_USE_SANITIZERS AND NOT (CYGWIN OR MINGW OR MSYS OR MSVC) )
     endif()
 endif()
 
+
+# Test harness (in ../test)
+add_custom_target(test  COMMAND ../test/run.sh )
+add_custom_target(tests COMMAND ../test/run.sh )
+
 # This is intentionally commented off
 # See Chapter 10 Testing for discussion about building libtiff
 if ( 0 ) 
