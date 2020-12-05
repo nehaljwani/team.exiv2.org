@@ -1,0 +1,7 @@
+STRUCTURE OF AVI  FILE (II): ../files/avi.avi
+ address | chunk |   length | data 
+      12 | LIST  |      192 | hdrlavih8___5.__..._____..__._______.___
+     212 | JUNK  |     1816 | ________________________________________
+    2036 | LIST  |   670672 | movi00db~.__...|._.._...__._`....._.._..
+  672716 | idx1  |     2912 | 00db.___.___~.__00db.___..__b.__00db.___
+END: ../files/avi.avi

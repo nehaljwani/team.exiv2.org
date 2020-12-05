@@ -1,0 +1,157 @@
+STRUCTURE OF WEBP FILE (II): ../files/webp.webp
+ address | chunk |   length | data 
+      12 | VP8X  |       10 | ,___.._.._
+      30 | ICCP  |      560 | __.0ADBE..__mntrRGB XYZ .._._._._3_;acsp
+     598 | VP8   |   172008 | .G...*.. .>1..B.!..o.. ......]..6^~nQ...
+  172614 | EXIF  |    12040 | II*_.___.__.._.___..__..._.___ .__..._._
+  STRUCTURE OF TIFF FILE (II): ../files/webp.webp:172622->12040
+   address |    tag                              |      type |    count |    offset | value
+        10 | 0x0100 Exif.Image.ImageWidth        |      LONG |        1 |           | 1200
+        22 | 0x0101 Exif.Image.ImageLength       |      LONG |        1 |           | 800
+        34 | 0x0102 Exif.Image.BitsPerSample     |     SHORT |        3 |       194 | 8 8 8
+        46 | 0x010e Exif.Image.ImageDescription  |     ASCII |       37 |       200 |                                     
+        58 | 0x010f Exif.Image.Make              |     ASCII |       18 |       238 | NIKON CORPORATION
+        70 | 0x0110 Exif.Image.Model             |     ASCII |       12 |       256 | NIKON D5300
+        82 | 0x0112 Exif.Image.Orientation       |     SHORT |        1 |           | 1
+        94 | 0x011a Exif.Image.XResolution       |  RATIONAL |        1 |       268 | 300/1
+       106 | 0x011b Exif.Image.YResolution       |  RATIONAL |        1 |       276 | 300/1
+       118 | 0x0128 Exif.Image.ResolutionUnit    |     SHORT |        1 |           | 2
+       130 | 0x0131 Exif.Image.Software          |     ASCII |       11 |       284 | GIMP 2.9.5
+       142 | 0x0132 Exif.Image.DateTime          |     ASCII |       20 |       296 | 2016:08:13 10:54:16
+       154 | 0x0213 Exif.Image.YCbCrPositioning  |     SHORT |        1 |           | 1
+       166 | 0x8769 Exif.Image.ExifTag           |      LONG |        1 |           | 316
+    STRUCTURE OF TIFF FILE (II): ../files/webp.webp:172622->12040
+     address |    tag                              |      type |    count |    offset | value
+         318 | 0x829a Exif.Photo.ExposureTime      |  RATIONAL |        1 |       814 | 10/4000
+         330 | 0x829d Exif.Photo.FNumber           |  RATIONAL |        1 |       822 | 100/10
+         342 | 0x8822 Exif.Photo.ExposureProgram   |     SHORT |        1 |           | 0
+         354 | 0x8827 Exif.Photo.ISOSpeedRatings   |     SHORT |        1 |           | 200
+         366 | 0x8830 Exif.Photo.SensitivityType   |     SHORT |        1 |           | 2
+         378 | 0x9000 Exif.Photo.ExifVersion       | UNDEFINED |        4 |           | 0230
+         390 | 0x9003 Exif.Photo.DateTimeOriginal  |     ASCII |       20 |       830 | 2015:07:16 15:38:54
+         402 | 0x9004 Exif.Photo.DateTimeDigitized |     ASCII |       20 |       850 | 2015:07:16 15:38:54
+         414 | 0x9101 Exif.Photo.ComponentsConfi.. | UNDEFINED |        4 |           | ..._
+         426 | 0x9102 Exif.Photo.CompressedBitsP.. |  RATIONAL |        1 |       870 | 2/1
+         438 | 0x9204 Exif.Photo.ExposureBiasValue | SRATIONAL |        1 |       878 | 0/6
+         450 | 0x9205 Exif.Photo.MaxApertureValue  |  RATIONAL |        1 |       886 | 43/10
+         462 | 0x9207 Exif.Photo.MeteringMode      |     SHORT |        1 |           | 5
+         474 | 0x9208 Exif.Photo.LightSource       |     SHORT |        1 |           | 0
+         486 | 0x9209 Exif.Photo.Flash             |     SHORT |        1 |           | 16
+         498 | 0x920a Exif.Photo.FocalLength       |  RATIONAL |        1 |       894 | 440/10
+         510 | 0x927c Exif.Photo.MakerNote         | UNDEFINED |     3826 |       902 | Nikon_..__II*_.___9_+_._$___..__,_._ +++
+      STRUCTURE OF TIFF FILE (II): ../files/webp.webp:172622->12040:912->3816
+       address |    tag                              |      type |    count |    offset | value
+            10 | 0x002b Exif.Nikon.0x2b              |     ASCII |       36 |       698 | 48 49 48 48 0 0 2 0 0 0 0 0 0 0 0 0
+            22 | 0x002c Exif.Nikon.0x2c              |     ASCII |     1157 |       734 | 48 49 48 49 35 0 128 2 170 1 0 0 0 0 +++
+            34 | 0x002d Exif.Nikon.0x2d              |     ASCII |        8 |      1892 | 512 0 0
+            46 | 0x0032 Exif.Nikon.0x32              |     ASCII |       20 |      1900 | 48 49 48 48 1 0 0 0
+            58 | 0x0035 Exif.Nikon.0x35              |     ASCII |       16 |      1920 | 48 50 48 48 0 0
+            70 | 0x003b Exif.Nikon.0x3b              |     ASCII |       32 |      1936 | 256/256 256/256 256/256 256/256
+            82 | 0x003c Exif.Nikon.0x3c              |     ASCII |        2 |           | 1
+            94 | 0x009d Exif.Nikon.0x9d              |     ASCII |        2 |           | 0
+           106 | 0x00a3 Exif.Nikon.0xa3              |     UBYTE |        1 |           | 0
+           118 | 0x00b6 Exif.Nikon.0xb6              |     ASCII |       16 |      1968 | 0 0 0 0 0 0 0 0
+           130 | 0x00bb Exif.Nikon.0xbb              |     ASCII |       26 |      1984 | 48 50 48 48 255 255 255 0
+           142 | 0x00bf Exif.Nikon.0xbf              |     ASCII |        2 |           | 0
+           154 | 0x00c0 Exif.Nikon.0xc0              |     ASCII |       21 |      2010 | 60 1 12 0 144 1 12 0
+           166 | 0x0022 Exif.Nikon.0x22              |     SHORT |        1 |           | 65535
+           178 | 0x008a Exif.Nikon.0x8a              |     SHORT |        1 |           | 1
+           190 | 0x001e Exif.Nikon.ColorSpace        |     SHORT |        1 |           | 1
+           202 | 0x001b Exif.Nikon.CropHiSpeed       |     SHORT |        7 |      2032 | 0 6016 4016 6016 4016 0 0
+           214 | 0x0019 Exif.Nikon.ExposureBracket.. | SRATIONAL |        1 |      2046 | 0/6
+           226 | 0x000e Exif.Nikon.ExposureDiff      | UNDEFINED |        4 |           | _.._
+           238 | 0x001c Exif.Nikon.ExposureTuning    |     SHORT |        3 |      2054 | 0 1 6
+           250 | 0x0018 Exif.Nikon.FlashBracketComp  | UNDEFINED |        4 |           | _.._
+           262 | 0x0012 Exif.Nikon.FlashComp         | UNDEFINED |        4 |           | _.._
+           274 | 0x0009 Exif.Nikon.FlashDevice       |     ASCII |       20 |      2060 |                    
+           286 | 0x0017 Exif.Nikon.FlashExposureComp | UNDEFINED |        4 |           | _.._
+           298 | 0x00a8 Exif.Nikon.0xa8              | UNDEFINED |       49 |      2080 | 0106________________________________ +++
+           310 | 0x0087 Exif.Nikon.0x87              |     UBYTE |        1 |           | 0
+           322 | 0x0008 Exif.Nikon.FlashSetting      |     ASCII |       13 |      2130 |             
+           334 | 0x0007 Exif.Nikon.Focus             |     ASCII |        7 |      2144 | AF-A  
+           346 | 0x00b1 Exif.Nikon.0xb1              |     SHORT |        1 |           | 4
+           358 | 0x0013 Exif.Nikon.ISOSettings       |     SHORT |        2 |           | 0 200
+           370 | 0x0002 Exif.Nikon.ISOSpeed          |     SHORT |        2 |           | 0 200
+           382 | 0x0016 Exif.Nikon.ImageBoundary     |     SHORT |        4 |      2152 | 0 0 6000 4000
+           394 | 0x00a2 Exif.Nikon.0xa2              |      LONG |        1 |           | 6173648
+           406 | 0x0084 Exif.Nikon.0x84              |  RATIONAL |        4 |      2160 | 180/10 2500/10 35/10 63/10
+           418 | 0x008b Exif.Nikon.0x8b              | UNDEFINED |        4 |           | 7.._
+           430 | 0x0083 Exif.Nikon.0x83              |     UBYTE |        1 |           | 14
+           442 | 0x0095 Exif.Nikon.0x95              |     ASCII |        5 |      2192 | OFF 
+           454 | 0x000d Exif.Nikon.ProgramShift      | UNDEFINED |        4 |           | _.._
+           466 | 0x0004 Exif.Nikon.Quality           |     ASCII |        8 |      2198 | NORMAL 
+           478 | 0x009e Exif.Nikon.0x9e              |     SHORT |       10 |      2206 | 0 0 0 0 0 0 0 0 0 0
+           490 | 0x001d Exif.Nikon.SerialNumber      |     ASCII |        8 |      2226 | 2567806
+           502 | 0x0089 Exif.Nikon.0x89              |     SHORT |        1 |           | 0
+           514 | 0x00a7 Exif.Nikon.0xa7              |      LONG |        1 |           | 9608
+           526 | 0x00ab Exif.Nikon.0xab              |     ASCII |       16 |      2234 | AUTO(FLASH OFF)
+           538 | 0x0001 Exif.Nikon.Version           | UNDEFINED |        4 |           | 0211
+           550 | 0x000c Exif.Nikon.WB_RBLevels       |  RATIONAL |        4 |      2250 | 538/256 354/256 256/256 256/256
+           562 | 0x0005 Exif.Nikon.WhiteBalance      |     ASCII |       13 |      2282 | AUTO        
+           574 | 0x000b Exif.Nikon.WhiteBalanceBias  |    SSHORT |        2 |           | 0 0
+           586 | 0x00b7 Exif.Nikon.0xb7              | UNDEFINED |       30 |      2296 | 0100_...i.._._________________
+           598 | 0x0097 Exif.Nikon.0x97              | UNDEFINED |     1188 |      2326 | 0219.dU....W..2......:.......F.#$.I +++
+           610 | 0x00b8 Exif.Nikon.0xb8              | UNDEFINED |      172 |      3514 | 0100__e_..__________________________ +++
+           622 | 0x0025 Exif.Nikon.0x25              | UNDEFINED |       14 |      3686 | H..___H..___._
+           634 | 0x0098 Exif.Nikon.0x98              | UNDEFINED |       33 |      3700 | 0204.W....z.o..#[.....!o.x..E....
+           646 | 0x00b0 Exif.Nikon.0xb0              | UNDEFINED |       16 |      3734 | 0100____________
+           658 | 0x0023 Exif.Nikon.PictureControl    | UNDEFINED |       58 |      3750 | 0100STANDARD____________STANDARD____ +++
+          3750 | 0x0023 Exif.Nikon.PcVersion         |     ASCII |        4 |           | 0100
+          3754 | 0x0023 Exif.Nikon.PcName            |     ASCII |       20 |           | STANDARD
+          3774 | 0x0023 Exif.Nikon.PcBase            |     ASCII |       20 |           | STANDARD
+          3798 | 0x0023 Exif.Nikon.PcAdjust          |     UBYTE |        1 |           | 0
+          3799 | 0x0023 Exif.Nikon.PcQuickAdjust     |     UBYTE |        1 |           | 255
+          3800 | 0x0023 Exif.Nikon.PcSharpness       |     UBYTE |        1 |           | 0
+          3801 | 0x0023 Exif.Nikon.PcContrast        |     UBYTE |        1 |           | 0
+          3802 | 0x0023 Exif.Nikon.PcBrightness      |     UBYTE |        1 |           | 128
+          3803 | 0x0023 Exif.Nikon.PcSaturation      |     UBYTE |        1 |           | 0
+          3804 | 0x0023 Exif.Nikon.PcHueAdjustment   |     UBYTE |        1 |           | 128
+          3805 | 0x0023 Exif.Nikon.PcFilterEffect    |     UBYTE |        1 |           | 255
+          3806 | 0x0023 Exif.Nikon.PcFilterEffect    |     UBYTE |        1 |           | 255
+          3807 | 0x0023 Exif.Nikon.PcToningSaturat.. |     UBYTE |        1 |           | 255
+           670 | 0x001f Exif.Nikon.0x1f              | UNDEFINED |        8 |      3808 | 0100..__
+           682 | 0x0024 Exif.Nikon.0x24              | UNDEFINED |        4 |           | __._
+      END: ../files/webp.webp:172622->12040:912->3816
+         522 | 0x9286 Exif.Photo.UserComment       | UNDEFINED |       44 |      4728 | ________                             +++
+         534 | 0x9290 Exif.Photo.0x9290            |     ASCII |        3 |           | 00
+         546 | 0x9291 Exif.Photo.0x9291            |     ASCII |        3 |           | 00
+         558 | 0x9292 Exif.Photo.0x9292            |     ASCII |        3 |           | 00
+         570 | 0xa000 Exif.Photo.FlashpixVersion   | UNDEFINED |        4 |           | 0100
+         582 | 0xa001 Exif.Photo.ColorSpace        |     SHORT |        1 |           | 1
+         594 | 0xa002 Exif.Photo.PixelXDimension   |      LONG |        1 |           | 6000
+         606 | 0xa003 Exif.Photo.PixelYDimension   |      LONG |        1 |           | 4000
+         618 | 0xa217 Exif.Photo.0xa217            |     SHORT |        1 |           | 2
+         630 | 0xa300 Exif.Photo.FileSource        | UNDEFINED |        1 |           | .
+         642 | 0xa301 Exif.Photo.SceneType         | UNDEFINED |        1 |           | .
+         654 | 0xa302 Exif.Photo.0xa302            | UNDEFINED |        8 |      4772 | ._.__...
+         666 | 0xa401 Exif.Photo.CustomRendered    |     SHORT |        1 |           | 0
+         678 | 0xa402 Exif.Photo.ExposureMode      |     SHORT |        1 |           | 0
+         690 | 0xa403 Exif.Photo.WhiteBalance      |     SHORT |        1 |           | 0
+         702 | 0xa404 Exif.Photo.0xa404            |  RATIONAL |        1 |      4780 | 1/1
+         714 | 0xa405 Exif.Photo.0xa405            |     SHORT |        1 |           | 66
+         726 | 0xa406 Exif.Photo.SceneCaptureType  |     SHORT |        1 |           | 0
+         738 | 0xa407 Exif.Photo.0xa407            |     SHORT |        1 |           | 0
+         750 | 0xa408 Exif.Photo.Contrast          |     SHORT |        1 |           | 0
+         762 | 0xa409 Exif.Photo.Saturation        |     SHORT |        1 |           | 0
+         774 | 0xa40a Exif.Photo.Sharpness         |     SHORT |        1 |           | 0
+         786 | 0xa40c Exif.Photo.0xa40c            |     SHORT |        1 |           | 0
+         798 | 0xa420 Exif.Photo.0xa420            |     ASCII |       33 |      4788 | 090caaf2c085f3e102513b24750041aa
+    END: ../files/webp.webp:172622->12040
+       178 | 0x8825 Exif.Image.GPSTag            |      LONG |        1 |           | 4822
+    STRUCTURE OF TIFF FILE (II): ../files/webp.webp:172622->12040
+     address |    tag                              |      type |    count |    offset | value
+        4824 | 000000 Exif.GPSInfo.GPSVersionID    |     UBYTE |        4 |           | 2 3 0 0
+        4836 | 0x0001 Exif.GPSInfo.GPSLatitudeRef  |     ASCII |        2 |           | N
+        4848 | 0x0002 Exif.GPSInfo.GPSLatitude     |  RATIONAL |        3 |      4960 | 51/1 106969/10000 0/1
+        4860 | 0x0003 Exif.GPSInfo.GPSLongitudeRef |     ASCII |        2 |           | W
+        4872 | 0x0004 Exif.GPSInfo.GPSLongitude    |  RATIONAL |        3 |      4984 | 1/1 495984/10000 0/1
+        4884 | 0x0005 Exif.GPSInfo.GPSAltitudeRef  |     UBYTE |        1 |           | 0
+        4896 | 0x0006 Exif.GPSInfo.GPSAltitude     |  RATIONAL |        1 |      5008 | 97/1
+        4908 | 0x0007 Exif.GPSInfo.GPSTimeStamp    |  RATIONAL |        3 |      5016 | 14/1 38/1 5588/100
+        4920 | 0x0008 Exif.GPSInfo.GPSSatellites   |     ASCII |        3 |           | 09
+        4932 | 0x0012 Exif.GPSInfo.GPSMapDatum     |     ASCII |       17 |      5040 | WGS-84          
+        4944 | 0x001d Exif.GPSInfo.GPSDateStamp    |     ASCII |       11 |      5058 | 2015:07:16
+    END: ../files/webp.webp:172622->12040
+  END: ../files/webp.webp:172622->12040
+  184662 | XMP   |     2864 | <?xpacket begin="..." id="W5M0MpCehiHzre
+END: ../files/webp.webp

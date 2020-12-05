@@ -1,0 +1,64 @@
+STRUCTURE OF MRW FILE (MM): ../files/mrw.mrw
+ address | kind |   length | data 
+       0 |  MRM |    70136 | ...Z...Z.......M...7...c......f........
+       8 |  PRD |       24 | 27790001......._..R____.
+      40 |  TTW |    69496 | MM_*___._..__.___.__._.._.___.__...._.__
+  STRUCTURE OF TIFF FILE (MM): ../files/mrw.mrw:48->69496
+   address |    tag                              |      type |    count |    offset | value
+        10 | 0x0100 Exif.Image.ImageWidth        |      LONG |        1 |           | 655360
+        22 | 0x0101 Exif.Image.ImageLength       |      LONG |        1 |           | 2147942400
+        34 | 0x0103 Exif.Image.Compression       |     SHORT |        1 |           | 0
+        46 | 0x010e Exif.Image.ImageDescription  |     ASCII |        8 |       134 | DCF 1.0
+        58 | 0x010f Exif.Image.Make              |     ASCII |       18 |       142 | Minolta Co., Ltd.
+        70 | 0x0110 Exif.Image.Model             |     ASCII |       10 |       160 | DiMAGE 7i
+        82 | 0x0131 Exif.Image.Software          |     ASCII |       10 |       170 | Ver.1.10e
+        94 | 0x0132 Exif.Image.DateTime          |     ASCII |       20 |       180 | 2005:03:24 14:56:52
+       106 | 0x8769 Exif.Image.ExifTag           |      LONG |        1 |           | 4026531840
+    STRUCTURE OF TIFF FILE (MM): ../files/mrw.mrw:48->69496
+     address |    tag                              |      type |    count |    offset | value
+         242 | 0x829a Exif.Photo.ExposureTime      |  RATIONAL |        1 |       622 | 1/250
+         254 | 0x829d Exif.Photo.FNumber           |  RATIONAL |        1 |       630 | 56/10
+         266 | 0x8822 Exif.Photo.ExposureProgram   |     SHORT |        1 |           | 0
+         278 | 0x8827 Exif.Photo.ISOSpeedRatings   |     SHORT |        1 |           | 0
+         290 | 0x9000 Exif.Photo.ExifVersion       | UNDEFINED |        4 |           | 0220
+         302 | 0x9003 Exif.Photo.DateTimeOriginal  |     ASCII |       20 |       582 | 2005:03:24 14:56:52
+         314 | 0x9004 Exif.Photo.DateTimeDigitized |     ASCII |       20 |       602 | 2005:03:24 14:56:52
+         326 | 0x9203 Exif.Photo.0x9203            | SRATIONAL |        1 |       670 | 78/10
+         338 | 0x9204 Exif.Photo.ExposureBiasValue | SRATIONAL |        1 |       638 | 0/10
+         350 | 0x9205 Exif.Photo.MaxApertureValue  |  RATIONAL |        1 |       646 | 30/10
+         362 | 0x9207 Exif.Photo.MeteringMode      |     SHORT |        1 |           | 0
+         374 | 0x9208 Exif.Photo.LightSource       |     SHORT |        1 |           | 0
+         386 | 0x9209 Exif.Photo.Flash             |     SHORT |        1 |           | 0
+         398 | 0x920a Exif.Photo.FocalLength       |  RATIONAL |        1 |       654 | 2193/256
+         410 | 0x9214 Exif.Photo.0x9214            |     SHORT |        4 |       678 | 1280 960 320 384
+         422 | 0x927c Exif.Photo.MakerNote         | UNDEFINED |    12252 |       686 | _.___.___.MLT0_._.___.__.._._.__,.__ +++
+      STRUCTURE OF TIFF FILE (MM): ../files/mrw.mrw:48->69496
+       address |    tag                              |      type |    count |    offset | value
+           688 | 000000 Exif.Minolta.BlockDescriptor | UNDEFINED |        4 |           | 0TLM
+           700 | 0x0003 Exif.Minolta.0x3             | UNDEFINED |      224 |       788 | _______.___________________________0 +++
+           712 | 0x0010 Exif.Minolta.AutoFocus       | UNDEFINED |    11492 |      1012 | ........___.____.................... +++
+           724 | 0x0020 Exif.Minolta.0x20            | UNDEFINED |      394 |     12504 | _._.._w.o.s_s..___.. ...._________(0 +++
+           736 | 0x0040 Exif.Minolta.ImageSize       |      LONG |        1 |           | 2149095168
+           748 | 0x0088 Exif.Minolta.0x88            |      LONG |        1 |           | 2201157632
+           760 | 0x0089 Exif.Minolta.0x89            |      LONG |        1 |           | 4074438656
+           772 | 0x0e00 Exif.Minolta.0xe00           | UNDEFINED |       40 |     12898 | PrintIM_0100___._._._._..___._.___..____
+      END: ../files/mrw.mrw:48->69496
+         434 | 0xa001 Exif.Photo.ColorSpace        |     SHORT |        1 |           | 0
+         446 | 0xa401 Exif.Photo.CustomRendered    |     SHORT |        1 |           | 0
+         458 | 0xa402 Exif.Photo.ExposureMode      |     SHORT |        1 |           | 0
+         470 | 0xa403 Exif.Photo.WhiteBalance      |     SHORT |        1 |           | 0
+         482 | 0xa404 Exif.Photo.0xa404            |  RATIONAL |        1 |       662 | 0/1
+         494 | 0xa405 Exif.Photo.0xa405            |     SHORT |        1 |           | 0
+         506 | 0xa406 Exif.Photo.SceneCaptureType  |     SHORT |        1 |           | 0
+         518 | 0xa407 Exif.Photo.0xa407            |     SHORT |        1 |           | 0
+         530 | 0xa408 Exif.Photo.Contrast          |     SHORT |        1 |           | 0
+         542 | 0xa409 Exif.Photo.Saturation        |     SHORT |        1 |           | 0
+         554 | 0xa40a Exif.Photo.Sharpness         |     SHORT |        1 |           | 0
+         566 | 0xa40c Exif.Photo.0xa40c            |     SHORT |        1 |           | 0
+    END: ../files/mrw.mrw:48->69496
+       118 | 0xc4a5 Exif.Image.0xc4a5            | UNDEFINED |       40 |       200 | PrintIM_0250___._._._._..___._.___..____
+  END: ../files/mrw.mrw:48->69496
+   69544 |  WBG |       12 | .....p._._.p
+   69564 |  RIF |       60 | ._____0__....~.|...h...;.i.@...b_L_K_._K
+   69632 |  PAD |      504 | ________________________________________
+END: ../files/mrw.mrw

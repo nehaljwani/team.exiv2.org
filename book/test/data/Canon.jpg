@@ -1,0 +1,113 @@
+STRUCTURE OF JPEG FILE (II): ../files/Canon.jpg
+ address | marker       |  length | signature
+       0 | 0xffd8 SOI  
+       2 | 0xffe1 APP1  |   14360 | Exif__II*_.___._..._ ___.___..._.___.___
+  STRUCTURE OF TIFF FILE (II): ../files/Canon.jpg:12->14352
+   address |    tag                              |      type |    count |    offset | value
+        10 | 0x010e Exif.Image.ImageDescription  |     ASCII |       32 |       146 |                                
+        22 | 0x010f Exif.Image.Make              |     ASCII |        6 |       178 | Canon
+        34 | 0x0110 Exif.Image.Model             |     ASCII |       16 |       184 | Canon IXUS 185 
+        46 | 0x0112 Exif.Image.Orientation       |     SHORT |        1 |           | 1
+        58 | 0x011a Exif.Image.XResolution       |  RATIONAL |        1 |       200 | 180/1
+        70 | 0x011b Exif.Image.YResolution       |  RATIONAL |        1 |       208 | 180/1
+        82 | 0x0128 Exif.Image.ResolutionUnit    |     SHORT |        1 |           | 2
+        94 | 0x0132 Exif.Image.DateTime          |     ASCII |       20 |       216 | 2020:02:02 10:34:18
+       106 | 0x0213 Exif.Image.YCbCrPositioning  |     SHORT |        1 |           | 2
+       118 | 0x8769 Exif.Image.ExifTag           |      LONG |        1 |           | 236
+    STRUCTURE OF TIFF FILE (II): ../files/Canon.jpg:12->14352
+     address |    tag                              |      type |    count |    offset | value
+         238 | 0x829a Exif.Photo.ExposureTime      |  RATIONAL |        1 |       686 | 1/60
+         250 | 0x829d Exif.Photo.FNumber           |  RATIONAL |        1 |       694 | 32/10
+         262 | 0x8827 Exif.Photo.ISOSpeedRatings   |     SHORT |        1 |           | 640
+         274 | 0x8830 Exif.Photo.SensitivityType   |     SHORT |        1 |           | 4
+         286 | 0x9000 Exif.Photo.ExifVersion       | UNDEFINED |        4 |           | 0230
+         298 | 0x9003 Exif.Photo.DateTimeOriginal  |     ASCII |       20 |       702 | 2020:02:02 10:34:18
+         310 | 0x9004 Exif.Photo.DateTimeDigitized |     ASCII |       20 |       722 | 2020:02:02 10:34:18
+         322 | 0x9101 Exif.Photo.ComponentsConfi.. | UNDEFINED |        4 |           | ..._
+         334 | 0x9102 Exif.Photo.CompressedBitsP.. |  RATIONAL |        1 |       742 | 3/1
+         346 | 0x9201 Exif.Photo.0x9201            | SRATIONAL |        1 |       750 | 189/32
+         358 | 0x9202 Exif.Photo.0x9202            |  RATIONAL |        1 |       758 | 107/32
+         370 | 0x9204 Exif.Photo.ExposureBiasValue | SRATIONAL |        1 |       766 | 0/3
+         382 | 0x9205 Exif.Photo.MaxApertureValue  |  RATIONAL |        1 |       774 | 107/32
+         394 | 0x9207 Exif.Photo.MeteringMode      |     SHORT |        1 |           | 5
+         406 | 0x9209 Exif.Photo.Flash             |     SHORT |        1 |           | 16
+         418 | 0x920a Exif.Photo.FocalLength       |  RATIONAL |        1 |       782 | 5000/1000
+         430 | 0x927c Exif.Photo.MakerNote         | UNDEFINED |     5862 |       790 | ._._._2___..__._._.___..__._._"___.. +++
+      STRUCTURE OF TIFF FILE (II): ../files/Canon.jpg:12->14352
+       address |    tag                              |      type |    count |    offset | value
+           792 | 0x0001 Exif.Canon.Macro             |     SHORT |       50 |      1168 | 100 2 0 3 0 0 0 4 65535 1 0 0 0 0 0  +++
+           804 | 0x0003 Exif.Canon.Quality           |     SHORT |        4 |      1268 | 0 0 0 0
+           816 | 0x0004 Exif.Canon.FlashMode         |     SHORT |       34 |      1276 | 68 54 192 96 107 189 0 0 0 0 0 0 0 0 +++
+           828 | 0x0006 Exif.Canon.0x6               |     ASCII |       19 |      1344 | IMG:IXUS 185  JPEG
+           840 | 0x0007 Exif.Canon.FocusMode         |     ASCII |       22 |      1364 | Firmware Version 1.00
+           852 | 0x0008 Exif.Canon.0x8               |      LONG |        1 |           | 1200247
+           864 | 0x000d Exif.Canon.Contrast          |      LONG |     1001 |      1386 | 4004 20 11 2 4 232 172 2 3 4 404 36  +++
+           876 | 0x0010 Exif.Canon.ISOSpeed          |      LONG |        1 |           | 68485120
+           888 | 0x0013 Exif.Canon.0x13              |     SHORT |        4 |      5390 | 0 0 0 0
+           900 | 0x0018 Exif.Canon.0x18              |     UBYTE |      256 |      5398 | 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0  +++
+           912 | 0x0019 Exif.Canon.0x19              |     SHORT |        1 |           | 1
+           924 | 0x001c Exif.Canon.0x1c              |     SHORT |        1 |           | 0
+           936 | 0x001d Exif.Canon.0x1d              |     SHORT |       16 |      5654 | 32 1 0 2 2 2 2 0 0 0 0 0 0 0 0 0
+           948 | 0x001e Exif.Canon.0x1e              |      LONG |        1 |           | 16777472
+           960 | 0x001f Exif.Canon.0x1f              |     SHORT |       69 |      5686 | 138 2 0 4 8 0 0 0 0 0 0 0 0 0 0 0 0  +++
+           972 | 0x0022 Exif.Canon.0x22              |     SHORT |      208 |      5824 | 416 0 0 16 8 1 1 640 480 0 0 0 0 0 8 +++
+           984 | 0x0023 Exif.Canon.0x23              |      LONG |        2 |      6240 | 8 0
+           996 | 0x0027 Exif.Canon.0x27              |     SHORT |       36 |      6248 | 10 1 65535 0 0 72 1 32 0 65535 0 0 1 +++
+          1008 | 0x0028 Exif.Canon.0x28              |     UBYTE |       16 |      6320 | 80 246 150 144 175 247 161 40 189 43 +++
+          1020 | 0x002d Exif.Canon.0x2d              |      LONG |        1 |           | 0
+          1032 | 0x002e Exif.Canon.0x2e              |     SHORT |       35 |      6336 | 70 32767 32767 65535 65535 32767 327 +++
+          1044 | 0x002f Exif.Canon.0x2f              |     SHORT |       34 |      6406 | 68 2 65535 65535 65535 65535 65535 6 +++
+          1056 | 0x0031 Exif.Canon.0x31              |     SHORT |        6 |      6474 | 12 1 2 0 3 4
+          1068 | 0x0033 Exif.Canon.0x33              |      LONG |        4 |      6486 | 3687768213 681659330 2294033341 1305 +++
+          1080 | 0x0035 Exif.Canon.0x35              |     SLONG |        4 |      6502 | 16 0 32766 0
+          1092 | 0x0037 Exif.Canon.0x37              |      LONG |        2 |      6518 | 8 0
+          1104 | 0x0038 Exif.Canon.0x38              | UNDEFINED |        8 |      6526 | .___..._
+          1116 | 0x003c Exif.Canon.0x3c              |     SHORT |       49 |      6534 | 98 5 9 1 5152 3864 5152 3864 370 102 +++
+          1128 | 0x003f Exif.Canon.0x3f              |      LONG |        1 |           | 0
+          1140 | 0x009a Exif.Canon.0x9a              |      LONG |        5 |      6632 | 2 5152 3864 0 0
+          1152 | 0x00d0 Exif.Canon.0xd0              |      LONG |        1 |           | 0
+      END: ../files/Canon.jpg:12->14352
+         442 | 0x9286 Exif.Photo.UserComment       | UNDEFINED |      264 |      6652 | ____________________________________ +++
+         454 | 0x9290 Exif.Photo.0x9290            |     ASCII |        3 |           | 94
+         466 | 0x9291 Exif.Photo.0x9291            |     ASCII |        3 |           | 94
+         478 | 0x9292 Exif.Photo.0x9292            |     ASCII |        3 |           | 94
+         490 | 0xa000 Exif.Photo.FlashpixVersion   | UNDEFINED |        4 |           | 0100
+         502 | 0xa001 Exif.Photo.ColorSpace        |     SHORT |        1 |           | 1
+         514 | 0xa002 Exif.Photo.PixelXDimension   |     SHORT |        1 |           | 5152
+         526 | 0xa003 Exif.Photo.PixelYDimension   |     SHORT |        1 |           | 3864
+         538 | 0xa005 Exif.Photo.InteropTag        |      LONG |        1 |           | 6940
+         550 | 0xa20e Exif.Photo.0xa20e            |  RATIONAL |        1 |      6916 | 5152000/243
+         562 | 0xa20f Exif.Photo.0xa20f            |  RATIONAL |        1 |      6924 | 3864000/183
+         574 | 0xa210 Exif.Photo.0xa210            |     SHORT |        1 |           | 2
+         586 | 0xa217 Exif.Photo.0xa217            |     SHORT |        1 |           | 2
+         598 | 0xa300 Exif.Photo.FileSource        | UNDEFINED |        1 |           | .
+         610 | 0xa401 Exif.Photo.CustomRendered    |     SHORT |        1 |           | 0
+         622 | 0xa402 Exif.Photo.ExposureMode      |     SHORT |        1 |           | 0
+         634 | 0xa403 Exif.Photo.WhiteBalance      |     SHORT |        1 |           | 0
+         646 | 0xa404 Exif.Photo.0xa404            |  RATIONAL |        1 |      6932 | 5152/5152
+         658 | 0xa406 Exif.Photo.SceneCaptureType  |     SHORT |        1 |           | 0
+         670 | 0xa430 Exif.Photo.0xa430            |     ASCII |        1 |           | 
+    END: ../files/Canon.jpg:12->14352
+       130 | 0x8825 Exif.Image.GPSTag            |      LONG |        1 |           | 6994
+    STRUCTURE OF TIFF FILE (II): ../files/Canon.jpg:12->14352
+     address |    tag                              |      type |    count |    offset | value
+        6996 | 000000 Exif.GPSInfo.GPSVersionID    |     UBYTE |        4 |           | 2 2 0 0
+        7008 | 0x0001 Exif.GPSInfo.GPSLatitudeRef  |     ASCII |        2 |           | N
+        7020 | 0x0002 Exif.GPSInfo.GPSLatitude     |  RATIONAL |        3 |      7132 | 51/1 23/1 12/1
+        7032 | 0x0003 Exif.GPSInfo.GPSLongitudeRef |     ASCII |        2 |           | W
+        7044 | 0x0004 Exif.GPSInfo.GPSLongitude    |  RATIONAL |        3 |      7156 | 0/1 44/1 26/1
+        7056 | 0x0005 Exif.GPSInfo.GPSAltitudeRef  |     UBYTE |        1 |           | 0
+        7068 | 0x0006 Exif.GPSInfo.GPSAltitude     |  RATIONAL |        1 |      7180 | 10460/100
+        7080 | 0x0007 Exif.GPSInfo.GPSTimeStamp    |  RATIONAL |        3 |      7188 | 10/1 34/1 18/1
+        7092 | 0x0012 Exif.GPSInfo.GPSMapDatum     |     ASCII |        7 |      7212 | WGS-84
+        7104 | 0x001b Exif.GPSInfo.0x1b            | UNDEFINED |       18 |      7220 | ASCII___HYBRID-FIX
+        7116 | 0x001d Exif.GPSInfo.GPSDateStamp    |     ASCII |       20 |      7238 | 2020:02:02 10:34:18
+    END: ../files/Canon.jpg:12->14352
+  END: ../files/Canon.jpg:12->14352
+   14364 | 0xffe1 APP1  |    2398 | http://ns.adobe.com/xap/1.0/_<?xpacket b
+   16764 | 0xffe2 APP2  |      96 | MPF_II*_.___.__.._.___0100..._.___.___..
+   16862 | 0xffdb DQT   |     132 | _.......................................
+   16996 | 0xffc0 SOF0  |      17 | .... ..!_........
+   17015 | 0xffc4 DHT   |     418 | __........________............_.........
+   17435 | 0xffda SOS   |      12 | .._...._?_.d
+END: ../files/Canon.jpg

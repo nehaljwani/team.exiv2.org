@@ -1,0 +1,20 @@
+STRUCTURE OF TIFF FILE (II): ../files/NikonD5300.dcp
+ address |    tag                              |      type |    count |    offset | value
+      10 | 0xc614 Exif.DNG.UniqueCameraModel   |     ASCII |       12 |       218 | Nikon D5300
+      22 | 0xc621 Exif.DNG.ColorMatrix1        | SRATIONAL |        9 |       230 | 9672/10000 4294963143/10000 64/10000 +++
+      34 | 0xc622 Exif.DNG.ColorMatrix2        | SRATIONAL |        9 |       302 | 6988/10000 4294965912/10000 42949665 +++
+      46 | 0xc65a Exif.DNG.CalibrationIllumi.. |     SHORT |        1 |           | 17
+      58 | 0xc65b Exif.DNG.CalibrationIllumi.. |     SHORT |        1 |           | 21
+      70 | 0xc6f4 Exif.DNG.ProfileCalibratio.. |     ASCII |       10 |       374 | com.adobe
+      82 | 0xc6f8 Exif.DNG.ProfileName         |     ASCII |       17 |       384 | Camera Landscape
+      94 | 0xc6fc Exif.DNG.ProfileToneCurve    |     FLOAT |      128 |       402 | 0 0 983631792 989550973 992020400 99 +++
+     106 | 0xc6fd Exif.DNG.ProfileEmbedPolicy  |      LONG |        1 |           | 1
+     118 | 0xc6fe Exif.DNG.ProfileCopyright    |     ASCII |       35 |       914 | Copyright 2012 Adobe Systems, Inc.
+     130 | 0xc714 Exif.DNG.ForwardMatrix1      | SRATIONAL |        9 |       950 | 7978/10000 1352/10000 313/10000 2880 +++
+     142 | 0xc715 Exif.DNG.ForwardMatrix2      | SRATIONAL |        9 |      1022 | 7978/10000 1352/10000 313/10000 2880 +++
+     154 | 0xc725 Exif.DNG.ProfileLookTableD.. |      LONG |        3 |      1094 | 90 16 16
+     166 | 0xc726 Exif.DNG.ProfileLookTableD.. |     FLOAT |    69120 |      1106 | 0 1065353216 1065353216 1109273108 1 +++
+     178 | 0xc7a4 Exif.DNG.ProfileLookTableE.. |      LONG |        1 |           | 1
+     190 | 0xc7a5 Exif.DNG.BaselineExposureO.. | SRATIONAL |        1 |    277586 | 4294967261/100
+     202 | 0xc7a6 Exif.DNG.DefaultBlackRender  |      LONG |        1 |           | 1
+END: ../files/NikonD5300.dcp

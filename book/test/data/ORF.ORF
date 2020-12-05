@@ -1,0 +1,416 @@
+STRUCTURE OF TIFF FILE (II): ../files/ORF.ORF
+ address |    tag                              |      type |    count |    offset | value
+      10 | 0x0100 Exif.Image.ImageWidth        |      LONG |        1 |           | 4100
+      22 | 0x0101 Exif.Image.ImageLength       |      LONG |        1 |           | 3084
+      34 | 0x0102 Exif.Image.BitsPerSample     |     SHORT |        1 |           | 16
+      46 | 0x0103 Exif.Image.Compression       |     SHORT |        1 |           | 1
+      58 | 0x0106 Exif.Image.PhotometricInte.. |     SHORT |        1 |           | 1
+      70 | 0x010e Exif.Image.ImageDescription  |     ASCII |       32 |      2492 | OLYMPUS DIGITAL CAMERA         
+      82 | 0x010f Exif.Image.Make              |     ASCII |       24 |      2524 | OLYMPUS IMAGING CORP.  
+      94 | 0x0110 Exif.Image.Model             |     ASCII |       17 |      2548 | E-600           
+     106 | 0x0111 Exif.Image.StripOffsets      |      LONG |        1 |           | 1455616
+     118 | 0x0112 Exif.Image.Orientation       |     SHORT |        1 |           | 1
+     130 | 0x0115 Exif.Image.SamplesPerPixel   |     SHORT |        1 |           | 1
+     142 | 0x0116 Exif.Image.RowsPerStrip      |      LONG |        1 |           | 3084
+     154 | 0x0117 Exif.Image.StripByteCounts   |      LONG |        1 |           | 10808675
+     166 | 0x011a Exif.Image.XResolution       |  RATIONAL |        1 |      1136 | 314/1
+     178 | 0x011b Exif.Image.YResolution       |  RATIONAL |        1 |      1144 | 314/1
+     190 | 0x011c Exif.Image.PlanarConfigura.. |     SHORT |        1 |           | 1
+     202 | 0x0128 Exif.Image.ResolutionUnit    |     SHORT |        1 |           | 2
+     214 | 0x0131 Exif.Image.Software          |     ASCII |       32 |      2566 | Version 1.0                    
+     226 | 0x0132 Exif.Image.DateTime          |     ASCII |       20 |      2472 | 2010:04:18 17:43:07
+     238 | 0x8769 Exif.Image.ExifTag           |      LONG |        1 |           | 266
+  STRUCTURE OF TIFF FILE (II): ../files/ORF.ORF
+   address |    tag                              |      type |    count |    offset | value
+       268 | 0x829a Exif.Photo.ExposureTime      |  RATIONAL |        1 |      3332 | 1/400
+       280 | 0x829d Exif.Photo.FNumber           |  RATIONAL |        1 |      3372 | 100/10
+       292 | 0x8822 Exif.Photo.ExposureProgram   |     SHORT |        1 |           | 1
+       304 | 0x8827 Exif.Photo.ISOSpeedRatings   |     SHORT |        1 |           | 100
+       316 | 0x9000 Exif.Photo.ExifVersion       | UNDEFINED |        4 |           | 0221
+       328 | 0x9003 Exif.Photo.DateTimeOriginal  |     ASCII |       20 |      3289 | 2010:04:18 17:43:07
+       340 | 0x9004 Exif.Photo.DateTimeDigitized |     ASCII |       20 |      3309 | 2010:04:18 17:43:07
+       352 | 0x9204 Exif.Photo.ExposureBiasValue | SRATIONAL |        1 |      3340 | 0/10
+       364 | 0x9205 Exif.Photo.MaxApertureValue  |  RATIONAL |        1 |      3348 | 925/256
+       376 | 0x9207 Exif.Photo.MeteringMode      |     SHORT |        1 |           | 5
+       388 | 0x9208 Exif.Photo.LightSource       |     SHORT |        1 |           | 9
+       400 | 0x9209 Exif.Photo.Flash             |     SHORT |        1 |           | 8
+       412 | 0x920a Exif.Photo.FocalLength       |  RATIONAL |        1 |      3364 | 14/1
+       424 | 0x927c Exif.Photo.MakerNote         | UNDEFINED |  1452144 |      3472 | OLYMPUS_II._.__.._..__..___.._.___.. +++
+    STRUCTURE OF  FILE (II): ../files/ORF.ORF:3472->1452144
+          14 | 0x0100 Exif.Olympus.ThumbnailImage  | UNDEFINED |     4892 |     11792 | ...._._............................. +++
+          26 | 0x0200 Exif.Olympus.SpecialMode     |      LONG |        3 |      4256 | 0 0 0
+          38 | 0x0209 Exif.Olympus.0x209           | UNDEFINED |       32 |      4268 | OLYMPUS DIGITAL CAMERA         _
+          50 | 0x2010 Exif.Olympus.Equipment       |       IFD |        1 |           | 114
+      STRUCTURE OF  FILE (II): ../files/ORF.ORF:3472->1452144
+           116 | 000000 Exif.OlympusEQ.Version       | UNDEFINED |        4 |           | 0100
+           128 | 0x0100 Exif.OlympusEQ.CameraType    |     ASCII |        6 |      4304 | S0030
+           140 | 0x0101 Exif.OlympusEQ.SerialNumber  |     ASCII |       32 |      4310 | H78503777                      
+           152 | 0x0102 Exif.OlympusEQ.InternalSer.. |     ASCII |       32 |      4342 | 4080910003247001               
+           164 | 0x0103 Exif.OlympusEQ.0x103         |  RATIONAL |        1 |      4376 | 2160/100
+           176 | 0x0104 Exif.OlympusEQ.0x104         |      LONG |        1 |           | 4099
+           188 | 0x0201 Exif.OlympusEQ.0x201         |     UBYTE |        6 |      4394 | 0 0 35 0 1 0
+           200 | 0x0202 Exif.OlympusEQ.0x202         |     ASCII |       32 |      4400 | 212950660
+           212 | 0x0203 Exif.OlympusEQ.0x203         |     ASCII |       32 |      4432 | OLYMPUS 14-42mm Lens
+           224 | 0x0204 Exif.OlympusEQ.0x204         |      LONG |        1 |           | 4869
+           236 | 0x0205 Exif.OlympusEQ.0x205         |     SHORT |        1 |           | 925
+           248 | 0x0206 Exif.OlympusEQ.0x206         |     SHORT |        1 |           | 1273
+           260 | 0x0207 Exif.OlympusEQ.0x207         |     SHORT |        1 |           | 14
+           272 | 0x0208 Exif.OlympusEQ.0x208         |     SHORT |        1 |           | 42
+           284 | 0x020a Exif.OlympusEQ.0x20a         |     SHORT |        1 |           | 940
+           296 | 0x020b Exif.OlympusEQ.0x20b         |     SHORT |        1 |           | 49223
+           308 | 0x0301 Exif.OlympusEQ.0x301         |     UBYTE |        6 |      4488 | 0 0 0 0 0 0
+           320 | 0x0302 Exif.OlympusEQ.0x302         |     ASCII |       32 |      4494 | 
+           332 | 0x0303 Exif.OlympusEQ.0x303         |     ASCII |       32 |      4526 | 
+           344 | 0x0304 Exif.OlympusEQ.0x304         |      LONG |        1 |           | 0
+           356 | 0x1000 Exif.OlympusEQ.0x1000        |     SHORT |        1 |           | 0
+           368 | 0x1001 Exif.OlympusEQ.0x1001        |     SHORT |        1 |           | 0
+           380 | 0x1002 Exif.OlympusEQ.0x1002        |      LONG |        1 |           | 0
+           392 | 0x1003 Exif.OlympusEQ.0x1003        |     ASCII |       32 |      4572 | 
+      END: ../files/ORF.ORF:3472->1452144
+          62 | 0x2020 Exif.OlympusEQ.0x2020        |       IFD |        1 |           | 408
+      STRUCTURE OF  FILE (II): ../files/ORF.ORF:3472->1452144
+           410 | 000000 Exif.OlympusCS.Version       | UNDEFINED |        4 |           | 0100
+           422 | 0x0100 Exif.OlympusCS.PreviewImag.. |      LONG |        1 |           | 1
+           434 | 0x0101 Exif.OlympusCS.PreviewImag.. |      LONG |        1 |           | 29296
+           446 | 0x0102 Exif.OlympusCS.PreviewImag.. |      LONG |        1 |           | 1073154
+           458 | 0x0200 Exif.OlympusCS.ExposureMode  |     SHORT |        1 |           | 1
+           470 | 0x0201 Exif.OlympusCS.0x201         |     SHORT |        1 |           | 0
+           482 | 0x0202 Exif.OlympusCS.0x202         |     SHORT |        1 |           | 5
+           494 | 0x0203 Exif.OlympusCS.0x203         | SRATIONAL |        1 |      4628 | 0/100
+           506 | 0x0300 Exif.OlympusCS.0x300         |     SHORT |        1 |           | 0
+           518 | 0x0301 Exif.OlympusCS.0x301         |     SHORT |        2 |           | 0 257
+           530 | 0x0302 Exif.OlympusCS.0x302         |     SHORT |        2 |           | 1 256
+           542 | 0x0303 Exif.OlympusCS.0x303         |     SHORT |        1 |           | 1
+           554 | 0x0304 Exif.OlympusCS.0x304         |      LONG |       64 |      4648 | 1484154505 0 0 0 0 0 0 0 0 0 0 0 0 0 +++
+           566 | 0x0305 Exif.OlympusCS.0x305         | SRATIONAL |        5 |      4904 | 0/0 190/510 255/510 190/510 255/510
+           578 | 0x0306 Exif.OlympusCS.0x306         |     UBYTE |        1 |           | 0
+           590 | 0x0307 Exif.OlympusCS.0x307         |    SSHORT |        3 |      4946 | 0 0 0
+           602 | 0x0400 Exif.OlympusCS.0x400         |     SHORT |        1 |           | 2
+           614 | 0x0401 Exif.OlympusCS.0x401         | SRATIONAL |        1 |      4956 | 0/1
+           626 | 0x0402 Exif.OlympusCS.0x402         |     SHORT |        1 |           | 0
+           638 | 0x0403 Exif.OlympusCS.0x403         |     SHORT |        1 |           | 0
+           650 | 0x0404 Exif.OlympusCS.0x404         |     SHORT |        3 |      4968 | 0 0 0
+           662 | 0x0405 Exif.OlympusCS.0x405         | SRATIONAL |        3 |      4976 | 0/0 0/0 0/0
+           674 | 0x0406 Exif.OlympusCS.0x406         | SRATIONAL |        3 |      5000 | 0/0 0/0 0/0
+           686 | 0x0500 Exif.OlympusCS.0x500         |     SHORT |        1 |           | 18
+           698 | 0x0501 Exif.OlympusCS.0x501         |     SHORT |        1 |           | 5300
+           710 | 0x0502 Exif.OlympusCS.0x502         |    SSHORT |        2 |           | 0 0
+           722 | 0x0503 Exif.OlympusCS.0x503         |    SSHORT |        3 |      5032 | 1 65531 5
+           734 | 0x0504 Exif.OlympusCS.0x504         |     SHORT |        1 |           | 0
+           746 | 0x0505 Exif.OlympusCS.0x505         |    SSHORT |        3 |      5040 | 0 65531 5
+           758 | 0x0506 Exif.OlympusCS.0x506         |    SSHORT |        3 |      5046 | 1 65531 5
+           770 | 0x0507 Exif.OlympusCS.0x507         |     SHORT |        1 |           | 0
+           782 | 0x0508 Exif.OlympusCS.0x508         |     SHORT |        1 |           | 0
+           794 | 0x0509 Exif.OlympusCS.0x509         |     SHORT |        1 |           | 0
+           806 | 0x050a Exif.OlympusCS.0x50a         |     SHORT |        1 |           | 0
+           818 | 0x050b Exif.OlympusCS.0x50b         |     SHORT |        1 |           | 0
+           830 | 0x050c Exif.OlympusCS.0x50c         |     SHORT |        1 |           | 0
+           842 | 0x050e Exif.OlympusCS.0x50e         |     SHORT |        1 |           | 0
+           854 | 0x050f Exif.OlympusCS.0x50f         |    SSHORT |        4 |      5074 | 0 65535 1 1
+           866 | 0x0520 Exif.OlympusCS.0x520         |     SHORT |        2 |           | 1 2
+           878 | 0x0521 Exif.OlympusCS.0x521         |    SSHORT |        3 |      5104 | 0 65534 2
+           890 | 0x0522 Exif.OlympusCS.0x522         |     SHORT |        1 |           | 0
+           902 | 0x0523 Exif.OlympusCS.0x523         |    SSHORT |        3 |      5112 | 0 65534 2
+           914 | 0x0524 Exif.OlympusCS.0x524         |    SSHORT |        3 |      5118 | 0 65534 2
+           926 | 0x0525 Exif.OlympusCS.0x525         |    SSHORT |        1 |           | 0
+           938 | 0x0526 Exif.OlympusCS.0x526         |    SSHORT |        1 |           | 0
+           950 | 0x0527 Exif.OlympusCS.0x527         |    SSHORT |        3 |      5082 | 65534 65534 1
+           962 | 0x0528 Exif.OlympusCS.0x528         |     SHORT |        1 |           | 0
+           974 | 0x0529 Exif.OlympusCS.0x529         |     SHORT |        4 |      5090 | 0 0 0 0
+           986 | 0x0600 Exif.OlympusCS.0x600         |     SHORT |        3 |      5128 | 0 0 0
+           998 | 0x0601 Exif.OlympusCS.0x601         |     SHORT |        2 |           | 0 0
+          1010 | 0x0604 Exif.OlympusCS.0x604         |      LONG |        1 |           | 1
+          1022 | 0x0800 Exif.OlympusCS.0x800         |     SHORT |        1 |           | 0
+          1034 | 0x0900 Exif.OlympusCS.0x900         |     SHORT |        1 |           | 0
+          1046 | 0x0901 Exif.OlympusCS.0x901         |     SLONG |        2 |      5280 | 0 0
+          1058 | 0x0902 Exif.OlympusCS.0x902         |     SHORT |        1 |           | 1
+      END: ../files/ORF.ORF:3472->1452144
+          74 | 0x2030 Exif.OlympusCS.0x2030        |       IFD |        1 |           | 1074
+      STRUCTURE OF  FILE (II): ../files/ORF.ORF:3472->1452144
+          1076 | 000000 Exif.OlymRawDev.Version      | UNDEFINED |        4 |           | 0100
+          1088 | 0x0100 Exif.OlymRawDev.ExposureBi.. | SRATIONAL |        1 |      5304 | 0/1
+          1100 | 0x0101 Exif.OlymRawDev.WhiteBalan.. |     SHORT |        1 |           | 0
+          1112 | 0x0102 Exif.OlymRawDev.WBFineAdju.. |    SSHORT |        1 |           | 0
+          1124 | 0x0103 Exif.OlymRawDev.GrayPoint    |     SHORT |        3 |      5316 | 0 0 0
+          1136 | 0x0104 Exif.OlymRawDev.0x104        |    SSHORT |        3 |      5322 | 0 0 0
+          1148 | 0x0105 Exif.OlymRawDev.0x105        |     SHORT |        1 |           | 0
+          1160 | 0x0106 Exif.OlymRawDev.0x106        |    SSHORT |        3 |      5330 | 0 0 0
+          1172 | 0x0107 Exif.OlymRawDev.0x107        |    SSHORT |        3 |      5336 | 0 0 0
+          1184 | 0x0108 Exif.OlymRawDev.0x108        |     SHORT |        1 |           | 0
+          1196 | 0x0109 Exif.OlymRawDev.0x109        |     SHORT |        1 |           | 0
+          1208 | 0x010a Exif.OlymRawDev.0x10a        |     SHORT |        1 |           | 0
+          1220 | 0x010b Exif.OlymRawDev.0x10b        |     SHORT |        1 |           | 0
+          1232 | 0x010c Exif.OlymRawDev.0x10c        |     SHORT |        1 |           | 0
+      END: ../files/ORF.ORF:3472->1452144
+          86 | 0x2040 Exif.OlymRawDev.0x2040       |       IFD |        1 |           | 1248
+      STRUCTURE OF  FILE (II): ../files/ORF.ORF:3472->1452144
+          1250 | 000000 Exif.OlymImgProc.Version     | UNDEFINED |        4 |           | 0112
+          1262 | 0x0100 Exif.OlymImgProc.WB_RBLevels |     SHORT |        4 |      5354 | 474 330 256 256
+          1274 | 0x0101 Exif.OlymImgProc.0x101       |     SHORT |        4 |      5362 | 256 256 256 256
+          1286 | 0x0102 Exif.OlymImgProc.0x102       |     SHORT |        4 |      5370 | 281 625 256 256
+          1298 | 0x0103 Exif.OlymImgProc.0x103       |     SHORT |        4 |      5378 | 344 482 256 256
+          1310 | 0x0104 Exif.OlymImgProc.0x104       |     SHORT |        4 |      5386 | 371 439 256 256
+          1322 | 0x0105 Exif.OlymImgProc.0x105       |     SHORT |        4 |      5394 | 396 407 256 256
+          1334 | 0x0106 Exif.OlymImgProc.0x106       |     SHORT |        4 |      5402 | 448 474 256 256
+          1346 | 0x0107 Exif.OlymImgProc.0x107       |     SHORT |        4 |      5410 | 410 393 256 256
+          1358 | 0x0108 Exif.OlymImgProc.0x108       |     SHORT |        4 |      5418 | 438 417 256 256
+          1370 | 0x0109 Exif.OlymImgProc.0x109       |     SHORT |        4 |      5426 | 444 358 256 256
+          1382 | 0x010a Exif.OlymImgProc.0x10a       |     SHORT |        4 |      5434 | 474 331 256 256
+          1394 | 0x010b Exif.OlymImgProc.0x10b       |     SHORT |        4 |      5442 | 524 298 256 256
+          1406 | 0x010c Exif.OlymImgProc.0x10c       |     SHORT |        4 |      5450 | 535 325 256 256
+          1418 | 0x010d Exif.OlymImgProc.0x10d       |     SHORT |        4 |      5458 | 570 255 256 256
+          1430 | 0x010e Exif.OlymImgProc.0x10e       |     SHORT |        4 |      5466 | 254 884 256 256
+          1442 | 0x010f Exif.OlymImgProc.0x10f       |     SHORT |        4 |      5474 | 384 384 256 256
+          1454 | 0x0110 Exif.OlymImgProc.0x110       |     SHORT |        4 |      5482 | 384 384 256 256
+          1466 | 0x0111 Exif.OlymImgProc.0x111       |     SHORT |        4 |      5490 | 384 384 256 256
+          1478 | 0x0120 Exif.OlymImgProc.0x120       |     SHORT |        4 |      5498 | 424 377 256 256
+          1490 | 0x0121 Exif.OlymImgProc.0x121       |     SHORT |        4 |      5506 | 522 297 256 256
+          1502 | 0x0122 Exif.OlymImgProc.0x122       |    SSHORT |        8 |      5514 | 2 100 65534 100 65534 100 65534 100
+          1514 | 0x0200 Exif.OlymImgProc.0x200       |     SHORT |        9 |      5532 | 360 65456 65512 65492 360 65476 6552 +++
+          1526 | 0x0201 Exif.OlymImgProc.0x201       |     SHORT |        9 |      5550 | 332 65480 65516 65504 340 65484 6553 +++
+          1538 | 0x0202 Exif.OlymImgProc.0x202       |     SHORT |        9 |      5568 | 304 65520 65504 65484 320 65524 6553 +++
+          1550 | 0x0203 Exif.OlymImgProc.0x203       |     SHORT |        9 |      5586 | 310 65508 65510 65492 328 65508 6553 +++
+          1562 | 0x0204 Exif.OlymImgProc.0x204       |     SHORT |        9 |      5604 | 318 65500 65510 65496 328 65504 6553 +++
+          1574 | 0x0205 Exif.OlymImgProc.0x205       |     SHORT |        9 |      5622 | 320 65496 65512 65496 332 65500 6553 +++
+          1586 | 0x0206 Exif.OlymImgProc.0x206       |     SHORT |        9 |      5640 | 396 65404 65528 65498 304 65526 6553 +++
+          1598 | 0x0207 Exif.OlymImgProc.0x207       |     SHORT |        9 |      5658 | 320 65496 65512 65500 332 65496 6553 +++
+          1610 | 0x0208 Exif.OlymImgProc.0x208       |     SHORT |        9 |      5676 | 304 65512 65512 65508 304 65516 6553 +++
+          1622 | 0x0209 Exif.OlymImgProc.0x209       |     SHORT |        9 |      5694 | 326 65488 65514 65504 336 65488 6553 +++
+          1634 | 0x020a Exif.OlymImgProc.0x20a       |     SHORT |        9 |      5712 | 332 65480 65516 65504 340 65484 6553 +++
+          1646 | 0x020b Exif.OlymImgProc.0x20b       |     SHORT |        9 |      5730 | 334 65476 65518 65504 344 65480 6553 +++
+          1658 | 0x020c Exif.OlymImgProc.0x20c       |     SHORT |        9 |      5748 | 316 65500 65512 65512 320 65496 6553 +++
+          1670 | 0x020d Exif.OlymImgProc.0x20d       |     SHORT |        9 |      5766 | 344 65464 65520 65510 348 65470 6553 +++
+          1682 | 0x020e Exif.OlymImgProc.0x20e       |     SHORT |        9 |      5784 | 238 60 65494 65500 348 65480 65530 6 +++
+          1694 | 0x020f Exif.OlymImgProc.0x20f       |     SHORT |        9 |      5802 | 210 88 65494 65480 332 65516 65532 6 +++
+          1706 | 0x0210 Exif.OlymImgProc.0x210       |     SHORT |        9 |      5820 | 222 76 65494 65488 336 65504 65532 6 +++
+          1718 | 0x0211 Exif.OlymImgProc.0x211       |     SHORT |        9 |      5838 | 224 72 65496 65492 336 65500 65532 6 +++
+          1730 | 0x0212 Exif.OlymImgProc.0x212       |     SHORT |        9 |      5856 | 230 68 65494 65494 340 65494 65530 6 +++
+          1742 | 0x0213 Exif.OlymImgProc.0x213       |     SHORT |        9 |      5874 | 290 65524 65514 65492 316 65520 6553 +++
+          1754 | 0x0214 Exif.OlymImgProc.0x214       |     SHORT |        9 |      5892 | 230 68 65494 65498 340 65490 65532 6 +++
+          1766 | 0x0215 Exif.OlymImgProc.0x215       |     SHORT |        9 |      5910 | 222 68 65502 65504 312 65512 65530 6 +++
+          1778 | 0x0216 Exif.OlymImgProc.0x216       |     SHORT |        9 |      5928 | 234 64 65494 65500 344 65484 65532 6 +++
+          1790 | 0x0217 Exif.OlymImgProc.0x217       |     SHORT |        9 |      5946 | 238 60 65494 65500 348 65480 65530 6 +++
+          1802 | 0x0218 Exif.OlymImgProc.0x218       |     SHORT |        9 |      5964 | 246 52 65494 65502 352 65474 65530 6 +++
+          1814 | 0x0219 Exif.OlymImgProc.0x219       |     SHORT |        9 |      5982 | 228 68 65496 65508 332 65488 65532 6 +++
+          1826 | 0x021a Exif.OlymImgProc.0x21a       |     SHORT |        9 |      6000 | 250 48 65494 65504 360 65464 65530 6 +++
+          1838 | 0x0228 Exif.OlymImgProc.0x228       |     SHORT |        9 |      6018 | 324 65492 65512 65502 332 65494 6553 +++
+          1850 | 0x0229 Exif.OlymImgProc.0x229       |     SHORT |        9 |      6036 | 234 64 65494 65496 344 65488 65532 6 +++
+          1862 | 0x0259 Exif.OlymImgProc.0x259       |    SSHORT |       99 |      6054 | 243 11 2 5 249 2 5 11 240 245 9 2 5  +++
+          1874 | 0x0302 Exif.OlymImgProc.0x302       |     SHORT |        1 |           | 256
+          1886 | 0x0303 Exif.OlymImgProc.0x303       |     SHORT |        1 |           | 43
+          1898 | 0x0304 Exif.OlymImgProc.0x304       |     SHORT |       11 |      6256 | 9 13 18 23 30 37 43 50 57 64 74
+          1910 | 0x0305 Exif.OlymImgProc.0x305       |     SHORT |        5 |      6280 | 256 256 256 256 256
+          1922 | 0x0312 Exif.OlymImgProc.0x312       |     SHORT |        1 |           | 256
+          1934 | 0x0313 Exif.OlymImgProc.0x313       |     SHORT |        1 |           | 7
+          1946 | 0x0314 Exif.OlymImgProc.0x314       |     SHORT |       11 |      6290 | 7 7 7 7 7 7 7 7 7 7 7
+          1958 | 0x0315 Exif.OlymImgProc.0x315       |     SHORT |        5 |      6312 | 256 256 256 256 256
+          1970 | 0x0340 Exif.OlymImgProc.0x340       |    SSHORT |       24 |      6324 | 26 8 19 9 8 65528 8 4 65531 1 0 6552 +++
+          1982 | 0x0341 Exif.OlymImgProc.0x341       |    SSHORT |       24 |      6372 | 0 2 10 65525 65531 65534 0 0 6 65531 +++
+          1994 | 0x0342 Exif.OlymImgProc.0x342       |    SSHORT |       24 |      6420 | 20 14 32 12 24 65520 2 10 8 4 16 655 +++
+          2006 | 0x0343 Exif.OlymImgProc.0x343       |    SSHORT |       24 |      6468 | 1 0 9 65530 65520 65532 1 65534 5 0  +++
+          2018 | 0x0350 Exif.OlymImgProc.0x350       |     SHORT |       12 |      6516 | 0 0 9 16383 4095 9 0 0 0 0 0 0
+          2030 | 0x0351 Exif.OlymImgProc.0x351       |     SHORT |       30 |      6540 | 0 0 141 64 70 141 128 141 141 232 25 +++
+          2042 | 0x0400 Exif.OlymImgProc.0x400       |     SHORT |       63 |      6674 | 1384 2884 4540 6412 8616 11432 16383 +++
+          2054 | 0x0401 Exif.OlymImgProc.0x401       |     SHORT |        5 |      6600 | 1 1 1 1 1
+          2066 | 0x0402 Exif.OlymImgProc.0x402       |     SHORT |        5 |      6610 | 12 34 56 87 87
+          2078 | 0x0403 Exif.OlymImgProc.0x403       |     SHORT |        5 |      6620 | 384 384 384 384 384
+          2090 | 0x0404 Exif.OlymImgProc.0x404       |     SHORT |        5 |      6630 | 511 511 511 511 511
+          2102 | 0x0405 Exif.OlymImgProc.0x405       |     SHORT |        5 |      6640 | 0 0 0 0 0
+          2114 | 0x0406 Exif.OlymImgProc.0x406       |     SHORT |        5 |      6650 | 13 19 26 43 43
+          2126 | 0x0407 Exif.OlymImgProc.0x407       |     SHORT |        1 |           | 256
+          2138 | 0x0408 Exif.OlymImgProc.0x408       |     SHORT |        5 |      6660 | 3 3 3 3 3
+          2150 | 0x0409 Exif.OlymImgProc.0x409       |     SHORT |        5 |      6802 | 0 0 0 0 0
+          2162 | 0x040a Exif.OlymImgProc.0x40a       |     SHORT |       15 |      6812 | 256 256 256 256 256 256 256 256 256  +++
+          2174 | 0x0410 Exif.OlymImgProc.0x410       |     SHORT |        5 |      6842 | 0 0 0 0 0
+          2186 | 0x0420 Exif.OlymImgProc.0x420       |    SSHORT |        1 |           | 0
+          2198 | 0x0421 Exif.OlymImgProc.0x421       |     SHORT |        1 |           | 128
+          2210 | 0x0422 Exif.OlymImgProc.0x422       |    SSHORT |        5 |      6852 | 0 0 0 0 0
+          2222 | 0x0423 Exif.OlymImgProc.0x423       |     SHORT |        5 |      6862 | 128 128 128 128 128
+          2234 | 0x0424 Exif.OlymImgProc.0x424       |    SSHORT |        5 |      6872 | 0 0 0 0 0
+          2246 | 0x0425 Exif.OlymImgProc.0x425       |     SHORT |        5 |      6882 | 128 128 128 128 128
+          2258 | 0x0600 Exif.OlymImgProc.0x600       |     SHORT |        4 |      6892 | 65 65 65 65
+          2270 | 0x0601 Exif.OlymImgProc.0x601       |     SHORT |        6 |      6914 | 320 4096 3328 4096 20 128
+          2282 | 0x0602 Exif.OlymImgProc.0x602       |     SHORT |        6 |      6926 | 320 4096 3328 4096 20 128
+          2294 | 0x0603 Exif.OlymImgProc.0x603       |     SHORT |        6 |      6938 | 320 4096 3328 4096 20 128
+          2306 | 0x0610 Exif.OlymImgProc.0x610       |     SHORT |        1 |           | 256
+          2318 | 0x0611 Exif.OlymImgProc.0x611       |     SHORT |        2 |           | 12 0
+          2330 | 0x0612 Exif.OlymImgProc.0x612       |     SHORT |        2 |           | 30 0
+          2342 | 0x0613 Exif.OlymImgProc.0x613       |     SHORT |        2 |           | 30 0
+          2354 | 0x0614 Exif.OlymImgProc.0x614       |      LONG |        1 |           | 4032
+          2366 | 0x0615 Exif.OlymImgProc.0x615       |      LONG |        1 |           | 3024
+          2378 | 0x0617 Exif.OlymImgProc.0x617       |     SHORT |        1 |           | 8
+          2390 | 0x0618 Exif.OlymImgProc.0x618       |     SHORT |        1 |           | 1
+          2402 | 0x0619 Exif.OlymImgProc.0x619       |     SHORT |        1 |           | 1
+          2414 | 0x0620 Exif.OlymImgProc.0x620       |     SHORT |        1 |           | 3
+          2426 | 0x0630 Exif.OlymImgProc.0x630       |     SHORT |        1 |           | 3
+          2438 | 0x0640 Exif.OlymImgProc.0x640       |     SHORT |        1 |           | 0
+          2450 | 0x0641 Exif.OlymImgProc.0x641       |     SHORT |        1 |           | 5
+          2462 | 0x0642 Exif.OlymImgProc.0x642       |     SHORT |        1 |           | 0
+          2474 | 0x0643 Exif.OlymImgProc.0x643       |     SHORT |        1 |           | 2
+          2486 | 0x0644 Exif.OlymImgProc.0x644       |     SHORT |        1 |           | 5
+          2498 | 0x0645 Exif.OlymImgProc.0x645       |     SHORT |        1 |           | 4
+          2510 | 0x0646 Exif.OlymImgProc.0x646       |     SHORT |        1 |           | 3
+          2522 | 0x0647 Exif.OlymImgProc.0x647       |     SHORT |        1 |           | 2
+          2534 | 0x0648 Exif.OlymImgProc.0x648       |     SHORT |        1 |           | 3
+          2546 | 0x0649 Exif.OlymImgProc.0x649       |     SHORT |        1 |           | 4
+          2558 | 0x0650 Exif.OlymImgProc.0x650       |     SHORT |        1 |           | 7
+          2570 | 0x0651 Exif.OlymImgProc.0x651       |     SHORT |        1 |           | 15
+          2582 | 0x0652 Exif.OlymImgProc.0x652       |     SHORT |        1 |           | 12
+          2594 | 0x0653 Exif.OlymImgProc.0x653       |     SHORT |        1 |           | 5
+          2606 | 0x0800 Exif.OlymImgProc.0x800       |     FLOAT |        9 |      7000 | 3181085040 1023706223 3149851268 317 +++
+          2618 | 0x0801 Exif.OlymImgProc.0x801       |     SHORT |       16 |      7036 | 8192 8192 8192 8192 8192 8192 8192 8 +++
+          2630 | 0x0802 Exif.OlymImgProc.0x802       |  RATIONAL |        1 |      7068 | 11140000/69760
+          2642 | 0x0803 Exif.OlymImgProc.0x803       |     SHORT |        3 |      7076 | 12 20 24
+          2654 | 0x0804 Exif.OlymImgProc.0x804       |     SHORT |        2 |           | 0 0
+          2666 | 0x0805 Exif.OlymImgProc.0x805       |    SSHORT |        2 |           | 4023 644
+          2678 | 0x1003 Exif.OlymImgProc.0x1003      |     SHORT |        1 |           | 8
+          2690 | 0x1004 Exif.OlymImgProc.0x1004      |     SHORT |        1 |           | 0
+          2702 | 0x1005 Exif.OlymImgProc.0x1005      |     SHORT |        2 |           | 0 0
+          2714 | 0x1006 Exif.OlymImgProc.0x1006      |     SHORT |        8 |      7098 | 0 0 0 0 0 0 0 0
+          2726 | 0x1007 Exif.OlymImgProc.0x1007      |     SHORT |        5 |      7114 | 0 0 0 0 0
+          2738 | 0x1008 Exif.OlymImgProc.0x1008      |     SHORT |        1 |           | 0
+          2750 | 0x1009 Exif.OlymImgProc.0x1009      |     SHORT |        3 |      7126 | 0 0 0
+          2762 | 0x100a Exif.OlymImgProc.0x100a      |     SHORT |        3 |      7132 | 0 0 0
+          2774 | 0x1010 Exif.OlymImgProc.0x1010      |     SHORT |        1 |           | 0
+          2786 | 0x1011 Exif.OlymImgProc.0x1011      |     SHORT |        1 |           | 0
+          2798 | 0x1012 Exif.OlymImgProc.0x1012      |     SHORT |        1 |           | 0
+          2810 | 0x1013 Exif.OlymImgProc.0x1013      |     SHORT |       10 |      7144 | 0 0 0 0 0 0 0 0 0 0
+          2822 | 0x1014 Exif.OlymImgProc.0x1014      |     SHORT |       10 |      7164 | 0 0 0 0 0 0 0 0 0 0
+          2834 | 0x1015 Exif.OlymImgProc.0x1015      |     SHORT |        2 |           | 0 0
+          2846 | 0x1016 Exif.OlymImgProc.0x1016      |     SHORT |        4 |      7188 | 0 0 0 0
+          2858 | 0x1017 Exif.OlymImgProc.0x1017      |     SHORT |        3 |      7196 | 0 0 0
+          2870 | 0x1018 Exif.OlymImgProc.0x1018      |     SHORT |        3 |      7202 | 0 0 0
+          2882 | 0x1019 Exif.OlymImgProc.0x1019      |     SHORT |        2 |           | 0 0
+          2894 | 0x101a Exif.OlymImgProc.0x101a      |     SHORT |        1 |           | 0
+          2906 | 0x101b Exif.OlymImgProc.0x101b      |    SSHORT |        2 |           | 0 0
+          2918 | 0x101c Exif.OlymImgProc.0x101c      |     SHORT |        2 |           | 0 1
+          2930 | 0x1102 Exif.OlymImgProc.0x1102      |     UBYTE |        4 |           | 0 1 2 3
+          2942 | 0x1103 Exif.OlymImgProc.0x1103      | UNDEFINED |   138240 |   1309296 | ....V...[.....................u..... +++
+          2954 | 0x1104 Exif.OlymImgProc.0x1104      | UNDEFINED |     4608 |   1447536 | .................................... +++
+          2966 | 0x1105 Exif.OlymImgProc.0x1105      |     UBYTE |        4 |           | 160 0 144 108
+          2978 | 0x1106 Exif.OlymImgProc.0x1106      |     UBYTE |        4 |           | 32 0 18 18
+          2990 | 0x1107 Exif.OlymImgProc.0x1107      |     SHORT |        2 |           | 0 0
+          3002 | 0x1108 Exif.OlymImgProc.0x1108      |     SHORT |        8 |      7238 | 0 0 0 0 0 0 0 0
+          3014 | 0x1109 Exif.OlymImgProc.0x1109      |     SHORT |       16 |      7254 | 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+          3026 | 0x110a Exif.OlymImgProc.0x110a      |    SSHORT |        1 |           | 0
+          3038 | 0x110b Exif.OlymImgProc.0x110b      |     SHORT |        5 |      7288 | 0 0 0 0 0
+          3050 | 0x110c Exif.OlymImgProc.0x110c      |     SHORT |        4 |      7298 | 0 0 0 0
+          3062 | 0x110d Exif.OlymImgProc.0x110d      |     SHORT |        1 |           | 0
+          3074 | 0x110e Exif.OlymImgProc.0x110e      |     SHORT |        8 |      7308 | 0 0 0 0 0 0 0 0
+          3086 | 0x110f Exif.OlymImgProc.0x110f      |     SHORT |        3 |      7324 | 0 0 0
+          3098 | 0x1110 Exif.OlymImgProc.0x1110      |     SHORT |       10 |      7330 | 0 0 0 0 0 0 0 0 0 0
+          3110 | 0x1112 Exif.OlymImgProc.0x1112      |     UBYTE |        2 |           | 1 1
+          3122 | 0x1113 Exif.OlymImgProc.0x1113      |     SHORT |        4 |      7352 | 0 0 4031 3023
+          3134 | 0x1114 Exif.OlymImgProc.0x1114      |     UBYTE |        1 |           | 0
+          3146 | 0x1115 Exif.OlymImgProc.0x1115      |     SHORT |        2 |           | 0 0
+          3158 | 0x1116 Exif.OlymImgProc.0x1116      |     SHORT |        2 |           | 0 0
+          3170 | 0x1117 Exif.OlymImgProc.0x1117      |      LONG |        2 |      7372 | 0 0
+          3182 | 0x1118 Exif.OlymImgProc.0x1118      |    SSHORT |        2 |           | 0 0
+          3194 | 0x1119 Exif.OlymImgProc.0x1119      |     UBYTE |        2 |           | 0 0
+          3206 | 0x111a Exif.OlymImgProc.0x111a      |     UBYTE |        2 |           | 0 0
+          3218 | 0x1200 Exif.OlymImgProc.0x1200      |      LONG |        3 |      7388 | 0 0 0
+          3230 | 0x1201 Exif.OlymImgProc.0x1201      |     SHORT |      192 |      7400 | 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0  +++
+          3242 | 0x1202 Exif.OlymImgProc.0x1202      |      LONG |        3 |      7784 | 0 0 0
+          3254 | 0x1203 Exif.OlymImgProc.0x1203      |     SHORT |        6 |      7796 | 0 0 0 0 0 0
+          3266 | 0x1204 Exif.OlymImgProc.0x1204      |    SSHORT |        2 |           | 0 0
+          3278 | 0x1205 Exif.OlymImgProc.0x1205      |    SSHORT |        1 |           | 0
+          3290 | 0x1206 Exif.OlymImgProc.0x1206      |    SSHORT |       10 |      7814 | 0 0 0 0 0 0 0 0 0 0
+          3302 | 0x1300 Exif.OlymImgProc.0x1300      |    SSHORT |        4 |      7834 | 0 0 0 0
+          3314 | 0x1301 Exif.OlymImgProc.0x1301      |     SHORT |        2 |           | 0 0
+          3326 | 0x1302 Exif.OlymImgProc.0x1302      |    SSHORT |        2 |           | 2809 0
+          3338 | 0x1303 Exif.OlymImgProc.0x1303      |    SSHORT |        2 |           | 2750 0
+          3350 | 0x1304 Exif.OlymImgProc.0x1304      |    SSHORT |        2 |           | 2741 0
+          3362 | 0x1305 Exif.OlymImgProc.0x1305      |     SHORT |        4 |      7858 | 0 0 0 0
+          3374 | 0x1400 Exif.OlymImgProc.0x1400      |    SSHORT |        3 |      7938 | 0 0 0
+          3386 | 0x1401 Exif.OlymImgProc.0x1401      |     SHORT |       10 |      7866 | 30 35 30 35 30 35 10 60 10 60
+          3398 | 0x1402 Exif.OlymImgProc.0x1402      |    SSHORT |       10 |      7886 | 60 60 60 60 60 60 0 85 0 85
+          3410 | 0x1403 Exif.OlymImgProc.0x1403      |     SHORT |       10 |      7906 | 60 60 60 60 60 60 60 60 60 60
+          3422 | 0x1404 Exif.OlymImgProc.0x1404      |     SHORT |        2 |           | 50 50
+          3434 | 0x1405 Exif.OlymImgProc.0x1405      |     SHORT |        2 |           | 50 50
+          3446 | 0x1406 Exif.OlymImgProc.0x1406      |     SHORT |        2 |           | 1 0
+          3458 | 0x1407 Exif.OlymImgProc.0x1407      |     SHORT |        2 |           | 0 0
+          3470 | 0x1408 Exif.OlymImgProc.0x1408      |    SSHORT |        6 |      7944 | 65529 6 65529 7 65529 7
+      END: ../files/ORF.ORF:3472->1452144
+          98 | 0x2050 Exif.OlymImgProc.0x2050      |       IFD |        1 |           | 3486
+      STRUCTURE OF  FILE (II): ../files/ORF.ORF:3472->1452144
+          3488 | 000000 Exif.OlymFocusInfo.Version   | UNDEFINED |        4 |           | 0100
+          3500 | 0x0200 Exif.OlymFocusInfo.0x200     |    SSHORT |        2 |           | 2218 2218
+          3512 | 0x0201 Exif.OlymFocusInfo.0x201     |    SSHORT |        3 |      7968 | 1280 1211 1211
+          3524 | 0x0202 Exif.OlymFocusInfo.0x202     |    SSHORT |        2 |           | 1706 1704
+          3536 | 0x0203 Exif.OlymFocusInfo.0x203     |    SSHORT |        2 |           | 2681 0
+          3548 | 0x0204 Exif.OlymFocusInfo.0x204     |    SSHORT |        2 |           | 2847 2721
+          3560 | 0x0205 Exif.OlymFocusInfo.0x205     |    SSHORT |        1 |           | 0
+          3572 | 0x0206 Exif.OlymFocusInfo.0x206     |    SSHORT |        1 |           | 0
+          3584 | 0x0207 Exif.OlymFocusInfo.0x207     |     SHORT |        1 |           | 0
+          3596 | 0x0209 Exif.OlymFocusInfo.AutoFocus |     SHORT |        1 |           | 0
+          3608 | 0x020a Exif.OlymFocusInfo.0x20a     |     SHORT |        1 |           | 0
+          3620 | 0x020b Exif.OlymFocusInfo.0x20b     |     SHORT |        1 |           | 256
+          3632 | 0x020c Exif.OlymFocusInfo.0x20c     |    SSHORT |        2 |           | 0 0
+          3644 | 0x020d Exif.OlymFocusInfo.0x20d     |      LONG |        1 |           | 0
+          3656 | 0x020e Exif.OlymFocusInfo.0x20e     |      LONG |        5 |      7996 | 0 0 0 0 0
+          3668 | 0x020f Exif.OlymFocusInfo.0x20f     |      LONG |        5 |      8016 | 0 0 145360128 175702016 111804422
+          3680 | 0x0210 Exif.OlymFocusInfo.SceneDe.. |     SHORT |        1 |           | 0
+          3692 | 0x0211 Exif.OlymFocusInfo.SceneArea |      LONG |        8 |      8040 | 0 0 0 0 0 0 0 1912604423
+          3704 | 0x0212 Exif.OlymFocusInfo.0x212     |      LONG |      720 |      8072 | 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0  +++
+          3716 | 0x0213 Exif.OlymFocusInfo.0x213     |     SHORT |        1 |           | 0
+          3728 | 0x0214 Exif.OlymFocusInfo.0x214     |     SHORT |        1 |           | 0
+          3740 | 0x0215 Exif.OlymFocusInfo.0x215     |     SHORT |        1 |           | 0
+          3752 | 0x0219 Exif.OlymFocusInfo.0x219     |    SSHORT |        4 |     10978 | 1 164 668 5172
+          3764 | 0x021a Exif.OlymFocusInfo.0x21a     |    SSHORT |        4 |     10986 | 785 749 632 503
+          3776 | 0x021b Exif.OlymFocusInfo.0x21b     |    SSHORT |        3 |     10994 | 765 689 566
+          3788 | 0x0300 Exif.OlymFocusInfo.0x300     |     SHORT |        1 |           | 0
+          3800 | 0x0301 Exif.OlymFocusInfo.0x301     |     SHORT |        1 |           | 23
+          3812 | 0x0302 Exif.OlymFocusInfo.0x302     |     SHORT |        1 |           | 0
+          3824 | 0x0305 Exif.OlymFocusInfo.0x305     |  RATIONAL |        1 |     11012 | 4294967295/10
+          3836 | 0x0307 Exif.OlymFocusInfo.0x307     |     SHORT |        1 |           | 0
+          3848 | 0x0308 Exif.OlymFocusInfo.0x308     |     SHORT |        1 |           | 82
+          3860 | 0x0309 Exif.OlymFocusInfo.0x309     |     SHORT |        1 |           | 0
+          3872 | 0x030a Exif.OlymFocusInfo.0x30a     |    SSHORT |       20 |     11080 | 65512 13 65484 13 65517 778 257 0 32 +++
+          3884 | 0x030b Exif.OlymFocusInfo.0x30b     |     SHORT |        1 |           | 0
+          3896 | 0x030c Exif.OlymFocusInfo.0x30c     |     SHORT |        2 |           | 314 1051
+          3908 | 0x030d Exif.OlymFocusInfo.0x30d     |     SHORT |       22 |     11122 | 0 40 0 0 35 40 56 0 0 239 0 0 35 0 3 +++
+          3920 | 0x030e Exif.OlymFocusInfo.0x30e     |     SHORT |        1 |           | 0
+          3932 | 0x030f Exif.OlymFocusInfo.0x30f     |    SSHORT |        4 |     11030 | 465 5445 5445 5445
+          3944 | 0x0318 Exif.OlymFocusInfo.0x318     |     SHORT |        1 |           | 1
+          3956 | 0x0319 Exif.OlymFocusInfo.0x319     |     SHORT |        1 |           | 255
+          3968 | 0x031a Exif.OlymFocusInfo.0x31a     |     SHORT |       84 |     11172 | 33130 33389 33646 33904 34162 33650  +++
+          3980 | 0x031b Exif.OlymFocusInfo.0x31b     |     SHORT |        1 |           | 0
+          3992 | 0x0320 Exif.OlymFocusInfo.0x320     |     SHORT |       16 |     11342 | 23 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+          4004 | 0x0325 Exif.OlymFocusInfo.0x325     |     SHORT |        8 |     11374 | 0 0 0 0 0 0 0 0
+          4016 | 0x0326 Exif.OlymFocusInfo.0x326     |     SHORT |        8 |     11390 | 768 768 768 768 768 768 768 768
+          4028 | 0x0327 Exif.OlymFocusInfo.0x327     |     SHORT |        1 |           | 0
+          4040 | 0x0328 Exif.OlymFocusInfo.0x328     | UNDEFINED |      256 |     11406 | ____________________________________ +++
+          4052 | 0x0402 Exif.OlymFocusInfo.0x402     |     SHORT |        1 |           | 0
+          4064 | 0x1200 Exif.OlymFocusInfo.0x1200    |     SHORT |        1 |           | 2
+          4076 | 0x1201 Exif.OlymFocusInfo.0x1201    |     SHORT |        2 |           | 0 0
+          4088 | 0x1202 Exif.OlymFocusInfo.0x1202    |     SHORT |        1 |           | 0
+          4100 | 0x1203 Exif.OlymFocusInfo.0x1203    | SRATIONAL |        1 |     11692 | 0/1
+          4112 | 0x1204 Exif.OlymFocusInfo.0x1204    |     SHORT |        1 |           | 0
+          4124 | 0x1205 Exif.OlymFocusInfo.0x1205    |  RATIONAL |        1 |     11704 | 0/1
+          4136 | 0x1206 Exif.OlymFocusInfo.0x1206    |     SHORT |        1 |           | 0
+          4148 | 0x1207 Exif.OlymFocusInfo.0x1207    |     SHORT |        1 |           | 0
+          4160 | 0x1208 Exif.OlymFocusInfo.0x1208    |     SHORT |        1 |           | 0
+          4172 | 0x1209 Exif.OlymFocusInfo.0x1209    |     SHORT |        2 |           | 0 1
+          4184 | 0x120a Exif.OlymFocusInfo.0x120a    |     SHORT |        1 |           | 0
+          4196 | 0x1500 Exif.OlymFocusInfo.0x1500    |    SSHORT |        1 |           | 538
+          4208 | 0x1600 Exif.OlymFocusInfo.0x1600    | UNDEFINED |       53 |     11726 | !10__..`.g.....||@_L_....@_L_C_M___. +++
+          4220 | 0x1700 Exif.OlymFocusInfo.0x1700    |     UBYTE |        4 |           | 0 0 0 0
+      END: ../files/ORF.ORF:3472->1452144
+    END: ../files/ORF.ORF:3472->1452144
+       436 | 0x9286 Exif.Photo.UserComment       | UNDEFINED |      125 |      3164 | ________                             +++
+       448 | 0xa000 Exif.Photo.FlashpixVersion   | UNDEFINED |        4 |           | 0100
+       460 | 0xa001 Exif.Photo.ColorSpace        |     SHORT |        1 |           | 1
+       472 | 0xa300 Exif.Photo.FileSource        | UNDEFINED |        1 |           | .
+       484 | 0xa302 Exif.Photo.0xa302            | UNDEFINED |        8 |      3385 | ._._..._
+       496 | 0xa401 Exif.Photo.CustomRendered    |     SHORT |        1 |           | 0
+       508 | 0xa402 Exif.Photo.ExposureMode      |     SHORT |        1 |           | 1
+       520 | 0xa403 Exif.Photo.WhiteBalance      |     SHORT |        1 |           | 1
+       532 | 0xa404 Exif.Photo.0xa404            |  RATIONAL |        1 |      3400 | 100/100
+       544 | 0xa406 Exif.Photo.SceneCaptureType  |     SHORT |        1 |           | 0
+       556 | 0xa407 Exif.Photo.0xa407            |     SHORT |        1 |           | 0
+       568 | 0xa408 Exif.Photo.Contrast          |     SHORT |        1 |           | 0
+       580 | 0xa409 Exif.Photo.Saturation        |     SHORT |        1 |           | 2
+       592 | 0xa40a Exif.Photo.Sharpness         |     SHORT |        1 |           | 2
+  END: ../files/ORF.ORF
+     250 | 0xc4a5 Exif.Image.0xc4a5            | UNDEFINED |      528 |      2600 | PrintIM_0300__%_._._._._.___._.___._ +++
+END: ../files/ORF.ORF
