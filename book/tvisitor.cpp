@@ -2406,9 +2406,9 @@ void IFD::visitMakerNote(Visitor& visitor,DataBuf& buf,uint64_t count,uint64_t o
         makerNote.valid_ = true; // Valid without magic=42
         makerNote.accept(visitor,makerDict());
     } else if ( image_.maker_ == kPentax ) {
-        // IFD "PENTAX \0MM"  10 bytes into the data!
+        size_t punt = buf.begins("AOC") ? 6 : 10 ;
         ImageEndianSaver save(image_,keBig);
-        IFD makerNote(image_,offset+10,false);
+        IFD makerNote(image_,offset+punt,false);
         makerNote.accept(visitor,makerDict());
     } else {
         bool   bNext = maker()  != kSony;                                        // Sony no trailing next
@@ -3089,17 +3089,18 @@ void init()
 {
     if ( tiffDict.size() ) return; // don't do this twice!
 
-    maker["Canon"]                         = kCanon ; makerDicts[kCanon] = &canonDict;
-    maker["NIKON CORPORATION"]             = kNikon ; makerDicts[kNikon] = &nikonDict;
-    maker["NIKON"]                         = kNikon ; makerDicts[kCanon] = &nikonDict;
-    maker["SONY"]                          = kSony  ; makerDicts[kCanon] = &sonyDict;
-    maker["AGFAPHOTO"]                     = kAgfa  ; makerDicts[kCanon] = &agfaDict;
-    maker["Apple"]                         = kApple ; makerDicts[kCanon] = &appleDict;
-    maker["Panasonic"]                     = kPano  ; makerDicts[kCanon] = &panoDict;
-    maker["Minolta Co., Ltd."]             = kMino  ; makerDicts[kCanon] = &minoDict;
-    maker["OLYMPUS IMAGING CORP.  "]       = kOlym  ; makerDicts[kCanon] = &olymDict;
-    maker["FUJIFILM"]                      = kFuji  ; makerDicts[kCanon] = &fujiDict;
-    maker["RICOH IMAGING COMPANY, LTD.  "] = kPentax; makerDicts[kCanon] = &pentaxDict;
+    maker["Canon"]                         = kCanon ; makerDicts[kCanon ] = &canonDict;
+    maker["NIKON CORPORATION"]             = kNikon ; makerDicts[kNikon ] = &nikonDict;
+    maker["NIKON"]                         = kNikon ; makerDicts[kNikon ] = &nikonDict;
+    maker["SONY"]                          = kSony  ; makerDicts[kSony  ] = &sonyDict;
+    maker["AGFAPHOTO"]                     = kAgfa  ; makerDicts[kAgfa  ] = &agfaDict;
+    maker["Apple"]                         = kApple ; makerDicts[kApple ] = &appleDict;
+    maker["Panasonic"]                     = kPano  ; makerDicts[kPano  ] = &panoDict;
+    maker["Minolta Co., Ltd."]             = kMino  ; makerDicts[kMino  ] = &minoDict;
+    maker["OLYMPUS IMAGING CORP.  "]       = kOlym  ; makerDicts[kOlym  ] = &olymDict;
+    maker["FUJIFILM"]                      = kFuji  ; makerDicts[kFuji  ] = &fujiDict;
+    maker["RICOH IMAGING COMPANY, LTD.  "] = kPentax; makerDicts[kPentax] = &pentaxDict;
+    maker["PENTAX Corporation "]           = kPentax; makerDicts[kPentax] = &pentaxDict;
 
     tiffDict  [ktGroup ] = "Image";
     tiffDict  [ ktExif ] = "ExifTag";

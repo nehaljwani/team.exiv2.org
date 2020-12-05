@@ -38,15 +38,15 @@ _And our cat Lizzie._
 | [2.5 MakerNotes](#MakerNotes)                         | 38 | [RIFF Resource I'change File Fmt](#RIFF) | 20 | [11.6 Samples](#11-6)                   | 80 |
 | [2.6 Metadata Convertors](#Convertors)                | 38 | [MRW Minolta Raw](#MRW)                  | 21 | [11.7 Users](#11-7)                     | 80 |
 | [3. Reading Metadata](#3)                             |    | [ORF Olympus Raw Format](#ORF)           | 22 | [11.8 Bugs](#11-8)                      | 80 |
-| [3.1 Read metadata with dd](#3-1)                     |    | [PGF Progressive Graphics File](#PGF)    |    | [11.9 Releases](#11-9)                  |    |
-| [3.2 Tags and TagNames](#3-2)                         |    | [PSD PhotoShop Document](#PSD)           |    | [11.10 Platforms](#11-10)               |    |
-| [3.3 Visitor Design Pattern](#3-3)                    |    | [RAF Fujifilm RAW](#RAF)                 |    | [11.11 Localisation](#11-11)            |    |
-| [3.4 IFD::accept()](#3-4)                             |    | [RW2 Panasonic RAW](#RW2)                |    | [11.12 Build Server](#11-12)            |    |
-| [3.5 ReportVisitor::visitTag()](#3-5)                 |    | [TGA Truevision Targa](#TGA)             |    | [11.11 Source Code](#11-11)             |    |
-| [3.6 Jpeg::Image accept()](#3-6)                      |    | [BMP Windows Bitmap](#BMP)               |    | [11.14 Web Site](#11-14)                |    |
-|                                                       |    | [GIF Graphical Interchange Format](#GIF) |    | [11.15 Servers](#11-15)                 |    |
-| [4. Lens Recognition](#4)                             |    | [SIDECAR Xmp Sidecars](#SIDECAR)         |    | [11.16 API](#11-16)                     |    |
-| [5. I/O in Exiv2](#5)                                 |    |                                          |    | [11.17 Contributors](#11-17)            |    |
+| [3.1 Read metadata with dd](#3-1)                     |    | [PEF Pentax Raw](#PEF)                   |    | [11.9 Releases](#11-9)                  |    |
+| [3.2 Tags and TagNames](#3-2)                         |    | [PGF Progressive Graphics File](#PGF)    |    | [11.10 Platforms](#11-10)               |    |
+| [3.3 Visitor Design Pattern](#3-3)                    |    | [PSD PhotoShop Document](#PSD)           |    | [11.11 Localisation](#11-11)            |    |
+| [3.4 IFD::accept()](#3-4)                             |    | [RAF Fujifilm RAW](#RAF)                 |    | [11.12 Build Server](#11-12)            |    |
+| [3.5 ReportVisitor::visitTag()](#3-5)                 |    | [RW2 Panasonic RAW](#RW2)                |    | [11.11 Source Code](#11-11)             |    |
+| [3.6 Jpeg::Image accept()](#3-6)                      |    | [TGA Truevision Targa](#TGA)             |    | [11.14 Web Site](#11-14)                |    |
+|                                                       |    | [BMP Windows Bitmap](#BMP)               |    | [11.15 Servers](#11-15)                 |    |
+| [4. Lens Recognition](#4)                             |    | [GIF Graphical Interchange Format](#GIF) |    | [11.16 API](#11-16)                     |    |
+| [5. I/O in Exiv2](#5)                                 |    | [SIDECAR Xmp Sidecars](#SIDECAR)         |    | [11.17 Contributors](#11-17)            |    |
 | [6. Image Previews](#6)                               | 38 |                                          | 22 | [11.18 Scheduling](#11-18)              | 80 |
 |                                                       | 39 |                                          | 23 | [11.19 Enhancements](#11-19)            | 81 | 
 |                                                       | 41 |                                          | 24 | [11.20 Tools](#11-20)                   | 81 |
@@ -243,17 +243,17 @@ A good model for an image is to think of it as a container.  It's like a directo
 
 The good news however is that file formats come in families which are:
 
-| Family  | Description                                                                          | Examples |
-|:--      |:---                                                                                  |:--       |
-| TIFF    | You must learn Tiff thoroughly to understand metadata | TIFF, DNG, NEF, ICC, CR2, ORF, RAW, DCP |
-| JIFF    | JPEG Image File Format<br>Linked list of 64k segments                               | JPEG, EXV |
-| PNG     | Another popular format<br>Linked list of chunks                                           | PNG |
-| CIFF    | Camera Image File Format.  Dave Coffin parse.c decodes CRW                                | CRW |
-| ISOBMFF | Based on the .mp4 format                                             | MP4, CR3, AVI, HEIF, JP2 |
-| RIFF    | Resource Interchange File Format                                                    | WEBP, AVI |
-| GIF     | Graphics Image Format                                                                     | GIF | 
-| BMP     | Windows BMP never has XMP, IPTC or Exif metadata.<br>Version5 may include an ICC profile. | BMP |
-| EPS     | Adobe Encapsulated PostScript<br>The code in Exiv2 to deal with this is deprecated    | EPS, AI |
+| Family  | Description                                                                              | Examples |
+|:--      |:---                                                                                      |:--       |
+| TIFF    | You must learn Tiff thoroughly to understand metadata | TIFF, DNG, NEF, ICC, CR2, ORF, RAW, DCP,PEF |
+| JIFF    | JPEG Image File Format<br>Linked list of 64k segments                                   | JPEG, EXV |
+| PNG     | Another popular format<br>Linked list of chunks                                               | PNG |
+| CIFF    | Camera Image File Format.  Dave Coffin parse.c decodes CRW                                    | CRW |
+| ISOBMFF | Based on the .mp4 format                                                 | MP4, CR3, AVI, HEIF, JP2 |
+| RIFF    | Resource Interchange File Format                                                        | WEBP, AVI |
+| GIF     | Graphics Image Format                                                                         | GIF | 
+| BMP     | Windows BMP never has XMP, IPTC or Exif metadata.<br>Version5 may include an ICC profile.     | BMP |
+| EPS     | Adobe Encapsulated PostScript<br>The code in Exiv2 to deal with this is deprecated        | EPS, AI |
 
 The Metadata is defined by standards which also define how to embed the data in the image.
 
@@ -1630,7 +1630,7 @@ TagDict& ifdDict(maker_e maker,uint16_t tag,TagDict& makerDict)
 }
 ```
 
-There are many tags defined for the ORF file in Exiv2.  Only a few have been defined in tvisitor.cpp for illustration purpose.  To see unknown tags:
+There are many tags defined for the ORF file in Exiv2.  Only a few have been defined in tvisitor.cpp for illustration purposes.  To see unknown tags:
 
 ```bash
 .../book $ build/tvisitor -pU ~/ORF.ORF 
@@ -1647,6 +1647,12 @@ There are many tags defined for the ORF file in Exiv2.  Only a few have been def
            212 | 0x0203 Exif.OlympusEQ.0x203         |     ASCII |       32 |      4432 | OLYMPUS 14-42mm Lens
 ...
 ```
+
+[TOC](#TOC)
+<div id="PEF"/>
+## Pentax Raw
+
+PEF is Tiff.  I haven't found anything special about the PEF format.  Of course, it has code for the Pentax MakerNote and that code is shared with some AVIF files in which the maker is "Ricoh".  P
 
 [TOC](#TOC)
 <div id="PGF"/>
