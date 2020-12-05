@@ -990,7 +990,7 @@ As you can see, the 'colr' box is stored at 40+22 bytes into the file and has a 
 ```
 [TOC](#TOC)
 <div id="ISOBMFF"/>
-## ISOBMFF, CR3, HEIF, AVI
+## ISOBMFF, CR3, HEIF, AVIF
 
 I obtained the standard here: [https://mpeg.chiariglione.org/standards/mpeg-4/iso-base-media-file-format/text-isoiec-14496-12-5th-edition](https://mpeg.chiariglione.org/standards/mpeg-4/iso-base-media-file-format/text-isoiec-14496-12-5th-edition)
 
@@ -1032,6 +1032,8 @@ Very nice program with very nice code.  In addition to the GUI/Explorer, there i
 It did not build _out of the box_ for me on Ubuntu18.04.  [https://github.com/DigiDNA/ISOBMFF/issues/12](https://github.com/DigiDNA/ISOBMFF/issues/12}
 
 ### Canon CR3 Format
+
+![cr3](cr3.png)
 
 This is a dump from a CR3:
 

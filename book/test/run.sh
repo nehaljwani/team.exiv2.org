@@ -11,7 +11,7 @@ report()
 {
     stub=$1
     # if there's no reference file, create one
-    # (make it easy to add tests or delete and rewrite all reference files)
+    # (makes it easy to add tests or delete and rewrite all reference files)
     if [ ! -e "../test/data/$stub" ]; then
         cp "../test/tmp/$stub" ../test/data
     fi
@@ -30,11 +30,10 @@ report()
 for i in $( ls ../files/* | sort --ignore-case ) ; do
     stub=$(basename $i)
     # dmpf and csv are utility tests
-    if [ $stub == dmpf -o $stub == csv -o $stub == args ]; then
-        ./$stub ../files/$stub 2>&1 > "../test/tmp/$stub"
-    else 
-        ./tvisitor -pRU "$i"   2&>1 > "../test/tmp/$stub"
-    fi
+    case "$stub" in
+       dmpf|csv|args)  ./$stub ../files/$stub 2>&1 > "../test/tmp/$stub" ;;
+       *)              ./tvisitor -pRU "$i"   2&>1 > "../test/tmp/$stub" ;;
+    esac 
     report $stub
 done
 
