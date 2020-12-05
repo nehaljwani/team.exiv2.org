@@ -666,7 +666,6 @@ TagDict pentaxDict;
 
 std::map<maker_e,TagDict*> makerDicts;
 
-
 enum ktSpecial
 {   ktMN        = 0x927c
 ,   ktGps       = 0x8825
@@ -763,10 +762,13 @@ private:
     endian_e    endian_ ;
 };
 typedef std::vector<Field>   Fields;
-typedef std::map<std::string,Fields>  MakerTags;
+typedef std::map<std::string,Fields>      MakerTags;
+typedef std::map<std::string,std::string> Dict;
 
-// global variable
+// global variables
 MakerTags makerTags;
+MakerTags boxTags  ;
+Dict      boxDict ;
 
 // https://github.com/openSUSE/libsolv/blob/master/win32/fmemopen.c
 #ifdef _MSC_VER
@@ -995,7 +997,8 @@ public:
     PSOption      option() { return option_ ; }
     std::ostream& out()    { return out_    ; }
     std::string   indent() { return ::indent(indent_);}
-    bool          isRecursive() { return (option_ & kpsRecursive)?true:false;}
+    bool          isRecursive()        { return (option_ & kpsRecursive             ) ? true : false;}
+    bool          isBasicOrRecursive() { return (option_ & (kpsBasic | kpsRecursive)) ? true : false;}
 protected:
     uint32_t      indent_ ;
     PSOption      option_;
@@ -1035,7 +1038,6 @@ public:
     Visits&     visits()       { return visits_   ; }
     size_t      depth()        { return depth_    ; }
     bool        bigtiff()      { return bigtiff_  ; }
-    virtual std::string boxName (uint32_t  box) { return ""; }
     virtual std::string uuidName(DataBuf& uuid) { return ""; }
 
     void visit(uint64_t address) { // never visit an address twice!
@@ -1055,6 +1057,14 @@ public:
         if ( makerDicts.find(maker) != makerDicts.end() ) {
             makerDict_ = *makerDicts[maker];
         }
+    }
+
+    std::string boxName(uint32_t box)
+    {
+        char           name[5];
+        std::memcpy   (name,&box,4);
+        name[4] = 0   ;
+        return std::string(name) ;
     }
 
     void setMaker(DataBuf& buf)
@@ -1745,13 +1755,6 @@ public:
     }
     virtual void accept(class Visitor& v);
 
-    std::string boxName(uint32_t box)
-    {
-        char           name[5];
-        std::memcpy   (name,&box,4);
-        name[4] = 0   ;
-        return std::string(name) ;
-    }
     std::string uuidName(DataBuf& data)
     {
         std::string uuid = data.toUuidString();
@@ -1780,8 +1783,7 @@ public:
     }
 
 private:
-    std::map<std::string,std::string> uuids_;
-
+    Dict uuids_;
 };
 
 class ICC : public Image
@@ -2285,7 +2287,7 @@ public:
 
     void visitEnd(Image& image)
     {
-        if ( (option() & kpsBasic) || isRecursive() ) {
+        if ( isBasicOrRecursive() ) {
             out() << indent() << "END: " << image.path() << std::endl;
         }
         indent_--;
@@ -2710,7 +2712,7 @@ void ReportVisitor::visitIPTC(Io& io,Image& image
                           ,uint16_t record,uint16_t dataset,uint32_t len
                           ,DataBuf& buff,uint32_t offset)
 {
-    if ( option() & (kpsBasic|kpsRecursive) ) {
+    if ( isBasicOrRecursive() ) {
         TagDict& iptcDict = iptcDicts.find(record) != iptcDicts.end() ? iptcDicts[record] : iptc0;
         std::string tag  = tagName(dataset,iptcDict,30,"Iptc");
         if ( printTag(tag) ) {
@@ -2723,22 +2725,20 @@ void ReportVisitor::visitIPTC(Io& io,Image& image
 void ReportVisitor::visitSegment(Io& io,Image& image,uint64_t address
          ,uint8_t marker,uint16_t length,std::string& signature)
 {
-    if ( option() & (kpsBasic|kpsRecursive) ) {
+    if ( isBasicOrRecursive() ) {
         DataBuf buf( length < 40 ? length : 40 );
         IoSave  save(io,address+4);
         io.read(buf);
         std::string value = buf.toString(kttUndefined,buf.size_,image.endian());
-        if ( option() & (kpsBasic | kpsRecursive) ) {
-            out() <<           stringFormat("%8ld | 0xff%02x %-5s", address,marker,nm_[marker].c_str())
-                  << (length ? stringFormat(" | %7d | %s", length,value.c_str()) : "")
-                  << std::endl;
-        }
+        out() <<           stringFormat("%8ld | 0xff%02x %-5s", address,marker,nm_[marker].c_str())
+              << (length ? stringFormat(" | %7d | %s", length,value.c_str()) : "")
+              << std::endl;
     }
 }
 
 void ReportVisitor::visitICCTag(const byte* tag,uint32_t offset,uint32_t length)
 {
-    if ( option() & (kpsBasic | kpsRecursive) ) {
+    if ( isBasicOrRecursive() ) {
         out() << indent() << stringFormat("%6s | %8d | %8d ",tag,offset,length) << std::endl;
     }
 }
@@ -2747,7 +2747,7 @@ void ReportVisitor::visitBegin(Image& image,std::string msg)
 {
     image.depth_++;
     indent_++;
-    if ( option() & (kpsBasic|kpsRecursive) ) {
+    if ( isBasicOrRecursive() ) {
         char c = image.endian() == keBig ? 'M' : 'I';
         out() << indent() << stringFormat("STRUCTURE OF %s FILE (%c%c): ",image.format().c_str(),c,c) <<  image.io().path() << std::endl;
         if ( msg.size() ) out() << indent() << msg << std::endl;
@@ -2768,7 +2768,7 @@ void ReportVisitor::visitTag
 , DataBuf&       buf
 , const TagDict& tagDict
 ) {
-    if ( option() & (kpsBasic|kpsRecursive) ) {
+    if ( isBasicOrRecursive() ) {
         std::string offsetS ;
         if ( typeSize(type)*count > (image.bigtiff_?8:4) ) {
             std::ostringstream os ;
@@ -2866,7 +2866,7 @@ void ReportVisitor::visitChunk(Io& io,Image& image,uint64_t address
                         ,char* chunk,uint32_t length,uint32_t chksum)
 {
     IoSave save(io,address+8);
-    if ( option() & (kpsBasic | kpsRecursive) ) {
+    if ( isBasicOrRecursive() ) {
         {   IoSave    restore(io);
             DataBuf   data(length > 40 ? 40 : length ); // read enougth data for reporting purposes
             io.read(data);
@@ -2963,7 +2963,7 @@ void ReportVisitor::visit8BIM(Io& io,Image& image,uint32_t offset
 void ReportVisitor::visitRiff(uint64_t address,std::string chunk
                 ,uint32_t length,DataBuf& data)
 {
-    if ( option() & (kpsBasic | kpsRecursive) ) {
+    if ( isBasicOrRecursive() ) {
         out() << indent() << stringFormat("%8d | %4s  | %8d | ",address,chunk.c_str(),length)
               << snip(data.binaryToString(),length) << std::endl;
     }
@@ -2972,12 +2972,12 @@ void ReportVisitor::visitRiff(uint64_t address,std::string chunk
 void ReportVisitor::visitMrw(Io& io,Image& image,uint64_t address,std::string chunk
                 ,uint32_t length,DataBuf& data)
 {
-    if ( option() & (kpsBasic | kpsRecursive) ) {
+    if ( isBasicOrRecursive() ) {
         out() << indent() << stringFormat("%8d | %4s | %8d | ",address,chunk.c_str(),length)
               << snip(data.binaryToString(),length) << std::endl;
     }
 
-    if ( kpsRecursive && chunk == "TTW" ) {
+    if ( isRecursive() && chunk == "TTW" ) {
         Io tiff(io,address+8,length);
         visitExif(tiff);
     }
@@ -2998,7 +2998,7 @@ void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
         std::cout << "unrecognised uuid = " << data.toUuidString() << std::endl;
     }
 
-    if ( option() & (kpsBasic | kpsRecursive) ) {
+    if ( isBasicOrRecursive() ) {
         out() << indent() << stringFormat("%8d | %8d | %4s | %4s | ",address,length,name.c_str(),uuid.c_str() );
         uint64_t start    = uuid.size() ? 16 : 0;
         if ( length > 40+start ) length = 40;
@@ -3006,7 +3006,7 @@ void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
               << " " << data.toString(kttUByte,length,image.endian(),start)
               << std::endl;
     }
-    if ( option() & kpsRecursive ){
+    if ( isRecursive() ){
         if ( uuid == "exif" ) {
             Io        tiff(io,address+8+16,data.size_-16); // uuid is 16 bytes (128 bits)
             TiffImage(tiff).accept(*this);
@@ -3019,6 +3019,18 @@ void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
             if ( dicts.find(name) != dicts.end() ) {
                 Io        tiff(io,address+8,data.size_);
                 TiffImage(tiff).accept(*this,dicts[name]);
+            }
+        }
+    }
+
+    if ( boxDict.find(name) != boxDict.end() ) {
+        if ( boxTags.find(name) != boxTags.end() ) {
+            for (Field field : boxTags[name] ) {
+                std::string n      = chop( boxDict[name] + "." + field.name(),28);
+                endian_e    endian = field.endian() == keImage ? image.endian() : field.endian();
+                out() << indent() << stringFormat("%-28s ",n.c_str())
+                      << chop(data.toString(field.type(),field.count(),endian,field.start()),40)
+                      << std::endl;
             }
         }
     }
@@ -3490,6 +3502,13 @@ void init()
     psdDict        [ 0x0422] = "Exif"          ;
     psdDict        [ 0x0423] = "Exif"          ;
     psdDict        [ 0x0424] = "XMP"           ;
+
+    // ISOBMFF boxes
+    boxDict["ispe"] = "ISOBMFF.ispe";
+    boxTags["ispe"].push_back(Field("Version"         ,kttUShort , 0, 1));
+    boxTags["ispe"].push_back(Field("Flags"           ,kttUShort , 2, 1));
+    boxTags["ispe"].push_back(Field("Width"           ,kttLong   , 4, 1));
+    boxTags["ispe"].push_back(Field("Height"          ,kttLong   , 8, 1));
 }
 
 // That's all Folks!
