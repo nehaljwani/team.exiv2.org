@@ -2428,7 +2428,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2020-12-04 20:00:17 +0000</string>
+	<string>2020-12-05 08:22:18 +0000</string>
 	<key>Modifier</key>
 	<string>Robin Mills</string>
 	<key>NotesVisible</key>
@@ -37322,6 +37322,386 @@ etc..}</string>
 			<key>GraphicsList</key>
 			<array>
 				<dict>
+					<key>Bounds</key>
+					<string>{{178.29920757399771, 228.54642128251129}, {100, 21}}</string>
+					<key>Class</key>
+					<string>ShapedGraphic</string>
+					<key>FitText</key>
+					<string>YES</string>
+					<key>Flow</key>
+					<string>Resize</string>
+					<key>FontInfo</key>
+					<dict>
+						<key>Font</key>
+						<string>Consolas</string>
+						<key>Size</key>
+						<real>10</real>
+					</dict>
+					<key>ID</key>
+					<integer>787</integer>
+					<key>Style</key>
+					<dict>
+						<key>fill</key>
+						<dict>
+							<key>Draws</key>
+							<string>NO</string>
+						</dict>
+						<key>shadow</key>
+						<dict>
+							<key>Draws</key>
+							<string>NO</string>
+						</dict>
+						<key>stroke</key>
+						<dict>
+							<key>Draws</key>
+							<string>NO</string>
+						</dict>
+					</dict>
+					<key>Text</key>
+					<dict>
+						<key>Align</key>
+						<integer>0</integer>
+						<key>RTFD</key>
+						<data>
+						BAtzdHJlYW10eXBlZIHoA4QBQISE
+						hBJOU0F0dHJpYnV0ZWRTdHJpbmcA
+						hIQITlNPYmplY3QAhZKEhIQITlNT
+						dHJpbmcBlIQBKxIgMyAgICAzNDU2
+						ICAgIDIzNCCGhAJpSQESkoSEhAxO
+						U0RpY3Rpb25hcnkAlIQBaQOShJaW
+						B05TQ29sb3KGkoSEhAdOU0NvbG9y
+						AJSEAWMBhARmZmZmgx5tfD+DPIMG
+						PIPUfQA/AYaShJaWEE5TUGFyYWdy
+						YXBoU3R5bGWGkoSEhBdOU011dGFi
+						bGVQYXJhZ3JhcGhTdHlsZQCEhBBO
+						U1BhcmFncmFwaFN0eWxlAJSEBEND
+						QFMAAISEhAdOU0FycmF5AJSZAIaB
+						AAKEBFsxZl0khpKElpYGTlNGb250
+						hpKEhIQGTlNGb250HpSZHIQFWzI4
+						Y10GAAAAEgAAAP/+QwBvAG4AcwBv
+						AGwAYQBzAAAAhAFmCZsAmwGbAJsA
+						hoaG
+						</data>
+						<key>Text</key>
+						<string>{\rtf1\ansi\ansicpg1252\cocoartf2513
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Consolas;}
+{\colortbl;\red255\green255\blue255;\red251\green2\blue128;}
+{\*\expandedcolortbl;;\csgenericrgb\c98604\c821\c50192;}
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs18 \cf2  3    3456    234 }</string>
+					</dict>
+					<key>Wrap</key>
+					<string>NO</string>
+				</dict>
+				<dict>
+					<key>Bounds</key>
+					<string>{{134.92913005599823, 228.121225215332}, {37, 18.425196067179286}}</string>
+					<key>Class</key>
+					<string>ShapedGraphic</string>
+					<key>FontInfo</key>
+					<dict>
+						<key>Size</key>
+						<real>10</real>
+					</dict>
+					<key>HFlip</key>
+					<string>YES</string>
+					<key>ID</key>
+					<integer>786</integer>
+					<key>Style</key>
+					<dict>
+						<key>fill</key>
+						<dict>
+							<key>Color</key>
+							<dict>
+								<key>b</key>
+								<real>1</real>
+								<key>g</key>
+								<real>0.94831100000000002</real>
+								<key>r</key>
+								<real>0.729325</real>
+								<key>space</key>
+								<string>srgb</string>
+							</dict>
+						</dict>
+						<key>shadow</key>
+						<dict>
+							<key>Draws</key>
+							<string>NO</string>
+						</dict>
+					</dict>
+					<key>Text</key>
+					<dict>
+						<key>Text</key>
+						<string>{\rtf1\ansi\ansicpg1252\cocoartf2513
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 HelveticaNeue;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc\partightenfactor0
+
+\f0\fs20 \cf0 ext}</string>
+					</dict>
+				</dict>
+				<dict>
+					<key>Bounds</key>
+					<string>{{257.19290949935038, 151.10235746942172}, {55, 21}}</string>
+					<key>Class</key>
+					<string>ShapedGraphic</string>
+					<key>FitText</key>
+					<string>YES</string>
+					<key>Flow</key>
+					<string>Resize</string>
+					<key>FontInfo</key>
+					<dict>
+						<key>Font</key>
+						<string>Consolas</string>
+						<key>Size</key>
+						<real>10</real>
+					</dict>
+					<key>ID</key>
+					<integer>785</integer>
+					<key>Style</key>
+					<dict>
+						<key>fill</key>
+						<dict>
+							<key>Draws</key>
+							<string>NO</string>
+						</dict>
+						<key>shadow</key>
+						<dict>
+							<key>Draws</key>
+							<string>NO</string>
+						</dict>
+						<key>stroke</key>
+						<dict>
+							<key>Draws</key>
+							<string>NO</string>
+						</dict>
+					</dict>
+					<key>Text</key>
+					<dict>
+						<key>Align</key>
+						<integer>0</integer>
+						<key>RTFD</key>
+						<data>
+						BAtzdHJlYW10eXBlZIHoA4QBQISE
+						hBJOU0F0dHJpYnV0ZWRTdHJpbmcA
+						hIQITlNPYmplY3QAhZKEhIQITlNT
+						dHJpbmcBlIQBKwkgRXhpZiAgMyCG
+						hAJpSQEJkoSEhAxOU0RpY3Rpb25h
+						cnkAlIQBaQOShJaWB05TQ29sb3KG
+						koSEhAdOU0NvbG9yAJSEAWMBhARm
+						ZmZmgx5tfD+DPIMGPIPUfQA/AYaS
+						hJaWEE5TUGFyYWdyYXBoU3R5bGWG
+						koSEhBdOU011dGFibGVQYXJhZ3Jh
+						cGhTdHlsZQCEhBBOU1BhcmFncmFw
+						aFN0eWxlAJSEBENDQFMAAISEhAdO
+						U0FycmF5AJSZAIaBAAKEBFsxZl0k
+						hpKElpYGTlNGb250hpKEhIQGTlNG
+						b250HpSZHIQFWzI4Y10GAAAAEgAA
+						AP/+QwBvAG4AcwBvAGwAYQBzAAAA
+						hAFmCZsAmwGbAJsAhoaG
+						</data>
+						<key>Text</key>
+						<string>{\rtf1\ansi\ansicpg1252\cocoartf2513
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Consolas;}
+{\colortbl;\red255\green255\blue255;\red251\green2\blue128;}
+{\*\expandedcolortbl;;\csgenericrgb\c98604\c821\c50192;}
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs18 \cf2  Exif  3 }</string>
+					</dict>
+					<key>Wrap</key>
+					<string>NO</string>
+				</dict>
+				<dict>
+					<key>Class</key>
+					<string>LineGraphic</string>
+					<key>FontInfo</key>
+					<dict>
+						<key>Font</key>
+						<string>Helvetica</string>
+						<key>Size</key>
+						<real>12</real>
+					</dict>
+					<key>ID</key>
+					<integer>784</integer>
+					<key>Points</key>
+					<array>
+						<string>{185.50325662744325, 190.63878220866525}</string>
+						<string>{268.52822405503485, 190.63878220866525}</string>
+					</array>
+					<key>Style</key>
+					<dict>
+						<key>shadow</key>
+						<dict>
+							<key>Draws</key>
+							<string>NO</string>
+						</dict>
+						<key>stroke</key>
+						<dict>
+							<key>HeadArrow</key>
+							<string>0</string>
+							<key>Legacy</key>
+							<false/>
+							<key>TailArrow</key>
+							<string>0</string>
+							<key>Width</key>
+							<real>0.25</real>
+						</dict>
+					</dict>
+				</dict>
+				<dict>
+					<key>Class</key>
+					<string>LineGraphic</string>
+					<key>FontInfo</key>
+					<dict>
+						<key>Font</key>
+						<string>Helvetica</string>
+						<key>Size</key>
+						<real>12</real>
+					</dict>
+					<key>ID</key>
+					<integer>783</integer>
+					<key>Points</key>
+					<array>
+						<string>{198.66928381352906, 178.03681898457853}</string>
+						<string>{198.66928381352906, 245.23021915241742}</string>
+					</array>
+					<key>Style</key>
+					<dict>
+						<key>shadow</key>
+						<dict>
+							<key>Draws</key>
+							<string>NO</string>
+						</dict>
+						<key>stroke</key>
+						<dict>
+							<key>HeadArrow</key>
+							<string>0</string>
+							<key>Legacy</key>
+							<false/>
+							<key>TailArrow</key>
+							<string>0</string>
+							<key>Width</key>
+							<real>0.25</real>
+						</dict>
+					</dict>
+				</dict>
+				<dict>
+					<key>Class</key>
+					<string>LineGraphic</string>
+					<key>FontInfo</key>
+					<dict>
+						<key>Font</key>
+						<string>Helvetica</string>
+						<key>Size</key>
+						<real>12</real>
+					</dict>
+					<key>ID</key>
+					<integer>782</integer>
+					<key>Points</key>
+					<array>
+						<string>{235.8306991778397, 178.03681898457842}</string>
+						<string>{235.8306991778397, 245.73021915241742}</string>
+					</array>
+					<key>Style</key>
+					<dict>
+						<key>shadow</key>
+						<dict>
+							<key>Draws</key>
+							<string>NO</string>
+						</dict>
+						<key>stroke</key>
+						<dict>
+							<key>HeadArrow</key>
+							<string>0</string>
+							<key>Legacy</key>
+							<false/>
+							<key>TailArrow</key>
+							<string>0</string>
+							<key>Width</key>
+							<real>0.25</real>
+						</dict>
+					</dict>
+				</dict>
+				<dict>
+					<key>Class</key>
+					<string>LineGraphic</string>
+					<key>FontInfo</key>
+					<dict>
+						<key>Font</key>
+						<string>Helvetica</string>
+						<key>Size</key>
+						<real>12</real>
+					</dict>
+					<key>ID</key>
+					<integer>781</integer>
+					<key>Points</key>
+					<array>
+						<string>{290.42124941823056, 101.67651514918199}</string>
+						<string>{290.42124941823056, 169.869915317021}</string>
+					</array>
+					<key>Style</key>
+					<dict>
+						<key>shadow</key>
+						<dict>
+							<key>Draws</key>
+							<string>NO</string>
+						</dict>
+						<key>stroke</key>
+						<dict>
+							<key>HeadArrow</key>
+							<string>0</string>
+							<key>Legacy</key>
+							<false/>
+							<key>TailArrow</key>
+							<string>0</string>
+							<key>Width</key>
+							<real>0.25</real>
+						</dict>
+					</dict>
+				</dict>
+				<dict>
+					<key>Class</key>
+					<string>LineGraphic</string>
+					<key>FontInfo</key>
+					<dict>
+						<key>Font</key>
+						<string>Helvetica</string>
+						<key>Size</key>
+						<real>12</real>
+					</dict>
+					<key>ID</key>
+					<integer>780</integer>
+					<key>Points</key>
+					<array>
+						<string>{263.64172264199561, 115.88911318277164}</string>
+						<string>{305.16669006958722, 115.88911318277164}</string>
+					</array>
+					<key>Style</key>
+					<dict>
+						<key>shadow</key>
+						<dict>
+							<key>Draws</key>
+							<string>NO</string>
+						</dict>
+						<key>stroke</key>
+						<dict>
+							<key>HeadArrow</key>
+							<string>0</string>
+							<key>Legacy</key>
+							<false/>
+							<key>TailArrow</key>
+							<string>0</string>
+							<key>Width</key>
+							<real>0.25</real>
+						</dict>
+					</dict>
+				</dict>
+				<dict>
 					<key>Class</key>
 					<string>LineGraphic</string>
 					<key>FontInfo</key>
@@ -37335,8 +37715,8 @@ etc..}</string>
 					<integer>778</integer>
 					<key>Points</key>
 					<array>
-						<string>{78, 245.54330039270283}</string>
-						<string>{135, 245.54330039270283}</string>
+						<string>{78.625, 220.05167616138095}</string>
+						<string>{134.99999999999997, 220.05167616138095}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -37348,7 +37728,7 @@ etc..}</string>
 						<key>stroke</key>
 						<dict>
 							<key>HeadArrow</key>
-							<string>FilledArrow</string>
+							<string>0</string>
 							<key>Legacy</key>
 							<false/>
 							<key>TailArrow</key>
@@ -37370,9 +37750,10 @@ etc..}</string>
 					<integer>777</integer>
 					<key>Points</key>
 					<array>
-						<string>{78.09448750638569, 337.51966870670253}</string>
-						<string>{78, 163}</string>
-						<string>{199.09448750638575, 163.51966870670256}</string>
+						<string>{109.61417033309057, 338.80035539385301}</string>
+						<string>{78.51968282670488, 338.79249250752162}</string>
+						<string>{78.51968282670488, 160.86729110399025}</string>
+						<string>{198.61417033309061, 161.30035539385327}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -37384,17 +37765,17 @@ etc..}</string>
 						<key>stroke</key>
 						<dict>
 							<key>HeadArrow</key>
-							<string>FilledArrow</string>
+							<string>0</string>
 							<key>Legacy</key>
 							<false/>
 							<key>TailArrow</key>
-							<string>FilledBall</string>
+							<string>Arrow</string>
 						</dict>
 					</dict>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{178.41732432227431, 218.69669073219936}, {100, 21}}</string>
+					<string>{{178.29920757399771, 191.04051765186509}, {100, 21}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -37472,7 +37853,7 @@ etc..}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{86.039370850315237, 316.48031784117688}, {148, 33}}</string>
+					<string>{{108.9488159261163, 322.46455792670179}, {128, 33}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -37521,6 +37902,29 @@ etc..}</string>
 					<dict>
 						<key>Align</key>
 						<integer>0</integer>
+						<key>RTFD</key>
+						<data>
+						BAtzdHJlYW10eXBlZIHoA4QBQISE
+						hBJOU0F0dHJpYnV0ZWRTdHJpbmcA
+						hIQITlNPYmplY3QAhZKEhIQITlNT
+						dHJpbmcBlIQBKzpBZnRlciBwYXJz
+						aW5nIG1ldGEsIHBhcnNlCmV4aWZJ
+						RCBpbiB0aGUgaWluZi9pbG9jIGNv
+						bXBsZXgghoQCaUkBOpKEhIQMTlNE
+						aWN0aW9uYXJ5AJSEAWkDkoSWlgdO
+						U0NvbG9yhpKEhIQHTlNDb2xvcgCU
+						hAFjAYQEZmZmZgAAAAGGkoSWlhBO
+						U1BhcmFncmFwaFN0eWxlhpKEhIQX
+						TlNNdXRhYmxlUGFyYWdyYXBoU3R5
+						bGUAhIQQTlNQYXJhZ3JhcGhTdHls
+						ZQCUhARDQ0BTAACEhIQHTlNBcnJh
+						eQCUmQCGgQAChARbMWZdJIaShJaW
+						Bk5TRm9udIaShISEBk5TRm9udB6U
+						mTSEBVs1MmNdBgAAACoAAAD//kgA
+						ZQBsAHYAZQB0AGkAYwBhAE4AZQB1
+						AGUALQBJAHQAYQBsAGkAYwAAAIQB
+						ZgmbAJsBmwCbAIaGhg==
+						</data>
 						<key>Text</key>
 						<string>{\rtf1\ansi\ansicpg1252\cocoartf2513
 \cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 HelveticaNeue-Italic;}
@@ -37529,15 +37933,15 @@ etc..}</string>
 \deftab720
 \pard\pardeftab720\partightenfactor0
 
-\f0\i\fs18 \cf2 Before leaving meta, we parse Exif\
-if located in the iinf/iloc complex }</string>
+\f0\i\fs18 \cf2 After parsing meta, parse\
+exifID in the iinf/iloc complex }</string>
 					</dict>
 					<key>Wrap</key>
 					<string>NO</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{178.41732432227431, 235.45668615517656}, {100, 21}}</string>
+					<string>{{178.29920757399771, 209.80051307484229}, {100, 21}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -37611,7 +38015,7 @@ if located in the iinf/iloc complex }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{178.41732432227431, 198.42519865073555}, {100, 21}}</string>
+					<string>{{178.29920757399771, 172.76902557040128}, {100, 21}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -37660,6 +38064,27 @@ if located in the iinf/iloc complex }</string>
 					<dict>
 						<key>Align</key>
 						<integer>0</integer>
+						<key>RTFD</key>
+						<data>
+						BAtzdHJlYW10eXBlZIHoA4QBQISE
+						hBJOU0F0dHJpYnV0ZWRTdHJpbmcA
+						hIQITlNPYmplY3QAhZKEhIQITlNT
+						dHJpbmcBlIQBKxJJRCAgb2Zmc2V0
+						IGxlbmd0aCCGhAJpSQESkoSEhAxO
+						U0RpY3Rpb25hcnkAlIQBaQOShJaW
+						B05TQ29sb3KGkoSEhAdOU0NvbG9y
+						AJSEAWMBhARmZmZmg8LAcz2DfH4A
+						P4Nrmn8/AYaShJaWEE5TUGFyYWdy
+						YXBoU3R5bGWGkoSEhBdOU011dGFi
+						bGVQYXJhZ3JhcGhTdHlsZQCEhBBO
+						U1BhcmFncmFwaFN0eWxlAJSEBEND
+						QFMAAISEhAdOU0FycmF5AJSZAIaB
+						AAKEBFsxZl0khpKElpYGTlNGb250
+						hpKEhIQGTlNGb250HpSZHIQFWzI4
+						Y10GAAAAEgAAAP/+QwBvAG4AcwBv
+						AGwAYQBzAAAAhAFmCZsAmwGbAJsA
+						hoaG
+						</data>
 						<key>Text</key>
 						<string>{\rtf1\ansi\ansicpg1252\cocoartf2513
 \cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Consolas;}
@@ -37675,7 +38100,7 @@ if located in the iinf/iloc complex }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{257.17322667264551, 154.64567051299915}, {55, 21}}</string>
+					<string>{{257.19290949935038, 133.53149313141043}, {55, 21}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -37718,7 +38143,7 @@ if located in the iinf/iloc complex }</string>
 						BAtzdHJlYW10eXBlZIHoA4QBQISE
 						hBJOU0F0dHJpYnV0ZWRTdHJpbmcA
 						hIQITlNPYmplY3QAhZKEhIQITlNT
-						dHJpbmcBlIQBKwkgRXhpZiAgMiCG
+						dHJpbmcBlIQBKwkgaHZjMSAgMiCG
 						hAJpSQEJkoSEhAxOU0RpY3Rpb25h
 						cnkAlIQBaQOShJaWB05TQ29sb3KG
 						koSEhAdOU0NvbG9yAJSEAWMBhARm
@@ -37741,14 +38166,14 @@ if located in the iinf/iloc complex }</string>
 \deftab720
 \pard\pardeftab720\partightenfactor0
 
-\f0\fs18 \cf2  Exif  2 }</string>
+\f0\fs18 \cf2  hvc1  2 }</string>
 					</dict>
 					<key>Wrap</key>
 					<string>NO</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{257.17322667264551, 115.64567051299915}, {55, 21}}</string>
+					<string>{{257.19290949935038, 96.031493131410429}, {55, 21}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -37797,31 +38222,11 @@ if located in the iinf/iloc complex }</string>
 					<dict>
 						<key>Align</key>
 						<integer>0</integer>
-						<key>RTFD</key>
-						<data>
-						BAtzdHJlYW10eXBlZIHoA4QBQISE
-						hBJOU0F0dHJpYnV0ZWRTdHJpbmcA
-						hIQITlNPYmplY3QAhZKEhIQITlNT
-						dHJpbmcBlIQBKwkgSXRlbSBJRCCG
-						hAJpSQEJkoSEhAxOU0RpY3Rpb25h
-						cnkAlIQBaQOShJaWB05TQ29sb3KG
-						koSEhAdOU0NvbG9yAJSEAWMBhARm
-						ZmZmg4TAcz2De34AP4O7mn8/AYaS
-						hJaWEE5TUGFyYWdyYXBoU3R5bGWG
-						koSEhBdOU011dGFibGVQYXJhZ3Jh
-						cGhTdHlsZQCEhBBOU1BhcmFncmFw
-						aFN0eWxlAJSEBENDQFMAAISEhAdO
-						U0FycmF5AJSZAIaBAAKEBFsxZl0k
-						hpKElpYGTlNGb250hpKEhIQGTlNG
-						b250HpSZHIQFWzI4Y10GAAAAEgAA
-						AP/+QwBvAG4AcwBvAGwAYQBzAAAA
-						hAFmCZsAmwGbAJsAhoaG
-						</data>
 						<key>Text</key>
 						<string>{\rtf1\ansi\ansicpg1252\cocoartf2513
 \cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Consolas;}
 {\colortbl;\red255\green255\blue255;\red15\green128\blue255;}
-{\*\expandedcolortbl;;\cssrgb\c0\c58980\c100000;}
+{\*\expandedcolortbl;;\csgenericrgb\c5951\c50193\c99845;}
 \deftab720
 \pard\pardeftab720\partightenfactor0
 
@@ -37832,7 +38237,7 @@ if located in the iinf/iloc complex }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{198.78740056180567, 280.13844388777488}, {56.692913055419922, 18.425196067179286}}</string>
+					<string>{{198.78740056180567, 267.5754474802435}, {56.692913055419922, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -37880,7 +38285,7 @@ if located in the iinf/iloc complex }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{115.40157445096582, 271.63844388777488}, {56.692913055419922, 18.425196067179286}}</string>
+					<string>{{115.40157445096582, 259.0754474802435}, {56.692913055419922, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -37928,7 +38333,7 @@ if located in the iinf/iloc complex }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{135.09448750638578, 236.2201513561788}, {37, 18.425196067179286}}</string>
+					<string>{{135.09448750638575, 209.72852712485692}, {37, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -37976,7 +38381,7 @@ if located in the iinf/iloc complex }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{135.09448750638578, 217.79495528899952}, {37, 18.425196067179286}}</string>
+					<string>{{135.09448750638575, 191.30333105767764}, {37, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -38024,7 +38429,7 @@ if located in the iinf/iloc complex }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{115.40157445096582, 199.33858441320928}, {56.692913055419922, 18.425196067179286}}</string>
+					<string>{{115.40157445096582, 172.8469601818874}, {56.692913055419922, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -38072,7 +38477,7 @@ if located in the iinf/iloc complex }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{257.17322667264551, 135.64567051299915}, {55, 21}}</string>
+					<string>{{257.19290949935038, 116.03149313141043}, {55, 21}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -38188,7 +38593,7 @@ if located in the iinf/iloc complex }</string>
 {\*\expandedcolortbl;;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc\partightenfactor0
 
-\f0\fs20 \cf0 iinf}</string>
+\f0\fs20 \cf0 pitm}</string>
 					</dict>
 				</dict>
 				<dict>
@@ -38236,7 +38641,7 @@ if located in the iinf/iloc complex }</string>
 {\*\expandedcolortbl;;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc\partightenfactor0
 
-\f0\fs20 \cf0 pitm}</string>
+\f0\fs20 \cf0 iinf}</string>
 					</dict>
 				</dict>
 				<dict>
@@ -38445,8 +38850,8 @@ if located in the iinf/iloc complex }</string>
 					<integer>769</integer>
 					<key>Points</key>
 					<array>
-						<string>{245.48030804305569, 288.38944464697795}</string>
-						<string>{281.73030804305557, 288.38944464697795}</string>
+						<string>{245.48030804305569, 275.82644823944656}</string>
+						<string>{282.23030804305557, 275.82644823944656}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -38480,8 +38885,8 @@ if located in the iinf/iloc complex }</string>
 					<integer>768</integer>
 					<key>Points</key>
 					<array>
-						<string>{162.09448750638575, 280.35104192136453}</string>
-						<string>{199.09448750638575, 280.35104192136453}</string>
+						<string>{162.09448750638575, 267.53804551383314}</string>
+						<string>{198.84448750638575, 267.53804551383314}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -38515,8 +38920,8 @@ if located in the iinf/iloc complex }</string>
 					<integer>767</integer>
 					<key>Points</key>
 					<array>
-						<string>{162.09448750638569, 134.64567051299915}</string>
-						<string>{199.09448750638575, 134.64567051299915}</string>
+						<string>{162.11417033309056, 115.03149313141043}</string>
+						<string>{199.11417033309061, 115.03149313141043}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -38578,7 +38983,7 @@ if located in the iinf/iloc complex }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{282.17322667264551, 344.00328475845498}, {56.692913055419922, 18.425196067179286}}</string>
+					<string>{{282.17322667264551, 331.44028835092365}, {56.692913055419922, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -38626,7 +39031,7 @@ if located in the iinf/iloc complex }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{282.17322667264551, 325.47998411990721}, {56.692913055419922, 18.425196067179286}}</string>
+					<string>{{282.17322667264551, 312.91698771237589}, {56.692913055419922, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -38674,7 +39079,7 @@ if located in the iinf/iloc complex }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{282.17322667264551, 307.0236132441168}, {56.692913055419922, 18.425196067179286}}</string>
+					<string>{{282.17322667264551, 294.46061683658547}, {56.692913055419922, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -38722,7 +39127,7 @@ if located in the iinf/iloc complex }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{282.17322667264551, 288.59841717693752}, {56.692913055419922, 18.425196067179286}}</string>
+					<string>{{282.17322667264551, 276.03542076940619}, {56.692913055419922, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -38770,7 +39175,7 @@ if located in the iinf/iloc complex }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{198.78740056180567, 171.50393681742077}, {56.692913055419922, 18.425196067179286}}</string>
+					<string>{{198.80708338851053, 151.88975943583208}, {56.692913055419922, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -38818,7 +39223,7 @@ if located in the iinf/iloc complex }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{198.78740056180567, 153.07874075024148}, {56.692913055419922, 18.425196067179286}}</string>
+					<string>{{198.80708338851053, 133.46456336865279}, {56.692913055419922, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -38866,7 +39271,7 @@ if located in the iinf/iloc complex }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{198.78740056180567, 134.65354468306219}, {56.692913055419922, 18.425196067179286}}</string>
+					<string>{{198.80708338851053, 115.03936730147348}, {56.692913055419922, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -38962,7 +39367,7 @@ if located in the iinf/iloc complex }</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{356.33464896134501, 92.869436132179203}, {154.65352551688375, 253}}</string>
+					<string>{{356.33464896134501, 92.869436132179203}, {154.65352551688375, 263}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -39034,43 +39439,44 @@ if located in the iinf/iloc complex }</string>
 						BAtzdHJlYW10eXBlZIHoA4QBQISE
 						hBJOU0F0dHJpYnV0ZWRTdHJpbmcA
 						hIQITlNPYmplY3QAhZKEhIQITlNT
-						dHJpbmcBlIQBK4HfAUJveCAgRGF0
-						YQphdjFDIFVua25vd24gKGluIGhl
-						aWMpCmNvbHIgSUNDIHByb2ZpbGUK
-						ZGluZiBEYXRhIGluZm8gY29udGFp
-						bmVyCmZ0eXAgRmlsZSB0eXBlCmlo
-						ZHIgSW1hZ2UgaGVhZGVyCmhkbGcg
-						SGFuZGxlciAobWVkaWEgdHlwZSkK
-						aWluZiBJdGVtIGluZm9ybWF0aW9u
-						Cmlsb2MgSXRlbSBsb2NhdGlvbgog
-						ZXh0IFN1YiBmaWVsZCBvZiBpbG9j
-						IAppbmZlIEl0ZW0gaW5mbyBlbnRy
-						eQppcGNvIEl0ZW0gUHJvcGVydHkg
-						Q29udGFpbmVyCmlwcnAgSXRlbSBQ
-						cm9wZXJ0aWVzCmlzcGUgVW5rbm93
-						biAoaW4gaGVpYykKalAgICBKcGVn
-						IDIwMDAgT3BlbgpqcDJjIEpwZWcg
-						MjAwMCBDbG9zZQpqcDJoIEpwZWcg
-						MjAwMCBIZWFkZXIKbWRhdCBNZWRp
-						YSBjb250YWluZXIgCm1ldGEgTWV0
-						YWRhdGEgY29udGFpbmVyCm1vb3Yg
-						TW92aWUgY29udGFpbmVyCnBpdG0g
-						UHJpbWFyeSBpdGVtIHJlZiAKcGl4
-						aSBQaXhlbCBhc3BlY3QgcmF0aW8K
-						dXVpZCBEYXRhhoQCaUkBgd8BkoSE
-						hAxOU0RpY3Rpb25hcnkAlIQBaQOS
-						hJaWB05TQ29sb3KGkoSEhAdOU0Nv
-						bG9yAJSEAWMBhARmZmZmgx5tfD+D
-						PIMGPIPUfQA/AYaShJaWEE5TUGFy
-						YWdyYXBoU3R5bGWGkoSEhBdOU011
-						dGFibGVQYXJhZ3JhcGhTdHlsZQCE
-						hBBOU1BhcmFncmFwaFN0eWxlAJSE
-						BENDQFMAAISEhAdOU0FycmF5AJSZ
-						AIaBAAKEBFsxZl0khpKElpYGTlNG
-						b250hpKEhIQGTlNGb250HpSZHIQF
-						WzI4Y10GAAAAEgAAAP/+QwBvAG4A
-						cwBvAGwAYQBzAAAAhAFmCZsAmwGb
-						AJsAhoaG
+						dHJpbmcBlIQBK4H7AUJveCAgUHVy
+						cG9zZQphdjFDIFVua25vd24gKGlu
+						IGhlaWMpCmNvbHIgSUNDIHByb2Zp
+						bGUKZGluZiBEYXRhIGluZm8gY29u
+						dGFpbmVyCmZ0eXAgRmlsZSB0eXBl
+						CmloZHIgSW1hZ2UgaGVhZGVyCmhk
+						bHIgSGFuZGxlciAobWVkaWEgdHlw
+						ZSkKaHZjMSBWaXN1YWxTYW1wbGVF
+						bnRyeQppaW5mIEl0ZW0gaW5mb3Jt
+						YXRpb24KaWxvYyBJdGVtIGxvY2F0
+						aW9uCiBleHQgU3ViIGZpZWxkIG9m
+						IGlsb2MgCmluZmUgSXRlbSBpbmZv
+						IGVudHJ5CmlwY28gSXRlbSBQcm9w
+						ZXJ0eSBDb250YWluZXIKaXBycCBJ
+						dGVtIFByb3BlcnRpZXMKaXNwZSBJ
+						bWFnZVNwYXRpYWxFeHRlbnRzCmpQ
+						ICAgSnBlZyAyMDAwIE9wZW4KanAy
+						YyBKcGVnIDIwMDAgQ2xvc2UKanAy
+						aCBKcGVnIDIwMDAgSGVhZGVyCm1k
+						YXQgTWVkaWEgY29udGFpbmVyIApt
+						ZXRhIE1ldGFkYXRhIGNvbnRhaW5l
+						cgptb292IE1vdmllIGNvbnRhaW5l
+						cgpwaXRtIFByaW1hcnkgaXRlbSBy
+						ZWYgCnBpeGkgUGl4ZWwgYXNwZWN0
+						IHJhdGlvCnV1aWQgRGF0YYaEAmlJ
+						AYH7AZKEhIQMTlNEaWN0aW9uYXJ5
+						AJSEAWkDkoSWlgdOU0NvbG9yhpKE
+						hIQHTlNDb2xvcgCUhAFjAYQEZmZm
+						ZoMebXw/gzyDBjyD1H0APwGGkoSW
+						lhBOU1BhcmFncmFwaFN0eWxlhpKE
+						hIQXTlNNdXRhYmxlUGFyYWdyYXBo
+						U3R5bGUAhIQQTlNQYXJhZ3JhcGhT
+						dHlsZQCUhARDQ0BTAACEhIQHTlNB
+						cnJheQCUmQCGgQAChARbMWZdJIaS
+						hJaWBk5TRm9udIaShISEBk5TRm9u
+						dB6UmRyEBVsyOGNdBgAAABIAAAD/
+						/kMAbwBuAHMAbwBsAGEAcwAAAIQB
+						ZgmbAJsBmwCbAIaGhg==
 						</data>
 						<key>Text</key>
 						<string>{\rtf1\ansi\ansicpg1252\cocoartf2513
@@ -39080,20 +39486,21 @@ if located in the iinf/iloc complex }</string>
 \deftab720
 \pard\pardeftab720\partightenfactor0
 
-\f0\fs18 \cf2 Box  Data\
+\f0\fs18 \cf2 Box  Purpose\
 av1C Unknown (in heic)\
 colr ICC profile\
 dinf Data info container\
 ftyp File type\
 ihdr Image header\
-hdlg Handler (media type)\
+hdlr Handler (media type)\
+hvc1 VisualSampleEntry\
 iinf Item information\
 iloc Item location\
  ext Sub field of iloc \
 infe Item info entry\
 ipco Item Property Container\
 iprp Item Properties\
-ispe Unknown (in heic)\
+ispe ImageSpatialExtents\
 jP   Jpeg 2000 Open\
 jp2c Jpeg 2000 Close\
 jp2h Jpeg 2000 Header\
@@ -39342,7 +39749,7 @@ uuid Data}</string>
 			<key>HorizontalGuides</key>
 			<array>
 				<real>79.370079460294221</real>
-				<real>153.07086753056743</real>
+				<real>161.57479859646853</real>
 				<real>272.12598672100876</real>
 				<real>360.00000326633449</real>
 				<real>423.77953140407095</real>
@@ -39441,9 +39848,9 @@ uuid Data}</string>
 		<key>TopSlabHeight</key>
 		<real>33</real>
 		<key>VisibleRegion</key>
-		<string>{{-188, -172}, {1182, 882}}</string>
+		<string>{{0, 19.75}, {583.5, 433.5}}</string>
 		<key>Zoom</key>
-		<real>1</real>
+		<real>2</real>
 		<key>ZoomValues</key>
 		<array>
 			<array>
@@ -39538,8 +39945,8 @@ uuid Data}</string>
 			</array>
 			<array>
 				<string>isobmff</string>
-				<real>1</real>
 				<real>2</real>
+				<real>4</real>
 			</array>
 		</array>
 	</dict>
