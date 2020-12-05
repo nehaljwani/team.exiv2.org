@@ -1775,11 +1775,13 @@ public:
         const char*  kJp2UuidIptc  = "33c7a4d2-b81d-4723-a0ba-f1a3e097ad38" ;
         const char*  kJp2UuidXmp   = "be7acfcb-97a9-42e8-9c71-999491e3afac" ;
         const char*  kJp2UuidCano  = "85c0b687-820f-11e0-8111-f4ce462b6a48" ;
+        const char*  kJp2UuidCanp  = "eaf42b5e-1c98-4b88-b9fb-b7dc406e4d16" ; // Canon preview
 
         uuids_[kJp2UuidExif] = "exif" ;
         uuids_[kJp2UuidIptc] = "iptc" ;
         uuids_[kJp2UuidXmp ] = "xmp"  ;
         uuids_[kJp2UuidCano] = "cano" ;
+        uuids_[kJp2UuidCanp] = "canp" ;
     }
 
 private:

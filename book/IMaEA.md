@@ -266,7 +266,7 @@ The Metadata is defined by standards which also define how to embed the data in 
 
 I suspect the proliferation of formats is caused by the hardware engineers.  When hardware people start a new project, they copy the CAD files from the last project and proceed from there.  They don't worry about back-porting changes or compatibility.  We have to live with this mess.
 
-There is also the issue of patents.  It's unclear if it's legal to read an ISOBMFF file which is used by Apple to store Heif files.  I believe it is legal to read ISOBMFF files.  It's illegal to reverse engineer the H.264 codec which is used to encrypt the image in a HEIF.  Metadata is occasionally compressed (PNG), encrypted (Nikon) or ciphered (Sony).
+There is also the issue of patents.  It's unclear if it's legal to read an ISOBMFF file which is used by Apple to store Heif files.  I believe it is legal to read ISOBMFF files.  It's illegal to reverse engineer the proprietary encoded data stored in the mdat box a HEIF.  Metadata is occasionally compressed (PNG), encrypted (Nikon) or ciphered (Sony).
 
 Here is a useful WikiPedia site that summarises file formats: [https://en.wikipedia.org/wiki/Comparison\_of\_graphics\_file\_formats](https://en.wikipedia.org/wiki/Comparison_of_graphics_file_formats)
 
@@ -994,7 +994,7 @@ As you can see, the 'colr' box is stored at 40+22 bytes into the file and has a 
 
 I obtained the standard here: [https://mpeg.chiariglione.org/standards/mpeg-4/iso-base-media-file-format/text-isoiec-14496-12-5th-edition](https://mpeg.chiariglione.org/standards/mpeg-4/iso-base-media-file-format/text-isoiec-14496-12-5th-edition)
 
-There has been a lot of discussion in Team Exiv2 concerning the legality of reading this file.  I don't believe it's illegal to read metadata from a container.  I believe it's illegal to decode H.264 encoded data stored in the image.  However the metadata is not protected in anyway.  So, I'll implement this in tvisitor.cpp.  Team Exiv2 may agree to include this in Exiv2 v0.28.  If I ever work on Exiv2 v0.27.4, I will implement ISOBMFF by extending the existing JP2 code.
+There has been a lot of discussion in Team Exiv2 concerning the legality of reading this file.  I don't believe it's illegal to read metadata from a container.  I believe it's illegal to decode proprietary encoded data stored in the image.  However the metadata is not protected in anyway.  So, I'll implement this in tvisitor.cpp.  Team Exiv2 may agree to include this in Exiv2 v0.28.  If I ever work on Exiv2 v0.27.4, I will implement ISOBMFF by extending the existing JP2 code.
 
 The most obvious difference between JP2000 and ISOBMFF is the first box.  For JP2, this is of type <b>jP  </b> _(jPspacespace)_ followed by **ftyp**.  ISOBMFF files begin with an **ftyp** box.  The syntax of the **ftyp** box is:
 
@@ -1391,6 +1391,58 @@ STRUCTURE OF JP2 (heic) FILE (MM): /Users/rmills/Downloads/IMG_3578.HEIC
 END: /Users/rmills/Downloads/IMG_3578.HEIC
 ```
 
+#### Reporting Boxes as Metadata
+
+The tvisitor.cpp code is mostly a structural parser.  It locates Exif metadata within the meta box and, if the user has selected the Recursive option (-pR), will report the Exif metadata.  However, the basic report can treat boxes as metadata and this has been done for the ispe box which is specified as follows:
+
+```
+6.5.3.2 Syntax
+aligned(8) class ImageSpatialExtentsProperty
+extends ItemFullProperty('ispe', version = 0, flags = 0) {
+unsigned int(32) image_width;
+       unsigned int(32) image_height;
+}
+```
+
+This is coded into tvisitor.cpp as follows:
+
+```cpp
+    // ISOBMFF boxes
+    boxDict["ispe"] = "ISOBMFF.ispe";
+    boxTags["ispe"].push_back(Field("Version"         ,kttUShort , 0, 1));
+    boxTags["ispe"].push_back(Field("Flags"           ,kttUShort , 2, 1));
+    boxTags["ispe"].push_back(Field("Width"           ,kttLong   , 4, 1));
+    boxTags["ispe"].push_back(Field("Height"          ,kttLong   , 8, 1));
+```
+
+The processing of this data is achieved in ReportVisitor::visitBox() as follows:
+
+```
+    if ( boxDict.find(name) != boxDict.end() ) {
+        if ( boxTags.find(name) != boxTags.end() ) {
+            for (Field field : boxTags[name] ) {
+                std::string n      = chop( boxDict[name] + "." + field.name(),28);
+                endian_e    endian = field.endian() == keImage ? image.endian() : field.endian();
+                out() << indent() << stringFormat("%-28s ",n.c_str())
+                      << chop(data.toString(field.type(),field.count(),endian,field.start()),40)
+                      << std::endl;
+            }
+        }
+    }
+```
+
+These tags are reported as metadata as follows:
+
+```
+           692 |       12 | ispe |      | ______..__.. 0 0 0 0 0 0 15 192 0 0 11 208
+      ISOBMFF.ispe.Version         0
+      ISOBMFF.ispe.Flags           0
+      ISOBMFF.ispe.Width           4032
+      ISOBMFF.ispe.Height          3024
+```
+
+More information about binary decoding in tvisitor.cpp is discussed in [3.5 ReportVisitor::visitTag()](#3-5)
+
 [TOC](#TOC)
 <div id="CRW"/>
 ## CRW Canon Raw Format
@@ -1652,7 +1704,7 @@ There are many tags defined for the ORF file in Exiv2.  Only a few have been def
 <div id="PEF"/>
 ## Pentax Raw
 
-PEF is Tiff.  I haven't found anything special about the PEF format.  Of course, it has code for the Pentax MakerNote and that code is shared with some AVIF files in which the maker is "Ricoh".  P
+PEF is Tiff.  I haven't found anything special about the PEF format.  Of course, it has code for the Pentax MakerNote and that code is shared with some AVIF files in which the maker is "Ricoh".
 
 [TOC](#TOC)
 <div id="PGF"/>
