@@ -3525,8 +3525,8 @@ void init()
 
     // ISOBMFF boxes
     boxDict["ispe"] = "ISOBMFF.ispe";
-    boxTags["ispe"].push_back(Field("Version"         ,kttUShort , 0, 1));
-    boxTags["ispe"].push_back(Field("Flags"           ,kttUShort , 2, 1));
+    boxTags["ispe"].push_back(Field("Version"         ,kttUByte  , 0, 1));
+    boxTags["ispe"].push_back(Field("Flags"           ,kttUByte  , 1, 3));
     boxTags["ispe"].push_back(Field("Width"           ,kttLong   , 4, 1));
     boxTags["ispe"].push_back(Field("Height"          ,kttLong   , 8, 1));
 }

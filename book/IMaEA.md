@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-12-05</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-12-06</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -999,7 +999,7 @@ There has been a lot of discussion in Team Exiv2 concerning the legality of read
 The most obvious difference between JP2000 and ISOBMFF is the first box.  For JP2, this is of type <b>jP  </b> _(jPspacespace)_ followed by **ftyp**.  ISOBMFF files begin with an **ftyp** box.  The syntax of the **ftyp** box is:
 
 ```
-aligned(8) class FileTypeBox  extends Box(‘ftyp’) {
+class FileTypeBox  extends Box(‘ftyp’) {
   unsigned int(32) major_brand;
   unsigned int(32) minor_version;
   unsigned int(32) compatible_brands[]; // to end of the box
@@ -1129,42 +1129,38 @@ for version 1:
 
 ### HEIC and AVIF
 
-To understand how to parse HEIC and AVIF, we have to discuss the specification of more boxes. The file is organized into a heirarchy of box as shown in this drawing.
-
-![isobmff](isobmff.png)
-
+To understand how to parse HEIC and AVIF, we have to discuss the specification of more boxes.
 
 #### Full Box
 
-The Full Box is specified as follows:
+A "Full Box" has a 4 byte header which is version (1 byte) followed by flags (3 bytes).  It is specified as follows:
 
 ```
-aligned(8) class FullBox(unsigned int(32) boxtype, unsigned int(8) v, bit(24) f) 
- extends Box(boxtype) {
- unsigned int(8) version = v;
- bit(24) flags = f;
+class FullBox(unsigned int(32) boxtype, unsigned int(8) v, bit(24) f) 
+   extends Box(boxtype) {
+   unsigned int(8) version = v;
+   bit(24) flags = f;
 }
 ```
 
-A "Full Box" has a 4 byte header which is version (1 byte) followed by flags (3 bytes).
+
 
 #### Handler Box
 
-This is specified as follows:
+Declares the media (handler) type.  This effectively add a name for a full box such as 'pict'.
 
 ```
-aligned(8) class HandlerBox extends FullBox(‘hdlr’, version = 0, 0) {
- unsigned int(32) pre_defined = 0;
- unsigned int(32) handler_type;
- const unsigned int(32)[3] reserved = 0;
- string name;
+class HandlerBox extends FullBox(‘hdlr’, version = 0, 0) {
+   unsigned int(32) pre_defined = 0;
+   unsigned int(32) handler_type;
+   const unsigned int(32)[3] reserved = 0;
+   string name;
 }
 ```
 
-
 #### Media Box mdat
 
-This is specified as follows:
+This is the box in which the creator of the file stores the media.  From a metadata point of view, there is nothing useful in this box and can be treated as the end of file.
 
 ```
 aligned(8) class MediaDataBox extends Box(‘mdat’) {
@@ -1179,37 +1175,36 @@ This is pure binary data.  From a metadata perspective, this the end of the file
 This is specified as follows:
 
 ```
-aligned(8) class MetaBox (handler_type)
-   extends FullBox(‘meta’, version = 0, 0) {
-   HandlerBox(handler_type) theHandler;
-   PrimaryItemBox
-   DataInformationBox
-   ItemLocationBox
-   ItemProtectionBox
-   ItemInfoBox
-   IPMPControlBox
-   ItemReferenceBox
-   ItemDataBox
-   Box other_boxes[];
+class MetaBox (handler_type)
+  extends FullBox(‘meta’, version = 0, 0) {
+    HandlerBox(handler_type) theHandler;
+    PrimaryItemBox        // pitm (optional boxes)
+    DataInformationBox    // dinf
+    ItemLocationBox       // iloc
+    ItemProtectionBox     // iprp
+    ItemInfoBox           // iinf
+    IPMPControlBox
+    ItemReferenceBox      // iref
+    ItemDataBox           // idat
+    Box other_boxes[];
 }
 ```
 
 #### Item Information Box iinf
 
-_The Item information box provides extra information about selected items, including symbolic (File) names_.
+The Item information box provides extra information about selected items, including symbolic (File) names.  Effectively is a list of data named data item ID.  For our purposes we are interest to know the ID of any Exif metadata.
 
 This is specified as follows:
 
 ```
-aligned(8) class ItemInfoBox
+class ItemInfoBox
   extends FullBox(‘iinf’, version, 0) {
-
-  if (version == 0) {
-    unsigned int(16) entry_count;
-  } else {
-    unsigned int(32) entry_count;
-  }
-  ItemInfoEntry[ entry_count ]
+    if (version == 0) {
+        unsigned int(16) entry_count;
+    } else {
+        unsigned int(32) entry_count;
+    }
+    ItemInfoEntry[ entry_count ]
 }
 ```
 
@@ -1217,47 +1212,52 @@ aligned(8) class ItemInfoBox
 
 _The item location box provides a directory of resources in this or other Files, by locating their container, their offset within that container, and their length. Placing this in binary format enables common handling of this data, even by systems which do not understand the particular metadata system used_.
 
-This is specified as follows:
+This is a single box with which contains an array of ID/extent/length tuples.  We are very interesting the extend/length of the Exif ID.
+
+Please be aware that the order of the  iinf and iloc boxes is not specified.  In tvisitor, we parse Exif metadata before we leave the the meta box.
+
+The iloc box is is specified as follows:
 
 ```
-aligned(8) class ItemLocationBox extends FullBox(‘iloc’, version, 0) {
-  unsigned int(4)
-  unsigned int(4)
-  unsigned int(4)
-  if ((version == 1) || (version == 2)) {
-     offset_size;
-     length_size;
-     base_offset_size;
-     unsigned int(4) index_size;
-  } else {
-    unsigned int(4) reserved;
-  }
-  if (version < 2) {
-    unsigned int(16) item_count;
-  } else if (version == 2) {
-    unsigned int(32) item_count;
-  }
-  for (i=0; i<item_count; i++) {
-    if (version < 2) {
-      unsigned int(16) item_ID;
-    } else if (version == 2) {
-      unsigned int(32) item_ID;
-    }
+class ItemLocationBox
+  extends FullBox(‘iloc’, version, 0) {
+    unsigned int(4)
+    unsigned int(4)
+    unsigned int(4)
     if ((version == 1) || (version == 2)) {
-      unsigned int(12) reserved = 0;
-      unsigned int(4) construction_method; 
+        offset_size;
+        length_size;
+        base_offset_size;
+        unsigned int(4) index_size;
+    } else {
+        unsigned int(4) reserved;
     }
-    unsigned int(16) data_reference_index;
-    unsigned int(base_offset_size*8) base_offset;
-    unsigned int(16) extent_count;
-    for (j=0; j<extent_count; j++) {
-      if (((version == 1) || (version == 2)) && (index_size > 0)) {
-        unsigned int(index_size*8) extent_index;
-      }
-      unsigned int(offset_size*8) extent_offset;
-      unsigned int(length_size*8) extent_length;
-    } // for j
-  } // for i
+    if (version < 2) {
+        unsigned int(16) item_count;
+    } else if (version == 2) {
+        unsigned int(32) item_count;
+    }
+    for (i=0; i<item_count; i++) {
+        if (version < 2) {
+            unsigned int(16) item_ID;
+        } else if (version == 2) {
+            unsigned int(32) item_ID;
+        }
+        if ((version == 1) || (version == 2)) {
+            unsigned int(12) reserved = 0;
+            unsigned int(4) construction_method; 
+        }
+        unsigned int(16) data_reference_index;
+        unsigned int(base_offset_size*8) base_offset;
+        unsigned int(16) extent_count;
+        for (j=0; j<extent_count; j++) {
+            if (((version == 1) || (version == 2)) && (index_size > 0)) {
+                unsigned int(index_size*8) extent_index;
+            }
+            unsigned int(offset_size*8) extent_offset;
+            unsigned int(length_size*8) extent_length;
+        } // for j
+    } // for i
 }
 ```
 
@@ -1318,7 +1318,7 @@ The code in ISOBMFF/iloc.cpp is (effectively):
 ```cpp
 void ILOC::ReadData( Parser & parser, BinaryStream & stream )
 {
-	FullBox::ReadData( parser, stream );
+    FullBox::ReadData( parser, stream );
 
 	uint8_t u8 = stream.ReadUInt8();        
 	this->SetOffsetSize( u8 >> 4 );
@@ -1393,14 +1393,33 @@ END: /Users/rmills/Downloads/IMG_3578.HEIC
 
 #### Reporting Boxes as Metadata
 
-The tvisitor.cpp code is mostly a structural parser.  It locates Exif metadata within the meta box and, if the user has selected the Recursive option (-pR), will report the Exif metadata.  However, the basic report can treat boxes as metadata and this has been done for the ispe box which is specified as follows:
+The tvisitor.cpp code is a structural parser.  It locates Exif metadata within the meta box and, if the user has selected the Recursive option (-pR), will report the Exif metadata.  However, the kpsBasic report can report boxes as metadata and this has been done for the ispe box which is specified as follows:
 
 ```
-6.5.3.2 Syntax
-aligned(8) class ImageSpatialExtentsProperty
-extends ItemFullProperty('ispe', version = 0, flags = 0) {
-unsigned int(32) image_width;
-       unsigned int(32) image_height;
+class Box (unsigned int(32) boxtype, 
+  optional unsigned int(8)[16] extended_type) {
+    unsigned int(32) size;
+    unsigned int(32) type = boxtype;
+    if (size==1) {
+        unsigned int(64) largesize;
+    } else if (size==0) {
+        // box extends to end of file
+    }
+    if (boxtype==‘uuid’) {
+        unsigned int(8)[16] usertype = extended_type;
+    }
+}
+
+class FullBox(unsigned int(32) boxtype,
+  unsigned int(8) v, bit(24) f)  extends Box(boxtype) {
+    unsigned int(8) version = v;
+    bit(24) flags = f;
+}
+
+class ImageSpatialExtentsProperty
+    extends ItemFullProperty('ispe', version = 0, flags = 0) {
+    unsigned int(32) image_width;
+    unsigned int(32) image_height;
 }
 ```
 
@@ -1410,7 +1429,7 @@ This is coded into tvisitor.cpp as follows:
     // ISOBMFF boxes
     boxDict["ispe"] = "ISOBMFF.ispe";
     boxTags["ispe"].push_back(Field("Version"         ,kttUShort , 0, 1));
-    boxTags["ispe"].push_back(Field("Flags"           ,kttUShort , 2, 1));
+    boxTags["ispe"].push_back(Field("Flags"           ,kttUByte  , 1, 3));
     boxTags["ispe"].push_back(Field("Width"           ,kttLong   , 4, 1));
     boxTags["ispe"].push_back(Field("Height"          ,kttLong   , 8, 1));
 ```
@@ -1434,11 +1453,11 @@ The processing of this data is achieved in ReportVisitor::visitBox() as follows:
 These tags are reported as metadata as follows:
 
 ```
-           692 |       12 | ispe |      | ______..__.. 0 0 0 0 0 0 15 192 0 0 11 208
+             0 |       20 | ispe |      | ______..__.. 0 0 0 0 0 0 15 160 0 0 23 128
       ISOBMFF.ispe.Version         0
-      ISOBMFF.ispe.Flags           0
-      ISOBMFF.ispe.Width           4032
-      ISOBMFF.ispe.Height          3024
+      ISOBMFF.ispe.Flags           0 0 0
+      ISOBMFF.ispe.Width           4000
+      ISOBMFF.ispe.Height          6016
 ```
 
 More information about binary decoding in tvisitor.cpp is discussed in [3.5 ReportVisitor::visitTag()](#3-5)
