@@ -72,12 +72,12 @@ STRUCTURE OF JP2 (heic) FILE (MM): ../files/IMG1.HEIC
            560 |      112 | hvcC |      | ..p___._____Z._...._ 1 3 112 0 0 0 176 0 0 0 0 0 90 240 0 252 253 248 248 0
            672 |       20 | ispe |      | ______.___._ 0 0 0 0 0 0 2 0 0 0 2 0
       ISOBMFF.ispe.Version         0
-      ISOBMFF.ispe.Flags           0
+      ISOBMFF.ispe.Flags           0 0 0
       ISOBMFF.ispe.Width           512
       ISOBMFF.ispe.Height          512
            692 |       20 | ispe |      | ______..__.. 0 0 0 0 0 0 15 192 0 0 11 208
       ISOBMFF.ispe.Version         0
-      ISOBMFF.ispe.Flags           0
+      ISOBMFF.ispe.Flags           0 0 0
       ISOBMFF.ispe.Width           4032
       ISOBMFF.ispe.Height          3024
            712 |        9 | irot |      | . 3
@@ -85,7 +85,7 @@ STRUCTURE OF JP2 (heic) FILE (MM): ../files/IMG1.HEIC
           1281 |      112 | hvcC |      | ..p___._____<._...._ 1 3 112 0 0 0 176 0 0 0 0 0 60 240 0 252 253 248 248 0
           1393 |       20 | ispe |      | ______.@___. 0 0 0 0 0 0 1 64 0 0 0 240
       ISOBMFF.ispe.Version         0
-      ISOBMFF.ispe.Flags           0
+      ISOBMFF.ispe.Flags           0 0 0
       ISOBMFF.ispe.Width           320
       ISOBMFF.ispe.Height          240
       END: ../files/IMG1.HEIC:36->3910:1325->1737:8->1413

@@ -20,7 +20,7 @@ STRUCTURE OF JP2 (avif) FILE (MM): ../files/20200717_221452.avif
       STRUCTURE OF JP2 FILE (MM): ../files/20200717_221452.avif:44->9332:197->9135:8->9104
              0 |       20 | ispe |      | ______..__.. 0 0 0 0 0 0 15 160 0 0 23 128
       ISOBMFF.ispe.Version         0
-      ISOBMFF.ispe.Flags           0
+      ISOBMFF.ispe.Flags           0 0 0
       ISOBMFF.ispe.Width           4000
       ISOBMFF.ispe.Height          6016
             20 |       16 | pixi |      | ____.... 0 0 0 0 3 8 8 8

@@ -19,7 +19,7 @@ STRUCTURE OF JP2 (avif) FILE (MM): ../files/avif.avif
       STRUCTURE OF JP2 FILE (MM): ../files/avif.avif:44->292:155->111:8->80
              0 |       20 | ispe |      | ______..__.8 0 0 0 0 0 0 7 128 0 0 4 56
       ISOBMFF.ispe.Version         0
-      ISOBMFF.ispe.Flags           0
+      ISOBMFF.ispe.Flags           0 0 0
       ISOBMFF.ispe.Width           1920
       ISOBMFF.ispe.Height          1080
             20 |       19 | colr |      | nclx_._._.. 110 99 108 120 0 2 0 2 0 2 128
