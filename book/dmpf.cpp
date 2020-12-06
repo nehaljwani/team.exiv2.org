@@ -166,8 +166,6 @@ int main(int argc, char* argv[])
         size_t  width  = options["width"];
         size_t  start  = options["start"];
         
-        std::cout << "path = " << path << std::endl;
-
         if ( path != terminal ) {
             f     = fopen(path.c_str(),"rb");
             fseek(f,0,SEEK_END);

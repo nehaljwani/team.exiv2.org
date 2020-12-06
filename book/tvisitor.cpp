@@ -2579,149 +2579,150 @@ void Jp2Image::accept(class Visitor& v)
     IoSave restore(io(),start_);
     uint64_t address = start_ ;
     uint64_t length  = 8;
-    while ( length>= 8 &&  address < io().size() ) {
+    uint32_t box        ;
+    while ( length && address < io().size() ) {
         io().seek(address );
-        length  = io().getLong(endian_);
-        uint32_t  box     ;
+        length = io().getLong(endian_);
         io().read(&box,4) ;
         if ( length == 1 ) {
             length = io().getLong8(endian_);
         }
-        if ( length < 8 || address + length > io().size() ) {
-            break ;
-        }
-        v.visitBox(io(),*this,address,box,length); // tell the visitor
+        if ( length > 8 && (address + length) <= io().size() ) {
+            v.visitBox(io(),*this,address,box,length); // tell the visitor
 
-        DataBuf  data(length-8);
-        uint32_t skip      = 0 ;
-        if ( length ) {
-            IoSave restore(io(),io().tell());
-            io().read(data);
-        }
-
-        // 8.11.3.1
-        if ( boxName(box) == "iloc" ) { // 0 1 0 0 0 0 0 1 0 0 42 179 0 0 46 167 a,b= 10931,11943
-            uint8_t  version = 0 ;
-            uint32_t flags   = 0 ;
-            if ( fullBox(box) ) {
-                skip += 4 ;
-                flags = io().getLong(keBig); // version/flags
-                version = (int8_t ) flags >> 24 ;
-                version &= 0x00ffffff ;
+            DataBuf  data(length-8);
+            uint32_t skip      = 0 ;
+            if ( length ) {
+                IoSave restore(io(),io().tell());
+                io().read(data);
             }
-            uint16_t u          = getByte(data,skip) ; skip++;
-            uint16_t offsetSize = u >> 4  ;
-            uint16_t lengthSize = u & 0xF ;
 
-            uint16_t indexSize  = 0       ;
-                     u          = getByte(data,skip) ; skip++ ;
-            if ( version == 1 || version == 2 ) {
-                indexSize = u & 0xF ;
-            }
-            // uint16_t baseOffsetSize = u >> 4;
+            // 8.11.3.1
+            if ( boxName(box) == "iloc" ) { // 0 1 0 0 0 0 0 1 0 0 42 179 0 0 46 167 a,b= 10931,11943
+                uint8_t  version = 0 ;
+                uint32_t flags   = 0 ;
+                if ( fullBox(box) ) {
+                    skip += 4 ;
+                    flags = io().getLong(keBig); // version/flags
+                    version = (int8_t ) flags >> 24 ;
+                    version &= 0x00ffffff ;
+                }
+                uint16_t u          = getByte(data,skip) ; skip++;
+                uint16_t offsetSize = u >> 4  ;
+                uint16_t lengthSize = u & 0xF ;
 
-            uint32_t itemCount  = version < 2 ? getShort(data,skip,keBig) : getLong(data,skip,keBig);
-            skip               += version < 2 ?               2           :         4               ;
-            if ( offsetSize == 4 && lengthSize == 4 && ((length-16) % itemCount) == 0 ) {
-                uint32_t step = (length-16)/itemCount                  ; // length of data per item.
-                uint32_t base = skip;
-                for ( uint32_t i = 0 ; i < itemCount ; i++ ) {
-                    skip=base+i*step ; // move in 16 or 14 byte steps
-                    uint32_t ID     = version > 2 ? getLong(data,skip,keBig) : getShort(data,skip,keBig);
-                    uint32_t offset = getLong(data,skip+step-8,keBig);
-                    uint32_t ldata  = getLong(data,skip+step-4,keBig);
-                    v.out() << v.indent() << stringFormat("%8d | %8d |  ext | %4d | %6d,%6d",address+skip,step,ID,offset,ldata) << std::endl;
-                    // IlocExt startLength(ID,offset,ldata);
-                    ilocExts.push_back(IlocExt(ID,offset,ldata));// startLength);
+                uint16_t indexSize  = 0       ;
+                         u          = getByte(data,skip) ; skip++ ;
+                if ( version == 1 || version == 2 ) {
+                    indexSize = u & 0xF ;
+                }
+                // uint16_t baseOffsetSize = u >> 4;
+
+                uint32_t itemCount  = version < 2 ? getShort(data,skip,keBig) : getLong(data,skip,keBig);
+                skip               += version < 2 ?               2           :         4               ;
+                if ( offsetSize == 4 && lengthSize == 4 && ((length-16) % itemCount) == 0 ) {
+                    uint32_t step = (length-16)/itemCount                  ; // length of data per item.
+                    uint32_t base = skip;
+                    for ( uint32_t i = 0 ; i < itemCount ; i++ ) {
+                        skip=base+i*step ; // move in 16 or 14 byte steps
+                        uint32_t ID     = version > 2 ? getLong(data,skip,keBig) : getShort(data,skip,keBig);
+                        uint32_t offset = getLong(data,skip+step-8,keBig);
+                        uint32_t ldata  = getLong(data,skip+step-4,keBig);
+                        v.out() << v.indent() << stringFormat("%8d | %8d |  ext | %4d | %6d,%6d",address+skip,step,ID,offset,ldata) << std::endl;
+                        // IlocExt startLength(ID,offset,ldata);
+                        ilocExts.push_back(IlocExt(ID,offset,ldata));// startLength);
+                    }
                 }
             }
-        }
-        // 8.11.6.2
-        if ( boxName(box) == "infe" ) { // .__._.__hvc1_ 2 0 0 1 0 1 0 0 104 118 99 49 0
-                             getLong (data,skip,keBig) ; skip+=4;
-            uint16_t   ID =  getShort(data,skip,keBig) ; skip+=2;
-                             getShort(data,skip,keBig) ; skip+=2; // protection
-            std::string name((const char*)data.pData_+skip);
-            if ( name.find("Exif")== 0 ) { // "Exif" or "ExifExif"
-                exifID_ = ID ;
-            }
-        }
-
-        // recursion if superbox
-        if ( superBox(box) ) {
-            uint64_t skip    = 0 ;
-            uint8_t  version = 0 ;
-            uint32_t flags   = 0 ;
-            uint32_t nEntries= 0 ;
-            bool     bRecurse= true;
-            if ( fullBox(box) ) {
-                skip += 4 ;
-                flags = io().getLong(keBig); // version/flags
-                version = (int8_t ) flags >> 24 ;
-                version &= 0x00ffffff ;
-            }
-
-            // 8.11.6.1.
-            if ( boxName(box) == "iinf" ) {
-                nEntries = version ? io().getLong(keBig) : io().getShort(keBig);
-                skip    += version ?         4           :         2           ;
-            } else if ( boxName(box) == "iloc" ) {
-                bRecurse = false; // we've already searched this box.
-            }
-            if ( bRecurse ) {
-                Jp2Image jp2(io(),io().tell(),length-8-skip);
-                jp2.valid_=true;
-                jp2.accept(v);
-                // copy the exifID data from jp2
-                for ( size_t i = 0 ; i <    jp2.ilocExts.size() ; i++ ) {
-                    ilocExts.push_back(jp2.ilocExts[i]);
-                }
-                if ( jp2.exifID_ ) exifID_ = jp2.exifID_;
-            }
-        }
-
-        // recursion?
-        if ( boxName(box) == "uuid" ) {
-            DataBuf uuid(16);
-            io().read(uuid);
-            if ( uuidName(uuid) == "cano" ) {
-                Jp2Image jp2(io(),io().tell(),length-16);
-                jp2.valid_=true;
-                jp2.accept(v);
-            }
-        }
-
-        // before leaving the meta box, process any discovered Exif metadata
-        if ( boxName(box) == kJp2Box_meta && exifID_ && ilocExts.size() && v.isRecursive() ) {
-            uint32_t exifOffset = 0 ;
-            uint32_t exifLength = 0 ;
-            for ( size_t i = 0 ; i < ilocExts.size(); i++) {
-                if ( ilocExts[i].ID_ == exifID_ ) {
-                    exifOffset = ilocExts[i].start_ ;
-                    exifLength = ilocExts[i].length_;
+            // 8.11.6.2
+            if ( boxName(box) == "infe" ) { // .__._.__hvc1_ 2 0 0 1 0 1 0 0 104 118 99 49 0
+                                 getLong (data,skip,keBig) ; skip+=4;
+                uint16_t   ID =  getShort(data,skip,keBig) ; skip+=2;
+                                 getShort(data,skip,keBig) ; skip+=2; // protection
+                std::string name((const char*)data.pData_+skip);
+                if ( name.find("Exif")== 0 ) { // "Exif" or "ExifExif"
+                    exifID_ = ID ;
                 }
             }
-            if ( exifOffset && exifLength ) {
-                io().seek(exifOffset);
-                DataBuf   head(20);
-                io().read(head);
 
-                // hunt for "II" or "MM"
-                size_t punt = 0 ;
-                for ( size_t i = 0 ; i < head.size_ && !punt ; i+=2) {
-                    if ( head.pData_[i] == head.pData_[i+1] )
-                        if ( head.pData_[i] == 'I' || head.pData_[i] == 'M' )
-                            punt = i;
+            // recursion if superbox
+            if ( superBox(box) ) {
+                uint64_t skip    = 0 ;
+                uint8_t  version = 0 ;
+                uint32_t flags   = 0 ;
+                uint32_t nEntries= 0 ;
+                bool     bRecurse= true;
+                if ( fullBox(box) ) {
+                    skip += 4 ;
+                    flags = io().getLong(keBig); // version/flags
+                    version = (int8_t ) flags >> 24 ;
+                    version &= 0x00ffffff ;
                 }
-                Io             t_io(io(),exifOffset+punt,exifLength-punt);
-                TiffImage tiff(t_io);
-                if ( tiff.valid() ) tiff.accept(v);
+
+                // 8.11.6.1.
+                if ( boxName(box) == "iinf" ) {
+                    nEntries = version ? io().getLong(keBig) : io().getShort(keBig);
+                    skip    += version ?         4           :         2           ;
+                } else if ( boxName(box) == "iloc" ) {
+                    bRecurse = false; // we've already searched this box.
+                }
+                if ( bRecurse ) {
+                    Jp2Image jp2(io(),io().tell(),length-8-skip);
+                    jp2.valid_=true;
+                    jp2.accept(v);
+                    // copy the exifID data from jp2
+                    for ( size_t i = 0 ; i <    jp2.ilocExts.size() ; i++ ) {
+                        ilocExts.push_back(jp2.ilocExts[i]);
+                    }
+                    if ( jp2.exifID_ ) exifID_ = jp2.exifID_;
+                }
             }
-            exifID_ = 0 ;
-            ilocExts.clear();
-        }
-        address += length ;
+
+            // recursion?
+            if ( boxName(box) == "uuid" ) {
+                DataBuf uuid(16);
+                io().read(uuid);
+                if ( uuidName(uuid) == "cano" ) {
+                    Jp2Image jp2(io(),io().tell(),length-16);
+                    jp2.valid_=true;
+                    jp2.accept(v);
+                }
+            }
+
+            // before leaving the meta box, process any discovered Exif metadata
+            if ( boxName(box) == kJp2Box_meta && exifID_ && ilocExts.size() && v.isRecursive() ) {
+                uint32_t exifOffset = 0 ;
+                uint32_t exifLength = 0 ;
+                for ( size_t i = 0 ; i < ilocExts.size(); i++) {
+                    if ( ilocExts[i].ID_ == exifID_ ) {
+                        exifOffset = ilocExts[i].start_ ;
+                        exifLength = ilocExts[i].length_;
+                    }
+                }
+                if ( exifOffset && exifLength ) {
+                    io().seek(exifOffset);
+                    DataBuf   head(20);
+                    io().read(head);
+
+                    // hunt for "II" or "MM"
+                    size_t punt = 0 ;
+                    for ( size_t i = 0 ; i < head.size_ && !punt ; i+=2) {
+                        if ( head.pData_[i] == head.pData_[i+1] )
+                            if ( head.pData_[i] == 'I' || head.pData_[i] == 'M' )
+                                punt = i;
+                    }
+                    Io             t_io(io(),exifOffset+punt,exifLength-punt);
+                    TiffImage tiff(t_io);
+                    if ( tiff.valid() ) tiff.accept(v);
+                }
+                exifID_ = 0 ;
+                ilocExts.clear();
+            }
+        } // if ( length > 8 && (address + length) <= io().size() )
+        address += length ; // move to next box
     }
+    if ( boxName(box) == "jp2c" ) v.visitBox(io(),*this,address,box,length);
+
     v.visitEnd(*this);
 } // Jp2Image::accept()
 
@@ -3024,6 +3025,7 @@ void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
               << " " << data.toString(    kttUByte,dump,image.endian(),start)
               << std::endl;
     }
+    
     if ( isRecursive() ){
         if ( uuidName == "exif" ) {
             Io        tiff(io,address+punt+16,data.size_-16-punt); // uuid is 16 bytes (128 bits)
