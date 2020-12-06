@@ -150,6 +150,7 @@ typedef unsigned char byte ;
 uint8_t  getByte (const DataBuf& buf,size_t offset) ;
 uint16_t getShort(const DataBuf& buf,size_t offset,endian_e endian);
 uint32_t getLong (const DataBuf& buf,size_t offset,endian_e endian);
+uint64_t getLong8(const DataBuf& buf,size_t offset,endian_e endian);
 
 class DataBuf
 {
@@ -217,6 +218,7 @@ public:
     uint8_t  getByte (uint64_t offset                ) { return ::getByte (*this,offset)       ; }
     uint16_t getShort(uint64_t offset,endian_e endian) { return ::getShort(*this,offset,endian); }
     uint32_t getLong (uint64_t offset,endian_e endian) { return ::getLong (*this,offset,endian); }
+    uint64_t getLong8(uint64_t offset,endian_e endian) { return ::getLong8(*this,offset,endian); }
     uint32_t search(uint32_t start,const char* s)
     {
         uint64_t l = ::strlen(s);
@@ -243,7 +245,7 @@ public:
     std::string path() { return path_; }
     std::string toString(type_e type,uint64_t count,endian_e endian,uint64_t offset=0);
     std::string binaryToString(uint64_t start,uint64_t size);
-    std::string toUuidString() ;
+    std::string toUuidString(size_t offset=0) ;
 
 private:
     std::string path_;
@@ -290,7 +292,12 @@ uint16_t getShort(byte b[],size_t offset,endian_e endian)
 uint32_t getLong(byte b[],size_t offset,endian_e endian)
 {
     bool bSwap = endian != ::platformEndian();
-    return (uint32_t) byteSwap(b+offset,bSwap,2);
+    return (uint32_t) byteSwap(b+offset,bSwap,4);
+}
+uint64_t getLong8(byte b[],size_t offset,endian_e endian)
+{
+    bool bSwap = endian != ::platformEndian();
+    return (uint64_t) byteSwap(b+offset,bSwap,8);
 }
 
 uint16_t getPascalStringLength(DataBuf& buff,uint32_t offset)
@@ -550,17 +557,18 @@ std::string DataBuf::toString(type_e type,uint64_t count=0,endian_e endian=keLit
     return os.str();
 } // DataBuf::toString
 
-std::string DataBuf::toUuidString()
+std::string DataBuf::toUuidString(size_t offset /* =0 */)
 {
     // 123e4567-e89b-12d3-a456-426614174000
     std::string result ;
-    if ( size_ >= 16 ) {
+    if ( size_ >= 16+offset ) {
+        byte* p = pData_+offset;
         result = ::stringFormat("%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x"
-                               ,pData_[ 0],pData_[ 1],pData_[ 2],pData_[ 3]
-                               ,pData_[ 4],pData_[ 5]
-                               ,pData_[ 6],pData_[ 7]
-                               ,pData_[ 8],pData_[ 9]
-                               ,pData_[10],pData_[11],pData_[12],pData_[13],pData_[14],pData_[15]
+                               ,p[ 0],p[ 1],p[ 2],p[ 3]
+                               ,p[ 4],p[ 5]
+                               ,p[ 6],p[ 7]
+                               ,p[ 8],p[ 9]
+                               ,p[10],p[11],p[12],p[13],p[14],p[15]
                                );
     }
     return result ;
@@ -876,6 +884,12 @@ public:
         read   (buf);
         return ::getLong(buf,0,endian);
     }
+    uint32_t getLong8(endian_e endian)
+    {
+        DataBuf buf(8);
+        read   (buf);
+        return ::getLong8(buf,0,endian);
+    }
     float getFloat(endian_e endian)
     {
         return (float) getLong(endian);
@@ -1038,7 +1052,7 @@ public:
     Visits&     visits()       { return visits_   ; }
     size_t      depth()        { return depth_    ; }
     bool        bigtiff()      { return bigtiff_  ; }
-    virtual std::string uuidName(DataBuf& uuid) { return ""; }
+    virtual std::string uuidName(DataBuf& uuid,size_t offset=0) { return ""; }
 
     void visit(uint64_t address) { // never visit an address twice!
         if ( visits_.find(address) != visits_.end() ) {
@@ -1749,15 +1763,15 @@ public:
                 brand_ = boxName(box);
                 format_ = "JP2 (" + brand_ + ")";
             }
-            header_ = " address |   length |  box | uuid | data";
+            header_ = " address |   length | box  | uuid | data";
         }
         return valid_ ;
     }
     virtual void accept(class Visitor& v);
 
-    std::string uuidName(DataBuf& data)
+    std::string uuidName(DataBuf& data,size_t offset=0)
     {
-        std::string uuid = data.toUuidString();
+        std::string uuid = data.toUuidString(offset);
         return uuids_.find(uuid) != uuids_.end() ? uuids_[uuid]  : "";
     }
     std::string  brand_   ;
@@ -2564,23 +2578,26 @@ void Jp2Image::accept(class Visitor& v)
     v.visitBegin(*this);
     IoSave restore(io(),start_);
     uint64_t address = start_ ;
-    while (  address < io().size() ) {
+    uint64_t length  = 8;
+    while ( length>= 8 &&  address < io().size() ) {
         io().seek(address );
-        uint32_t  length  = io().getLong(endian_);
+        length  = io().getLong(endian_);
         uint32_t  box     ;
         io().read(&box,4) ;
-
-        if ( length > io().size() ) {
-            // Error(kerCorruptedMetadata);
+        if ( length == 1 ) {
+            length = io().getLong8(endian_);
         }
+        if ( length < 8 || address + length > io().size() ) {
+            break ;
+        }
+        v.visitBox(io(),*this,address,box,length); // tell the visitor
+
         DataBuf  data(length-8);
         uint32_t skip      = 0 ;
         if ( length ) {
             IoSave restore(io(),io().tell());
             io().read(data);
         }
-
-        v.visitBox(io(),*this,address,box,length); // tell the visitor
 
         // 8.11.3.1
         if ( boxName(box) == "iloc" ) { // 0 1 0 0 0 0 0 1 0 0 42 179 0 0 46 167 a,b= 10931,11943
@@ -2703,9 +2720,7 @@ void Jp2Image::accept(class Visitor& v)
             exifID_ = 0 ;
             ilocExts.clear();
         }
-        address = (boxName(box) == kJp2Box_jp2c
-               ||  boxName(box) == kJp2Box_mdat) ? io().size()
-                : address + length;
+        address += length ;
     }
     v.visitEnd(*this);
 } // Jp2Image::accept()
@@ -2989,28 +3004,29 @@ void ReportVisitor::visitMrw(Io& io,Image& image,uint64_t address,std::string ch
 void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
                             ,uint32_t box,uint32_t length)
 {
-    IoSave save(io,address+8);
-    length -= 8              ;
-    DataBuf data(length);
-    io.read(data);
+    uint64_t punt = 8        ; // to start of binary data
+    IoSave   save(io,address);
+    DataBuf  data(length    ); // length,box,data
+    io.read (data);
 
-    std::string name = image.boxName (box);
-    std::string uuid = name == "uuid" ? image.uuidName(data) : "";
-    if ( name == "uuid" && !uuid.size() ) {
-        std::cout << "unrecognised uuid = " << data.toUuidString() << std::endl;
+    std::string name     = image.boxName (box);
+    std::string uuidName = name == "uuid" ? image.uuidName(data,punt) : "";
+    if ( name == "uuid" && !uuidName.size() ) {
+        std::cout << "unrecognised uuid = " << uuidName << std::endl;
     }
 
     if ( isBasicOrRecursive() ) {
-        out() << indent() << stringFormat("%8d | %8d | %4s | %4s | ",address,length,name.c_str(),uuid.c_str() );
-        uint64_t start    = uuid.size() ? 16 : 0;
-        if ( length > 40+start ) length = 40;
-        out() << data.toString(kttUndefined,length,image.endian(),start)
-              << " " << data.toString(kttUByte,length,image.endian(),start)
+        out() << indent() << stringFormat("%8d | %8d | %4s | %4s | ",address,length,name.c_str(),uuidName.c_str() );
+        uint64_t start    = punt + (uuidName.size() ? 16 : 0);
+        uint64_t dump     = length > start ? length - start : 0 ;
+        if ( dump > 20 ) dump  = 20;
+        out() <<        data.toString(kttUndefined,dump,image.endian(),start)
+              << " " << data.toString(    kttUByte,dump,image.endian(),start)
               << std::endl;
     }
     if ( isRecursive() ){
-        if ( uuid == "exif" ) {
-            Io        tiff(io,address+8+16,data.size_-16); // uuid is 16 bytes (128 bits)
+        if ( uuidName == "exif" ) {
+            Io        tiff(io,address+punt+16,data.size_-16-punt); // uuid is 16 bytes (128 bits)
             TiffImage(tiff).accept(*this);
         } else {
             std::map<std::string,TagDict> dicts ;
@@ -3019,7 +3035,7 @@ void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
             dicts["CMT3"] = canonDict;
             dicts["CMT4"] = gpsDict;
             if ( dicts.find(name) != dicts.end() ) {
-                Io        tiff(io,address+8,data.size_);
+                Io        tiff(io,address+punt,data.size_);
                 TiffImage(tiff).accept(*this,dicts[name]);
             }
         }
@@ -3031,13 +3047,13 @@ void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
                 std::string n      = chop( boxDict[name] + "." + field.name(),28);
                 endian_e    endian = field.endian() == keImage ? image.endian() : field.endian();
                 out() << indent() << stringFormat("%-28s ",n.c_str())
-                      << chop(data.toString(field.type(),field.count(),endian,field.start()),40)
+                      << chop(data.toString(field.type(),field.count(),endian,field.start()+punt),40)
                       << std::endl;
             }
         }
     }
 
-    if ( option() & kpsXMP && uuid == "xmp " ) {
+    if ( option() & kpsXMP && uuidName == "xmp " ) {
         out() << data.pData_+17 ;
     }
 }
