@@ -2462,7 +2462,6 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
             // Error(kerTiffDirectoryTooLarge,nEntries);
             // print error message and terminate the visit
             visitor.showError(stringFormat(" ** directory too large %d **",nEntries));
-            visitor.visitDirEnd(image_,start);
             visitor.visitEnd(image_);
             return ;
         }
