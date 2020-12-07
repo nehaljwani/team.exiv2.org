@@ -2697,6 +2697,139 @@ END: /Users/rmills/jp2.jp2
 ```
 
 [TOC](#TOC)
+<div id="IPTC-Exiv2"/>
+### IPTC Support in Exiv2
+
+This is discussed: [https://github.com/Exiv2/exiv2/issues/1395](https://github.com/Exiv2/exiv2/issues/1395)
+
+### IPTC Support in Exiv2
+
+Exif provides support for Section 1. "Envelope" and Section 2. "Application".  Tags are report as follows:
+
+```bash
+518 rmills@rmillsmm-local:~/gnu/exiv2/team/book/build $ exiv2 -pi ~/Stonehenge.jpg 
+Iptc.Envelope.ModelVersion                   Short       1  4
+Iptc.Envelope.CharacterSet                   String      3  G
+Iptc.Application2.RecordVersion              Short       1  4
+Iptc.Application2.Caption                    String     12  Classic View
+519 rmills@rmillsmm-local:~/gnu/exiv2/team/book/build $ 
+```
+
+You can list the available tags with samples/taglist.cpp
+
+```bash
+$ taglist Iptc | csv -
+[ModelVersion]	[ 0]	[ 0x0000]	[ Envelope]	[ true]	[ false]	[ 2]	[ 2]	[ Iptc.Envelope.ModelVersion]	[ Short]	[ A binary ...]	
+[Destination]	[ 5]	[ 0x0005]	[ Envelope]	[ false]	[ true]	[ 0]	[ 1024]	[ Iptc.Envelope.Destination]	[ String]	[ This DataSet ...]	
+[FileFormat]	[ 20]	[ 0x0014]	[ Envelope]	[ true]	[ false]	[ 2]	[ 2]	[ Iptc.Envelope.FileFormat]	[ Short]	[ A binary number ...]	
+[FileVersion]	[ 22]	[ 0x0016]	[ Envelope]	[ true]	[ false]	[ 2]	[ 2]	[ Iptc.Envelope.FileVersion]	[ Short]	[ A binary number ...]	
+...
+[RecordVersion]	[ 0]	[ 0x0000]	[ Application2]	[ true]	[ false]	[ 2]	[ 2]	[ Iptc.Application2.RecordVersion]	[ Short]	[ A binary number ...]	
+[ObjectType]	[ 3]	[ 0x0003]	[ Application2]	[ false]	[ false]	[ 3]	[ 67]	[ Iptc.Application2.ObjectType]	[ String]	[ The Object Type is ...]	
+[ObjectAttribute]	[ 4]	[ 0x0004]	[ Application2]	[ false]	[ true]	[ 4]	[ 68]	[ Iptc.Application2.ObjectAttribute]	[ String]	[ The Object ...]	
+...
+[Preview]	[ 202]	[ 0x00ca]	[ Application2]	[ false]	[ false]	[ 0]	[ 256000]	[ Iptc.Application2.Preview]	[ Undefined]	[ Binary image preview data.]	
+```
+
+This is documented here: [https://exiv2.org/iptc.html](https://exiv2.org/iptc.html)
+
+![iptc_tables.png](iptc_tables.png)
+
+#### IPTC API
+
+This is documented here: [https://exiv2.org/doc/classExiv2_1_1IptcDataSets.html](https://exiv2.org/doc/classExiv2_1_1IptcDataSets.html)
+
+![iptc_api.png](iptc_api.png)
+
+In C++, you could enumerate the supported tags as follows:
+
+```cpp
+    const Exiv2::DataSet* env = Exiv2::IptcDataSets::envelopeRecordList();
+    do {
+        std::string desc(env->desc_);
+        if ( desc.size() > 20 ) desc = desc.substr(0,18) + " ...";
+        std::cout << env->number_ << " : " << env->name_ << " = \"" << desc << "\""   << std::endl;
+    } while (++env && env->number_ != 0xffff);
+```
+
+You can print properties of a tag with code such as:
+
+```cpp
+    std::cout << "Properties of Application2.Caption" << std::endl;
+    std::cout << "number, recordId: " << Exiv2::IptcDataSets::Caption <<","<< Exiv2::IptcDataSets::application2 <<std::endl;
+    std::cout << "Description:      " << Exiv2::IptcDataSets::dataSetDesc
+                                        (Exiv2::IptcDataSets::Caption, Exiv2::IptcDataSets::application2) << std::endl;
+    std::cout << "Repeatable:       "  << Exiv2::IptcDataSets::dataSetRepeatable
+                                      (Exiv2::IptcDataSets::Caption, Exiv2::IptcDataSets::application2) << std::endl;
+```
+
+Which would result in the following output:
+
+```
+Properties of Application2.Caption
+number, recordId: 120,2
+Description:      A textual description of the object data.
+Repeatable:       0
+```
+
+You can define and enumerate tags in C++ with code such as:
+
+```cpp
+    Exiv2::IptcData iptcData;
+
+    iptcData["Iptc.Envelope.ModelVersion"] = 42;
+    iptcData["Iptc.Envelope.TimeSent"    ] = "14:41:0-05:00";
+    iptcData["Iptc.Application2.Headline"] = "I am a headline";
+    iptcData["Iptc.Application2.Keywords"] = "First Keyword";
+    iptcData["Iptc.Application2.Keywords"] = "Another Keyword";
+    iptcData["Iptc.Application2.Caption" ] = "First Caption";
+    iptcData["Iptc.Application2.Caption" ] = "Another Caption";
+    iptcData["Iptc.Application2.DateCreated"] = "2004-8-3";
+    iptcData["Iptc.0x0009.0x0001"        ] = "Who am I?";
+```
+
+Which results in:
+
+```
+Iptc.Envelope.ModelVersion 42
+Iptc.Envelope.TimeSent 14:41:00-05:00
+Iptc.Application2.Headline I am a headline
+Iptc.Application2.Keywords Another Keyword
+Iptc.Application2.Caption Another Caption
+Iptc.Application2.DateCreated 2004-08-03
+Iptc.0x0009.0x0001 Who am I?
+```
+
+The API enables you to use IPTC Sections and tags for which Exiv2 has no symbolic name.
+
+You will observe that redefining Keywords and Caption overwrites the stored value in iptcData.  To write multiple keywords, use add() as follows:
+
+```cpp
+    Exiv2::IptcData iptcData;
+    Exiv2::Value::AutoPtr iptc_value = Exiv2::Value::create(Exiv2::string);
+
+    Exiv2::IptcKey        iptc_keywords("Iptc.Application2.Keywords");
+    iptc_value->read("Keyword 1"); iptcData.add(iptc_keywords, iptc_value.get());
+    iptc_value->read("Keyword 2"); iptcData.add(iptc_keywords, iptc_value.get());
+
+    Exiv2::IptcKey        iptc_caption("Iptc.Application2.Caption");
+    iptc_value->read("Caption 1"); iptcData.add(iptc_caption, iptc_value.get());
+    iptc_value->read("Caption 2"); iptcData.add(iptc_caption, iptc_value.get());
+
+    for (Exiv2::IptcData::iterator md = iptcData.begin(); md != iptcData.end(); ++md) {
+        std::cout << md->key() << " " << md->value() << std::endl;
+    }
+```
+
+Which results as follows, with caption having a single value because it is not repeatable.  
+
+```
+Iptc.Application2.Keywords Keyword 1
+Iptc.Application2.Keywords Keyword 2
+Iptc.Application2.Caption Caption 1
+```
+
+[TOC](#TOC)
 <div id="ICC"/>
 ## 2.4 ICC Profile
 ![icc](icc.png)
