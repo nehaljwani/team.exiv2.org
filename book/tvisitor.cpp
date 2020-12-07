@@ -1294,8 +1294,8 @@ public:
 
             uint16_t bytesize = bigtiff_ ? getShort(header,4,endian_) : 8;
             uint16_t version  = bigtiff_ ? getShort(header,6,endian_) : 0;
-                                             // Pano     // Olym         // DCP
-            valid_ =  (magic_==42||magic_==43||magic_==85||magic_==0x4f52||magic_==0x4352) && (c == C) && (c=='I'||c=='M') && bytesize == 8 && version == 0;
+                                             // Pano     // Olym     R O // Olym     RS   // DCP
+            valid_ =  (magic_==42||magic_==43||magic_==85||magic_==0x4f52||magic_==0x5352 ||magic_==0x4352) && (c == C) && (c=='I'||c=='M') && bytesize == 8 && version == 0;
             // Panosonic have augmented tiffDict with their keys
             if ( magic_ == 85 ) {
                 setMaker(kPano);
@@ -2415,10 +2415,16 @@ void IFD::visitMakerNote(Visitor& visitor,DataBuf& buf,uint64_t count,uint64_t o
         makerNote.accept(visitor,makerDict());
     } else if ( image_.maker_ == kOlym ) {
         Io     io(io_,offset,count);
-        TiffImage makerNote(io,image_.maker_);
-        makerNote.start_ = 12  ; // "OLYMPUS\0II\0x3\0x0"E#
-        makerNote.valid_ = true; // Valid without magic=42
-        makerNote.accept(visitor,makerDict());
+        if ( buf.begins("OLYMPUS")  ) { // "OLYMPUS\0II\0x3\0x0"E# or "OLYMP\0"
+            TiffImage makerNote(io,image_.maker_);
+            makerNote.start_ =  12 ;
+            makerNote.valid_ = true; // Valid without magic=42
+            makerNote.accept(visitor,makerDict());
+        } else {
+            size_t punt = 8 ; // "OLUMPUS\0shortE#"
+            IFD makerNote(image_,offset+punt,false);
+            makerNote.accept(visitor,makerDict());
+        }
     } else if ( image_.maker_ == kFuji ) {
         Io     io(io_,offset,count);
         TiffImage makerNote(io,image_.maker_);
@@ -3140,6 +3146,7 @@ void init()
     maker["Panasonic"]                     = kPano  ; makerDicts[kPano  ] = &panoDict;
     maker["Minolta Co., Ltd."]             = kMino  ; makerDicts[kMino  ] = &minoDict;
     maker["OLYMPUS IMAGING CORP.  "]       = kOlym  ; makerDicts[kOlym  ] = &olymDict;
+    maker["OLYMPUS OPTICAL CO.,LTD"]       = kOlym  ; makerDicts[kOlym  ] = &olymDict;
     maker["FUJIFILM"]                      = kFuji  ; makerDicts[kFuji  ] = &fujiDict;
     maker["RICOH IMAGING COMPANY, LTD.  "] = kPentax; makerDicts[kPentax] = &pentaxDict;
     maker["PENTAX Corporation "]           = kPentax; makerDicts[kPentax] = &pentaxDict;

@@ -1566,7 +1566,7 @@ There is information about this format here: [http://www.dalibor.cz/software/min
 <div id="ORF"/>
 ## ORF Olympus Raw
 
-This is a member of the TIFF family of formats.
+This is a member of the TIFF family of formats.  There two known variants.  One has a magic value of "OR" and the other has "SR".
 
 ```bash
 .../book 509 rmills@rmillsmbp:~/gnu/exiv2/team/book $ dmpf count=40 width=20 endian=0 hex=1 bs=2 ~/ORF.ORF 
@@ -1575,6 +1575,8 @@ This is a member of the TIFF family of formats.
     0x14       20: __..._.___..__..._._  ->     0  101    4    1    0  c0c    0  102    3    1
 .../book $ 
 ```
+
+Other important differences are the value of Exif.Image.Make and the encoding of the MakerNote.  These differences are documented in the code in tvisitor.cpp
 
 The following is a typical dump:
 

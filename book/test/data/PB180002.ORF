@@ -1,0 +1,90 @@
+STRUCTURE OF TIFF FILE (II): ../files/PB180002.ORF
+ address |    tag                              |      type |    count |    offset | value
+      10 | 0x0100 Exif.Image.ImageWidth        |      LONG |        1 |           | 2576
+      22 | 0x0101 Exif.Image.ImageLength       |      LONG |        1 |           | 1925
+      34 | 0x0102 Exif.Image.BitsPerSample     |     SHORT |        1 |           | 12
+      46 | 0x0103 Exif.Image.Compression       |     SHORT |        1 |           | 1
+      58 | 0x0106 Exif.Image.PhotometricInte.. |     SHORT |        1 |           | 2
+      70 | 0x010e Exif.Image.ImageDescription  |     ASCII |       32 |       254 | OLYMPUS DIGITAL CAMERA         
+      82 | 0x010f Exif.Image.Make              |     ASCII |       24 |       286 | OLYMPUS OPTICAL CO.,LTD
+      94 | 0x0110 Exif.Image.Model             |     ASCII |        7 |       310 | C5050Z
+     106 | 0x0111 Exif.Image.StripOffsets      |      LONG |      122 |      2170 | 15360 77184 139008 200832 262656 324 +++
+     118 | 0x0112 Exif.Image.Orientation       |     SHORT |        1 |           | 1
+     130 | 0x0115 Exif.Image.SamplesPerPixel   |     SHORT |        1 |           | 1
+     142 | 0x0116 Exif.Image.RowsPerStrip      |      LONG |        1 |           | 16
+     154 | 0x0117 Exif.Image.StripByteCounts   |      LONG |      122 |      2938 | 61824 61824 61824 61824 61824 61824  +++
+     166 | 0x011a Exif.Image.XResolution       |  RATIONAL |        1 |       324 | 72/1
+     178 | 0x011b Exif.Image.YResolution       |  RATIONAL |        1 |       332 | 72/1
+     190 | 0x0128 Exif.Image.ResolutionUnit    |     SHORT |        1 |           | 2
+     202 | 0x0131 Exif.Image.Software          |     ASCII |        8 |       340 | v558-78
+     214 | 0x0132 Exif.Image.DateTime          |     ASCII |       20 |       372 | 2020:11:18 17:54:38
+     226 | 0x8769 Exif.Image.ExifTag           |      LONG |        1 |           | 636
+  STRUCTURE OF TIFF FILE (II): ../files/PB180002.ORF
+   address |    tag                              |      type |    count |    offset | value
+       638 | 0x829a Exif.Photo.ExposureTime      |  RATIONAL |        1 |       990 | 10/300
+       650 | 0x829d Exif.Photo.FNumber           |  RATIONAL |        1 |       998 | 56/10
+       662 | 0x8822 Exif.Photo.ExposureProgram   |     SHORT |        1 |           | 2
+       674 | 0x8827 Exif.Photo.ISOSpeedRatings   |     SHORT |        1 |           | 100
+       686 | 0x9000 Exif.Photo.ExifVersion       | UNDEFINED |        4 |           | 0220
+       698 | 0x9003 Exif.Photo.DateTimeOriginal  |     ASCII |       20 |      1006 | 2020:11:18 17:54:38
+       710 | 0x9004 Exif.Photo.DateTimeDigitized |     ASCII |       20 |      1026 | 2020:11:18 17:54:38
+       722 | 0x9204 Exif.Photo.ExposureBiasValue | SRATIONAL |        1 |      1046 | 0/10
+       734 | 0x9205 Exif.Photo.MaxApertureValue  |  RATIONAL |        1 |      1054 | 30/10
+       746 | 0x9207 Exif.Photo.MeteringMode      |     SHORT |        1 |           | 5
+       758 | 0x9208 Exif.Photo.LightSource       |     SHORT |        1 |           | 0
+       770 | 0x9209 Exif.Photo.Flash             |     SHORT |        1 |           | 25
+       782 | 0x920a Exif.Photo.FocalLength       |  RATIONAL |        1 |      1062 | 71/10
+       794 | 0x927c Exif.Photo.MakerNote         | UNDEFINED |      958 |      1212 | OLYMP_._ __..__,___.___.._.___J.__.. +++
+    STRUCTURE OF TIFF FILE (II): ../files/PB180002.ORF
+     address |    tag                              |      type |    count |    offset | value
+        1222 | 0x0100 Exif.Olympus.ThumbnailImage  | UNDEFINED |    11264 |      4096 | ...._._....................."....)$+ +++
+        1234 | 0x0200 Exif.Olympus.SpecialMode     |      LONG |        3 |      1610 | 0 0 0
+        1246 | 0x0201 Exif.Olympus.Quality         |     SHORT |        1 |           | 6
+        1258 | 0x0202 Exif.Olympus.Macro           |     SHORT |        1 |           | 0
+        1270 | 0x0203 Exif.Olympus.BWMode          |     SHORT |        1 |           | 0
+        1282 | 0x0204 Exif.Olympus.DigitalZoom     |  RATIONAL |        1 |      1622 | 100/100
+        1294 | 0x0205 Exif.Olympus.0x205           |  RATIONAL |        1 |      1630 | 904/100
+        1306 | 0x0206 Exif.Olympus.0x206           |    SSHORT |        6 |      1638 | 65233 64976 64930 65259 65044 65019
+        1318 | 0x0207 Exif.Olympus.0x207           |     ASCII |        8 |      1650 | SX558
+        1330 | 0x0208 Exif.Olympus.0x208           |     ASCII |       52 |      1658 | [pictureInfo] Resolution=6 [Camera I +++
+        1342 | 0x0209 Exif.Olympus.0x209           | UNDEFINED |       32 |      1718 | OLYMPUS DIGITAL CAMERA_.........
+        1354 | 0x0300 Exif.Olympus.0x300           |     SHORT |        1 |           | 0
+        1366 | 0x0301 Exif.Olympus.0x301           |     SHORT |        1 |           | 0
+        1378 | 0x0302 Exif.Olympus.0x302           |     SHORT |        1 |           | 0
+        1390 | 0x0303 Exif.Olympus.0x303           |     SHORT |        1 |           | 0
+        1402 | 0x0304 Exif.Olympus.0x304           |     SHORT |        1 |           | 1
+        1414 | 0x0305 Exif.Olympus.0x305           |      LONG |        1 |           | 1
+        1426 | 0x100f Exif.Olympus.0x100f          |     SHORT |        1 |           | 0
+        1438 | 0x1011 Exif.Olympus.0x1011          |     SHORT |        9 |      1750 | 358 65434 0 65484 394 65450 2 65416 374
+        1450 | 0x1012 Exif.Olympus.0x1012          |     SHORT |        4 |      1768 | 0 0 0 0
+        1462 | 0x1017 Exif.Olympus.0x1017          |     SHORT |        2 |           | 424 62
+        1474 | 0x1018 Exif.Olympus.0x1018          |     SHORT |        2 |           | 400 64
+        1486 | 0x1029 Exif.Olympus.0x1029          |     SHORT |        1 |           | 1
+        1498 | 0x102a Exif.Olympus.0x102a          |     SHORT |        1 |           | 608
+        1510 | 0x102b Exif.Olympus.0x102b          |     SHORT |        6 |      1776 | 96 4096 3072 4096 16 256
+        1522 | 0x102c Exif.Olympus.0x102c          |     SHORT |        2 |           | 12 0
+        1534 | 0x102d Exif.Olympus.0x102d          |     SHORT |        1 |           | 10752
+        1546 | 0x102e Exif.Olympus.0x102e          |      LONG |        1 |           | 2560
+        1558 | 0x102f Exif.Olympus.0x102f          |      LONG |        1 |           | 1920
+        1570 | 0x103f Exif.Olympus.0x103f          |     SHORT |        1 |           | 2
+        1582 | 0x0f01 Exif.Olympus.0xf01           | UNDEFINED |      128 |      1788 | _______c_______.____________________ +++
+        1594 | 0x0f00 Exif.Olympus.0xf00           | UNDEFINED |      254 |      1916 | ________________&..C____N __.s__N .. +++
+    END: ../files/PB180002.ORF
+       806 | 0x9286 Exif.Photo.UserComment       | UNDEFINED |      125 |      1070 | ________                             +++
+       818 | 0xa000 Exif.Photo.FlashpixVersion   | UNDEFINED |        4 |           | 0100
+       830 | 0xa001 Exif.Photo.ColorSpace        |     SHORT |        1 |           | 1
+       842 | 0xa300 Exif.Photo.FileSource        | UNDEFINED |        1 |           | .
+       854 | 0xa301 Exif.Photo.SceneType         | UNDEFINED |        1 |           | .
+       866 | 0xa302 Exif.Photo.0xa302            | UNDEFINED |        8 |      1196 | ._._..._
+       878 | 0xa401 Exif.Photo.CustomRendered    |     SHORT |        1 |           | 0
+       890 | 0xa402 Exif.Photo.ExposureMode      |     SHORT |        1 |           | 0
+       902 | 0xa403 Exif.Photo.WhiteBalance      |     SHORT |        1 |           | 0
+       914 | 0xa404 Exif.Photo.0xa404            |  RATIONAL |        1 |      1204 | 0/0
+       926 | 0xa406 Exif.Photo.SceneCaptureType  |     SHORT |        1 |           | 0
+       938 | 0xa407 Exif.Photo.0xa407            |     SHORT |        1 |           | 0
+       950 | 0xa408 Exif.Photo.Contrast          |     SHORT |        1 |           | 0
+       962 | 0xa409 Exif.Photo.Saturation        |     SHORT |        1 |           | 0
+       974 | 0xa40a Exif.Photo.Sharpness         |     SHORT |        1 |           | 0
+  END: ../files/PB180002.ORF
+     238 | 0xc4a5 Exif.Image.0xc4a5            | UNDEFINED |      244 |       392 | PrintIM_0250__._._._._._.___._.___._ +++
+END: ../files/PB180002.ORF
