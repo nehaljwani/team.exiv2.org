@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-12-06</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-12-07</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -37,12 +37,12 @@ _And our cat Lizzie._
 | [2.4 ICC Profile](#ICC)                               | 37 | [CRW Canon Raw](#CRW)                    | 20 | [11.5 Testing](#11-5)                   | 80 |
 | [2.5 MakerNotes](#MakerNotes)                         | 38 | [RIFF Resource I'change File Fmt](#RIFF) | 20 | [11.6 Samples](#11-6)                   | 80 |
 | [2.6 Metadata Convertors](#Convertors)                | 38 | [MRW Minolta Raw](#MRW)                  | 21 | [11.7 Users](#11-7)                     | 80 |
-| [3. Reading Metadata](#3)                             |    | [ORF Olympus Raw Format](#ORF)           | 22 | [11.8 Bugs](#11-8)                      | 80 |
+| [3. Reading Metadata](#3)                             |    | [ORF Olympus Raw](#ORF)                  | 22 | [11.8 Bugs](#11-8)                      | 80 |
 | [3.1 Read metadata with dd](#3-1)                     |    | [PEF Pentax Raw](#PEF)                   |    | [11.9 Releases](#11-9)                  |    |
 | [3.2 Tags and TagNames](#3-2)                         |    | [PGF Progressive Graphics File](#PGF)    |    | [11.10 Platforms](#11-10)               |    |
 | [3.3 Visitor Design Pattern](#3-3)                    |    | [PSD PhotoShop Document](#PSD)           |    | [11.11 Localisation](#11-11)            |    |
-| [3.4 IFD::accept()](#3-4)                             |    | [RAF Fujifilm RAW](#RAF)                 |    | [11.12 Build Server](#11-12)            |    |
-| [3.5 ReportVisitor::visitTag()](#3-5)                 |    | [RW2 Panasonic RAW](#RW2)                |    | [11.11 Source Code](#11-11)             |    |
+| [3.4 IFD::accept()](#3-4)                             |    | [RAF Fujifilm Raw](#RAF)                 |    | [11.12 Build Server](#11-12)            |    |
+| [3.5 ReportVisitor::visitTag()](#3-5)                 |    | [RW2 Panasonic Raw](#RW2)                |    | [11.11 Source Code](#11-11)             |    |
 | [3.6 Jpeg::Image accept()](#3-6)                      |    | [TGA Truevision Targa](#TGA)             |    | [11.14 Web Site](#11-14)                |    |
 |                                                       |    | [BMP Windows Bitmap](#BMP)               |    | [11.15 Servers](#11-15)                 |    |
 | [4. Lens Recognition](#4)                             |    | [GIF Graphical Interchange Format](#GIF) |    | [11.16 API](#11-16)                     |    |
@@ -58,7 +58,7 @@ _And our cat Lizzie._
 | [7.4 Listing the API](#7-4)                           | 53 |                                          | 30 |                                         | 81 |
 | [7.5 Function Selectors](#7-5)                        | 57 |                                          |    |                                         | 81 |
 | [7.6 Tags in Exiv2](#7-6)                             | 59 |                                          |    |                                         | 81 |
-| [7.7 Tag Decoder](#7-6)                               | 61 |                                          |    |                                         | 82 |
+| [7.7 Tag Decoder](#7-7)                               | 61 |                                          |    |                                         | 82 |
 | [7.8 TiffVisitor](#7-8)                               | 63 |                                          |    |                                         |    |
 | [7.9 Other Exiv2 Classes](#7-9)                       | 63 | _**Other Sections**_                     |    |                                         | 82 |
 | [8. Test Suite](#8)                                   | 63 | [Dedication](#dedication)                |  2 |                                         | 82 |
@@ -237,7 +237,7 @@ Thank You for reading my book.  If you find errors, please let me know.  If you'
 
 The following summaries of the file formats are provided to help you to understand both this book and the Exiv2 code.  The Standard Specifications should be consulted for more detail.
 
-I've made a summary of every file format supported by Exiv2 and hope you find that useful.  There are an absurd number of Graphics File Formats.  I have a copy somewhere of the O'Reilly book.  I got it in 1996 and it has 1000+ pages.  Since then there have been many more invented.  It's a software mess.  In the early days, many formats were local to a few users in a University and escaped to a wider audience.  However the never ending stream of new standards is horrible.  Canon have several different RAW formats such as CRW, CR2 and CR3.
+I've made a summary of every file format supported by Exiv2 and hope you find that useful.  There are an absurd number of Graphics File Formats.  I have a copy somewhere of the O'Reilly book.  I got it in 1996 and it has 1000+ pages.  Since then there have been many more invented.  It's a software mess.  In the early days, many formats were local to a few users in a University and escaped to a wider audience.  However the never ending stream of new standards is horrible.  Canon have several different Raw formats such as CRW, CR2 and CR3.
 
 A good model for an image is to think of it as a container.  It's like a directory on the disk.   The directory can hold files with different formats and the directory is recursive as it can contain a directory of more files.  Almost every graphics format since TIFF in 1992 is a container.
 
@@ -245,7 +245,7 @@ The good news however is that file formats come in families which are:
 
 | Family  | Description                                                                              | Examples |
 |:--      |:---                                                                                      |:--       |
-| TIFF    | You must learn Tiff thoroughly to understand metadata | TIFF, DNG, NEF, ICC, CR2, ORF, RAW, DCP,PEF |
+| TIFF    | You must learn Tiff thoroughly to understand metadata | TIFF, DNG, NEF, ICC, CR2, ORF, RAF, DCP,PEF |
 | JIFF    | JPEG Image File Format<br>Linked list of 64k segments                                   | JPEG, EXV |
 | PNG     | Another popular format<br>Linked list of chunks                                               | PNG |
 | CIFF    | Camera Image File Format.  Dave Coffin parse.c decodes CRW                                    | CRW |
@@ -1464,7 +1464,7 @@ More information about binary decoding in tvisitor.cpp is discussed in [3.5 Repo
 
 [TOC](#TOC)
 <div id="CRW"/>
-## CRW Canon Raw Format
+## CRW Canon Raw
 
 ![crw](crw.png)
 
@@ -1514,14 +1514,14 @@ void RiffImage::accept(class Visitor& visitor)
             visit(address);
             io().seek(address);
             io().read(riff);
-            
+
             char        signature[5];
             std::string chunk   = riff.getChars(0,4,signature);
             uint32_t    length  = ::getLong(riff,4,endian_) ;
             uint64_t    pad     = length % 2 ? 1 : 0        ; // pad if length is odd
             uint64_t    next    = io().tell() + length +pad ;
             if ( next > fileLength_ ) Error(kerCorruptedMetadata);
-            
+
             data.zero();
             io().read(data.pData_,length < data.size_?length:data.size_);
             visitor.visitRiff(address,chunk,length,data);
@@ -1547,7 +1547,7 @@ void RiffImage::accept(class Visitor& visitor)
 
 [TOC](#TOC)
 <div id="MRW"/>
-## MRW Minolta Raw Format
+## MRW Minolta Raw
 
 ![mrw](mrw.png)
 
@@ -1564,7 +1564,7 @@ There is information about this format here: [http://www.dalibor.cz/software/min
 
 [TOC](#TOC)
 <div id="ORF"/>
-## ORF Olympus Raw Format
+## ORF Olympus Raw
 
 This is a member of the TIFF family of formats.
 
@@ -1892,7 +1892,7 @@ I haven't bothered to implement options -pX (XMP), -pC (ICC Color Profile) or -p
 
 [TOC](#TOC)
 <div id="RAF"/>
-## RAF Fujifilm RAW
+## RAF Fujifilm Raw
 ![raf](raf.png)<br>
 
 I found this useful description: [https://libopenraw.freedesktop.org/formats/raf](https://libopenraw.freedesktop.org/formats/raf/).  I don't recognise the format of the embedded CFA.  I believe CFA is Color Filter Array. 
@@ -1903,7 +1903,7 @@ The MakerNote in the embedded JPEG in a RAF has a 12 byte header followed by an 
 
 [TOC](#TOC)
 <div id="RW2"/>
-## RW2 Panasonic RAW
+## RW2 Panasonic Raw
 
 There is a discussion of Raw Image Formats here: [https://en.wikipedia.org/wiki/Raw\_image\_format](https://en.wikipedia.org/wiki/Raw_image_format)
 
@@ -2744,7 +2744,10 @@ void IFD::visitMakerNote(Visitor& visitor,DataBuf& buf,uint16_t count,uint32_t o
 } // visitMakerNote
 ```
 
-To be written.
+There is document on exiv2.org concerning the MakerNotes and references to the external web-site which discuss this matter. [https://exiv2.org/makernote.html](https://exiv2.org/makernote.html).
+
+Because the manufacturers store their data as an embedded IFD or Tiff file, tvisitor only needs the makerDict to know the meaning for the tags.  However MakerNotes usually have binary structures to define such matters and CameraSettings which will appear as tags such as Exiv2.NikonCs.Something.  The decoding of those binary structures is discussed in [7.7 Tag Decoder](#7-7).
+
 
 [TOC](#TOC)
 <div id="2-6"/>
