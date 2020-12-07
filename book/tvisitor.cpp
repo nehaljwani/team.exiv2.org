@@ -1007,6 +1007,7 @@ public:
     virtual void visitMrw     (Io& io,Image& image
                               ,uint64_t address,std::string chunk
                               ,uint32_t length,DataBuf& data)                        { return ; }
+    virtual void showError   (std::string message ) { return ; }
 
     PSOption      option() { return option_ ; }
     std::ostream& out()    { return out_    ; }
@@ -2300,6 +2301,7 @@ public:
     void visitMrw     (Io& io,Image& image
                       ,uint64_t address,std::string chunk
                       ,uint32_t length,DataBuf& data);
+    void showError    (std::string message ) { out() << indent() << message << std::endl; }
 
     void visitEnd(Image& image)
     {
@@ -2455,7 +2457,16 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
         io_.read(entry.pData_, bigtiff ? 8 : 2);
         uint64_t nEntries = bigtiff ? getLong8(entry,0,endian) : getShort(entry,0,endian);
 
-        if ( nEntries > 500 ) Error(kerTiffDirectoryTooLarge,nEntries);
+        if ( nEntries > 500 ) {
+            // don't Error (== panic) when the directory size seems impossible
+            // Error(kerTiffDirectoryTooLarge,nEntries);
+            // print error message and terminate the visit
+            visitor.showError(stringFormat(" ** directory too large %d **",nEntries));
+            visitor.visitDirEnd(image_,start);
+            visitor.visitEnd(image_);
+            return ;
+        }
+        
         visitor.visitDirBegin(image_,nEntries);
         uint64_t a0 = start + (bigtiff?8:2) + nEntries * entry.size_; // addresss to read next
 
