@@ -2702,8 +2702,6 @@ END: /Users/rmills/jp2.jp2
 
 This is discussed: [https://github.com/Exiv2/exiv2/issues/1395](https://github.com/Exiv2/exiv2/issues/1395)
 
-### IPTC Support in Exiv2
-
 Exif provides support for Section 1. "Envelope" and Section 2. "Application".  Tags are report as follows:
 
 ```bash
