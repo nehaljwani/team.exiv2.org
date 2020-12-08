@@ -28,6 +28,7 @@ void printOptions(error_e e)
 {
     if ( options["verbose"] || e == errorSyntax ) {
         size_t count=0;
+        std::cout << "options: ";
         for ( auto option : options ) {
             std::cout << (count++?" ":"") << option.first << "=" << option.second << "" ;
         }
@@ -131,7 +132,9 @@ int main(int argc, char* argv[])
     options["start"  ] =  0; // set by file[:start->length]+
 
     // parse arguments
-    if ( argc < 2 ) {
+    if( (argc < 2)                                         // ./dmpf
+    ||  (argc==2 && std::string(argv[1]).find("-h") != -1) // ./dmpf --help or ./dmpf -h => help
+    ){
         syntax(argc,argv,errorSyntax) ;
     } else for ( int i = 1 ; i < argc ; i++ ) {
         const char* arg = argv[i];
@@ -141,8 +144,12 @@ int main(int argc, char* argv[])
         bool        bClaimed = false;
         if ( split(argv[i],key,value) ) {
             if ( options.find(key) != options.end() ) {
-                options[key]+=value;
                 bClaimed = true ;
+                if ( key == "bs" || key == "hex" || key == "verbose" || key == "endian" ) {
+                    options[key] =value; // boolean keys
+                } else {
+                    options[key]+=value; // accumulative keys
+                }
             }
         } else if ( file(arg,stub,options["start"]) ) {
             paths.push_back(stub);
