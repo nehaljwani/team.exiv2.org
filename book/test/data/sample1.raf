@@ -1,0 +1,184 @@
+STRUCTURE OF RAF FILE (MM): ../files/sample1.raf
+  address |   length | data 
+        0 |       16 |       magic: FUJIFILMCCD-RAW 
+       16 |        4 |       data1: 0201
+       20 |        8 |       data2: FF159501
+       28 |       32 |      camera: X-T3____________________________
+       60 |        4 |     version: 0100
+       64 |       20 |     unknown: ____________________
+       84 |        4 | JPEG Offset: 148
+       88 |        4 | JPEG Length: 2993767
+       92 |        4 |  CFA Offset: 2994088
+       96 |        4 |  CFA Length: 22104
+      100 |        4 | TIFF Offset: 3016192
+      104 |        4 | TIFF Length: 53397824
+      148 |  2993767 | ......Exif__II*_.___
+  STRUCTURE OF JPEG FILE (II): ../files/sample1.raf:148->2993767
+   address | marker       |  length | signature
+       0 | 0xffd8 SOI  
+       2 | 0xffe1 APP1  |   65450 | Exif__II*_.___._..._.___.___..._.___.___
+    STRUCTURE OF TIFF FILE (II): ../files/sample1.raf:148->2993767:12->65442
+     address |    tag                              |      type |    count |    offset | value
+          10 | 0x010f Exif.Image.Make              |     ASCII |        9 |       170 | FUJIFILM
+          22 | 0x0110 Exif.Image.Model             |     ASCII |        5 |       180 | X-T3
+          34 | 0x0112 Exif.Image.Orientation       |     SHORT |        1 |           | 1
+          46 | 0x011a Exif.Image.XResolution       |  RATIONAL |        1 |       186 | 72/1
+          58 | 0x011b Exif.Image.YResolution       |  RATIONAL |        1 |       194 | 72/1
+          70 | 0x0128 Exif.Image.ResolutionUnit    |     SHORT |        1 |           | 2
+          82 | 0x0131 Exif.Image.Software          |     ASCII |       28 |       202 | Digital Camera X-T3 Ver1.00
+          94 | 0x0132 Exif.Image.DateTime          |     ASCII |       20 |       230 | 2018:09:06 15:23:59
+         106 | 0x013b Exif.Image.Artist            |     ASCII |      256 |       250 |                                      +++
+         118 | 0x0213 Exif.Image.YCbCrPositioning  |     SHORT |        1 |           | 2
+         130 | 0x8298 Exif.Image.0x8298            |     ASCII |      512 |       506 |                                      +++
+         142 | 0x8769 Exif.Image.ExifTag           |      LONG |        1 |           | 1124
+      STRUCTURE OF TIFF FILE (II): ../files/sample1.raf:148->2993767:12->65442
+       address |    tag                              |      type |    count |    offset | value
+          1126 | 0x829a Exif.Photo.ExposureTime      |  RATIONAL |        1 |      1658 | 10/2200
+          1138 | 0x829d Exif.Photo.FNumber           |  RATIONAL |        1 |      1666 | 400/100
+          1150 | 0x8822 Exif.Photo.ExposureProgram   |     SHORT |        1 |           | 3
+          1162 | 0x8827 Exif.Photo.ISOSpeedRatings   |     SHORT |        1 |           | 160
+          1174 | 0x8830 Exif.Photo.SensitivityType   |     SHORT |        1 |           | 1
+          1186 | 0x9000 Exif.Photo.ExifVersion       | UNDEFINED |        4 |           | 0230
+          1198 | 0x9003 Exif.Photo.DateTimeOriginal  |     ASCII |       20 |      1674 | 2018:09:06 15:23:59
+          1210 | 0x9004 Exif.Photo.DateTimeDigitized |     ASCII |       20 |      1694 | 2018:09:06 15:23:59
+          1222 | 0x9101 Exif.Photo.ComponentsConfi.. | UNDEFINED |        4 |           | ..._
+          1234 | 0x9102 Exif.Photo.CompressedBitsP.. |  RATIONAL |        1 |      1714 | 32/10
+          1246 | 0x9201 Exif.Photo.0x9201            | SRATIONAL |        1 |      1722 | 782/100
+          1258 | 0x9202 Exif.Photo.0x9202            |  RATIONAL |        1 |      1730 | 400/100
+          1270 | 0x9203 Exif.Photo.0x9203            | SRATIONAL |        1 |      1738 | 649/100
+          1282 | 0x9204 Exif.Photo.ExposureBiasValue | SRATIONAL |        1 |      1746 | 0/100
+          1294 | 0x9205 Exif.Photo.MaxApertureValue  |  RATIONAL |        1 |      1754 | 300/100
+          1306 | 0x9207 Exif.Photo.MeteringMode      |     SHORT |        1 |           | 5
+          1318 | 0x9208 Exif.Photo.LightSource       |     SHORT |        1 |           | 0
+          1330 | 0x9209 Exif.Photo.Flash             |     SHORT |        1 |           | 0
+          1342 | 0x920a Exif.Photo.FocalLength       |  RATIONAL |        1 |      1762 | 5500/100
+          1354 | 0x927c Exif.Photo.MakerNote         | UNDEFINED |     1168 |      2176 | FUJIFILM.___B___._.___0130._._0___*. +++
+        STRUCTURE OF  FILE (II): ../files/sample1.raf:148->2993767:12->65442:2176->1168
+              14 | 000000 Exif.Fuji.Version            | UNDEFINED |        4 |           | 0130
+              26 | 0x0010 Exif.Fuji.SerialNumber       |     ASCII |       48 |       810 | FF02B4550110     5935343737341808179 +++
+              38 | 0x0020 Exif.Fuji.0x20               |     ASCII |        6 |       858 | 14365
+              50 | 0x1000 Exif.Fuji.Quality            |     ASCII |        8 |       864 | NORMAL 
+              62 | 0x1001 Exif.Fuji.Sharpness          |     SHORT |        1 |           | 3
+              74 | 0x1002 Exif.Fuji.WhiteBalance       |     SHORT |        1 |           | 0
+              86 | 0x1003 Exif.Fuji.0x1003             |     SHORT |        1 |           | 0
+              98 | 0x100a Exif.Fuji.0x100a             |     SLONG |        2 |       872 | 0 0
+             110 | 0x100b Exif.Fuji.0x100b             |     SHORT |        1 |           | 256
+             122 | 0x100e Exif.Fuji.0x100e             |     SHORT |        1 |           | 0
+             134 | 0x1010 Exif.Fuji.0x1010             |     SHORT |        1 |           | 38976
+             146 | 0x1011 Exif.Fuji.0x1011             | SRATIONAL |        1 |       880 | 0/100
+             158 | 0x1021 Exif.Fuji.0x1021             |     SHORT |        1 |           | 0
+             170 | 0x1022 Exif.Fuji.0x1022             |     SHORT |        1 |           | 1
+             182 | 0x1023 Exif.Fuji.0x1023             |     SHORT |        2 |           | 3598 2090
+             194 | 0x1025 Exif.Fuji.0x1025             |      LONG |        1 |           | 1900592
+             206 | 0x1026 Exif.Fuji.0x1026             |     SHORT |        1 |           | 16
+             218 | 0x102b Exif.Fuji.0x102b             |     SHORT |        1 |           | 17
+             230 | 0x102c Exif.Fuji.0x102c             |      LONG |        1 |           | 131073
+             242 | 0x102d Exif.Fuji.0x102d             |      LONG |        1 |           | 16401
+             254 | 0x102e Exif.Fuji.0x102e             |      LONG |        1 |           | 258
+             266 | 0x1030 Exif.Fuji.0x1030             |     SHORT |        1 |           | 0
+             278 | 0x1031 Exif.Fuji.0x1031             |     SHORT |        1 |           | 256
+             290 | 0x1032 Exif.Fuji.0x1032             |     SHORT |        1 |           | 1
+             302 | 0x1040 Exif.Fuji.0x1040             |     SLONG |        1 |           | 0
+             314 | 0x1041 Exif.Fuji.0x1041             |     SLONG |        1 |           | 0
+             326 | 0x1045 Exif.Fuji.0x1045             |      LONG |        1 |           | 1
+             338 | 0x1046 Exif.Fuji.0x1046             |      LONG |        1 |           | 1
+             350 | 0x1047 Exif.Fuji.0x1047             |     SLONG |        1 |           | 0
+             362 | 0x1048 Exif.Fuji.0x1048             |     SLONG |        1 |           | 0
+             374 | 0x104d Exif.Fuji.0x104d             |     SHORT |        1 |           | 0
+             386 | 0x1050 Exif.Fuji.0x1050             |     SHORT |        1 |           | 0
+             398 | 0x1100 Exif.Fuji.0x1100             |     SHORT |        1 |           | 0
+             410 | 0x1101 Exif.Fuji.0x1101             |     SHORT |        1 |           | 0
+             422 | 0x1103 Exif.Fuji.0x1103             |      LONG |        1 |           | 0
+             434 | 0x1200 Exif.Fuji.0x1200             |     SHORT |        1 |           | 0
+             446 | 0x1300 Exif.Fuji.0x1300             |     SHORT |        1 |           | 0
+             458 | 0x1301 Exif.Fuji.0x1301             |     SHORT |        1 |           | 0
+             470 | 0x1302 Exif.Fuji.0x1302             |     SHORT |        1 |           | 0
+             482 | 0x1303 Exif.Fuji.0x1303             |     SHORT |        1 |           | 0
+             494 | 0x1304 Exif.Fuji.0x1304             |     SHORT |        1 |           | 0
+             506 | 0x1305 Exif.Fuji.0x1305             |     SHORT |        1 |           | 0
+             518 | 0x1400 Exif.Fuji.0x1400             |     SHORT |        1 |           | 1
+             530 | 0x1401 Exif.Fuji.0x1401             |     SHORT |        1 |           | 0
+             542 | 0x1402 Exif.Fuji.0x1402             |     SHORT |        1 |           | 1
+             554 | 0x1403 Exif.Fuji.0x1403             |     SHORT |        1 |           | 100
+             566 | 0x1404 Exif.Fuji.0x1404             |  RATIONAL |        1 |       888 | 1800/100
+             578 | 0x1405 Exif.Fuji.0x1405             |  RATIONAL |        1 |       896 | 5500/100
+             590 | 0x1406 Exif.Fuji.0x1406             |  RATIONAL |        1 |       904 | 280/100
+             602 | 0x1407 Exif.Fuji.0x1407             |  RATIONAL |        1 |       912 | 400/100
+             614 | 0x1408 Exif.Fuji.0x1408             | UNDEFINED |        4 |           | 0300
+             626 | 0x1409 Exif.Fuji.0x1409             | UNDEFINED |        4 |           | 0100
+             638 | 0x140a Exif.Fuji.0x140a             |     SHORT |        1 |           | 19
+             650 | 0x1422 Exif.Fuji.0x1422             |     SHORT |        3 |       920 | 1 1 0
+             662 | 0x1424 Exif.Fuji.0x1424             |     SHORT |        1 |           | 4096
+             674 | 0x1430 Exif.Fuji.0x1430             | UNDEFINED |      129 |       926 | ____________________________________ +++
+             686 | 0x1431 Exif.Fuji.0x1431             |      LONG |        1 |           | 0
+             698 | 0x1436 Exif.Fuji.0x1436             |     SHORT |        1 |           | 0
+             710 | 0x1438 Exif.Fuji.0x1438             |     SHORT |        1 |           | 32775
+             722 | 0x1439 Exif.Fuji.0x1439             |     ASCII |       48 |      1056 | 
+             734 | 0x1442 Exif.Fuji.0x1442             |      LONG |        1 |           | 0
+             746 | 0x1446 Exif.Fuji.0x1446             |      LONG |        1 |           | 2
+             758 | 0x1447 Exif.Fuji.0x1447             |     ASCII |       32 |      1104 | X-T3_0100
+             770 | 0x1448 Exif.Fuji.0x1448             |     ASCII |       32 |      1136 | X-T3_0100
+             782 | 0x4100 Exif.Fuji.0x4100             |     SHORT |        1 |           | 0
+             794 | 0x4200 Exif.Fuji.0x4200             |     SHORT |        1 |           | 0
+        END: ../files/sample1.raf:148->2993767:12->65442:2176->1168
+          1366 | 0x9286 Exif.Photo.UserComment       | UNDEFINED |      256 |      1770 | ________                             +++
+          1378 | 0xa000 Exif.Photo.FlashpixVersion   | UNDEFINED |        4 |           | 0100
+          1390 | 0xa001 Exif.Photo.ColorSpace        |     SHORT |        1 |           | 1
+          1402 | 0xa002 Exif.Photo.PixelXDimension   |      LONG |        1 |           | 4416
+          1414 | 0xa003 Exif.Photo.PixelYDimension   |      LONG |        1 |           | 2944
+          1426 | 0xa005 Exif.Photo.InteropTag        |      LONG |        1 |           | 3344
+          1438 | 0xa20e Exif.Photo.0xa20e            |  RATIONAL |        1 |      2026 | 1882/1
+          1450 | 0xa20f Exif.Photo.0xa20f            |  RATIONAL |        1 |      2034 | 1882/1
+          1462 | 0xa210 Exif.Photo.0xa210            |     SHORT |        1 |           | 3
+          1474 | 0xa217 Exif.Photo.0xa217            |     SHORT |        1 |           | 2
+          1486 | 0xa300 Exif.Photo.FileSource        | UNDEFINED |        1 |           | .
+          1498 | 0xa301 Exif.Photo.SceneType         | UNDEFINED |        1 |           | .
+          1510 | 0xa401 Exif.Photo.CustomRendered    |     SHORT |        1 |           | 0
+          1522 | 0xa402 Exif.Photo.ExposureMode      |     SHORT |        1 |           | 0
+          1534 | 0xa403 Exif.Photo.WhiteBalance      |     SHORT |        1 |           | 0
+          1546 | 0xa405 Exif.Photo.0xa405            |     SHORT |        1 |           | 83
+          1558 | 0xa406 Exif.Photo.SceneCaptureType  |     SHORT |        1 |           | 0
+          1570 | 0xa40a Exif.Photo.Sharpness         |     SHORT |        1 |           | 0
+          1582 | 0xa40c Exif.Photo.0xa40c            |     SHORT |        1 |           | 0
+          1594 | 0xa431 Exif.Photo.0xa431            |     ASCII |       11 |      2042 | 8CQ00434
+          1606 | 0xa432 Exif.Photo.0xa432            |  RATIONAL |        4 |      2054 | 1800/100 5500/100 280/100 400/100
+          1618 | 0xa433 Exif.Photo.0xa433            |     ASCII |       13 |      2086 | FUJIFILM
+          1630 | 0xa434 Exif.Photo.0xa434            |     ASCII |       64 |      2100 | XF18-55mmF2.8-4 R LM OIS
+          1642 | 0xa435 Exif.Photo.0xa435            |     ASCII |       11 |      2164 | 8BA23023
+      END: ../files/sample1.raf:148->2993767:12->65442
+         154 | 0xc4a5 Exif.Image.0xc4a5            | UNDEFINED |      106 |      1018 | PrintIM_0250__._._.___._"___..____.. +++
+    END: ../files/sample1.raf:148->2993767:12->65442
+   65454 | 0xffc4 DHT   |     418 | __........________............_.........
+   65874 | 0xffdb DQT   |     132 | _.......................................
+   66008 | 0xffdd DRI   |       4 | _...
+   66014 | 0xffc0 SOF0  |      17 | ....@..!_........
+   66033 | 0xffda SOS   |      12 | .._...._?_..
+  END: ../files/sample1.raf:148->2993767
+  2994088 |    22104 | ___..__..V...._._._.
+  3016192 | 53397824 | II*_.___.__.._.___._
+  STRUCTURE OF TIFF FILE (II): ../files/sample1.raf:3016192->53397824
+   address |    tag                              |      type |    count |    offset | value
+        10 | 0xf000 Exif.Image.0xf000            |       IFD |        1 |           | 26
+    STRUCTURE OF TIFF FILE (II): ../files/sample1.raf:3016192->53397824
+     address |    tag                              |      type |    count |    offset | value
+          28 | 0xf001 Exif.Fuji.RawFullWidth       |      LONG |        1 |           | 6384
+          40 | 0xf002 Exif.Fuji.RawFullHeight      |      LONG |        1 |           | 4182
+          52 | 0xf003 Exif.Fuji.BitPerSample       |      LONG |        1 |           | 14
+          64 | 0xf004 Exif.Fuji.0xf004             |      LONG |        1 |           | 0
+          76 | 0xf005 Exif.Fuji.0xf005             |      LONG |        1 |           | 0
+          88 | 0xf006 Exif.Fuji.0xf006             |      LONG |        1 |           | 0
+         100 | 0xf007 Exif.Fuji.StripOffsets       |      LONG |        1 |           | 2048
+         112 | 0xf008 Exif.Fuji.StripByteCounts    |      LONG |        1 |           | 53395776
+         124 | 0xf009 Exif.Fuji.0xf009             |      LONG |        1 |           | 142
+         136 | 0xf00a Exif.Fuji.BlackLevel         |      LONG |       36 |       248 | 1022 1022 1022 1022 1022 1022 1022 1 +++
+         148 | 0xf00b Exif.Fuji.GeometricDistort.. | SRATIONAL |       19 |       392 | 3749/9 502/1420 710/1420 870/1420 10 +++
+         160 | 0xf00c Exif.Fuji.WB_GRBLevelsStan.. |      LONG |        8 |       544 | 302 371 826 17 302 626 485 21
+         172 | 0xf00d Exif.Fuji.WB_GRBLevelsAuto   |      LONG |        3 |       576 | 302 561 552
+         184 | 0xf00e Exif.Fuji.WB_GRBLevels       |      LONG |        3 |       588 | 302 561 552
+         196 | 0xf00f Exif.Fuji.ChromaticAberrat.. | SRATIONAL |       29 |       600 | 3749/9 502/1420 710/1420 870/1420 10 +++
+         208 | 0xf010 Exif.Fuji.VignettingParams   | SRATIONAL |       19 |       824 | 3749/9 502/1420 710/1420 870/1420 10 +++
+         220 | 0xf011 Exif.Fuji.0xf011             |     SLONG |        1 |           | 0
+         232 | 0xf012 Exif.Fuji.0xf012             |     SLONG |        1 |           | 0
+    END: ../files/sample1.raf:3016192->53397824
+  END: ../files/sample1.raf:3016192->53397824
+END: ../files/sample1.raf

@@ -1,0 +1,97 @@
+STRUCTURE OF JPEG FILE (II): ../files/ReaganLargeJpg.jpg
+ address | marker       |  length | signature
+       0 | 0xffd8 SOI  
+       2 | 0xffe0 APP0  |      16 | JFIF_....,.,__..
+      20 | 0xffe1 APP1  |    4073 | Exif__MM_*___._..._.__..___..._.___.__.2
+  STRUCTURE OF TIFF FILE (MM): ../files/ReaganLargeJpg.jpg:30->4065
+   address |    tag                              |      type |    count |    offset | value
+        10 | 0x010e Exif.Image.ImageDescription  |     ASCII |      403 |       158 | 040621-N-6536T-062
+USS Ronald Reagan +++
+        22 | 0x010f Exif.Image.Make              |     ASCII |       18 |       562 | NIKON CORPORATION
+        34 | 0x0110 Exif.Image.Model             |     ASCII |       10 |       580 | NIKON D1X
+        46 | 0x0112 Exif.Image.Orientation       |     SHORT |        1 |           | 0
+        58 | 0x011a Exif.Image.XResolution       |  RATIONAL |        1 |       590 | 300/1
+        70 | 0x011b Exif.Image.YResolution       |  RATIONAL |        1 |       598 | 300/1
+        82 | 0x0128 Exif.Image.ResolutionUnit    |     SHORT |        1 |           | 0
+        94 | 0x0131 Exif.Image.Software          |     ASCII |       12 |       606 | GIMP 2.8.18
+       106 | 0x0132 Exif.Image.DateTime          |     ASCII |       20 |       618 | 2016:09:14 08:57:27
+       118 | 0x013b Exif.Image.Artist            |     ASCII |       34 |       638 | Photographerís Mate 3rd Class (A
+       130 | 0x8769 Exif.Image.ExifTag           |      LONG |        1 |           | 2684485632
+    STRUCTURE OF TIFF FILE (MM): ../files/ReaganLargeJpg.jpg:30->4065
+     address |    tag                              |      type |    count |    offset | value
+         674 | 0x829a Exif.Photo.ExposureTime      |  RATIONAL |        1 |      1110 | 1/125
+         686 | 0x829d Exif.Photo.FNumber           |  RATIONAL |        1 |      1118 | 5/1
+         698 | 0x8822 Exif.Photo.ExposureProgram   |     SHORT |        1 |           | 0
+         710 | 0x9000 Exif.Photo.ExifVersion       | UNDEFINED |        4 |           | 0220
+         722 | 0x9003 Exif.Photo.DateTimeOriginal  |     ASCII |       20 |      1126 | 2004:06:21 23:37:53
+         734 | 0x9004 Exif.Photo.DateTimeDigitized |     ASCII |       20 |      1146 | 2004:06:21 23:37:53
+         746 | 0x9101 Exif.Photo.ComponentsConfi.. | UNDEFINED |        4 |           | _...
+         758 | 0x9102 Exif.Photo.CompressedBitsP.. |  RATIONAL |        1 |      1166 | 4/1
+         770 | 0x9204 Exif.Photo.ExposureBiasValue | SRATIONAL |        1 |      1174 | 1/3
+         782 | 0x9205 Exif.Photo.MaxApertureValue  |  RATIONAL |        1 |      1182 | 3/1
+         794 | 0x9207 Exif.Photo.MeteringMode      |     SHORT |        1 |           | 0
+         806 | 0x9208 Exif.Photo.LightSource       |     SHORT |        1 |           | 0
+         818 | 0x9209 Exif.Photo.Flash             |     SHORT |        1 |           | 0
+         830 | 0x920a Exif.Photo.FocalLength       |  RATIONAL |        1 |      1190 | 42/1
+         842 | 0x9290 Exif.Photo.0x9290            |     ASCII |        3 |           | 
+         854 | 0x9291 Exif.Photo.0x9291            |     ASCII |        3 |           | 
+         866 | 0x9292 Exif.Photo.0x9292            |     ASCII |        3 |           | 
+         878 | 0xa000 Exif.Photo.FlashpixVersion   | UNDEFINED |        4 |           | 0010
+         890 | 0xa001 Exif.Photo.ColorSpace        |     SHORT |        1 |           | 0
+         902 | 0xa002 Exif.Photo.PixelXDimension   |      LONG |        1 |           | 3355443200
+         914 | 0xa003 Exif.Photo.PixelYDimension   |      LONG |        1 |           | 2181038080
+         926 | 0xa217 Exif.Photo.0xa217            |     SHORT |        1 |           | 0
+         938 | 0xa300 Exif.Photo.FileSource        | UNDEFINED |        1 |           | _
+         950 | 0xa301 Exif.Photo.SceneType         | UNDEFINED |        1 |           | _
+         962 | 0xa401 Exif.Photo.CustomRendered    |     SHORT |        1 |           | 0
+         974 | 0xa402 Exif.Photo.ExposureMode      |     SHORT |        1 |           | 0
+         986 | 0xa403 Exif.Photo.WhiteBalance      |     SHORT |        1 |           | 0
+         998 | 0xa404 Exif.Photo.0xa404            |  RATIONAL |        1 |      1198 | 1/1
+        1010 | 0xa405 Exif.Photo.0xa405            |     SHORT |        1 |           | 0
+        1022 | 0xa406 Exif.Photo.SceneCaptureType  |     SHORT |        1 |           | 0
+        1034 | 0xa407 Exif.Photo.0xa407            |     SHORT |        1 |           | 0
+        1046 | 0xa408 Exif.Photo.Contrast          |     SHORT |        1 |           | 0
+        1058 | 0xa409 Exif.Photo.Saturation        |     SHORT |        1 |           | 0
+        1070 | 0xa40a Exif.Photo.Sharpness         |     SHORT |        1 |           | 0
+        1082 | 0xa40c Exif.Photo.0xa40c            |     SHORT |        1 |           | 0
+        1094 | 0xa420 Exif.Photo.0xa420            |     ASCII |       33 |      1206 | 127c1377b054a3f65bf2754ebb24e7f2
+    END: ../files/ReaganLargeJpg.jpg:30->4065
+       142 | 0x8825 Exif.Image.GPSTag            |      LONG |        1 |           | 3624140800
+    STRUCTURE OF TIFF FILE (MM): ../files/ReaganLargeJpg.jpg:30->4065
+     address |    tag                              |      type |    count |    offset | value
+        1242 | 000000 Exif.GPSInfo.GPSVersionID    |     UBYTE |        4 |           | 0 0 2 2
+    END: ../files/ReaganLargeJpg.jpg:30->4065
+  END: ../files/ReaganLargeJpg.jpg:30->4065
+    4095 | 0xffe1 APP1  |    6191 | http://ns.adobe.com/xap/1.0/_<?xpacket b
+   10288 | 0xffe2 APP2  |   65535 | ICC_PROFILE_.._.. APPL..__prtrRGB Lab ..
+   75825 | 0xffe2 APP2  |   65535 | ICC_PROFILE_...S...r.R...t.RT..wrRO..y.R
+  141362 | 0xffe2 APP2  |   65535 | ICC_PROFILE_....o..b.tn..Q.Km....#l..S..
+  206899 | 0xffe2 APP2  |   65535 | ICC_PROFILE_.......l>.........-.........
+  272436 | 0xffe2 APP2  |   65535 | ICC_PROFILE_...QY2w$.gZ.wY..Z.w..y[.xE.-
+  337973 | 0xffe2 APP2  |   65535 | ICC_PROFILE_..]W.j....QlT....m..3..o....
+  403510 | 0xffe2 APP2  |   65535 | ICC_PROFILE_....j;....h..~.Kg8.C..f#....
+  469047 | 0xffe2 APP2  |   65535 | ICC_PROFILE_...M...Y.MX..[qM..B\.M...].M
+  534584 | 0xffe2 APP2  |   65535 | ICC_PROFILE_....dDZ7.be.W...gcS..YN.....
+  600121 | 0xffe2 APP2  |   65535 | ICC_PROFILE_.....hRv...i.s1.|k.o...llm..
+  665658 | 0xffe2 APP2  |   65535 | ICC_PROFILE_......y.....z%.L.jz.....{3..
+  731195 | 0xffe2 APP2  |   65535 | ICC_PROFILE_..N...<m....Js}.s..vL.%.5x..
+  796732 | 0xffe2 APP2  |   65535 | ICC_PROFILE_....>.....,..N.....m...O.v..
+  862269 | 0xffe2 APP2  |   65535 | ICC_PROFILE_..........{.............5...
+  927806 | 0xffe2 APP2  |   65535 | ICC_PROFILE_.."...__,_..__0..<__7..m__?.
+  993343 | 0xffe2 APP2  |   65535 | ICC_PROFILE_.........1.....7.....?O...=I
+ 1058880 | 0xffe2 APP2  |   65535 | ICC_PROFILE_...<.A......................
+ 1124417 | 0xffe2 APP2  |   65535 | ICC_PROFILE_...$.....__.t.......l..... .
+ 1189954 | 0xffe2 APP2  |   65535 | ICC_PROFILE_.....V.b...........$...3...u
+ 1255491 | 0xffe2 APP2  |   65535 | ICC_PROFILE_...0.446.0.456.0.462.0.471.0
+ 1321028 | 0xffe2 APP2  |   65535 | ICC_PROFILE_..286.0.297.0.309.0.317.0.31
+ 1386565 | 0xffe2 APP2  |   65535 | ICC_PROFILE_..0.171.0.184.0.194.0.199.0.
+ 1452102 | 0xffe2 APP2  |   65535 | ICC_PROFILE_..74.0.073.0.076.0.086.0.104
+ 1517639 | 0xffe2 APP2  |   65535 | ICC_PROFILE_..9.0.894.0.901.0.903.0.905.
+ 1583176 | 0xffe2 APP2  |   41160 | ICC_PROFILE_...463.0.465.0.469.0.476.0.4
+ 1624338 | 0xffdb DQT   |      67 | _.......................................
+ 1624407 | 0xffdb DQT   |      67 | ........................................
+ 1624476 | 0xffc2 SOF2  |      17 | ._._...._........
+ 1624495 | 0xffc4 DHT   |      30 | __.....__________....._.......
+ 1624527 | 0xffc4 DHT   |      27 | ._......__________.........
+ 1624556 | 0xffda SOS   |      12 | .._....__...
+END: ../files/ReaganLargeJpg.jpg

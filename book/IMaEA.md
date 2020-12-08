@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-12-07</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-12-08</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -249,11 +249,10 @@ The good news however is that file formats come in families which are:
 | JIFF    | JPEG Image File Format<br>Linked list of 64k segments                                   | JPEG, EXV |
 | PNG     | Another popular format<br>Linked list of chunks                                               | PNG |
 | CIFF    | Camera Image File Format.  Dave Coffin parse.c decodes CRW                                    | CRW |
-| ISOBMFF | Based on the .mp4 format                                                 | MP4, CR3, AVI, HEIF, JP2 |
+| ISOBMFF | Based on the .mp4 format                                                | MP4, CR3, AVIF, HEIF, JP2 |
 | RIFF    | Resource Interchange File Format                                                        | WEBP, AVI |
 | GIF     | Graphics Image Format                                                                         | GIF | 
 | BMP     | Windows BMP never has XMP, IPTC or Exif metadata.<br>Version5 may include an ICC profile.     | BMP |
-| EPS     | Adobe Encapsulated PostScript<br>The code in Exiv2 to deal with this is deprecated        | EPS, AI |
 
 The Metadata is defined by standards which also define how to embed the data in the image.
 

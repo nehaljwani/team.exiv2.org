@@ -1,0 +1,115 @@
+STRUCTURE OF JPEG FILE (II): ../files/multi-segment_exif.jpg
+ address | marker       |  length | signature
+       0 | 0xffd8 SOI  
+       2 | 0xffe1 APP1  |   65535 | Exif__II*_.___._..._.___.___..._.___.___
+   65539 | 0xffe1 APP1  |    5603 | Exif__..................................
+  STRUCTURE OF TIFF FILE (II): ../files/multi-segment_exif.jpg+12->65527+65549->5595
+   address |    tag                              |      type |    count |    offset | value
+        10 | 0x010f Exif.Image.Make              |     ASCII |        6 |       170 | NIKON
+        22 | 0x0110 Exif.Image.Model             |     ASCII |       14 |       176 | COOLPIX P6000
+        34 | 0x0112 Exif.Image.Orientation       |     SHORT |        1 |           | 1
+        46 | 0x011a Exif.Image.XResolution       |  RATIONAL |        1 |       190 | 300/1
+        58 | 0x011b Exif.Image.YResolution       |  RATIONAL |        1 |       198 | 300/1
+        70 | 0x0128 Exif.Image.ResolutionUnit    |     SHORT |        1 |           | 2
+        82 | 0x0131 Exif.Image.Software          |     ASCII |       18 |       206 | COOLPIX P6000V1.0
+        94 | 0x0132 Exif.Image.DateTime          |     ASCII |       20 |       224 | 2008:12:14 13:55:22
+       106 | 0x0213 Exif.Image.YCbCrPositioning  |     SHORT |        1 |           | 1
+       118 | 0x0214 Exif.Image.0x214             |  RATIONAL |        6 |       244 | 0/0 255/1 0/0 128/1 0/0 128/1
+       130 | 0x8769 Exif.Image.ExifTag           |      LONG |        1 |           | 312
+    STRUCTURE OF TIFF FILE (II): ../files/multi-segment_exif.jpg+12->65527+65549->5595
+     address |    tag                              |      type |    count |    offset | value
+         314 | 0x829a Exif.Photo.ExposureTime      |  RATIONAL |        1 |       714 | 1/176
+         326 | 0x829d Exif.Photo.FNumber           |  RATIONAL |        1 |       722 | 9/2
+         338 | 0x8822 Exif.Photo.ExposureProgram   |     SHORT |        1 |           | 2
+         350 | 0x8827 Exif.Photo.ISOSpeedRatings   |     SHORT |        1 |           | 64
+         362 | 0x9000 Exif.Photo.ExifVersion       | UNDEFINED |        4 |           | 0231
+         374 | 0x9003 Exif.Photo.DateTimeOriginal  |     ASCII |       20 |       730 | 2008:12:14 13:55:22
+         386 | 0x9004 Exif.Photo.DateTimeDigitized |     ASCII |       20 |       750 | 2008:12:14 13:55:22
+         398 | 0x9101 Exif.Photo.ComponentsConfi.. | UNDEFINED |        4 |           | ..._
+         410 | 0x9204 Exif.Photo.ExposureBiasValue | SRATIONAL |        1 |       770 | 0/1
+         422 | 0x9205 Exif.Photo.MaxApertureValue  |  RATIONAL |        1 |       778 | 5365/1872
+         434 | 0x9207 Exif.Photo.MeteringMode      |     SHORT |        1 |           | 5
+         446 | 0x9208 Exif.Photo.LightSource       |     SHORT |        1 |           | 0
+         458 | 0x9209 Exif.Photo.Flash             |     SHORT |        1 |           | 16
+         470 | 0x920a Exif.Photo.FocalLength       |  RATIONAL |        1 |       786 | 23/5
+         482 | 0x927c Exif.Photo.MakerNote         | UNDEFINED |    70158 |       794 | Nikon_.___II*_.___&_._._.___0200._._ +++
+      STRUCTURE OF TIFF FILE (II): ../files/multi-segment_exif.jpg+12->65527+65549->5595:804->70148
+       address |    tag                              |      type |    count |    offset | value
+            10 | 0x0001 Exif.Nikon.Version           | UNDEFINED |        4 |           | 0200
+            22 | 0x0002 Exif.Nikon.ISOSpeed          |     SHORT |        2 |           | 0 0
+            34 | 0x0003 Exif.Nikon.0x3               |     ASCII |        6 |       470 | COLOR
+            46 | 0x0004 Exif.Nikon.Quality           |     ASCII |        7 |       476 | NRW   
+            58 | 0x0005 Exif.Nikon.WhiteBalance      |     ASCII |       13 |       484 | AUTO        
+            70 | 0x0006 Exif.Nikon.0x6               |     ASCII |        7 |       498 | NORMAL
+            82 | 0x0007 Exif.Nikon.Focus             |     ASCII |        7 |       506 | AF-S  
+            94 | 0x0008 Exif.Nikon.FlashSetting      |     ASCII |        8 |       514 |        
+           106 | 0x000a Exif.Nikon.0xa               |  RATIONAL |        1 |       522 | 9321/1000
+           118 | 0x000f Exif.Nikon.0xf               |     ASCII |        7 |       530 | AUTO  
+           130 | 0x0010 Exif.Nikon.0x10              | UNDEFINED |     2542 |       538 | ____________________________________ +++
+           142 | 0x0011 Exif.Nikon.0x11              |      LONG |        1 |           | 70042
+           154 | 0x0014 Exif.Nikon.0x14              | UNDEFINED |    66596 |      3080 | NRW 0100____72f_..__..__e.__________ +++
+           166 | 0x001a Exif.Nikon.0x1a              | UNDEFINED |        1 |           |  
+           178 | 0x0021 Exif.Nikon.0x21              | UNDEFINED |      106 |     69676 | ._@.._______________________________ +++
+           190 | 0x0022 Exif.Nikon.0x22              |     SHORT |        1 |           | 0
+           202 | 0x0029 Exif.Nikon.0x29              |     SHORT |        2 |           | 0 0
+           214 | 0x002f Exif.Nikon.0x2f              |     SHORT |        1 |           | 0
+           226 | 0x0080 Exif.Nikon.0x80              |     ASCII |       14 |     69782 | NORMAL       
+           238 | 0x0081 Exif.Nikon.0x81              |     ASCII |        9 |     69796 | NORMAL  
+           250 | 0x0082 Exif.Nikon.0x82              |     ASCII |       13 |     69806 | WIDE ADAPTER
+           262 | 0x0085 Exif.Nikon.0x85              |  RATIONAL |        1 |     69820 | 0/0
+           274 | 0x0086 Exif.Nikon.0x86              |  RATIONAL |        1 |     69828 | 100/100
+           286 | 0x0088 Exif.Nikon.0x88              | UNDEFINED |        4 |           | __._
+           298 | 0x008f Exif.Nikon.0x8f              |     ASCII |       16 |     69836 |                
+           310 | 0x0091 Exif.Nikon.0x91              | UNDEFINED |       18 |     69852 | _______.______DC__
+           322 | 0x0094 Exif.Nikon.0x94              |    SSHORT |        1 |           | 0
+           334 | 0x0095 Exif.Nikon.0x95              |     ASCII |        5 |     69870 | OFF 
+           346 | 0x009b Exif.Nikon.0x9b              |     UBYTE |        2 |           | 0 0
+           358 | 0x009c Exif.Nikon.0x9c              |     ASCII |       20 |     69876 |                    
+           370 | 0x009d Exif.Nikon.0x9d              |     SHORT |        1 |           | 0
+           382 | 0x009e Exif.Nikon.0x9e              |     SHORT |       10 |     69896 | 0 0 0 0 0 0 0 0 0 0
+           394 | 0x00a8 Exif.Nikon.0xa8              | UNDEFINED |       20 |     69916 | 0100________________
+           406 | 0x00aa Exif.Nikon.0xaa              |     ASCII |       16 |     69936 | NORMAL         
+           418 | 0x00ac Exif.Nikon.0xac              |     ASCII |       14 |     69952 | VR-ON        
+           430 | 0x00b2 Exif.Nikon.0xb2              |     ASCII |       10 |     69966 | NORMAL  
+           442 | 0x00b3 Exif.Nikon.0xb3              |     ASCII |        8 |     69976 |        
+           454 | 0x00bd Exif.Nikon.0xbd              | UNDEFINED |       58 |     69984 | 0100STANDARD   _________STANDARD   _ +++
+      END: ../files/multi-segment_exif.jpg+12->65527+65549->5595:804->70148
+         494 | 0x9286 Exif.Photo.UserComment       | UNDEFINED |        8 |     70952 | ASCII___
+         506 | 0xa000 Exif.Photo.FlashpixVersion   | UNDEFINED |        4 |           | 0100
+         518 | 0xa001 Exif.Photo.ColorSpace        |     SHORT |        1 |           | 65535
+         530 | 0xa217 Exif.Photo.0xa217            |     SHORT |        1 |           | 2
+         542 | 0xa300 Exif.Photo.FileSource        | UNDEFINED |        1 |           | .
+         554 | 0xa301 Exif.Photo.SceneType         | UNDEFINED |        1 |           | .
+         566 | 0xa302 Exif.Photo.0xa302            | UNDEFINED |        8 |     70960 | ._._.._.
+         578 | 0xa401 Exif.Photo.CustomRendered    |     SHORT |        1 |           | 0
+         590 | 0xa402 Exif.Photo.ExposureMode      |     SHORT |        1 |           | 0
+         602 | 0xa403 Exif.Photo.WhiteBalance      |     SHORT |        1 |           | 0
+         614 | 0xa404 Exif.Photo.0xa404            |  RATIONAL |        1 |     70968 | 0/1
+         626 | 0xa405 Exif.Photo.0xa405            |     SHORT |        1 |           | 21
+         638 | 0xa406 Exif.Photo.SceneCaptureType  |     SHORT |        1 |           | 0
+         650 | 0xa407 Exif.Photo.0xa407            |     SHORT |        1 |           | 0
+         662 | 0xa408 Exif.Photo.Contrast          |     SHORT |        1 |           | 0
+         674 | 0xa409 Exif.Photo.Saturation        |     SHORT |        1 |           | 0
+         686 | 0xa40a Exif.Photo.Sharpness         |     SHORT |        1 |           | 0
+         698 | 0xa40c Exif.Photo.0xa40c            |     SHORT |        1 |           | 0
+    END: ../files/multi-segment_exif.jpg+12->65527+65549->5595
+       142 | 0x8825 Exif.Image.GPSTag            |      LONG |        1 |           | 70976
+    STRUCTURE OF TIFF FILE (II): ../files/multi-segment_exif.jpg+12->65527+65549->5595
+     address |    tag                              |      type |    count |    offset | value
+       70978 | 000000 Exif.GPSInfo.GPSVersionID    |     UBYTE |        4 |           | 2 2 0 0
+       70990 | 0x0001 Exif.GPSInfo.GPSLatitudeRef  |     ASCII |        2 |           | 
+       71002 | 0x0003 Exif.GPSInfo.GPSLongitudeRef |     ASCII |        2 |           | 
+       71014 | 0x0005 Exif.GPSInfo.GPSAltitudeRef  |     UBYTE |        1 |           | 0
+       71026 | 0x0007 Exif.GPSInfo.GPSTimeStamp    |  RATIONAL |        3 |     71090 | 0/1 0/1 0/1
+       71038 | 0x0008 Exif.GPSInfo.GPSSatellites   |     ASCII |        1 |           | 
+       71050 | 0x0010 Exif.GPSInfo.0x10            |     ASCII |        2 |           | 
+       71062 | 0x0011 Exif.GPSInfo.0x11            |  RATIONAL |        1 |     71114 | 0/0
+       71074 | 0x0012 Exif.GPSInfo.GPSMapDatum     |     ASCII |        1 |           | 
+    END: ../files/multi-segment_exif.jpg+12->65527+65549->5595
+       154 | 0x9003 Exif.Image.0x9003            |     ASCII |       20 |       292 | 2008:12:14 13:55:22
+  END: ../files/multi-segment_exif.jpg+12->65527+65549->5595
+   71144 | 0xffdb DQT   |     132 | _.......................................
+   71278 | 0xffc4 DHT   |     418 | __........________............_.........
+   71698 | 0xffc0 SOF0  |      17 | ..0.@..!_........
+   71717 | 0xffda SOS   |      12 | .._...._?_..
+END: ../files/multi-segment_exif.jpg

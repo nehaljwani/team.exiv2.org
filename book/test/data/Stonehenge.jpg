@@ -152,15 +152,8 @@ STRUCTURE OF JPEG FILE (II): ../files/Stonehenge.jpg
    18096 | 0xffed APP13 |      96 | Photoshop 3.0_8BIM.._____'..__._...Z_..%
   STRUCTURE OF 8BIM FILE (MM): ../files/Stonehenge.jpg:18114->78
        offset |   kind | tagName                      |  len | data | 
-            0 | 0x0404 | PSD.8BIM.IPTCNAA             |   39 | 12+1 | ..__._...Z_..%G..__._...x_.____________
-    STRUCTURE OF IPTC FILE (MM): ../files/Stonehenge.jpg:18114->78:12->39
-        Record | DataSet | Name                           | Length | Data
-             1 |       0 | Iptc.Envelope.ModelVersion     |      2 | _.
-             1 |      90 | Iptc.Envelope.CharacterSet     |      3 | .%G
-             2 |       0 | Iptc.Application.RecordVersion |      2 | _.
-             2 |     120 | Iptc.Application.Caption       |     12 | Classic View
-    END: ../files/Stonehenge.jpg:18114->78:12->39
-           52 | 0x0425 | PSD.8BIM.0x425               |   16 | 12+0 | 3..M____________
+            0 | 0x0404 | PSD.8BIM.IPTCNAA             |   39 | 12+1 | ..__._...Z_..%G..__._...x_._____________
+           52 | 0x0425 | PSD.8BIM.0x425               |   16 | 12+0 | 3..M____________...>.._._______..`...___
   END: ../files/Stonehenge.jpg:18114->78
    18194 | 0xffe2 APP2  |    4094 | MPF_II*_.___.__.._.___0100..._.___.___..
    22290 | 0xffdb DQT   |     132 | _.......................................

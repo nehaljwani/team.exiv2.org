@@ -572,12 +572,10 @@ std::string DataBuf::toUuidString(size_t offset /* =0 */)
     std::string result ;
     if ( size_ >= 16+offset ) {
         byte* p = pData_+offset;
-        result = ::stringFormat("%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x"
-                               ,p[ 0],p[ 1],p[ 2],p[ 3]
-                               ,p[ 4],p[ 5]
-                               ,p[ 6],p[ 7]
-                               ,p[ 8],p[ 9]
-                               ,p[10],p[11],p[12],p[13],p[14],p[15]
+        result = ::stringFormat("%02x%02x%02x%02x-"        "%02x%02x-"      "%02x%02x-"
+                                "%02x%02x-"                "%02x%02x%02x%02x%02x%02x"
+                                ,p[ 0],p[ 1],p[ 2],p[ 3]   ,p[ 4],p[ 5]     ,p[ 6],p[ 7]
+                                ,p[ 8],p[ 9]               ,p[10],p[11],p[12],p[13],p[14],p[15]
                                );
     }
     return result ;
@@ -591,7 +589,7 @@ enum maker_e
 ,   kSony
 ,   kAgfa
 ,   kApple
-,   kPano
+,   kPana
 ,   kMino
 ,   kFuji
 ,   kOlym
@@ -667,7 +665,7 @@ TagDict nikonDict ;
 TagDict sonyDict  ;
 TagDict agfaDict  ;
 TagDict appleDict ;
-TagDict panoDict  ;
+TagDict panaDict  ;
 TagDict minoDict  ;
 TagDict fujiDict  ;
 TagDict olymDict  ;
@@ -1310,12 +1308,12 @@ public:
 
             uint16_t bytesize = bigtiff_ ? getShort(header,4,endian_) : 8;
             uint16_t version  = bigtiff_ ? getShort(header,6,endian_) : 0;
-                                             // Pano     // Olym     R O // Olym     RS   // DCP
+                                             // Pana     // Olym     R O // Olym     RS   // DCP
             valid_ =  (magic_==42||magic_==43||magic_==85||magic_==0x4f52||magic_==0x5352 ||magic_==0x4352) && (c == C) && (c=='I'||c=='M') && bytesize == 8 && version == 0;
-            // Panosonic have augmented tiffDict with their keys
+            // Panasonic have augmented tiffDict with their keys
             if ( magic_ == 85 ) {
-                setMaker(kPano);
-                for ( TagDict::iterator it = panoDict.begin() ; it != panoDict.end() ; it++ ) {
+                setMaker(kPana);
+                for ( TagDict::iterator it = panaDict.begin() ; it != panaDict.end() ; it++ ) {
                     if ( it->first != ktGroup ) {
                         tiffDict[it->first] = it->second;
                     }
@@ -1581,21 +1579,23 @@ void C8BIM::accept(Visitor& visitor)
         IoSave  restore(io(),start_);
         DataBuf buff   (io().size()) ;
         io().read(buff) ;
-    //  out() << indent() << buff.toString(kttUByte) << std::endl;
+        // visitor.out() << visitor.indent() << buff.toString(kttUByte) << std::endl;
         uint32_t offset = 0  ;
-        while ( offset+4 < buff.size_ ) {
+        while ( offset+8 < buff.size_ ) {
             uint16_t kind = getShort             (buff,offset+4     ,endian_);
             uint16_t name = getPascalStringLength(buff,offset+6);
             uint32_t len  = getLong              (buff,offset+6+name,endian_);
             uint32_t pad  = len%2?1:0;
             uint32_t data = (uint32_t)(4+2+4+name); // "8BIM" + short (kind) + name + long (len)
             DataBuf  b(len);
-            memcpy(b.pData_,buff.pData_+offset+data,len-data);
-            visitor.visit8BIM(io(),*this,offset,kind,len,data,pad,b);
-            if ( visitor.isRecursive() && kind == ktIPTCPS ) {
-                Io   stream(io(),offset+data,len);
-                IPTC iptc(stream);
-                iptc.accept(visitor);
+            if ( len > data ) {
+                memcpy(b.pData_,buff.pData_+offset+data,len-data);
+                visitor.visit8BIM(io(),*this,offset,kind,len,data,pad,b);
+                if ( visitor.isRecursive() && kind == ktIPTCPS ) {
+                    Io   stream(io(),offset+data,len);
+                    IPTC iptc(stream);
+                    iptc.accept(visitor);
+                }
             }
             offset += len + pad + data ;
         }
@@ -3005,7 +3005,7 @@ void ReportVisitor::visit8BIM(Io& io,Image& image,uint32_t offset
         out() << indent()
               << stringFormat("   %8d | %#06x | %-28s | %4d | %2d+%1d | "
                             ,offset,kind,tag.c_str(),len,data,pad)
-              << b.binaryToString()
+              << chop(b.binaryToString(0,40),40)
               << std::endl;
     }
 }
@@ -3158,7 +3158,7 @@ void init()
     makers["SONY"       ]  = kSony   ; makerDicts[kSony  ] = &sonyDict;
     makers["AGFA"       ]  = kAgfa   ; makerDicts[kAgfa  ] = &agfaDict;
     makers["Apple"      ]  = kApple  ; makerDicts[kApple ] = &appleDict;
-    makers["Panasonic"  ]  = kPano   ; makerDicts[kPano  ] = &panoDict;
+    makers["Panasonic"  ]  = kPana   ; makerDicts[kPana  ] = &panaDict;
     makers["Minolta"    ]  = kMino   ; makerDicts[kMino  ] = &minoDict;
     makers["OLYMPUS"    ]  = kOlym   ; makerDicts[kOlym  ] = &olymDict;
     makers["FUJIFILM"   ]  = kFuji   ; makerDicts[kFuji  ] = &fujiDict;
@@ -3345,21 +3345,21 @@ void init()
     appleDict [ 0x000c ] = "Twelve";
     appleDict [ 0x000d ] = "Thirteen";
 
-    panoDict  [ktGroup ] = "Panosonic";
-    panoDict  [ 0x0001 ] = "Version";
-    panoDict  [ 0x0002 ] = "SensorWidth";
-    panoDict  [ 0x0003 ] = "SensorHeight";
-    panoDict  [ 0x0004 ] = "SensorTopBorder";
-    panoDict  [ 0x0005 ] = "SensorLeftBorder";
-    panoDict  [ 0x0006 ] = "ImageHeight";
-    panoDict  [ 0x0007 ] = "ImageWidth";
-    panoDict  [ 0x0011 ] = "RedBalance";
-    panoDict  [ 0x0012 ] = "BlueBalance";
-    panoDict  [ 0x0017 ] = "ISOSpeed";
-    panoDict  [ 0x0024 ] = "WBRedLevel";
-    panoDict  [ 0x0025 ] = "WBGreenLevel";
-    panoDict  [ 0x0026 ] = "WBBlueLevel";
-    panoDict  [ 0x002e ] = "PreviewImage";
+    panaDict  [ktGroup ] = "Panasonic";
+    panaDict  [ 0x0001 ] = "Version";
+    panaDict  [ 0x0002 ] = "SensorWidth";
+    panaDict  [ 0x0003 ] = "SensorHeight";
+    panaDict  [ 0x0004 ] = "SensorTopBorder";
+    panaDict  [ 0x0005 ] = "SensorLeftBorder";
+    panaDict  [ 0x0006 ] = "ImageHeight";
+    panaDict  [ 0x0007 ] = "ImageWidth";
+    panaDict  [ 0x0011 ] = "RedBalance";
+    panaDict  [ 0x0012 ] = "BlueBalance";
+    panaDict  [ 0x0017 ] = "ISOSpeed";
+    panaDict  [ 0x0024 ] = "WBRedLevel";
+    panaDict  [ 0x0025 ] = "WBGreenLevel";
+    panaDict  [ 0x0026 ] = "WBBlueLevel";
+    panaDict  [ 0x002e ] = "PreviewImage";
 
     minoDict  [ktGroup ] = "Minolta";
     minoDict  [ 0x0000 ] = "BlockDescriptor";
@@ -3547,6 +3547,7 @@ void init()
 
     psdDict        [ktGroup ]= "8BIM"          ;
     psdDict        [ktIPTCPS]= "IPTCNAA"       ;
+    psdDict        [ 0x03ea] = "XMP"           ;
     psdDict        [ 0x040C] = "Thumbnail"     ;
     psdDict        [ 0x040F] = "ICCProfile"    ;
     psdDict        [ 0x0421] = "Version"       ;

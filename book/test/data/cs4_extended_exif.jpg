@@ -1,0 +1,50 @@
+STRUCTURE OF JPEG FILE (II): ../files/cs4_extended_exif.jpg
+ address | marker       |  length | signature
+       0 | 0xffd8 SOI  
+       2 | 0xffe0 APP0  |      16 | JFIF_..._._.__..
+      20 | 0xffe1 APP1  |   65498 | Exif__MM_*___._..._.___.___n.._.___._.__
+   65520 | 0xffe1 APP1  |   65498 | Exif__g keys we require'd            nex
+  131020 | 0xffe1 APP1  |   52820 | Exif__)            if ($$segDataPt =~ /^
+  STRUCTURE OF TIFF FILE (MM): ../files/cs4_extended_exif.jpg+30->65490+65530->65490+131030->52812
+   address |    tag                              |      type |    count |    offset | value
+        10 | 0x010e Exif.Image.ImageDescription  |     ASCII |        1 |           | n
+        22 | 0x0112 Exif.Image.Orientation       |     SHORT |        1 |           | 0
+        34 | 0x011a Exif.Image.XResolution       |  RATIONAL |        1 |    182649 | 283465/10000
+        46 | 0x011b Exif.Image.YResolution       |  RATIONAL |        1 |    182657 | 283465/10000
+        58 | 0x0128 Exif.Image.ResolutionUnit    |     SHORT |        1 |           | 0
+        70 | 0x0131 Exif.Image.Software          |     ASCII |       30 |    182665 | Adobe Photoshop CS4 Macintosh
+        82 | 0x0132 Exif.Image.DateTime          |     ASCII |       20 |    182695 | 2008:12:16 11:23:22
+        94 | 0x8769 Exif.Image.ExifTag           |      LONG |        1 |           | 3167289856
+    STRUCTURE OF TIFF FILE (MM): ../files/cs4_extended_exif.jpg+30->65490+65530->65490+131030->52812
+     address |    tag                              |      type |    count |    offset | value
+      182718 | 0xa001 Exif.Photo.ColorSpace        |     SHORT |        1 |           | 0
+      182730 | 0xa002 Exif.Photo.PixelXDimension   |      LONG |        1 |           | 3321954304
+      182742 | 0xa003 Exif.Photo.PixelYDimension   |      LONG |        1 |           | 1409351680
+    END: ../files/cs4_extended_exif.jpg+30->65490+65530->65490+131030->52812
+  END: ../files/cs4_extended_exif.jpg+30->65490+65530->65490+131030->52812
+  183842 | 0xffed APP13 |    4440 | Photoshop 3.0_8BIM..____....__.__..x..#-
+  STRUCTURE OF 8BIM FILE (MM): ../files/cs4_extended_exif.jpg:183860->4422
+       offset |   kind | tagName                      |  len | data | 
+            0 | 0x0404 | PSD.8BIM.IPTCNAA             | 2012 | 12+0 | ..__.__..x..#---------------------------
+         2024 | 0x0425 | PSD.8BIM.0x425               |   16 | 12+0 | I..%____________../files/cs4_extended_ex
+         2052 | 0x03ed | PSD.8BIM.0x3ed               |   16 | 12+0 | _G..____________../files/cs4_extended_ex
+         2080 | 0x0426 | PSD.8BIM.0x426               |   14 | 12+0 | ________________../files/cs4_extended_ex
+         2182 | 0x03f5 | PSD.8BIM.0x3f5               |   72 | 12+0 | _/ff_._lff_._____._/ff_._..._._____._2__
+         2266 | 0x03f8 | PSD.8BIM.0x3f8               |  112 | 12+0 | __........................____..........
+         2390 | 0x0408 | PSD.8BIM.0x408               |   16 | 12+0 | ___.____________../files/cs4_extended_ex
+         2434 | 0x041a | PSD.8BIM.0x41a               |  841 | 12+1 | ___.__________.T__..___._U_n_t_i_t_l_e_d
+         3328 | 0x040c | PSD.8BIM.Thumbnail           |  966 | 12+0 | ___.___.___x__..__.___.._._....._.JFIF_.
+         4306 | 0x0421 | PSD.8BIM.Version             |   85 | 12+1 | ___..___._A_d_o_b_e_ _P_h_o_t_o_s_h_o_p_
+  END: ../files/cs4_extended_exif.jpg:183860->4422
+  188284 | 0xffe1 APP1  |    4323 | http://ns.adobe.com/xap/1.0/_<?xpacket b
+  192609 | 0xffe1 APP1  |   65477 | http://ns.adobe.com/xmp/extension/_C8400
+  258088 | 0xffe1 APP1  |   65477 | http://ns.adobe.com/xmp/extension/_C8400
+  323567 | 0xffe1 APP1  |   56466 | http://ns.adobe.com/xmp/extension/_C8400
+  380035 | 0xffe2 APP2  |    3160 | ICC_PROFILE_..__.HLino..__mntrRGB XYZ ..
+  383197 | 0xffee APP14 |      14 | Adobe_d.___...
+  383213 | 0xffdb DQT   |     132 | _.......................................
+  383347 | 0xffc0 SOF0  |      17 | ..T...."_........
+  383366 | 0xffdd DRI   |       4 | _...
+  383372 | 0xffc4 DHT   |     319 | __........_______._..........._........_
+  383693 | 0xffda SOS   |      12 | .._...._?_.T
+END: ../files/cs4_extended_exif.jpg
