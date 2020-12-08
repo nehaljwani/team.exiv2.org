@@ -110,7 +110,7 @@ enum error_e
 ,   kerInvalidMemoryAccess
 };
 
-void Error (error_e error, std::string msg,std::string m2="")
+void Error (error_e error, std::string msg,const std::string& m2="")
 {
     switch ( error ) {
         case   kerCorruptedMetadata      : std::cerr << "corrupted metadata"       ; break;
@@ -122,7 +122,7 @@ void Error (error_e error, std::string msg,std::string m2="")
         case   kerDataSourceOpenFailed   : std::cerr << "data source open failed"  ; break;
         case   kerNoImageInInputData     : std::cerr << "not image in input data"  ; break;
         case   kerFileDidNotOpen         : std::cerr << "file did not open"        ; break;
-        case   kerUnknownFormat          : std::cerr << "unknown format"           ; break;
+        case   kerUnknownFormat          : std::cerr << "unknown format " << m2    ; break;
         case   kerAlreadyVisited         : std::cerr << "already visited"          ; break;
         case   kerInvalidMemoryAccess    : std::cerr << "invalid memory access"    ; break;
         default                          : std::cerr << "unknown error"            ; break;
