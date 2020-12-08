@@ -506,6 +506,15 @@ std::string binaryToString(const byte* b,uint64_t start,uint64_t size)
     return result;
 }
 
+// https://stackoverflow.com/questions/11635/case-insensitive-string-comparison-in-c
+bool isEqualsNoCase(const std::string& a, const std::string& b)
+{
+    return std::equal(a.begin(), a.end(), b.begin(),
+                      [](char a, char b) {
+                          return tolower(a) == tolower(b);
+                      });
+}
+
 std::string DataBuf::binaryToString(uint64_t start=0,uint64_t size=0)
 {
     return ::binaryToString(pData_,start,size?size:size_);
@@ -588,7 +597,9 @@ enum maker_e
 ,   kOlym
 ,   kPentax
 };
-std::map<std::string,maker_e> maker;
+typedef std::map<std::string,maker_e> Maker_t;
+typedef Maker_t::iterator             Maker_i;
+Maker_t makers;
 
 // Canon magic
 enum kCanonHeap
@@ -1084,11 +1095,16 @@ public:
 
     void setMaker(DataBuf& buf)
     {
-        if ( buf.hasNull() ) {
-            const char* make = (const char*) buf.pData_ ;
-            maker_           = maker.find(make)!= maker.end() ? maker[make] : maker_;
-            setMaker(maker_);
+        maker_e result = kUnknown;
+        // Don't do a look up because Makers have multiple names.  Use the short names in makers;
+        for (Maker_i it = makers.begin(); it != makers.end(); it++) {
+            std::string key  (it->first);
+            std::string maker((const char*)buf.pData_,key.size());
+            if ( isEqualsNoCase(maker,key) ) {
+                result = it->second;
+            }
         }
+        setMaker(result);
     } // setMaker
 
     bool superBox(uint32_t box)
@@ -3137,19 +3153,17 @@ void init()
 {
     if ( tiffDict.size() ) return; // don't do this twice!
 
-    maker["Canon"]                         = kCanon ; makerDicts[kCanon ] = &canonDict;
-    maker["NIKON CORPORATION"]             = kNikon ; makerDicts[kNikon ] = &nikonDict;
-    maker["NIKON"]                         = kNikon ; makerDicts[kNikon ] = &nikonDict;
-    maker["SONY"]                          = kSony  ; makerDicts[kSony  ] = &sonyDict;
-    maker["AGFAPHOTO"]                     = kAgfa  ; makerDicts[kAgfa  ] = &agfaDict;
-    maker["Apple"]                         = kApple ; makerDicts[kApple ] = &appleDict;
-    maker["Panasonic"]                     = kPano  ; makerDicts[kPano  ] = &panoDict;
-    maker["Minolta Co., Ltd."]             = kMino  ; makerDicts[kMino  ] = &minoDict;
-    maker["OLYMPUS IMAGING CORP.  "]       = kOlym  ; makerDicts[kOlym  ] = &olymDict;
-    maker["OLYMPUS OPTICAL CO.,LTD"]       = kOlym  ; makerDicts[kOlym  ] = &olymDict;
-    maker["FUJIFILM"]                      = kFuji  ; makerDicts[kFuji  ] = &fujiDict;
-    maker["RICOH IMAGING COMPANY, LTD.  "] = kPentax; makerDicts[kPentax] = &pentaxDict;
-    maker["PENTAX Corporation "]           = kPentax; makerDicts[kPentax] = &pentaxDict;
+    makers["Canon"      ]  = kCanon  ; makerDicts[kCanon ] = &canonDict;
+    makers["NIKON"      ]  = kNikon  ; makerDicts[kNikon ] = &nikonDict;
+    makers["SONY"       ]  = kSony   ; makerDicts[kSony  ] = &sonyDict;
+    makers["AGFA"       ]  = kAgfa   ; makerDicts[kAgfa  ] = &agfaDict;
+    makers["Apple"      ]  = kApple  ; makerDicts[kApple ] = &appleDict;
+    makers["Panasonic"  ]  = kPano   ; makerDicts[kPano  ] = &panoDict;
+    makers["Minolta"    ]  = kMino   ; makerDicts[kMino  ] = &minoDict;
+    makers["OLYMPUS"    ]  = kOlym   ; makerDicts[kOlym  ] = &olymDict;
+    makers["FUJIFILM"   ]  = kFuji   ; makerDicts[kFuji  ] = &fujiDict;
+    makers["RICOH"      ]  = kPentax ; makerDicts[kPentax] = &pentaxDict;
+    makers["PENTAX"     ]  = kPentax ; makerDicts[kPentax] = &pentaxDict;
 
     tiffDict  [ktGroup ] = "Image";
     tiffDict  [ ktExif ] = "ExifTag";
