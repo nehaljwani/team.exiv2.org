@@ -1588,7 +1588,7 @@ void C8BIM::accept(Visitor& visitor)
             uint32_t pad  = len%2?1:0;
             uint32_t data = (uint32_t)(4+2+4+name); // "8BIM" + short (kind) + name + long (len)
             DataBuf  b(len);
-            if ( len > data ) {
+            if ( len >= data ) {
                 memcpy(b.pData_,buff.pData_+offset+data,len-data);
                 visitor.visit8BIM(io(),*this,offset,kind,len,data,pad,b);
                 if ( visitor.isRecursive() && kind == ktIPTCPS ) {
@@ -3002,10 +3002,14 @@ void ReportVisitor::visit8BIM(Io& io,Image& image,uint32_t offset
 {
     std::string tag = ::tagName(kind,psdDict,40,"PSD");
     if ( printTag(tag) ) {
+        uint64_t chop_len = 30 ; // set chop_len to avoid excessive output
+        uint64_t len = b.size_<chop_len?b.size_:chop_len; // number of bytes to format
+        
         out() << indent()
               << stringFormat("   %8d | %#06x | %-28s | %4d | %2d+%1d | "
                             ,offset,kind,tag.c_str(),len,data,pad)
-              << chop(b.binaryToString(0,40),40)
+              << (b.size_ < chop_len ? b.binaryToString(0,len)                  // format and print
+                                     : chop(b.binaryToString(0,len),chop_len))  // format, chop and print
               << std::endl;
     }
 }

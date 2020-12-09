@@ -2,6 +2,8 @@
 
 pass=0
 fail=0
+log=/tmp/tvisitor-test.txt
+rm -rf $log
 
 # Create reference and tmp directories
 if [ ! -e ../test/data ]; then mkdir ../test/data ; fi
@@ -13,15 +15,15 @@ report()
     # if there's no reference file, create one
     # (makes it easy to add tests or delete and rewrite all reference files)
     if [ ! -e "../test/data/$stub" ]; then
-        cp "../test/tmp/$stub" ../test/data
+        cp    "../test/tmp/$stub" ../test/data
     fi
-    
+
     diff -q "../test/tmp/$stub" "../test/data/$stub" >/dev/null 
     if [ "$?" == "0" ]; then
         echo "$stub passed";
         pass=$((pass+1))
     else
-        echo "$stub failed"
+        echo '*****' "$stub failed" '*******' | tee -a $log
         fail=$((fail+1))
     fi
 }
@@ -39,6 +41,7 @@ done
 
 echo -------------------
 echo Passed $pass Failed $fail
+if [ -e $log ]; then cat  $log ; fi
 echo -------------------
 
 # That's all Folks

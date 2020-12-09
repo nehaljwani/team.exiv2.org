@@ -25,16 +25,22 @@ STRUCTURE OF JPEG FILE (II): ../files/cs4_extended_exif.jpg
   183842 | 0xffed APP13 |    4440 | Photoshop 3.0_8BIM..____....__.__..x..#-
   STRUCTURE OF 8BIM FILE (MM): ../files/cs4_extended_exif.jpg:183860->4422
        offset |   kind | tagName                      |  len | data | 
-            0 | 0x0404 | PSD.8BIM.IPTCNAA             | 2012 | 12+0 | ..__.__..x..#---------------------------
-         2024 | 0x0425 | PSD.8BIM.0x425               |   16 | 12+0 | I..%____________../files/cs4_extended_ex
-         2052 | 0x03ed | PSD.8BIM.0x3ed               |   16 | 12+0 | _G..____________../files/cs4_extended_ex
-         2080 | 0x0426 | PSD.8BIM.0x426               |   14 | 12+0 | ________________../files/cs4_extended_ex
-         2182 | 0x03f5 | PSD.8BIM.0x3f5               |   72 | 12+0 | _/ff_._lff_._____._/ff_._..._._____._2__
-         2266 | 0x03f8 | PSD.8BIM.0x3f8               |  112 | 12+0 | __........................____..........
-         2390 | 0x0408 | PSD.8BIM.0x408               |   16 | 12+0 | ___.____________../files/cs4_extended_ex
-         2434 | 0x041a | PSD.8BIM.0x41a               |  841 | 12+1 | ___.__________.T__..___._U_n_t_i_t_l_e_d
-         3328 | 0x040c | PSD.8BIM.Thumbnail           |  966 | 12+0 | ___.___.___x__..__.___.._._....._.JFIF_.
-         4306 | 0x0421 | PSD.8BIM.Version             |   85 | 12+1 | ___..___._A_d_o_b_e_ _P_h_o_t_o_s_h_o_p_
+            0 | 0x0404 | PSD.8BIM.IPTCNAA             |   30 | 12+0 | ..__.__..x..#-----------------
+    STRUCTURE OF IPTC FILE (MM): ../files/cs4_extended_exif.jpg:183860->4422:12->2012
+        Record | DataSet | Name                           | Length | Data
+             2 |       0 | Iptc.Application.RecordVersion |      2 | __
+             2 |     120 | Iptc.Application.Caption       |   2000 | #------------------------------------------------------- +++
+    END: ../files/cs4_extended_exif.jpg:183860->4422:12->2012
+         2024 | 0x0425 | PSD.8BIM.0x425               |   16 | 12+0 | I..%____________
+         2052 | 0x03ed | PSD.8BIM.0x3ed               |   16 | 12+0 | _G..____________
+         2080 | 0x0426 | PSD.8BIM.0x426               |   14 | 12+0 | ______________
+         2182 | 0x03f5 | PSD.8BIM.0x3f5               |   30 | 12+0 | _/ff_._lff_._____._/ff_._..._.
+         2266 | 0x03f8 | PSD.8BIM.0x3f8               |   30 | 12+0 | __........................____
+         2390 | 0x0408 | PSD.8BIM.0x408               |   16 | 12+0 | ___.____________
+         2434 | 0x041a | PSD.8BIM.0x41a               |   30 | 12+1 | ___.__________.T__..___._U_n_t
+         3288 | 0x0428 | PSD.8BIM.0x428               |   12 | 12+0 | ____________
+         3328 | 0x040c | PSD.8BIM.Thumbnail           |   30 | 12+0 | ___.___.___x__..__.___.._._...
+         4306 | 0x0421 | PSD.8BIM.Version             |   30 | 12+1 | ___..___._A_d_o_b_e_ _P_h_o_t_
   END: ../files/cs4_extended_exif.jpg:183860->4422
   188284 | 0xffe1 APP1  |    4323 | http://ns.adobe.com/xap/1.0/_<?xpacket b
   192609 | 0xffe1 APP1  |   65477 | http://ns.adobe.com/xmp/extension/_C8400
