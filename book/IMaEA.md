@@ -49,27 +49,24 @@ _And our cat Lizzie._
 | [5. I/O in Exiv2](#5)                                 |    | [SIDECAR Xmp Sidecars](#SIDECAR)         |    | [11.17 Contributors](#11-17)            |    |
 | [6. Image Previews](#6)                               | 38 |                                          | 22 | [11.18 Scheduling](#11-18)              | 80 |
 |                                                       | 39 |                                          | 23 | [11.19 Enhancements](#11-19)            | 81 | 
-| [7. Exiv2 Architecture](#7)                           | 41 |                                          | 24 | [11.20 Tools](#11-20)                   | 81 |
-| [7.1 API Overview](#7-1)                              | 41 |                                          | 25 | [11.21 Licensing](#11-21)               | 81 |
-| [7.2 Typical Sample Application](#7-2)                | 42 |                                          | 26 | [11.22 Back-porting](#11-22)            | 81 |
-| [7.3 The EasyAccess API](#7-3)                        | 44 |                                          | 27 | [11.23 Partners](#11-23)                | 81 |
+| [7. Exiv2 Architecture](#7)                           | 41 | [9. API/ABI Compatibility](#9)           | 24 | [11.20 Tools](#11-20)                   | 81 |
+| [7.1 API Overview](#7-1)                              | 41 | [10. Security](#10)                      | 25 | [11.21 Licensing](#11-21)               | 81 |
+| [7.2 Typical Sample Application](#7-2)                | 42 | [10.1 Security Policy](#10-1)            | 26 | [11.22 Back-porting](#11-22)            | 81 |
+| [7.3 The EasyAccess API](#7-3)                        | 44 | [10.2 The Fuzzing Police](#10-2)         | 27 | [11.23 Partners](#11-23)                | 81 |
 | [7.4 Listing the API](#7-4)                           | 44 |                                          | 28 | [11.24 Development](#11-24)             | 81 |
-| [7.5 Function Selectors](#7-5)                        | 48 |                                          | 29 |                                         | 81 |
-| [7.6 Tags in Exiv2](#7-6)                             | 53 |                                          | 30 |                                         | 81 |
-| [7.7 Tag Decoder](#7-7)                               | 57 |                                          |    |                                         | 81 |
-| [7.8 TiffVisitor](#7-8)                               | 59 |                                          |    |                                         | 81 |
-| [7.9 Other Exiv2 Classes](#7-9)                       | 61 |                                          |    |                                         | 82 |
-|                                                       | 63 |                                          |    |                                         |    |
-| [8. Test Suite](#8)                                   | 63 | _**Other Sections**_                     |    |                                         | 82 |
-| [8.1 Bash Tests](#8-1)                                | 63 | [Dedication](#dedication)                |  2 |                                         | 82 |
-| [8.2 Python Tests](#8-2)                              | 68 | [About this book](#about)                |  4 |                                         | 82 |
-| [8.3 Unit Tests](#8-3)                                | 69 | [How did I get interested ?](#begin)     |  4 |                                         | 82 |
-| [8.4 Version Test](#8-4)                              | 70 | [2012 - 2017](#2012)                     |  5 |                                         | 82 |
-| [8.5 Generating HUGE images](#8-5)                    | 71 | [2017 - Present](#2017)                  |  5 |                                         |    |
-| [8.6 Download Test Images](#8-6)                      | 73 | [Current Priorities](#current)           |  6 |                                         |    |
-| [9. API/ABI Compatibility](#9)                        | 74 | [Future Projects](#future)               |  6 |                                         |    |
-| [10. Security](#10)                                   | 75 | [Scope of Book](#scope)                  |  7 | [12. Code discussed in this book](#12) | 110 |                                      
-| [10.2 The Fuzzing Police](#10-2)                      | 80 | [Making this book](#making)              |  8 | [The Last Word](#finally)              | 111 |
+| [7.5 Function Selectors](#7-5)                        | 48 | _**Other Sections**_                     | 29 |                                         | 81 |
+| [7.6 Tags in Exiv2](#7-6)                             | 53 | [Dedication](#dedication)                | 30 |                                         | 81 |
+| [7.7 Tag Decoder](#7-7)                               | 57 | [About this book](#about)                |    |                                         | 81 |
+| [7.8 TiffVisitor](#7-8)                               | 59 | [How did I get here?](#begin)            |    |                                         | 81 |
+| [7.9 Other Exiv2 Classes](#7-9)                       | 61 | [2012 - 2017](#2012)                     |    |                                         | 82 |
+|                                                       | 63 | [Current Priorities](#current)           |    |                                         |    |
+| [8. Test Suite](#8)                                   | 63 | [Future Projects](#future)               |    |                                         | 82 |
+| [8.1 Bash Tests](#8-1)                                | 63 | [Scope of Book](#scope)                  |  2 |                                         | 82 |
+| [8.2 Python Tests](#8-2)                              | 68 | [Making this book](#making)              |  4 |                                         | 82 |
+| [8.3 Unit Tests](#8-3)                                | 69 |                                          |  4 |                                         | 82 |
+| [8.4 Version Test](#8-4)                              | 70 |                                          |  5 |                                         | 82 |
+| [8.5 Generating HUGE images](#8-5)                    | 71 |                                          |  5 |  [12. Code discussed in this book](#12) |    |
+| [8.6 Download Test Images](#8-6)                      | 73 |                                          |  6 |  [The Last Word](#finally)              |    |          
 
 <div id="about"/>
 ## About this book
@@ -5262,14 +5259,14 @@ The largest file I produced with freeimage was 1.8gb.  I suspect the framebuffer
 <div id="8-6"/>
 ## 8.6 Download Test Images
 
-There are a substantial body of test images available on the ExifTool Web-site at: [http://owl.phy.queensu.ca/~phil/exiftool/sample_images.html](http://owl.phy.queensu.ca/~phil/exiftool/sample_images.html).
+There is a substantial body of test images available on the ExifTool Web-site at: [http://owl.phy.queensu.ca/~phil/exiftool/sample_images.html](http://owl.phy.queensu.ca/~phil/exiftool/sample_images.html).
 
 ![exiftool_testimages.png](exiftool_testimages.png)
 
-I use this the little script to download an untar them:
+I use this the little script to download and untar them:
 
 ```bash
-#!/bin/sh
+#!/usr/bin/env bash
 
 # Download exiftool test files
 tags=$(curl -L --silent http://owl.phy.queensu.ca/~phil/exiftool/sample_images.html | grep tar | cut -d'>' -f 3- | cut -d'<' -f 1 | grep tar.gz)
@@ -5296,7 +5293,7 @@ $ find . -print0 -type f | xargs -0 tvisitor
 ```
 
 However when you have a lot of files, you may encounter the limits of the number of arguments that can be passed via argc/argv to main.   You can 
-use the bash while/read mechanism to execute the files using the dentist's method _you pull them out, **one at a time!**_
+use the bash while/read mechanism to execute the files using the dentist's method: _you pull them out, **one at a time!**_
 
 ```bash
 input=/tmp/my-temporary-file
