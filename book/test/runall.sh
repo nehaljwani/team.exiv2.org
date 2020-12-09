@@ -1,0 +1,74 @@
+#!/bin/bash
+
+input="/tmp/tvisitor-runall.txt"
+testfiles=/Users/Shared/Jenkins/Home/userContent/testfiles
+count=0
+ignored=0
+
+# set -x
+
+syntax() {
+    echo "usage: ./runall.sh  { help | dryrun | verbose | program+ | option+ | section+ }+ "
+    echo -n "sections: "  
+    for s in $(find $testfiles -maxdepth 1 -type d | sort --ignore-case); do echo -n "$(basename $s) " ; done
+    echo
+}
+
+bomb() {
+    echo "*** $1 requires an argument ***" >&2
+    exit 1
+}
+
+##
+# parse command line
+if [ "$#" == "0" ]; then help=1; fi
+while [ "$#" != "0" ]; do
+    arg="$1"
+    shift
+    case "$arg" in
+      -d|--dryrun|-dryrun)    dryrun=1     ;;
+      -h|--help|-help|-\?)    help=1       ;;
+      -n|--name|-name)        if [ $# -gt 0 ]; then name="$1"               ; shift; else bomb $arg ; fi ;;
+      -o|--option|-option)    if [ $# -gt 0 ]; then option="$option $1"     ; shift; else bomb $arg ; fi ;;
+      -p|--program|-program)  if [ $# -gt 0 ]; then program="$1"            ; shift; else bomb $arg ; fi ;;
+      -s|--section|-section)  if [ $# -gt 0 ]; then section="$1"            ; shift; else bomb $arg ; fi ;;
+      -v|--verbose|-verbose)  verbose=1    ;;
+      *)             echo "*** invalid option: $arg ***" 1>&2; help=1; ;;
+    esac
+done
+
+# inspect/modify options
+if [ ! -z $help      ]; then syntax ; exit 0      ; fi
+if [ ! -z $section   ]; then testfiles="$testfiles/$section" ; fi
+if [ ! -d $testfiles ]; then  >&2 echo "directory $testfiles does not exit" ; exit 1 ; fi
+if [   -z $program   ]; then program=tvisitor     ; fi
+if [ ! -z $name      ]; then name="-name '$name'" ; fi
+if [ ! -z $dryrun    ]; then verbose=1            ; fi
+
+if [ ! -z $verbose   ]; then
+    echo program = $program
+    echo section = $section
+    echo option  = $option
+    exit;
+fi
+if [ ! -z $dryrun ]; then exit ; exit ; fi
+
+find "$testfiles" -type f $name | sort > "$input"
+while IFS= read -r file
+do
+    file "$file" | grep -q "image data" 2>&1 > /dev/null 
+    if [ "$?" == "0" ]; then
+        count=$((count+1))
+        $program "$@" $option "$file"
+    else
+        ignored=$((ignored+1))
+        >&2 echo IGNORED $file
+    fi
+done < "$input"
+
+>&2 echo -------------------
+>&2 echo count $count ignored $ignored
+>&2 echo -------------------
+
+# That's all Folks!
+##

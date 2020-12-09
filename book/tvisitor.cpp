@@ -110,8 +110,12 @@ enum error_e
 ,   kerInvalidMemoryAccess
 };
 
+
+std::string error_program;
+std::string error_path   ;
 void Error (error_e error, std::string msg,const std::string& m2="")
 {
+    if ( !isatty(STDIN_FILENO))  std::cerr << error_program << " " << error_path << ": ";
     switch ( error ) {
         case   kerCorruptedMetadata      : std::cerr << "corrupted metadata"       ; break;
         case   kerTiffDirectoryTooLarge  : std::cerr << "tiff directory too large" ; break;
@@ -3116,6 +3120,7 @@ void init(); // prototype
 
 int main(int argc,const char* argv[])
 {
+    error_program = std::string(argv[0]);
     init();
 
     int rc  = 0;
@@ -3141,6 +3146,7 @@ int main(int argc,const char* argv[])
         while ( arg < argc ) {
             // Open the image
             std::string             path  = argv[arg++];
+            error_path                    = path;
             std::unique_ptr<Image> pImage = ImageFactory(path);
             if (   pImage ) pImage->accept(visitor);
             else            Error(kerUnknownFormat,path);
