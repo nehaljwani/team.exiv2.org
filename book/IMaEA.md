@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-12-09</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-12-10</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -54,19 +54,19 @@ _And our cat Lizzie._
 | [7.2 Typical Sample Application](#7-2)                | 42 | [10.1 Security Policy](#10-1)            | 26 | [11.22 Back-porting](#11-22)            | 81 |
 | [7.3 The EasyAccess API](#7-3)                        | 44 | [10.2 The Fuzzing Police](#10-2)         | 27 | [11.23 Partners](#11-23)                | 81 |
 | [7.4 Listing the API](#7-4)                           | 44 |                                          | 28 | [11.24 Development](#11-24)             | 81 |
-| [7.5 Function Selectors](#7-5)                        | 48 | _**Other Sections**_                     | 29 |                                         | 81 |
-| [7.6 Tags in Exiv2](#7-6)                             | 53 | [Dedication](#dedication)                | 30 |                                         | 81 |
-| [7.7 Tag Decoder](#7-7)                               | 57 | [About this book](#about)                |    |                                         | 81 |
-| [7.8 TiffVisitor](#7-8)                               | 59 | [How did I get here?](#begin)            |    |                                         | 81 |
-| [7.9 Other Exiv2 Classes](#7-9)                       | 61 | [2012 - 2017](#2012)                     |    |                                         | 82 |
-|                                                       | 63 | [Current Priorities](#current)           |    |                                         |    |
-| [8. Test Suite](#8)                                   | 63 | [Future Projects](#future)               |    |                                         | 82 |
-| [8.1 Bash Tests](#8-1)                                | 63 | [Scope of Book](#scope)                  |  2 |                                         | 82 |
-| [8.2 Python Tests](#8-2)                              | 68 | [Making this book](#making)              |  4 |                                         | 82 |
-| [8.3 Unit Tests](#8-3)                                | 69 |                                          |  4 |                                         | 82 |
+| [7.5 Function Selectors](#7-5)                        | 48 | [12. Code discussed in this book](#12)   | 29 |                                         | 81 |
+| [7.6 Tags in Exiv2](#7-6)                             | 53 |                                          | 30 | _**Other Sections**_                    | 81 |
+| [7.7 Tag Decoder](#7-7)                               | 57 |                                          |    | [Dedication](#dedication)               | 81 |
+| [7.8 TiffVisitor](#7-8)                               | 59 |                                          |    | [About this book](#about)               | 81 |
+| [7.9 Other Exiv2 Classes](#7-9)                       | 61 |                                          |    | [How did I get here?](#begin)           | 82 |
+|                                                       | 63 |                                          |    | [2012 - 2017](#2012)                    |    |
+| [8. Test Suite](#8)                                   | 63 |                                          |    | [Current Priorities](#current)          | 82 |
+| [8.1 Bash Tests](#8-1)                                | 63 |                                          |  2 | [Future Projects](#future)              | 82 |
+| [8.2 Python Tests](#8-2)                              | 68 |                                          |  4 | [Scope of Book](#scope)                 | 82 |
+| [8.3 Unit Tests](#8-3)                                | 69 |                                          |  4 | [Making this book](#making)             | 82 |
 | [8.4 Version Test](#8-4)                              | 70 |                                          |  5 |                                         | 82 |
-| [8.5 Generating HUGE images](#8-5)                    | 71 |                                          |  5 |  [12. Code discussed in this book](#12) |    |
-| [8.6 Download Test Images](#8-6)                      | 73 |                                          |  6 |  [The Last Word](#finally)              |    |          
+| [8.5 Generating HUGE images](#8-5)                    | 71 |                                          |  5 |                                         |    |
+| [8.6 Downloading Test Images](#8-6)                   | 73 |                                          |  6 |  [The Last Word](#finally)              |    |          
 
 <div id="about"/>
 ## About this book
@@ -5257,7 +5257,7 @@ The largest file I produced with freeimage was 1.8gb.  I suspect the framebuffer
 [TOC](#TOC)
 
 <div id="8-6"/>
-## 8.6 Download Test Images
+## 8.6 Downloading Test Images
 
 There is a substantial body of test images available on the ExifTool Web-site at: [http://owl.phy.queensu.ca/~phil/exiftool/sample_images.html](http://owl.phy.queensu.ca/~phil/exiftool/sample_images.html).
 
@@ -5304,13 +5304,15 @@ do
 done < "$input"
 ```
 
-### Raw Image Archive
+### Pixls Raw Image Archive
 
-There is an outstanding collection of raw images at: [https://raw.pixls.us](https://raw.pixls.us).  You can download the archive (currently 34GBytes/1500 images).
+There is an outstanding collection of raw images at: [https://raw.pixls.us](https://raw.pixls.us).  You can download the archive (currently 34GBytes/1500 images) as a zip archive.
 
 I tried downloading the archive on macOS, and Safari gave up after about 15GBytes. So, I tried curl. Much the same"
 
 ```bash
+$ curl -LO https://raw.pixls.us/getfile.php/0/archive/raw_pixls_us_archive.zip
+.... progress ....
  curl: (18) transfer closed with 16957967827 bytes remaining to read.
 ```
 
@@ -5322,11 +5324,29 @@ rsync -av rsync://raw.pixls.us/data/ raw-pixls-us-data/
 
 However I had 3000 links to ‘storage’.  Downloading the links is very useful because it reveals the structure of the archive and the files available. It only takes a couple of seconds to have an useful index of the archive. I’m sure given the path to a image, an rsync command can be readily constructed to down any file, or directory of interest.
 
-Success with:
+Some success with:
 
 ```bash
 $ rsync -avL rsync://raw.pixls.us/data/ raw-pixls-us-data/
 ```
+
+This downloaded about 600 files.  Still a long way short of the 3000 available.  I finished by running the following several times.
+
+```bash
+$ cd raw-pixls-us-data/
+$ for i in $(find . -maxdepth 1 -type d)
+    do i=$(basename "$i")
+    rsync -avL "rsync://raw.pixls.us/data/$i" "$i" 
+done
+```
+
+Happiness!  3000 images consuming 50GBytes.
+
+#### RAWSAMPLES.CH
+
+The original RAW-Samples Website (online since March 2007).  [https://www.rawsamples.ch/index.php/en/](https://www.rawsamples.ch/index.php/en/)
+ 
+This is another excellent resource.  I downloaded them about 5 years ago. There are 300 images which consume 6GB.  I probably wrote a script to get them, however I've forgotten what I did.  I believe the images here were copied to Pixls.  
 
 [TOC](#TOC)
 
