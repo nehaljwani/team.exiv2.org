@@ -9,7 +9,7 @@ errors=0
 # set -x
 
 syntax() {
-    echo "usage: ./runall.sh  { help | dryrun | verbose | program+ | option+ | section+ }+ "
+    echo "usage: ./runall.sh  { help | dryrun | verbose | list | program+ | option+ | section+ | name+ }+ "
     echo -n "sections: "  
     ( cd  "$testfiles" 
       for s in $(find . -maxdepth 1 -type d | sort --ignore-case)
@@ -34,7 +34,7 @@ while [ "$#" != "0" ]; do
       -d|--dryrun|-dryrun)    dryrun=1      ;;
       -h|--help|-help|-\?)    help=1        ;;
       -l|--list|-list)        list=1        ;;
-      -n|--name|-name)        if [ $# -gt 0 ]; then name="$1"               ; shift; else bomb $arg ; fi ;;
+      -n|--name|-name)        if [ $# -gt 0 ]; then name="-name $1"         ; shift; else bomb $arg ; fi ;;
       -o|--option|-option)    if [ $# -gt 0 ]; then option="$option $1"     ; shift; else bomb $arg ; fi ;;
       -p|--program|-program)  if [ $# -gt 0 ]; then program="$1"            ; shift; else bomb $arg ; fi ;;
       -s|--section|-section)  if [ $# -gt 0 ]; then section="$1"            ; shift; else bomb $arg ; fi ;;
@@ -56,7 +56,6 @@ if [ ! -z $verbose   ]; then
     echo program = $program
     echo section = $section
     echo option  = $option
-    exit;
 fi
 if [ ! -z $dryrun ]; then exit ; exit ; fi
 
@@ -70,15 +69,19 @@ find "$testfiles" -type f $name | sort > "$input"
 while IFS= read -r file
 do
     filename=$(basename -- "$file")
-    extension="${filename##*.}"
+    ext="${filename##*.}"
+    ext=$(echo "$ext" | tr '[:lower:]' '[:upper:]')
     file "$file" | grep -q -e "image data" -e "ISO Media" 2>&1 > /dev/null 
-    if [ "$?" == "0" -o "$extension" == "CRW" -o "$extension" == "CR2" ]; then
+    if [ "$?" == "0" -o "$ext" == CRW -o "$ext" == CR2 -o "$ext" == RAF -o "$ext" == RW2 -o "$ext" == RAW -o "$ext" == EXV ]; then
         count=$((count+1))
         $program "$@" $option "$file"
         if [ "$?" != "0" ]; then errors=$((errors+1)); fi
     else
         ignored=$((ignored+1))
-        >&2 echo IGNORED $file
+        # don't report obvious duds.
+        if [ "$ext" != ZIP -a "$ext" != 7Z -a "$ext" != TXT -a "$ext" != RAR -a "$ext" != XZ ]; then
+            >&2 echo IGNORED $file
+        fi
     fi
 done < "$input"
 
