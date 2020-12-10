@@ -4,6 +4,7 @@ input="/tmp/tvisitor-runall.txt"
 testfiles=/Users/Shared/Jenkins/Home/userContent/testfiles
 count=0
 ignored=0
+errors=0
 
 # set -x
 
@@ -64,19 +65,22 @@ fi
 find "$testfiles" -type f $name | sort > "$input"
 while IFS= read -r file
 do
-    file "$file" | grep -q "image data" 2>&1 > /dev/null 
-    if [ "$?" == "0" ]; then
+    filename=$(basename -- "$file")
+    extension="${filename##*.}"
+    file "$file" | grep -q -e "image data" -e "ISO Media" 2>&1 > /dev/null 
+    if [ "$?" == "0" -o "$extension" == "CRW" -o "$extension" == "CR2" ]; then
         count=$((count+1))
         $program "$@" $option "$file"
+        if [ "$?" != "0" ]; then errors=$((errors+1)); fi
     else
         ignored=$((ignored+1))
         >&2 echo IGNORED $file
     fi
 done < "$input"
 
->&2 echo -------------------
->&2 echo count $count ignored $ignored
->&2 echo -------------------
+>&2 echo ---------------------------
+>&2 echo count $count errors $errors ignored $ignored
+>&2 echo ---------------------------
 
 # That's all Folks!
 ##
