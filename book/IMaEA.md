@@ -5306,7 +5306,7 @@ done < "$input"
 
 ### Pixls Raw Image Archive
 
-There is an outstanding collection of raw images at: [https://raw.pixls.us](https://raw.pixls.us).  You can download the archive (currently 34GBytes/1500 images) as a zip archive.
+There is an outstanding collection of raw images at: [https://raw.pixls.us](https://raw.pixls.us).  You can download the archive (currently 68GBytes/2800 images) as a zip archive.
 
 I tried downloading the archive on macOS, and Safari gave up after about 15GBytes. So, I tried curl. Much the same"
 
@@ -5330,7 +5330,7 @@ Some success with:
 $ rsync -avL rsync://raw.pixls.us/data/ raw-pixls-us-data/
 ```
 
-This downloaded about 600 files.  Still a long way short of the 3000 available.  I finished by running the following several times.
+This downloaded about 600 files.  Still a long way short of the 2800 available.  I finished by running the following several times:
 
 ```bash
 $ cd raw-pixls-us-data/
@@ -5340,7 +5340,7 @@ $ for i in $(find . -maxdepth 1 -type d)
 done
 ```
 
-Happiness!  3000 images consuming 50GBytes.
+Happiness!  2800 images consuming 68GBytes.
 
 #### RAWSAMPLES.CH
 
