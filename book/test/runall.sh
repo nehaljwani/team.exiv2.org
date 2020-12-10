@@ -11,7 +11,11 @@ errors=0
 syntax() {
     echo "usage: ./runall.sh  { help | dryrun | verbose | program+ | option+ | section+ }+ "
     echo -n "sections: "  
-    for s in $(find $testfiles -maxdepth 1 -type d | sort --ignore-case); do echo -n "$(basename $s) " ; done
+    ( cd  "$testfiles" 
+      for s in $(find . -maxdepth 1 -type d | sort --ignore-case)
+      do   echo -n "$(basename $s) "
+      done
+    )
     echo
 }
 
