@@ -2413,54 +2413,78 @@ void CIFF::accept(Visitor& visitor)
 
 void IFD::visitMakerNote(Visitor& visitor,DataBuf& buf,uint64_t count,uint64_t offset)
 {
-    if ( image_.maker_ == kNikon ) {
-        // MakerNote is embeded tiff `II*_....` 10 bytes into the data!
-        size_t punt = buf.strequals("Nikon") ? 10 : 0 ;
-        Io     io(io_,offset+punt,count-punt);
-        TiffImage makerNote(io,image_.maker_);
-        makerNote.accept(visitor,makerDict());
-    } else if ( image_.maker_ == kAgfa && buf.strequals("ABC") ) {
-        // MakerNote is an IFD `ABC_IIdL...`  6 bytes into the data!
-        ImageEndianSaver save(image_,keLittle);
-        IFD makerNote(image_,offset+6,false);
-        makerNote.accept(visitor,makerDict());
-    } else if ( image_.maker_ == kApple && buf.strequals("Apple iOS")) {
-        // IFD `Apple iOS__.MM_._._.___.___._._.__..`  26 bytes into the data!
-        ImageEndianSaver save(image_,keBig);
-        IFD makerNote(image_,offset+26,false);
-        makerNote.accept(visitor,makerDict());
-    } else if ( image_.maker_ == kMino ) {
-        ImageEndianSaver save(image_,keBig);  // Always bigEndian
-        IFD makerNote(image_,offset,false);
-        makerNote.accept(visitor,makerDict());
-    } else if ( image_.maker_ == kOlym ) {
-        Io     io(io_,offset,count);
-        if ( buf.begins("OLYMPUS")  ) { // "OLYMPUS\0II\0x3\0x0"E# or "OLYMP\0"
-            TiffImage makerNote(io,image_.maker_);
-            makerNote.start_ =  12 ;
-            makerNote.valid_ = true; // Valid without magic=42
-            makerNote.accept(visitor,makerDict());
-        } else {
-            size_t punt = 8 ; // "OLUMPUS\0shortE#"
-            IFD makerNote(image_,offset+punt,false);
-            makerNote.accept(visitor,makerDict());
-        }
-    } else if ( image_.maker_ == kFuji ) {
-        Io     io(io_,offset,count);
-        TiffImage makerNote(io,image_.maker_);
-        makerNote.start_ = 12  ; // // "FUJIFILM" 0x0c000000
-        makerNote.valid_ = true; // Valid without magic=42
-        makerNote.accept(visitor,makerDict());
-    } else if ( image_.maker_ == kPentax ) {
-        size_t punt = buf.begins("AOC") ? 6 : 10 ;
-        ImageEndianSaver save(image_,keBig);
-        IFD makerNote(image_,offset+punt,false);
-        makerNote.accept(visitor,makerDict());
-    } else {
-        bool   bNext = maker()  != kSony;                                        // Sony no trailing next
-        size_t punt  = maker()  == kSony && buf.strequals("SONY DSC ") ? 12 : 0; // Sony 12 byte punt
-        IFD makerNote(image_,offset+punt,bNext);
-        makerNote.accept(visitor,makerDict());
+    switch ( image_.maker_ ) {
+        case kUnknown     : /* do nothing */ ; break;
+        default           : /* do nothing */ ; break;
+        
+        case kNikon       : {
+                // MakerNote is embeded tiff `II*_....` 10 bytes into the data!
+                size_t punt = buf.strequals("Nikon") ? 10 : 0 ;
+                Io     io(io_,offset+punt,count-punt);
+                TiffImage makerNote(io,image_.maker_);
+                makerNote.accept(visitor,makerDict());
+            } break;
+
+        case kAgfa :
+            if ( buf.strequals("ABC") ) {
+                // MakerNote is an IFD `ABC_IIdL...`  6 bytes into the data!
+                ImageEndianSaver save(image_,keLittle);
+                IFD makerNote(image_,offset+6,false);
+                makerNote.accept(visitor,makerDict());
+            } break;
+            
+        case kApple:
+            if ( buf.strequals("Apple iOS")) {
+                // IFD `Apple iOS__.MM_._._.___.___._._.__..`  26 bytes into the data!
+                ImageEndianSaver save(image_,keBig);
+                IFD makerNote(image_,offset+26,false);
+                makerNote.accept(visitor,makerDict());
+            } break;
+
+        case kMino : {
+                ImageEndianSaver save(image_,keBig);  // Always bigEndian
+                IFD makerNote(image_,offset,false);
+                makerNote.accept(visitor,makerDict());
+            } break;
+            
+        case kOlym:
+            if ( buf.begins("OLYMPUS\0II")  ) { // "OLYMPUS\0II\0x3\0x0"E# or "OLYMP\0"
+                Io     io(io_,offset,count);
+                TiffImage makerNote(io,image_.maker_);
+                makerNote.start_ =  12 ;
+                makerNote.valid_ = true; // Valid without magic=42
+                makerNote.accept(visitor,makerDict());
+            } else {
+                size_t punt = 8 ; // "OLUMPUS\0shortE#"
+                IFD makerNote(image_,offset+punt,false);
+                makerNote.accept(visitor,makerDict());
+            } break;
+
+        case kFuji: {
+                Io     io(io_,offset,count);
+                TiffImage makerNote(io,image_.maker_);
+                makerNote.start_ = 12  ; // "FUJIFILM" 0x0c000000
+                makerNote.valid_ = true; // Valid without magic=42
+                makerNote.accept(visitor,makerDict());
+            } break;
+
+        case kPentax: {
+                size_t punt = buf.begins("AOC") ? 6 : 10 ;
+                ImageEndianSaver save(image_,keBig);
+                IFD makerNote(image_,offset+punt,false);
+                makerNote.accept(visitor,makerDict());
+            } break;
+
+        case kCanon: {
+                IFD makerNote(image_,offset,true);
+                makerNote.accept(visitor,makerDict());
+            } break;
+
+        case kSony: {
+                size_t punt  = buf.strequals("SONY DSC ") ? 12 : 0; // Sony 12 byte punt
+                IFD makerNote(image_,offset+punt,false);
+                makerNote.accept(visitor,makerDict());
+            } break;
     }
 } // visitMakerNote
 
@@ -2491,7 +2515,7 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
             visitor.visitEnd(image_);
             return ;
         }
-        
+
         visitor.visitDirBegin(image_,nEntries);
         uint64_t a0 = start + (bigtiff?8:2) + nEntries * entry.size_; // addresss to read next
 

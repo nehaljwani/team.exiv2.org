@@ -26,13 +26,15 @@ while [ "$#" != "0" ]; do
     arg="$1"
     shift
     case "$arg" in
-      -d|--dryrun|-dryrun)    dryrun=1     ;;
-      -h|--help|-help|-\?)    help=1       ;;
+      -d|--dryrun|-dryrun)    dryrun=1      ;;
+      -h|--help|-help|-\?)    help=1        ;;
+      -l|--list|-list)        list=1        ;;
       -n|--name|-name)        if [ $# -gt 0 ]; then name="$1"               ; shift; else bomb $arg ; fi ;;
       -o|--option|-option)    if [ $# -gt 0 ]; then option="$option $1"     ; shift; else bomb $arg ; fi ;;
       -p|--program|-program)  if [ $# -gt 0 ]; then program="$1"            ; shift; else bomb $arg ; fi ;;
       -s|--section|-section)  if [ $# -gt 0 ]; then section="$1"            ; shift; else bomb $arg ; fi ;;
-      -v|--verbose|-verbose)  verbose=1    ;;
+      -v|--verbose|-verbose)  verbose=1     ;;
+#     *)                      section=$1    ;;
       *)             echo "*** invalid option: $arg ***" 1>&2; help=1; ;;
     esac
 done
@@ -52,6 +54,12 @@ if [ ! -z $verbose   ]; then
     exit;
 fi
 if [ ! -z $dryrun ]; then exit ; exit ; fi
+
+if [ ! -z $list ]; then
+    cd "$testfiles"
+    ls -1 | sort
+    exit 0
+fi
 
 find "$testfiles" -type f $name | sort > "$input"
 while IFS= read -r file
