@@ -2549,7 +2549,12 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
 
             if ( type == kttIfd  ) {
                 for ( uint64_t i = 0 ; i < count ; i++ ) {
-                    offset = get4or8 (buff,0,i,endian);
+                    offset = buff.getLong(i*4,endian);
+                    IFD(image_,offset,false).accept(visitor,ifdDict(image_.maker_,tag,makerDict()));
+                }
+            } else if ( type == kttIfd8  ) {
+                for ( uint64_t i = 0 ; i < count ; i++ ) {
+                    offset = buff.getLong8(i*8,endian);
                     IFD(image_,offset,false).accept(visitor,ifdDict(image_.maker_,tag,makerDict()));
                 }
             } else if ( tag == ktSubIFD  ) {
