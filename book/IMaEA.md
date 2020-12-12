@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-12-11</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-12-12</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -6427,6 +6427,48 @@ I strongly encourage you to download, build and install Exiv2.  The current (and
 There is substantial documentation provided with the Exiv2 project.  This book does not duplicate the project documentation, but compliments it by explaining how and why the code works. 
 
 The following two programs args.cpp and dmpf.cpp are based on similar utility programs on the Apollo Workstatation on which I worked during the 1980s.
+
+#### tvisitor
+
+The syntax for tvisitor is:
+
+```bash
+577 rmills@rmillsmm-local:~/gnu/github/exiv2/0.27-maintenance/build $ tvisitor
+usage: tvisitor -{ U | S | R | X | C | I }+ path+
+578 rmills@rmillsmm-local:~/gnu/github/exiv2/0.27-maintenance/build $
+```
+
+The options are:
+
+| Option | Exiv2 Equivalent | Meaning | Description |
+|:--          |:--                        |:--             |:-- |
+| U    | --unknown | Unknown | Reports unknown tags |
+| S    | -pS | Structure  | This is the default |
+| R   | -pR | Recursive | Descent as deeply as possible |
+| X  | -pX | XMP   | Report XMP |
+| C  | -pC | Icc  | Report ICC Profiles |
+| I | -pi |  Iptc | Report IPTC Data |
+
+The flag options can be in any order and undefined flags are ignored.  The most common option that I use is -pR which is equivalent to exiv2's -pR.  It could be simply stated as tvisitor R foo.  In the test harness, I use -pRU.
+
+An unknown tag is an item of metadata in a file for which tvisitor does not know the name.  A tiff 'tag' is identified by a 16 bit integer and these are defined in the TIFF-EP and Exif Specifications.  The MakeNote tags are not standardised and unknown tags are reported in the following style:
+
+```
+   address |    tag                    |      type |    count |    offset | value
+       382 | 0x003b Exif.Nikon.0x3b    |  RATIONAL |        4 |      1519 | 256/256 256/256 256/256 256/256
+```
+
+There is no plan to have a man page for tvisitor because it has a 200 page book!  tvisitor isn't intended for any production use and has been written to explain how Exiv2 works.  In less than 4000 lines of code it decodes the metadata in all formats supported by Exiv2 plus ISOBMFF formats .CR3, .HEIC and .AVIF.  Additionally, it supports BigTiff, extended JPEG, dumping ICC profiles and many other features which are not supported in Exiv2.
+
+tvisitor is currently being tested using more than 10,000 images harvested from ExifTool, raw.Pixls.us, RawSamples.ch and images collected from issues reported to Exiv2.  My aim is to successfully read 9990 which is 99.9% reliability.  I fully expect the Community to attack me concerning the 0.1% that are not successfully decoded.  On-line abuse from the Community is the reason that I am retiring.
+
+I have written the book for two purposes:
+
+1. To Explain how Exiv2 works.
+2. To Explain how to parse metadata.
+
+Exiv2 provides a unique capability to the Community and its long term maintenance is of importance to Linux.  To my knowledge, no book as been written about Metadata.  The tvisitor code would provide a good resource from which to  develop a new Metadata Library.
+
 
 #### make test
 

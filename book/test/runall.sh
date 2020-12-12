@@ -75,19 +75,22 @@ do
     if [ "$?" == "0" -o "$ext" == CRW -o "$ext" == CR2 -o "$ext" == RAF -o "$ext" == RW2 -o "$ext" == RAW -o "$ext" == EXV ]; then
         count=$((count+1))
         $program "$@" $option "$file"
-        if [ "$?" != "0" ]; then errors=$((errors+1)); fi
+        if [ "$?" != "0" ]; then 
+            >&2 echo FAILED $file
+            errors=$((errors+1))
+        fi
     else
         ignored=$((ignored+1))
         # don't report obvious duds.
         if [ "$ext" != ZIP -a "$ext" != 7Z -a "$ext" != TXT -a "$ext" != RAR -a "$ext" != XZ ]; then
-            >&2 echo IGNORED $file
+            >&2 echo IGNORE $file
         fi
     fi
 done < "$input"
 
->&2 echo ---------------------------
->&2 echo count $count errors $errors ignored $ignored
->&2 echo ---------------------------
+>&2 echo -------------------------------
+>&2 echo count $count failed $errors ignored $ignored
+>&2 echo -------------------------------
 
 # That's all Folks!
 ##
