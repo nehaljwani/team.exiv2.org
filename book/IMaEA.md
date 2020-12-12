@@ -6433,9 +6433,9 @@ The following two programs args.cpp and dmpf.cpp are based on similar utility pr
 The syntax for tvisitor is:
 
 ```bash
-577 rmills@rmillsmm-local:~/gnu/github/exiv2/0.27-maintenance/build $ tvisitor
+$ tvisitor
 usage: tvisitor -{ U | S | R | X | C | I }+ path+
-578 rmills@rmillsmm-local:~/gnu/github/exiv2/0.27-maintenance/build $
+$
 ```
 
 The options are:
@@ -6444,18 +6444,72 @@ The options are:
 |:--          |:--                        |:--             |:-- |
 | U    | --unknown | Unknown | Reports unknown tags |
 | S    | -pS | Structure  | This is the default |
-| R   | -pR | Recursive | Descent as deeply as possible |
+| R   | -pR | Recursive | Descend as deeply as possible |
 | X  | -pX | XMP   | Report XMP |
 | C  | -pC | Icc  | Report ICC Profiles |
 | I | -pi |  Iptc | Report IPTC Data |
 
-The flag options can be in any order and undefined flags are ignored.  The most common option that I use is -pR which is equivalent to exiv2's -pR.  It could be simply stated as tvisitor R foo.  In the test harness, I use -pRU.
+The options can be in any order and undefined characters are ignored.  The most common option that I use is -pR which is equivalent to exiv2's -pR.  It could be simply stated as tvisitor -R foo.  In the test harness, I use -pRU.
 
-An unknown tag is an item of metadata in a file for which tvisitor does not know the name.  A tiff 'tag' is identified by a 16 bit integer and these are defined in the TIFF-EP and Exif Specifications.  The MakeNote tags are not standardised and unknown tags are reported in the following style:
+The option **U** prints Unknown (and known) tags. An unknown tag is an item of metadata for which tvisitor does not know the name.  A tiff 'tag' is identified by a 16 bit integer and these are defined in the TIFF-EP and Exif Specifications.  The MakeNote tags are not standardised and unknown tags are reported in the following style:
 
 ```
    address |    tag                    |      type |    count |    offset | value
        382 | 0x003b Exif.Nikon.0x3b    |  RATIONAL |        4 |      1519 | 256/256 256/256 256/256 256/256
+```
+
+The option **S** prints the Structure of the file.  For example, use the following file:  https://clanmills.com/Stonehenge.jpg, we see the structure of the JPEG file:
+
+```
+$ tvisitor -pS ~/Stonehenge.jpg 
+STRUCTURE OF JPEG FILE (II): /Users/rmills/Stonehenge.jpg
+ address | marker       |  length | signature
+       0 | 0xffd8 SOI  
+       2 | 0xffe1 APP1  |   15288 | Exif__II*_.___._..._.___.___..._.___.___
+   15292 | 0xffe1 APP1  |    2610 | http://ns.adobe.com/xap/1.0/_<?xpacket b
+   17904 | 0xffed APP13 |      96 | Photoshop 3.0_8BIM.._____'..__._...Z_..%
+   18002 | 0xffe2 APP2  |    4094 | MPF_II*_.___.__.._.___0100..._.___.___..
+   22098 | 0xffdb DQT   |     132 | _.......................................
+   22232 | 0xffc0 SOF0  |      17 | ....p..!_........
+   22251 | 0xffc4 DHT   |     418 | __........________............_.........
+   22671 | 0xffda SOS   |      12 | .._...._?_..
+END: /Users/rmills/Stonehenge.jpg
+$ 
+```
+The option **R** performs a Recursive descent of the file and dumps embedded structures such as the TIFF which contains the Exif Metadata.  It also descends into IPTC data and ICC Profiles.
+
+```
+$ tvisitor -pR ~/Stonehenge.jpg 
+STRUCTURE OF JPEG FILE (II): /Users/rmills/Stonehenge.jpg
+ address | marker       |  length | signature
+       0 | 0xffd8 SOI  
+       2 | 0xffe1 APP1  |   15288 | Exif__II*_.___._..._.___.___..._.___.___
+  STRUCTURE OF TIFF FILE (II): /Users/rmills/Stonehenge.jpg:12->15280
+   address |    tag                              |      type |    count |    offset | value
+        10 | 0x010f Exif.Image.Make              |     ASCII |       18 |       146 | NIKON CORPORATION
+        22 | 0x0110 Exif.Image.Model             |     ASCII |       12 |       164 | NIKON D5300
+  ....
+  END: /Users/rmills/Stonehenge.jpg:12->15280
+   15292 | 0xffe1 APP1  |    2610 | http://ns.adobe.com/xap/1.0/_<?xpacket b
+   17904 | 0xffed APP13 |      96 | Photoshop 3.0_8BIM.._____'..__._...Z_..%
+  STRUCTURE OF 8BIM FILE (MM): /Users/rmills/Stonehenge.jpg:17922->78
+       offset |   kind | tagName                      |  len | data | 
+            0 | 0x0404 | PSD.8BIM.IPTCNAA             |   30 | 12+1 | ..__._...Z_..%G..__._...x_.___
+    STRUCTURE OF IPTC FILE (MM): /Users/rmills/Stonehenge.jpg:17922->78:12->39
+        Record | DataSet | Name                           | Length | Data
+             1 |       0 | Iptc.Envelope.ModelVersion     |      2 | _.
+             1 |      90 | Iptc.Envelope.CharacterSet     |      3 | .%G
+             2 |       0 | Iptc.Application.RecordVersion |      2 | _.
+             2 |     120 | Iptc.Application.Caption       |     12 | Classic View
+    END: /Users/rmills/Stonehenge.jpg:17922->78:12->39
+  END: /Users/rmills/Stonehenge.jpg:17922->78
+   18002 | 0xffe2 APP2  |    4094 | MPF_II*_.___.__.._.___0100..._.___.___..
+   22098 | 0xffdb DQT   |     132 | _.......................................
+   22232 | 0xffc0 SOF0  |      17 | ....p..!_........
+   22251 | 0xffc4 DHT   |     418 | __........________............_.........
+   22671 | 0xffda SOS   |      12 | .._...._?_..
+END: /Users/rmills/Stonehenge.jpg
+$
 ```
 
 There is no plan to have a man page for tvisitor because it has a 200 page book!  tvisitor isn't intended for any production use and has been written to explain how Exiv2 works.  In less than 4000 lines of code it decodes the metadata in all formats supported by Exiv2 plus ISOBMFF formats .CR3, .HEIC and .AVIF.  Additionally, it supports BigTiff, extended JPEG, dumping ICC profiles and many other features which are not supported in Exiv2.
@@ -6468,6 +6522,7 @@ I have written the book for two purposes:
 2. To Explain how to parse metadata.
 
 Exiv2 provides a unique capability to the Community and its long term maintenance is of importance to Linux.  To my knowledge, no book as been written about Metadata.  The tvisitor code would provide a good resource from which to  develop a new Metadata Library.
+ 
 
 
 #### make test
