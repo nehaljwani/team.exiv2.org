@@ -33,8 +33,8 @@ for i in $( ls ../files/* | sort --ignore-case ) ; do
     stub=$(basename $i)
     # dmpf and csv are utility tests
     case "$stub" in
-       dmpf|csv|args)  ./$stub ../files/$stub 2>&1 > "../test/tmp/$stub" ;;
-       *)              ./tvisitor -pRU "$i"   2&>1 > "../test/tmp/$stub" ;;
+       dmpf|csv)  ./$stub ../files/$stub 2>&1 > "../test/tmp/$stub" ;;
+       *)         ./tvisitor -pRU "$i"   2&>1 > "../test/tmp/$stub" ;;
     esac 
     report $stub
 done

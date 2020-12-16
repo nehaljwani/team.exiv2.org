@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-12-12</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-12-16</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -55,11 +55,11 @@ _And our cat Lizzie._
 | [7.3 The EasyAccess API](#7-3)                        | 44 | [10.2 The Fuzzing Police](#10-2)         | 27 | [11.23 Partners](#11-23)                | 81 |
 | [7.4 Listing the API](#7-4)                           | 44 |                                          | 28 | [11.24 Development](#11-24)             | 81 |
 | [7.5 Function Selectors](#7-5)                        | 48 | [12. Code discussed in this book](#12)   | 29 |                                         | 81 |
-| [7.6 Tags in Exiv2](#7-6)                             | 53 |                                          | 30 | _**Other Sections**_                    | 81 |
-| [7.7 Tag Decoder](#7-7)                               | 57 |                                          |    | [Dedication](#dedication)               | 81 |
-| [7.8 TiffVisitor](#7-8)                               | 59 |                                          |    | [About this book](#about)               | 81 |
-| [7.9 Other Exiv2 Classes](#7-9)                       | 61 |                                          |    | [How did I get here?](#begin)           | 82 |
-|                                                       | 63 |                                          |    | [2012 - 2017](#2012)                    |    |
+| [7.6 Tags in Exiv2](#7-6)                             | 53 | [tvisitor](#tvisitor)                    | 30 | _**Other Sections**_                    | 81 |
+| [7.7 Tag Decoder](#7-7)                               | 57 | [dmpf](#dmpf)                            |    | [Dedication](#dedication)               | 81 |
+| [7.8 TiffVisitor](#7-8)                               | 59 | [csv](#csv)                              |    | [About this book](#about)               | 81 |
+| [7.9 Other Exiv2 Classes](#7-9)                       | 61 | [CMakeLists.txt](#cmakelists)            |    | [How did I get here?](#begin)           | 82 |
+|                                                       | 63 | [make test](#maketest)                   |    | [2012 - 2017](#2012)                    |    |
 | [8. Test Suite](#8)                                   | 63 |                                          |    | [Current Priorities](#current)          | 82 |
 | [8.1 Bash Tests](#8-1)                                | 63 |                                          |  2 | [Future Projects](#future)              | 82 |
 | [8.2 Python Tests](#8-2)                              | 68 |                                          |  4 | [Scope of Book](#scope)                 | 82 |
@@ -2110,126 +2110,79 @@ The tag XMLPacket is normally an array of BYTE values.  The encoding of such a s
  
 ### Inspecting the Values of Exif Data
 
-Before we get into the Exiv2 code, let's look at the simpler python TIFF/Exif library.   [https://github.com/Moustikitos/tyf](https://github.com/Moustikitos/tyf)
-
-You will also need to install PIL:
+Let's look at the metadata in the file files/Stonehenge.jpg and files/Stonehenge.tiff
 
 ```bash
-$ sudo python3 -m pip install Pillow
-$ git clone https://github.com/Moustikitos/tyf
-$ cd tyf
-$ sudo python3 setup.py install
-```
-
-This is a library and I've constructed a program to reveal the Exif metadata.
-
-```python
-#!/usr/bin/env python3
-
-import Tyf
-import os
-import sys
-
-import urllib.request
-from io  import BytesIO
-from PIL import Image
-
-##
-#
-def dumpTags(ifd):
-    bDumpTags    = True
-    bGenerateMap = False
-
-    if bDumpTags:
-        for tag in ifd:
-            V=tag[1]
-            v=str(V)
-            if type(V)==type(''):
-                v='"'+v+'"'
-            if len(v) > 30:
-               v = v[0:26] + '.. '
-            t=str(type(V))
-            t=t[8:len(t)-2]
-            if t == 'bytes':
-                t=str(len(V)) + ' ' + t
-            elif t == 'str':
-                t=str(len(V))
-            if len(t) > 30:
-                t = t[0:26]+'.. '
-
-            t='('+t+')'
-
-            print('%s -> %s %s' % ( tag[0], v , t)  )
-
-##
-#
-def main(argv):
-    """main - main program of course"""
-
-    image = Tyf.open(argv[1])
-    # help(jpg)
-
-    if str(type(image)) == "<class 'Tyf.TiffFile'>":
-        dumpTags(image[0])
-    elif str(type(image)) == "<class 'Tyf.JpegFile'>":
-        dumpTags(image.ifd0)
-    else:
-        print("unknown image type " + str(type(image)))
-
-if __name__ == '__main__':
-    main(sys.argv)
-
-# That's all Folks
-##
-```
-
-Download from [https://clanmills.com/Stonehenge.jpg](https://clanmills.com/Stonehenge.jpg) and [https://clanmills.com/Stonehenge.tif](https://clanmills.com/Stonehenge.tif)
-
-```bash
-$ ~/bin/mdump.py  ~/Stonehenge.jpg           $ ~/bin/mdump.py  ~/Stonehenge.tif
-Make -> "NIKON CORPORATION" (17)             ImageLength -> 1 (int)
-Model -> "NIKON D5300" (11)                  BitsPerSample -> (8, 8, 8, 8) 
-Orientation -> 1 (int)                       Compression -> 1 (int)
-XResolution -> 300.0 (float)                 PhotometricInterpretation -> 2
-YResolution -> 300.0 (float)                 FillOrder -> 1 (int)
-ResolutionUnit -> 2 (int)                    ImageDescription -> "Classic V"
-Software -> "Ver.1.00 " (9)                  Make -> "NIKON CORPORATION" (1
-DateTime -> 2015-07-16 20:25:28 (datetim     Model -> "NIKON D5300" (11)
-YCbCrPositioning -> 1 (int)                  StripOffsets -> 901 (int)
-Exif IFD -> 222 (int)                        Orientation -> 1 (int)
+$ exiv2 -pe files/Stonehenge.jpg
+Exif.Image.Make                  Ascii      18  NIKON CORPORATION
+Exif.Image.Model                 Ascii      12  NIKON D5300
 ...
-MakerNote -> b'Nikon\x00\x02\x11\x00\x00'    ExposureTime -> 0.0025 (float)
-UserComment ->                               FNumber -> 10.0 (float)
-SubsecTime -> "00" (2)                       ExposureProgram -> 0 (int)
-SubsecTimeOriginal -> "00" (2)               ISOSpeedRatings -> 200 (int)
-SubsecTimeDigitized -> "00" (2)              ExifVersion -> b'0230' (4 byte
-FlashpixVersion -> b'0100' (4 bytes)         DateTimeOriginal -> 2015-07-16
-ColorSpace -> 1 (int)                        DateTimeDigitized -> 2015-07-1
-PixelXDimension -> 6000 (int)                ComponentsConfiguration -> 
-PixelYDimension -> 4000 (int)                CompressedBitsPerPixel -> 2.0 
-Interoperability IFD -> 4306 (int)           ExposureBiasValue -> (0, 1) (t
-SensingMethod -> 2 (int)                     MaxApertureValue -> 4.3 (float
-FileSource -> b'\x03' (1 bytes)              MeteringMode -> 5 (int)
-SceneType -> b'\x01' (1 bytes)               LightSource -> 0 (int)
-CFAPattern -> b'\x02\x00\x02\x00\x00\x01'     Flash -> 16 (int)
-CustomRendered -> 0 (int)                    FocalLength -> 44.0 (float)
-ExposureMode -> 0 (int)                      UserComment -> 
+Exif.Image.ExifTag               Long        1  222
+Exif.Photo.ExposureTime          Rational    1  1/400 s
+Exif.Photo.FNumber               Rational    1  F10
 ...
-GPSLatitudeRef -> 1 (int)                    WhiteBalance -> 0 (int)
-GPSLatitude -> 51.17828166666666 (float)     DigitalZoomRatio -> 1.0 (float
-GPSLongitudeRef -> -1 (int)                  FocalLengthIn35mmFilm -> 66 (i
-GPSLongitude -> 1.8266399999999998 (floa     SceneCaptureType -> 0 (int)
-GPSAltitudeRef -> -1 (int)                   GainControl -> 0 (int)
-GPSAltitude -> 97.0 (float)                  Contrast -> 0 (int)
-GPSTimeStamp -> 14:38:55 (datetime.time)     Saturation -> 0 (int)
-GPSSatellites -> "09" (2)                    Sharpness -> 0 (int)
-GPSMapDatum -> "WGS-84          " (16)       SubjectDistanceRange -> 0 (int
-GPSDateStamp -> 2015-07-16 00:00:00 (dat     ImageUniqueID -> "090caaf..."
-                                             GPSLatitudeRef -> 1 (int)
-...                                             GPSLatitude -> 51.178280555555
+Exif.Photo.MakerNote             Undefined 3152  78 105 107 111 110 
+Exif.Nikon3.Version              Undefined   4  2.11
+Exif.Nikon3.ISOSpeed             Short       2  200
+...
+Exif.NikonPc.Version             Undefined   4  1.00
+Exif.NikonPc.Name                Ascii      20  STANDARD
+...
+Exif.Photo.SensingMethod         Short       1  One-chip color area
+Exif.Photo.FileSource            Undefined   1  Digital still camera
+..
+Exif.Image.GPSTag                Long        1  4104
+Exif.GPSInfo.GPSVersionID        Byte        4  2.3.0.0
+Exif.GPSInfo.GPSLatitudeRef      Ascii       2  North
+Exif.GPSInfo.GPSLatitude         Rational    3  51deg 11' 0"
+...
+Iptc.Envelope.ModelVersion       Short       1  4
+Iptc.Envelope.CharacterSet       String      3  _%G
+Iptc.Application2.RecordVersion  Short       1  4
+Iptc.Application2.Caption        String     12  Classic View
+Xmp.xmp.Rating                   XmpText     1  0
+Xmp.xmp.ModifyDate               XmpText    25  2015-07-16T20:25:28+01:00
+Xmp.cm2e.Father                  XmpText    11  Robin Mills
+Xmp.cm2e.Family                  XmpBag      0  
+Xmp.dc.description               LangAlt     1  lang="x-default" Classic View
+Xmp.dc.Family                    XmpBag      1  Robin
 ```
 
-Data's similar.  The order is different.  Good news is that the commands _**$ exiv2 -pe ~/Stonehenge.jpg**_ and __*$ exiv2 -pe ~/Stonehenge.tif*__ produce similar data in the same order.  We'd hope so as both commands are reading the same embedded Exif metadata.  The way in which the Exif is embedded in Tiff and JPG is different, however the Exif metadata is effectively the same.
+```
+$ exiv2 -pe files/Stonehenge.files
+Exif.Image.ImageWidth                Short       1  300
+Exif.Image.ImageLength               Short       1  200
+...
+Exif.Image.ExifTag                   Long        1  8
+Exif.Photo.ExposureTime              Rational    1  1/400 s
+Exif.Photo.FNumber                   Rational    1  F10
+...
+Exif.Photo.ImageUniqueID             Ascii      33  090caaf2c085f3e102513b24750041aa
+Exif.Image.InterColorProfile         Undefined 3144  0 0 12 
+Exif.Image.GPSTag                    Long        1  629
+Exif.GPSInfo.GPSVersionID            Byte        4  2.3.0.0
+Exif.GPSInfo.GPSLatitudeRef          Ascii       2  North
+Exif.GPSInfo.GPSLatitude             Rational    3  51deg 10' 42"
+...
+Iptc.Envelope.CharacterSet           String      3  _%G
+Iptc.Application2.RecordVersion      Short       1  2
+Iptc.Application2.DigitizationTime   Time       11  15:38:54+00:00
+...
+Xmp.cm2e.Family                      XmpBag      0  
+Xmp.cm2e.Father                      XmpText    11  Robin Mills
+Xmp.dc.Family                        XmpBag      1  Robin
+Xmp.dc.description                   LangAlt     1  lang="x-default" Classic View
+...
+```
+
+The conversion from files/Stonehenge.jpg to files/Stonehenge.tif was performed with Preview.app on macOS.  Several observations about this:
+
+1. The data is very similar.
+2. The Stonehenge.jpg has a maker note and Stonehenge.tiff does not.
+3. The Stonehenge.tiff has an ICC profile and Stonehenge.jpg does not.
+4. The order is the same.  Exif.Image, Exif.Photo, Exif.Nikon, Exif.GPSInfo, Iptc, Xmp.
+
+For the moment, take comfort from that both are very similar.  By the end of the book, you will understand the differences. 
 
 [TOC](#TOC)
 <div id="XMP"/>
@@ -5489,7 +5442,7 @@ A couple of years later, Kevin send us four security alerts.  When I invited him
 
 [https://securitylab.github.com/research/how-to-escape-from-the-fuzz](https://securitylab.github.com/research/how-to-escape-from-the-fuzz)
 
-While security is an important matter, the behaviour of the fuzzing police is despicable and very demotivating.  They frequently report false positives which consume/waste resources.  None of those people ever say "Thank You" when something is fixed and never apologise for false positives.  They sometimes say something useless like "I did you a favour because there could have been something wrong.".
+While security is an important matter, the behaviour of the fuzzing police is very demotivating.  They frequently report false positives which consume/waste resources.  None of those people ever say "Thank You" when something is fixed and never apologise for false positives.  They sometimes say something useless like "I did you a favour because there could have been something wrong.".
 
 I must also mention that the fuzzing police use special tools that build and instrument the code to detect suspicious run-time activity.  Often, there is no end-user bug report to demonstrate an issue.  When they report an issue, they provide a file called `poc` = Proof of Concept.  Their bug reports are usually totally devoid of information about how to reproduce the issue and there is no cross-reference with the CVE tracking data-base.
 
@@ -5754,13 +5707,13 @@ Exiv2 has always resisted the temptation to provide a GUI version of the program
 
 User Support is very time consuming.  I prioritise working with users as the most important aspect of the project.  Occasionally, in the run-up to a release, I will ask a user to wait.  However, my default is to deal with users as quickly as possible.  I try to acknowledge and confirm their report within 24 hours and to fix/close issues in one week.
 
-The reason to give them priority is the importance of users to the project.  Without users, the project is dead.  Without support, users will not use the code.  I know this is true because I have taken some sabbaticals to deal with other matters in my life.  When I am not active, the number of user reports and requests falls quickly.  When I return from my break, the number of user report immediately increases.
+The reason to give them priority is the importance of users to the project.  Without users, the project is dead.  Without support, users will not use the code.  I know this is true because I have taken some sabbaticals to deal with other matters in my life.  When I am not active, the number of user reports and requests falls quickly.  When I return from my break, the number of user reports immediately increases.
 
-I have been very disappointed by the appreciation shown by users to my attention to their questions.  Very few people have the courtesy to use words like "Please" and "Thank You".  Why is this?  I don't know.  Moreover, I am astonished by the abuse I have encountered.  The on-line behaviour of some users is unacceptable.  I have encountered this behaviour from our OEM Engineers when I worked on Adobe PostScript.  However, I could refer that to management at Adobe and at the OEM and the matter would settle.  With open-source, I have to ignore and accept this awful behaviour.
+I have been very disappointed by the appreciation shown by users to my attention to their questions.  Very few people have the courtesy to use words like "Please" and "Thank You".  Why is this?  I don't know.  Moreover, I am astonished by the abuse I have encountered.  The on-line behaviour of some users is unacceptable.  I have encountered this behaviour from our OEM Engineers when I worked on Adobe PostScript.  However, I could refer that to management at Adobe and at the OEM and the matter would be settled.  With open-source, I have to accept and ignore this awful behaviour.
 
-I have wondered if the users who behave this way believe that I am a business and have let them down in some way.  Open source is a community.  In reporting a bug, they are participating in the development process.  I usually thank users for reporting issues.  It's sad that they seldom have the courtesy to thank me for fixing the issue.
+I have wondered if the users who behave this way believe that I am a business and have let them down in some way.  Open source is a community.  In reporting a bug, they are participating in the development process.  I always thank users for reporting issues.  It's sad that they seldom have the courtesy to thank me for fixing the issue.
 
-A member of my family is the Principal of a College.  We were discussing the behaviour of parents of students.  She said _the one word you must never use with a parent is **No**_.  It's the same with open source users.  It's pointless to say _**No**_ because they will not accept this.  A good example is Lens Recognition.  The configuration file was added in 0.26 to enable users to fix lens recognition issues by updating an ascii file.  Many users demand that I fix their lens in C++ to save them a minute to update ~/.exiv2.  Saying _**No**_ is pointless.
+A member of my family is the Principal of a College.  We were discussing the behaviour of parents of students.  She said _the one word you must never use with a parent is **No**_.  It's the same with open source users.  It's pointless to say _**No**_ because they will not accept this.  A good example is Lens Recognition.  The configuration file was added in 0.26 to enable users to fix lens recognition issues by updating an ascii file.  Users frequently demand that I fix their lens in C++ to save them a minute to update ~/.exiv2.  Saying _**No**_ is pointless.
 
 On a more positive note about dealing with users, I have enjoyed many on-line discussions with frequent visitors to exiv2.org.  For sure, I include Arnold, Mikayel, Alan and Steve in this group and there are many more.  If you are courteous, I am always pleased to hear from you.  We are a community with a shared vision of working together.  Thank You for participating. 
 
@@ -5768,9 +5721,9 @@ On a more positive note about dealing with users, I have enjoyed many on-line di
 <div id="11-8"/>
 ### 11.8 Bugs
 
-Exiv2 has used three bug tracking systems during its 17 year life.  In the early days, issues were stored on a forum hosted by yahoo.  (Who?).  About the time that I joined the project (2008), Redmine was installed to track issues on exiv2.org.  I really like Redmine.  It has a nice UI with good search, cross referencing, and reporting tools.  I very much appreciated the API to query and download data in JSON format.  I had a script to generate various report to monitor release progress.
+Exiv2 has used three bug tracking systems during its 17 year life.  In the early days, issues were stored on a forum hosted by Yahoo.  (Who?).  About the time that I joined the project in 2008, Redmine was installed to track issues on exiv2.org.  I really like Redmine.  It has a nice UI with good search, cross referencing, and reporting tools.  I very much appreciated the Rest API to query and download data in JSON format.  I wrote a python script to generate various reports to monitor release progress.
 
-We moved the code to GitHub when Exiv2 v0.26 was released in April 2017.  I didn't know that GitHub provided issue tracking and many other project management tools.  We could even consider closing exiv2.org in future and providing all project resources from GitHub.
+We moved the code to GitHub when Exiv2 v0.26 was released in April 2017.  I didn't know that GitHub provided issue tracking and many other project management tools.  We could consider closing exiv2.org in future and providing all project resources from GitHub.
 
 I believe the GitHub Rest API provides a mechanism with which we could collect data.  I could use that to generate report similar to my Remine/python/JSON code. 
 
@@ -6038,8 +5991,76 @@ Those build systems are provided by GitHub and work very well.  To use them, you
 |:--       |:--             |:--      |
 | GitLib   | .gitlab-ci.yml | Linux and UNIX  |
 | Travis   | .travis.yml    | Linux, macOS and UNIX  |
-| Appveyor | appveyor.yml   | Visual Studio |
+| Appveyor | appveyor.yml   | Visual Studio, Cygwin64 and MinGW64/msys2 |
 | Code Cov | codecov.yml    | Linux Code Coverage |
+
+I wrote the following Appveyor Configuration (YMP) to build Cygwin and MinGW.
+
+```
+init:
+  - echo %PYTHON%
+
+environment:
+  PYTHON: "C:/Python37-x64"
+
+  matrix:
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      BUILD: MINGW64
+      INTEGRATION_TESTS: 1
+      ARCHITECTURE: x86_64
+      UNIT_TESTS: 1
+      WEBREADY: False
+      WARNINGS_AS_ERRORS: ON
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      BUILD: CYGWIN64
+      INTEGRATION_TESTS: 1
+      ARCHITECTURE: x86_64
+      UNIT_TESTS: 1
+      WEBREADY: False
+      WARNINGS_AS_ERRORS: ON
+
+shallow_clone: true
+
+install:
+    - echo %APPVEYOR_BUILD_FOLDER%
+    - if "%BUILD%"=="MINGW64" set "PATH=c:\msys64\mingw64\bin;c:\msys64\usr\bin;c:\msys64\usr\local\bin;"
+    - if "%BUILD%"=="MINGW64" C:\msys64\usr\bin\bash -c "python -m pip install --upgrade pip;pip3.exe install lxml ; for i in base-devel git coreutils dos2unix tar diffutils make  \
+         mingw-w64-x86_64-toolchain mingw-w64-x86_64-gcc      mingw-w64-x86_64-gdb     \
+         mingw-w64-x86_64-cmake     mingw-w64-x86_64-gettext  mingw-w64-x86_64-python3 \
+         mingw-w64-x86_64-libexpat  mingw-w64-x86_64-libiconv mingw-w64-x86_64-zlib    \
+         mingw-w64-x86_64-gtest ; do (echo y | pacman -S $i) ; done
+    - cd %APPVEYOR_BUILD_FOLDER%
+    - if "%BUILD%"=="CYGWIN64" set "PATH=c:\cygwin64\usr\local\bin;c:\cygwin64\bin;c:\cygwin64\usr\bin;c:\cygwin64\usr\sbin;"
+    - if "%BUILD%"=="CYGWIN64" C:\cygwin64\bin\bash -c "wget https://raw.githubusercontent.com/transcode-open/apt-cyg/master/apt-cyg ; chmod +x apt-cyg; mv apt-cyg /usr/local/bin"
+    - if "%BUILD%"=="CYGWIN64" C:\cygwin64\bin\bash -c "apt-cyg install cmake zlib-devel libexpat-devel libxml2-devel libxslt-devel python38 python38-pip python38-libxml2"
+    - if "%BUILD%"=="CYGWIN64" C:\cygwin64\bin\bash -c "/usr/bin/python3.8.exe -m pip install --upgrade pip"
+
+build_script:
+    - cmd: set   CMD=mkdir -p build
+    - cmd: set   CMD=%CMD%; cd build    
+    - cmd: set   CMD=%CMD%; cmake .. -G 'Unix Makefiles' -DCMAKE_CXX_STANDARD=98 -DCMAKE_CXX_FLAGS=-Wno-deprecated
+    - cmd: set   CMD=%CMD%; cmake --build . --config Release
+    - cmd: rem echo %CMD%
+    - cd %APPVEYOR_BUILD_FOLDER%
+    - cmd: if "%BUILD%"=="MINGW64" C:\msys64\usr\bin\bash -c "%CMD%"
+    - cmd: set   CMD=which python3 python
+    - cmd: set   CMD=%CMD%; python --version
+    - cmd: set   CMD=%CMD%; build/bin/exiv2 --verbose --version; pwd ; ls -l
+    - cmd: set   CMD=%CMD%; cd build ; cmake --build . --config Release --target python_tests
+    - cmd: echo %CMD%
+    - cd %APPVEYOR_BUILD_FOLDER%
+    - cmd: if "%BUILD%"=="MINGW64" C:\msys64\usr\bin\bash -c "%CMD%"
+    - cmd: set "PATH=c:\cygwin64\usr\local\bin;c:\cygwin64\bin;c:\cygwin64\usr\bin;c:\cygwin64\usr\sbin;"
+    - cmd: set  CMD=rm -rf build
+    - cmd: set  CMD=%CMD%; mkdir -p build
+    - cmd: set  CMD=%CMD%; cd build
+    - cmd: set  CMD=%CMD%;cmake .. -DCMAKE_CXX_STANDARD=98 -DCMAKE_CXX_FLAGS=-Wno-deprecated
+    - cmd: set  CMD=%CMD%; make
+    - cmd: set  CMD=%CMD%; make python_tests
+    - cmd: echo %CMD%
+    - cd %APPVEYOR_BUILD_FOLDER%
+    - cmd: if "%BUILD%"=="CYGWIN64" C:\cygwin64\bin\bash -c "%CMD%"
+```
 
 #### My build script ./build.sh
 
@@ -6426,8 +6447,8 @@ I strongly encourage you to download, build and install Exiv2.  The current (and
 
 There is substantial documentation provided with the Exiv2 project.  This book does not duplicate the project documentation, but compliments it by explaining how and why the code works. 
 
-The following two programs args.cpp and dmpf.cpp are based on similar utility programs on the Apollo Workstatation on which I worked during the 1980s.
-
+[TOC](#TOC)
+<div id="tvisitor"/>
 #### tvisitor
 
 The syntax for tvisitor is:
@@ -6523,8 +6544,142 @@ I have written the book for two purposes:
 
 Exiv2 provides a unique capability to the Community and its long term maintenance is of importance to Linux.  To my knowledge, no book as been written about Metadata.  The tvisitor code would provide a good resource from which to  develop a new Metadata Library.
  
+[TOC](#TOC)
+<div id="dmpf"/>
+#### dmpf.cpp
 
+The purpose of this program is to inspect files.  It's _**od**_ on steroids combined with parts of _**dd**_.
 
+```bash
+559 rmills@rmillsmm-local:~/gnu/exiv2/team/book/build $ dmpf -h
+syntax: dmpf [key=value]+ path+
+options: bs=1 count=0 endian=0 hex=1 skip=0 start=0 verbose=0 width=32
+560 rmills@rmillsmm-local:~/gnu/exiv2/team/book/build $ 
+```
+
+There are numerous examples of this utility in the book.  The options are:
+
+| Option    | Description              | Default | Comment |
+|:--        |:--                       |:--      |:--    |
+| bs=       | block size (1,2 or 4)    |  1 | |
+| count=    | number of bytes to dump  | rest of file | Accumulative |
+| endian=   | endian 0=little, 1=big   |  0 | |
+| hex=      | 0=int or 1=hex           |  0 | |
+| skip=     | number of bytes to skip  |  0 | Accumulative |
+| start=    | number of bytes to start |  0 | Used internalyby "path->start:length" |
+| verbose=  | echo the settings        |  0 | |
+| width=    | width of output          | 40 | |
+
+path can be - or path or "path:offset->length"
+
+The term _**Accumulative**_ means you may use the option more that once and they will be added.  
+**Non Accumulative**_ settings are set when encountered.  So, the last setting will prevail.
+
+[TOC](#TOC)
+<div id="csv"/>
+#### csv.cpp
+
+The purpose of this program is to "pretty print" csv files. The only use of this program is to "pretty-print" csv output from taglist for presentation in this book.  For example:
+
+```bash
+$ taglist ALL | csv - | head -3
+[Image.ProcessingSoftware]	[11]	[0x000b]	[Image]	[Exif.Image.ProcessingSoftware]	...
+[Image.NewSubfileType]	[254]	[0x00fe]	[Image]	[Exif.Image.NewSubfileType]	[Long]	...
+[Image.SubfileType]	[255]	[0x00ff]	[Image]	[Exif.Image.SubfileType]	[Short] ...
+$ 
+```
+
+[TOC](#TOC)
+<div id="cmakelists"/>
+#### CMakeLists.txt
+
+Here is the CMakeList.txt for the code that accompanies the book.  It's similar and simpler version of the cmake code in Exiv2.
+
+```cmake
+cmake_minimum_required(VERSION 3.8)
+project(book VERSION 0.0.1 LANGUAGES CXX)
+include(CheckCXXCompilerFlag)
+
+set(CMAKE_CXX_STANDARD   11)
+set(CMAKE_CXX_EXTENSIONS ON)
+
+if("${CMAKE_SIZEOF_VOID_P}" STREQUAL "4")
+    message(FATAL_ERROR "32 bit build is not supported")  
+    error()
+endif()
+
+add_executable(visitor     visitor.cpp    )
+add_executable(tvisitor    tvisitor.cpp   )
+add_executable(dmpf        dmpf.cpp       )
+add_executable(csv         csv.cpp        )
+
+# parse.cpp will be removed later.  It's here to help me understand CRW files.
+add_executable(parse       parse.cpp      )
+
+set(CMAKE_OSX_DEPLOYMENT_TARGET "10.15"   )
+set(CMAKE_OSX_ARCHITECTURES     "x86_64"  )
+set(CMAKE_XCODE_ARCHS           "x86_64"  )
+
+option( EXIV2_TEAM_USE_SANITIZERS     "Enable ASAN when available"                     OFF )
+if ( MSVC ) 
+   option( EXIV2_ENABLE_PNG              "Build compressed/png support (requires libz)"   OFF )
+else()
+   option( EXIV2_ENABLE_PNG              "Build compressed/png support (requires libz)"   ON )
+endif()
+
+if( EXIV2_ENABLE_PNG )
+    find_package( ZLIB REQUIRED )
+endif( )
+if ( EXIV2_ENABLE_PNG AND ZLIB_FOUND ) 
+    target_link_libraries ( tvisitor PRIVATE ${ZLIB_LIBRARIES} )
+    target_compile_options( tvisitor PUBLIC -DHAVE_LIBZ)
+endif()
+
+if(WIN32)
+    find_library(WSOCK32_LIBRARY wsock32)
+    find_library(WS2_32_ LIBRARY ws2_32)
+    target_link_libraries(parse    wsock32 ws2_32)
+    target_link_libraries(tvisitor wsock32 ws2_32)
+endif()
+
+# ASAN (not on Windows).
+if ( EXIV2_TEAM_USE_SANITIZERS AND NOT (CYGWIN OR MINGW OR MSYS OR MSVC) ) 
+    check_cxx_compiler_flag(                                  -fno-omit-frame-pointer       HAS_NO_EMIT)
+    if(HAS_NO_EMIT)
+        add_compile_options(                                  -fno-omit-frame-pointer )
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fno-omit-frame-pointer")
+    endif()
+    check_cxx_compiler_flag(                                  -fsanitize=address,undefined  HAS_FSAU)
+    if(HAS_FSAU)
+        add_compile_options(                                  -fsanitize=address,undefined )
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address,undefined")
+    endif()
+    check_cxx_compiler_flag(                                  -fno-sanitize-recover=all     HAS_FSRA)
+    if(HAS_FSRA)
+        add_compile_options(                                  -fno-sanitize-recover=all )
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fno-sanitize-recover=all")
+    endif()
+endif()
+
+# Test harness (in ../test)
+add_custom_target(test  COMMAND ../test/run.sh )
+add_custom_target(tests COMMAND ../test/run.sh )
+
+# This is intentionally commented off
+# See Chapter 10 Testing for discussion about building libtiff
+if ( 0 ) 
+	include_directories(/usr/local/include)
+	link_directories(/usr/local/lib)
+	add_executable(create_tiff create_tiff.cpp)
+	target_link_libraries(create_tiff z tiff jpeg)
+endif()
+
+# That's all Folks!
+##
+```
+
+[TOC](#TOC)
+<div id="maketest"/>
 #### make test
 
 The code in the book has a simple test harness in test/run.sh.  When you build, you can run the tests with the command:
@@ -6594,7 +6749,7 @@ report()
 for i in $( ls ../files/* | sort --ignore-case ) ; do
     stub=$(basename $i)
     # dmpf and csv are utility tests
-    if [ $stub == dmpf -o $stub == csv -o $stub == args ]; then
+    if [ $stub == dmpf -o $stub == csv -o ]; then
         ./$stub ../files/$stub 2>&1 > "../test/tmp/$stub"
     else 
         ./tvisitor -pRU "$i"   2&>1 > "../test/tmp/$stub"
@@ -6610,379 +6765,6 @@ echo -------------------
 ##
 ```
 
-The CMake code in CMakeLists.txt is:
-
-```cmake
-# Test harness (in ../test)
-add_custom_target(test  COMMAND ../test/run.sh )
-add_custom_target(tests COMMAND ../test/run.sh )
-```
-
-#### args.cpp
-
-The purpose of this program is to analyse command-line arguments.
-
-```cpp
-#include <stdio.h>
-int main(int argc, char* argv[])
-{
-    int i = 1 ;
-    while ( i < argc ) {
-        printf("%-2d: %s\n",i,argv[i]) ;
-        i++;
-    }
-    return 0 ;
-}
-```
-#### csv.cpp
-
-The purpose of this program is to "pretty print" csv files. 
-
-```cpp
-// http://www.zedwood.com/article/cpp-csv-parser
-#include <string>
-#include <vector>
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <istream>
- 
-std::vector<std::string> read(std::istream &in, char delimiter)
-{
-    std::stringstream ss;
-    bool inquotes = false;
-    bool bEnd     = false;
-    char Q = '"'  ; // quote character
-    char L = '\n' ; // line-feed
-    char C = '\r' ; // carriage-return
-
-    std::vector<std::string> row;
-    
-    while(in.good() && !bEnd) {
-        char c = in.get();
-        if (!inquotes && c==Q) { 
-            inquotes=true;
-        } else if (inquotes && c==Q) { 
-            if ( in.peek() == Q) { //2 consecutive quotes resolve to 1
-                ss << (char)in.get();
-            } else { //endquotechar
-                inquotes=false;
-            }
-        } else if (!inquotes && c==delimiter) { //end of field
-            row.push_back( ss.str() );
-            ss.str("");
-        } else if (!inquotes && (c==C || c==L) ) {
-            if(in.peek()==L) { in.get(); }
-            row.push_back( ss.str() );
-            bEnd = true;
-        } else {
-          ss << c;
-        }
-    }
-    return row;
-}
- 
-int main(int argc, char *argv[])
-{
-    if ( argc != 2 ) {
-        std::cerr << "usage: " << argv[0] << " { path | - }" << std::endl;
-        return 1;
-    }
-    
-    // open file and connect to std::cin
-    std::string   path(argv[1]);
-    std::ifstream file(path);     
-    if ( path != "-" ) {
-        if ( file.is_open() ) {
-            std::cin.rdbuf(file.rdbuf());
-        } else if ( argc > 1 ) { 
-            std::cerr << "file did not open: " << path << std::endl;
-            return 2;
-        }
-    }
-    
-    // parse input line by line
-    while( std::cin.good() )
-    {
-        std::vector<std::string> row = read(std::cin , ',');
-        for(int i=0, leng=row.size(); i<leng; i++)
-            std::cout << "[" << row[i] << "]" << "\t";
-        std::cout << std::endl;
-    }
-    
-    file.close();
-    return 0;
-}
-```
-
-
-#### dmpf.cpp
-
-The purpose of this program is to inspect files.  It's _**od**_ on steroids.
-
-```cpp
-// g++ --std=c++11 dmpf.cpp
-#include <stdio.h>
-#include <map>
-#include <string.h>
-#include <vector>
-#include <string>
-#include <cstring>
-#include <iostream>
-#include <sstream>
-
-#ifdef _MSC_VER
-#pragma warning(disable : 4996)
-#endif
-
-std::vector      <std::string> paths;
-std::string                    terminal("-");
-std::map<std::string,uint32_t> options;
-
-static enum error_e
-{    errorOK = 0
-,     errorSyntax
-,   errorProcessing
-}   error = errorOK ;
-
-uint8_t print(uint8_t c) { return c >= 32 && c < 127 ? c : c==0 ? '_' : '.' ; }
-
-void printOptions(error_e e)
-{
-    if ( options["verbose"] || e == errorSyntax ) {
-        size_t count=0;
-        for ( auto option : options ) {
-            std::cout << (count++?" ":"") << option.first << "=" << option.second << "" ;
-        }
-    }
-    std::cout << std::endl;
-    error = e;
-}
-
-void syntax(int argc, char* argv[],error_e e)
-{
-    std::cout << "syntax: " << argv[0] << " [key=value]+ path+" << std::endl;
-    printOptions(errorSyntax) ;
-}
-
-bool split(const char* arg,std::string& key,uint32_t& value)
-{
-    while ( *arg == '-' ) arg++;
-    const char* chop = std::strchr(arg,'=');
-    if ( chop ) {
-        key   = std::string(arg,chop-arg);
-        value = atoi(chop+1);
-    }
-    return chop != NULL;
-}
-
-// endian and byte swappers
-bool isPlatformBigEndian()
-{
-    union { uint32_t i; char c[4]; } e = { 0x01000000 };
-    return e.c[0]?true:false;
-}
-
-uint32_t platformEndian() { return isPlatformBigEndian() ? 1 : 0; }
-void swap(void* from,void* to,size_t n)
-{
-    uint8_t*     v = reinterpret_cast<uint8_t *>(from);
-    uint8_t*  swap = reinterpret_cast<uint8_t *>(to  );
-    for (size_t i = 0; i < n; i++) {
-        swap[i] = v[n - i - 1];
-    }
-}
-uint64_t swap(uint64_t* value,bool bSwap)
-{
-    uint64_t result = *value ;
-    if ( bSwap ) swap(value,&result,sizeof result);
-    return result;
-}
-uint32_t swap(uint32_t* value,bool bSwap)
-{
-    uint32_t result = *value ;
-    if ( bSwap ) swap(value,&result,sizeof result);
-    return result;
-}
-uint16_t swap(uint16_t* value,bool bSwap)
-{
-    uint16_t result = *value ;
-    if ( bSwap ) swap(value,&result,sizeof result);
-    return result;
-}
-
-std::vector<std::string> splitter (const std::string &s, char delim)
-{
-    std::vector<std::string> result;
-    std::stringstream        ss (s);
-    std::string              item;
-
-    while (getline (ss, item, delim)) {
-        result.push_back (item);
-    }
-
-    return result;
-}
-
-bool file(const char* arg,std::string& stub,uint32_t& skip)
-{
-    std::string path(arg);
-    if ( path == terminal ) { stub = terminal ; return true ; }
-    
-    // parse path/to/file[:number+length]+
-    std::vector<std::string> paths = ::splitter(path,':');
-    for ( size_t i = 1 ; i < paths.size() ; i++ ) {
-        std::vector<std::string> numbers = splitter(paths[i],'+');
-        skip += ::atoi(numbers[0].c_str());
-    }
-    FILE*  f      = ::fopen(paths[0].c_str(),"rb");
-    bool   result = f != NULL ;
-    if     (f) fclose(f);
-    stub=paths[0];
-    return result;
-} //file
-
-int main(int argc, char* argv[])
-{
-    options["bs"     ] =  1;
-    options["width"  ] = 32;
-    options["count"  ] =  0;
-    options["endian" ] =  isPlatformBigEndian();
-    options["hex"    ] =  1;
-    options["skip"   ] =  0;
-    options["verbose"] =  0;
-    options["start"  ] =  0; // set by file[:start->length]+
-
-    // parse arguments
-    if ( argc < 2 ) {
-        syntax(argc,argv,errorSyntax) ;
-    } else for ( int i = 1 ; i < argc ; i++ ) {
-        const char* arg = argv[i];
-        std::string key;
-        std::string stub;
-        uint32_t    value ;
-        bool        bClaimed = false;
-        if ( split(argv[i],key,value) ) {
-            if ( options.find(key) != options.end() ) {
-                options[key]+=value;
-                bClaimed = true ;
-            }
-        } else if ( file(arg,stub,options["start"]) ) {
-            paths.push_back(stub);
-            bClaimed = true;
-        }
-        if ( !bClaimed ) {
-            std::cerr << "argument not understood: " << arg << std::endl;
-            error = errorProcessing;
-        }
-    }
-            
-    // report arguments
-    if ( options["verbose"] ) printOptions(error) ;
-    
-    // process
-    if ( !error  ) for ( auto path : paths ) {
-        FILE* f = NULL  ;
-        size_t  size   = 1;
-        size_t  skip   = options["skip" ];
-        size_t  count  = options["count"];
-        size_t  width  = options["width"];
-        size_t  start  = options["start"];
-        
-        std::cout << "path = " << path << std::endl;
-
-        if ( path != terminal ) {
-            f     = fopen(path.c_str(),"rb");
-            fseek(f,0,SEEK_END);
-            size  = ftell(f);
-        } else {
-            f      = stdin   ;
-            size   = 256*1024;
-        }
-        if ( !count ) count = size - skip-start;
-        if ( !f || (skip+count+start) > size ) {
-            std::cerr << path << " insufficient data" << std::endl;
-            error = errorProcessing;
-        }
-        
-        char    line[1000]  ;
-        char    buff[64]    ;
-        size_t  reads  = 0 ; // count the reads
-        size_t  nRead  = 0 ; // bytes actually read
-        size_t  remain = count ; // how many bytes still to read
-        if ( width > sizeof buff ) width = sizeof(buff);
-        fseek(f,(long)skip+start,SEEK_SET);
-        
-        if ( !error ) while ( remain && (nRead = fread(buff,1,remain>width?width:remain,f)) > 0 ) {
-            // line number
-            int l = sprintf(line,"%#8lx %8ld: ",(unsigned long)(skip+reads*width), (unsigned long)(skip+reads*width) ) ;
-
-            // ascii print
-            for ( int i = 0 ; i < nRead ; i++ ) {
-                l += sprintf(line+l,"%c", print(buff[i])) ;
-            }
-
-            // blank pad the ascii
-            size_t  n   = nRead ;
-            while ( n++ <  width ) {
-                l += sprintf(line+l," ") ;
-            }
-            l += sprintf(line+l,"  -> ") ;
-            
-            size_t   bs = options["bs"];
-            switch ( bs ) {
-            case 8 :
-                for ( size_t i = 0 ; i < nRead; i += bs ) {
-                    uint64_t* p = (uint64_t*) &buff[i] ;
-                    uint64_t  v = swap(p, options["endian"]!=platformEndian() );
-                    l += options["hex"] ? sprintf(line+l," %16llx" ,(long long int)v )
-                                        : sprintf(line+l," %20lld" ,(long long int)v )
-                    ;
-                }
-            break;
-            case 4 :
-                for ( size_t i = 0 ; i < nRead ; i += bs ) {
-                    uint32_t* p = (uint32_t*) &buff[i] ;
-                    uint32_t  v = swap(p,  options["endian"]!=platformEndian());
-                    l += options["hex"] ? sprintf(line+l,"  %8x" ,v )
-                                        : sprintf(line+l," %10d" ,v )
-                    ;
-                }
-            break;
-            case 2:
-                for ( size_t i = 0 ; i < nRead ; i += bs ) {
-                    uint16_t* p = (uint16_t*) &buff[i] ;
-                    uint16_t  v = swap(p,  options["endian"]!=platformEndian());
-                    l += options["hex"] ? sprintf(line+l," %4x" ,v )
-                                        : sprintf(line+l," %5d" ,v )
-                    ;
-                }
-            break;
-            default:
-                for ( int i = 0 ; i < nRead ; i++ ) { // bs == 1
-                    uint8_t v = buff[i];
-                    l += options["hex"] ? sprintf(line+l," %02x" ,v )
-                                    : sprintf(line+l," %3d" ,v )
-                    ;
-                }
-            }
-
-            line[l] = 0 ;
-            std::cout << line << std::endl;
-            reads++;
-            remain -= nRead;
-            if ( path == terminal ) size += nRead;
-        } // while remains && nRead
-
-        if ( f != stdin ) {
-            fclose(f);
-        }
-        f = NULL;
-    }
-
-    return error ;
-} // main
-```
 
 [TOC](#TOC)
 # The Last Word

@@ -2,8 +2,10 @@ cmake_minimum_required(VERSION 3.8)
 project(book VERSION 0.0.1 LANGUAGES CXX)
 include(CheckCXXCompilerFlag)
 
-set(CMAKE_CXX_STANDARD   11)
-set(CMAKE_CXX_EXTENSIONS ON)
+set(CMAKE_CXX_STANDARD                11 )
+set(CMAKE_CXX_EXTENSIONS              ON )
+set(CMAKE_OSX_ARCHITECTURES     "x86_64" )
+set(CMAKE_XCODE_ARCHS           "x86_64" )
 
 if("${CMAKE_SIZEOF_VOID_P}" STREQUAL "4")
     message(FATAL_ERROR "32 bit build is not supported")  
@@ -11,22 +13,27 @@ if("${CMAKE_SIZEOF_VOID_P}" STREQUAL "4")
 endif()
 
 add_executable(visitor     visitor.cpp    )
-add_executable(parse       parse.cpp      )
 add_executable(tvisitor    tvisitor.cpp   )
-add_executable(args        args.cpp       )
 add_executable(dmpf        dmpf.cpp       )
-add_executable(csv         csv.cpp       )
+add_executable(csv         csv.cpp        )
+add_executable(parse       parse.cpp      )
 
-set(CMAKE_OSX_DEPLOYMENT_TARGET "10.13.0")
-set(CMAKE_OSX_ARCHITECTURES     "x86_64" )
-set(CMAKE_XCODE_ARCHS           "x86_64" )
+# calm Xcode 12 (macOS 11.0/Big Sur) complaining about the platform   
+if ( APPLE ) 
+    # Don't know what execute_process doesn't set SW_VERS correctly.
+    if ( 1 )  
+        set (SW_VERS 10.15)
+    else()
+        execute_process(COMMAND  sw_vers -productVersion OUTPUT_VARIABLE SW_VERS)
+    endif()
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "${SW_VERS}")
+endif()
 
-
-option( EXIV2_TEAM_USE_SANITIZERS     "Enable ASAN when available"                     OFF )
+option( EXIV2_TEAM_USE_SANITIZERS  "Enable ASAN when available"                     OFF )
 if ( MSVC ) 
-   option( EXIV2_ENABLE_PNG              "Build compressed/png support (requires libz)"   OFF )
+   option( EXIV2_ENABLE_PNG        "Build compressed/png support (requires libz)"   OFF )
 else()
-   option( EXIV2_ENABLE_PNG              "Build compressed/png support (requires libz)"   ON )
+   option( EXIV2_ENABLE_PNG        "Build compressed/png support (requires libz)"   ON )
 endif()
 
 if( EXIV2_ENABLE_PNG )
@@ -44,7 +51,7 @@ if(WIN32)
     target_link_libraries(tvisitor wsock32 ws2_32)
 endif()
 
-# ASAN (not on Windows).
+# ASAN (not on Windows)
 if ( EXIV2_TEAM_USE_SANITIZERS AND NOT (CYGWIN OR MINGW OR MSYS OR MSVC) ) 
     check_cxx_compiler_flag(                                  -fno-omit-frame-pointer       HAS_NO_EMIT)
     if(HAS_NO_EMIT)
@@ -63,13 +70,12 @@ if ( EXIV2_TEAM_USE_SANITIZERS AND NOT (CYGWIN OR MINGW OR MSYS OR MSVC) )
     endif()
 endif()
 
-
 # Test harness (in ../test)
 add_custom_target(test  COMMAND ../test/run.sh )
 add_custom_target(tests COMMAND ../test/run.sh )
 
 # This is intentionally commented off
-# See Chapter 10 Testing for discussion about building libtiff
+# See Chapter 8 Testing for discussion about building libtiff
 if ( 0 ) 
 	include_directories(/usr/local/include)
 	link_directories(/usr/local/lib)

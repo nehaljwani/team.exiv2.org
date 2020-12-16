@@ -34,7 +34,7 @@ while [ "$#" != "0" ]; do
       -d|--dryrun|-dryrun)    dryrun=1      ;;
       -h|--help|-help|-\?)    help=1        ;;
       -l|--list|-list)        list=1        ;;
-      -n|--name|-name)        if [ $# -gt 0 ]; then name="-name $1"         ; shift; else bomb $arg ; fi ;;
+      -n|--name|-name)        if [ $# -gt 0 ]; then name="-iname $1"         ; shift; else bomb $arg ; fi ;;
       -o|--option|-option)    if [ $# -gt 0 ]; then option="$option $1"     ; shift; else bomb $arg ; fi ;;
       -p|--program|-program)  if [ $# -gt 0 ]; then program="$1"            ; shift; else bomb $arg ; fi ;;
       -s|--section|-section)  if [ $# -gt 0 ]; then section="$1"            ; shift; else bomb $arg ; fi ;;
@@ -49,19 +49,23 @@ if [ ! -z $help      ]; then syntax ; exit 0      ; fi
 if [ ! -z $section   ]; then testfiles="$testfiles/$section" ; fi
 if [ ! -d $testfiles ]; then  >&2 echo "directory $testfiles does not exit" ; exit 1 ; fi
 if [   -z $program   ]; then program=tvisitor     ; fi
-if [ ! -z $name      ]; then name="-name '$name'" ; fi
 if [ ! -z $dryrun    ]; then verbose=1            ; fi
 
 if [ ! -z $verbose   ]; then
     echo program = $program
     echo section = $section
     echo option  = $option
+    echo name    = $name
 fi
 if [ ! -z $dryrun ]; then exit ; exit ; fi
 
 if [ ! -z $list ]; then
-    cd "$testfiles"
-    ls -1 | sort
+    if [ -z "$name" ]; then
+        cd "$testfiles"
+        ls -1 | sort
+    else
+        find "$testfiles" -type f $name
+    fi
     exit 0
 fi
 
