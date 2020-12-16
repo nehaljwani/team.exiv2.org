@@ -22,8 +22,6 @@ _And our cat Lizzie._
 
 <center><img src="MusicRoom.jpg" width="500" style="border:2px solid #21668F;"/></center>
 
-[TOC](#TOC)  
-
 ## <center>TABLE of CONTENTS</center>
 <div id="TOC"/>
 
@@ -2106,11 +2104,11 @@ The structure of those tags is defined on page34 of the Exiv2-2 Specification.  
 
 These tags are discussed and explained in the Exiv2 man page.  The code in tvisitor.cpp does not deal with CharSet decoding and reports the binary values of the bytes.
 
-The tag XMLPacket is normally an array of BYTE values.  The encoding of such a string defaults to UTF-8 and can be defined in the XML Processing Instruction.  For an Exif/Tiff perspective, the count is the number of bytes used to store the string.  The length of the decoded string may differ.
+The tag XMLPacket is normally an array of BYTE values.  The encoding of such a string defaults to UTF-8 and can be defined in the XML Processing Instruction.  From an Exif/Tiff perspective, the count is the number of bytes used to store the string.  The length of the decoded string may differ.
  
-### Inspecting the Values of Exif Data
+### Inspecting Exif MetaData
 
-Let's look at the metadata in the file files/Stonehenge.jpg and files/Stonehenge.tiff
+Let's look at the metadata in files/Stonehenge.jpg:
 
 ```bash
 $ exiv2 -pe files/Stonehenge.jpg
@@ -2121,68 +2119,53 @@ Exif.Image.ExifTag               Long        1  222
 Exif.Photo.ExposureTime          Rational    1  1/400 s
 Exif.Photo.FNumber               Rational    1  F10
 ...
-Exif.Photo.MakerNote             Undefined 3152  78 105 107 111 110 
+Exif.Photo.MakerNote             Undefined 3152  78 105 107 111 110 ...
 Exif.Nikon3.Version              Undefined   4  2.11
 Exif.Nikon3.ISOSpeed             Short       2  200
 ...
 Exif.NikonPc.Version             Undefined   4  1.00
 Exif.NikonPc.Name                Ascii      20  STANDARD
 ...
-Exif.Photo.SensingMethod         Short       1  One-chip color area
-Exif.Photo.FileSource            Undefined   1  Digital still camera
-..
+Exif.Photo.UserComment           Undefined  20  charset=Ascii Classic View
+...
+Exif.Photo.ImageUniqueID         Ascii      33  090caaf2c085f3e102513b24750041aa
 Exif.Image.GPSTag                Long        1  4104
 Exif.GPSInfo.GPSVersionID        Byte        4  2.3.0.0
 Exif.GPSInfo.GPSLatitudeRef      Ascii       2  North
-Exif.GPSInfo.GPSLatitude         Rational    3  51deg 11' 0"
-...
-Iptc.Envelope.ModelVersion       Short       1  4
-Iptc.Envelope.CharacterSet       String      3  _%G
-Iptc.Application2.RecordVersion  Short       1  4
-Iptc.Application2.Caption        String     12  Classic View
-Xmp.xmp.Rating                   XmpText     1  0
-Xmp.xmp.ModifyDate               XmpText    25  2015-07-16T20:25:28+01:00
-Xmp.cm2e.Father                  XmpText    11  Robin Mills
-Xmp.cm2e.Family                  XmpBag      0  
-Xmp.dc.description               LangAlt     1  lang="x-default" Classic View
-Xmp.dc.Family                    XmpBag      1  Robin
-```
-
-```
-$ exiv2 -pe files/Stonehenge.files
-Exif.Image.ImageWidth                Short       1  300
-Exif.Image.ImageLength               Short       1  200
-...
-Exif.Image.ExifTag                   Long        1  8
-Exif.Photo.ExposureTime              Rational    1  1/400 s
-Exif.Photo.FNumber                   Rational    1  F10
-...
-Exif.Photo.ImageUniqueID             Ascii      33  090caaf2c085f3e102513b24750041aa
-Exif.Image.InterColorProfile         Undefined 3144  0 0 12 
-Exif.Image.GPSTag                    Long        1  629
-Exif.GPSInfo.GPSVersionID            Byte        4  2.3.0.0
-Exif.GPSInfo.GPSLatitudeRef          Ascii       2  North
-Exif.GPSInfo.GPSLatitude             Rational    3  51deg 10' 42"
-...
-Iptc.Envelope.CharacterSet           String      3  _%G
-Iptc.Application2.RecordVersion      Short       1  2
-Iptc.Application2.DigitizationTime   Time       11  15:38:54+00:00
-...
-Xmp.cm2e.Family                      XmpBag      0  
-Xmp.cm2e.Father                      XmpText    11  Robin Mills
-Xmp.dc.Family                        XmpBag      1  Robin
-Xmp.dc.description                   LangAlt     1  lang="x-default" Classic View
+Exif.GPSInfo.GPSLatitude         Rational    3  51d 11m 0s
 ...
 ```
 
-The conversion from files/Stonehenge.jpg to files/Stonehenge.tif was performed with Preview.app on macOS.  Several observations about this:
+And files/Stonehenge.tiff:
+
+```
+$ exiv2 -pe files/Stonehenge.tiff
+Exif.Image.Make                  Ascii      18  NIKON CORPORATION
+Exif.Image.Model                 Ascii      12  NIKON D5300
+...
+Exif.Image.ExifTag               Long        1  8
+Exif.Photo.ExposureTime          Rational    1  1/400 s
+Exif.Photo.FNumber               Rational    1  F10
+...
+Exif.Photo.UserComment           Undefined  20  charset=Ascii Classic View
+...
+Exif.Photo.ImageUniqueID         Ascii      33  090caaf2c085f3e102513b24750041aa
+Exif.Image.InterColorProfile     Undefined 3144  0 0 12 
+Exif.Image.GPSTag                Long        1  629
+Exif.GPSInfo.GPSVersionID        Byte        4  2.3.0.0
+Exif.GPSInfo.GPSLatitudeRef      Ascii       2  North
+Exif.GPSInfo.GPSLatitude         Rational    3  51d 10m 42s
+...
+```
+
+The conversion from files/Stonehenge.jpg to files/Stonehenge.tiff was performed with Preview.app on macOS.  Several observations about this:
 
 1. The data is very similar.
-2. The Stonehenge.jpg has a maker note and Stonehenge.tiff does not.
-3. The Stonehenge.tiff has an ICC profile and Stonehenge.jpg does not.
-4. The order is the same.  Exif.Image, Exif.Photo, Exif.Nikon, Exif.GPSInfo, Iptc, Xmp.
+2. Stonehenge.jpg has a MakerNote and Stonehenge.tiff does not.
+3. Stonehenge.tiff has an ICC profile and Stonehenge.jpg does not.
+4. The order is the same.  Exif.Image, Exif.Image.ExifTag, Exif.Photo, Exif.Photo.MakerNote, Exif.Nikon, Exif.Image.GPSTag,Exif.GPSInfo
 
-For the moment, take comfort from that both are very similar.  By the end of the book, you will understand the differences. 
+For the moment, take comfort that both are very similar.  By the end of the book, you will understand the differences. 
 
 [TOC](#TOC)
 <div id="XMP"/>
