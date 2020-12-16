@@ -7,33 +7,34 @@ set(CMAKE_CXX_EXTENSIONS              ON )
 set(CMAKE_OSX_ARCHITECTURES     "x86_64" )
 set(CMAKE_XCODE_ARCHS           "x86_64" )
 
+# build for the current version of macOS
+if ( APPLE ) 
+    execute_process(COMMAND sw_vers -productVersion
+                    OUTPUT_STRIP_TRAILING_WHITESPACE
+                    OUTPUT_VARIABLE SW_VERS
+                   )
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "${SW_VERS}")
+endif()
+
+# don't build for 32bit (size_t/sprintf unhappiness)
 if("${CMAKE_SIZEOF_VOID_P}" STREQUAL "4")
     message(FATAL_ERROR "32 bit build is not supported")  
     error()
 endif()
 
+# the programs
 add_executable(visitor     visitor.cpp    )
 add_executable(tvisitor    tvisitor.cpp   )
 add_executable(dmpf        dmpf.cpp       )
 add_executable(csv         csv.cpp        )
 add_executable(parse       parse.cpp      )
 
-# calm Xcode 12 (macOS 11.0/Big Sur) complaining about the platform   
-if ( APPLE ) 
-    # Don't know what execute_process doesn't set SW_VERS correctly.
-    if ( 1 )  
-        set (SW_VERS 10.15)
-    else()
-        execute_process(COMMAND  sw_vers -productVersion OUTPUT_VARIABLE SW_VERS)
-    endif()
-    set(CMAKE_OSX_DEPLOYMENT_TARGET "${SW_VERS}")
-endif()
-
-option( EXIV2_TEAM_USE_SANITIZERS  "Enable ASAN when available"                     OFF )
+# options
+option(    EXIV2_TEAM_USE_SANITIZERS  "Enable ASAN when available"                  OFF )
 if ( MSVC ) 
    option( EXIV2_ENABLE_PNG        "Build compressed/png support (requires libz)"   OFF )
 else()
-   option( EXIV2_ENABLE_PNG        "Build compressed/png support (requires libz)"   ON )
+   option( EXIV2_ENABLE_PNG        "Build compressed/png support (requires libz)"   ON  )
 endif()
 
 if( EXIV2_ENABLE_PNG )
@@ -45,8 +46,8 @@ if ( EXIV2_ENABLE_PNG AND ZLIB_FOUND )
 endif()
 
 if(WIN32)
-    find_library(WSOCK32_LIBRARY wsock32)
-    find_library(WS2_32_ LIBRARY ws2_32)
+    find_library(WSOCK32_LIBRARY   wsock32)
+    find_library(WS2_32_LIBRARY    ws2_32)
     target_link_libraries(parse    wsock32 ws2_32)
     target_link_libraries(tvisitor wsock32 ws2_32)
 endif()

@@ -53,9 +53,9 @@ _And our cat Lizzie._
 | [7.3 The EasyAccess API](#7-3)                        | 44 | [10.2 The Fuzzing Police](#10-2)         | 27 | [11.23 Partners](#11-23)                | 81 |
 | [7.4 Listing the API](#7-4)                           | 44 |                                          | 28 | [11.24 Development](#11-24)             | 81 |
 | [7.5 Function Selectors](#7-5)                        | 48 | [12. Code discussed in this book](#12)   | 29 |                                         | 81 |
-| [7.6 Tags in Exiv2](#7-6)                             | 53 | [tvisitor](#tvisitor)                    | 30 | _**Other Sections**_                    | 81 |
-| [7.7 Tag Decoder](#7-7)                               | 57 | [dmpf](#dmpf)                            |    | [Dedication](#dedication)               | 81 |
-| [7.8 TiffVisitor](#7-8)                               | 59 | [csv](#csv)                              |    | [About this book](#about)               | 81 |
+| [7.6 Tags in Exiv2](#7-6)                             | 53 | [tvisitor.cpp](#tvisitor)                | 30 | _**Other Sections**_                    | 81 |
+| [7.7 Tag Decoder](#7-7)                               | 57 | [dmpf.cpp](#dmpf)                        |    | [Dedication](#dedication)               | 81 |
+| [7.8 TiffVisitor](#7-8)                               | 59 | [csv.cpp](#csv)                          |    | [About this book](#about)               | 81 |
 | [7.9 Other Exiv2 Classes](#7-9)                       | 61 | [CMakeLists.txt](#cmakelists)            |    | [How did I get here?](#begin)           | 82 |
 |                                                       | 63 | [make test](#maketest)                   |    | [2012 - 2017](#2012)                    |    |
 | [8. Test Suite](#8)                                   | 63 |                                          |    | [Current Priorities](#current)          | 82 |
@@ -6432,7 +6432,7 @@ There is substantial documentation provided with the Exiv2 project.  This book d
 
 [TOC](#TOC)
 <div id="tvisitor"/>
-#### tvisitor
+### tvisitor.cpp
 
 The syntax for tvisitor is:
 
@@ -6529,38 +6529,64 @@ Exiv2 provides a unique capability to the Community and its long term maintenanc
  
 [TOC](#TOC)
 <div id="dmpf"/>
-#### dmpf.cpp
+### dmpf.cpp
 
 The purpose of this program is to inspect files.  It's _**od**_ on steroids combined with parts of _**dd**_.
 
 ```bash
-559 rmills@rmillsmm-local:~/gnu/exiv2/team/book/build $ dmpf -h
-syntax: dmpf [key=value]+ path+
-options: bs=1 count=0 endian=0 hex=1 skip=0 start=0 verbose=0 width=32
-560 rmills@rmillsmm-local:~/gnu/exiv2/team/book/build $ 
+$ dmpf -h
+usage: ./dmpf [-]+[key=value]+ path+
+options: bs=1 count=0 dryrun=0 endian=0 hex=1 skip=0 start=0 verbose=0 width=32
+$ 
 ```
 
 There are numerous examples of this utility in the book.  The options are:
 
 | Option    | Description              | Default | Comment |
-|:--        |:--                       |:--      |:--    |
-| bs=       | block size (1,2 or 4)    |  1 | |
+|:--        |:--                       |:--      |:--      |
+| bs=       | block size               |  1 | 1,2 or 4     |
 | count=    | number of bytes to dump  | rest of file | Accumulative |
-| endian=   | endian 0=little, 1=big   |  0 | |
+| dryrun=   | report options and quite |  0 | |
+| endian=   | endian 0=little, 1=big   |  0 | toggles native endian |
 | hex=      | 0=int or 1=hex           |  0 | |
 | skip=     | number of bytes to skip  |  0 | Accumulative |
 | start=    | number of bytes to start |  0 | Used internalyby "path->start:length" |
 | verbose=  | echo the settings        |  0 | |
-| width=    | width of output          | 40 | |
+| width=    | width of output          | 32 | |
 
 path can be - or path or "path:offset->length"
 
 The term _**Accumulative**_ means you may use the option more that once and they will be added.  
 **Non Accumulative**_ settings are set when encountered.  So, the last setting will prevail.
 
+Here are some examples, using files/Stonehenge.jpg for which the structure is:
+
+```bash
+$ tvisitor -pS files/Stonehenge.jpg
+STRUCTURE OF JPEG FILE (II): files/Stonehenge.jpg
+ address | marker       |  length | signature
+       0 | 0xffd8 SOI  
+       2 | 0xffe1 APP1  |   15272 | Exif__II*_.___._..._.___.___..._.___.___
+   15276 | 0xffe1 APP1  |    2786 | http://ns.adobe.com/xap/1.0/_<?xpacket b
+   18064 | 0xffed APP13 |      96 | Photoshop 3.0_8BIM.._____'..__._...Z_..%
+   18162 | 0xffe2 APP2  |    4094 | MPF_II*_.___.__.._.___0100..._.___.___..
+   22258 | 0xffdb DQT   |     132 | _.......................................
+   22392 | 0xffc0 SOF0  |      17 | ....p..!_........
+   22411 | 0xffc4 DHT   |     418 | __........________............_.........
+   22831 | 0xffda SOS   |      12 | .._...._?_..
+END: files/Stonehenge.jpg
+$ 
+```
+
+| Purpose                    | Command                                                   | Output |
+|:--                         |:--                                                        |:--     | 
+| Dump the first 16 bytes    | $ dmpf count=16 files/Stonehenge.jpg                      | `   0        0: ....;.Exif__II*_              ->  ff d8 ff e1 3b a8 45 78 69 66 00 00 49 49 2a 00` |
+| Dump 12 bytes of Exif data | $ dmpf count=12 skip=2 skip=4 skip=6 files/Stonehenge.jpg | ` 0xc       12: II*_.___._..                      ->  49 49 2a 00 08 00 00 00 0b 00 0f 01` |
+| Dump 12 bytes of Exif data | $ dmpf 'files/Stonehenge.jpg:12&#8209;>24'                | ` 0xc       12: II*_.___._..                      ->  49 49 2a 00 08 00 00 00 0b 00 0f 01` |
+
 [TOC](#TOC)
 <div id="csv"/>
-#### csv.cpp
+### csv.cpp
 
 The purpose of this program is to "pretty print" csv files. The only use of this program is to "pretty-print" csv output from taglist for presentation in this book.  For example:
 
@@ -6574,7 +6600,7 @@ $
 
 [TOC](#TOC)
 <div id="cmakelists"/>
-#### CMakeLists.txt
+### CMakeLists.txt
 
 Here is the CMakeList.txt for the code that accompanies the book.  It's similar and simpler version of the cmake code in Exiv2.
 
@@ -6583,31 +6609,39 @@ cmake_minimum_required(VERSION 3.8)
 project(book VERSION 0.0.1 LANGUAGES CXX)
 include(CheckCXXCompilerFlag)
 
-set(CMAKE_CXX_STANDARD   11)
-set(CMAKE_CXX_EXTENSIONS ON)
+set(CMAKE_CXX_STANDARD                11 )
+set(CMAKE_CXX_EXTENSIONS              ON )
+set(CMAKE_OSX_ARCHITECTURES     "x86_64" )
+set(CMAKE_XCODE_ARCHS           "x86_64" )
 
+# build for the current version of macOS
+if ( APPLE ) 
+    execute_process(COMMAND sw_vers -productVersion
+                    OUTPUT_STRIP_TRAILING_WHITESPACE
+                    OUTPUT_VARIABLE SW_VERS
+                   )
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "${SW_VERS}")
+endif()
+
+# don't build for 32bit (size_t/sprintf unhappiness)
 if("${CMAKE_SIZEOF_VOID_P}" STREQUAL "4")
     message(FATAL_ERROR "32 bit build is not supported")  
     error()
 endif()
 
+# the programs
 add_executable(visitor     visitor.cpp    )
 add_executable(tvisitor    tvisitor.cpp   )
 add_executable(dmpf        dmpf.cpp       )
 add_executable(csv         csv.cpp        )
-
-# parse.cpp will be removed later.  It's here to help me understand CRW files.
 add_executable(parse       parse.cpp      )
 
-set(CMAKE_OSX_DEPLOYMENT_TARGET "10.15"   )
-set(CMAKE_OSX_ARCHITECTURES     "x86_64"  )
-set(CMAKE_XCODE_ARCHS           "x86_64"  )
-
-option( EXIV2_TEAM_USE_SANITIZERS     "Enable ASAN when available"                     OFF )
+# options
+option(    EXIV2_TEAM_USE_SANITIZERS  "Enable ASAN when available"                  OFF )
 if ( MSVC ) 
-   option( EXIV2_ENABLE_PNG              "Build compressed/png support (requires libz)"   OFF )
+   option( EXIV2_ENABLE_PNG        "Build compressed/png support (requires libz)"   OFF )
 else()
-   option( EXIV2_ENABLE_PNG              "Build compressed/png support (requires libz)"   ON )
+   option( EXIV2_ENABLE_PNG        "Build compressed/png support (requires libz)"   ON  )
 endif()
 
 if( EXIV2_ENABLE_PNG )
@@ -6619,13 +6653,13 @@ if ( EXIV2_ENABLE_PNG AND ZLIB_FOUND )
 endif()
 
 if(WIN32)
-    find_library(WSOCK32_LIBRARY wsock32)
-    find_library(WS2_32_ LIBRARY ws2_32)
+    find_library(WSOCK32_LIBRARY   wsock32)
+    find_library(WS2_32_LIBRARY    ws2_32)
     target_link_libraries(parse    wsock32 ws2_32)
     target_link_libraries(tvisitor wsock32 ws2_32)
 endif()
 
-# ASAN (not on Windows).
+# ASAN (not on Windows)
 if ( EXIV2_TEAM_USE_SANITIZERS AND NOT (CYGWIN OR MINGW OR MSYS OR MSVC) ) 
     check_cxx_compiler_flag(                                  -fno-omit-frame-pointer       HAS_NO_EMIT)
     if(HAS_NO_EMIT)
@@ -6649,7 +6683,7 @@ add_custom_target(test  COMMAND ../test/run.sh )
 add_custom_target(tests COMMAND ../test/run.sh )
 
 # This is intentionally commented off
-# See Chapter 10 Testing for discussion about building libtiff
+# See Chapter 8 Testing for discussion about building libtiff
 if ( 0 ) 
 	include_directories(/usr/local/include)
 	link_directories(/usr/local/lib)
@@ -6663,7 +6697,7 @@ endif()
 
 [TOC](#TOC)
 <div id="maketest"/>
-#### make test
+### make test
 
 The code in the book has a simple test harness in test/run.sh.  When you build, you can run the tests with the command:
 

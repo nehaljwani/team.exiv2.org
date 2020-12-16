@@ -17,8 +17,8 @@ std::string                    terminal("-");
 std::map<std::string,uint32_t> options;
 
 static enum error_e
-{    errorOK = 0
-,     errorSyntax
+{   errorOK = 0
+,   errorSyntax
 ,   errorProcessing
 }   error = errorOK ;
 
@@ -39,7 +39,7 @@ void printOptions(error_e e)
 
 void syntax(int argc, char* argv[],error_e e)
 {
-    std::cout << "syntax: " << argv[0] << " [key=value]+ path+" << std::endl;
+    std::cout << "usage: " << argv[0] << " [-]+[key=value]+ path+" << std::endl;
     printOptions(errorSyntax) ;
 }
 
@@ -102,16 +102,25 @@ std::vector<std::string> splitter (const std::string &s, char delim)
     return result;
 }
 
-bool file(const char* arg,std::string& stub,uint32_t& skip)
+bool file(const char* arg,std::string& stub,uint32_t& skip,uint32_t& count)
 {
     std::string path(arg);
     if ( path == terminal ) { stub = terminal ; return true ; }
-    
+
     // parse path/to/file[:number+length]+
     std::vector<std::string> paths = ::splitter(path,':');
     for ( size_t i = 1 ; i < paths.size() ; i++ ) {
-        std::vector<std::string> numbers = splitter(paths[i],'+');
-        skip += ::atoi(numbers[0].c_str());
+        std::vector<std::string> numbers;
+        // path:start
+        numbers   = splitter(paths[i],'+');
+        if ( numbers.size() ) {
+            skip     += ::atoi(numbers[0].c_str());
+            // path:start->count
+            numbers   = splitter(numbers[0],'>');
+            if ( !count && numbers.size() > 1 ) {
+                count = ::atoi(numbers[1].c_str());
+            }
+        }
     }
     FILE*  f      = ::fopen(paths[0].c_str(),"rb");
     bool   result = f != NULL ;
@@ -129,6 +138,7 @@ int main(int argc, char* argv[])
     options["hex"    ] =  1;
     options["skip"   ] =  0;
     options["verbose"] =  0;
+    options["dryrun" ] =  0;
     options["start"  ] =  0; // set by file[:start->length]+
 
     // parse arguments
@@ -145,13 +155,13 @@ int main(int argc, char* argv[])
         if ( split(argv[i],key,value) ) {
             if ( options.find(key) != options.end() ) {
                 bClaimed = true ;
-                if ( key == "bs" || key == "hex" || key == "verbose" || key == "endian" ) {
+                if ( key == "bs" || key == "hex" || key == "verbose" || key == "endian" || key == "dryrun" ) {
                     options[key] =value; // boolean keys
                 } else {
                     options[key]+=value; // accumulative keys
                 }
             }
-        } else if ( file(arg,stub,options["start"]) ) {
+        } else if ( file(arg,stub,options["start"],options["count"]) ) {
             paths.push_back(stub);
             bClaimed = true;
         }
@@ -160,10 +170,11 @@ int main(int argc, char* argv[])
             error = errorProcessing;
         }
     }
-            
+
     // report arguments
-    if ( options["verbose"] ) printOptions(error) ;
-    
+    if ( options["verbose"] || options["dryrun"]  ) printOptions(error) ;
+    if ( options["dryrun"] ) exit(0);
+
     // process
     if ( !error  ) for ( auto path : paths ) {
         FILE* f = NULL  ;
@@ -172,7 +183,7 @@ int main(int argc, char* argv[])
         size_t  count  = options["count"];
         size_t  width  = options["width"];
         size_t  start  = options["start"];
-        
+
         if ( path != terminal ) {
             f     = fopen(path.c_str(),"rb");
             fseek(f,0,SEEK_END);
@@ -186,7 +197,7 @@ int main(int argc, char* argv[])
             std::cerr << path << " insufficient data" << std::endl;
             error = errorProcessing;
         }
-        
+
         char    line[1000]  ;
         char    buff[64]    ;
         size_t  reads  = 0 ; // count the reads
@@ -194,7 +205,7 @@ int main(int argc, char* argv[])
         size_t  remain = count ; // how many bytes still to read
         if ( width > sizeof buff ) width = sizeof(buff);
         fseek(f,(long)skip+start,SEEK_SET);
-        
+
         if ( !error ) while ( remain && (nRead = fread(buff,1,remain>width?width:remain,f)) > 0 ) {
             // line number
             int l = sprintf(line,"%#8lx %8ld: ",(unsigned long)(skip+reads*width), (unsigned long)(skip+reads*width) ) ;
@@ -210,7 +221,7 @@ int main(int argc, char* argv[])
                 l += sprintf(line+l," ") ;
             }
             l += sprintf(line+l,"  -> ") ;
-            
+
             size_t   bs = options["bs"];
             switch ( bs ) {
             case 8 :
