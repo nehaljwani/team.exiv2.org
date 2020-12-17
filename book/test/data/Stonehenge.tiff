@@ -1,30 +1,30 @@
 STRUCTURE OF TIFF FILE (MM): ../files/Stonehenge.tiff
  address |    tag                              |      type |    count |    offset | value
-  240818 | 0x0100 Exif.Image.ImageWidth        |     SHORT |        1 |           | 0
-  240830 | 0x0101 Exif.Image.ImageLength       |     SHORT |        1 |           | 0
-  240842 | 0x0102 Exif.Image.BitsPerSample     |     SHORT |        4 |    241162 | 8 8 8 8
-  240854 | 0x0103 Exif.Image.Compression       |     SHORT |        1 |           | 0
-  240866 | 0x0106 Exif.Image.PhotometricInte.. |     SHORT |        1 |           | 0
-  240878 | 0x010a Exif.Image.0x10a             |     SHORT |        1 |           | 0
-  240890 | 0x010e Exif.Image.ImageDescription  |     ASCII |       13 |    241194 | Classic View
-  240902 | 0x010f Exif.Image.Make              |     ASCII |       18 |    241208 | NIKON CORPORATION
-  240914 | 0x0110 Exif.Image.Model             |     ASCII |       12 |    241226 | NIKON D5300
-  240926 | 0x0111 Exif.Image.StripOffsets      |      LONG |        2 |    241178 | 816 131616
-  240938 | 0x0112 Exif.Image.Orientation       |     SHORT |        1 |           | 0
-  240950 | 0x0115 Exif.Image.SamplesPerPixel   |     SHORT |        1 |           | 0
-  240962 | 0x0116 Exif.Image.RowsPerStrip      |     SHORT |        1 |           | 0
-  240974 | 0x0117 Exif.Image.StripByteCounts   |      LONG |        2 |    241170 | 130800 109200
-  240986 | 0x011a Exif.Image.XResolution       |  RATIONAL |        1 |    241146 | 300/1
-  240998 | 0x011b Exif.Image.YResolution       |  RATIONAL |        1 |    241154 | 300/1
-  241010 | 0x011c Exif.Image.PlanarConfigura.. |     SHORT |        1 |           | 0
-  241022 | 0x0128 Exif.Image.ResolutionUnit    |     SHORT |        1 |           | 0
-  241034 | 0x0131 Exif.Image.Software          |     ASCII |       10 |    241238 | Ver.1.00 
-  241046 | 0x0132 Exif.Image.DateTime          |     ASCII |       20 |    241248 | 2015:07:16 20:25:28
-  241058 | 0x0152 Exif.Image.0x152             |     SHORT |        1 |           | 0
-  241070 | 0x0153 Exif.Image.0x153             |     SHORT |        4 |    241186 | 1 1 1 1
-  241082 | 0x02bc Exif.Image.XMLPacket         |     UBYTE |     1549 |    241348 | 60 120 58 120 109 112 109 101 116 97 +++
-  241094 | 0x83bb Exif.Image.IPTCNAA           | UNDEFINED |       80 |    241268 | ..Z_..%G..__._...?_.153854..>_.20150 +++
-  STRUCTURE OF IPTC FILE (MM): ../files/Stonehenge.tiff:241268->80
+  240844 | 0x0100 Exif.Image.ImageWidth        |     SHORT |        1 |           | 0
+  240856 | 0x0101 Exif.Image.ImageLength       |     SHORT |        1 |           | 0
+  240868 | 0x0102 Exif.Image.BitsPerSample     |     SHORT |        4 |    241188 | 8 8 8 8
+  240880 | 0x0103 Exif.Image.Compression       |     SHORT |        1 |           | 0
+  240892 | 0x0106 Exif.Image.PhotometricInte.. |     SHORT |        1 |           | 0
+  240904 | 0x010a Exif.Image.0x10a             |     SHORT |        1 |           | 0
+  240916 | 0x010e Exif.Image.ImageDescription  |     ASCII |       13 |    241220 | Classic View
+  240928 | 0x010f Exif.Image.Make              |     ASCII |       18 |    241234 | NIKON CORPORATION
+  240940 | 0x0110 Exif.Image.Model             |     ASCII |       12 |    241252 | NIKON D5300
+  240952 | 0x0111 Exif.Image.StripOffsets      |      LONG |        2 |    241204 | 841 131641
+  240964 | 0x0112 Exif.Image.Orientation       |     SHORT |        1 |           | 0
+  240976 | 0x0115 Exif.Image.SamplesPerPixel   |     SHORT |        1 |           | 0
+  240988 | 0x0116 Exif.Image.RowsPerStrip      |     SHORT |        1 |           | 0
+  241000 | 0x0117 Exif.Image.StripByteCounts   |      LONG |        2 |    241196 | 130800 109200
+  241012 | 0x011a Exif.Image.XResolution       |  RATIONAL |        1 |    241172 | 300/1
+  241024 | 0x011b Exif.Image.YResolution       |  RATIONAL |        1 |    241180 | 300/1
+  241036 | 0x011c Exif.Image.PlanarConfigura.. |     SHORT |        1 |           | 0
+  241048 | 0x0128 Exif.Image.ResolutionUnit    |     SHORT |        1 |           | 0
+  241060 | 0x0131 Exif.Image.Software          |     ASCII |       10 |    241264 | Ver.1.00 
+  241072 | 0x0132 Exif.Image.DateTime          |     ASCII |       20 |    241274 | 2015:07:16 20:25:28
+  241084 | 0x0152 Exif.Image.0x152             |     SHORT |        1 |           | 0
+  241096 | 0x0153 Exif.Image.0x153             |     SHORT |        4 |    241212 | 1 1 1 1
+  241108 | 0x02bc Exif.Image.XMLPacket         |     UBYTE |     1549 |    241374 | 60 120 58 120 109 112 109 101 116 97 +++
+  241120 | 0x83bb Exif.Image.IPTCNAA           | UNDEFINED |       80 |    241294 | ..Z_..%G..__._...?_.153854..>_.20150 +++
+  STRUCTURE OF IPTC FILE (MM): ../files/Stonehenge.tiff:241294->80
       Record | DataSet | Name                           | Length | Data
            1 |      90 | Iptc.Envelope.CharacterSet     |      3 | .%G
            2 |       0 | Iptc.Application.RecordVersion |      2 | _.
@@ -33,8 +33,8 @@ STRUCTURE OF TIFF FILE (MM): ../files/Stonehenge.tiff
            2 |      60 | Iptc.Application.0x3c          |      6 | 153854
            2 |     120 | Iptc.Application.Caption       |     12 | Classic View
            2 |      55 | Iptc.Application.0x37          |      8 | 20150716
-  END: ../files/Stonehenge.tiff:241268->80
-  241106 | 0x8769 Exif.Image.ExifTag           |      LONG |        1 |           | 134217728
+  END: ../files/Stonehenge.tiff:241294->80
+  241132 | 0x8769 Exif.Image.ExifTag           |      LONG |        1 |           | 134217728
   STRUCTURE OF TIFF FILE (MM): ../files/Stonehenge.tiff
    address |    tag                              |      type |    count |    offset | value
         10 | 0x829a Exif.Photo.ExposureTime      |  RATIONAL |        1 |       482 | 1/400
@@ -53,7 +53,7 @@ STRUCTURE OF TIFF FILE (MM): ../files/Stonehenge.tiff
        166 | 0x9208 Exif.Photo.LightSource       |     SHORT |        1 |           | 0
        178 | 0x9209 Exif.Photo.Flash             |     SHORT |        1 |           | 0
        190 | 0x920a Exif.Photo.FocalLength       |  RATIONAL |        1 |       562 | 44/1
-       202 | 0x9286 Exif.Photo.UserComment       | UNDEFINED |       18 |       570 | UNICODE_..________
+       202 | 0x9286 Exif.Photo.UserComment       | UNDEFINED |       20 |       570 | ASCII___Classic View
        214 | 0x9290 Exif.Photo.0x9290            |     ASCII |        3 |           | 
        226 | 0x9291 Exif.Photo.0x9291            |     ASCII |        3 |           | 
        238 | 0x9292 Exif.Photo.0x9292            |     ASCII |        3 |           | 
@@ -67,7 +67,7 @@ STRUCTURE OF TIFF FILE (MM): ../files/Stonehenge.tiff
        334 | 0xa401 Exif.Photo.CustomRendered    |     SHORT |        1 |           | 0
        346 | 0xa402 Exif.Photo.ExposureMode      |     SHORT |        1 |           | 0
        358 | 0xa403 Exif.Photo.WhiteBalance      |     SHORT |        1 |           | 0
-       370 | 0xa404 Exif.Photo.0xa404            |  RATIONAL |        1 |       588 | 1/1
+       370 | 0xa404 Exif.Photo.0xa404            |  RATIONAL |        1 |       590 | 1/1
        382 | 0xa405 Exif.Photo.0xa405            |     SHORT |        1 |           | 0
        394 | 0xa406 Exif.Photo.SceneCaptureType  |     SHORT |        1 |           | 0
        406 | 0xa407 Exif.Photo.0xa407            |     SHORT |        1 |           | 0
@@ -75,10 +75,10 @@ STRUCTURE OF TIFF FILE (MM): ../files/Stonehenge.tiff
        430 | 0xa409 Exif.Photo.Saturation        |     SHORT |        1 |           | 0
        442 | 0xa40a Exif.Photo.Sharpness         |     SHORT |        1 |           | 0
        454 | 0xa40c Exif.Photo.0xa40c            |     SHORT |        1 |           | 0
-       466 | 0xa420 Exif.Photo.0xa420            |     ASCII |       33 |       596 | 090caaf2c085f3e102513b24750041aa
+       466 | 0xa420 Exif.Photo.0xa420            |     ASCII |       33 |       598 | 090caaf2c085f3e102513b24750041aa
   END: ../files/Stonehenge.tiff
-  241118 | 0x8773 Exif.Image.InterColorProfile | UNDEFINED |     3144 |    242898 | __.HLino..__mntrRGB XYZ .._._._._1__ +++
-  STRUCTURE OF ICC FILE (MM): ../files/Stonehenge.tiff:242898->3144
+  241144 | 0x8773 Exif.Image.InterColorProfile | UNDEFINED |     3144 |    242924 | __.HLino..__mntrRGB XYZ .._._._._1__ +++
+  STRUCTURE OF ICC FILE (MM): ../files/Stonehenge.tiff:242924->3144
      sig |   offset |   length
     cprt |      336 |       51 
     desc |      388 |      108 
@@ -97,18 +97,19 @@ STRUCTURE OF TIFF FILE (MM): ../files/Stonehenge.tiff
     rTRC |     1084 |     2060 
     gTRC |     1084 |     2060 
     bTRC |     1084 |     2060 
-  END: ../files/Stonehenge.tiff:242898->3144
-  241130 | 0x8825 Exif.Image.GPSTag            |      LONG |        1 |           | 1963065344
+  END: ../files/Stonehenge.tiff:242924->3144
+  241156 | 0x8825 Exif.Image.GPSTag            |      LONG |        1 |           | 1996619776
   STRUCTURE OF TIFF FILE (MM): ../files/Stonehenge.tiff
    address |    tag                              |      type |    count |    offset | value
-       631 | 000000 Exif.GPSInfo.GPSVersionID    |     UBYTE |        4 |           | 0 0 3 2
-       643 | 0x0001 Exif.GPSInfo.GPSLatitudeRef  |     ASCII |        2 |           | 
-       655 | 0x0002 Exif.GPSInfo.GPSLatitude     |  RATIONAL |        3 |       743 | 51/1 10/1 4181/100
-       667 | 0x0003 Exif.GPSInfo.GPSLongitudeRef |     ASCII |        2 |           | 
-       679 | 0x0004 Exif.GPSInfo.GPSLongitude    |  RATIONAL |        3 |       767 | 1/1 49/1 3590/100
-       691 | 0x0005 Exif.GPSInfo.GPSAltitudeRef  |     UBYTE |        1 |           | 0
-       703 | 0x0006 Exif.GPSInfo.GPSAltitude     |  RATIONAL |        1 |       791 | 97/1
-       715 | 0x0008 Exif.GPSInfo.GPSSatellites   |     ASCII |        3 |           | 
-       727 | 0x0012 Exif.GPSInfo.GPSMapDatum     |     ASCII |       17 |       799 | WGS-84          
+       633 | 000000 Exif.GPSInfo.GPSVersionID    |     UBYTE |        4 |           | 0 0 3 2
+       645 | 0x0001 Exif.GPSInfo.GPSLatitudeRef  |     ASCII |        2 |           | 
+       657 | 0x0002 Exif.GPSInfo.GPSLatitude     |  RATIONAL |        3 |       757 | 51/1 10/1 4181/100
+       669 | 0x0003 Exif.GPSInfo.GPSLongitudeRef |     ASCII |        2 |           | 
+       681 | 0x0004 Exif.GPSInfo.GPSLongitude    |  RATIONAL |        3 |       781 | 1/1 49/1 3590/100
+       693 | 0x0005 Exif.GPSInfo.GPSAltitudeRef  |     UBYTE |        1 |           | 0
+       705 | 0x0006 Exif.GPSInfo.GPSAltitude     |  RATIONAL |        1 |       805 | 97/1
+       717 | 0x0008 Exif.GPSInfo.GPSSatellites   |     ASCII |        3 |           | 
+       729 | 0x0012 Exif.GPSInfo.GPSMapDatum     |     ASCII |       17 |       813 | WGS-84          
+       741 | 0x001d Exif.GPSInfo.GPSDateStamp    |     ASCII |       11 |       830 | 2015:07:16
   END: ../files/Stonehenge.tiff
 END: ../files/Stonehenge.tiff

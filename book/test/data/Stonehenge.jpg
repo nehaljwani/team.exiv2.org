@@ -1,8 +1,8 @@
 STRUCTURE OF JPEG FILE (II): ../files/Stonehenge.jpg
  address | marker       |  length | signature
        0 | 0xffd8 SOI  
-       2 | 0xffe1 APP1  |   15304 | Exif__II*_.___._..._.___.___..._.___.___
-  STRUCTURE OF TIFF FILE (II): ../files/Stonehenge.jpg:12->15296
+       2 | 0xffe1 APP1  |   15272 | Exif__II*_.___._..._.___.___..._.___.___
+  STRUCTURE OF TIFF FILE (II): ../files/Stonehenge.jpg:12->15264
    address |    tag                              |      type |    count |    offset | value
         10 | 0x010f Exif.Image.Make              |     ASCII |       18 |       146 | NIKON CORPORATION
         22 | 0x0110 Exif.Image.Model             |     ASCII |       12 |       164 | NIKON D5300
@@ -14,7 +14,7 @@ STRUCTURE OF JPEG FILE (II): ../files/Stonehenge.jpg
         94 | 0x0132 Exif.Image.DateTime          |     ASCII |       20 |       202 | 2015:07:16 20:25:28
        106 | 0x0213 Exif.Image.YCbCrPositioning  |     SHORT |        1 |           | 1
        118 | 0x8769 Exif.Image.ExifTag           |      LONG |        1 |           | 222
-    STRUCTURE OF TIFF FILE (II): ../files/Stonehenge.jpg:12->15296
+    STRUCTURE OF TIFF FILE (II): ../files/Stonehenge.jpg:12->15264
      address |    tag                              |      type |    count |    offset | value
          224 | 0x829a Exif.Photo.ExposureTime      |  RATIONAL |        1 |       732 | 10/4000
          236 | 0x829d Exif.Photo.FNumber           |  RATIONAL |        1 |       740 | 100/10
@@ -33,7 +33,7 @@ STRUCTURE OF JPEG FILE (II): ../files/Stonehenge.jpg
          392 | 0x9209 Exif.Photo.Flash             |     SHORT |        1 |           | 16
          404 | 0x920a Exif.Photo.FocalLength       |  RATIONAL |        1 |       812 | 440/10
          416 | 0x927c Exif.Photo.MakerNote         | UNDEFINED |     3152 |       820 | Nikon_..__II*_.___9_._._.___0211._._ +++
-      STRUCTURE OF TIFF FILE (II): ../files/Stonehenge.jpg:12->15296:830->3142
+      STRUCTURE OF TIFF FILE (II): ../files/Stonehenge.jpg:12->15264:830->3142
        address |    tag                              |      type |    count |    offset | value
             10 | 0x0001 Exif.Nikon.Version           | UNDEFINED |        4 |           | 0211
             22 | 0x0002 Exif.Nikon.ISOSpeed          |     SHORT |        2 |           | 0 200
@@ -105,8 +105,8 @@ STRUCTURE OF JPEG FILE (II): ../files/Stonehenge.jpg
            658 | 0x00bb Exif.Nikon.0xbb              | UNDEFINED |        8 |      3126 | 0200..._
            670 | 0x00bf Exif.Nikon.0xbf              |     SHORT |        1 |           | 0
            682 | 0x00c0 Exif.Nikon.0xc0              | UNDEFINED |        8 |      3134 | <.._..._
-      END: ../files/Stonehenge.jpg:12->15296:830->3142
-         428 | 0x9286 Exif.Photo.UserComment       | UNDEFINED |       14 |      3972 | UNICODE_...._.
+      END: ../files/Stonehenge.jpg:12->15264:830->3142
+         428 | 0x9286 Exif.Photo.UserComment       | UNDEFINED |       20 |      3972 | ASCII___Classic View
          440 | 0x9290 Exif.Photo.0x9290            |     ASCII |        3 |           | 00
          452 | 0x9291 Exif.Photo.0x9291            |     ASCII |        3 |           | 00
          464 | 0x9292 Exif.Photo.0x9292            |     ASCII |        3 |           | 00
@@ -114,15 +114,15 @@ STRUCTURE OF JPEG FILE (II): ../files/Stonehenge.jpg
          488 | 0xa001 Exif.Photo.ColorSpace        |     SHORT |        1 |           | 1
          500 | 0xa002 Exif.Photo.PixelXDimension   |     SHORT |        1 |           | 6000
          512 | 0xa003 Exif.Photo.PixelYDimension   |     SHORT |        1 |           | 4000
-         524 | 0xa005 Exif.Photo.InteropTag        |      LONG |        1 |           | 4074
+         524 | 0xa005 Exif.Photo.InteropTag        |      LONG |        1 |           | 4042
          536 | 0xa217 Exif.Photo.0xa217            |     SHORT |        1 |           | 2
          548 | 0xa300 Exif.Photo.FileSource        | UNDEFINED |        1 |           | .
          560 | 0xa301 Exif.Photo.SceneType         | UNDEFINED |        1 |           | .
-         572 | 0xa302 Exif.Photo.0xa302            | UNDEFINED |        8 |      4024 | ._.__...
+         572 | 0xa302 Exif.Photo.0xa302            | UNDEFINED |        8 |      3992 | ._.__...
          584 | 0xa401 Exif.Photo.CustomRendered    |     SHORT |        1 |           | 0
          596 | 0xa402 Exif.Photo.ExposureMode      |     SHORT |        1 |           | 0
          608 | 0xa403 Exif.Photo.WhiteBalance      |     SHORT |        1 |           | 0
-         620 | 0xa404 Exif.Photo.0xa404            |  RATIONAL |        1 |      4032 | 1/1
+         620 | 0xa404 Exif.Photo.0xa404            |  RATIONAL |        1 |      4000 | 1/1
          632 | 0xa405 Exif.Photo.0xa405            |     SHORT |        1 |           | 66
          644 | 0xa406 Exif.Photo.SceneCaptureType  |     SHORT |        1 |           | 0
          656 | 0xa407 Exif.Photo.0xa407            |     SHORT |        1 |           | 0
@@ -130,41 +130,41 @@ STRUCTURE OF JPEG FILE (II): ../files/Stonehenge.jpg
          680 | 0xa409 Exif.Photo.Saturation        |     SHORT |        1 |           | 0
          692 | 0xa40a Exif.Photo.Sharpness         |     SHORT |        1 |           | 0
          704 | 0xa40c Exif.Photo.0xa40c            |     SHORT |        1 |           | 0
-         716 | 0xa420 Exif.Photo.0xa420            |     ASCII |       33 |      4040 | 090caaf2c085f3e102513b24750041aa
-    END: ../files/Stonehenge.jpg:12->15296
-       130 | 0x8825 Exif.Image.GPSTag            |      LONG |        1 |           | 4104
-    STRUCTURE OF TIFF FILE (II): ../files/Stonehenge.jpg:12->15296
+         716 | 0xa420 Exif.Photo.0xa420            |     ASCII |       33 |      4008 | 090caaf2c085f3e102513b24750041aa
+    END: ../files/Stonehenge.jpg:12->15264
+       130 | 0x8825 Exif.Image.GPSTag            |      LONG |        1 |           | 4072
+    STRUCTURE OF TIFF FILE (II): ../files/Stonehenge.jpg:12->15264
      address |    tag                              |      type |    count |    offset | value
-        4106 | 000000 Exif.GPSInfo.GPSVersionID    |     UBYTE |        4 |           | 2 3 0 0
-        4118 | 0x0001 Exif.GPSInfo.GPSLatitudeRef  |     ASCII |        2 |           | N
-        4130 | 0x0002 Exif.GPSInfo.GPSLatitude     |  RATIONAL |        3 |      4242 | 51/1 106969/10000 0/1
-        4142 | 0x0003 Exif.GPSInfo.GPSLongitudeRef |     ASCII |        2 |           | W
-        4154 | 0x0004 Exif.GPSInfo.GPSLongitude    |  RATIONAL |        3 |      4266 | 1/1 495984/10000 0/1
-        4166 | 0x0005 Exif.GPSInfo.GPSAltitudeRef  |     UBYTE |        1 |           | 0
-        4178 | 0x0006 Exif.GPSInfo.GPSAltitude     |  RATIONAL |        1 |      4290 | 97/1
-        4190 | 0x0007 Exif.GPSInfo.GPSTimeStamp    |  RATIONAL |        3 |      4298 | 14/1 38/1 5588/100
-        4202 | 0x0008 Exif.GPSInfo.GPSSatellites   |     ASCII |        3 |           | 09
-        4214 | 0x0012 Exif.GPSInfo.GPSMapDatum     |     ASCII |       17 |      4322 | WGS-84          
-        4226 | 0x001d Exif.GPSInfo.GPSDateStamp    |     ASCII |       11 |      4340 | 2015:07:16
-    END: ../files/Stonehenge.jpg:12->15296
-  END: ../files/Stonehenge.jpg:12->15296
-   15308 | 0xffe1 APP1  |    2786 | http://ns.adobe.com/xap/1.0/_<?xpacket b
-   18096 | 0xffed APP13 |      96 | Photoshop 3.0_8BIM.._____'..__._...Z_..%
-  STRUCTURE OF 8BIM FILE (MM): ../files/Stonehenge.jpg:18114->78
+        4074 | 000000 Exif.GPSInfo.GPSVersionID    |     UBYTE |        4 |           | 2 3 0 0
+        4086 | 0x0001 Exif.GPSInfo.GPSLatitudeRef  |     ASCII |        2 |           | N
+        4098 | 0x0002 Exif.GPSInfo.GPSLatitude     |  RATIONAL |        3 |      4210 | 51/1 106969/10000 0/1
+        4110 | 0x0003 Exif.GPSInfo.GPSLongitudeRef |     ASCII |        2 |           | W
+        4122 | 0x0004 Exif.GPSInfo.GPSLongitude    |  RATIONAL |        3 |      4234 | 1/1 495984/10000 0/1
+        4134 | 0x0005 Exif.GPSInfo.GPSAltitudeRef  |     UBYTE |        1 |           | 0
+        4146 | 0x0006 Exif.GPSInfo.GPSAltitude     |  RATIONAL |        1 |      4258 | 97/1
+        4158 | 0x0007 Exif.GPSInfo.GPSTimeStamp    |  RATIONAL |        3 |      4266 | 14/1 38/1 5588/100
+        4170 | 0x0008 Exif.GPSInfo.GPSSatellites   |     ASCII |        3 |           | 09
+        4182 | 0x0012 Exif.GPSInfo.GPSMapDatum     |     ASCII |       17 |      4290 | WGS-84          
+        4194 | 0x001d Exif.GPSInfo.GPSDateStamp    |     ASCII |       11 |      4308 | 2015:07:16
+    END: ../files/Stonehenge.jpg:12->15264
+  END: ../files/Stonehenge.jpg:12->15264
+   15276 | 0xffe1 APP1  |    2786 | http://ns.adobe.com/xap/1.0/_<?xpacket b
+   18064 | 0xffed APP13 |      96 | Photoshop 3.0_8BIM.._____'..__._...Z_..%
+  STRUCTURE OF 8BIM FILE (MM): ../files/Stonehenge.jpg:18082->78
        offset |   kind | tagName                      |  len | data | 
             0 | 0x0404 | PSD.8BIM.IPTCNAA             |   30 | 12+1 | ..__._...Z_..%G..__._...x_.___
-    STRUCTURE OF IPTC FILE (MM): ../files/Stonehenge.jpg:18114->78:12->39
+    STRUCTURE OF IPTC FILE (MM): ../files/Stonehenge.jpg:18082->78:12->39
         Record | DataSet | Name                           | Length | Data
              1 |       0 | Iptc.Envelope.ModelVersion     |      2 | _.
              1 |      90 | Iptc.Envelope.CharacterSet     |      3 | .%G
              2 |       0 | Iptc.Application.RecordVersion |      2 | _.
              2 |     120 | Iptc.Application.Caption       |     12 | Classic View
-    END: ../files/Stonehenge.jpg:18114->78:12->39
+    END: ../files/Stonehenge.jpg:18082->78:12->39
            52 | 0x0425 | PSD.8BIM.0x425               |   16 | 12+0 | 3..M____________
-  END: ../files/Stonehenge.jpg:18114->78
-   18194 | 0xffe2 APP2  |    4094 | MPF_II*_.___.__.._.___0100..._.___.___..
-   22290 | 0xffdb DQT   |     132 | _.......................................
-   22424 | 0xffc0 SOF0  |      17 | ....p..!_........
-   22443 | 0xffc4 DHT   |     418 | __........________............_.........
-   22863 | 0xffda SOS   |      12 | .._...._?_..
+  END: ../files/Stonehenge.jpg:18082->78
+   18162 | 0xffe2 APP2  |    4094 | MPF_II*_.___.__.._.___0100..._.___.___..
+   22258 | 0xffdb DQT   |     132 | _.......................................
+   22392 | 0xffc0 SOF0  |      17 | ....p..!_........
+   22411 | 0xffc4 DHT   |     418 | __........________............_.........
+   22831 | 0xffda SOS   |      12 | .._...._?_..
 END: ../files/Stonehenge.jpg
