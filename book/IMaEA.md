@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-12-16</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-12-17</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -6180,9 +6180,11 @@ There are two worlds.  There is the perfect world inhabited by management.  They
 
 I worked in a company which, to hide their identity, I will call it _"West Anchors"_.  A colleague was giving a board presentation in which they had a slide:
 
-_It is the Policy of_ **West Anchors &copy;** _is to get it right first time, every time_.
+_It is the Policy of_ **West Anchors &#174;** _is to get it right first time, every time_.
 
-There we have it.  Nothing is ever late, nothing is more difficult than expected, all suppliers deliver on time and specification.  Nobody is ever sick.  When I discussed the project schedule with my boss, I asked him why there was no time in the schedule for bugs and fixes.  His response was _**"There better not be any bugs"**_.  Five years later, West Anchors were closed by their owners.
+There we have it.  Nothing is ever late, nothing is more difficult than expected, all suppliers deliver on time.  Every specification is faultless.  All modules work together perfectly.  Nobody is ever sick.
+
+When I discussed the project schedule with my boss, I asked him why there was no time in the schedule for bugs and fixes.  His response was _**"There better not be any"**_.  Five years later, West Anchors were closed by their owners.  Presumably the owners were bored by perfection.
 
 I also had the misfortune to work at a company where the boss was an expert in planning.  He explained to me that the only challenge in Software Engineering was getting the schedule right.  Everything else was trivial.
 
@@ -6235,7 +6237,7 @@ You require training and inspection services to manage quality.
 
 And many other things arrive which were not in the simple model. In the worst case, new tasks can be larger than the original task.  You have an exploding, complex challenge.
 
-To deal with this, you have to start a project inside the project.  Something like "Remove furniture" is obvious in a house. But what would it mean on an Aircraft Carrier?
+To deal with this, you have to start a project inside the project.  Something like "Remove furniture" is obvious in a house. But what would that mean on an Aircraft Carrier?
 
 So, we stay calm and add more items to the project plan.  And that's when and why everything goes wrong.  The plan gets longer and more detailed.  However it's still the same old linear model.
 
