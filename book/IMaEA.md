@@ -6129,7 +6129,7 @@ We use several servers:
 4. Redmine (https://redmine.exiv2.org)
 5. SSH on the buildserver
 
-I am pleased to say that the management of exiv2.org is undertaken my Nehal.  I don't think it's an onerous task, however I appreciate having this taken off my back.
+I am pleased to say that the management of exiv2.org is undertaken by Nehal.  I don't think it's an onerous task, however I appreciate having this taken off my back.
 
 [TOC](#TOC)
 <div id="11-16"/>
@@ -6176,21 +6176,21 @@ So, how are contributors recruited?  The answer is _**I don't know**_.  For sure
 
 This is a major and important topic.  Apart from writing code, I've spent more time thinking about project scheduling than any other aspect of Software Engineering.  
 
-There are two worlds.  There is the perfect world which is inhabited by management.  These people live in a world which is quite different from mine.  In their world, the specification is clear, the schedule is realistic, nobody makes mistakes and everything works.  It's a wonderful place.  Sadly, I've never had the good fortune to live in that world.
+There are two worlds.  There is the perfect world inhabited by management.  They live in a world which is quite different from mine.  In their world, the specification is clear, the schedule is realistic, nobody makes mistakes and everything works.  It's a wonderful place.  Sadly, I've never had the good fortune to live in that world.
 
-I worked in a company which, to hide their identity, I will call "West Anchors".  A colleague was giving a board presentation in which they had a slide:
+I worked in a company which, to hide their identity, I will call it _"West Anchors"_.  A colleague was giving a board presentation in which they had a slide:
 
-_**It is the Policy of West Anchors to get it right first time, every time.**_
+_It is the Policy of_ **West Anchors &copy;** _is to get it right first time, every time_.
 
-There we have it.  Nothing is ever late, nothing is more difficult than expected, all suppliers deliver on time to specification and nobody is ever sick.  When I discussed the project schedule with my boss I asked him why there was no time in the schedule for bugs and fixes, his response was "There better not be any bugs."  Five years later, West Anchors were closed by their owners.
+There we have it.  Nothing is ever late, nothing is more difficult than expected, all suppliers deliver on time and specification.  Nobody is ever sick.  When I discussed the project schedule with my boss, I asked him why there was no time in the schedule for bugs and fixes.  His response was _**"There better not be any bugs"**_.  Five years later, West Anchors were closed by their owners.
 
-I also had the misfortune to work at a company where the boss was an expert in planning.  He explained to me that the only challenge in Software Engineering is to get the schedule right.  Everything else was trivial.
+I also had the misfortune to work at a company where the boss was an expert in planning.  He explained to me that the only challenge in Software Engineering was getting the schedule right.  Everything else was trivial.
 
-So, if you live in the perfect world, you'll not find anything interesting or useful in this part of the book, because I'm talking about the less than perfect world in which I live.  I usually call it "Reality".
+So, if you live in the perfect world, you'll not find anything interesting or useful in this part of the book, because I'm talking about the less than perfect world in which I live.  I usually call it **Reality**.
 
-Another challenge is that many users are perfect and live in this other world where everything works.  So users seldom understand that the open-source project may be populated by people who live in the depressing world of "Reality".
+Another challenge is that many users _pretend_ to live in the mythical world where everything works.  Those users are hostile to open-source projects populated by people who live in my depressing world of **Reality**.
 
-Scheduling an open-source project is almost impossible.  You are dealing with volunteers.  You might think you know the volunteers, however you don't.  It's unusual to have even met the people.  How can you understand the pressure and stress in another person's life when you know so little about their circumstances.  And remember they are volunteers.  They can walk off the job if they wish.  In a business, management have tools such as reviews, salary, careers, vacations, bonuses, promotions and lay-offs to manipulate the employees.  In the open-source world, you have none of those tools.
+Scheduling an open-source project is almost impossible.  You are dealing with volunteers.  You might think you know the volunteers, however you don't.  It's unusual to have even met the people.  How can you understand the pressure and stress in another person's life when you know so little about their circumstances.  And remember they are volunteers.  They can walk off the job if they wish.  In a business, management have tools such as reviews, salary, careers, vacations, bonuses, promotions and lay-offs to manipulate the employees.  In open-source, you have **none of those tools**.
 
 Here are my thought about how to solve the scheduling problem.
 
@@ -6542,17 +6542,17 @@ $
 
 There are numerous examples of this utility in the book.  The options are:
 
-| Option    | Description              | Default | Comment |
-|:--        |:--                       |:--      |:--      |
-| bs=       | block size               |  1 | 1,2 or 4     |
-| count=    | number of bytes to dump  | rest of file | Accumulative |
-| dryrun=   | report options and quite |  0 | |
-| endian=   | endian 0=little, 1=big   |  0 | toggles native endian |
-| hex=      | 0=int or 1=hex           |  0 | |
-| skip=     | number of bytes to skip  |  0 | Accumulative |
-| start=    | number of bytes to start |  0 | Used internalyby "path->start:length" |
-| verbose=  | echo the settings        |  0 | |
-| width=    | width of output          | 32 | |
+| Option    | Description              | Default | Comment               |
+|:--        |:--                       |:--      |:--                    |
+| bs=       | block size               |  1 | 1,2 or 4                   |
+| count=    | number of bytes to dump  | rest of file | Accumulative     |
+| dryrun=   | report options and quite |  0 |                            |
+| endian=   | endian 0=little, 1=big   |  0 | toggles native endian      |
+| hex=      | 0=int or 1=hex           |  0 |                            |
+| skip=     | number of bytes to skip  |  0 | Accumulative               |
+| start=    | number of bytes to start |  0 | Set by path->start:length+ |
+| verbose=  | echo the settings        |  0 |                            |
+| width=    | width of output          | 32 |                            |
 
 path can be - or path or "path:offset->length"
 
