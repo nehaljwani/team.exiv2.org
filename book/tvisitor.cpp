@@ -256,7 +256,7 @@ private:
 
 // https://github.com/ncruces/dcraw/blob/master/parse.c
 typedef unsigned char uchar;
-void nikon_decrypt (uchar ci, uchar cj, int tag, int i, int size, uchar *buf)
+void nikon_decrypt (uchar ci, uchar cj, int tag, int start, int size, uchar *buf)
 {
   static const uchar xlat[2][256] = {
   { 0xc1,0xbf,0x6d,0x0d,0x59,0xc5,0x13,0x9d,0x83,0x61,0x6b,0x4f,0xc7,0x7f,0x3d,0x3d,
@@ -294,16 +294,18 @@ void nikon_decrypt (uchar ci, uchar cj, int tag, int i, int size, uchar *buf)
   uchar ck=0x60;
 
   // if (strncmp ((char *)buf, "02", 2)) return;
-  DataBuf result(size);
+  DataBuf result(size); // create buffer for the result
+  ::memcpy(result.pData_,buf,size); // copy the input
+    
   ci = xlat[0][ci];
   cj = xlat[1][cj];
 //printf("Decrypted tag 0x%x:\n%*s", tag, (i & 31)*3, "");
-  for (; i < size; i++) {
+  for (int i = start ; i < size; i++) {
   // printf("%02x%c", buf[i] ^ (cj += ci * ck++), (i & 31) == 31 ? '\n':' ');
     result.pData_[i] = buf[i] ^ (cj += ci * ck++);
   }
   // if (size & 31) puts("");
-  for ( i = 4 ; i < size ; i++ ) buf[i]= result.pData_[i];
+  ::memcpy(buf+start,result.pData_+start,size-start); // update the input buffer
 }
 
 // endian and byte swappers
@@ -2926,7 +2928,7 @@ void ReportVisitor::visitTag
                   << chop(value,40)
                   << std::endl
             ;
-            if ( makerTags.find(name) != makerTags.end() ) {
+            if ( name != "Exif.Nikon.LensData" && makerTags.find(name) != makerTags.end() ) {
                 for (Field field : makerTags[name] ) {
                     std::string n      = join(groupName(tagDict),field.name(),28);
                     endian_e    endian = field.endian() == keImage ? image.endian() : field.endian();
@@ -2962,6 +2964,20 @@ void ReportVisitor::visitTag
             ;
             image.key_ = 0 ;
             image.serial_ = 0 ;
+
+            if ( makerTags.find(name) != makerTags.end() ) {
+                for (Field field : makerTags[name] ) {
+                    std::string n      = join(groupName(tagDict),field.name(),28);
+                    endian_e    endian = field.endian() == keImage ? image.endian() : field.endian();
+                    out() << indent()
+                          << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
+                                         ,offset+field.start(),tag,n.c_str(),typeName(field.type()),field.count(),"")
+                          << chop(image.lensData_.toString(field.type(),field.count(),endian,field.start()),40)
+                          << std::endl
+                    ;
+                }
+            }
+
         }
     }
 } // visitTag
@@ -3653,6 +3669,12 @@ void init()
     makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcFilterEffect"    ,kttUByte, 55, 1));
     makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcFilterEffect"    ,kttUByte, 56, 1));
     makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcToningSaturation",kttUByte, 57, 1));
+
+    // https://exiftool.org/TagNames/Nikon.html#LensData00 "Nikon LensData0800 Tags"
+    makerTags["Exif.Nikon.LensData"      ].push_back(Field("LdVersion"         ,kttAscii , 0, 4));
+    makerTags["Exif.Nikon.LensData"      ].push_back(Field("LdFocusDistance"   ,kttUByte , 9, 1));
+    makerTags["Exif.Nikon.LensData"      ].push_back(Field("LdLensIDNumber"    ,kttUByte ,13, 1));
+    makerTags["Exif.Nikon.LensData"      ].push_back(Field("LdLensID"          ,kttUShort,48, 1));
 
     // Iptc dicts
     iptcEnvelope   [ktGroup] = "Envelope"      ;
