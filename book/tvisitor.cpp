@@ -294,18 +294,16 @@ void nikon_decrypt (uchar ci, uchar cj, int tag, int start, int size, uchar *buf
   uchar ck=0x60;
 
   // if (strncmp ((char *)buf, "02", 2)) return;
-  DataBuf result(size); // create buffer for the result
-  ::memcpy(result.pData_,buf,size); // copy the input
+  if ( start >= size ) return ;
     
   ci = xlat[0][ci];
   cj = xlat[1][cj];
 //printf("Decrypted tag 0x%x:\n%*s", tag, (i & 31)*3, "");
   for (int i = start ; i < size; i++) {
   // printf("%02x%c", buf[i] ^ (cj += ci * ck++), (i & 31) == 31 ? '\n':' ');
-    result.pData_[i] = buf[i] ^ (cj += ci * ck++);
+    buf[i] ^= (cj += ci * ck++);
   }
   // if (size & 31) puts("");
-  ::memcpy(buf+start,result.pData_+start,size-start); // update the input buffer
 }
 
 // endian and byte swappers
@@ -1100,7 +1098,9 @@ public:
     , makerDict_(emptyDict)
     , lensData_(4)
     { init(); };
-    virtual    ~Image()        { io_.close()      ; }
+    virtual    ~Image() {
+        io_.close()      ;
+    }
 
     void init(){
         start_     = 0 ;
@@ -2950,7 +2950,7 @@ void ReportVisitor::visitTag
             image.lensData_.copy(buf);
             image.lensAddress_ = address ;
         }
-        if ( image.serial_ && image.key_ && image.lensData_.size_ ) {
+        if ( image.serial_ && image.key_ && image.lensData_.size_ > 6000 ) {
             name = "Exif.Nikon.LensData";
             printTag( name);
         //  nikon_decrypt (serial, key, 0x98, 4, sizeof buf98, buf98);

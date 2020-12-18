@@ -4299,6 +4299,82 @@ static DataBuf sonyTagCipher(uint16_t /* tag */, const byte* bytes, uint32_t siz
 }
 ```     
 
+#### Nikon Encryption
+
+See: [https://github.com/Exiv2/exiv2/issues/1433](https://github.com/Exiv2/exiv2/issues/1433).
+
+The tag 0x0098 is Exif.Nikon.LensInfo and documented by ExifTool here: [https://exiftool.org/TagNames/Nikon.html#LensData00](https://exiftool.org/TagNames/Nikon.html#LensData00).  In tvisitor.cpp, I've only code four fields as follows:
+
+```cpp
+makerTags["Exif.Nikon.LensData"      ].push_back(Field("LdVersion"         ,kttAscii , 0, 4));
+makerTags["Exif.Nikon.LensData"      ].push_back(Field("LdFocusDistance"   ,kttUByte , 9, 1));
+makerTags["Exif.Nikon.LensData"      ].push_back(Field("LdLensIDNumber"    ,kttUByte ,13, 1));
+makerTags["Exif.Nikon.LensData"      ].push_back(Field("LdLensID"          ,kttUShort,48, 1));
+```
+
+The encrypted data is in the tag 0x0098 LensData.  However, it requires two addition items of information which are 0x0017 "Shutter Count" and "Serial Number" which are declared here.
+
+```cpp
+nikonDict [ 0x001d ] = "SerialNumber";
+nikonDict [ 0x0098 ] = "LensData";
+nikonDict [ 0x00a7 ] = "DecryptKey";
+```
+
+There's a challenge in calling the decryptor because the encrypted data can be stored in the image before we know the key!  So the decoding of the data is deferred until all three items have been found.  This is done in ReportVisitor::visitTag() with the following code:
+
+```cpp
+// save nikon encrypted data until it can be decoded
+if ( name == "Exif.Nikon.SerialNumber" ) image.serial_ = atoi((char*) buf.pData_) ;
+if ( name == "Exif.Nikon.DecryptKey"   ) image.key_    = buf.getLong(0,image.endian());
+if ( name == "Exif.Nikon.LensData"     ) {
+    image.lensData_.alloc(buf.size_);
+    image.lensData_.copy(buf);
+    image.lensAddress_ = address ;
+}
+if ( image.serial_ && image.key_ && image.lensData_.size_ ) {
+    name = "Exif.Nikon.LensData";
+    printTag( name);
+//  nikon_decrypt (serial, key, 0x98, 4, sizeof buf98, buf98);
+    nikon_decrypt(image.serial_,image.key_,0x98,4,image.lensData_.size_,image.lensData_.pData_);
+    std::string decrypted = image.lensData_.toString(kttByte,image.lensData_.size_,image.endian_);
+    out() << indent()
+          << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
+                ,image.lensAddress_,tag,name.c_str(),::typeName(type),count,offsetS.c_str())
+          << chop(decrypted,40)
+          << std::endl
+    ;
+    image.key_ = 0 ;
+    image.serial_ = 0 ;
+
+    if ( makerTags.find(name) != makerTags.end() ) {
+        for (Field field : makerTags[name] ) {
+            std::string n      = join(groupName(tagDict),field.name(),28);
+            endian_e    endian = field.endian() == keImage ? image.endian() : field.endian();
+            out() << indent()
+                  << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
+                                 ,offset+field.start(),tag,n.c_str(),typeName(field.type()),field.count(),"")
+                  << chop(image.lensData_.toString(field.type(),field.count(),endian,field.start()),40)
+                  << std::endl
+            ;
+        }
+    }
+} // if ( image.serial_ && image.key_ && image.lensData_.size_ )
+```
+
+ReportVisitor::visitTag() is a little messed up by have to defer encrypted (or ciphered) data.  If tvisitor was being further developed, we would encounter more tags which require this treatment, and we could a data structure to hold deferred tags and their interdependencies.  Additionally, this magic should be handled in IFD::accept().  For the moment, the _**if**_ statements in ReportVisitor::visitTag() are OK.
+
+The code in nikon_decrypt() was obtained here: [https://github.com/ncruces/dcraw/blob/master/parse.c](https://github.com/ncruces/dcraw/blob/master/parse.c).  The code has been modified in minor ways to avoid printing to std::cout and return decrypted data in the buffer.
+
+The result is very satisfying:
+
+```bash
+tvisitor -pR files/CH0_0174.NEF | grep LensIDNumber
+         187 | 0x00a7 Exif.Nikon.LdLensIDNumber    |     UBYTE |        1 |           | 119
+exiftool -a -G1 -s "-*lens*" ../files/CH0_0174.NEF | grep LensIDNumber
+[Nikon]         LensIDNumber                    : 119
+$ 
+```
+
 [TOC](#TOC)
 <div id="7-7"/>
 ### 7.7 Tag Decoder
