@@ -39,6 +39,58 @@
 
 typedef std::set<uint64_t> Visits;
 
+// https://github.com/ncruces/dcraw/blob/master/parse.c
+typedef unsigned char uchar;
+void nikon_decrypt (uchar ci, uchar cj, int tag, int start, int size, uchar *buf)
+{
+  static const uchar xlat[2][256] = {
+  { 0xc1,0xbf,0x6d,0x0d,0x59,0xc5,0x13,0x9d,0x83,0x61,0x6b,0x4f,0xc7,0x7f,0x3d,0x3d,
+    0x53,0x59,0xe3,0xc7,0xe9,0x2f,0x95,0xa7,0x95,0x1f,0xdf,0x7f,0x2b,0x29,0xc7,0x0d,
+    0xdf,0x07,0xef,0x71,0x89,0x3d,0x13,0x3d,0x3b,0x13,0xfb,0x0d,0x89,0xc1,0x65,0x1f,
+    0xb3,0x0d,0x6b,0x29,0xe3,0xfb,0xef,0xa3,0x6b,0x47,0x7f,0x95,0x35,0xa7,0x47,0x4f,
+    0xc7,0xf1,0x59,0x95,0x35,0x11,0x29,0x61,0xf1,0x3d,0xb3,0x2b,0x0d,0x43,0x89,0xc1,
+    0x9d,0x9d,0x89,0x65,0xf1,0xe9,0xdf,0xbf,0x3d,0x7f,0x53,0x97,0xe5,0xe9,0x95,0x17,
+    0x1d,0x3d,0x8b,0xfb,0xc7,0xe3,0x67,0xa7,0x07,0xf1,0x71,0xa7,0x53,0xb5,0x29,0x89,
+    0xe5,0x2b,0xa7,0x17,0x29,0xe9,0x4f,0xc5,0x65,0x6d,0x6b,0xef,0x0d,0x89,0x49,0x2f,
+    0xb3,0x43,0x53,0x65,0x1d,0x49,0xa3,0x13,0x89,0x59,0xef,0x6b,0xef,0x65,0x1d,0x0b,
+    0x59,0x13,0xe3,0x4f,0x9d,0xb3,0x29,0x43,0x2b,0x07,0x1d,0x95,0x59,0x59,0x47,0xfb,
+    0xe5,0xe9,0x61,0x47,0x2f,0x35,0x7f,0x17,0x7f,0xef,0x7f,0x95,0x95,0x71,0xd3,0xa3,
+    0x0b,0x71,0xa3,0xad,0x0b,0x3b,0xb5,0xfb,0xa3,0xbf,0x4f,0x83,0x1d,0xad,0xe9,0x2f,
+    0x71,0x65,0xa3,0xe5,0x07,0x35,0x3d,0x0d,0xb5,0xe9,0xe5,0x47,0x3b,0x9d,0xef,0x35,
+    0xa3,0xbf,0xb3,0xdf,0x53,0xd3,0x97,0x53,0x49,0x71,0x07,0x35,0x61,0x71,0x2f,0x43,
+    0x2f,0x11,0xdf,0x17,0x97,0xfb,0x95,0x3b,0x7f,0x6b,0xd3,0x25,0xbf,0xad,0xc7,0xc5,
+    0xc5,0xb5,0x8b,0xef,0x2f,0xd3,0x07,0x6b,0x25,0x49,0x95,0x25,0x49,0x6d,0x71,0xc7 },
+  { 0xa7,0xbc,0xc9,0xad,0x91,0xdf,0x85,0xe5,0xd4,0x78,0xd5,0x17,0x46,0x7c,0x29,0x4c,
+    0x4d,0x03,0xe9,0x25,0x68,0x11,0x86,0xb3,0xbd,0xf7,0x6f,0x61,0x22,0xa2,0x26,0x34,
+    0x2a,0xbe,0x1e,0x46,0x14,0x68,0x9d,0x44,0x18,0xc2,0x40,0xf4,0x7e,0x5f,0x1b,0xad,
+    0x0b,0x94,0xb6,0x67,0xb4,0x0b,0xe1,0xea,0x95,0x9c,0x66,0xdc,0xe7,0x5d,0x6c,0x05,
+    0xda,0xd5,0xdf,0x7a,0xef,0xf6,0xdb,0x1f,0x82,0x4c,0xc0,0x68,0x47,0xa1,0xbd,0xee,
+    0x39,0x50,0x56,0x4a,0xdd,0xdf,0xa5,0xf8,0xc6,0xda,0xca,0x90,0xca,0x01,0x42,0x9d,
+    0x8b,0x0c,0x73,0x43,0x75,0x05,0x94,0xde,0x24,0xb3,0x80,0x34,0xe5,0x2c,0xdc,0x9b,
+    0x3f,0xca,0x33,0x45,0xd0,0xdb,0x5f,0xf5,0x52,0xc3,0x21,0xda,0xe2,0x22,0x72,0x6b,
+    0x3e,0xd0,0x5b,0xa8,0x87,0x8c,0x06,0x5d,0x0f,0xdd,0x09,0x19,0x93,0xd0,0xb9,0xfc,
+    0x8b,0x0f,0x84,0x60,0x33,0x1c,0x9b,0x45,0xf1,0xf0,0xa3,0x94,0x3a,0x12,0x77,0x33,
+    0x4d,0x44,0x78,0x28,0x3c,0x9e,0xfd,0x65,0x57,0x16,0x94,0x6b,0xfb,0x59,0xd0,0xc8,
+    0x22,0x36,0xdb,0xd2,0x63,0x98,0x43,0xa1,0x04,0x87,0x86,0xf7,0xa6,0x26,0xbb,0xd6,
+    0x59,0x4d,0xbf,0x6a,0x2e,0xaa,0x2b,0xef,0xe6,0x78,0xb6,0x4e,0xe0,0x2f,0xdc,0x7c,
+    0xbe,0x57,0x19,0x32,0x7e,0x2a,0xd0,0xb8,0xba,0x29,0x00,0x3c,0x52,0x7d,0xa8,0x49,
+    0x3b,0x2d,0xeb,0x25,0x49,0xfa,0xa3,0xaa,0x39,0xa7,0xc5,0xa7,0x50,0x11,0x36,0xfb,
+    0xc6,0x67,0x4a,0xf5,0xa5,0x12,0x65,0x7e,0xb0,0xdf,0xaf,0x4e,0xb3,0x61,0x7f,0x2f } };
+  uchar ck=0x60;
+
+  // if (strncmp ((char *)buf, "02", 2)) return;
+  if ( start >= size ) return ;
+
+  ci = xlat[0][ci];
+  cj = xlat[1][cj];
+//printf("Decrypted tag 0x%x:\n%*s", tag, (i & 31)*3, "");
+  for (int i = start ; i < size; i++) {
+  // printf("%02x%c", buf[i] ^ (cj += ci * ck++), (i & 31) == 31 ? '\n':' ');
+    buf[i] ^= (cj += ci * ck++);
+  }
+  // if (size & 31) puts("");
+}
+
 // types of data in Exif Specification
 enum type_e
 {    kttMin             = 0
@@ -171,13 +223,22 @@ public:
             pData_ = (byte*) std::calloc(size_,1);
         }
     }
+    DataBuf(DataBuf& other)
+    : pData_(NULL)
+    , size_ (0)
+    {
+        if ( other.size_ ) {
+            malloc(other.size_);
+            memcpy(pData_,other.pData_,size_);
+        }
+    }
     virtual ~DataBuf()
     {
         empty(true);
-        size_ = 0 ;
     }
     bool empty(bool bForce=false) {
         bool result = size_ == 0;
+
         if ( bForce && pData_ && size_ ) {
             std::free(pData_) ;
             pData_ = NULL ;
@@ -185,7 +246,7 @@ public:
         if ( bForce ) size_ = 0;
         return result;
     }
-    void alloc(uint64_t size)
+    void malloc(uint64_t size)
     {
         empty(true);
         pData_ = (byte*) std::malloc(size_);
@@ -244,67 +305,22 @@ public:
         memcpy(pData_+offset,src,size);
     }
     void copy(uint32_t v,uint64_t offset=0) { copy(&v,4,offset); }
-    void copy(DataBuf& src,uint64_t size=0) { if ( !size ) size=src.size_; if (size <= src.size_ && size <= size_) copy(src.pData_,size);}
-    std::string path() { return path_; }
-    std::string toString(type_e type,uint64_t count,endian_e endian,uint64_t offset=0);
-    std::string binaryToString(uint64_t start,uint64_t size);
-    std::string toUuidString(size_t offset=0) ;
+    void copy(DataBuf& src,uint64_t size=0) {
+        if ( !size ) size=src.size_;
+        malloc(size) ;
+
+        if (size <= src.size_ && size <= size_) {
+            memcpy(pData_,src.pData_,size);
+        }
+    }
+    std::string path() const { return path_; }
+    std::string toString(type_e type,uint64_t count,endian_e endian,uint64_t offset=0) const;
+    std::string binaryToString(uint64_t start,uint64_t size) const;
+    std::string toUuidString(size_t offset=0) const;
 
 private:
     std::string path_;
 };
-
-// https://github.com/ncruces/dcraw/blob/master/parse.c
-typedef unsigned char uchar;
-void nikon_decrypt (uchar ci, uchar cj, int tag, int start, int size, uchar *buf)
-{
-  static const uchar xlat[2][256] = {
-  { 0xc1,0xbf,0x6d,0x0d,0x59,0xc5,0x13,0x9d,0x83,0x61,0x6b,0x4f,0xc7,0x7f,0x3d,0x3d,
-    0x53,0x59,0xe3,0xc7,0xe9,0x2f,0x95,0xa7,0x95,0x1f,0xdf,0x7f,0x2b,0x29,0xc7,0x0d,
-    0xdf,0x07,0xef,0x71,0x89,0x3d,0x13,0x3d,0x3b,0x13,0xfb,0x0d,0x89,0xc1,0x65,0x1f,
-    0xb3,0x0d,0x6b,0x29,0xe3,0xfb,0xef,0xa3,0x6b,0x47,0x7f,0x95,0x35,0xa7,0x47,0x4f,
-    0xc7,0xf1,0x59,0x95,0x35,0x11,0x29,0x61,0xf1,0x3d,0xb3,0x2b,0x0d,0x43,0x89,0xc1,
-    0x9d,0x9d,0x89,0x65,0xf1,0xe9,0xdf,0xbf,0x3d,0x7f,0x53,0x97,0xe5,0xe9,0x95,0x17,
-    0x1d,0x3d,0x8b,0xfb,0xc7,0xe3,0x67,0xa7,0x07,0xf1,0x71,0xa7,0x53,0xb5,0x29,0x89,
-    0xe5,0x2b,0xa7,0x17,0x29,0xe9,0x4f,0xc5,0x65,0x6d,0x6b,0xef,0x0d,0x89,0x49,0x2f,
-    0xb3,0x43,0x53,0x65,0x1d,0x49,0xa3,0x13,0x89,0x59,0xef,0x6b,0xef,0x65,0x1d,0x0b,
-    0x59,0x13,0xe3,0x4f,0x9d,0xb3,0x29,0x43,0x2b,0x07,0x1d,0x95,0x59,0x59,0x47,0xfb,
-    0xe5,0xe9,0x61,0x47,0x2f,0x35,0x7f,0x17,0x7f,0xef,0x7f,0x95,0x95,0x71,0xd3,0xa3,
-    0x0b,0x71,0xa3,0xad,0x0b,0x3b,0xb5,0xfb,0xa3,0xbf,0x4f,0x83,0x1d,0xad,0xe9,0x2f,
-    0x71,0x65,0xa3,0xe5,0x07,0x35,0x3d,0x0d,0xb5,0xe9,0xe5,0x47,0x3b,0x9d,0xef,0x35,
-    0xa3,0xbf,0xb3,0xdf,0x53,0xd3,0x97,0x53,0x49,0x71,0x07,0x35,0x61,0x71,0x2f,0x43,
-    0x2f,0x11,0xdf,0x17,0x97,0xfb,0x95,0x3b,0x7f,0x6b,0xd3,0x25,0xbf,0xad,0xc7,0xc5,
-    0xc5,0xb5,0x8b,0xef,0x2f,0xd3,0x07,0x6b,0x25,0x49,0x95,0x25,0x49,0x6d,0x71,0xc7 },
-  { 0xa7,0xbc,0xc9,0xad,0x91,0xdf,0x85,0xe5,0xd4,0x78,0xd5,0x17,0x46,0x7c,0x29,0x4c,
-    0x4d,0x03,0xe9,0x25,0x68,0x11,0x86,0xb3,0xbd,0xf7,0x6f,0x61,0x22,0xa2,0x26,0x34,
-    0x2a,0xbe,0x1e,0x46,0x14,0x68,0x9d,0x44,0x18,0xc2,0x40,0xf4,0x7e,0x5f,0x1b,0xad,
-    0x0b,0x94,0xb6,0x67,0xb4,0x0b,0xe1,0xea,0x95,0x9c,0x66,0xdc,0xe7,0x5d,0x6c,0x05,
-    0xda,0xd5,0xdf,0x7a,0xef,0xf6,0xdb,0x1f,0x82,0x4c,0xc0,0x68,0x47,0xa1,0xbd,0xee,
-    0x39,0x50,0x56,0x4a,0xdd,0xdf,0xa5,0xf8,0xc6,0xda,0xca,0x90,0xca,0x01,0x42,0x9d,
-    0x8b,0x0c,0x73,0x43,0x75,0x05,0x94,0xde,0x24,0xb3,0x80,0x34,0xe5,0x2c,0xdc,0x9b,
-    0x3f,0xca,0x33,0x45,0xd0,0xdb,0x5f,0xf5,0x52,0xc3,0x21,0xda,0xe2,0x22,0x72,0x6b,
-    0x3e,0xd0,0x5b,0xa8,0x87,0x8c,0x06,0x5d,0x0f,0xdd,0x09,0x19,0x93,0xd0,0xb9,0xfc,
-    0x8b,0x0f,0x84,0x60,0x33,0x1c,0x9b,0x45,0xf1,0xf0,0xa3,0x94,0x3a,0x12,0x77,0x33,
-    0x4d,0x44,0x78,0x28,0x3c,0x9e,0xfd,0x65,0x57,0x16,0x94,0x6b,0xfb,0x59,0xd0,0xc8,
-    0x22,0x36,0xdb,0xd2,0x63,0x98,0x43,0xa1,0x04,0x87,0x86,0xf7,0xa6,0x26,0xbb,0xd6,
-    0x59,0x4d,0xbf,0x6a,0x2e,0xaa,0x2b,0xef,0xe6,0x78,0xb6,0x4e,0xe0,0x2f,0xdc,0x7c,
-    0xbe,0x57,0x19,0x32,0x7e,0x2a,0xd0,0xb8,0xba,0x29,0x00,0x3c,0x52,0x7d,0xa8,0x49,
-    0x3b,0x2d,0xeb,0x25,0x49,0xfa,0xa3,0xaa,0x39,0xa7,0xc5,0xa7,0x50,0x11,0x36,0xfb,
-    0xc6,0x67,0x4a,0xf5,0xa5,0x12,0x65,0x7e,0xb0,0xdf,0xaf,0x4e,0xb3,0x61,0x7f,0x2f } };
-  uchar ck=0x60;
-
-  // if (strncmp ((char *)buf, "02", 2)) return;
-  if ( start >= size ) return ;
-    
-  ci = xlat[0][ci];
-  cj = xlat[1][cj];
-//printf("Decrypted tag 0x%x:\n%*s", tag, (i & 31)*3, "");
-  for (int i = start ; i < size; i++) {
-  // printf("%02x%c", buf[i] ^ (cj += ci * ck++), (i & 31) == 31 ? '\n':' ');
-    buf[i] ^= (cj += ci * ck++);
-  }
-  // if (size & 31) puts("");
-}
 
 // endian and byte swappers
 bool isPlatformBigEndian()
@@ -570,12 +586,12 @@ bool isEqualsNoCase(const std::string& a, const std::string& b)
                       });
 }
 
-std::string DataBuf::binaryToString(uint64_t start=0,uint64_t size=0)
+std::string DataBuf::binaryToString(uint64_t start=0,uint64_t size=0) const
 {
     return ::binaryToString(pData_,start,size?size:size_);
 }
 
-std::string DataBuf::toString(type_e type,uint64_t count=0,endian_e endian=keLittle,uint64_t offset/*=0*/)
+std::string DataBuf::toString(type_e type,uint64_t count=0,endian_e endian=keLittle,uint64_t offset/*=0*/) const
 {
     std::ostringstream os;
     std::string        sp;
@@ -621,7 +637,7 @@ std::string DataBuf::toString(type_e type,uint64_t count=0,endian_e endian=keLit
     return os.str();
 } // DataBuf::toString
 
-std::string DataBuf::toUuidString(size_t offset /* =0 */)
+std::string DataBuf::toUuidString(size_t offset /* =0 */) const
 {
     // 123e4567-e89b-12d3-a456-426614174000
     std::string result ;
@@ -635,6 +651,26 @@ std::string DataBuf::toUuidString(size_t offset /* =0 */)
     }
     return result ;
 } // DataBuf::toUuidString
+
+class ExifDatum {
+public:
+    ExifDatum(uint64_t address,std::string name, uint16_t tag,type_e type,uint32_t count,uint64_t offset,DataBuf& buff)
+    : address_(address)
+    , name_   (name)
+    , tag_    (tag)
+    , count_  (count)
+    , offset_ (offset)
+    , buff_   (buff)
+    {}
+private:
+    uint64_t    address_;
+    std::string name_   ;
+    uint16_t    tag_    ;
+    type_e      type_   ;
+    uint32_t    count_  ;
+    uint64_t    offset_ ;
+    DataBuf     buff_   ;
+};
 
 // Camera makers
 enum maker_e
@@ -1091,26 +1127,26 @@ public:
     Image(std::string path)
     : io_(path,"rb")
     , makerDict_(emptyDict)
-    , lensData_(4)
     { init(); };
     Image(Io io)
     : io_       (io)
     , makerDict_(emptyDict)
-    , lensData_(4)
     { init(); };
+
     virtual    ~Image() {
         io_.close()      ;
     }
 
     void init(){
-        start_     = 0 ;
-        bigtiff_   = false;
-        endian_    = keLittle;
-        depth_     = 0;
-        valid_     = false;
-        serial_    = 0 ;
-        key_       = 0 ;
-        setMaker(kUnknown);
+        start_         = 0 ;
+        bigtiff_       = false;
+        endian_        = keLittle;
+        depth_         = 0;
+        valid_         = false;
+        serial_        = 0 ;
+        shutterCount_  = 0 ;
+        setMaker(kUnknown) ;
+        lensSize_      = 0 ;
     }
 
     bool        valid()        { return false     ; }
@@ -1200,12 +1236,20 @@ protected:
     endian_e    endian_;
     bool        bigtiff_;
     size_t      depth_;
-    std::string format_      ; // "TIFF", "JPEG" etc...
-    std::string header_      ; // title for report
-    uint32_t    serial_      ; // required by nikon_decrypt
-    uint32_t    key_         ; // required by nikon_decrypt
-    DataBuf     lensData_    ;
-    int64_t     lensAddress_ ;
+    std::string format_       ; // "TIFF", "JPEG" etc...
+    std::string header_       ; // title for report
+
+    // store    Nikon.LensData tag
+    uint32_t    serial_       ; // required by nikon_decrypt
+    uint32_t    shutterCount_ ; // required by nikon_decrypt
+    int64_t     lensAddress_  ;
+    type_e      lensType_     ;
+    uint32_t    lensCount_    ;
+    uint64_t    lensOffset_   ;
+    std::string lensOffsetS_  ;
+    uint16_t    lensTag_      ;
+    byte        lensData_[200];
+    size_t      lensSize_     ;
 
     bool isPrintXMP(uint16_t type, PSOption option)
     {
@@ -2389,11 +2433,15 @@ public:
         }
         indent_--;
         image.depth_--;
-    } // visitEnd
+    }; // visitEnd
+
+    // called by visitTag()
+    void reportTag   (std::string& name,uint64_t address,endian_e endian,uint16_t tag,type_e type,uint32_t count,const DataBuf& buff,std::string offsetS);
+    void reportFields(std::string& name,uint64_t address,endian_e endian,uint16_t tag,type_e type,uint32_t count,const DataBuf& buff,TagDict& makerDict);
 
 private:
-    std::string    nm_       [256];
-    bool           hasLength_[256];
+    std::string    nm_        [256];
+    bool           hasLength_ [256];
 
     const byte     dht_      = 0xc4;
     const byte     dqt_      = 0xdb;
@@ -2475,7 +2523,7 @@ void IFD::visitMakerNote(Visitor& visitor,DataBuf& buf,uint64_t count,uint64_t o
     switch ( image_.maker_ ) {
         case kUnknown     : /* do nothing */ ; break;
         default           : /* do nothing */ ; break;
-        
+
         case kNikon       : {
                 // MakerNote is embeded tiff `II*_....` 10 bytes into the data!
                 size_t punt = buf.strequals("Nikon") ? 10 : 0 ;
@@ -2491,7 +2539,7 @@ void IFD::visitMakerNote(Visitor& visitor,DataBuf& buf,uint64_t count,uint64_t o
                 IFD makerNote(image_,offset+6,false);
                 makerNote.accept(visitor,makerDict());
             } break;
-            
+
         case kApple:
             if ( buf.strequals("Apple iOS")) {
                 // IFD `Apple iOS__.MM_._._.___.___._._.__..`  26 bytes into the data!
@@ -2505,7 +2553,7 @@ void IFD::visitMakerNote(Visitor& visitor,DataBuf& buf,uint64_t count,uint64_t o
                 IFD makerNote(image_,offset,false);
                 makerNote.accept(visitor,makerDict());
             } break;
-            
+
         case kOlym:
             if ( buf.begins("OLYMPUS\0II")  ) { // "OLYMPUS\0II\0x3\0x0"E# or "OLYMP\0"
                 Io     io(io_,offset,count);
@@ -2899,6 +2947,35 @@ void ReportVisitor::visitBegin(Image& image,std::string msg)
     }
 }
 
+void ReportVisitor::reportFields(std::string& name,uint64_t address,endian_e endian,uint16_t tag,type_e type,uint32_t count,const DataBuf& buff,TagDict& makerDict)
+{
+    if ( makerTags.find(name) == makerTags.end() ) return;
+
+    for (Field field : makerTags[name]) {
+        std::string n    = join(groupName(makerDict),field.name(),28);
+        size_t      byte = field.start() + field.count() * typeSize(field.type());
+        if ( byte <= buff.size_ ) {
+            out() << indent()
+                  << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
+                                 ,address+field.start(),tag,n.c_str(),typeName(field.type()),field.count(),"")
+                  << chop(buff.toString(field.type(),field.count(),endian,field.start()),40)
+                  << std::endl
+            ;
+        }
+    }
+}
+
+void ReportVisitor::reportTag(std::string& name,uint64_t address,endian_e endian,uint16_t tag,type_e type,uint32_t count,const DataBuf& buff,std::string offsetS)
+{
+    if ( printTag(name) ) {
+        out() << indent()
+              << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
+                   ,address,tag,name.c_str(),::typeName(type),count,offsetS.c_str())
+              << chop(buff.toString(type,count,endian),40)
+              << std::endl;
+    }
+}
+
 void ReportVisitor::visitTag
 ( Io&            io
 , Image&         image
@@ -2907,78 +2984,65 @@ void ReportVisitor::visitTag
 , type_e         type
 , uint64_t       count
 , uint64_t       offset
-, DataBuf&       buf
+, DataBuf&       buff
 , const TagDict& tagDict
 ) {
-    if ( isBasicOrRecursive() ) {
-        std::string offsetS ;
-        if ( typeSize(type)*count > (image.bigtiff_?8:4) ) {
-            std::ostringstream os ;
-            os  <<  offset;
-            offsetS         = os.str();
-        }
+    if ( !isBasicOrRecursive() ) return ;
 
-        std::string    name = tagName(tag,tagDict,28);
-        std::string   value = buf.toString(type,count,image.endian_);
-        
-        if ( printTag(name) ) {
-            out() << indent()
-                  << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
-                        ,address,tag,name.c_str(),::typeName(type),count,offsetS.c_str())
-                  << chop(value,40)
-                  << std::endl
-            ;
-            if ( name != "Exif.Nikon.LensData" && makerTags.find(name) != makerTags.end() ) {
-                for (Field field : makerTags[name] ) {
-                    std::string n      = join(groupName(tagDict),field.name(),28);
-                    endian_e    endian = field.endian() == keImage ? image.endian() : field.endian();
-                    out() << indent()
-                          << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
-                                         ,offset+field.start(),tag,n.c_str(),typeName(field.type()),field.count(),"")
-                          << chop(buf.toString(field.type(),field.count(),endian,field.start()),40)
-                          << std::endl
-                    ;
-                }
-            }
+    std::string offsetS ;
+    if ( typeSize(type)*count > (image.bigtiff_?8:4) ) {
+        std::ostringstream os ;
+        os  <<  offset;
+        offsetS         = os.str();
+    }
+
+    std::string    name = tagName(tag,tagDict,28);
+    std::string   value = buff.toString(type,count,image.endian_);
+
+    if ( printTag(name) ) {
+        reportTag(name,address,image.endian_,tag,type,count,buff,offsetS);
+        if ( name != "Exif.Nikon.LensData" ) {
+            reportFields(name,offset,image.endian(),tag,type,count,buff,image.makerDict_);
         }
-        
-        // save nikon encrypted data until it can be decoded
-        if ( name == "Exif.Nikon.SerialNumber" ) image.serial_ = atoi((char*) buf.pData_) ;
-        if ( name == "Exif.Nikon.DecryptKey"   ) image.key_    = buf.getLong(0,image.endian());
-        if ( name == "Exif.Nikon.LensData"     ) {
-            image.lensData_.alloc(buf.size_);
-            image.lensData_.copy(buf);
+    }
+
+    // save nikon encrypted data until it can be decoded
+    if ( name == "Exif.Nikon.SerialNumber" ) image.serial_       = atoi((char*) buff.pData_) ;
+    if ( name == "Exif.Nikon.ShutterCount" ) image.shutterCount_ = buff.getLong(0,image.endian());
+    if ( name == "Exif.Nikon.LensData"     ) {
+        // store the tag
+        //image.lensData_.copy(buff)   ;
+        //image.lensData_.malloc(buff.size_);
+        //memcpy(image.lensData_.pData_,buff.pData_,buff.size_);
+        if ( sizeof(image.lensData_) > buff.size_) {
+            memcpy(image.lensData_,buff.pData_,buff.size_);
+            image.lensSize_    = buff.size_;
             image.lensAddress_ = address ;
+            image.lensType_    = type    ;
+            image.lensCount_   = count   ;
+            image.lensTag_     = tag     ;
+            image.lensOffset_  = offset  ;
+            image.lensOffsetS_ = offsetS ;
         }
-        if ( image.serial_ && image.key_ && image.lensData_.size_ > 6000 ) {
-            name = "Exif.Nikon.LensData";
-            printTag( name);
-        //  nikon_decrypt (serial, key, 0x98, 4, sizeof buf98, buf98);
-            nikon_decrypt(image.serial_,image.key_,0x98,4,image.lensData_.size_,image.lensData_.pData_);
-            std::string decrypted = image.lensData_.toString(kttByte,image.lensData_.size_,image.endian_);
-            out() << indent()
-                  << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
-                        ,image.lensAddress_,tag,name.c_str(),::typeName(type),count,offsetS.c_str())
-                  << chop(decrypted,40)
-                  << std::endl
-            ;
-            image.key_ = 0 ;
-            image.serial_ = 0 ;
+    }
+    // decode lensData
+    if ( image.serial_ && image.shutterCount_ && image.lensSize_ ) {
+        name = "Exif.Nikon.LensData";
+        // restore the tag
+        address = image.lensAddress_ ;
+        tag     = image.lensTag_     ;
+        type    = image.lensType_    ;
+        count   = image.lensCount_   ;
+        offset  = image.lensOffset_  ;
+        offsetS = image.lensOffsetS_ ;
 
-            if ( makerTags.find(name) != makerTags.end() ) {
-                for (Field field : makerTags[name] ) {
-                    std::string n      = join(groupName(tagDict),field.name(),28);
-                    endian_e    endian = field.endian() == keImage ? image.endian() : field.endian();
-                    out() << indent()
-                          << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
-                                         ,offset+field.start(),tag,n.c_str(),typeName(field.type()),field.count(),"")
-                          << chop(image.lensData_.toString(field.type(),field.count(),endian,field.start()),40)
-                          << std::endl
-                    ;
-                }
-            }
+        nikon_decrypt(image.serial_,image.shutterCount_,tag,4,image.lensSize_,image.lensData_);
+        DataBuf   lens(image.lensSize_);
+        lens.copy(image.lensData_,image.lensSize_);
 
-        }
+        reportTag   (name,address,image.endian(),tag,type,count,lens,offsetS);
+        reportFields(name, offset,image.endian(),tag,type,count,lens,image.makerDict_);
+        image.serial_ = 0; // don't do this again.
     }
 } // visitTag
 
@@ -3134,7 +3198,7 @@ void ReportVisitor::visit8BIM(Io& io,Image& image,uint32_t offset
     if ( printTag(tag) ) {
         uint64_t chop_len = 30 ; // set chop_len to avoid excessive output
         uint64_t len = b.size_<chop_len?b.size_:chop_len; // number of bytes to format
-        
+
         out() << indent()
               << stringFormat("   %8d | %#06x | %-28s | %4d | %2d+%1d | "
                             ,offset,kind,tag.c_str(),len,data,pad)
@@ -3191,7 +3255,7 @@ void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
               << " " << data.toString(    kttUByte,dump,image.endian(),start)
               << std::endl;
     }
-    
+
     if ( isRecursive() ){
         if ( uuidName == "exif" ) {
             Io        tiff(io,address+punt+16,data.size_-16-punt); // uuid is 16 bytes (128 bits)
@@ -3413,7 +3477,7 @@ void init()
     nikonDict [ 0x001e ] = "ColorSpace";
     nikonDict [ 0x0023 ] = "PictureControl";
     nikonDict [ 0x0098 ] = "LensData";
-    nikonDict [ 0x00a7 ] = "DecryptKey";
+    nikonDict [ 0x00a7 ] = "ShutterCount";
 
     canonDict [ktGroup ] = "Canon";
     canonDict [ 0x0001 ] = "Macro";

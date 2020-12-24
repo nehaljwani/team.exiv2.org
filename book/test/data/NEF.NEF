@@ -141,13 +141,17 @@ STRUCTURE OF TIFF FILE (II): ../files/NEF.NEF
          514 | 0x0095 Exif.Nikon.0x95              |     ASCII |        5 |     17050 | OFF 
          526 | 0x0096 Exif.Nikon.0x96              | UNDEFINED |      624 |     17056 | D H.H.H.H...__._ _0_@_P_`_p_._._._._ +++
          538 | 0x0097 Exif.Nikon.0x97              | UNDEFINED |     1188 |     17680 | 0219....a>..s=9...9.O....F....^q.r`. +++
-         550 | 0x0098 Exif.Nikon.0x98              | UNDEFINED |       33 |     18868 | 0204..&..H-..|[q..s..h..i.l[....I
+         550 | 0x0098 Exif.Nikon.LensData          | UNDEFINED |       33 |     18868 | 0204..&..H-..|[q..s..h..i.l[....I
          562 | 0x0099 Exif.Nikon.0x99              |     SHORT |        2 |           | 3008 2008
          574 | 0x009d Exif.Nikon.0x9d              |     SHORT |        1 |           | 0
          586 | 0x009e Exif.Nikon.0x9e              |     SHORT |       10 |     18902 | 0 0 0 0 0 0 0 0 0 0
          598 | 0x00a3 Exif.Nikon.0xa3              |     UBYTE |        1 |           | 0
          610 | 0x00a4 Exif.Nikon.0xa4              | UNDEFINED |        4 |           | 0300
-         622 | 0x00a7 Exif.Nikon.0xa7              |      LONG |        1 |           | 12593
+         622 | 0x00a7 Exif.Nikon.ShutterCount      |      LONG |        1 |           | 12593
+         550 | 0x0098 Exif.Nikon.LensData          | UNDEFINED |       33 |     18868 | 0204.....S...U8.[]V?j..H?u5.....s
+       18868 | 0x0098 Exif.Nikon.LdVersion         |     ASCII |        4 |           | 0204
+       18877 | 0x0098 Exif.Nikon.LdFocusDistance   |     UBYTE |        1 |           | 83
+       18881 | 0x0098 Exif.Nikon.LdLensIDNumber    |     UBYTE |        1 |           | 85
          634 | 0x00a8 Exif.Nikon.0xa8              | UNDEFINED |       49 |     18922 | 0106________________________________ +++
          646 | 0x00ab Exif.Nikon.0xab              |     ASCII |       16 |     18972 | SCENE AUTO     
          658 | 0x00b0 Exif.Nikon.0xb0              | UNDEFINED |       16 |     18988 | 0100____________

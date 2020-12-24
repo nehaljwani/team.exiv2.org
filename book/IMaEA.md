@@ -4267,7 +4267,7 @@ As we can see, tag == 1 in the Nikon MakerNotes is Version.  In Canon MakerNotes
 [TOC](#TOC)
 ### Tag Encryption
 
-Exiv2 does not decrypt or encrypt any data.  The sony tag 0x9402 is used to store FocusPosition and the data is ciphered.  It's a simple cipher and the code was provided by Phil Harvey.  The code is discussed in the detail in the issue referenced in the code below.
+Exiv2 can decrypt/encrypt the metadata in Nikon tag 0x0098 "LensData".  The sony tag 0x9402 is used to store FocusPosition and the data is ciphered.  It's a simple cipher and the code was provided by Phil Harvey.  The code is discussed in the detail in the issue referenced in the code below.
 
 The ArrayCfg structure allows any tag to be decrypted by readMetadata() andn encrypted by writeMetadata().  I believe sony tag 0x9402 is the only tag that takes advantage of this feature of the TiffVisitor.
 
@@ -4317,48 +4317,50 @@ The encrypted data is in the tag 0x0098 LensData.  However, it requires two addi
 ```cpp
 nikonDict [ 0x001d ] = "SerialNumber";
 nikonDict [ 0x0098 ] = "LensData";
-nikonDict [ 0x00a7 ] = "DecryptKey";
+nikonDict [ 0x00a7 ] = "ShutterCount";
 ```
 
 There's a challenge in calling the decryptor because the encrypted data can be stored in the image before we know the key!  So the decoding of the data is deferred until all three items have been found.  This is done in ReportVisitor::visitTag() with the following code:
 
 ```cpp
 // save nikon encrypted data until it can be decoded
-if ( name == "Exif.Nikon.SerialNumber" ) image.serial_ = atoi((char*) buf.pData_) ;
-if ( name == "Exif.Nikon.DecryptKey"   ) image.key_    = buf.getLong(0,image.endian());
+if ( name == "Exif.Nikon.SerialNumber" ) image.serial_       = atoi((char*) buff.pData_) ;
+if ( name == "Exif.Nikon.ShutterCount" ) image.shutterCount_ = buff.getLong(0,image.endian());
 if ( name == "Exif.Nikon.LensData"     ) {
-    image.lensData_.alloc(buf.size_);
-    image.lensData_.copy(buf);
-    image.lensAddress_ = address ;
-}
-if ( image.serial_ && image.key_ && image.lensData_.size_ ) {
-    name = "Exif.Nikon.LensData";
-    printTag( name);
-//  nikon_decrypt (serial, key, 0x98, 4, sizeof buf98, buf98);
-    nikon_decrypt(image.serial_,image.key_,0x98,4,image.lensData_.size_,image.lensData_.pData_);
-    std::string decrypted = image.lensData_.toString(kttByte,image.lensData_.size_,image.endian_);
-    out() << indent()
-          << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
-                ,image.lensAddress_,tag,name.c_str(),::typeName(type),count,offsetS.c_str())
-          << chop(decrypted,40)
-          << std::endl
-    ;
-    image.key_ = 0 ;
-    image.serial_ = 0 ;
-
-    if ( makerTags.find(name) != makerTags.end() ) {
-        for (Field field : makerTags[name] ) {
-            std::string n      = join(groupName(tagDict),field.name(),28);
-            endian_e    endian = field.endian() == keImage ? image.endian() : field.endian();
-            out() << indent()
-                  << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
-                                 ,offset+field.start(),tag,n.c_str(),typeName(field.type()),field.count(),"")
-                  << chop(image.lensData_.toString(field.type(),field.count(),endian,field.start()),40)
-                  << std::endl
-            ;
-        }
+    // store the tag
+    //image.lensData_.copy(buff)   ;
+    //image.lensData_.malloc(buff.size_);
+    //memcpy(image.lensData_.pData_,buff.pData_,buff.size_);
+    if ( sizeof(image.lensData_) > buff.size_) {
+        memcpy(image.lensData_,buff.pData_,buff.size_);
+        image.lensSize_    = buff.size_;
+        image.lensAddress_ = address ;
+        image.lensType_    = type    ;
+        image.lensCount_   = count   ;
+        image.lensTag_     = tag     ;
+        image.lensOffset_  = offset  ;
+        image.lensOffsetS_ = offsetS ;
     }
-} // if ( image.serial_ && image.key_ && image.lensData_.size_ )
+}
+// decode lensData
+if ( image.serial_ && image.shutterCount_ && image.lensSize_ ) {
+    name = "Exif.Nikon.LensData";
+    // restore the tag
+    address = image.lensAddress_ ;
+    tag     = image.lensTag_     ;
+    type    = image.lensType_    ;
+    count   = image.lensCount_   ;
+    offset  = image.lensOffset_  ;
+    offsetS = image.lensOffsetS_ ;
+
+    nikon_decrypt(image.serial_,image.shutterCount_,tag,4,image.lensSize_,image.lensData_);
+    DataBuf   lens(image.lensSize_);
+    lens.copy(image.lensData_,image.lensSize_);
+
+    reportTag   (name,address,image.endian(),tag,type,count,lens,offsetS);
+    reportFields(name, offset,image.endian(),tag,type,count,lens,image.makerDict_);
+    image.serial_ = 0; // don't do this again.
+}
 ```
 
 ReportVisitor::visitTag() is a little messed up by have to defer encrypted (or ciphered) data.  If tvisitor was being further developed, we would encounter more tags which require this treatment, and we could a data structure to hold deferred tags and their interdependencies.  Additionally, this magic should be handled in IFD::accept().  For the moment, the _**if**_ statements in ReportVisitor::visitTag() are OK.

@@ -89,12 +89,16 @@ STRUCTURE OF JPEG FILE (II): ../files/Stonehenge.jpg
            466 | 0x008b Exif.Nikon.0x8b              | UNDEFINED |        4 |           | 7.._
            478 | 0x0095 Exif.Nikon.0x95              |     ASCII |        5 |      1586 | OFF 
            490 | 0x0097 Exif.Nikon.0x97              | UNDEFINED |     1188 |      1592 | 0219.dU....W..2......:.......F.#$.I +++
-           502 | 0x0098 Exif.Nikon.0x98              | UNDEFINED |       33 |      2780 | 0204.W....z.o..#[.....!o.x..E....
+           502 | 0x0098 Exif.Nikon.LensData          | UNDEFINED |       33 |      2780 | 0204.W....z.o..#[.....!o.x..E....
            514 | 0x009d Exif.Nikon.0x9d              |     SHORT |        1 |           | 0
            526 | 0x009e Exif.Nikon.0x9e              |     SHORT |       10 |      2814 | 0 0 0 0 0 0 0 0 0 0
            538 | 0x00a2 Exif.Nikon.0xa2              |      LONG |        1 |           | 6173648
            550 | 0x00a3 Exif.Nikon.0xa3              |     UBYTE |        1 |           | 0
-           562 | 0x00a7 Exif.Nikon.0xa7              |      LONG |        1 |           | 9608
+           562 | 0x00a7 Exif.Nikon.ShutterCount      |      LONG |        1 |           | 9608
+           502 | 0x0098 Exif.Nikon.LensData          | UNDEFINED |       33 |      2780 | 0204.O..N....}.Bv........V......N
+          2780 | 0x0098 Exif.Nikon.LdVersion         |     ASCII |        4 |           | 0204
+          2789 | 0x0098 Exif.Nikon.LdFocusDistance   |     UBYTE |        1 |           | 16
+          2793 | 0x0098 Exif.Nikon.LdLensIDNumber    |     UBYTE |        1 |           | 125
            574 | 0x00a8 Exif.Nikon.0xa8              | UNDEFINED |       49 |      2834 | 0106________________________________ +++
            586 | 0x00ab Exif.Nikon.0xab              |     ASCII |       16 |      2884 | AUTO(FLASH OFF)
            598 | 0x00b0 Exif.Nikon.0xb0              | UNDEFINED |       16 |      2900 | 0100____________

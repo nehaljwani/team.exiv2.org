@@ -83,7 +83,7 @@ STRUCTURE OF WEBP FILE (II): ../files/webp.webp
            478 | 0x009e Exif.Nikon.0x9e              |     SHORT |       10 |      2206 | 0 0 0 0 0 0 0 0 0 0
            490 | 0x001d Exif.Nikon.SerialNumber      |     ASCII |        8 |      2226 | 2567806
            502 | 0x0089 Exif.Nikon.0x89              |     SHORT |        1 |           | 0
-           514 | 0x00a7 Exif.Nikon.0xa7              |      LONG |        1 |           | 9608
+           514 | 0x00a7 Exif.Nikon.ShutterCount      |      LONG |        1 |           | 9608
            526 | 0x00ab Exif.Nikon.0xab              |     ASCII |       16 |      2234 | AUTO(FLASH OFF)
            538 | 0x0001 Exif.Nikon.Version           | UNDEFINED |        4 |           | 0211
            550 | 0x000c Exif.Nikon.WB_RBLevels       |  RATIONAL |        4 |      2250 | 538/256 354/256 256/256 256/256
@@ -93,7 +93,11 @@ STRUCTURE OF WEBP FILE (II): ../files/webp.webp
            598 | 0x0097 Exif.Nikon.0x97              | UNDEFINED |     1188 |      2326 | 0219.dU....W..2......:.......F.#$.I +++
            610 | 0x00b8 Exif.Nikon.0xb8              | UNDEFINED |      172 |      3514 | 0100__e_..__________________________ +++
            622 | 0x0025 Exif.Nikon.0x25              | UNDEFINED |       14 |      3686 | H..___H..___._
-           634 | 0x0098 Exif.Nikon.0x98              | UNDEFINED |       33 |      3700 | 0204.W....z.o..#[.....!o.x..E....
+           634 | 0x0098 Exif.Nikon.LensData          | UNDEFINED |       33 |      3700 | 0204.W....z.o..#[.....!o.x..E....
+           634 | 0x0098 Exif.Nikon.LensData          | UNDEFINED |       33 |      3700 | 0204.O..N....}.Bv........V......N
+          3700 | 0x0098 Exif.Nikon.LdVersion         |     ASCII |        4 |           | 0204
+          3709 | 0x0098 Exif.Nikon.LdFocusDistance   |     UBYTE |        1 |           | 16
+          3713 | 0x0098 Exif.Nikon.LdLensIDNumber    |     UBYTE |        1 |           | 125
            646 | 0x00b0 Exif.Nikon.0xb0              | UNDEFINED |       16 |      3734 | 0100____________
            658 | 0x0023 Exif.Nikon.PictureControl    | UNDEFINED |       58 |      3750 | 0100STANDARD____________STANDARD____ +++
           3750 | 0x0023 Exif.Nikon.PcVersion         |     ASCII |        4 |           | 0100
