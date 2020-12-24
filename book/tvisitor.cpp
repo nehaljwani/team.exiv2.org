@@ -31,6 +31,9 @@
 #ifndef  _MSC_VER
 #include <unistd.h>
 #define  FSEEK_LONG uint64_t
+#else
+#include <stdio.h>
+#define  STDIN_FILENO _fileno(stdin)
 #endif
 
 #ifdef HAVE_LIBZ
@@ -3312,7 +3315,7 @@ int main(int argc,const char* argv[])
     if ( argc >= 2 ) {
         // Parse the visitor options
         PSOption option = kpsBasic;
-        if ( argv[arg][0] == '-' ) { // argument starts with - 
+        if ( argv[arg][0] == '-' ) { // argument starts with -
             std::string a(argv[arg++]);
             option  = a.find("R") != std::string::npos ? kpsRecursive
                     : a.find("X") != std::string::npos ? kpsXMP
