@@ -3009,26 +3009,20 @@ void ReportVisitor::visitTag
     // save nikon encrypted data until it can be decoded
     if ( name == "Exif.Nikon.SerialNumber" ) image.serial_       = atoi((char*) buff.pData_) ;
     if ( name == "Exif.Nikon.ShutterCount" ) image.shutterCount_ = buff.getLong(0,image.endian());
-    if ( name == "Exif.Nikon.LensData"     ) {
-        // store the tag
-        //image.lensData_.copy(buff)   ;
-        //image.lensData_.malloc(buff.size_);
-        //memcpy(image.lensData_.pData_,buff.pData_,buff.size_);
-        if ( sizeof(image.lensData_) > buff.size_) {
-            memcpy(image.lensData_,buff.pData_,buff.size_);
-            image.lensSize_    = buff.size_;
-            image.lensAddress_ = address ;
-            image.lensType_    = type    ;
-            image.lensCount_   = count   ;
-            image.lensTag_     = tag     ;
-            image.lensOffset_  = offset  ;
-            image.lensOffsetS_ = offsetS ;
-        }
+    // save lensData
+    if ( name == "Exif.Nikon.LensData" && sizeof(image.lensData_) > buff.size_ ) {
+        memcpy(image.lensData_,buff.pData_,buff.size_);
+        image.lensSize_    = buff.size_;
+        image.lensAddress_ = address ;
+        image.lensType_    = type    ;
+        image.lensCount_   = count   ;
+        image.lensTag_     = tag     ;
+        image.lensOffset_  = offset  ;
+        image.lensOffsetS_ = offsetS ;
     }
-    // decode lensData
+    // restore and decode lensData
     if ( image.serial_ && image.shutterCount_ && image.lensSize_ ) {
         name = "Exif.Nikon.LensData";
-        // restore the tag
         address = image.lensAddress_ ;
         tag     = image.lensTag_     ;
         type    = image.lensType_    ;
