@@ -44,7 +44,7 @@ typedef std::set<uint64_t> Visits;
 
 // https://github.com/ncruces/dcraw/blob/master/parse.c
 typedef unsigned char uchar;
-void nikon_decrypt (uchar ci, uchar cj, int tag, int start, int size, uchar *buf)
+void nikon_decrypt (uchar ci, uchar cj, uint16_t tag, uint64_t start, uint64_t size, uchar *buf)
 {
   static const uchar xlat[2][256] = {
   { 0xc1,0xbf,0x6d,0x0d,0x59,0xc5,0x13,0x9d,0x83,0x61,0x6b,0x4f,0xc7,0x7f,0x3d,0x3d,
@@ -87,7 +87,7 @@ void nikon_decrypt (uchar ci, uchar cj, int tag, int start, int size, uchar *buf
   ci = xlat[0][ci];
   cj = xlat[1][cj];
 //printf("Decrypted tag 0x%x:\n%*s", tag, (i & 31)*3, "");
-  for (int i = start ; i < size; i++) {
+  for (uint64_t i = start ; i < size; i++) {
   // printf("%02x%c", buf[i] ^ (cj += ci * ck++), (i & 31) == 31 ? '\n':' ');
     buf[i] ^= (cj += ci * ck++);
   }
@@ -987,7 +987,7 @@ public:
         read   (buf);
         return ::getLong(buf,0,endian);
     }
-    uint32_t getLong8(endian_e endian)
+    uint64_t getLong8(endian_e endian)
     {
         DataBuf buf(8);
         read   (buf);
@@ -1084,14 +1084,14 @@ public:
     virtual void visitDirEnd  (Image& image,uint64_t start)          = 0 ;
     virtual void visitTag     (Io& io,Image& image
                         ,uint64_t address, uint16_t tag, type_e type
-                        ,uint64_t count,   uint64_t offset
+                        ,uint32_t count,   uint64_t offset
                         ,DataBuf& buf,     const TagDict& tagDict  ) = 0 ;
     virtual void visitCiff    (Io& io,Image& image,uint64_t address) = 0 ;
     virtual void visitSegment (Io& io,Image& image,uint64_t address
              ,uint8_t marker,uint16_t length,std::string& signature) = 0 ;
     virtual void visitExif    (Io& io)                               = 0 ;
     virtual void visitChunk   (Io& io,Image& image,uint64_t address,char* chunk,uint32_t length,uint32_t checksum) = 0;
-    virtual void visitBox     (Io& io,Image& image,uint64_t address,uint32_t box,uint32_t length) = 0 ;
+    virtual void visitBox     (Io& io,Image& image,uint64_t address,uint32_t box,uint64_t length) = 0 ;
 
     // optional methods
     virtual void visitXMP     (DataBuf& /* xmp */ )                                  { return ; }
@@ -1245,14 +1245,14 @@ protected:
     // store    Nikon.LensData tag
     uint32_t    serial_       ; // required by nikon_decrypt
     uint32_t    shutterCount_ ; // required by nikon_decrypt
-    int64_t     lensAddress_  ;
+    uint64_t    lensAddress_  ;
     type_e      lensType_     ;
     uint32_t    lensCount_    ;
     uint64_t    lensOffset_   ;
     std::string lensOffsetS_  ;
     uint16_t    lensTag_      ;
     byte        lensData_[200];
-    size_t      lensSize_     ;
+    uint64_t    lensSize_     ;
 
     bool isPrintXMP(uint16_t type, PSOption option)
     {
@@ -2377,7 +2377,7 @@ public:
         }
     }
     void visitChunk   (Io& io,Image& image,uint64_t address,char* chunk,uint32_t length,uint32_t checksum);
-    void visitBox     (Io& io,Image& image,uint64_t address,uint32_t box,uint32_t length);
+    void visitBox     (Io& io,Image& image,uint64_t address,uint32_t box,uint64_t length);
 
     void visitSegment (Io& io,Image& image,uint64_t address
              ,uint8_t marker,uint16_t length,std::string& signature);
@@ -2412,7 +2412,7 @@ public:
 
     void visitTag     ( Io&  io,Image& image, uint64_t  address
                       , uint16_t         tag, type_e       type
-                      , uint64_t       count, uint64_t offset
+                      , uint32_t       count, uint64_t offset
                       , DataBuf&         buf, const TagDict& tagDict);
     void visitICCTag  (const byte* tag,uint32_t offset,uint32_t length);
     void visitIPTC    (Io& io,Image& image
@@ -2638,8 +2638,8 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
             io_.read(entry);
             uint16_t tag    = getShort(entry,  0,endian);
             type_e   type   = getType (entry,  2,endian);
-            uint64_t count  = get4or8 (entry,4,0,endian);
-            uint64_t offset = get4or8 (entry,4,1,endian);
+            uint32_t count  = (uint32_t) get4or8 (entry,4,0,endian);
+            uint32_t offset = (uint32_t) get4or8 (entry,4,1,endian);
 
             if ( !typeValid(type,bigtiff) ) {
                 Error(kerInvalidTypeValue,type);
@@ -2664,12 +2664,12 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
                 }
             } else if ( type == kttIfd8  ) {
                 for ( uint64_t i = 0 ; i < count ; i++ ) {
-                    offset = buff.getLong8(i*8,endian);
+                    offset = (uint32_t) buff.getLong8(i*8,endian);
                     IFD(image_,offset,false).accept(visitor,ifdDict(image_.maker_,tag,makerDict()));
                 }
             } else if ( tag == ktSubIFD  ) {
                 for ( uint64_t i = 0 ; i < count ; i++ ) {
-                    offset = get4or8 (buff,0,i,endian);
+                    offset = (uint32_t) get4or8 (buff,0,i,endian);
                     IFD(image_,offset,false).accept(visitor,tagDict);
                 }
             } else switch ( tag ) {
@@ -2766,7 +2766,7 @@ void Jp2Image::accept(class Visitor& v)
             v.visitBox(io(),*this,address,box,length); // tell the visitor
 
             DataBuf  data(length-8);
-            uint32_t skip      = 0 ;
+            uint64_t skip      = 0 ;
             if ( length ) {
                 IoSave restore(io(),io().tell());
                 io().read(data);
@@ -2796,9 +2796,9 @@ void Jp2Image::accept(class Visitor& v)
                 uint32_t itemCount  = version < 2 ? getShort(data,skip,keBig) : getLong(data,skip,keBig);
                 skip               += version < 2 ?               2           :         4               ;
                 if ( offsetSize == 4 && lengthSize == 4 && ((length-16) % itemCount) == 0 ) {
-                    uint32_t step = (length-16)/itemCount                  ; // length of data per item.
-                    uint32_t base = skip;
-                    for ( uint32_t i = 0 ; i < itemCount ; i++ ) {
+                    uint64_t step = (length-16)/itemCount                  ; // length of data per item.
+                    uint64_t base = skip;
+                    for ( uint64_t i = 0 ; i < itemCount ; i++ ) {
                         skip=base+i*step ; // move in 16 or 14 byte steps
                         uint32_t ID     = version > 2 ? getLong(data,skip,keBig) : getShort(data,skip,keBig);
                         uint32_t offset = getLong(data,skip+step-8,keBig);
@@ -2985,7 +2985,7 @@ void ReportVisitor::visitTag
 , uint64_t       address
 , uint16_t       tag
 , type_e         type
-, uint64_t       count
+, uint32_t       count
 , uint64_t       offset
 , DataBuf&       buff
 , const TagDict& tagDict
@@ -2993,7 +2993,7 @@ void ReportVisitor::visitTag
     if ( !isBasicOrRecursive() ) return ;
 
     std::string offsetS ;
-    if ( typeSize(type)*count > (image.bigtiff_?8:4) ) {
+    if ( (uint64_t) (typeSize(type)*count) > (image.bigtiff_?8:4) ) {
         std::ostringstream os ;
         os  <<  offset;
         offsetS         = os.str();
@@ -3230,7 +3230,7 @@ void ReportVisitor::visitMrw(Io& io,Image& image,uint64_t address,std::string ch
 }
 
 void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
-                            ,uint32_t box,uint32_t length)
+                            ,uint32_t box,uint64_t length)
 {
     uint64_t punt = 8        ; // to start of binary data
     IoSave   save(io,address);
