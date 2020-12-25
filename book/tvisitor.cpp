@@ -1,4 +1,4 @@
-#ifdef  _MSC_VER
+#if defined(_MSC_VER)
 #define _CRT_SECURE_NO_WARNINGS
 #define  FSEEK_LONG  long
 #pragma  warning(disable : 4996)
@@ -8,6 +8,10 @@
 #include <windows.h>
 #define  fileno      _fileno
 #define  vsnprint    _vsnprintf
+#endif
+
+#if defined(__MINGW64__) || defined(__CYGWIN__)
+#include <windows.h>
 #endif
 
 #include <iostream>
@@ -882,7 +886,7 @@ MakerTags boxTags  ;
 Dict      boxDict ;
 
 // https://github.com/openSUSE/libsolv/blob/master/win32/fmemopen.c
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(__MINGW64__)
 FILE* fmemopen(void* buf, size_t size, const char* mode)
 {
     char temppath[MAX_PATH + 1];

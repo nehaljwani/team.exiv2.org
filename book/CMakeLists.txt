@@ -40,8 +40,9 @@ endif()
 if( EXIV2_ENABLE_PNG )
     find_package( ZLIB REQUIRED )
 endif( )
+
 if ( EXIV2_ENABLE_PNG AND ZLIB_FOUND ) 
-    target_link_libraries ( tvisitor PRIVATE ${ZLIB_LIBRARIES} )
+    target_link_libraries ( tvisitor ${ZLIB_LIBRARIES} )
     target_compile_options( tvisitor PUBLIC -DHAVE_LIBZ)
 endif()
 

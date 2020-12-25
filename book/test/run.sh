@@ -18,7 +18,7 @@ report()
         cp    "../test/tmp/$stub" ../test/data
     fi
 
-    diff -q "../test/tmp/$stub" "../test/data/$stub" >/dev/null 
+    diff --ignore-all-space -q "../test/tmp/$stub" "../test/data/$stub" >/dev/null 
     if [ "$?" == "0" ]; then
         echo "$stub passed";
         pass=$((pass+1))
