@@ -813,10 +813,25 @@ The following keywords are predefined and should be used where appropriate.
 
 Other keywords may be defined for other purposes. Keywords of general interest can be registered with the PNG Registration Authority. It is also permitted to use private unregistered keywords.
 
----------------
+You can set this using the ImageMagick utility **mogrify**.  
+
+<center>![wizard.jpg](wizard.jpg)</center>
+
+```
+868 rmills@rmillsmm-local:~/gnu/exiv2/team/book $ tvisitor exif.png | grep -e comment -e info -e source
+869 rmills@rmillsmm-local:~/gnu/exiv2/team/book $ mogrify -set info 'I am info' exif.png
+870 rmills@rmillsmm-local:~/gnu/exiv2/team/book $ mogrify -set source 'Souce you know' exif.png
+871 rmills@rmillsmm-local:~/gnu/exiv2/team/book $ mogrify -set comment  'Comment in a PNG' exif.png
+872 rmills@rmillsmm-local:~/gnu/exiv2/team/book $ tvisitor exif.png | grep -e comment -e info -e source
+   127957 |  tEXt |      24 | 0x1adeaee2 | comment_Comment in a PNG
+   128091 |  tEXt |      14 | 0xd064ad9e | info_I am info
+   128117 |  tEXt |      21 | 0xb1645ed2 | source_Souce you know
+873 rmills@rmillsmm-local:~/gnu/exiv2/team/book $ 
+```
+
+Exiv2 does not provide support for PNG Textual Information.  The subject is discussed here: [https://github.com/Exiv2/exiv2/issues/1343](https://github.com/Exiv2/exiv2/issues/1343).
 
 As tvisitor displays the chunks and decompressed data, no further processing is necessary to see this data.  However, cannot display this data apart from the zTXt/Description Chunk described below.  To support this in Exiv2 requires a new "Family" of metadata with keys such as: Png.zTXt.Author.  Adding a new "Family" is a considerable undertaking.  The project to have a "unified" metadata container should be undertaken first.
-
 
 ### Exiv2 Comment zTXt/Description Chunk
 
