@@ -792,7 +792,7 @@ enum ktSpecial
 ,   ktIPTC      = 0x83bb
 ,   ktIPTCPS    = 0x0404
 ,   ktICC       = 0x8773
-,   ktMNP       = 0xc634 // Pentax MakerNote
+,   ktMNP       = 0xc634 // Pentax MakerNote and DNGPrivateData
 ,   ktGroup     = 0xffff
 };
 
@@ -2527,13 +2527,15 @@ void CIFF::accept(Visitor& visitor)
 
 void IFD::visitMakerNote(Visitor& visitor,DataBuf& buf,uint64_t count,uint64_t offset)
 {
+    bool bAdobe = buf.begins("Adobe");
     switch ( image_.maker_ ) {
         case kUnknown     : /* do nothing */ ; break;
         default           : /* do nothing */ ; break;
 
         case kNikon       : {
                 // MakerNote is embeded tiff `II*_....` 10 bytes into the data!
-                size_t punt = buf.strequals("Nikon") ? 10 : 0 ;
+                size_t        punt = buf.strequals("Nikon") ? 10 : 0 ;
+                if ( bAdobe ) punt = 30              ;  // Adobe_MakN_.Q.II__..Nikon_..__II*_.___?_
                 Io     io(io_,offset+punt,count-punt);
                 TiffImage makerNote(io,image_.maker_);
                 makerNote.accept(visitor,makerDict());
@@ -2679,9 +2681,8 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
             } else switch ( tag ) {
                 case ktGps    : IFD(image_,offset,false).accept(visitor,gpsDict );break;
                 case ktExif   : IFD(image_,offset,false).accept(visitor,exifDict);break;
-                case ktMN     :         visitMakerNote(visitor,buff,count,offset);break;
-                case ktMNP    : if ( maker() == kPentax )
-                                        visitMakerNote(visitor,buff,count,offset);break;
+                case ktMNP    : /* Pentax and DNGPrivateData */
+                case ktMN     : visitMakerNote(visitor,buff,count,offset)        ;break;
                 default       : /* do nothing                                  */;break;
             }
 
@@ -3401,6 +3402,7 @@ void init()
     dngDict   [ 0xc614 ] = "UniqueCameraModel";
     dngDict   [ 0xc621 ] = "ColorMatrix1";
     dngDict   [ 0xc622 ] = "ColorMatrix2";
+    dngDict   [ 0xc634 ] = "DNGPrivateData";
     dngDict   [ 0xc65a ] = "CalibrationIlluminant1";
     dngDict   [ 0xc65b ] = "CalibrationIlluminant2";
     dngDict   [ 0xc6f4 ] = "ProfileCalibrationSignature";

@@ -132,7 +132,7 @@ bool file(const char* arg,std::string& stub,uint32_t& skip,uint32_t& count)
 int main(int argc, char* argv[])
 {
     options["bs"     ] =  1;
-    options["width"  ] = 32;
+    options["width"  ] =  0;
     options["count"  ] =  0;
     options["endian" ] =  isPlatformBigEndian();
     options["hex"    ] =  1;
@@ -203,6 +203,7 @@ int main(int argc, char* argv[])
         size_t  reads  = 0 ; // count the reads
         size_t  nRead  = 0 ; // bytes actually read
         size_t  remain = count ; // how many bytes still to read
+        if ( width == 0 ) width = 32 ;
         if ( width > sizeof buff ) width = sizeof(buff);
         fseek(f,(long)skip+start,SEEK_SET);
 

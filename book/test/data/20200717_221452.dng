@@ -116,7 +116,7 @@ STRUCTURE OF TIFF FILE (II): ../files/20200717_221452.dng
      394 | 0xc62b Exif.Image.0xc62b            |  RATIONAL |        1 |       898 | 1/1
      406 | 0xc62c Exif.Image.0xc62c            |  RATIONAL |        1 |       906 | 1/1
      418 | 0xc62e Exif.Image.0xc62e            |  RATIONAL |        1 |       914 | 1/1
-     430 | 0xc634 Exif.Image.0xc634            |     UBYTE |   151552 |       922 | 80 69 78 84 65 88 32 0 73 73 114 0 0 +++
+     430 | 0xc634 Exif.DNG.DNGPrivateData      |     UBYTE |   151552 |       922 | 80 69 78 84 65 88 32 0 73 73 114 0 0 +++
   STRUCTURE OF TIFF FILE (II): ../files/20200717_221452.dng
    address |    tag                              |      type |    count |    offset | value
        934 | 000000 Exif.Pentax.Version          |     UBYTE |        4 |           | 11 6 1 0

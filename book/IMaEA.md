@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-12-17</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-12-28</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -316,7 +316,7 @@ _DNG is an extension of the TIFF 6.0 format, and is compatible with the TIFF-EP 
 I downloaded and installed Adobe's DNG Convertor and applied it to some NEF files from my Nikon D5300:
 
 ```bash
-.../book/build $ ./tvisitor -pU /Users/rmills/temp/Raw/DSC_0003.dng
+.../book/build $ ./tvisitor -pU .../files/DSC_0003.dng
 STRUCTURE OF TIFF FILE (II): /Users/rmills/temp/Raw/DSC_0003.dng
  address |    tag                              |      type |    count |    offset | value
       10 | 0x00fe Exif.Image.NewSubfileType    |      LONG |        1 |           | 1
@@ -357,13 +357,13 @@ STRUCTURE OF TIFF FILE (II): /Users/rmills/temp/Raw/DSC_0003.dng
 END: /Users/rmills/temp/Raw/DSC_0003.dng
 ```
 
-I was a little surprised that Adobe have removed the MakerNote.
+I was a little surprised that Adobe appeared to have removed the MakerNote.  However, Phil Harvey alerted me to my error.  In fact, the tag Exif.DNG.DNGPrivateData is a wrapper around the MakerNote.  However the offset to the MakerNote in the Raw image and the DNG are different.  So, it's possible that data in the Raw makernote has been lost by the DNG convertor.
 
-I believe the "undefined" tags which are listed in the format: Exif.Image.0xc761 and defined in the specification.  C761.H is "Noise Profile" for which the mathematics are explained by Adobe!
+"Undefined" tags are reported by tvisitor in the format: Exif.Image.0xc761 and defined in the specification.  For example: C761.H is "Noise Profile" for which the mathematics are explained by Adobe!
 
-#### CR2 and NEF will require more investigation.
+#### CR2 and NEF may require more investigation.
 
-It's possible that there are tags which are unique to CR2 and NEF and tvisitor.cpp is hiding them when the *U* option is not being used.  In the first instance, I can search in the Exiv2 source code to see if there is any special or unusual being defined or used by the CR2 and NEF handlers.
+It's possible that there are tags which are unique to CR2 and NEF and tvisitor.cpp is hiding them when the *U* option is not being used.  In the first instance, you are welcome to search the Exiv2 source code to see if there is anything special or unusual being defined or used by the CR2 and NEF handlers.
 
 ### Garbage Collecting Tiff Files
 
@@ -371,7 +371,7 @@ There is a significant problem with the Tiff format.  It's possible for binary r
 
 Imperial College have medical imaging Tiff files which are of the order of 100 GigaBytes in length.  Clearly we do not want to rewrite such a file to modify a few bytes of metadata.  We determine the new IFD0 and write it at end of the file. 
 
-When we update a Makernote, we should "edit in place" and always avoid relocating the data.  Regrettably for a JPEG, that's almost impossible.  As camera manufacturers have higher resolutions and larger displays for review, the manufacturers want to have larger thumbnails and are happy to store the preview somewhere in the JPEG and have a hidden offset in the makernote.  This works fine until the image is edited when the preview is lost.
+When we update a Makernote, we should "edit in place" and avoid relocating the data.  Regrettably for a JPEG, that's almost impossible.  As camera manufacturers have higher resolutions and larger displays for review, the manufacturers want to have larger thumbnails.  The manufacturers appear to be happy to store the preview somewhere in the JPEG and have a hidden offset in the makernote.  This works fine until the image is edited when the preview is lost.
 
 In principle, a Tiff can be garbage collected with a block-map.  If we set up a block-map with one bit for every thousand bytes, we can run the IFDs and mark all the blocks in use.  When we rewrite the TIFF (well IFD0 actually), we can inspect the block-map to determine a "hole" in the file at which to write.  I would not do this.  It's unsafe to over-write anything in a Tiff with the exception of IFD0 and the header offset.  The situation with JPEG is more serious.  It's impossible to rewrite the JPEG in place.
 
@@ -1728,7 +1728,7 @@ PEF is Tiff.  I haven't found anything special about the PEF format.  Of course,
 
 The PGF website is [https://www.libpgf.org](https://www.libpgf.org)
 
-This file format was introduced in 2000 at the same time as JP2000 with the intention of replacing JPEG.  Neither PGF nor JP2000 have been successful in their aims.  While both are technically superior to JPEG, the market as remained loyal to JPEG.  I suspect that is because few Camera manufacturers ship products that support this format.
+This file format was introduced in 2000 at the same time as JP2000 with the intention of replacing JPEG.  Neither PGF nor JP2000 have been successful in their aims.  While both are technically superior to JPEG, the market has remained loyal to JPEG.  I suspect that is because few Camera manufacturers ship products that support this format.
 
 The file format is little-endian.  Curiously, the metadata is embedded as a PNG which is big-endian.
 
@@ -2179,9 +2179,9 @@ Here are a couple of discussions about XMP on GitHub and Redmine. [https://githu
 
 Exiv2 provides a veneer over Adobe XMPsdk that makes it quite easy to work with XMP.  As XMP is eXtensible, you are more-or-less free to create arbitrary trees of metadata which conform to the RDF schema.  I strongly recommend however that applications emulate the XMP generated by Adobe Applications as that promotes better interoperability.
 
-Exiv2 is not a metadata policeman.  You are provided with tools to modify metadata.  _**As Jabba said in Star Wars:** "With great power comes great responsibility."_.  Use the tools wisely.  Learn the ways of the force!
+Exiv2 is not a metadata policeman.  You are provided with tools to modify metadata.  _**With great power comes great responsibility**_.  Learn the ways of the force and use the tools wisely.  
 
-I have taken the XMP example from this web-site and simplified it a little into the file _**xmp.xmp**_  [https://en.wikipedia.org/wiki/Extensible\_Metadata\_Platform](https://en.wikipedia.org/wiki/Extensible_Metadata_Platform)
+I have taken the XMP example from this web-site.  I have simplified it a little and put it into the file _**xmp.xmp**_  [https://en.wikipedia.org/wiki/Extensible\_Metadata\_Platform](https://en.wikipedia.org/wiki/Extensible_Metadata_Platform)
 
 ```xml
 <?xpacket begin="?" id="W5M0MpCehiHzreSzNTczkc9d"?>
@@ -2290,7 +2290,7 @@ You create XMP metadata with the syntax:
 $ exiv2 -M'set Xmp.namespace.Key value' path
 ```
 
-Adobe XMPsdk isn't easy to understand. As I have never used it outside of Exiv2, my knowledge is limited.  Exiv2 however enables you to insert, modify and delete simple values, Seq and Struct objects and Bags.  You can create this XMP structure about using the Exiv2 command-line program as follows:
+Adobe XMPsdk isn't easy to understand. As I have never used it outside of Exiv2, my knowledge is limited.  Exiv2 however enables you to insert, modify and delete simple values, Seq and Struct objects and Bags.  You can create this XMP structure using the Exiv2 command-line program as follows:
 
 **Step 1 Get an image and delete all XMP metadata:**
 

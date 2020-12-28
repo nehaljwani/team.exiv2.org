@@ -80,7 +80,7 @@ STRUCTURE OF JP2 (avif) FILE (MM): ../files/20200717_221452.avif
        214 | 0xc62b Exif.Image.0xc62b            |  RATIONAL |        1 |       492 | 1/1
        226 | 0xc62c Exif.Image.0xc62c            |  RATIONAL |        1 |       500 | 1/1
        238 | 0xc62e Exif.Image.0xc62e            |  RATIONAL |        1 |       508 | 1/1
-       250 | 0xc634 Exif.Image.0xc634            | UNDEFINED |    18018 |       516 | PENTAX _MM_k___.___....__._.___.____ +++
+       250 | 0xc634 Exif.DNG.DNGPrivateData      | UNDEFINED |    18018 |       516 | PENTAX _MM_k___.___....__._.___.____ +++
     STRUCTURE OF TIFF FILE (MM): ../files/20200717_221452.avif:1021420->18912
      address |    tag                              |      type |    count |    offset | value
          528 | 000000 Exif.Pentax.Version          |     UBYTE |        4 |           | 0 1 6 11
