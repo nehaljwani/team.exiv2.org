@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-12-28</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-12-29</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -785,37 +785,36 @@ static int hexToString(char buff[],int length)
 }
 ```
 
----------------
+Here is an important section of the PNG standard concerning textual metadata:
 
-Here is an important section of the standard concerning textual metadata:
-
-**11.3.4 Textual information**
+_**11.3.4 Textual information**_
 
 _11.3.4.1 Introduction_
 
-PNG provides the tEXt, iTXt, and zTXt chunks for storing text strings associated with the image, such as an image description or copyright notice. Keywords are used to indicate what each text string represents. Any number of such text chunks may appear, and more than one with the same keyword is permitted.
+_PNG provides the tEXt, iTXt, and zTXt chunks for storing text strings associated with the image, such as an image description or copyright notice. Keywords are used to indicate what each text string represents. Any number of such text chunks may appear, and more than one with the same keyword is permitted._
 
 _11.3.4.2 Keywords and text strings_
 
-The following keywords are predefined and should be used where appropriate.
+_The following keywords are predefined and should be used where appropriate._
 
-| Title | Short (one line) title or caption for image |
+| _Title_ | _Short (one line) title or caption for image_ |
 |:-- |:-- |
-| Author | Name of image's creator |
-| Description | Description of image (possibly long) |
-| Copyright | Copyright notice |
-| Creation Time | Time of original image creation |
-| Software | Software used to create the image |
-| Disclaimer | Legal disclaimer |
-| Warning | Warning of nature of content |
-| Source | Device used to create the image |
-| Comment | Miscellaneous comment |
+| _Author_        | _Name of image's creator_ |
+| _Description_   | _Description of image (possibly long)_ |
+| _Copyright_     | _Copyright notice_ |
+| _Creation Time_ | _Time of original image creation_ |
+| _Software_      | _Software used to create the image_ |
+| _Disclaimer_    | _Legal disclaimer_ |
+| _Warning_       | _Warning of nature of content_ |
+| _Source_        | _Device used to create the image_ |
+| _Comment_       | _Miscellaneous comment_ |
 
-Other keywords may be defined for other purposes. Keywords of general interest can be registered with the PNG Registration Authority. It is also permitted to use private unregistered keywords.
-
-You can set this using the ImageMagick utility **mogrify**.  
+_Other keywords may be defined for other purposes. Keywords of general interest can be registered with the PNG Registration Authority. It is also permitted to use private unregistered keywords._
 
 <center>![wizard.jpg](wizard.jpg)</center>
+
+You can set Textual Information in PNG files using the ImageMagick utility **mogrify**.  
+
 
 ```
 868 rmills@rmillsmm-local:~/gnu/exiv2/team/book $ tvisitor exif.png | grep -e comment -e info -e source
@@ -825,17 +824,21 @@ You can set this using the ImageMagick utility **mogrify**.
 872 rmills@rmillsmm-local:~/gnu/exiv2/team/book $ tvisitor exif.png | grep -e comment -e info -e source
    127957 |  tEXt |      24 | 0x1adeaee2 | comment_Comment in a PNG
    128091 |  tEXt |      14 | 0xd064ad9e | info_I am info
-   128117 |  tEXt |      21 | 0xb1645ed2 | source_Souce you know
+   128117 |  tEXt |      22 | 0xb1645ed2 | source_Source you know
 873 rmills@rmillsmm-local:~/gnu/exiv2/team/book $ 
 ```
 
-Exiv2 does not provide support for PNG Textual Information.  The subject is discussed here: [https://github.com/Exiv2/exiv2/issues/1343](https://github.com/Exiv2/exiv2/issues/1343).
+As tvisitor displays the chunks, no further processing is necessary to see this data for tEXt chunks.
 
-As tvisitor displays the chunks and decompressed data, no further processing is necessary to see this data.  However, cannot display this data apart from the zTXt/Description Chunk described below.  To support this in Exiv2 requires a new "Family" of metadata with keys such as: Png.zTXt.Author.  Adding a new "Family" is a considerable undertaking.  The project to have a "unified" metadata container should be undertaken first.
+Exiv2 does not provide support for PNG Textual Information. The subject is discussed here: [https://github.com/Exiv2/exiv2/issues/1343](https://github.com/Exiv2/exiv2/issues/1343).  To support PNG Textual Information in Exiv2 requires a new "Family" of metadata with keys such as: Png.zTXt.Author.  Adding a new "Family" is a considerable undertaking.  The project to have a "unified" metadata container should be undertaken first.
 
 ### Exiv2 Comment zTXt/Description Chunk
 
-There's an option `$ exiv2 -c abcdefg foo.jpg` which will set the "Comment" in a JPEG file.  You can print the comment with `$ exiv2 -pc foo`.  A "Comment" in a JPEG is a top level COM segment in the JPEG.  Somebody decided to use those commands on a PNG to update an iTXt chunk with the signature "Description".  
+There's an option `$ exiv2 -c abcdefg foo.jpg` which will set the "Comment" in a JPEG file.  You can print the comment with `$ exiv2 -pc foo`.  A "Comment" in a JPEG is a top level COM segment in the JPEG.  Somebody decided to use those commands on a PNG to update an iTXt chunk with the signature "Description".  I think that was a poor decision which has gone unnoticed.
+
+### Exiv2 Comment iTXt/Description Chunk
+
+Encoding of iTXt comments in PNG is perverse and implemented in the Exiv2 function tEXtToDataBuf() which is not in tvisitor.cpp
 
 [TOC](#TOC)
 <div id="JP2"/>
