@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-12-29</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-12-31</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -819,7 +819,7 @@ You can set Textual Information in PNG files using the ImageMagick utility **mog
 ```
 868 rmills@rmillsmm-local:~/gnu/exiv2/team/book $ tvisitor exif.png | grep -e comment -e info -e source
 869 rmills@rmillsmm-local:~/gnu/exiv2/team/book $ mogrify -set info 'I am info' exif.png
-870 rmills@rmillsmm-local:~/gnu/exiv2/team/book $ mogrify -set source 'Souce you know' exif.png
+870 rmills@rmillsmm-local:~/gnu/exiv2/team/book $ mogrify -set source 'Source you know' exif.png
 871 rmills@rmillsmm-local:~/gnu/exiv2/team/book $ mogrify -set comment  'Comment in a PNG' exif.png
 872 rmills@rmillsmm-local:~/gnu/exiv2/team/book $ tvisitor exif.png | grep -e comment -e info -e source
    127957 |  tEXt |      24 | 0x1adeaee2 | comment_Comment in a PNG
@@ -1651,7 +1651,7 @@ END: /Users/rmills/ORF.ORF
 
 The MakerNote contains almost all the data in the file:
 
-```
+```bash
  424 | 0x927c Exif.Photo.MakerNote         | UNDEFINED |  1452144 |      3472 | OLYMPUS_II._.__.._..__..___.._.___.. +++
 ```
 
@@ -6458,7 +6458,7 @@ There is one recent tool which has surprised and pleased me.  I have written thi
 
 [TOC](#TOC)
 <div id="11-21"/>
-### 11.21 Licensing
+### 11.21 Licensing and Legal
 
 Licensing is a legal minefield.  Exiv2 is licensed under GPLv2.  Until Exiv2 v0.26, Andreas offered a commercial license for Exiv2.   The contract between Andreas and users is not the concern of the Exiv2 open-source project. 
 
@@ -6466,9 +6466,17 @@ In the days of the Commercial license, I made no distinction between open-source
 
 The general subject of the legality of Exiv2 hasn't been explored.  There has been an enormous discussion about the legality of reading ISOBMFF files.  See [https://github.com/Exiv2/exiv2/issues/1229](https://github.com/Exiv2/exiv2/issues/1229#issuecomment-705350266).
 
-The ISOBMFF issue has caused me to wonder if Exiv2 is legal at all.  I also wonder if any open source is legal!  What makes something legal or illegal?  Is everything legal until there is a law which declares it as illegal, or everything illegal until permitted by legislation?  I suspect everything is legal until there is a legal precedent _legislation or court ruling_ to the contrary.
+The ISOBMFF issue has caused me to wonder if Exiv2 is legal at all.  I also wonder if any open source is legal!  What makes something legal or illegal?  Is everything legal until there is a law which declares it as illegal, or everything illegal until permitted by legislation?  I suspect everything is legal until there is a legal precedent such as _legislation_ or _a court ruling_ to the contrary.
 
-Dealing with legal matters is not like reporting a bug.  Exiv2 is an open-source project and we get a regular stream of issues reported on https://github.com/exiv2/exiv2.  I acknowledge, investigate, reply and close the issue.  By design, the process is focused on resolution.  Legal processes are very different.  When you ask for legal advice, you are instigating an open-ended process which will endlessly expand. 
+Dealing with legal matters is not like reporting a bug.  Exiv2 is an open-source project and we get a regular stream of issues reported on https://github.com/exiv2/exiv2.  I acknowledge, investigate, reply and close the issue.  By design, the process is focused on resolution.  Legal processes are very different.  When you ask for legal advice, you are instigating an open-ended process which will expand endlessly. 
+
+Closely related to licensing is patents.  There is a patent non-agression group called OIN which is the Open Invention Network.  Members agree to give toll free use of their patents to other members.  They have an impressive list of members include Facebook, Google, SAP, Microsoft, IBM and Canon.  They also maintain the Linux System Definition. [https://openinventionnetwork.com](https://openinventionnetwork.com)
+
+It makes sense for Exiv2 to belong to OIN and be included in the Linux System Definition.  The process to join is to fill in a form and sign it.  And that's a problem.  What is the legal status of Exiv2?  I don't know.  When you have a child, you register the birth and the child is recognised in law as a legal entity.  If you register a company, it is a legal entity with a board of directors.  Board members can sign documents on behalf of the company.  However, open source is neither of these things.  It's a collection of source on a server.  I think it belongs to the authors.  According to openhub.net there are 85 contributors.  Presumably I need the consent of all 85 contributors.  Even if I could contact all 85, it's possible that somebody would withhold their permission to join OIN.
+
+There is a reason to believe its not possible to get everybody to agree that Exiv2 should join OIN.  Andreas used to offer a commercial license for Exiv2.  In return for a modest fee, companies could ship products using the library and be free of the obligations of GPLv2.  I had the idea of asking Google to purchase the commercial rights from Andreas.  At least one team member objected because they didn't want anybody to "own" their work.  With some thought and discussion in my dining room, the team reached the conclusion that the Exiv2 Open Source Project was under no obligation concerning the Commercial License and a "Position Paper" was written.  I had the good fortune on vacation to meet a Legal Person who specialized in Intellectual Property.  I sent him the "Position Paper" and he concurred with our reasoning.  So, we were able to release the project from the Commercial License with no consequence for Team Exiv2.
+
+I was surprised by the Team's resistance to the idea of asking Google to buy the commercial rights.  My conclusion is that unless you have the contributor's support, you should assume that you do not have their support.  I don't intend to sign the OIN License.  I give permission for a future maintainer to sign the OIN License on my behalf.
 
 [TOC](#TOC)
 <div id="11-22"/>
