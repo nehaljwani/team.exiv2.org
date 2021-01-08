@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2020-12-31</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-01-08</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -4388,9 +4388,9 @@ The code in nikon_decrypt() was obtained here: [https://github.com/ncruces/dcraw
 The result is very satisfying:
 
 ```bash
-tvisitor -pR files/CH0_0174.NEF | grep LensIDNumber
+$ tvisitor -pR files/CH0_0174.NEF | grep LensIDNumber
          187 | 0x00a7 Exif.Nikon.LdLensIDNumber    |     UBYTE |        1 |           | 119
-exiftool -a -G1 -s "-*lens*" ../files/CH0_0174.NEF | grep LensIDNumber
+$ exiftool -a -G1 -s "-*lens*" ../files/CH0_0174.NEF | grep LensIDNumber
 [Nikon]         LensIDNumber                    : 119
 $ 
 ```

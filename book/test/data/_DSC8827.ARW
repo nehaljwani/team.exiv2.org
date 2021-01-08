@@ -126,7 +126,12 @@ STRUCTURE OF TIFF FILE (II): ../files/_DSC8827.ARW
         1824 | 0xb054 Exif.Sony.0xb054             |     SHORT |        1 |           | 0
         1836 | 0x9400 Exif.Sony.0x9400             | UNDEFINED |      153 |      2866 | ...._________________.____.___.___._ +++
         1848 | 0x9401 Exif.Sony.0x9401             | UNDEFINED |     4096 |      3019 | ._...__._.______p3.____.5..QI.elQ.G. +++
-        1860 | 0x9402 Exif.Sony.0x9402             | UNDEFINED |      400 |      7115 | ____________________________________ +++
+        1860 | 0x9402 Exif.Sony.FocalPosition      | UNDEFINED |      400 |      7115 | ____________________________________ +++
+        1860 | 0x9402 Exif.Sony.FocalPosition      | UNDEFINED |      400 |      7115 | ____________________________________ +++
+        7119 | 0x9402 Exif.Sony.FpAmbientTempera.. |      BYTE |        1 |           | _
+        7137 | 0x9402 Exif.Sony.FpFocusMode        |     UBYTE |        1 |           | 0
+        7138 | 0x9402 Exif.Sony.FpAreaMode         |     UBYTE |        1 |           | 0
+        7160 | 0x9402 Exif.Sony.FpFocusPosition    |     UBYTE |        1 |           | 0
         1872 | 0x9403 Exif.Sony.0x9403             | UNDEFINED |      400 |      7515 | ____________________________________ +++
         1884 | 0x9404 Exif.Sony.0x9404             | UNDEFINED |      556 |      7915 | ._\.....@.__._______..._________.___ +++
         1896 | 0x9405 Exif.Sony.0x9405             | UNDEFINED |     1834 |      8471 | ._..._..._.@._.@._________J__.J_____ +++

@@ -46,6 +46,35 @@
 
 typedef std::set<uint64_t> Visits;
 
+// https://github.com/Exiv2/exiv2/pull/906#issuecomment-504338797
+static void sonyCipher(Byte* bytes, uint32_t size, bool bDecipher)
+{
+    if ( size && bytes ) {
+		// initialize the code table
+		Byte  code[256];
+		for ( uint32_t i = 0 ; i < 249 ; i++ ) {
+			if ( bDecipher ) {
+				code[(i * i * i) % 249] = i ;
+			} else {
+				code[i] = (i * i * i) % 249 ;
+			}
+		}
+		for ( uint32_t i = 249 ; i < 256 ; i++ ) {
+			code[i] = i;
+		}
+
+        Byte* buff = (Byte*) ::malloc(size);
+		// code byte-by-byte
+		for ( uint32_t i = 0 ; i < size ; i++ ) {
+			buff[i] = code[bytes[i]];
+		}
+
+		// copy buff back into bytes
+		memcpy(bytes,buff,size);
+        ::free(buff);
+	}
+}
+
 // https://github.com/ncruces/dcraw/blob/master/parse.c
 typedef unsigned char uchar;
 void nikon_decrypt (uchar ci, uchar cj, uint16_t tag, uint64_t start, uint64_t size, uchar *buf)
@@ -2695,8 +2724,6 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
                     case ktIPTC : IPTC(io).accept(visitor) ; break;
                 }
             }
-
-
         } // for i < nEntries
 
         start = 0; // !stop
@@ -3007,6 +3034,11 @@ void ReportVisitor::visitTag
     std::string    name = tagName(tag,tagDict,28);
     std::string   value = buff.toString(type,count,image.endian_);
 
+    if ( name == "Exif.Sony.FocalPosition" ) {
+        reportTag(name,address,image.endian_,tag,type,count,buff,offsetS);
+		sonyCipher(buff.pData_,buff.size_,true);
+	}	
+
     if ( printTag(name) ) {
         reportTag(name,address,image.endian_,tag,type,count,buff,offsetS);
         if ( name != "Exif.Nikon.LensData" ) {
@@ -3046,6 +3078,7 @@ void ReportVisitor::visitTag
         reportFields(name, offset,image.endian(),tag,type,count,lens,image.makerDict_);
         image.serial_ = 0; // don't do this again.
     }
+    
 } // visitTag
 
 void ReportVisitor::visitXMP(DataBuf& xmp)
@@ -3527,6 +3560,13 @@ void init()
     sonyDict  [ 0xb04a ] = "SequenceNumber";
     sonyDict  [ 0xb04b ] = "AntiBlur";
     sonyDict  [ 0xb04e ] = "LongExposureNoiseReduction";
+    sonyDict  [ 0x9402 ] = "FocalPosition";
+
+    // Fields
+    makerTags["Exif.Sony.FocalPosition"].push_back(Field("FpAmbientTemperature" ,kttByte  , 0x04, 1));
+    makerTags["Exif.Sony.FocalPosition"].push_back(Field("FpFocusMode"          ,kttUByte , 0x16, 1));
+    makerTags["Exif.Sony.FocalPosition"].push_back(Field("FpAreaMode"           ,kttUByte , 0x17, 1));
+    makerTags["Exif.Sony.FocalPosition"].push_back(Field("FpFocusPosition"      ,kttUByte , 0x2d, 1));
 
     agfaDict  [ktGroup ] = "Agfa";
     agfaDict  [ 0x0001 ] = "One";
