@@ -1881,6 +1881,65 @@ void PgfImage::accept(Visitor& visitor)
     visitor.visitEnd  (*this); // tell the visitor
 }
 
+class GifImage : public Image
+{
+public:
+    GifImage(std::string path)
+    : Image  (path)
+    { }
+    GifImage(Io& io,size_t start,size_t count)
+    : Image(Io(io,start,count))
+    { }
+
+    bool valid()
+    {
+        if ( !valid_ ) {
+            endian_ = keLittle ;
+            start_  = 0  ;
+            IoSave   restore(io(),start_);
+            DataBuf  h(6);
+            io_.read(h);
+            valid_  = h.begins("GIF89a");
+            format_ = "GIF";
+            width_  = io().getShort(endian_);
+            height_ = io().getShort(endian_);
+            packed_ = io().getByte();
+            bgci_ = io().getByte();
+            par_ = io().getByte();
+        }
+        return valid_ ;
+    }
+    virtual void accept(class Visitor& v);
+
+private:
+    uint16_t width_  ;  // gct: 1, colr: 3, sort: 1 , gcts : 3;
+    uint16_t height_ ;
+    uint8_t  packed_ ;
+    uint8_t  bgci_   ;
+    uint8_t  par_    ;
+};
+
+uint8_t bits(uint8_t v,uint8_t s,uint8_t m) // value, shift,mask
+{
+    return (v >> s) & m;
+}
+
+void GifImage::accept(Visitor& visitor)
+{
+    // Ensure that this is the correct image type
+    if (!valid()) {
+        std::ostringstream os ; os << "expected " << format_ ;
+        Error(kerInvalidFileFormat,io().path(),os.str());
+    }
+    std::string msg = stringFormat("width,height = %d,%d gct,colr,sort,gcts = %d,%d,%d,%d bgci,par = %d,%d"
+                                , width_,height_
+                                , bits(packed_,7,1),bits(packed_,6,7),bits(packed_,4,1),bits(packed_,0,7)
+                                , bgci_,par_
+                                ) ;
+    visitor.visitBegin(*this,msg); // tell the visitor
+    visitor.visitEnd  (*this); // tell the visitor
+}
+
 class IlocExt {
 public:
     IlocExt(uint32_t ID,uint32_t start,uint32_t length)
@@ -3338,6 +3397,7 @@ std::unique_ptr<Image> ImageFactory(std::string path)
     MrwImage  mrw (path); if (  mrw.valid() ) return std::unique_ptr<Image> (new  MrwImage(path));
     RiffImage riff(path); if ( riff.valid() ) return std::unique_ptr<Image> (new RiffImage(path));
     RafImage  raf (path); if (  raf.valid() ) return std::unique_ptr<Image> (new  RafImage(path));
+    GifImage  gif (path); if (  gif.valid() ) return std::unique_ptr<Image> (new  GifImage(path));
     return NULL;
 }
 
