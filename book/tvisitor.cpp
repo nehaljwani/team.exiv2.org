@@ -1153,6 +1153,8 @@ public:
     virtual void visitMrw     (Io& io,Image& image
                               ,uint64_t address,std::string chunk
                               ,uint32_t length,DataBuf& data)                        { return ; }
+    virtual void visitGifHeader(Io& io,Image& image
+                              ,uint8_t gct,uint8_t res,uint8_t sort,uint8_t size)    { return ; }
     virtual void showError   (std::string message ) { return ; }
 
     PSOption      option() { return option_ ; }
@@ -2061,6 +2063,7 @@ public:
                 io().read(colors);
             }
             start_ = io().tell();
+            header_  = " address | leng | data             | value" ;
         }
         return valid_ ;
     }
@@ -2101,10 +2104,13 @@ void GifImage::accept(Visitor& visitor)
     dataTypes.push_back("XMP");
     dataTypes.push_back("ICC");
 
-    std::string msg = stringFormat("width,height = %d,%d\n",width_,height_)
-                    + stringFormat("GlobalColorTable,Resolution,Sort,Size = %d,%d,%d,%d\n",gct_,colr_,sort_,gcts_)
-                    + stringFormat("BackgroundColorIndex,PixelAspectRatio = %d,%d",bgci_,par_);
-    visitor.visitBegin(*this,msg); // tell the visitor
+    visitor.visitBegin(*this); // tell the visitor
+    visitor.visitGifHeader(io_,*this,gct_,colr_,sort_,gcts_);
+/*
+ std::string msg = stringFormat("width,height = %d,%d\n",width_,height_)
+                 + stringFormat("GlobalColorTable,Resolution,Sort,Size = %d,%d,%d,%d\n",gct_,colr_,sort_,gcts_)
+                 + stringFormat("BackgroundColorIndex,PixelAspectRatio = %d,%d",bgci_,par_);
+ */
     
     IoSave   save(io(),start_);
     uint16_t block = io().getShort(endian_);
@@ -2610,6 +2616,8 @@ public:
     void visitMrw     (Io& io,Image& image
                       ,uint64_t address,std::string chunk
                       ,uint32_t length,DataBuf& data);
+    void visitGifHeader(Io& io,Image& image
+                      ,uint8_t gct,uint8_t res,uint8_t sort,uint8_t size);
     void showError    (std::string message ) { out() << indent() << message << std::endl; }
 
     void visitEnd(Image& image)
@@ -3414,8 +3422,30 @@ void ReportVisitor::visitMrw(Io& io,Image& image,uint64_t address,std::string ch
         Io tiff(io,address+8,length);
         visitExif(tiff);
     }
-
 }
+
+void ReportVisitor::visitGifHeader(Io& io,Image& image,uint8_t gct,uint8_t res,uint8_t sort,uint8_t size)
+{
+    if ( isBasicOrRecursive() ) {
+        IoSave  save(io,0);
+        DataBuf head(3);
+        DataBuf vers(3);
+        DataBuf desc(7);
+        uint64_t address;
+        
+        address = io.tell() ; io.read(head); out() << indent() << stringFormat("%8d | %4d | %-16s | ",address,head.size_,head.toString(kttAscii).c_str()) << std::endl;
+        address = io.tell() ; io.read(vers); out() << indent() << stringFormat("%8d | %4d | %-16s | ",address,vers.size_,vers.toString(kttAscii).c_str()) << std::endl;
+        address = io.tell() ; io.read(desc); out() << indent() << stringFormat("%8d | %4d | %-16s | ",address,desc.size_,desc.toString(kttUByte).c_str())
+                                                               << stringFormat("gct=%d res=%d sort=%d size=%d",gct,res,sort,size)
+                                                               << std::endl;
+    }
+}
+/*
+std::string msg = stringFormat("width,height = %d,%d\n",width_,height_)
+                + stringFormat("GlobalColorTable,Resolution,Sort,Size = %d,%d,%d,%d\n",gct_,colr_,sort_,gcts_)
+                + stringFormat("BackgroundColorIndex,PixelAspectRatio = %d,%d",bgci_,par_);
+*/
+
 
 void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
                             ,uint32_t box,uint64_t length)
