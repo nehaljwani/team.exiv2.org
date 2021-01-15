@@ -1,0 +1,29 @@
+STRUCTURE OF GIF FILE (II): ../files/GIF.gif
+width,height = 8,8
+GlobalColorTable,Resolution,Sort,Size = 1,3,1,7
+BackgroundColorIndex,PixelAspectRatio = 0,49
+Comment: 286 bytes
+SCANNERMAKER: Canon
+SCANNER: Canon EOS DIGITAL REBEL
+SOFTWARE: GraphicConverter
+DATE: 2004:02:20 08:07:49
+DESCRIPTION: The picture caption
+
+Ignored Tags: $02BC, $9000, $9004, $9101, $9286, $A000, $A001, $A002, $A003, $A20E, $A20F, $A210, $A217, $A300, $A401, $A402, $A403, $A406
+
+---
+XMP: 439 bytes
+ICC: 492 bytes
+  STRUCTURE OF ICC FILE (MM): ../files/GIF.gif+1086->439
+     sig |   offset |   length
+    desc |      240 |       77 
+    rXYZ |      320 |       20 
+    gXYZ |      340 |       20 
+    bXYZ |      360 |       20 
+    rTRC |      380 |       14 
+    gTRC |      396 |       14 
+    bTRC |      412 |       14 
+    wtpt |      428 |       20 
+    cprt |      448 |       44 
+  END: ../files/GIF.gif+1086->439
+END: ../files/GIF.gif

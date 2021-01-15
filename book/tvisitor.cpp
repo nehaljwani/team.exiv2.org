@@ -349,6 +349,16 @@ public:
             memcpy(pData_,src.pData_,size);
         }
     }
+    void append(DataBuf& src,bool bEmpty=false) {
+        if ( bEmpty ) empty(bEmpty);
+        if ( src.size_ ) {
+            pData_ = pData_ ? (byte*) std::realloc(pData_,size_+src.size_)
+                            : (byte*) std::malloc(src.size_)
+            ;
+            std::memcpy(pData_+size_,src.pData_,src.size_); // copy from src
+            size_ += src.size_;                             // update size
+        }
+    }
     std::string path() const { return path_; }
     std::string toString(type_e type,uint64_t count,endian_e endian,uint64_t offset=0) const;
     std::string binaryToString(uint64_t start,uint64_t size) const;
@@ -1881,65 +1891,6 @@ void PgfImage::accept(Visitor& visitor)
     visitor.visitEnd  (*this); // tell the visitor
 }
 
-class GifImage : public Image
-{
-public:
-    GifImage(std::string path)
-    : Image  (path)
-    { }
-    GifImage(Io& io,size_t start,size_t count)
-    : Image(Io(io,start,count))
-    { }
-
-    bool valid()
-    {
-        if ( !valid_ ) {
-            endian_ = keLittle ;
-            start_  = 0  ;
-            IoSave   restore(io(),start_);
-            DataBuf  h(6);
-            io_.read(h);
-            valid_  = h.begins("GIF89a");
-            format_ = "GIF";
-            width_  = io().getShort(endian_);
-            height_ = io().getShort(endian_);
-            packed_ = io().getByte();
-            bgci_ = io().getByte();
-            par_ = io().getByte();
-        }
-        return valid_ ;
-    }
-    virtual void accept(class Visitor& v);
-
-private:
-    uint16_t width_  ;  // gct: 1, colr: 3, sort: 1 , gcts : 3;
-    uint16_t height_ ;
-    uint8_t  packed_ ;
-    uint8_t  bgci_   ;
-    uint8_t  par_    ;
-};
-
-uint8_t bits(uint8_t v,uint8_t s,uint8_t m) // value, shift,mask
-{
-    return (v >> s) & m;
-}
-
-void GifImage::accept(Visitor& visitor)
-{
-    // Ensure that this is the correct image type
-    if (!valid()) {
-        std::ostringstream os ; os << "expected " << format_ ;
-        Error(kerInvalidFileFormat,io().path(),os.str());
-    }
-    std::string msg = stringFormat("width,height = %d,%d gct,colr,sort,gcts = %d,%d,%d,%d bgci,par = %d,%d"
-                                , width_,height_
-                                , bits(packed_,7,1),bits(packed_,6,7),bits(packed_,4,1),bits(packed_,0,7)
-                                , bgci_,par_
-                                ) ;
-    visitor.visitBegin(*this,msg); // tell the visitor
-    visitor.visitEnd  (*this); // tell the visitor
-}
-
 class IlocExt {
 public:
     IlocExt(uint32_t ID,uint32_t start,uint32_t length)
@@ -2069,6 +2020,146 @@ void ICC::accept(class Visitor& visitor)
         }
         visitor.visitEnd((*this)); // tell the visitor
     }
+}
+
+uint8_t bits(uint8_t v,uint8_t s,uint8_t m) // value, shift,mask
+{
+    return (v >> s) & m;
+}
+
+class GifImage : public Image
+{
+public:
+    GifImage(std::string path)
+    : Image  (path)
+    { }
+    GifImage(Io& io,size_t start,size_t count)
+    : Image(Io(io,start,count))
+    { }
+
+    bool valid()
+    {
+        if ( !valid_ ) {
+            endian_ = keLittle ;
+            start_  = 0  ;
+            IoSave   restore(io(),start_);
+            DataBuf  h(6);
+            io_.read(h);
+            valid_  = h.begins("GIF89a");
+            format_ = "GIF";
+            width_  = io().getShort(endian_);
+            height_ = io().getShort(endian_);
+            packed_ = io().getByte();
+            bgci_   = io().getByte();
+            par_    = io().getByte();
+            gct_    = bits(packed_,7,1);
+            colr_   = bits(packed_,6,7);
+            sort_   = bits(packed_,4,1);
+            gcts_   = bits(packed_,0,7);
+            if ( gct_ ) {
+                DataBuf colors(3*256);
+                io().read(colors);
+            }
+            start_ = io().tell();
+        }
+        return valid_ ;
+    }
+    virtual void accept(class Visitor& v);
+
+private:
+    uint16_t width_  ;  // gct: 1, colr: 3, sort: 1 , gcts : 3;
+    uint16_t height_ ;
+    uint8_t  packed_ ;
+    uint8_t  bgci_   ;
+    uint8_t  par_    ;
+    uint8_t  gct_    ;
+    uint8_t  colr_   ;
+    uint8_t  sort_   ;
+    uint8_t  gcts_   ;
+    const uint16_t kAppExt = 0xff21;
+    const uint16_t kComExt = 0xfe21;
+    const uint16_t kXmpEnd = 0xfeff;
+};
+
+void GifImage::accept(Visitor& visitor)
+{
+    // Ensure that this is the correct image type
+    if (!valid()) {
+        std::ostringstream os ; os << "expected " << format_ ;
+        Error(kerInvalidFileFormat,io().path(),os.str());
+    }
+
+    enum
+    {   kDataUnknown
+    ,   kDataComment
+    ,   kDataXMP
+    ,   kDataICC
+    }   dataType = kDataUnknown;
+    std::vector<std::string> dataTypes ;
+    dataTypes.push_back("unknown");
+    dataTypes.push_back("Comment");
+    dataTypes.push_back("XMP");
+    dataTypes.push_back("ICC");
+
+    std::string msg = stringFormat("width,height = %d,%d\n",width_,height_)
+                    + stringFormat("GlobalColorTable,Resolution,Sort,Size = %d,%d,%d,%d\n",gct_,colr_,sort_,gcts_)
+                    + stringFormat("BackgroundColorIndex,PixelAspectRatio = %d,%d",bgci_,par_);
+    visitor.visitBegin(*this,msg); // tell the visitor
+    
+    IoSave   save(io(),start_);
+    uint16_t block = io().getShort(endian_);
+    DataBuf  data  ;
+    while ( block ==  kAppExt || block == kComExt ) {
+        dataType = block == kComExt ? kDataComment : kDataUnknown ;
+        uint16_t len = io().getByte() ;
+        while  ( len ) {
+            DataBuf buff(len);
+            io().read(buff);
+            if ( buff.strequals("XMP DataXMP") ) {
+                dataType = kDataXMP;
+                uint64_t start = io().tell();
+                uint16_t nContinue = 1000 ;
+                while (  nContinue-- ) {
+                    while ( io().getb() != 0x01 ) {}
+                    if ( io().getShort(endian_) == kXmpEnd ) {
+                        uint64_t end = io().tell() - 3;
+                        if ( end > start ) {
+                            data.read(io(),start,end-start);
+                            io().seek(end+255); // jump past the 255 byte pad
+                            nContinue = 0 ;
+                        }
+                    }
+                }
+            } else if ( buff.strequals("ICCRGBG1012")) {
+                dataType = kDataICC ;
+                len = io().getByte();
+                DataBuf icc(len);
+                io().read(icc);
+                buff.append(icc,true);
+            }
+            if ( dataType ==  kDataComment || dataType == kDataICC ) {
+                data.append(buff);
+            }
+            len = io().getByte();
+        }
+        
+        if ( dataType != kDataUnknown ) {
+            std::cout << dataTypes[dataType]  << ": " << data.size_ << " bytes" << std::endl;
+            if ( visitor.isRecursive() && dataType == kDataICC ) {
+                Io  icc(data);
+                ICC(icc).accept(visitor);
+            }
+            if ( (visitor.option() & kpsXMP) && dataType == kDataXMP
+            ||   (visitor.isRecursive() && dataType == kDataComment )
+            ) {
+                visitor.out() << std::string((const char*) data.pData_,data.size_) << std::endl << "---" << std::endl;;
+            }
+        }
+        data.empty(true);
+        if ( !len ) block = io().getShort(endian_);
+    }
+    
+    visitor.visitEnd  (*this); // tell the visitor
 }
 
 class RiffImage : public Image
