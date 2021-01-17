@@ -362,7 +362,8 @@ public:
     std::string path() const { return path_; }
     std::string toString(type_e type,uint64_t count,endian_e endian,uint64_t offset=0) const;
     std::string binaryToString(uint64_t start,uint64_t size) const;
-    std::string toUuidString(size_t offset=0) const;
+    std::string toUuidString(uint64_t offset=0) const ;
+    std::string toHexString (uint64_t offset=0,uint64_t count=0) const;
 
 private:
     std::string path_;
@@ -683,7 +684,7 @@ std::string DataBuf::toString(type_e type,uint64_t count=0,endian_e endian=keLit
     return os.str();
 } // DataBuf::toString
 
-std::string DataBuf::toUuidString(size_t offset /* =0 */) const
+std::string DataBuf::toUuidString(uint64_t offset /* =0 */) const
 {
     // 123e4567-e89b-12d3-a456-426614174000
     std::string result ;
@@ -697,6 +698,16 @@ std::string DataBuf::toUuidString(size_t offset /* =0 */) const
     }
     return result ;
 } // DataBuf::toUuidString
+
+std::string DataBuf::toHexString(uint64_t offset /*=0*/,uint64_t count /*=0*/) const
+{
+    std::string result;
+    if ( !count ) count = size_ - offset ;
+    for ( uint64_t i = offset ; i < offset+count ; i++ ) {
+        result+=stringFormat("%02x",pData_[i]);
+    }
+    return result;
+} // DataBuf::toHexString
 
 class ExifDatum {
 public:
@@ -2081,6 +2092,7 @@ private:
     uint8_t  gcts_   ;
     const uint16_t kAppExt = 0xff21;
     const uint16_t kComExt = 0xfe21;
+    const uint16_t kGCnExt = 0x21F9;
     const uint16_t kXmpEnd = 0xfeff;
 };
 
@@ -2106,11 +2118,6 @@ void GifImage::accept(Visitor& visitor)
 
     visitor.visitBegin(*this); // tell the visitor
     visitor.visitGifHeader(io_,*this,gct_,colr_,sort_,gcts_);
-/*
- std::string msg = stringFormat("width,height = %d,%d\n",width_,height_)
-                 + stringFormat("GlobalColorTable,Resolution,Sort,Size = %d,%d,%d,%d\n",gct_,colr_,sort_,gcts_)
-                 + stringFormat("BackgroundColorIndex,PixelAspectRatio = %d,%d",bgci_,par_);
- */
     
     IoSave   save(io(),start_);
     uint16_t block = io().getShort(endian_);
@@ -2155,8 +2162,8 @@ void GifImage::accept(Visitor& visitor)
                 Io  icc(data);
                 ICC(icc).accept(visitor);
             }
-            if ( (visitor.option() & kpsXMP) && dataType == kDataXMP
-            ||   (visitor.isRecursive() && dataType == kDataComment )
+            if(  ((visitor.option() & kpsXMP) && (dataType == kDataXMP    ))
+            ||    (visitor.isRecursive()      && (dataType == kDataComment))
             ) {
                 visitor.out() << std::string((const char*) data.pData_,data.size_) << std::endl << "---" << std::endl;;
             }
@@ -3430,22 +3437,40 @@ void ReportVisitor::visitGifHeader(Io& io,Image& image,uint8_t gct,uint8_t res,u
         IoSave  save(io,0);
         DataBuf head(3);
         DataBuf vers(3);
-        DataBuf desc(7);
+        DataBuf widt(2);
+        DataBuf heig(2);
+        DataBuf desc(1);
+        DataBuf back(1);
+        DataBuf aspe(1);
+        DataBuf next(3);
         uint64_t address;
         
-        address = io.tell() ; io.read(head); out() << indent() << stringFormat("%8d | %4d | %-16s | ",address,head.size_,head.toString(kttAscii).c_str()) << std::endl;
-        address = io.tell() ; io.read(vers); out() << indent() << stringFormat("%8d | %4d | %-16s | ",address,vers.size_,vers.toString(kttAscii).c_str()) << std::endl;
-        address = io.tell() ; io.read(desc); out() << indent() << stringFormat("%8d | %4d | %-16s | ",address,desc.size_,desc.toString(kttUByte).c_str())
-                                                               << stringFormat("gct=%d res=%d sort=%d size=%d",gct,res,sort,size)
-                                                               << std::endl;
+        address = io.tell() ; io.read(head); out() << indent() << stringFormat("%8d | %4d | %-16s | "                  ,address,head.size_,head.toString(kttAscii).c_str()) << std::endl;
+        address = io.tell() ; io.read(vers); out() << indent() << stringFormat("%8d | %4d | %-16s | version"           ,address,vers.size_,vers.toString(kttAscii).c_str()) << std::endl;
+        address = io.tell() ; io.read(widt); out() << indent() << stringFormat("%8d | %4d | %-16s | width"             ,address,widt.size_,widt.toString(kttShort).c_str()) << std::endl;
+        address = io.tell() ; io.read(heig); out() << indent() << stringFormat("%8d | %4d | %-16s | height"            ,address,heig.size_,heig.toString(kttShort).c_str()) << std::endl;
+        address = io.tell() ; io.read(desc); out() << indent() << stringFormat("%8d | %4d | %-16s | "                  ,address,desc.size_,desc.toString(kttUByte).c_str())
+                                                               << stringFormat("gct=%d res=%d sort=%d size=%d (%d)"    ,gct,res,sort,size,2<<size) << std::endl;
+        address = io.tell() ; io.read(back); out() << indent() << stringFormat("%8d | %4d | %-16s | background color"  ,address,back.size_,back.toString(kttUByte).c_str()) << std::endl;
+        address = io.tell() ; io.read(aspe); out() << indent() << stringFormat("%8d | %4d | %-16s | pixel aspect ratio",address,aspe.size_,aspe.toString(kttUByte).c_str()) << std::endl;
+
+        if ( gct ) {
+            uint32_t Size = (2 << size) ;
+            uint32_t chunk=16;
+            DataBuf  color(res);
+            for ( uint32_t i = 0 ; i < Size ; ) {
+                address = io.tell() ; io.read(color); out() << indent() << stringFormat("%8d | %4d | 0x%-6s ...     | ",address,res*chunk,color.toHexString(0,res).c_str());
+                io.seek(address);
+                for ( uint32_t c = 0 ; c<chunk && i++<Size ; c++) {
+                    io.read(color);
+                    out() << color.toHexString() << " ";
+                }
+                out() << std::endl;
+            }
+        }
+        address = io.tell() ; io.read(next); out() << indent() << stringFormat("%8d | %4d | %-16s | next"            ,address,next.size_,next.toString(kttUByte).c_str()) << std::endl;
     }
 }
-/*
-std::string msg = stringFormat("width,height = %d,%d\n",width_,height_)
-                + stringFormat("GlobalColorTable,Resolution,Sort,Size = %d,%d,%d,%d\n",gct_,colr_,sort_,gcts_)
-                + stringFormat("BackgroundColorIndex,PixelAspectRatio = %d,%d",bgci_,par_);
-*/
-
 
 void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
                             ,uint32_t box,uint64_t length)

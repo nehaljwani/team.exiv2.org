@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-01-16</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-01-18</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -14,7 +14,7 @@ _First, my wife Alison, who has been my loyal support since the day we met in Hi
 
 _Secondly, Andreas Huggel the founder of the project and Luis and Dan who have worked tirelessly with me since 2017._
 
-_Exiv2 contributors (in alphabetical order): Abhinav, Alan, Andreas (both of them), Arnold, Ben, Gilles, Kevin, Leo, Leonardo, Mahesh, Micha&lstrok;, Mikayel, Milo&scaron;, Nehal, Neils, Phil, Rosen, Sridhar, Thomas, Tuan .... and others who have contributed to Exiv2._
+_Exiv2 contributors (in alphabetical order): Abhinav, Alan, Alex, Andreas (both of them), Arnold, Ben, Gilles, Kevin, Leo, Leonardo, Mahesh, Micha&lstrok;, Mikayel, Milo&scaron;, Nehal, Neils, Phil, Rosen, Sridhar, Thomas, Tuan .... and others who have contributed to Exiv2._
 
 _File Detectives:  Phil Harvey, Dave Coffin, Laurent Cl&eacute;vy._
 
@@ -1987,58 +1987,111 @@ Before moving on from BMP, I'd like to say something about the flexibility of th
 | Adobe XMPsdk      |  [https://github.com/adobe/XMP-Toolkit-SDK.git](https://github.com/adobe/XMP-Toolkit-SDK.git) |
 | WikiPedia GIF     | [https://en.wikipedia.org/wiki/GIF](https://en.wikipedia.org/wiki/GIF) |
 
+I would like to say "Thank You" to Phil Harvey for providing files/GIF.gif which has embedded XMP and ICC data.  
 
-I built GifLib 5.1.1 on macOS .  5.2.1 complained about the option linker option _-soname_ and refused to link!
+### XMP in Gif
 
-I followed the discussion on the WikiPedia site and created a 3x2 pixel gif with MSPaint on Windows-10 which I've inspected with the giflib/.  The file gif.gif is in the book resources at: svn://dev.exiv2.org/svn/team/book
+This is supported by Gif89a files and documented by Adobe in XMPSpecificationPart3.pdf on page 17 of the 2010 edition.
+
+### ICC in Gif
+
+This is supported by Gif89a files and documented by ICC in ICC1v43_2010-12.pdf.
+
+When I built GifLib 5.2.1 on macOS it complained about the option linker option _-soname_ and refused to link!  The output show below was create on Linux.  As you will expect, the output from tvisitor is much nicer than GifLib.
 
 ```bash
-.../book $ gifbuild -d -v gif.gif 
-#
-# GIF information from gif.gif
-screen width 2
-screen height 3
+.../book $ gifbuild -d -v files/GIF.gif 
+# GIF information from files/GIF.gif
+screen width 8
+screen height 8
 screen colors 256
 screen background 0
-pixel aspect byte 0
+pixel aspect byte 49
 
 screen map
 	sort flag off
-	rgb 000 000 000
-	rgb 000 000 051
-.... color table entries ....
+	rgb 255 255 255
+	rgb 255 255 204
+...
 	rgb 000 000 000
 end
 
-graphics control
-	disposal mode 0
-	user input flag off
-	delay 0
-	transparent index 252
+comment
+SCANNERMAKER: Canon\r\nSCANNER: ... 
+end
+
+extension 0xff
+XMP DataXMP?xpacket begin...
+end
+
+extension 0xff
+ICCRGBG1012...
 end
 
 image # 1
 image left 0
 image top 0
-image bits 2 by 3 hex
-9993
-9300
-fbe0
+image bits 8 by 8 hex
+2323232323232323
+...
+# End of files/GIF.gif dump
 ```
+
+Output from tvisitor:
 
 ```bash
-.../book$ dmpf gif.gif 
-       0        0: GIF89a._._._______3__f__.__.__._  ->  47 49 46 38 39 61 02 00 03 00 f7 00 00 00 00 00 00 00 33 00 00 66 00 00 99 00 00 cc 00 00 ff 00
-                                                          G  I  F  8  9  a <-W-> <-H-> <-FLAGS> |-> ColorTable ->    
-    0x20       32: +__+3_+f_+._+._+._U__U3_Uf_U._U.  ->  2b 00 00 2b 33 00 2b 66 00 2b 99 00 2b cc 00 2b ff 00 55 00 00 55 33 00 55 66 00 55 99 00 55 cc
+$ tvisitor files/GIF.gif
+STRUCTURE OF GIF FILE (II): files/GIF.gif
+ address | leng | data             | value
+       0 |    3 | GIF              | 
+       3 |    3 | 89a              | version
+       6 |    2 | 8                | width
+       8 |    2 | 8                | height
+      10 |    1 | 247              | gct=1 res=3 sort=1 size=7 (256)
+      11 |    1 | 0                | background color
+      12 |    1 | 49               | pixel aspect ratio
+      13 |   48 | 0xffffff ...     | ffffff ffffcc ffff99 ffff66 ffff33 ffff00 ... 
 ...
-   0x300      768: .____________!...__._,____._.__.  ->  ff 00 00 00 00 00 00 00 00 00 00 00 00 21 f9 04 01 00 00 fc 00 2c 00 00 00 00 02 00 03 00 00 08
-   0x320      800: ._3M..`..._;                      ->  09 00 33 4d 9a 04 60 1f b8 80 00 3b
+     781 |    3 | 33 254 255       | next
+Comment: 286 bytes
+XMP: 439 bytes
+ICC: 492 bytes
+END: files/GIF.gif
 ```
 
-### XMP in Gif
+Here's the file being manually disassembled:
 
-This is supported by Gif89a files and documented by Adobe in XMPSpecificationPart3.pdf on page 17 of the 2010 edition.  At present I don't have a sample GIF with embedded XMP.  I don't know if Exiv2 supports GIF/XML.
+```bash
+.../book$ dmpf ../files/GIF.gif 
+       0        0: GIF89a._._._1...........f..3.._.  ->  47 49 46 38 39 61 08 00 08 00 f7 00 31 ff ff ff ff ff cc ff ff 99 ff ff 66 ff ff 33 ff ff 00 ff
+...
+   0x300      768: UDDD"""...___!..SCANNERMAKER: Ca  ->  55 44 44 44 22 22 22 11 11 11 00 00 00 21 fe ff 53 43 41 4e 4e 45 52 4d 41 4b 45 52 3a 20 43 61
+                                                                                            </> <-X-> <>
+   0x320      800: non..SCANNER: Canon EOS DIGITAL   ->  6e 6f 6e 0d 0a 53 43 41 4e 4e 45 52 3a 20 43 61 6e 6f 6e 20 45 4f 53 20 44 49 47 49 54 41 4c 20
+...
+   0x400     1024: 10, $A217, $A30.0, $A401, $A402,  ->  31 30 2c 20 24 41 32 31 37 2c 20 24 41 33 30 1f 30 2c 20 24 41 34 30 31 2c 20 24 41 34 30 32 2c
+                                                                                                     <L>
+   0x420     1056:  $A403, $A406.._!..XMP DataXMP<?  ->  20 24 41 34 30 33 2c 20 24 41 34 30 36 0d 0a 00 21 ff 0b 58 4d 50 20 44 61 74 61 58 4d 50 3c 3f
+                                                                                                     </> <-X-> 11 <--- XMP DataXMP  --- 11 bytes-> <--
+   0x440     1088: xpacket begin='...' id='W5M0MpCe  ->  78 70 61 63 6b 65 74 20 62 65 67 69 6e 3d 27 ef bb bf 27 20 69 64 3d 27 57 35 4d 30 4d 70 43 65
+...
+   0x5e0     1504: >.<?xpacket end='w'?>...........  ->  3e 0a 3c 3f 78 70 61 63 6b 65 74 20 65 6e 64 3d 27 77 27 3f 3e 01 ff fe fd fc fb fa f9 f8 f7 f6
+                                                                                                                        <--XMP/> <------- 255 bytes ----
+   0x600     1536: ................................  ->  f5 f4 f3 f2 f1 f0 ef ee ed ec eb ea e9 e8 e7 e6 e5 e4 e3 e2 e1 e0 df de dd dc db da d9 d8 d7 d6
+...
+   0x6e0     1760: .....................__!..ICCRGB  ->  15 14 13 12 11 10 0f 0e 0d 0c 0b 0a 09 08 07 06 05 04 03 02 01 00 00 21 ff 0b 49 43 43 52 47 42
+                                                                                                       255 bytes---------> <> <-X-> 11 <---- ICCRGBG1 --
+   0x700     1792: G1012.__..NKON. __mntrRGB XYZ ..  ->  47 31 30 31 32 ff 00 00 01 ec 4e 4b 4f 4e 02 20 00 00 6d 6e 74 72 52 47 42 20 58 59 5a 20 07 cf
+                                                         --- 11 bytes-><L> <-- Len -->
+...
+   0x800     2048: _.Nik.on Adobe RGB 4.0.0.3000___  ->  00 1b 4e 69 6b ed 6f 6e 20 41 64 6f 62 65 20 52 47 42 20 34 2e 30 2e 30 2e 33 30 30 30 00 00 00
+                                                                       <L>
+...
+   0x8e0     2272: n Corporation 2001__,____._.__..  ->  6e 20 43 6f 72 70 6f 72 61 74 69 6f 6e 20 32 30 30 31 00 00 2c 00 00 00 00 08 00 08 00 00 08 0f
+                                                                                                               <> <------ ? ------> <-w-> <-h-> <-?-><L>
+   0x900     2304: _G..H......*L.._;                 ->  00 47 08 1c 48 b0 a0 c1 83 08 13 2a 4c 18 10 00 3b
+                                                                                                     </></>
+```
 
 [TOC](#TOC)
 <div id="SIDECAR"/>
