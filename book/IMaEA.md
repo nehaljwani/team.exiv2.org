@@ -1981,13 +1981,16 @@ Before moving on from BMP, I'd like to say something about the flexibility of th
 
 | Component         | URL |
 |:--                |:--  |
-| Gif Specification |  [https://www.w3.org/Graphics/GIF/spec-gif89a.txt](https://www.w3.org/Graphics/GIF/spec-gif89a.txt) |
-| LibGif            | [https://sourceforge.net/projects/giflib/](https://sourceforge.net/projects/giflib/) |
-| LibGif Man Pages  | [https://www.mankier.com/1/gifbuild](https://www.mankier.com/1/gifbuild) |
-| Adobe XMPsdk      |  [https://github.com/adobe/XMP-Toolkit-SDK.git](https://github.com/adobe/XMP-Toolkit-SDK.git) |
-| WikiPedia GIF     | [https://en.wikipedia.org/wiki/GIF](https://en.wikipedia.org/wiki/GIF) |
+| Gif Specification | [https://www.w3.org/Graphics/GIF/spec-gif89a.txt](https://www.w3.org/Graphics/GIF/spec-gif89a.txt)               |
+| LibGif            | [https://sourceforge.net/projects/giflib/](https://sourceforge.net/projects/giflib/)                             |
+| LibGif Man Pages  | [https://www.mankier.com/1/gifbuild](https://www.mankier.com/1/gifbuild)                                         |
+| Adobe XMPsdk      | [https://github.com/adobe/XMP-Toolkit-SDK.git](https://github.com/adobe/XMP-Toolkit-SDK.git)<br>[http://www.color.org/specification/ICC1v43_2010-12.pdf](http://www.color.org/specification/ICC1v43_2010-12.pdf) |
+| ICC Specification | [http://www.color.org/specification/ICC1v43_2010-12.pdf](http://www.color.org/specification/ICC1v43_2010-12.pdf) |
+| WikiPedia GIF     | [https://en.wikipedia.org/wiki/GIF](https://en.wikipedia.org/wiki/GIF)                                           |
 
 I would like to say "Thank You" to Phil Harvey for providing files/GIF.gif which has embedded XMP and ICC data.  
+
+The GIF format can at best be described as horrible.  It's a collection of bit fields and flags and is basically an 8-bit file format.  For historical reasons, it's very commonly used on the internet.  It supports animation and transparency and uses a color table (palette) to store up to 256 different colours.  The format really shows its age.  It's remarkable that it supports embedding XMP, ICC profiles and comments.  There is no support for Exif, IPTC or thumbnails.
 
 ### XMP in Gif
 
