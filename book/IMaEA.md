@@ -1984,7 +1984,7 @@ Before moving on from BMP, I'd like to say something about the flexibility of th
 | Gif Specification | [https://www.w3.org/Graphics/GIF/spec-gif89a.txt](https://www.w3.org/Graphics/GIF/spec-gif89a.txt)               |
 | LibGif            | [https://sourceforge.net/projects/giflib/](https://sourceforge.net/projects/giflib/)                             |
 | LibGif Man Pages  | [https://www.mankier.com/1/gifbuild](https://www.mankier.com/1/gifbuild)                                         |
-| Adobe XMPsdk      | [https://github.com/adobe/XMP-Toolkit-SDK.git](https://github.com/adobe/XMP-Toolkit-SDK.git)<br>[http://www.color.org/specification/ICC1v43_2010-12.pdf](http://www.color.org/specification/ICC1v43_2010-12.pdf) |
+| Adobe XMPsdk      | [https://github.com/adobe/XMP-Toolkit-SDK.git](https://github.com/adobe/XMP-Toolkit-SDK.git)<br>[https://github.com/adobe/XMP-Toolkit-SDK/blob/main/docs/XMPSpecificationPart3.pdf](https://github.com/adobe/XMP-Toolkit-SDK/blob/main/docs/XMPSpecificationPart3.pdf) |
 | ICC Specification | [http://www.color.org/specification/ICC1v43_2010-12.pdf](http://www.color.org/specification/ICC1v43_2010-12.pdf) |
 | WikiPedia GIF     | [https://en.wikipedia.org/wiki/GIF](https://en.wikipedia.org/wiki/GIF)                                           |
 
@@ -2000,7 +2000,7 @@ This is supported by Gif89a files and documented by Adobe in XMPSpecificationPar
 
 This is supported by Gif89a files and documented by ICC in ICC1v43_2010-12.pdf.
 
-When I built GifLib 5.2.1 on macOS it complained about the option linker option _-soname_ and refused to link!  The output show below was create on Linux.  As you will expect, the output from tvisitor is much nicer than GifLib.
+When I built GifLib 5.2.1 on macOS it complained about the option linker option _-soname_ and refused to link!  The output show below was create on Linux.  As you have learnt to expect, the output from tvisitor is much nicer than GifLib.
 
 ```bash
 .../book $ gifbuild -d -v files/GIF.gif 
@@ -2015,7 +2015,7 @@ screen map
 	sort flag off
 	rgb 255 255 255
 	rgb 255 255 204
-...
+    ...
 	rgb 000 000 000
 end
 
@@ -2054,7 +2054,7 @@ STRUCTURE OF GIF FILE (II): ../files/GIF.gif
       11 |    1 | 0                | background color
       12 |    1 | 49               | pixel aspect ratio
       13 |   48 | 0xffffff ...     | ffffff ffffcc ffff99 ffff66 ffff33 ffff00 ffccff ffcccc ffcc99 ffcc66 ffcc33 ffcc00 ff99ff ff99cc ff9999 ff9966 
-....
+     ... |   48 | 0x...... ...     | ...... ......
      733 |   48 | 0x000077 ...     | 000077 000055 000044 000022 000011 eeeeee dddddd bbbbbb aaaaaa 888888 777777 555555 444444 222222 111111 000000 
      781 |    2 | 33 254           | Comment Extension
      784 |  255 | SCANNERMAKER +++ | 
@@ -2062,10 +2062,10 @@ STRUCTURE OF GIF FILE (II): ../files/GIF.gif
     1072 |    2 | 33 255           | App Extension
     1075 |   11 | XMP DataXMP      | 
     1087 |   60 | ?xpacket beg +++ | 
-    1148 |  101 | ta xmlns:x=' +++ | 
+    1148 |  101 | ta xmlns:x=  +++ | 
     1250 |   57 | /02/22-rdf-s +++ | 
-    1308 |   32 | xmlns:dc='ht +++ | 
-    1341 |  109 | ents/1.1/'>. +++ | 
+    1308 |   32 | xmlns:dc=ht  +++ | 
+    1341 |  109 | ents/1.1/>.  +++ | 
     1451 |   60 | /dc:title>.  +++ | 
     1512 |   99 | ket end='w'? +++ | 
     1612 |  170 | ???????????? +++ | 
@@ -2083,32 +2083,32 @@ END: ../files/GIF.gif
 Here's the file being manually disassembled:
 
 ```bash
-.../book$ dmpf ../files/GIF.gif 
+book$ dmpf files/GIF.gif 
        0        0: GIF89a._._._1...........f..3.._.  ->  47 49 46 38 39 61 08 00 08 00 f7 00 31 ff ff ff ff ff cc ff ff 99 ff ff 66 ff ff 33 ff ff 00 ff
                                                          <- GIF-> <- ver-> <-w-> <-h-><f><i><r> <------- color table -----
-...
+     ...
    0x300      768: UDDD"""...___!..SCANNERMAKER: Ca  ->  55 44 44 44 22 22 22 11 11 11 00 00 00 21 fe ff 53 43 41 4e 4e 45 52 4d 41 4b 45 52 3a 20 43 61
                                                                             color table----></> <-X-> <>
    0x320      800: non..SCANNER: Canon EOS DIGITAL   ->  6e 6f 6e 0d 0a 53 43 41 4e 4e 45 52 3a 20 43 61 6e 6f 6e 20 45 4f 53 20 44 49 47 49 54 41 4c 20
-...
+     ...
    0x400     1024: 10, $A217, $A30.0, $A401, $A402,  ->  31 30 2c 20 24 41 32 31 37 2c 20 24 41 33 30 1f 30 2c 20 24 41 34 30 31 2c 20 24 41 34 30 32 2c
                                                                                                      <L>
    0x420     1056:  $A403, $A406.._!..XMP DataXMP<?  ->  20 24 41 34 30 33 2c 20 24 41 34 30 36 0d 0a 00 21 ff 0b 58 4d 50 20 44 61 74 61 58 4d 50 3c 3f
                                                                                                      </> <-X-> 11 <--- XMP DataXMP  --- 11 bytes-> <--
-   0x440     1088: xpacket begin='...' id='W5M0MpCe  ->  78 70 61 63 6b 65 74 20 62 65 67 69 6e 3d 27 ef bb bf 27 20 69 64 3d 27 57 35 4d 30 4d 70 43 65
-...
+   0x440     1088: xpacket begin='...' id='W5M0MpCe' ->  78 70 61 63 6b 65 74 20 62 65 67 69 6e 3d 27 ef bb bf 27 20 69 64 3d 27 57 35 4d 30 4d 70 43 65
+     ...
    0x5e0     1504: >.<?xpacket end='w'?>...........  ->  3e 0a 3c 3f 78 70 61 63 6b 65 74 20 65 6e 64 3d 27 77 27 3f 3e 01 ff fe fd fc fb fa f9 f8 f7 f6
                                                                                                                         <--XMP/> <------- 255 bytes ----
    0x600     1536: ................................  ->  f5 f4 f3 f2 f1 f0 ef ee ed ec eb ea e9 e8 e7 e6 e5 e4 e3 e2 e1 e0 df de dd dc db da d9 d8 d7 d6
-...
+     ...
    0x6e0     1760: .....................__!..ICCRGB  ->  15 14 13 12 11 10 0f 0e 0d 0c 0b 0a 09 08 07 06 05 04 03 02 01 00 00 21 ff 0b 49 43 43 52 47 42
                                                                                                        255 bytes---------> <> <-X-> 11 <---- ICCRGBG1 --
    0x700     1792: G1012.__..NKON. __mntrRGB XYZ ..  ->  47 31 30 31 32 ff 00 00 01 ec 4e 4b 4f 4e 02 20 00 00 6d 6e 74 72 52 47 42 20 58 59 5a 20 07 cf
                                                          --- 11 bytes-><L> <-- Len -->
-...
+     ...
    0x800     2048: _.Nik.on Adobe RGB 4.0.0.3000___  ->  00 1b 4e 69 6b ed 6f 6e 20 41 64 6f 62 65 20 52 47 42 20 34 2e 30 2e 30 2e 33 30 30 30 00 00 00
                                                                        <L>
-...
+     ...
    0x8e0     2272: n Corporation 2001__,____._.__..  ->  6e 20 43 6f 72 70 6f 72 61 74 69 6f 6e 20 32 30 30 31 00 00 2c 00 00 00 00 08 00 08 00 00 08 0f
                                                                                                                <> <><IS><left><top> <-w-> <-h-><p>
    0x900     2304: _G..H......*L.._;                 ->  00 47 08 1c 48 b0 a0 c1 83 08 13 2a 4c 18 10 00 3b
