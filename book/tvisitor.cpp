@@ -3483,7 +3483,8 @@ void ReportVisitor::visitGifHeader(Io& io,Image& image,uint8_t gct,uint8_t res,u
             byte    len = io.getb() ;
             while ( len ) {
                 DataBuf b(len) ;
-                address = io.tell() ; io.read(b) ; out() << indent() << stringFormat("%8d | %4d | %-16s | "            ,address,len,chop(b.toString(kttAscii),16).c_str()) << std::endl;
+                type_e t = n==image.kGCnExt ? kttUByte : kttAscii;
+                address = io.tell() ; io.read(b) ; out() << indent() << stringFormat("%8d | %4d | %-16s | "            ,address,len,chop(b.toString(t),16).c_str()) << std::endl;
                 len = io.getb();
             }
             N = io.peek() ;

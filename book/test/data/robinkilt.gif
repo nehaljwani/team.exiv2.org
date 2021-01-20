@@ -1,12 +1,12 @@
-STRUCTURE OF GIF FILE (II): ../files/GIF.gif
+STRUCTURE OF GIF FILE (II): ../files/robinkilt.gif
  address | leng | data             | value
        0 |    3 | GIF              | 
        3 |    3 | 89a              | version
-       6 |    2 | 8                | width
-       8 |    2 | 8                | height
+       6 |    2 | 90               | width
+       8 |    2 | 298              | height
       10 |    1 | 247              | gct=1 res=3 sort=1 size=7 (256)
       11 |    1 | 0                | background color
-      12 |    1 | 49               | pixel aspect ratio
+      12 |    1 | 0                | pixel aspect ratio
       13 |   48 | 0xffffff ...     | ffffff ffffcc ffff99 ffff66 ffff33 ffff00 ffccff ffcccc ffcc99 ffcc66 ffcc33 ffcc00 ff99ff ff99cc ff9999 ff9966 
       61 |   48 | 0xff9933 ...     | ff9933 ff9900 ff66ff ff66cc ff6699 ff6666 ff6633 ff6600 ff33ff ff33cc ff3399 ff3366 ff3333 ff3300 ff00ff ff00cc 
      109 |   48 | 0xff0099 ...     | ff0099 ff0066 ff0033 ff0000 ccffff ccffcc ccff99 ccff66 ccff33 ccff00 ccccff cccccc cccc99 cccc66 cccc33 cccc00 
@@ -20,49 +20,10 @@ STRUCTURE OF GIF FILE (II): ../files/GIF.gif
      493 |   48 | 0x339933 ...     | 339933 339900 3366ff 3366cc 336699 336666 336633 336600 3333ff 3333cc 333399 333366 333333 333300 3300ff 3300cc 
      541 |   48 | 0x330099 ...     | 330099 330066 330033 330000 00ffff 00ffcc 00ff99 00ff66 00ff33 00ff00 00ccff 00cccc 00cc99 00cc66 00cc33 00cc00 
      589 |   48 | 0x0099ff ...     | 0099ff 0099cc 009999 009966 009933 009900 0066ff 0066cc 006699 006666 006633 006600 0033ff 0033cc 003399 003366 
-     637 |   48 | 0x003333 ...     | 003333 003300 0000ff 0000cc 000099 000066 000033 ee0000 dd0000 bb0000 aa0000 880000 770000 550000 440000 220000 
-     685 |   48 | 0x110000 ...     | 110000 00ee00 00dd00 00bb00 00aa00 008800 007700 005500 004400 002200 001100 0000ee 0000dd 0000bb 0000aa 000088 
-     733 |   48 | 0x000077 ...     | 000077 000055 000044 000022 000011 eeeeee dddddd bbbbbb aaaaaa 888888 777777 555555 444444 222222 111111 000000 
-     781 |    2 | 33 254           | Comment Extension
-     784 |  255 | SCANNERMAKER +++ | 
-    1040 |   31 | 0, $A401, $A +++ | 
-    1072 |    2 | 33 255           | App Extension
-    1075 |   11 | XMP DataXMP      | 
-    1087 |   60 | ?xpacket beg +++ | 
-    1148 |  101 | ta xmlns:x=' +++ | 
-    1250 |   57 | /02/22-rdf-s +++ | 
-    1308 |   32 | xmlns:dc='ht +++ | 
-    1341 |  109 | ents/1.1/'>. +++ | 
-    1451 |   60 | /dc:title>.  +++ | 
-    1512 |   99 | ket end='w'? +++ | 
-    1612 |  170 | ©¨§¦¥¤£¢¡ Ÿž +++ | 
-    1783 |    2 | 33 255           | App Extension
-    1786 |   11 | ICCRGBG1012      | 
-    1798 |  255 |                  | 
-    2054 |  237 | on Adobe RGB +++ | 
-    2292 |    1 | 0x2c             | Image Separator
-Comment: 286 bytes
-SCANNERMAKER: Canon
-SCANNER: Canon EOS DIGITAL REBEL
-SOFTWARE: GraphicConverter
-DATE: 2004:02:20 08:07:49
-DESCRIPTION: The picture caption
-
-Ignored Tags: $02BC, $9000, $9004, $9101, $9286, $A000, $A001, $A002, $A003, $A20E, $A20F, $A210, $A217, $A300, $A401, $A402, $A403, $A406
-
----
-XMP: 439 bytes
-ICC: 492 bytes
-  STRUCTURE OF ICC FILE (MM): ../files/GIF.gif+1086->439
-     sig |   offset |   length
-    desc |      240 |       77 
-    rXYZ |      320 |       20 
-    gXYZ |      340 |       20 
-    bXYZ |      360 |       20 
-    rTRC |      380 |       14 
-    gTRC |      396 |       14 
-    bTRC |      412 |       14 
-    wtpt |      428 |       20 
-    cprt |      448 |       44 
-  END: ../files/GIF.gif+1086->439
-END: ../files/GIF.gif
+     637 |   48 | 0x003333 ...     | 003333 003300 0000ff 0000cc 000099 000066 000033 000000 797374 163b86 1f478e 224c9a b1bdd2 25529b 2b59a3 6c84a9 
+     685 |   48 | 0x535f71 ...     | 535f71 264875 2e5486 2b4f7e 214066 3b6faf 315a8c 345e90 1e3753 396496 4f6f94 304861 3b546a 446779 304242 3f504d 
+     733 |   48 | 0x506257 ...     | 506257 151615 e2ded7 b7b4b0 d2cbc4 c4bfba a9a6a4 433b36 4b4643 61534d 8a8584 815850 a6766e b88880 ddafaa ffffff 
+     781 |    2 | 33 249           | Graphic Control Extension
+     784 |    4 | 1 0 0 255        | 
+     789 |    1 | 0x2c             | Image Separator
+END: ../files/robinkilt.gif
