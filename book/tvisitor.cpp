@@ -1018,6 +1018,7 @@ public:
     uint64_t read(void* buff,uint64_t size)              { return fread(buff,1,size,f_);}
     uint64_t read(DataBuf& buff)                         { return read(buff.pData_,buff.size_); }
     byte     getb()                                      { byte b; if (read(&b,1)==1) return b ; else return -1; }
+    byte     peek()                                      { uint64_t a = tell() ; byte result = getb() ; seek(a) ; return result ; }
     int      eof()                                       { return feof(f_) ; }
     uint64_t tell()                                      { return ftell(f_)-start_ ; }
     void     seek(int64_t offset,seek_e whence=ksStart)  { fseek(f_,(FSEEK_LONG)(offset+start_),whence) ; }
@@ -1329,6 +1330,11 @@ protected:
     const char*  kJp2Box_hdlr  = "hdlr";
     const char*  kJp2Box_iinf  = "iinf";
     const char*  kJp2Box_iloc  = "iloc";
+    
+    const uint16_t kAppExt     = 0xff21;
+    const uint16_t kComExt     = 0xfe21;
+    const uint16_t kGCnExt     = 0xf921;
+    const uint16_t kXmpEnd     = 0xfeff;
 };
 
 class ImageEndianSaver
@@ -2090,10 +2096,6 @@ private:
     uint8_t  colr_   ;
     uint8_t  sort_   ;
     uint8_t  gcts_   ;
-    const uint16_t kAppExt = 0xff21;
-    const uint16_t kComExt = 0xfe21;
-    const uint16_t kGCnExt = 0x21F9;
-    const uint16_t kXmpEnd = 0xfeff;
 };
 
 void GifImage::accept(Visitor& visitor)
@@ -3442,7 +3444,8 @@ void ReportVisitor::visitGifHeader(Io& io,Image& image,uint8_t gct,uint8_t res,u
         DataBuf desc(1);
         DataBuf back(1);
         DataBuf aspe(1);
-        DataBuf next(3);
+        DataBuf next(2);
+        DataBuf last(1);
         uint64_t address;
         
         address = io.tell() ; io.read(head); out() << indent() << stringFormat("%8d | %4d | %-16s | "                  ,address,head.size_,head.toString(kttAscii).c_str()) << std::endl;
@@ -3468,7 +3471,24 @@ void ReportVisitor::visitGifHeader(Io& io,Image& image,uint8_t gct,uint8_t res,u
                 out() << std::endl;
             }
         }
-        address = io.tell() ; io.read(next); out() << indent() << stringFormat("%8d | %4d | %-16s | next"            ,address,next.size_,next.toString(kttUByte).c_str()) << std::endl;
+        byte    N = io.peek() ;
+        while ( N == '!' ) {
+            address = io.tell() ; io.read(next); out() << indent() << stringFormat("%8d | %4d | %-16s | "              ,address,next.size_,chop(next.toString(kttUByte),16).c_str());
+            uint16_t        n = next.getShort(0,image.endian());
+            const char* sNext = n == image.kAppExt ? "App Extension"
+                              : n == image.kComExt ? "Comment Extension"
+                              : n == image.kGCnExt ? "Graphic Control Extension"
+                              : "unknown" ;
+            out() << sNext << std::endl;
+            byte    len = io.getb() ;
+            while ( len ) {
+                DataBuf b(len) ;
+                address = io.tell() ; io.read(b) ; out() << indent() << stringFormat("%8d | %4d | %-16s | "            ,address,len,chop(b.toString(kttAscii),16).c_str()) << std::endl;
+                len = io.getb();
+            }
+            N = io.peek() ;
+        }
+        address = io.tell() ; io.read(last) ; out() << indent() << stringFormat("%8d | %4d | %-#16x | %s"              ,address,last.size_,N,N==0x2c?"Image Separator":"") << std::endl;
     }
 }
 

@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-01-18</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-01-20</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -2041,7 +2041,7 @@ Output from tvisitor:
 
 ```bash
 $ tvisitor files/GIF.gif
-STRUCTURE OF GIF FILE (II): files/GIF.gif
+STRUCTURE OF GIF FILE (II): ../files/GIF.gif
  address | leng | data             | value
        0 |    3 | GIF              | 
        3 |    3 | 89a              | version
@@ -2050,13 +2050,31 @@ STRUCTURE OF GIF FILE (II): files/GIF.gif
       10 |    1 | 247              | gct=1 res=3 sort=1 size=7 (256)
       11 |    1 | 0                | background color
       12 |    1 | 49               | pixel aspect ratio
-      13 |   48 | 0xffffff ...     | ffffff ffffcc ffff99 ffff66 ffff33 ffff00 ... 
-...
-     781 |    3 | 33 254 255       | next
+      13 |   48 | 0xffffff ...     | ffffff ffffcc ffff99 ffff66 ffff33 ffff00 ffccff ffcccc ffcc99 ffcc66 ffcc33 ffcc00 ff99ff ff99cc ff9999 ff9966 
+....
+     733 |   48 | 0x000077 ...     | 000077 000055 000044 000022 000011 eeeeee dddddd bbbbbb aaaaaa 888888 777777 555555 444444 222222 111111 000000 
+     781 |    2 | 33 254           | Comment Extension
+     784 |  255 | SCANNERMAKER +++ | 
+    1040 |   31 | 0, $A401, $A +++ | 
+    1072 |    2 | 33 255           | App Extension
+    1075 |   11 | XMP DataXMP      | 
+    1087 |   60 | ?xpacket beg +++ | 
+    1148 |  101 | ta xmlns:x=' +++ | 
+    1250 |   57 | /02/22-rdf-s +++ | 
+    1308 |   32 | xmlns:dc='ht +++ | 
+    1341 |  109 | ents/1.1/'>. +++ | 
+    1451 |   60 | /dc:title>.  +++ | 
+    1512 |   99 | ket end='w'? +++ | 
+    1612 |  170 | ???????????? +++ | 
+    1783 |    2 | 33 255           | App Extension
+    1786 |   11 | ICCRGBG1012      | 
+    1798 |  255 |                  | 
+    2054 |  237 | on Adobe RGB +++ | 
+    2292 |    1 | 0x2c             | Image Separator
 Comment: 286 bytes
 XMP: 439 bytes
 ICC: 492 bytes
-END: files/GIF.gif
+END: ../files/GIF.gif
 ```
 
 Here's the file being manually disassembled:
@@ -2064,9 +2082,10 @@ Here's the file being manually disassembled:
 ```bash
 .../book$ dmpf ../files/GIF.gif 
        0        0: GIF89a._._._1...........f..3.._.  ->  47 49 46 38 39 61 08 00 08 00 f7 00 31 ff ff ff ff ff cc ff ff 99 ff ff 66 ff ff 33 ff ff 00 ff
+                                                         <- GIF-> <- ver-> <-w-> <-h-><f><i><r> <------- color table -----
 ...
    0x300      768: UDDD"""...___!..SCANNERMAKER: Ca  ->  55 44 44 44 22 22 22 11 11 11 00 00 00 21 fe ff 53 43 41 4e 4e 45 52 4d 41 4b 45 52 3a 20 43 61
-                                                                                            </> <-X-> <>
+                                                                            color table----></> <-X-> <>
    0x320      800: non..SCANNER: Canon EOS DIGITAL   ->  6e 6f 6e 0d 0a 53 43 41 4e 4e 45 52 3a 20 43 61 6e 6f 6e 20 45 4f 53 20 44 49 47 49 54 41 4c 20
 ...
    0x400     1024: 10, $A217, $A30.0, $A401, $A402,  ->  31 30 2c 20 24 41 32 31 37 2c 20 24 41 33 30 1f 30 2c 20 24 41 34 30 31 2c 20 24 41 34 30 32 2c
@@ -2088,7 +2107,7 @@ Here's the file being manually disassembled:
                                                                        <L>
 ...
    0x8e0     2272: n Corporation 2001__,____._.__..  ->  6e 20 43 6f 72 70 6f 72 61 74 69 6f 6e 20 32 30 30 31 00 00 2c 00 00 00 00 08 00 08 00 00 08 0f
-                                                                                                               <> <------ ? ------> <-w-> <-h-> <-?-><L>
+                                                                                                               <> <><IS><left><top> <-w-> <-h-><p>
    0x900     2304: _G..H......*L.._;                 ->  00 47 08 1c 48 b0 a0 c1 83 08 13 2a 4c 18 10 00 3b
                                                                                                      </></>
 ```
