@@ -3483,8 +3483,30 @@ void ReportVisitor::visitGifHeader(Io& io,Image& image,uint8_t gct,uint8_t res,u
             byte    len = io.getb() ;
             while ( len ) {
                 DataBuf b(len) ;
-                type_e t = n==image.kGCnExt ? kttUByte : kttAscii;
-                address = io.tell() ; io.read(b) ; out() << indent() << stringFormat("%8d | %4d | %-16s | "            ,address,len,chop(b.toString(t),16).c_str()) << std::endl;
+                if ( n == image.kAppExt || n == image.kComExt ) {
+                    address = io.tell() ; io.read(b) ; out() << indent() << stringFormat("%8d | %4d | %-16s | "            ,address,len,chop(b.toString(kttAscii),16).c_str());
+                    if ( n == image.kAppExt && b.strequals("XMP DataXMP") ) {
+                        uint64_t xmp   = 0 ;
+                        uint64_t start = io.tell();
+                        uint16_t nContinue = 1000 ;
+                        while (  nContinue-- ) {
+                            while ( io.getb() != 0x01 ) {}
+                            if ( io.getShort(image.endian()) == image.kXmpEnd ) {
+                                uint64_t end = io.tell() - 3;
+                                if ( end > start ) {
+                                    io.seek(end+255); // jump past the 255 byte pad
+                                    nContinue = 0 ;
+                                    xmp = end - start;
+                                }
+                            }
+                        }
+                        if ( xmp ) out() << stringFormat("XMP %d bytes",xmp) ;
+                    }
+                    out() <<std::endl;
+                } else {
+                    address = io.tell() ; io.read(b) ; out() << indent() << stringFormat("%8d | %4d | 0x%-14s | "            ,address,len,chop(b.toHexString(),14).c_str()) << std::endl;
+                }
+                n=0;
                 len = io.getb();
             }
             N = io.peek() ;

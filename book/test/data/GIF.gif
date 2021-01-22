@@ -25,21 +25,14 @@ STRUCTURE OF GIF FILE (II): ../files/GIF.gif
      733 |   48 | 0x000077 ...     | 000077 000055 000044 000022 000011 eeeeee dddddd bbbbbb aaaaaa 888888 777777 555555 444444 222222 111111 000000 
      781 |    2 | 33 254           | Comment Extension
      784 |  255 | SCANNERMAKER +++ | 
-    1040 |   31 | 0, $A401, $A +++ | 
+    1040 |   31 | 0x302c202441 +++ | 
     1072 |    2 | 33 255           | App Extension
-    1075 |   11 | XMP DataXMP      | 
-    1087 |   60 | ?xpacket beg +++ | 
-    1148 |  101 | ta xmlns:x=' +++ | 
-    1250 |   57 | /02/22-rdf-s +++ | 
-    1308 |   32 | xmlns:dc='ht +++ | 
-    1341 |  109 | ents/1.1/'>. +++ | 
-    1451 |   60 | /dc:title>.  +++ | 
-    1512 |   99 | ket end='w'? +++ | 
-    1612 |  170 | ©¨§¦¥¤£¢¡ Ÿž +++ | 
+    1075 |   11 | XMP DataXMP      | XMP 439 bytes
+    1781 |    1 | 0x00             | 
     1783 |    2 | 33 255           | App Extension
     1786 |   11 | ICCRGBG1012      | 
-    1798 |  255 |                  | 
-    2054 |  237 | on Adobe RGB +++ | 
+    1798 |  255 | 0x000001ec4e +++ | 
+    2054 |  237 | 0x6f6e204164 +++ | 
     2292 |    1 | 0x2c             | Image Separator
 Comment: 286 bytes
 SCANNERMAKER: Canon
