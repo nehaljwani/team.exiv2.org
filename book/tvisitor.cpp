@@ -2072,11 +2072,11 @@ public:
             bgci_   = io().getByte();
             par_    = io().getByte();
             gct_    = bits(packed_,7,1);
-            colr_   = bits(packed_,6,7);
+            res_    = bits(packed_,6,7);
             sort_   = bits(packed_,4,1);
             gcts_   = bits(packed_,0,7);
             if ( gct_ ) {
-                DataBuf colors(3*256);
+                DataBuf colors(res_*(2<<gcts_));
                 io().read(colors);
             }
             start_ = io().tell();
@@ -2093,7 +2093,7 @@ private:
     uint8_t  bgci_   ;
     uint8_t  par_    ;
     uint8_t  gct_    ;
-    uint8_t  colr_   ;
+    uint8_t  res_   ;
     uint8_t  sort_   ;
     uint8_t  gcts_   ;
 };
@@ -2119,7 +2119,7 @@ void GifImage::accept(Visitor& visitor)
     dataTypes.push_back("ICC");
 
     visitor.visitBegin(*this); // tell the visitor
-    visitor.visitGifHeader(io_,*this,gct_,colr_,sort_,gcts_);
+    visitor.visitGifHeader(io_,*this,gct_,res_,sort_,gcts_);
     
     IoSave   save(io(),start_);
     uint16_t block = io().getShort(endian_);
@@ -3481,10 +3481,12 @@ void ReportVisitor::visitGifHeader(Io& io,Image& image,uint8_t gct,uint8_t res,u
                               : "unknown" ;
             out() << sNext << std::endl;
             byte    len = io.getb() ;
+            DataBuf data ;
             while ( len ) {
                 DataBuf b(len) ;
                 if ( n == image.kAppExt || n == image.kComExt ) {
                     address = io.tell() ; io.read(b) ; out() << indent() << stringFormat("%8d | %4d | %-16s | "            ,address,len,chop(b.toString(kttAscii),16).c_str());
+                    data.append(b);
                     if ( n == image.kAppExt && b.strequals("XMP DataXMP") ) {
                         uint64_t xmp   = 0 ;
                         uint64_t start = io.tell();
@@ -3494,20 +3496,25 @@ void ReportVisitor::visitGifHeader(Io& io,Image& image,uint8_t gct,uint8_t res,u
                             if ( io.getShort(image.endian()) == image.kXmpEnd ) {
                                 uint64_t end = io.tell() - 3;
                                 if ( end > start ) {
-                                    io.seek(end+255); // jump past the 255 byte pad
-                                    nContinue = 0 ;
+                                    io.seek(start);
                                     xmp = end - start;
+                                    DataBuf XMP(xmp);
+                                    data.empty(true);
+                                    data.append(XMP);
+                                    io.seek(end+256); // jump past the 255 byte pad
+                                    nContinue = 0 ;
                                 }
                             }
                         }
-                        if ( xmp ) out() << stringFormat("XMP %d bytes",xmp) ;
                     }
                     out() <<std::endl;
                 } else {
                     address = io.tell() ; io.read(b) ; out() << indent() << stringFormat("%8d | %4d | 0x%-14s | "            ,address,len,chop(b.toHexString(),14).c_str()) << std::endl;
                 }
                 n=0;
-                len = io.getb();
+                address = io.tell() ; len = io.getb();
+                if ( len == 0 ) out() << indent() << stringFormat("%8d | %4d | %-16s | %s %d bytes"     ,address,  1,chop(stringFormat("%d",len),16).c_str(),"END",data.size_) << std::endl;
+                else            out() << indent() << stringFormat("%8d | %4d | %-16s | %s"              ,address,  1,chop(stringFormat("%d",len),16).c_str(),"NEXT"    ) << std::endl;
             }
             N = io.peek() ;
         }
