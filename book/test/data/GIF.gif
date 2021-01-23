@@ -25,37 +25,18 @@ STRUCTURE OF GIF FILE (II): ../files/GIF.gif
      733 |   48 | 0x000077 ...     | 000077 000055 000044 000022 000011 eeeeee dddddd bbbbbb aaaaaa 888888 777777 555555 444444 222222 111111 000000 
      781 |    2 | 33 254           | Comment Extension
      784 |  255 | SCANNERMAKER +++ | 
+    1039 |    1 | 31               | NEXT
     1040 |   31 | 0x302c202441 +++ | 
+    1071 |    1 | 0                | END 286 bytes
     1072 |    2 | 33 255           | App Extension
-    1075 |   11 | XMP DataXMP      | XMP 439 bytes
-    1781 |    1 | 0x00             | 
+    1075 |   11 | XMP DataXMP      | 
+    1782 |    1 | 0                | END 439 bytes
     1783 |    2 | 33 255           | App Extension
     1786 |   11 | ICCRGBG1012      | 
+    1797 |    1 | 255              | NEXT
     1798 |  255 | 0x000001ec4e +++ | 
+    2053 |    1 | 237              | NEXT
     2054 |  237 | 0x6f6e204164 +++ | 
+    2291 |    1 | 0                | END 492 bytes
     2292 |    1 | 0x2c             | Image Separator
-Comment: 286 bytes
-SCANNERMAKER: Canon
-SCANNER: Canon EOS DIGITAL REBEL
-SOFTWARE: GraphicConverter
-DATE: 2004:02:20 08:07:49
-DESCRIPTION: The picture caption
-
-Ignored Tags: $02BC, $9000, $9004, $9101, $9286, $A000, $A001, $A002, $A003, $A20E, $A20F, $A210, $A217, $A300, $A401, $A402, $A403, $A406
-
----
-XMP: 439 bytes
-ICC: 492 bytes
-  STRUCTURE OF ICC FILE (MM): ../files/GIF.gif+1086->439
-     sig |   offset |   length
-    desc |      240 |       77 
-    rXYZ |      320 |       20 
-    gXYZ |      340 |       20 
-    bXYZ |      360 |       20 
-    rTRC |      380 |       14 
-    gTRC |      396 |       14 
-    bTRC |      412 |       14 
-    wtpt |      428 |       20 
-    cprt |      448 |       44 
-  END: ../files/GIF.gif+1086->439
 END: ../files/GIF.gif

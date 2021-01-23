@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-01-20</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-01-23</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -2046,7 +2046,7 @@ Output from tvisitor:
 $ tvisitor files/GIF.gif
 STRUCTURE OF GIF FILE (II): ../files/GIF.gif
  address | leng | data             | value
-       0 |    3 | GIF              | 
+       0 |    3 | GIF              | magic
        3 |    3 | 89a              | version
        6 |    2 | 8                | width
        8 |    2 | 8                | height
@@ -2054,29 +2054,37 @@ STRUCTURE OF GIF FILE (II): ../files/GIF.gif
       11 |    1 | 0                | background color
       12 |    1 | 49               | pixel aspect ratio
       13 |   48 | 0xffffff ...     | ffffff ffffcc ffff99 ffff66 ffff33 ffff00 ffccff ffcccc ffcc99 ffcc66 ffcc33 ffcc00 ff99ff ff99cc ff9999 ff9966 
-     ... |   48 | 0x...... ...     | ...... ......
+      61 |   48 | 0xff9933 ...     | ff9933 ff9900 ff66ff ff66cc ff6699 ff6666 ff6633 ff6600 ff33ff ff33cc ff3399 ff3366 ff3333 ff3300 ff00ff ff00cc 
+     109 |   48 | 0xff0099 ...     | ff0099 ff0066 ff0033 ff0000 ccffff ccffcc ccff99 ccff66 ccff33 ccff00 ccccff cccccc cccc99 cccc66 cccc33 cccc00 
+     157 |   48 | 0xcc99ff ...     | cc99ff cc99cc cc9999 cc9966 cc9933 cc9900 cc66ff cc66cc cc6699 cc6666 cc6633 cc6600 cc33ff cc33cc cc3399 cc3366 
+     205 |   48 | 0xcc3333 ...     | cc3333 cc3300 cc00ff cc00cc cc0099 cc0066 cc0033 cc0000 99ffff 99ffcc 99ff99 99ff66 99ff33 99ff00 99ccff 99cccc 
+     253 |   48 | 0x99cc99 ...     | 99cc99 99cc66 99cc33 99cc00 9999ff 9999cc 999999 999966 999933 999900 9966ff 9966cc 996699 996666 996633 996600 
+     301 |   48 | 0x9933ff ...     | 9933ff 9933cc 993399 993366 993333 993300 9900ff 9900cc 990099 990066 990033 990000 66ffff 66ffcc 66ff99 66ff66 
+     349 |   48 | 0x66ff33 ...     | 66ff33 66ff00 66ccff 66cccc 66cc99 66cc66 66cc33 66cc00 6699ff 6699cc 669999 669966 669933 669900 6666ff 6666cc 
+     397 |   48 | 0x666699 ...     | 666699 666666 666633 666600 6633ff 6633cc 663399 663366 663333 663300 6600ff 6600cc 660099 660066 660033 660000 
+     445 |   48 | 0x33ffff ...     | 33ffff 33ffcc 33ff99 33ff66 33ff33 33ff00 33ccff 33cccc 33cc99 33cc66 33cc33 33cc00 3399ff 3399cc 339999 339966 
+     493 |   48 | 0x339933 ...     | 339933 339900 3366ff 3366cc 336699 336666 336633 336600 3333ff 3333cc 333399 333366 333333 333300 3300ff 3300cc 
+     541 |   48 | 0x330099 ...     | 330099 330066 330033 330000 00ffff 00ffcc 00ff99 00ff66 00ff33 00ff00 00ccff 00cccc 00cc99 00cc66 00cc33 00cc00 
+     589 |   48 | 0x0099ff ...     | 0099ff 0099cc 009999 009966 009933 009900 0066ff 0066cc 006699 006666 006633 006600 0033ff 0033cc 003399 003366 
+     637 |   48 | 0x003333 ...     | 003333 003300 0000ff 0000cc 000099 000066 000033 ee0000 dd0000 bb0000 aa0000 880000 770000 550000 440000 220000 
+     685 |   48 | 0x110000 ...     | 110000 00ee00 00dd00 00bb00 00aa00 008800 007700 005500 004400 002200 001100 0000ee 0000dd 0000bb 0000aa 000088 
      733 |   48 | 0x000077 ...     | 000077 000055 000044 000022 000011 eeeeee dddddd bbbbbb aaaaaa 888888 777777 555555 444444 222222 111111 000000 
-     781 |    2 | 33 254           | Comment Extension
+     781 |    2 | 0x21fe           | Comment Extension
      784 |  255 | SCANNERMAKER +++ | 
-    1040 |   31 | 0, $A401, $A +++ | 
-    1072 |    2 | 33 255           | App Extension
+    1039 |    1 | 31               | NEXT
+    1040 |   31 | 0x302c202441 +++ | 
+    1071 |    1 | 0                | END 286 bytes
+    1072 |    2 | 0x21ff           | App Extension
     1075 |   11 | XMP DataXMP      | 
-    1087 |   60 | ?xpacket beg +++ | 
-    1148 |  101 | ta xmlns:x=  +++ | 
-    1250 |   57 | /02/22-rdf-s +++ | 
-    1308 |   32 | xmlns:dc=ht  +++ | 
-    1341 |  109 | ents/1.1/>.  +++ | 
-    1451 |   60 | /dc:title>.  +++ | 
-    1512 |   99 | ket end='w'? +++ | 
-    1612 |  170 | ???????????? +++ | 
-    1783 |    2 | 33 255           | App Extension
+    1782 |    1 | 0                | END 439 bytes
+    1783 |    2 | 0x21ff           | App Extension
     1786 |   11 | ICCRGBG1012      | 
-    1798 |  255 |                  | 
-    2054 |  237 | on Adobe RGB +++ | 
+    1797 |    1 | 255              | NEXT
+    1798 |  255 | 0x000001ec4e +++ | 
+    2053 |    1 | 237              | NEXT
+    2054 |  237 | 0x6f6e204164 +++ | 
+    2291 |    1 | 0                | END 492 bytes
     2292 |    1 | 0x2c             | Image Separator
-Comment: 286 bytes
-XMP: 439 bytes
-ICC: 492 bytes
 END: ../files/GIF.gif
 ```
 

@@ -24,6 +24,7 @@ STRUCTURE OF GIF FILE (II): ../files/robinkilt.gif
      685 |   48 | 0x535f71 ...     | 535f71 264875 2e5486 2b4f7e 214066 3b6faf 315a8c 345e90 1e3753 396496 4f6f94 304861 3b546a 446779 304242 3f504d 
      733 |   48 | 0x506257 ...     | 506257 151615 e2ded7 b7b4b0 d2cbc4 c4bfba a9a6a4 433b36 4b4643 61534d 8a8584 815850 a6766e b88880 ddafaa ffffff 
      781 |    2 | 33 249           | Graphic Control Extension
-     784 |    4 | 1 0 0 255        | 
+     784 |    4 | 0x010000ff       | 
+     788 |    1 | 0                | END 4 bytes
      789 |    1 | 0x2c             | Image Separator
 END: ../files/robinkilt.gif

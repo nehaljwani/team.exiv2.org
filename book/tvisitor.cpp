@@ -2106,74 +2106,8 @@ void GifImage::accept(Visitor& visitor)
         Error(kerInvalidFileFormat,io().path(),os.str());
     }
 
-    enum
-    {   kDataUnknown
-    ,   kDataComment
-    ,   kDataXMP
-    ,   kDataICC
-    }   dataType = kDataUnknown;
-    std::vector<std::string> dataTypes ;
-    dataTypes.push_back("unknown");
-    dataTypes.push_back("Comment");
-    dataTypes.push_back("XMP");
-    dataTypes.push_back("ICC");
-
     visitor.visitBegin(*this); // tell the visitor
     visitor.visitGifHeader(io_,*this,gct_,res_,sort_,gcts_);
-    
-    IoSave   save(io(),start_);
-    uint16_t block = io().getShort(endian_);
-    DataBuf  data  ;
-    while ( block ==  kAppExt || block == kComExt ) {
-        dataType = block == kComExt ? kDataComment : kDataUnknown ;
-        uint16_t len = io().getByte() ;
-        while  ( len ) {
-            DataBuf buff(len);
-            io().read(buff);
-            if ( buff.strequals("XMP DataXMP") ) {
-                dataType = kDataXMP;
-                uint64_t start = io().tell();
-                uint16_t nContinue = 1000 ;
-                while (  nContinue-- ) {
-                    while ( io().getb() != 0x01 ) {}
-                    if ( io().getShort(endian_) == kXmpEnd ) {
-                        uint64_t end = io().tell() - 3;
-                        if ( end > start ) {
-                            data.read(io(),start,end-start);
-                            io().seek(end+255); // jump past the 255 byte pad
-                            nContinue = 0 ;
-                        }
-                    }
-                }
-            } else if ( buff.strequals("ICCRGBG1012")) {
-                dataType = kDataICC ;
-                len = io().getByte();
-                DataBuf icc(len);
-                io().read(icc);
-                buff.append(icc,true);
-            }
-            if ( dataType ==  kDataComment || dataType == kDataICC ) {
-                data.append(buff);
-            }
-            len = io().getByte();
-        }
-        
-        if ( dataType != kDataUnknown ) {
-            std::cout << dataTypes[dataType]  << ": " << data.size_ << " bytes" << std::endl;
-            if ( visitor.isRecursive() && dataType == kDataICC ) {
-                Io  icc(data);
-                ICC(icc).accept(visitor);
-            }
-            if(  ((visitor.option() & kpsXMP) && (dataType == kDataXMP    ))
-            ||    (visitor.isRecursive()      && (dataType == kDataComment))
-            ) {
-                visitor.out() << std::string((const char*) data.pData_,data.size_) << std::endl << "---" << std::endl;;
-            }
-        }
-        data.empty(true);
-        if ( !len ) block = io().getShort(endian_);
-    }
-    
     visitor.visitEnd  (*this); // tell the visitor
 }
 
@@ -3448,7 +3382,7 @@ void ReportVisitor::visitGifHeader(Io& io,Image& image,uint8_t gct,uint8_t res,u
         DataBuf last(1);
         uint64_t address;
         
-        address = io.tell() ; io.read(head); out() << indent() << stringFormat("%8d | %4d | %-16s | "                  ,address,head.size_,head.toString(kttAscii).c_str()) << std::endl;
+        address = io.tell() ; io.read(head); out() << indent() << stringFormat("%8d | %4d | %-16s | magic"             ,address,head.size_,head.toString(kttAscii).c_str()) << std::endl;
         address = io.tell() ; io.read(vers); out() << indent() << stringFormat("%8d | %4d | %-16s | version"           ,address,vers.size_,vers.toString(kttAscii).c_str()) << std::endl;
         address = io.tell() ; io.read(widt); out() << indent() << stringFormat("%8d | %4d | %-16s | width"             ,address,widt.size_,widt.toString(kttShort).c_str()) << std::endl;
         address = io.tell() ; io.read(heig); out() << indent() << stringFormat("%8d | %4d | %-16s | height"            ,address,heig.size_,heig.toString(kttShort).c_str()) << std::endl;
@@ -3473,7 +3407,8 @@ void ReportVisitor::visitGifHeader(Io& io,Image& image,uint8_t gct,uint8_t res,u
         }
         byte    N = io.peek() ;
         while ( N == '!' ) {
-            address = io.tell() ; io.read(next); out() << indent() << stringFormat("%8d | %4d | %-16s | "              ,address,next.size_,chop(next.toString(kttUByte),16).c_str());
+//          address = io.tell() ; io.read(next); out() << indent() << stringFormat("%8d | %4d | %-16s | "              ,address,next.size_,chop(next.toString(kttUByte),16).c_str());
+            address = io.tell() ; io.read(next); out() << indent() << stringFormat("%8d | %4d | 0x%-14s | "           ,address,next.size_,chop(next.toHexString(),14).c_str());
             uint16_t        n = next.getShort(0,image.endian());
             const char* sNext = n == image.kAppExt ? "App Extension"
                               : n == image.kComExt ? "Comment Extension"
@@ -3484,9 +3419,10 @@ void ReportVisitor::visitGifHeader(Io& io,Image& image,uint8_t gct,uint8_t res,u
             DataBuf data ;
             while ( len ) {
                 DataBuf b(len) ;
+                data.append(b);
                 if ( n == image.kAppExt || n == image.kComExt ) {
                     address = io.tell() ; io.read(b) ; out() << indent() << stringFormat("%8d | %4d | %-16s | "            ,address,len,chop(b.toString(kttAscii),16).c_str());
-                    data.append(b);
+                    if ( n == image.kAppExt ) data.empty(true);
                     if ( n == image.kAppExt && b.strequals("XMP DataXMP") ) {
                         uint64_t xmp   = 0 ;
                         uint64_t start = io.tell();
@@ -3499,9 +3435,10 @@ void ReportVisitor::visitGifHeader(Io& io,Image& image,uint8_t gct,uint8_t res,u
                                     io.seek(start);
                                     xmp = end - start;
                                     DataBuf XMP(xmp);
+                                    io.read(XMP);
                                     data.empty(true);
                                     data.append(XMP);
-                                    io.seek(end+256); // jump past the 255 byte pad
+                                    io.seek(end+257); // jump past the 255 byte pad
                                     nContinue = 0 ;
                                 }
                             }
@@ -3514,7 +3451,7 @@ void ReportVisitor::visitGifHeader(Io& io,Image& image,uint8_t gct,uint8_t res,u
                 n=0;
                 address = io.tell() ; len = io.getb();
                 if ( len == 0 ) out() << indent() << stringFormat("%8d | %4d | %-16s | %s %d bytes"     ,address,  1,chop(stringFormat("%d",len),16).c_str(),"END",data.size_) << std::endl;
-                else            out() << indent() << stringFormat("%8d | %4d | %-16s | %s"              ,address,  1,chop(stringFormat("%d",len),16).c_str(),"NEXT"    ) << std::endl;
+                else            out() << indent() << stringFormat("%8d | %4d | %-16s | %s"              ,address,  1,chop(stringFormat("%d",len),16).c_str(),"NEXT"          ) << std::endl;
             }
             N = io.peek() ;
         }
