@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-01-23</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-01-25</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -14,7 +14,7 @@ _First, my wife Alison, who has been my loyal support since the day we met in Hi
 
 _Secondly, Andreas Huggel the founder of the project and Luis and Dan who have worked tirelessly with me since 2017._
 
-_Exiv2 contributors (in alphabetical order): Abhinav, Alan, Alex, Andreas (both of them), Arnold, Ben, Gilles, Kevin, Leo, Leonardo, Mahesh, Micha&lstrok;, Mikayel, Milo&scaron;, Nehal, Neils, Phil, Rosen, Sridhar, Thomas, Tuan .... and others who have contributed to Exiv2._
+_Exiv2 contributors (in alphabetical order): Abhinav, Alan, Alex, Andreas (both of them), Arnold, Ben, Christoph, Gilles, Kevin, Leo, Leonardo, Mahesh, Micha&lstrok;, Mikayel, Milo&scaron;, Nehal, Neils, Peter, Phil, Rosen, Sridhar, Thomas, Tuan .... and others who have contributed to Exiv2._
 
 _File Detectives:  Phil Harvey, Dave Coffin, Laurent Cl&eacute;vy._
 
@@ -90,7 +90,7 @@ I said "Oh, it can't be too difficult to do that!".  And here we are more than a
 
 The program samples/geotag.cpp is a command line utility to geotag photos and I frequently use this on my own photographs.  Today, I have a Samsung Galaxy Watch which uploads runs to Strava.  I download the GPX from Strava.  The date/time information in the JPG is the key to search for the position data.  The GPS tags are created and saved in the image.
 
-In 2008, I chose to implement this in python because I wanted to learn the language.  Having discovered exiv2 and the python wrapper pyexiv2, I set off with enthusiasm to build a cross-platform script to run on **Windows** _(XP, Visual Studio 2003)_, **Ubuntu Linux** _(Hardy Heron 2008.04 LTS)_ and **macOS** _(32 bit Tiger 10.4 on a big-endian PPC)_.  After I finished, I emailed Andreas.  He responded in less than an hour and invited me to join Team Exiv2.  Initialially, I provided support to build Exiv2 with Visual Studio.
+In 2008, I chose to implement this in python because I wanted to learn the language.  Having discovered exiv2 and the python wrapper pyexiv2, I set off with enthusiasm to build a cross-platform script to run on **Windows** _(XP, Visual Studio 2003)_, **Ubuntu Linux** _(Hardy Heron 2008.04 LTS)_ and **MacOS-X** _(32 bit Tiger 10.4 on a big-endian PPC)_.  After I finished, I emailed Andreas.  He responded in less than an hour and invited me to join Team Exiv2.  Initially, I provided support to build Exiv2 with Visual Studio.
 
 Incidentally, later in 2008, Dennis offered me a contract to port his company's Linux code to Visual Studio to be used on a Windows CE Embedded Controller.  1 million lines of C++ were ported from Linux in 6 weeks.  I worked with Dennis for 4 years on all manner of GPS related software development.
 
@@ -497,7 +497,7 @@ Adobe have created an _**ad-hoc**_ standard by placing consecutive APP1 segments
 
 Exiv2 has no code to deal with this.  It can neither read nor write these files.  In fact, JpegImage::writeMetadata() currently throws when asked to write more than 64k into a JPEG.
 
-This is discussed here: [https://dev.exiv2.org/issues/1232](https://dev.exiv2.org/issues/1232) and here is the output of the test files which were contributed by Phil.
+This is discussed here: [https://dev.exiv2.org/issues/1232](https://dev.exiv2.org/issues/1232) and here is the output of the test files which were contributed by Phil Harvey.
 
 ```bash
 .../book/build $ ./tvisitor -pS ~/cs4_extended_exif.jpg 
@@ -5631,7 +5631,7 @@ The difficulties of maintaining an open-source project are well explained in thi
 <img src="open-source-today3.png" style="width:400px;border:2px solid #23668F"/>
 </center>
 
-I will quote the following as it seems totally true.
+I will quote the following as this matches my experience.
 
 _If most businesses are using Open Source code for free, how are the developers compensated for that real time and effort? In the majority of cases the answer is **with verbal abuse and emotional blackmail**_.
 
@@ -5732,13 +5732,13 @@ Exiv2 has dependencies on the following libraries.  All are optional, however it
 
 #### Conan
 
-Starting with Exiv2 v0.27, we can use conan to build dependencies.  I very much appreciate Luis bringing this technology to Exiv2 as it has hugely simplified building with Visual Studio.  In the CI builders on GitHub, conan is also used to build on Linux and macOS.  At this time (June 2020), I haven't been able to get conan to work on Cygwin and/or MinGW/msys2.  I expect that will soon be rectified.
+Starting with Exiv2 v0.27, we can use Conan to build dependencies.  I very much appreciate Luis bringing this technology to Exiv2 as it has hugely simplified building with Visual Studio.  In the CI builders on GitHub, Conan is also used to build on Linux and macOS.  The CI/Windows builds are performed by appveyor.  The Visual Studio builds are performed using Conan, the Cygwin64 and MinGW/msys2 CI script installs the dependencies directly.
 
-Prior to using conan, the build environment for Visual Studio was hand built for Visual Studio 2005 and relied on Visual Studio to convert to the edition in use.  Additionally, source trees for dependencies were required in specific locations on storage.  We did support CMake on Visual Studio, however it required a 500 line cmd file _cmakeBuild.cmd_ to download and build the dependencies.  The effort to create and maintain that apparatus was considerable.
+Prior to using Conan, the build environment for Visual Studio was hand built for Visual Studio 2005 and relied on Visual Studio to convert to the edition in use.  Additionally, source trees for dependencies were required in specific locations on storage.  We did support CMake on Visual Studio, however it required a 500 line cmd file _cmakeBuild.cmd_ to download and build the dependencies.  The effort to create and maintain that apparatus was considerable.
 
-Conan brings a fresh approach to building dependencies.  Every dependancy has a "recipe" which tells conan how to build a dependency.  The recipes are held on servers and are fetched from remote servers on demand.  Exiv2 has a file conanfile.py (written in python) which tells conan which dependencies are required.  Conan fetches the recipe, build the dependency and caches it for future use.  When dealing with very large libraries such as openssl, the recipe might pull prebuilt binaries for your requested configuration.  For more modest libraries (such as expat and zlib), the recipe will fetch the source and build.  Conan caches binary dependencies in your ~/.conan directory.  This arrangement means that you seldom build dependencies as they are usually in the cache.
+Conan brings a fresh approach to building dependencies.  Every dependancy has a "recipe" which tells Conan how to build a dependency.  The recipes are held on servers and are fetched from remote servers on demand.  Exiv2 has a file conanfile.py (written in python) which tells Conan which dependencies are required.  Conan fetches the recipe, build the dependency and caches it for future use.  When dealing with very large libraries such as openssl, the recipe might pull prebuilt binaries for your requested configuration.  For more modest libraries (such as expat and zlib), the recipe will fetch the source and build.  Conan caches binary dependencies in your ~/.conan directory.  This arrangement means that you seldom build dependencies as they are usually in the cache.
 
-I have always supported the plan to use CMake as our common build platform and invested a lot of effort in cmakeBuild.cmd.  Using conan with Visual Studio is much superior to our prior methods of working with CMake and Visual Studio.
+I have always supported the plan to use CMake as our common build platform and invested a lot of effort in cmakeBuild.cmd.  Using Conan with Visual Studio is much superior to our prior methods of working with CMake and Visual Studio.
 
 Luis has made other very useful contributions to Exiv2.  He rewrote most of the CMake code.  It's shorter, more robust, more flexible and easier to understand.  He also introduced CPack which packages both our Source Bundle and binary builds for public release on https://exiv2.org
 
@@ -6357,9 +6357,9 @@ This is a major and important topic.  Apart from writing code, I've spent more t
 
 There are two worlds.  There is the perfect world inhabited by management.  They live in a world which is quite different from mine.  In their world, the specification is clear, the schedule is realistic, nobody makes mistakes and everything works.  It's a wonderful place.  Sadly, I've never had the good fortune to live in that world.
 
-I worked in a company which, to hide their identity, I will call it _"West Anchors"_.  A colleague was giving a board presentation in which they had a slide:
+I worked in a company which, to hide their identity, I will call _"West Anchors"_.  A colleague was giving a board presentation in which they had a slide:
 
-_It is the Policy of_ **West Anchors &#174;** _is to get it right first time, every time_.
+_It is the Policy of_ **West Anchors &#174;** _to get it right first time, every time_.
 
 There we have it.  Nothing is ever late, nothing is more difficult than expected, all suppliers deliver on time.  Every specification is faultless.  All modules work together perfectly.  Nobody is ever sick.
 
@@ -6523,7 +6523,7 @@ In principle, anybody can develop a feature and submit a PR.  In reality, this s
 <div id="11-20"/>
 ### 11.20 Tools
 
-Every year brings new/different tools.  For example: cmake, git, MarkDown, conan and C++11.  One of the remarkable properties of tools you have never used is that they are perfect and solve all known issues, _until you use them_.   Tools you have never used are bug free and perfect.  Or so I am told.
+Every year brings new/different tools.  For example: cmake, git, MarkDown, Conan and C++11.  One of the remarkable properties of tools you have never used is that they are perfect and solve all known issues, _until you use them_.   Tools you have never used are bug free and perfect.  Or so I am told.
 
 I had an issue with the release bundles for Exiv2 v0.26.  My primary development platform is macOS.  Remarkably, the version of tar shipped by Apple puts hidden files in bundles to store file extended attributes.  I didn't know this until the bundles shipped and a bug report appeared.  You cannot see those files on macOS, because tar on macOS recreates the extended attributes.  However there were thousands of hidden files in the source bundle on Linux.  I recreated the bundles as Exiv2 v0.27a and shipped them.  There is an environment variable to suppress this.  I believe it is:  TAR\_WRITER\_OPTIONS=--no-mac-metadata.
 
