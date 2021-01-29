@@ -1,6 +1,6 @@
 STRUCTURE OF GIF FILE (II): ../files/GIF.gif
  address | leng | data             | value
-       0 |    3 | GIF              | 
+       0 |    3 | GIF              | magic
        3 |    3 | 89a              | version
        6 |    2 | 8                | width
        8 |    2 | 8                | height
@@ -23,15 +23,15 @@ STRUCTURE OF GIF FILE (II): ../files/GIF.gif
      637 |   48 | 0x003333 ...     | 003333 003300 0000ff 0000cc 000099 000066 000033 ee0000 dd0000 bb0000 aa0000 880000 770000 550000 440000 220000 
      685 |   48 | 0x110000 ...     | 110000 00ee00 00dd00 00bb00 00aa00 008800 007700 005500 004400 002200 001100 0000ee 0000dd 0000bb 0000aa 000088 
      733 |   48 | 0x000077 ...     | 000077 000055 000044 000022 000011 eeeeee dddddd bbbbbb aaaaaa 888888 777777 555555 444444 222222 111111 000000 
-     781 |    2 | 33 254           | Comment Extension
+     781 |    2 | 0x21fe           | Comment Extension
      784 |  255 | SCANNERMAKER +++ | 
     1039 |    1 | 31               | NEXT
     1040 |   31 | 0x302c202441 +++ | 
     1071 |    1 | 0                | END 286 bytes
-    1072 |    2 | 33 255           | App Extension
+    1072 |    2 | 0x21ff           | App Extension
     1075 |   11 | XMP DataXMP      | 
     1782 |    1 | 0                | END 439 bytes
-    1783 |    2 | 33 255           | App Extension
+    1783 |    2 | 0x21ff           | App Extension
     1786 |   11 | ICCRGBG1012      | 
     1797 |    1 | 255              | NEXT
     1798 |  255 | 0x000001ec4e +++ | 
