@@ -853,7 +853,9 @@ TagDict iptcApplication;
 
 TagDict& ifdDict(maker_e maker,uint16_t tag,TagDict& makerDict)
 {
-    TagDict& result = makerDict ;
+    TagDict& result = tag == ktExif ? exifDict
+                    : tag == ktGps  ? gpsDict
+                    : makerDict ;
     if ( maker == kOlym ) switch ( tag ) {
         case 0x2010 : result = olymEQDict ; break;
         case 0x2020 : result = olymCSDict ; break;
@@ -3619,6 +3621,7 @@ void init()
     tiffDict  [ 0x011b ] = "YResolution";
     tiffDict  [ 0x011c ] = "PlanarConfiguration";
     tiffDict  [ 0x0128 ] = "ResolutionUnit";
+    tiffDict  [ 0x0129 ] = "PageNumber";
     tiffDict  [ 0x0131 ] = "Software";
     tiffDict  [ 0x0132 ] = "DateTime";
     tiffDict  [ 0x013b ] = "Artist";
