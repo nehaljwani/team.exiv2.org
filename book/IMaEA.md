@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-01-25</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-01-31</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -5701,6 +5701,27 @@ Another possible solution would be to register a complaint about an individual. 
 While there is no sanction for a stakeholder being unreasonable, bad behaviour will continue.  A solution is possible.  If you are thinking _**I never contribute, therefore this does not affect me!**_, I ask you to think again if you use open-source.  When maintainers are abused and leave their project, everybody looses out.
 
 _**Will the Community do something about on-line abuse?**_
+
+
+#### The Future of Open Source
+
+Historically, open source was a collection of one-man projects.  And they were of limited scope.  I believe many of the early projects were rewrites of UNIX utilities that ran on a few operating systems.  Users were expected to download the code and make the most of it.  Before the web, contact with the author was limited.
+
+Things have changed.  A library such as Exiv2 is installed on a billion machines and most users are unaware of the existance of the library on their platform.  However the outlook view from the Captain's Bridge is of many more developers demanding help with an ever increasing number of platforms and shorter release cycles.  One thing remains the same.  The code is being maintained by one person.  This model is broken.  The pressure on the maintainer is considerable.  When combined with on-line abuse and criticism, the mix is toxic.  _**Something must be done about on-line abuse.**_.
+
+Some projects have been able to build a business based on an open-source project. Examples are Consulting and Premium Support.  I've never thought of any way to generate revenue for Exiv2.  Occassionally, I have responded to feature requests with a business proposal to undertake the project for a fee.  Such proposals were silently rejected without discussion.  So, users are happy to request a 500 hour project, however they are unwilling to discuss payment for the 500 hours.
+
+Being retired, I can spend time almost every day dealing with Exiv2.  However, contributors in employment have higher priorities in their life.  When contributors are between jobs, they are even less likely to work on Exiv2.  If the project could apply for a funding grant, contributors could be paid to deliver features.
+
+Something has to change and here are some ideas about funding and recognition.
+
+1. GSoC give students a bounty.  That program could be duplicated by Adobe, Facebook, Microsoft, Apple and other Tech Giants.
+2. Large organizations could make donations to a foundation from which projects could apply for grants.
+3. Github could carry ads and share the revenue with open source projects.
+4. A federal program like Darpa.
+5. Community recognition like the oscar or grammy awards.
+
+What's going to happen?  I don't know.
 
 [TOC](#TOC)
 <div id="11-1"/>
