@@ -1610,6 +1610,7 @@ private:
     const byte     dqt_      = 0xdb;
     const byte     dri_      = 0xdd;
     const byte     sos_      = 0xda;
+    const byte     soi_      = 0xd8;
     const byte     eoi_      = 0xd9;
     const byte     app0_     = 0xe0;
     const byte     com_      = 0xfe;
@@ -2475,7 +2476,13 @@ void JpegImage::accept(Visitor& visitor)
 
         // Jump past the segment
         io_.seek(address+2+length); // address is previous marker
-        done = marker == eoi_ || marker == sos_ || io().eof();
+        done = io().eof() || marker == eoi_ ;
+        if ( marker == sos_ ) {
+            while ( (marker = advanceToMarker()) != soi_ && !io().eof() ) {};
+            io().seek(io().tell()-2);
+        }
+        done = io().eof() || marker == eoi_ ;
+
     } // while !done
 
     visitor.visitEnd((*this)); // tell the visitor
