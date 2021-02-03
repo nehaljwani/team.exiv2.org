@@ -52,6 +52,6 @@ STRUCTURE OF JPEG FILE (II): ../files/cs4_extended_exif.jpg
   383347 | 0xffc0 SOF0  |      17 | ..T...."_........
   383366 | 0xffdd DRI   |       4 | _...
   383372 | 0xffc4 DHT   |     319 | __........_______._..........._........_
-  383693 | 0xffda SOS   |      12 | .._...._?_.T
+  383693 | 0xffda SOS  
   386577 | 0xffd9 EOI  
 END: ../files/cs4_extended_exif.jpg

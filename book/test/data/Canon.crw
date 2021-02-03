@@ -7,7 +7,9 @@ STRUCTURE OF CRW FILE (II): ../files/Canon.crw:26->10052
        2 | 0xffdb DQT   |     132 | _..........................!.#"!. .$)4,$
      136 | 0xffc0 SOF0  |      17 | ._x_...!_........
      155 | 0xffc4 DHT   |     418 | __........________............_.........
-     575 | 0xffda SOS   |      12 | .._...._?_..
+     575 | 0xffda SOS  
+    4415 | 0xffd9 EOI  
+    4471 | 0xff00      
   END: ../files/Canon.crw:26->10052:0->4418
  0x300a | H2   |   10 | Exif.CRW.ImageProps            |   5608 |   4418 | 
             width              2272

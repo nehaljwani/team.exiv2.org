@@ -1628,7 +1628,7 @@ private:
         start_  = 0       ;
         for (int i = 0; i < 256; i++) {
             bHasLength_[i] = (i >= sof0_ && i <= sof15_) || (i >= app0_ && i <= (app0_ | 0x0F))
-            ||               (i == dht_  || i == dqt_    ||  i == dri_  || i == com_  || i == sos_)
+            ||               (i == dht_  || i == dqt_    ||  i == dri_  || i == com_   )
             ;
         }
     }
@@ -2476,13 +2476,11 @@ void JpegImage::accept(Visitor& visitor)
 
         // Jump past the segment
         io_.seek(address+2+length); // address is previous marker
-        done = io().eof() || marker == eoi_ ;
         if ( marker == sos_ ) {
-            while ( (marker = advanceToMarker()) != soi_ && !io().eof() ) {};
+            while ( (marker = advanceToMarker()) != eoi_ /* && !io().eof() */ ) {};
             io().seek(io().tell()-2);
         }
-        done = io().eof() || marker == eoi_ ;
-
+        done = (address+2+length >= io().size());//  || (marker >= 0xc0 && marker <= 0xfe) ;
     } // while !done
 
     visitor.visitEnd((*this)); // tell the visitor
