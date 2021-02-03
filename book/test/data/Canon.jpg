@@ -110,4 +110,20 @@ STRUCTURE OF JPEG FILE (II): ../files/Canon.jpg
    16996 | 0xffc0 SOF0  |      17 | .... ..!_........
    17015 | 0xffc4 DHT   |     418 | __........________............_.........
    17435 | 0xffda SOS   |      12 | .._...._?_.d
+ 5356508 | 0xffd8 SOI  
+ 5356510 | 0xffe1 APP1  |     510 | Exif__II*_.___._i.._.___._______._..._._
+  STRUCTURE OF TIFF FILE (II): ../files/Canon.jpg:5356520->502
+   address |    tag                              |      type |    count |    offset | value
+        10 | 0x8769 Exif.Image.ExifTag           |      LONG |        1 |           | 26
+    STRUCTURE OF TIFF FILE (II): ../files/Canon.jpg:5356520->502
+     address |    tag                              |      type |    count |    offset | value
+          28 | 0xa002 Exif.Photo.PixelXDimension   |     SHORT |        1 |           | 1440
+          40 | 0xa003 Exif.Photo.PixelYDimension   |     SHORT |        1 |           | 1080
+    END: ../files/Canon.jpg:5356520->502
+  END: ../files/Canon.jpg:5356520->502
+ 5357022 | 0xffdb DQT   |     132 | _.......................................
+ 5357156 | 0xffc0 SOF0  |      17 | ..8....!_........
+ 5357175 | 0xffc4 DHT   |     418 | __........________............_.........
+ 5357595 | 0xffda SOS   |      12 | .._...._?_.Z
+ 5872617 | 0xffd9 EOI  
 END: ../files/Canon.jpg

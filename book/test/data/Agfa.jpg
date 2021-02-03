@@ -67,4 +67,5 @@ STRUCTURE OF JPEG FILE (II): ../files/Agfa.jpg
   184916 | 0xffc0 SOF0  |      17 | ._._..."_........
   184935 | 0xffc4 DHT   |      75 | _.._______________...________________.._
   185012 | 0xffda SOS   |      12 | .._...._?_._
+  185029 | 0xffd9 EOI  
 END: ../files/Agfa.jpg

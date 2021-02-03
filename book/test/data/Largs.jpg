@@ -42,4 +42,5 @@ STRUCTURE OF JPEG FILE (II): ../files/Largs.jpg
    19252 | 0xffdd DRI   |       4 | ....
    19258 | 0xffc4 DHT   |     243 | __......_________....._......_.......___
    19503 | 0xffda SOS   |      12 | .._...._?_..
+  496677 | 0xffd9 EOI  
 END: ../files/Largs.jpg

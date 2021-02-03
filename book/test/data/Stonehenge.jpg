@@ -171,4 +171,35 @@ STRUCTURE OF JPEG FILE (II): ../files/Stonehenge.jpg
    22392 | 0xffc0 SOF0  |      17 | ....p..!_........
    22411 | 0xffc4 DHT   |     418 | __........________............_.........
    22831 | 0xffda SOS   |      12 | .._...._?_..
+ 6196976 | 0xffd8 SOI  
+ 6196978 | 0xffe1 APP1  |    1022 | Exif__II*_.___._i.._.___._________._..._
+  STRUCTURE OF TIFF FILE (II): ../files/Stonehenge.jpg:6196988->1014
+   address |    tag                              |      type |    count |    offset | value
+        10 | 0x8769 Exif.Image.ExifTag           |      LONG |        1 |           | 28
+    STRUCTURE OF TIFF FILE (II): ../files/Stonehenge.jpg:6196988->1014
+     address |    tag                              |      type |    count |    offset | value
+          30 | 0xa002 Exif.Photo.PixelXDimension   |     SHORT |        1 |           | 640
+          42 | 0xa003 Exif.Photo.PixelYDimension   |     SHORT |        1 |           | 424
+    END: ../files/Stonehenge.jpg:6196988->1014
+  END: ../files/Stonehenge.jpg:6196988->1014
+ 6198002 | 0xffdb DQT   |     132 | _..........................!.#"!. .%)4,%
+ 6198136 | 0xffc0 SOF0  |      17 | .......!_........
+ 6198155 | 0xffc4 DHT   |     418 | __........________............_.........
+ 6198575 | 0xffda SOS   |      12 | .._...._?_..
+ 6234864 | 0xffd8 SOI  
+ 6234866 | 0xffe1 APP1  |    1022 | Exif__II*_.___._i.._.___._________._..._
+  STRUCTURE OF TIFF FILE (II): ../files/Stonehenge.jpg:6234876->1014
+   address |    tag                              |      type |    count |    offset | value
+        10 | 0x8769 Exif.Image.ExifTag           |      LONG |        1 |           | 28
+    STRUCTURE OF TIFF FILE (II): ../files/Stonehenge.jpg:6234876->1014
+     address |    tag                              |      type |    count |    offset | value
+          30 | 0xa002 Exif.Photo.PixelXDimension   |     SHORT |        1 |           | 1620
+          42 | 0xa003 Exif.Photo.PixelYDimension   |     SHORT |        1 |           | 1080
+    END: ../files/Stonehenge.jpg:6234876->1014
+  END: ../files/Stonehenge.jpg:6234876->1014
+ 6235890 | 0xffdb DQT   |     132 | _.......................................
+ 6236024 | 0xffc0 SOF0  |      17 | ..8.T..!_........
+ 6236043 | 0xffc4 DHT   |     418 | __........________............_.........
+ 6236463 | 0xffda SOS   |      12 | .._...._?_..
+ 6757985 | 0xffd9 EOI  
 END: ../files/Stonehenge.jpg
