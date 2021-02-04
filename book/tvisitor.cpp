@@ -2818,6 +2818,7 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
             } else switch ( tag ) {
                 case ktGps    : IFD(image_,offset,false).accept(visitor,gpsDict );break;
                 case ktExif   : IFD(image_,offset,false).accept(visitor,exifDict);break;
+                case ktIOP    : IFD(image_,offset,true ).accept(visitor,exifDict);break;
                 case ktMNP    : /* Pentax and DNGPrivateData */
                 case ktMN     : visitMakerNote(visitor,buff,count,offset)        ;break;
                 default       : /* do nothing                                  */;break;
