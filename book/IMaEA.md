@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-02-02</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-02-04</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -1022,7 +1022,7 @@ So there are two uint32\_t values which are the brand and minor\_version.  Then 
 
 #### Box Names
 
-A box name is a 4 byte big-endian byte stream and stored in a uint32\_t.  It is not nul-terminated.  So the box type <b>jP  </b> _(jPspacespace)_ is 0x2020506a, and **ftyp** is 0x70794666.
+A box name is a 4 byte big-endian byte stream and stored in a uint32\_t.  It is not nul-terminated.  So the box type <b>jP  </b> _(jPspacespace)_ is 0x2020506a, and **ftyp** is 0x70797666.
 
 #### UUID Box uuid
 
@@ -1030,7 +1030,7 @@ This is mechanism to store binary data in any format.  The ISOBMFF Specification
 
 #### ISOBMFF Explorer
 
-I've found the open-source product ISOBMFF Explorer very useful in learning about this file format.  [https://imazing.com/isobmff/download](https://imazing.com/isobmff/download).  The code is available from: (https://github.com/DigiDNA/ISOBMFF)[https://github.com/DigiDNA/ISOBMFF].  
+I've found the open-source product ISOBMFF Explorer very useful in learning about this file format.  [https://imazing.com/isobmff/download](https://imazing.com/isobmff/download).  The code is available from: [https://github.com/DigiDNA/ISOBMFF](https://github.com/DigiDNA/ISOBMFF).  
 
 I built it as follows.  You should use the git --recursive option to ensure that Submodules are also cloned.
 
