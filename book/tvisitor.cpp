@@ -1457,9 +1457,9 @@ public:
     : Image(path)
     , next_(true)
     {}
-    TiffImage(Io& io,maker_e maker=kUnknown)
+    TiffImage(Io& io,bool next=false,maker_e maker=kUnknown)
     : Image(io)
-    , next_(false)
+    , next_(next)
     { setMaker(maker);}
 
     bool valid()
@@ -2792,7 +2792,8 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
             size_t   alloc  = size*count     ;
             DataBuf  buff(alloc);
             if ( alloc <= (bigtiff?8:4) ) {
-                buff.copy(&offset,size*count);
+                IoSave save(io_,address+2+2 + (bigtiff?8:4)); // step over tag/type/count
+                io_.read(buff);
             } else {
                 IoSave save(io_,offset);
                 io_.read(buff);
@@ -3209,7 +3210,7 @@ void ReportVisitor::visitExif(Io& io)
 {
     if ( isRecursive() ) {
         // Beautiful.  io is a tiff file, call TiffImage::accept(visitor)
-        TiffImage(io).accept(*this);
+        TiffImage(io,true).accept(*this);
     }
 }
 
@@ -3631,6 +3632,8 @@ void init()
     tiffDict  [ 0x0131 ] = "Software";
     tiffDict  [ 0x0132 ] = "DateTime";
     tiffDict  [ 0x013b ] = "Artist";
+    tiffDict  [ 0x0201 ] = "JPEGIchangeFormat";
+    tiffDict  [ 0x0202 ] = "JPEGIchangeLength";
     tiffDict  [ 0x0213 ] = "YCbCrPositioning";
     // DNG Tags
     dngDict   [ktGroup ] = "DNG";
