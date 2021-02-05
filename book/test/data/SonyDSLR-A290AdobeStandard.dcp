@@ -1,16 +1,16 @@
 STRUCTURE OF TIFF FILE (II): ../files/SonyDSLR-A290AdobeStandard.dcp
- address |    tag                              |      type |    count |    offset | value
-      10 | 0xc614 Exif.DNG.UniqueCameraModel   |     ASCII |       15 |       170 | Sony DSLR-A290
-      22 | 0xc621 Exif.DNG.ColorMatrix1        | SRATIONAL |        9 |       186 | 6459/10000 4294965305/10000 42949670 +++
-      34 | 0xc622 Exif.DNG.ColorMatrix2        | SRATIONAL |        9 |       258 | 6038/10000 4294965812/10000 42949667 +++
-      46 | 0xc65a Exif.DNG.CalibrationIllumi.. |     SHORT |        1 |           | 17
-      58 | 0xc65b Exif.DNG.CalibrationIllumi.. |     SHORT |        1 |           | 21
-      70 | 0xc6f4 Exif.DNG.ProfileCalibratio.. |     ASCII |       10 |       330 | com.adobe
-      82 | 0xc6f8 Exif.DNG.ProfileName         |     ASCII |       15 |       340 | Adobe Standard
-      94 | 0xc6fd Exif.DNG.ProfileEmbedPolicy  |      LONG |        1 |           | 0
-     106 | 0xc6fe Exif.DNG.ProfileCopyright    |     ASCII |       35 |       356 | Copyright 2010 Adobe Systems, Inc.
-     118 | 0xc714 Exif.DNG.ForwardMatrix1      | SRATIONAL |        9 |       392 | 7361/10000 2078/10000 204/10000 3898 +++
-     130 | 0xc715 Exif.DNG.ForwardMatrix2      | SRATIONAL |        9 |       464 | 7361/10000 2078/10000 204/10000 3898 +++
-     142 | 0xc725 Exif.DNG.ProfileLookTableD.. |      LONG |        3 |       536 | 36 8 16
-     154 | 0xc726 Exif.DNG.ProfileLookTableD.. |     FLOAT |    13824 |       548 | 0 1065353216 1065353216 3247443163 1 +++
+ address |    tag                                  |      type |    count |    offset | value
+      10 | 0xc614 Exif.DNG.UniqueCameraModel       |     ASCII |       15 |       170 | Sony DSLR-A290
+      22 | 0xc621 Exif.DNG.ColorMatrix1            | SRATIONAL |        9 |       186 | 6459/10000 4294965305/10000 42949670 +++
+      34 | 0xc622 Exif.DNG.ColorMatrix2            | SRATIONAL |        9 |       258 | 6038/10000 4294965812/10000 42949667 +++
+      46 | 0xc65a Exif.DNG.CalibrationIlluminant1  |     SHORT |        1 |           | 17
+      58 | 0xc65b Exif.DNG.CalibrationIlluminant2  |     SHORT |        1 |           | 21
+      70 | 0xc6f4 Exif.DNG.ProfileCalibrationSig.. |     ASCII |       10 |       330 | com.adobe
+      82 | 0xc6f8 Exif.DNG.ProfileName             |     ASCII |       15 |       340 | Adobe Standard
+      94 | 0xc6fd Exif.DNG.ProfileEmbedPolicy      |      LONG |        1 |           | 0
+     106 | 0xc6fe Exif.DNG.ProfileCopyright        |     ASCII |       35 |       356 | Copyright 2010 Adobe Systems, Inc.
+     118 | 0xc714 Exif.DNG.ForwardMatrix1          | SRATIONAL |        9 |       392 | 7361/10000 2078/10000 204/10000 3898 +++
+     130 | 0xc715 Exif.DNG.ForwardMatrix2          | SRATIONAL |        9 |       464 | 7361/10000 2078/10000 204/10000 3898 +++
+     142 | 0xc725 Exif.DNG.ProfileLookTableDims    |      LONG |        3 |       536 | 36 8 16
+     154 | 0xc726 Exif.DNG.ProfileLookTableData    |     FLOAT |    13824 |       548 | 0 1065353216 1065353216 3247443163 1 +++
 END: ../files/SonyDSLR-A290AdobeStandard.dcp

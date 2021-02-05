@@ -118,15 +118,15 @@ STRUCTURE OF JP2 (heic) FILE (MM): ../files/Stonehenge.heic
       STRUCTURE OF JP2 FILE (MM): ../files/Stonehenge.heic:36->4762:2449->697:8->187
              0 |      122 | hvcC |      | ..`___._____Z._...._ 1 1 96 0 0 0 176 0 0 0 0 0 90 240 0 252 253 248 248 0
            122 |       20 | ispe |      | ______.___._ 0 0 0 0 0 0 2 0 0 0 2 0
-      ISOBMFF.ispe.Version         0
-      ISOBMFF.ispe.Flags           0 0 0
-      ISOBMFF.ispe.Width           512
-      ISOBMFF.ispe.Height          512
+      ISOBMFF.ispe.Version             0
+      ISOBMFF.ispe.Flags               0 0 0
+      ISOBMFF.ispe.Width               512
+      ISOBMFF.ispe.Height              512
            142 |       20 | ispe |      | ______.p__.. 0 0 0 0 0 0 23 112 0 0 15 160
-      ISOBMFF.ispe.Version         0
-      ISOBMFF.ispe.Flags           0 0 0
-      ISOBMFF.ispe.Width           6000
-      ISOBMFF.ispe.Height          4000
+      ISOBMFF.ispe.Version             0
+      ISOBMFF.ispe.Flags               0 0 0
+      ISOBMFF.ispe.Width               6000
+      ISOBMFF.ispe.Height              4000
            162 |        9 | irot |      | _ 0
            171 |       16 | pixi |      | ____.... 0 0 0 0 3 8 8 8
       END: ../files/Stonehenge.heic:36->4762:2449->697:8->187
@@ -235,72 +235,72 @@ STRUCTURE OF JP2 (heic) FILE (MM): ../files/Stonehenge.heic
       4738 |       16 |  ext |   99 |   5896,  3150
   END: ../files/Stonehenge.heic:36->4762
   STRUCTURE OF TIFF FILE (MM): ../files/Stonehenge.heic:4824->1072
-   address |    tag                              |      type |    count |    offset | value
-        10 | 0x010e Exif.Image.ImageDescription  |     ASCII |       13 |       146 | Classic View
-        22 | 0x010f Exif.Image.Make              |     ASCII |       18 |       160 | NIKON CORPORATION
-        34 | 0x0110 Exif.Image.Model             |     ASCII |       12 |       178 | NIKON D5300
-        46 | 0x0112 Exif.Image.Orientation       |     SHORT |        1 |           | 0
-        58 | 0x011a Exif.Image.XResolution       |  RATIONAL |        1 |       190 | 300/1
-        70 | 0x011b Exif.Image.YResolution       |  RATIONAL |        1 |       198 | 300/1
-        82 | 0x0128 Exif.Image.ResolutionUnit    |     SHORT |        1 |           | 0
-        94 | 0x0131 Exif.Image.Software          |     ASCII |       10 |       206 | Ver.1.00 
-       106 | 0x0132 Exif.Image.DateTime          |     ASCII |       20 |       216 | 2015:07:16 20:25:28
-       118 | 0x8769 Exif.Image.ExifTag           |      LONG |        1 |           | 3959422976
+   address |    tag                                  |      type |    count |    offset | value
+        10 | 0x010e Exif.Image.ImageDescription      |     ASCII |       13 |       146 | Classic View
+        22 | 0x010f Exif.Image.Make                  |     ASCII |       18 |       160 | NIKON CORPORATION
+        34 | 0x0110 Exif.Image.Model                 |     ASCII |       12 |       178 | NIKON D5300
+        46 | 0x0112 Exif.Image.Orientation           |     SHORT |        1 |           | 1
+        58 | 0x011a Exif.Image.XResolution           |  RATIONAL |        1 |       190 | 300/1
+        70 | 0x011b Exif.Image.YResolution           |  RATIONAL |        1 |       198 | 300/1
+        82 | 0x0128 Exif.Image.ResolutionUnit        |     SHORT |        1 |           | 2
+        94 | 0x0131 Exif.Image.Software              |     ASCII |       10 |       206 | Ver.1.00 
+       106 | 0x0132 Exif.Image.DateTime              |     ASCII |       20 |       216 | 2015:07:16 20:25:28
+       118 | 0x8769 Exif.Image.ExifTag               |      LONG |        1 |           | 236
     STRUCTURE OF TIFF FILE (MM): ../files/Stonehenge.heic:4824->1072
-     address |    tag                              |      type |    count |    offset | value
-         238 | 0x829a Exif.Photo.ExposureTime      |  RATIONAL |        1 |       710 | 1/400
-         250 | 0x829d Exif.Photo.FNumber           |  RATIONAL |        1 |       718 | 10/1
-         262 | 0x8822 Exif.Photo.ExposureProgram   |     SHORT |        1 |           | 0
-         274 | 0x8827 Exif.Photo.ISOSpeedRatings   |     SHORT |        1 |           | 0
-         286 | 0x8830 Exif.Photo.SensitivityType   |     SHORT |        1 |           | 0
-         298 | 0x9000 Exif.Photo.ExifVersion       | UNDEFINED |        4 |           | 0320
-         310 | 0x9003 Exif.Photo.DateTimeOriginal  |     ASCII |       20 |       726 | 2015:07:16 15:38:54
-         322 | 0x9004 Exif.Photo.DateTimeDigitized |     ASCII |       20 |       746 | 2015:07:16 15:38:54
-         334 | 0x9101 Exif.Photo.ComponentsConfi.. | UNDEFINED |        4 |           | _...
-         346 | 0x9102 Exif.Photo.CompressedBitsP.. |  RATIONAL |        1 |       766 | 2/1
-         358 | 0x9204 Exif.Photo.ExposureBiasValue | SRATIONAL |        1 |       774 | 0/1
-         370 | 0x9205 Exif.Photo.MaxApertureValue  |  RATIONAL |        1 |       782 | 43/10
-         382 | 0x9207 Exif.Photo.MeteringMode      |     SHORT |        1 |           | 0
-         394 | 0x9208 Exif.Photo.LightSource       |     SHORT |        1 |           | 0
-         406 | 0x9209 Exif.Photo.Flash             |     SHORT |        1 |           | 0
-         418 | 0x920a Exif.Photo.FocalLength       |  RATIONAL |        1 |       790 | 44/1
-         430 | 0x9286 Exif.Photo.UserComment       | UNDEFINED |       20 |       798 | ASCII___Classic View
-         442 | 0x9290 Exif.Photo.0x9290            |     ASCII |        3 |           | 
-         454 | 0x9291 Exif.Photo.0x9291            |     ASCII |        3 |           | 
-         466 | 0x9292 Exif.Photo.0x9292            |     ASCII |        3 |           | 
-         478 | 0xa000 Exif.Photo.FlashpixVersion   | UNDEFINED |        4 |           | 0010
-         490 | 0xa001 Exif.Photo.ColorSpace        |     SHORT |        1 |           | 0
-         502 | 0xa002 Exif.Photo.PixelXDimension   |      LONG |        1 |           | 1880555520
-         514 | 0xa003 Exif.Photo.PixelYDimension   |      LONG |        1 |           | 2685337600
-         526 | 0xa217 Exif.Photo.0xa217            |     SHORT |        1 |           | 0
-         538 | 0xa300 Exif.Photo.FileSource        | UNDEFINED |        1 |           | _
-         550 | 0xa301 Exif.Photo.SceneType         | UNDEFINED |        1 |           | _
-         562 | 0xa401 Exif.Photo.CustomRendered    |     SHORT |        1 |           | 0
-         574 | 0xa402 Exif.Photo.ExposureMode      |     SHORT |        1 |           | 0
-         586 | 0xa403 Exif.Photo.WhiteBalance      |     SHORT |        1 |           | 0
-         598 | 0xa404 Exif.Photo.0xa404            |  RATIONAL |        1 |       818 | 1/1
-         610 | 0xa405 Exif.Photo.0xa405            |     SHORT |        1 |           | 0
-         622 | 0xa406 Exif.Photo.SceneCaptureType  |     SHORT |        1 |           | 0
-         634 | 0xa407 Exif.Photo.0xa407            |     SHORT |        1 |           | 0
-         646 | 0xa408 Exif.Photo.Contrast          |     SHORT |        1 |           | 0
-         658 | 0xa409 Exif.Photo.Saturation        |     SHORT |        1 |           | 0
-         670 | 0xa40a Exif.Photo.Sharpness         |     SHORT |        1 |           | 0
-         682 | 0xa40c Exif.Photo.0xa40c            |     SHORT |        1 |           | 0
-         694 | 0xa420 Exif.Photo.0xa420            |     ASCII |       33 |       826 | 090caaf2c085f3e102513b24750041aa
+     address |    tag                                  |      type |    count |    offset | value
+         238 | 0x829a Exif.Photo.ExposureTime          |  RATIONAL |        1 |       710 | 1/400
+         250 | 0x829d Exif.Photo.FNumber               |  RATIONAL |        1 |       718 | 10/1
+         262 | 0x8822 Exif.Photo.ExposureProgram       |     SHORT |        1 |           | 0
+         274 | 0x8827 Exif.Photo.ISOSpeedRatings       |     SHORT |        1 |           | 200
+         286 | 0x8830 Exif.Photo.SensitivityType       |     SHORT |        1 |           | 2
+         298 | 0x9000 Exif.Photo.ExifVersion           | UNDEFINED |        4 |           | 0230
+         310 | 0x9003 Exif.Photo.DateTimeOriginal      |     ASCII |       20 |       726 | 2015:07:16 15:38:54
+         322 | 0x9004 Exif.Photo.DateTimeDigitized     |     ASCII |       20 |       746 | 2015:07:16 15:38:54
+         334 | 0x9101 Exif.Photo.ComponentsConfigura.. | UNDEFINED |        4 |           | ..._
+         346 | 0x9102 Exif.Photo.CompressedBitsPerPi.. |  RATIONAL |        1 |       766 | 2/1
+         358 | 0x9204 Exif.Photo.ExposureBiasValue     | SRATIONAL |        1 |       774 | 0/1
+         370 | 0x9205 Exif.Photo.MaxApertureValue      |  RATIONAL |        1 |       782 | 43/10
+         382 | 0x9207 Exif.Photo.MeteringMode          |     SHORT |        1 |           | 5
+         394 | 0x9208 Exif.Photo.LightSource           |     SHORT |        1 |           | 0
+         406 | 0x9209 Exif.Photo.Flash                 |     SHORT |        1 |           | 16
+         418 | 0x920a Exif.Photo.FocalLength           |  RATIONAL |        1 |       790 | 44/1
+         430 | 0x9286 Exif.Photo.UserComment           | UNDEFINED |       20 |       798 | ASCII___Classic View
+         442 | 0x9290 Exif.Photo.0x9290                |     ASCII |        3 |           | 00
+         454 | 0x9291 Exif.Photo.0x9291                |     ASCII |        3 |           | 00
+         466 | 0x9292 Exif.Photo.0x9292                |     ASCII |        3 |           | 00
+         478 | 0xa000 Exif.Photo.FlashpixVersion       | UNDEFINED |        4 |           | 0100
+         490 | 0xa001 Exif.Photo.ColorSpace            |     SHORT |        1 |           | 1
+         502 | 0xa002 Exif.Photo.PixelXDimension       |      LONG |        1 |           | 6000
+         514 | 0xa003 Exif.Photo.PixelYDimension       |      LONG |        1 |           | 4000
+         526 | 0xa217 Exif.Photo.0xa217                |     SHORT |        1 |           | 2
+         538 | 0xa300 Exif.Photo.FileSource            | UNDEFINED |        1 |           | .
+         550 | 0xa301 Exif.Photo.SceneType             | UNDEFINED |        1 |           | .
+         562 | 0xa401 Exif.Photo.CustomRendered        |     SHORT |        1 |           | 0
+         574 | 0xa402 Exif.Photo.ExposureMode          |     SHORT |        1 |           | 0
+         586 | 0xa403 Exif.Photo.WhiteBalance          |     SHORT |        1 |           | 0
+         598 | 0xa404 Exif.Photo.0xa404                |  RATIONAL |        1 |       818 | 1/1
+         610 | 0xa405 Exif.Photo.0xa405                |     SHORT |        1 |           | 66
+         622 | 0xa406 Exif.Photo.SceneCaptureType      |     SHORT |        1 |           | 0
+         634 | 0xa407 Exif.Photo.0xa407                |     SHORT |        1 |           | 0
+         646 | 0xa408 Exif.Photo.Contrast              |     SHORT |        1 |           | 0
+         658 | 0xa409 Exif.Photo.Saturation            |     SHORT |        1 |           | 0
+         670 | 0xa40a Exif.Photo.Sharpness             |     SHORT |        1 |           | 0
+         682 | 0xa40c Exif.Photo.0xa40c                |     SHORT |        1 |           | 0
+         694 | 0xa420 Exif.Photo.0xa420                |     ASCII |       33 |       826 | 090caaf2c085f3e102513b24750041aa
     END: ../files/Stonehenge.heic:4824->1072
-       130 | 0x8825 Exif.Image.GPSTag            |      LONG |        1 |           | 1543700480
+       130 | 0x8825 Exif.Image.GPSTag                |      LONG |        1 |           | 860
     STRUCTURE OF TIFF FILE (MM): ../files/Stonehenge.heic:4824->1072
-     address |    tag                              |      type |    count |    offset | value
-         862 | 000000 Exif.GPSInfo.GPSVersionID    |     UBYTE |        4 |           | 0 0 3 2
-         874 | 0x0001 Exif.GPSInfo.GPSLatitudeRef  |     ASCII |        2 |           | 
-         886 | 0x0002 Exif.GPSInfo.GPSLatitude     |  RATIONAL |        3 |       986 | 51/1 10/1 4181/100
-         898 | 0x0003 Exif.GPSInfo.GPSLongitudeRef |     ASCII |        2 |           | 
-         910 | 0x0004 Exif.GPSInfo.GPSLongitude    |  RATIONAL |        3 |      1010 | 1/1 49/1 3590/100
-         922 | 0x0005 Exif.GPSInfo.GPSAltitudeRef  |     UBYTE |        1 |           | 0
-         934 | 0x0006 Exif.GPSInfo.GPSAltitude     |  RATIONAL |        1 |      1034 | 97/1
-         946 | 0x0008 Exif.GPSInfo.GPSSatellites   |     ASCII |        3 |           | 
-         958 | 0x0012 Exif.GPSInfo.GPSMapDatum     |     ASCII |       17 |      1042 | WGS-84          
-         970 | 0x001d Exif.GPSInfo.GPSDateStamp    |     ASCII |       11 |      1060 | 2015:07:16
+     address |    tag                                  |      type |    count |    offset | value
+         862 | 000000 Exif.GPSInfo.GPSVersionID        |     UBYTE |        4 |           | 2 3 0 0
+         874 | 0x0001 Exif.GPSInfo.GPSLatitudeRef      |     ASCII |        2 |           | N
+         886 | 0x0002 Exif.GPSInfo.GPSLatitude         |  RATIONAL |        3 |       986 | 51/1 10/1 4181/100
+         898 | 0x0003 Exif.GPSInfo.GPSLongitudeRef     |     ASCII |        2 |           | W
+         910 | 0x0004 Exif.GPSInfo.GPSLongitude        |  RATIONAL |        3 |      1010 | 1/1 49/1 3590/100
+         922 | 0x0005 Exif.GPSInfo.GPSAltitudeRef      |     UBYTE |        1 |           | 0
+         934 | 0x0006 Exif.GPSInfo.GPSAltitude         |  RATIONAL |        1 |      1034 | 97/1
+         946 | 0x0008 Exif.GPSInfo.GPSSatellites       |     ASCII |        3 |           | 09
+         958 | 0x0012 Exif.GPSInfo.GPSMapDatum         |     ASCII |       17 |      1042 | WGS-84          
+         970 | 0x001d Exif.GPSInfo.GPSDateStamp        |     ASCII |       11 |      1060 | 2015:07:16
     END: ../files/Stonehenge.heic:4824->1072
   END: ../files/Stonehenge.heic:4824->1072
     4798 |  4013088 | mdat |      | _____=< ___.Exif__MM 0 0 0 0 0 61 60 32 0 0 0 6 69 120 105 102 0 0 77 77

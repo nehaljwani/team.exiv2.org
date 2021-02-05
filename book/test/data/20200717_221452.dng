@@ -1,240 +1,240 @@
 STRUCTURE OF TIFF FILE (II): ../files/20200717_221452.dng
- address |    tag                              |      type |    count |    offset | value
-      10 | 0x00fe Exif.Image.NewSubfileType    |      LONG |        1 |           | 1
-      22 | 0x0100 Exif.Image.ImageWidth        |      LONG |        1 |           | 160
-      34 | 0x0101 Exif.Image.ImageLength       |      LONG |        1 |           | 120
-      46 | 0x0102 Exif.Image.BitsPerSample     |     SHORT |        3 |       482 | 8 8 8
-      58 | 0x0103 Exif.Image.Compression       |     SHORT |        1 |           | 1
-      70 | 0x0106 Exif.Image.PhotometricInte.. |     SHORT |        1 |           | 2
-      82 | 0x010f Exif.Image.Make              |     ASCII |       30 |       490 | RICOH IMAGING COMPANY, LTD.  
-      94 | 0x0110 Exif.Image.Model             |     ASCII |       20 |       522 | PENTAX K-3 II      
-     106 | 0x0111 Exif.Image.StripOffsets      |      LONG |        1 |           | 153696
-     118 | 0x0112 Exif.Image.Orientation       |     SHORT |        1 |           | 6
-     130 | 0x0115 Exif.Image.SamplesPerPixel   |     SHORT |        1 |           | 3
-     142 | 0x0116 Exif.Image.RowsPerStrip      |      LONG |        1 |           | 120
-     154 | 0x0117 Exif.Image.StripByteCounts   |      LONG |        1 |           | 57600
-     166 | 0x011a Exif.Image.XResolution       |  RATIONAL |        1 |       542 | 300/1
-     178 | 0x011b Exif.Image.YResolution       |  RATIONAL |        1 |       550 | 300/1
-     190 | 0x011c Exif.Image.PlanarConfigura.. |     SHORT |        1 |           | 1
-     202 | 0x0128 Exif.Image.ResolutionUnit    |     SHORT |        1 |           | 2
-     214 | 0x0131 Exif.Image.Software          |     ASCII |       24 |       558 | PENTAX K-3 II Ver. 1.10
-     226 | 0x0132 Exif.Image.DateTime          |     ASCII |       20 |       582 | 2020:07:17 22:14:52
-     238 | 0x013b Exif.Image.Artist            |     ASCII |       16 |       602 | MARIAN RITOMSKY
-     250 | 0x014a Exif.Image.SubIFD            |      LONG |        2 |       638 | 152550 152956
+ address |    tag                                  |      type |    count |    offset | value
+      10 | 0x00fe Exif.Image.NewSubfileType        |      LONG |        1 |           | 1
+      22 | 0x0100 Exif.Image.ImageWidth            |      LONG |        1 |           | 160
+      34 | 0x0101 Exif.Image.ImageLength           |      LONG |        1 |           | 120
+      46 | 0x0102 Exif.Image.BitsPerSample         |     SHORT |        3 |       482 | 8 8 8
+      58 | 0x0103 Exif.Image.Compression           |     SHORT |        1 |           | 1
+      70 | 0x0106 Exif.Image.PhotometricInterpre.. |     SHORT |        1 |           | 2
+      82 | 0x010f Exif.Image.Make                  |     ASCII |       30 |       490 | RICOH IMAGING COMPANY, LTD.  
+      94 | 0x0110 Exif.Image.Model                 |     ASCII |       20 |       522 | PENTAX K-3 II      
+     106 | 0x0111 Exif.Image.StripOffsets          |      LONG |        1 |           | 153696
+     118 | 0x0112 Exif.Image.Orientation           |     SHORT |        1 |           | 6
+     130 | 0x0115 Exif.Image.SamplesPerPixel       |     SHORT |        1 |           | 3
+     142 | 0x0116 Exif.Image.RowsPerStrip          |      LONG |        1 |           | 120
+     154 | 0x0117 Exif.Image.StripByteCounts       |      LONG |        1 |           | 57600
+     166 | 0x011a Exif.Image.XResolution           |  RATIONAL |        1 |       542 | 300/1
+     178 | 0x011b Exif.Image.YResolution           |  RATIONAL |        1 |       550 | 300/1
+     190 | 0x011c Exif.Image.PlanarConfiguration   |     SHORT |        1 |           | 1
+     202 | 0x0128 Exif.Image.ResolutionUnit        |     SHORT |        1 |           | 2
+     214 | 0x0131 Exif.Image.Software              |     ASCII |       24 |       558 | PENTAX K-3 II Ver. 1.10
+     226 | 0x0132 Exif.Image.DateTime              |     ASCII |       20 |       582 | 2020:07:17 22:14:52
+     238 | 0x013b Exif.Image.Artist                |     ASCII |       16 |       602 | MARIAN RITOMSKY
+     250 | 0x014a Exif.Image.SubIFD                |      LONG |        2 |       638 | 152550 152956
   STRUCTURE OF TIFF FILE (II): ../files/20200717_221452.dng
-   address |    tag                              |      type |    count |    offset | value
-    152552 | 0x00fe Exif.Image.NewSubfileType    |      LONG |        1 |           | 0
-    152564 | 0x0100 Exif.Image.ImageWidth        |      LONG |        1 |           | 6080
-    152576 | 0x0101 Exif.Image.ImageLength       |      LONG |        1 |           | 4032
-    152588 | 0x0102 Exif.Image.BitsPerSample     |     SHORT |        1 |           | 14
-    152600 | 0x0103 Exif.Image.Compression       |     SHORT |        1 |           | 7
-    152612 | 0x0106 Exif.Image.PhotometricInte.. |     SHORT |        1 |           | 32803
-    152624 | 0x0111 Exif.Image.StripOffsets      |      LONG |        1 |           | 211296
-    152636 | 0x0115 Exif.Image.SamplesPerPixel   |     SHORT |        1 |           | 1
-    152648 | 0x0116 Exif.Image.RowsPerStrip      |      LONG |        1 |           | 4032
-    152660 | 0x0117 Exif.Image.StripByteCounts   |      LONG |        1 |           | 27116810
-    152672 | 0x011a Exif.Image.XResolution       |  RATIONAL |        1 |    152868 | 300/1
-    152684 | 0x011b Exif.Image.YResolution       |  RATIONAL |        1 |    152876 | 300/1
-    152696 | 0x011c Exif.Image.PlanarConfigura.. |     SHORT |        1 |           | 1
-    152708 | 0x0128 Exif.Image.ResolutionUnit    |     SHORT |        1 |           | 2
-    152720 | 0x828d Exif.Image.0x828d            |     SHORT |        2 |           | 2 2
-    152732 | 0x828e Exif.Image.0x828e            |     UBYTE |        4 |           | 0 1 1 2
-    152744 | 0xc617 Exif.Image.0xc617            |     SHORT |        1 |           | 1
-    152756 | 0xc619 Exif.Image.0xc619            |     SHORT |        2 |           | 2 2
-    152768 | 0xc61a Exif.Image.0xc61a            |      LONG |        4 |    152884 | 1 1 0 1
-    152780 | 0xc61d Exif.Image.0xc61d            |      LONG |        1 |           | 16124
-    152792 | 0xc61e Exif.Image.0xc61e            |  RATIONAL |        2 |    152900 | 1/1 1/1
-    152804 | 0xc61f Exif.Image.0xc61f            |      LONG |        2 |    152916 | 6 12
-    152816 | 0xc620 Exif.Image.0xc620            |      LONG |        2 |    152924 | 6016 4000
-    152828 | 0xc62d Exif.Image.0xc62d            |      LONG |        1 |           | 0
-    152840 | 0xc632 Exif.Image.0xc632            |  RATIONAL |        1 |    152932 | 1/1
-    152852 | 0xc68d Exif.Image.0xc68d            |      LONG |        4 |    152940 | 4 10 4028 6038
+   address |    tag                                  |      type |    count |    offset | value
+    152552 | 0x00fe Exif.Image.NewSubfileType        |      LONG |        1 |           | 0
+    152564 | 0x0100 Exif.Image.ImageWidth            |      LONG |        1 |           | 6080
+    152576 | 0x0101 Exif.Image.ImageLength           |      LONG |        1 |           | 4032
+    152588 | 0x0102 Exif.Image.BitsPerSample         |     SHORT |        1 |           | 14
+    152600 | 0x0103 Exif.Image.Compression           |     SHORT |        1 |           | 7
+    152612 | 0x0106 Exif.Image.PhotometricInterpre.. |     SHORT |        1 |           | 32803
+    152624 | 0x0111 Exif.Image.StripOffsets          |      LONG |        1 |           | 211296
+    152636 | 0x0115 Exif.Image.SamplesPerPixel       |     SHORT |        1 |           | 1
+    152648 | 0x0116 Exif.Image.RowsPerStrip          |      LONG |        1 |           | 4032
+    152660 | 0x0117 Exif.Image.StripByteCounts       |      LONG |        1 |           | 27116810
+    152672 | 0x011a Exif.Image.XResolution           |  RATIONAL |        1 |    152868 | 300/1
+    152684 | 0x011b Exif.Image.YResolution           |  RATIONAL |        1 |    152876 | 300/1
+    152696 | 0x011c Exif.Image.PlanarConfiguration   |     SHORT |        1 |           | 1
+    152708 | 0x0128 Exif.Image.ResolutionUnit        |     SHORT |        1 |           | 2
+    152720 | 0x828d Exif.Image.0x828d                |     SHORT |        2 |           | 2 2
+    152732 | 0x828e Exif.Image.0x828e                |     UBYTE |        4 |           | 0 1 1 2
+    152744 | 0xc617 Exif.Image.0xc617                |     SHORT |        1 |           | 1
+    152756 | 0xc619 Exif.Image.0xc619                |     SHORT |        2 |           | 2 2
+    152768 | 0xc61a Exif.Image.0xc61a                |      LONG |        4 |    152884 | 1 1 0 1
+    152780 | 0xc61d Exif.Image.0xc61d                |      LONG |        1 |           | 16124
+    152792 | 0xc61e Exif.Image.0xc61e                |  RATIONAL |        2 |    152900 | 1/1 1/1
+    152804 | 0xc61f Exif.Image.0xc61f                |      LONG |        2 |    152916 | 6 12
+    152816 | 0xc620 Exif.Image.0xc620                |      LONG |        2 |    152924 | 6016 4000
+    152828 | 0xc62d Exif.Image.0xc62d                |      LONG |        1 |           | 0
+    152840 | 0xc632 Exif.Image.0xc632                |  RATIONAL |        1 |    152932 | 1/1
+    152852 | 0xc68d Exif.Image.0xc68d                |      LONG |        4 |    152940 | 4 10 4028 6038
   END: ../files/20200717_221452.dng
   STRUCTURE OF TIFF FILE (II): ../files/20200717_221452.dng
-   address |    tag                              |      type |    count |    offset | value
-    152958 | 0x00fe Exif.Image.NewSubfileType    |      LONG |        1 |           | 1
-    152970 | 0x0100 Exif.Image.ImageWidth        |      LONG |        1 |           | 6016
-    152982 | 0x0101 Exif.Image.ImageLength       |      LONG |        1 |           | 4000
-    152994 | 0x0102 Exif.Image.BitsPerSample     |     SHORT |        3 |    153202 | 8 8 8
-    153006 | 0x0103 Exif.Image.Compression       |     SHORT |        1 |           | 7
-    153018 | 0x0106 Exif.Image.PhotometricInte.. |     SHORT |        1 |           | 6
-    153030 | 0x0111 Exif.Image.StripOffsets      |      LONG |        1 |           | 27328128
-    153042 | 0x0115 Exif.Image.SamplesPerPixel   |     SHORT |        1 |           | 3
-    153054 | 0x0116 Exif.Image.RowsPerStrip      |      LONG |        1 |           | 4000
-    153066 | 0x0117 Exif.Image.StripByteCounts   |      LONG |        1 |           | 2730023
-    153078 | 0x011a Exif.Image.XResolution       |  RATIONAL |        1 |    153210 | 300/1
-    153090 | 0x011b Exif.Image.YResolution       |  RATIONAL |        1 |    153218 | 300/1
-    153102 | 0x011c Exif.Image.PlanarConfigura.. |     SHORT |        1 |           | 1
-    153114 | 0x0128 Exif.Image.ResolutionUnit    |     SHORT |        1 |           | 2
-    153126 | 0x013e Exif.Image.0x13e             |  RATIONAL |        2 |    153226 | 313/1000 329/1000
-    153138 | 0x013f Exif.Image.0x13f             |  RATIONAL |        6 |    153242 | 64/100 33/100 30/100 60/100 15/100 6/100
-    153150 | 0x0211 Exif.Image.0x211             |  RATIONAL |        3 |    153290 | 299/1000 587/1000 114/1000
-    153162 | 0x0212 Exif.Image.0x212             |     SHORT |        2 |           | 2 1
-    153174 | 0x0213 Exif.Image.YCbCrPositioning  |     SHORT |        1 |           | 2
-    153186 | 0xc71a Exif.Image.0xc71a            |      LONG |        1 |           | 2
+   address |    tag                                  |      type |    count |    offset | value
+    152958 | 0x00fe Exif.Image.NewSubfileType        |      LONG |        1 |           | 1
+    152970 | 0x0100 Exif.Image.ImageWidth            |      LONG |        1 |           | 6016
+    152982 | 0x0101 Exif.Image.ImageLength           |      LONG |        1 |           | 4000
+    152994 | 0x0102 Exif.Image.BitsPerSample         |     SHORT |        3 |    153202 | 8 8 8
+    153006 | 0x0103 Exif.Image.Compression           |     SHORT |        1 |           | 7
+    153018 | 0x0106 Exif.Image.PhotometricInterpre.. |     SHORT |        1 |           | 6
+    153030 | 0x0111 Exif.Image.StripOffsets          |      LONG |        1 |           | 27328128
+    153042 | 0x0115 Exif.Image.SamplesPerPixel       |     SHORT |        1 |           | 3
+    153054 | 0x0116 Exif.Image.RowsPerStrip          |      LONG |        1 |           | 4000
+    153066 | 0x0117 Exif.Image.StripByteCounts       |      LONG |        1 |           | 2730023
+    153078 | 0x011a Exif.Image.XResolution           |  RATIONAL |        1 |    153210 | 300/1
+    153090 | 0x011b Exif.Image.YResolution           |  RATIONAL |        1 |    153218 | 300/1
+    153102 | 0x011c Exif.Image.PlanarConfiguration   |     SHORT |        1 |           | 1
+    153114 | 0x0128 Exif.Image.ResolutionUnit        |     SHORT |        1 |           | 2
+    153126 | 0x013e Exif.Image.0x13e                 |  RATIONAL |        2 |    153226 | 313/1000 329/1000
+    153138 | 0x013f Exif.Image.0x13f                 |  RATIONAL |        6 |    153242 | 64/100 33/100 30/100 60/100 15/100 6/100
+    153150 | 0x0211 Exif.Image.0x211                 |  RATIONAL |        3 |    153290 | 299/1000 587/1000 114/1000
+    153162 | 0x0212 Exif.Image.0x212                 |     SHORT |        2 |           | 2 1
+    153174 | 0x0213 Exif.Image.YCbCrPositioning      |     SHORT |        1 |           | 2
+    153186 | 0xc71a Exif.Image.0xc71a                |      LONG |        1 |           | 2
   END: ../files/20200717_221452.dng
-     262 | 0x8298 Exif.Image.0x8298            |     ASCII |       20 |       646 | (C) MARIAN RITOMSKY
-     274 | 0x8769 Exif.Image.ExifTag           |      LONG |        1 |           | 153314
+     262 | 0x8298 Exif.Image.0x8298                |     ASCII |       20 |       646 | (C) MARIAN RITOMSKY
+     274 | 0x8769 Exif.Image.ExifTag               |      LONG |        1 |           | 153314
   STRUCTURE OF TIFF FILE (II): ../files/20200717_221452.dng
-   address |    tag                              |      type |    count |    offset | value
-    153316 | 0x829a Exif.Photo.ExposureTime      |  RATIONAL |        1 |    153584 | 25/1
-    153328 | 0x829d Exif.Photo.FNumber           |  RATIONAL |        1 |    153592 | 56/10
-    153340 | 0x8822 Exif.Photo.ExposureProgram   |     SHORT |        1 |           | 3
-    153352 | 0x8827 Exif.Photo.ISOSpeedRatings   |     SHORT |        1 |           | 400
-    153364 | 0x8830 Exif.Photo.SensitivityType   |     SHORT |        1 |           | 1
-    153376 | 0x8831 Exif.Photo.0x8831            |      LONG |        1 |           | 400
-    153388 | 0x9003 Exif.Photo.DateTimeOriginal  |     ASCII |       20 |    153600 | 2020:07:17 22:14:52
-    153400 | 0x9004 Exif.Photo.DateTimeDigitized |     ASCII |       20 |    153620 | 2020:07:17 22:14:52
-    153412 | 0x9204 Exif.Photo.ExposureBiasValue | SRATIONAL |        1 |    153640 | 4294967276/10
-    153424 | 0x9207 Exif.Photo.MeteringMode      |     SHORT |        1 |           | 2
-    153436 | 0x9209 Exif.Photo.Flash             |     SHORT |        1 |           | 16
-    153448 | 0x920a Exif.Photo.FocalLength       |  RATIONAL |        1 |    153648 | 1800/100
-    153460 | 0xa217 Exif.Photo.0xa217            |     SHORT |        1 |           | 2
-    153472 | 0xa401 Exif.Photo.CustomRendered    |     SHORT |        1 |           | 0
-    153484 | 0xa402 Exif.Photo.ExposureMode      |     SHORT |        1 |           | 1
-    153496 | 0xa403 Exif.Photo.WhiteBalance      |     SHORT |        1 |           | 1
-    153508 | 0xa405 Exif.Photo.0xa405            |     SHORT |        1 |           | 27
-    153520 | 0xa406 Exif.Photo.SceneCaptureType  |     SHORT |        1 |           | 0
-    153532 | 0xa408 Exif.Photo.Contrast          |     SHORT |        1 |           | 0
-    153544 | 0xa409 Exif.Photo.Saturation        |     SHORT |        1 |           | 0
-    153556 | 0xa40a Exif.Photo.Sharpness         |     SHORT |        1 |           | 0
-    153568 | 0xa40c Exif.Photo.0xa40c            |     SHORT |        1 |           | 3
+   address |    tag                                  |      type |    count |    offset | value
+    153316 | 0x829a Exif.Photo.ExposureTime          |  RATIONAL |        1 |    153584 | 25/1
+    153328 | 0x829d Exif.Photo.FNumber               |  RATIONAL |        1 |    153592 | 56/10
+    153340 | 0x8822 Exif.Photo.ExposureProgram       |     SHORT |        1 |           | 3
+    153352 | 0x8827 Exif.Photo.ISOSpeedRatings       |     SHORT |        1 |           | 400
+    153364 | 0x8830 Exif.Photo.SensitivityType       |     SHORT |        1 |           | 1
+    153376 | 0x8831 Exif.Photo.0x8831                |      LONG |        1 |           | 400
+    153388 | 0x9003 Exif.Photo.DateTimeOriginal      |     ASCII |       20 |    153600 | 2020:07:17 22:14:52
+    153400 | 0x9004 Exif.Photo.DateTimeDigitized     |     ASCII |       20 |    153620 | 2020:07:17 22:14:52
+    153412 | 0x9204 Exif.Photo.ExposureBiasValue     | SRATIONAL |        1 |    153640 | 4294967276/10
+    153424 | 0x9207 Exif.Photo.MeteringMode          |     SHORT |        1 |           | 2
+    153436 | 0x9209 Exif.Photo.Flash                 |     SHORT |        1 |           | 16
+    153448 | 0x920a Exif.Photo.FocalLength           |  RATIONAL |        1 |    153648 | 1800/100
+    153460 | 0xa217 Exif.Photo.0xa217                |     SHORT |        1 |           | 2
+    153472 | 0xa401 Exif.Photo.CustomRendered        |     SHORT |        1 |           | 0
+    153484 | 0xa402 Exif.Photo.ExposureMode          |     SHORT |        1 |           | 1
+    153496 | 0xa403 Exif.Photo.WhiteBalance          |     SHORT |        1 |           | 1
+    153508 | 0xa405 Exif.Photo.0xa405                |     SHORT |        1 |           | 27
+    153520 | 0xa406 Exif.Photo.SceneCaptureType      |     SHORT |        1 |           | 0
+    153532 | 0xa408 Exif.Photo.Contrast              |     SHORT |        1 |           | 0
+    153544 | 0xa409 Exif.Photo.Saturation            |     SHORT |        1 |           | 0
+    153556 | 0xa40a Exif.Photo.Sharpness             |     SHORT |        1 |           | 0
+    153568 | 0xa40c Exif.Photo.0xa40c                |     SHORT |        1 |           | 3
   END: ../files/20200717_221452.dng
-     286 | 0x8825 Exif.Image.GPSTag            |      LONG |        1 |           | 153656
+     286 | 0x8825 Exif.Image.GPSTag                |      LONG |        1 |           | 153656
   STRUCTURE OF TIFF FILE (II): ../files/20200717_221452.dng
-   address |    tag                              |      type |    count |    offset | value
-    153658 | 000000 Exif.GPSInfo.GPSVersionID    |     UBYTE |        4 |           | 2 3 0 0
+   address |    tag                                  |      type |    count |    offset | value
+    153658 | 000000 Exif.GPSInfo.GPSVersionID        |     UBYTE |        4 |           | 2 3 0 0
   END: ../files/20200717_221452.dng
-     298 | 0xc612 Exif.Image.0xc612            |     UBYTE |        4 |           | 1 2 0 0
-     310 | 0xc613 Exif.Image.0xc613            |     UBYTE |        4 |           | 1 2 0 0
-     322 | 0xc614 Exif.DNG.UniqueCameraModel   |     ASCII |       14 |       682 | PENTAX K-3 II
-     334 | 0xc621 Exif.DNG.ColorMatrix1        | SRATIONAL |        9 |       698 | 62964/65536 4294936111/65536 4294962 +++
-     346 | 0xc622 Exif.DNG.ColorMatrix2        | SRATIONAL |        9 |       770 | 55560/65536 4294950506/65536 4294959 +++
-     358 | 0xc627 Exif.Image.0xc627            |  RATIONAL |        3 |       842 | 256/256 256/256 256/256
-     370 | 0xc628 Exif.Image.0xc628            |  RATIONAL |        3 |       866 | 256/559 256/256 256/411
-     382 | 0xc62a Exif.Image.0xc62a            | SRATIONAL |        1 |       890 | 4294933006/65536
-     394 | 0xc62b Exif.Image.0xc62b            |  RATIONAL |        1 |       898 | 1/1
-     406 | 0xc62c Exif.Image.0xc62c            |  RATIONAL |        1 |       906 | 1/1
-     418 | 0xc62e Exif.Image.0xc62e            |  RATIONAL |        1 |       914 | 1/1
-     430 | 0xc634 Exif.DNG.DNGPrivateData      |     UBYTE |   151552 |       922 | 80 69 78 84 65 88 32 0 73 73 114 0 0 +++
+     298 | 0xc612 Exif.Image.0xc612                |     UBYTE |        4 |           | 1 2 0 0
+     310 | 0xc613 Exif.Image.0xc613                |     UBYTE |        4 |           | 1 2 0 0
+     322 | 0xc614 Exif.DNG.UniqueCameraModel       |     ASCII |       14 |       682 | PENTAX K-3 II
+     334 | 0xc621 Exif.DNG.ColorMatrix1            | SRATIONAL |        9 |       698 | 62964/65536 4294936111/65536 4294962 +++
+     346 | 0xc622 Exif.DNG.ColorMatrix2            | SRATIONAL |        9 |       770 | 55560/65536 4294950506/65536 4294959 +++
+     358 | 0xc627 Exif.Image.0xc627                |  RATIONAL |        3 |       842 | 256/256 256/256 256/256
+     370 | 0xc628 Exif.Image.0xc628                |  RATIONAL |        3 |       866 | 256/559 256/256 256/411
+     382 | 0xc62a Exif.Image.0xc62a                | SRATIONAL |        1 |       890 | 4294933006/65536
+     394 | 0xc62b Exif.Image.0xc62b                |  RATIONAL |        1 |       898 | 1/1
+     406 | 0xc62c Exif.Image.0xc62c                |  RATIONAL |        1 |       906 | 1/1
+     418 | 0xc62e Exif.Image.0xc62e                |  RATIONAL |        1 |       914 | 1/1
+     430 | 0xc634 Exif.DNG.DNGPrivateData          |     UBYTE |   151552 |       922 | 80 69 78 84 65 88 32 0 73 73 114 0 0 +++
   STRUCTURE OF TIFF FILE (II): ../files/20200717_221452.dng
-   address |    tag                              |      type |    count |    offset | value
-       934 | 000000 Exif.Pentax.Version          |     UBYTE |        4 |           | 11 6 1 0
-       946 | 0x0001 Exif.Pentax.Mode             |     SHORT |        1 |           | 0
-       958 | 0x0002 Exif.Pentax.PreviewResolut.. |     SHORT |        2 |           | 720 480
-       970 | 0x0003 Exif.Pentax.PreviewLength    |      LONG |        1 |           | 52861
-       982 | 0x0004 Exif.Pentax.PreviewOffset    |      LONG |        1 |           | 72742
-       994 | 0x0005 Exif.Pentax.ModelID          |      LONG |        1 |           | 77980
-      1006 | 0x0006 Exif.Pentax.Date             | UNDEFINED |        4 |           | ....
-      1018 | 0x0007 Exif.Pentax.Time             | UNDEFINED |        3 |           | ..4
-      1030 | 0x0008 Exif.Pentax.Quality          |     SHORT |        1 |           | 4
-      1042 | 0x000c Exif.Pentax.0xc              |     SHORT |        2 |           | 1 63
-      1054 | 0x000d Exif.Pentax.Focus            |     SHORT |        1 |           | 3
-      1066 | 0x000e Exif.Pentax.Flash            |     SHORT |        2 |           | 0 0
-      1078 | 0x000f Exif.Pentax.0xf              |      LONG |        1 |           | 0
-      1090 | 0x0012 Exif.Pentax.0x12             |      LONG |        1 |           | 2500000
-      1102 | 0x0013 Exif.Pentax.0x13             |     SHORT |        1 |           | 56
-      1114 | 0x0014 Exif.Pentax.0x14             |     SHORT |        1 |           | 12
-      1126 | 0x0016 Exif.Pentax.0x16             |    SSHORT |        1 |           | 30
-      1138 | 0x0017 Exif.Pentax.0x17             |     SHORT |        1 |           | 1
-      1150 | 0x0018 Exif.Pentax.0x18             |     SHORT |        2 |           | 0 0
-      1162 | 0x0019 Exif.Pentax.0x19             |     SHORT |        1 |           | 1
-      1174 | 0x001d Exif.Pentax.0x1d             |      LONG |        1 |           | 1800
-      1186 | 0x001f Exif.Pentax.0x1f             |     SHORT |        1 |           | 1
-      1198 | 0x0020 Exif.Pentax.0x20             |     SHORT |        1 |           | 1
-      1210 | 0x0021 Exif.Pentax.0x21             |     SHORT |        1 |           | 1
-      1222 | 0x0027 Exif.Pentax.0x27             | UNDEFINED |        4 |           | ....
-      1234 | 0x002d Exif.Pentax.0x2d             |     SHORT |        1 |           | 61824
-      1246 | 0x0033 Exif.Pentax.0x33             |     UBYTE |        3 |           | 5 0 1
-      1258 | 0x0034 Exif.Pentax.0x34             |     UBYTE |        4 |           | 0 0 0 0
-      1270 | 0x0037 Exif.Pentax.0x37             |     SHORT |        1 |           | 0
-      1282 | 0x003d Exif.Pentax.0x3d             |     SHORT |        1 |           | 8192
-      1294 | 0x003e Exif.Pentax.0x3e             |     UBYTE |        4 |           | 0 0 0 0
-      1306 | 0x003f Exif.Pentax.0x3f             |     UBYTE |        4 |           | 8 215 0 0
-      1318 | 0x0047 Exif.Pentax.0x47             |      BYTE |        1 |           | .
-      1330 | 0x0048 Exif.Pentax.0x48             |     SHORT |        1 |           | 0
-      1342 | 0x0049 Exif.Pentax.0x49             |     SHORT |        1 |           | 0
-      1354 | 0x004d Exif.Pentax.0x4d             |      BYTE |        2 |           | __
-      1366 | 0x004f Exif.Pentax.0x4f             |     SHORT |        1 |           | 0
-      1378 | 0x0050 Exif.Pentax.0x50             |     SHORT |        1 |           | 0
-      1390 | 0x005c Exif.Pentax.0x5c             |     UBYTE |        2 |           | 64 7
-      1402 | 0x005d Exif.Pentax.0x5d             | UNDEFINED |        4 |           | ...m
-      1414 | 0x0060 Exif.Pentax.0x60             |     UBYTE |        4 |           | 0 0 0 0
-      1426 | 0x0062 Exif.Pentax.0x62             |     SHORT |        1 |           | 13
-      1438 | 0x0067 Exif.Pentax.0x67             |     SHORT |        1 |           | 1
-      1450 | 0x0068 Exif.Pentax.0x68             |     UBYTE |        2 |           | 1 0
-      1462 | 0x0069 Exif.Pentax.0x69             | UNDEFINED |        4 |           | ____
-      1474 | 0x006b Exif.Pentax.0x6b             |     UBYTE |        4 |           | 2 0 74 74
-      1486 | 0x006c Exif.Pentax.0x6c             |    SSHORT |        2 |           | 0 0
-      1498 | 0x006d Exif.Pentax.0x6d             |    SSHORT |        2 |           | 0 0
-      1510 | 0x006e Exif.Pentax.0x6e             |    SSHORT |        2 |           | 0 0
-      1522 | 0x006f Exif.Pentax.0x6f             |     UBYTE |        1 |           | 0
-      1534 | 0x0070 Exif.Pentax.0x70             |     UBYTE |        2 |           | 0 0
-      1546 | 0x0071 Exif.Pentax.0x71             |     UBYTE |        2 |           | 0 0
-      1558 | 0x0072 Exif.Pentax.0x72             |    SSHORT |        1 |           | 0
-      1570 | 0x0073 Exif.Pentax.0x73             |     SHORT |        1 |           | 65535
-      1582 | 0x0074 Exif.Pentax.0x74             |     SHORT |        1 |           | 65535
-      1594 | 0x0076 Exif.Pentax.0x76             |     UBYTE |        2 |           | 0 0
-      1606 | 0x0077 Exif.Pentax.0x77             |     SHORT |        2 |           | 720 480
-      1618 | 0x0078 Exif.Pentax.0x78             |     SHORT |        2 |           | 0 0
-      1630 | 0x0079 Exif.Pentax.0x79             |     UBYTE |        2 |           | 0 0
-      1642 | 0x007a Exif.Pentax.0x7a             |     UBYTE |        2 |           | 2 0
-      1654 | 0x007b Exif.Pentax.0x7b             |     UBYTE |        1 |           | 0
-      1666 | 0x007d Exif.Pentax.0x7d             |     UBYTE |        4 |           | 0 0 0 0
-      1678 | 0x007e Exif.Pentax.0x7e             |      LONG |        1 |           | 16124
-      1690 | 0x007f Exif.Pentax.0x7f             |     SHORT |        1 |           | 65535
-      1702 | 0x0080 Exif.Pentax.0x80             |     UBYTE |        1 |           | 1
-      1714 | 0x0083 Exif.Pentax.0x83             |     UBYTE |        1 |           | 0
-      1726 | 0x0085 Exif.Pentax.0x85             |     UBYTE |        4 |           | 0 0 0 0
-      1738 | 0x0086 Exif.Pentax.0x86             |     UBYTE |        1 |           | 0
-      1750 | 0x0092 Exif.Pentax.0x92             |     SHORT |        2 |           | 0 0
-      1762 | 0x0200 Exif.Pentax.0x200            |     SHORT |        4 |      1384 | 0 0 0 92
-      1774 | 0x0201 Exif.Pentax.0x201            |     SHORT |        4 |      1392 | 1 2 0 1856
-      1786 | 0x0205 Exif.Pentax.0x205            | UNDEFINED |       33 |      1400 | __]_._.___...m`_._._______b_._.__
-      1798 | 0x0206 Exif.Pentax.0x206            | UNDEFINED |       48 |      1436 | __g_._.___.___h_._.___.___i_._._____ +++
-      1810 | 0x0207 Exif.Pentax.0x207            | UNDEFINED |      128 |      1484 | JJl_._._______m_._._______n_._._____ +++
-      1822 | 0x0208 Exif.Pentax.0x208            | UNDEFINED |       36 |      1612 | __....x_._._______y_._._______z_._._
-      1834 | 0x0209 Exif.Pentax.0x209            | UNDEFINED |     4050 |      1648 | __.___{_._._______}_._._______~_._._ +++
-      1846 | 0x020a Exif.Pentax.0x20a            | UNDEFINED |     1350 |      5700 | ____________________________________ +++
-      1858 | 0x020b Exif.Pentax.0x20b            | UNDEFINED |     1350 |      7052 | ____________________________________ +++
-      1870 | 0x0215 Exif.Pentax.0x215            |      LONG |        5 |      8404 | 0 0 0 0 0
-      1882 | 0x0216 Exif.Pentax.0x216            | UNDEFINED |       20 |      8424 | ____________________
-      1894 | 0x021a Exif.Pentax.0x21a            | UNDEFINED |     1120 |      8444 | ____________________________________ +++
-      1906 | 0x021b Exif.Pentax.0x21b            | UNDEFINED |      364 |      9564 | ______..._._._._._._........____._._ +++
-      1918 | 0x021c Exif.Pentax.0x21c            | UNDEFINED |       18 |      9928 | ______...___._._._
-      1930 | 0x021d Exif.Pentax.0x21d            | UNDEFINED |       18 |      9948 | ._....______...___
-      1942 | 0x021e Exif.Pentax.0x21e            | UNDEFINED |        8 |      9968 | ._._._._
-      1954 | 0x021f Exif.Pentax.0x21f            | UNDEFINED |     1024 |      9976 | ....______..____._._._._._....______ +++
-      1966 | 0x0220 Exif.Pentax.0x220            | UNDEFINED |       59 |     11000 | ____________________________________ +++
-      1978 | 0x0221 Exif.Pentax.0x221            | UNDEFINED |      138 |     11060 | ____________________________________ +++
-      1990 | 0x0222 Exif.Pentax.0x222            | UNDEFINED |       18 |     11200 | __________________
-      2002 | 0x0224 Exif.Pentax.0x224            | UNDEFINED |       64 |     11220 | ____________________________________ +++
-      2014 | 0x0226 Exif.Pentax.0x226            | UNDEFINED |       13 |     11284 | _____________
-      2026 | 0x0227 Exif.Pentax.0x227            | UNDEFINED |       64 |     11300 | _____________________________V..____ +++
-      2038 | 0x0228 Exif.Pentax.0x228            | UNDEFINED |       64 |     11364 | ______________.__._.____________.... +++
-      2050 | 0x0229 Exif.Pentax.0x229            |     ASCII |       20 |     11428 | 
-      2062 | 0x022a Exif.Pentax.0x22a            | UNDEFINED |      345 |     11448 | ____________________________________ +++
-      2074 | 0x022b Exif.Pentax.0x22b            | UNDEFINED |        8 |     11796 | ________
-      2086 | 0x022c Exif.Pentax.0x22c            | UNDEFINED |       46 |     11804 | ____________________________________ +++
-      2098 | 0x022d Exif.Pentax.0x22d            | UNDEFINED |      109 |     11852 | ____________________________________ +++
-      2110 | 0x0231 Exif.Pentax.0x231            |     SHORT |        4 |     11964 | 4095 1800 1286 772
-      2122 | 0x0234 Exif.Pentax.0x234            | UNDEFINED |      160 |     11972 | ..........._q.__.F&-..__q&LQ..__k(.M +++
-      2134 | 0x0236 Exif.Pentax.0x236            | UNDEFINED |      107 |     12132 | . 3...__..._..._.__.......0_0_P..__. +++
-      2146 | 0x0238 Exif.Pentax.0x238            | UNDEFINED |       14 |     12240 | ______________
-      2158 | 0x023b Exif.Pentax.0x23b            | UNDEFINED |       20 |     12256 | ____________________
-      2170 | 0x023c Exif.Pentax.0x23c            | UNDEFINED |     1024 |     12276 | ____________________________________ +++
-      2182 | 0x023d Exif.Pentax.0x23d            | UNDEFINED |       20 |     13300 | ____________________
-      2194 | 0x023e Exif.Pentax.0x23e            | UNDEFINED |        8 |     13320 | ________
-      2206 | 0x0240 Exif.Pentax.0x240            | UNDEFINED |      384 |     13328 | ____________________________________ +++
-      2218 | 0x0243 Exif.Pentax.0x243            | UNDEFINED |      140 |     13712 | ____________________________________ +++
-      2230 | 0x03ff Exif.Pentax.0x3ff            | UNDEFINED |      768 |     13852 | ____________________________________ +++
-      2242 | 0x0404 Exif.Pentax.0x404            | UNDEFINED |     2086 |     14620 | ________________.___________________ +++
-      2254 | 0x0405 Exif.Pentax.0x405            | UNDEFINED |    46136 |     16708 | G...........m.....|...K..'V.}L?..U.. +++
-      2266 | 0x0406 Exif.Pentax.0x406            | UNDEFINED |     4116 |     62844 | ___.___.___.___.___.___.___.___.___. +++
-      2278 | 0x0407 Exif.Pentax.0x407            |     UBYTE |     4320 |     66960 | 190 45 221 226 132 45 6 11 106 42 79 +++
-      2290 | 0x0408 Exif.Pentax.0x408            |     UBYTE |     1440 |     71280 | 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0  +++
+   address |    tag                                  |      type |    count |    offset | value
+       934 | 000000 Exif.Pentax.Version              |     UBYTE |        4 |           | 11 6 1 0
+       946 | 0x0001 Exif.Pentax.Mode                 |     SHORT |        1 |           | 0
+       958 | 0x0002 Exif.Pentax.PreviewResolution    |     SHORT |        2 |           | 720 480
+       970 | 0x0003 Exif.Pentax.PreviewLength        |      LONG |        1 |           | 52861
+       982 | 0x0004 Exif.Pentax.PreviewOffset        |      LONG |        1 |           | 72742
+       994 | 0x0005 Exif.Pentax.ModelID              |      LONG |        1 |           | 77980
+      1006 | 0x0006 Exif.Pentax.Date                 | UNDEFINED |        4 |           | ....
+      1018 | 0x0007 Exif.Pentax.Time                 | UNDEFINED |        3 |           | ..4
+      1030 | 0x0008 Exif.Pentax.Quality              |     SHORT |        1 |           | 4
+      1042 | 0x000c Exif.Pentax.0xc                  |     SHORT |        2 |           | 1 63
+      1054 | 0x000d Exif.Pentax.Focus                |     SHORT |        1 |           | 3
+      1066 | 0x000e Exif.Pentax.Flash                |     SHORT |        2 |           | 0 0
+      1078 | 0x000f Exif.Pentax.0xf                  |      LONG |        1 |           | 0
+      1090 | 0x0012 Exif.Pentax.0x12                 |      LONG |        1 |           | 2500000
+      1102 | 0x0013 Exif.Pentax.0x13                 |     SHORT |        1 |           | 56
+      1114 | 0x0014 Exif.Pentax.0x14                 |     SHORT |        1 |           | 12
+      1126 | 0x0016 Exif.Pentax.0x16                 |    SSHORT |        1 |           | 30
+      1138 | 0x0017 Exif.Pentax.0x17                 |     SHORT |        1 |           | 1
+      1150 | 0x0018 Exif.Pentax.0x18                 |     SHORT |        2 |           | 0 0
+      1162 | 0x0019 Exif.Pentax.0x19                 |     SHORT |        1 |           | 1
+      1174 | 0x001d Exif.Pentax.0x1d                 |      LONG |        1 |           | 1800
+      1186 | 0x001f Exif.Pentax.0x1f                 |     SHORT |        1 |           | 1
+      1198 | 0x0020 Exif.Pentax.0x20                 |     SHORT |        1 |           | 1
+      1210 | 0x0021 Exif.Pentax.0x21                 |     SHORT |        1 |           | 1
+      1222 | 0x0027 Exif.Pentax.0x27                 | UNDEFINED |        4 |           | ....
+      1234 | 0x002d Exif.Pentax.0x2d                 |     SHORT |        1 |           | 61824
+      1246 | 0x0033 Exif.Pentax.0x33                 |     UBYTE |        3 |           | 5 0 1
+      1258 | 0x0034 Exif.Pentax.0x34                 |     UBYTE |        4 |           | 0 0 0 0
+      1270 | 0x0037 Exif.Pentax.0x37                 |     SHORT |        1 |           | 0
+      1282 | 0x003d Exif.Pentax.0x3d                 |     SHORT |        1 |           | 8192
+      1294 | 0x003e Exif.Pentax.0x3e                 |     UBYTE |        4 |           | 0 0 0 0
+      1306 | 0x003f Exif.Pentax.0x3f                 |     UBYTE |        4 |           | 8 215 0 0
+      1318 | 0x0047 Exif.Pentax.0x47                 |      BYTE |        1 |           | .
+      1330 | 0x0048 Exif.Pentax.0x48                 |     SHORT |        1 |           | 0
+      1342 | 0x0049 Exif.Pentax.0x49                 |     SHORT |        1 |           | 0
+      1354 | 0x004d Exif.Pentax.0x4d                 |      BYTE |        2 |           | __
+      1366 | 0x004f Exif.Pentax.0x4f                 |     SHORT |        1 |           | 0
+      1378 | 0x0050 Exif.Pentax.0x50                 |     SHORT |        1 |           | 0
+      1390 | 0x005c Exif.Pentax.0x5c                 |     UBYTE |        2 |           | 64 7
+      1402 | 0x005d Exif.Pentax.0x5d                 | UNDEFINED |        4 |           | ...m
+      1414 | 0x0060 Exif.Pentax.0x60                 |     UBYTE |        4 |           | 0 0 0 0
+      1426 | 0x0062 Exif.Pentax.0x62                 |     SHORT |        1 |           | 13
+      1438 | 0x0067 Exif.Pentax.0x67                 |     SHORT |        1 |           | 1
+      1450 | 0x0068 Exif.Pentax.0x68                 |     UBYTE |        2 |           | 1 0
+      1462 | 0x0069 Exif.Pentax.0x69                 | UNDEFINED |        4 |           | ____
+      1474 | 0x006b Exif.Pentax.0x6b                 |     UBYTE |        4 |           | 2 0 74 74
+      1486 | 0x006c Exif.Pentax.0x6c                 |    SSHORT |        2 |           | 0 0
+      1498 | 0x006d Exif.Pentax.0x6d                 |    SSHORT |        2 |           | 0 0
+      1510 | 0x006e Exif.Pentax.0x6e                 |    SSHORT |        2 |           | 0 0
+      1522 | 0x006f Exif.Pentax.0x6f                 |     UBYTE |        1 |           | 0
+      1534 | 0x0070 Exif.Pentax.0x70                 |     UBYTE |        2 |           | 0 0
+      1546 | 0x0071 Exif.Pentax.0x71                 |     UBYTE |        2 |           | 0 0
+      1558 | 0x0072 Exif.Pentax.0x72                 |    SSHORT |        1 |           | 0
+      1570 | 0x0073 Exif.Pentax.0x73                 |     SHORT |        1 |           | 65535
+      1582 | 0x0074 Exif.Pentax.0x74                 |     SHORT |        1 |           | 65535
+      1594 | 0x0076 Exif.Pentax.0x76                 |     UBYTE |        2 |           | 0 0
+      1606 | 0x0077 Exif.Pentax.0x77                 |     SHORT |        2 |           | 720 480
+      1618 | 0x0078 Exif.Pentax.0x78                 |     SHORT |        2 |           | 0 0
+      1630 | 0x0079 Exif.Pentax.0x79                 |     UBYTE |        2 |           | 0 0
+      1642 | 0x007a Exif.Pentax.0x7a                 |     UBYTE |        2 |           | 2 0
+      1654 | 0x007b Exif.Pentax.0x7b                 |     UBYTE |        1 |           | 0
+      1666 | 0x007d Exif.Pentax.0x7d                 |     UBYTE |        4 |           | 0 0 0 0
+      1678 | 0x007e Exif.Pentax.0x7e                 |      LONG |        1 |           | 16124
+      1690 | 0x007f Exif.Pentax.0x7f                 |     SHORT |        1 |           | 65535
+      1702 | 0x0080 Exif.Pentax.0x80                 |     UBYTE |        1 |           | 1
+      1714 | 0x0083 Exif.Pentax.0x83                 |     UBYTE |        1 |           | 0
+      1726 | 0x0085 Exif.Pentax.0x85                 |     UBYTE |        4 |           | 0 0 0 0
+      1738 | 0x0086 Exif.Pentax.0x86                 |     UBYTE |        1 |           | 0
+      1750 | 0x0092 Exif.Pentax.0x92                 |     SHORT |        2 |           | 0 0
+      1762 | 0x0200 Exif.Pentax.0x200                |     SHORT |        4 |      1384 | 0 0 0 92
+      1774 | 0x0201 Exif.Pentax.0x201                |     SHORT |        4 |      1392 | 1 2 0 1856
+      1786 | 0x0205 Exif.Pentax.0x205                | UNDEFINED |       33 |      1400 | __]_._.___...m`_._._______b_._.__
+      1798 | 0x0206 Exif.Pentax.0x206                | UNDEFINED |       48 |      1436 | __g_._.___.___h_._.___.___i_._._____ +++
+      1810 | 0x0207 Exif.Pentax.0x207                | UNDEFINED |      128 |      1484 | JJl_._._______m_._._______n_._._____ +++
+      1822 | 0x0208 Exif.Pentax.0x208                | UNDEFINED |       36 |      1612 | __....x_._._______y_._._______z_._._
+      1834 | 0x0209 Exif.Pentax.0x209                | UNDEFINED |     4050 |      1648 | __.___{_._._______}_._._______~_._._ +++
+      1846 | 0x020a Exif.Pentax.0x20a                | UNDEFINED |     1350 |      5700 | ____________________________________ +++
+      1858 | 0x020b Exif.Pentax.0x20b                | UNDEFINED |     1350 |      7052 | ____________________________________ +++
+      1870 | 0x0215 Exif.Pentax.0x215                |      LONG |        5 |      8404 | 0 0 0 0 0
+      1882 | 0x0216 Exif.Pentax.0x216                | UNDEFINED |       20 |      8424 | ____________________
+      1894 | 0x021a Exif.Pentax.0x21a                | UNDEFINED |     1120 |      8444 | ____________________________________ +++
+      1906 | 0x021b Exif.Pentax.0x21b                | UNDEFINED |      364 |      9564 | ______..._._._._._._........____._._ +++
+      1918 | 0x021c Exif.Pentax.0x21c                | UNDEFINED |       18 |      9928 | ______...___._._._
+      1930 | 0x021d Exif.Pentax.0x21d                | UNDEFINED |       18 |      9948 | ._....______...___
+      1942 | 0x021e Exif.Pentax.0x21e                | UNDEFINED |        8 |      9968 | ._._._._
+      1954 | 0x021f Exif.Pentax.0x21f                | UNDEFINED |     1024 |      9976 | ....______..____._._._._._....______ +++
+      1966 | 0x0220 Exif.Pentax.0x220                | UNDEFINED |       59 |     11000 | ____________________________________ +++
+      1978 | 0x0221 Exif.Pentax.0x221                | UNDEFINED |      138 |     11060 | ____________________________________ +++
+      1990 | 0x0222 Exif.Pentax.0x222                | UNDEFINED |       18 |     11200 | __________________
+      2002 | 0x0224 Exif.Pentax.0x224                | UNDEFINED |       64 |     11220 | ____________________________________ +++
+      2014 | 0x0226 Exif.Pentax.0x226                | UNDEFINED |       13 |     11284 | _____________
+      2026 | 0x0227 Exif.Pentax.0x227                | UNDEFINED |       64 |     11300 | _____________________________V..____ +++
+      2038 | 0x0228 Exif.Pentax.0x228                | UNDEFINED |       64 |     11364 | ______________.__._.____________.... +++
+      2050 | 0x0229 Exif.Pentax.0x229                |     ASCII |       20 |     11428 | 
+      2062 | 0x022a Exif.Pentax.0x22a                | UNDEFINED |      345 |     11448 | ____________________________________ +++
+      2074 | 0x022b Exif.Pentax.0x22b                | UNDEFINED |        8 |     11796 | ________
+      2086 | 0x022c Exif.Pentax.0x22c                | UNDEFINED |       46 |     11804 | ____________________________________ +++
+      2098 | 0x022d Exif.Pentax.0x22d                | UNDEFINED |      109 |     11852 | ____________________________________ +++
+      2110 | 0x0231 Exif.Pentax.0x231                |     SHORT |        4 |     11964 | 4095 1800 1286 772
+      2122 | 0x0234 Exif.Pentax.0x234                | UNDEFINED |      160 |     11972 | ..........._q.__.F&-..__q&LQ..__k(.M +++
+      2134 | 0x0236 Exif.Pentax.0x236                | UNDEFINED |      107 |     12132 | . 3...__..._..._.__.......0_0_P..__. +++
+      2146 | 0x0238 Exif.Pentax.0x238                | UNDEFINED |       14 |     12240 | ______________
+      2158 | 0x023b Exif.Pentax.0x23b                | UNDEFINED |       20 |     12256 | ____________________
+      2170 | 0x023c Exif.Pentax.0x23c                | UNDEFINED |     1024 |     12276 | ____________________________________ +++
+      2182 | 0x023d Exif.Pentax.0x23d                | UNDEFINED |       20 |     13300 | ____________________
+      2194 | 0x023e Exif.Pentax.0x23e                | UNDEFINED |        8 |     13320 | ________
+      2206 | 0x0240 Exif.Pentax.0x240                | UNDEFINED |      384 |     13328 | ____________________________________ +++
+      2218 | 0x0243 Exif.Pentax.0x243                | UNDEFINED |      140 |     13712 | ____________________________________ +++
+      2230 | 0x03ff Exif.Pentax.0x3ff                | UNDEFINED |      768 |     13852 | ____________________________________ +++
+      2242 | 0x0404 Exif.Pentax.0x404                | UNDEFINED |     2086 |     14620 | ________________.___________________ +++
+      2254 | 0x0405 Exif.Pentax.0x405                | UNDEFINED |    46136 |     16708 | G...........m.....|...K..'V.}L?..U.. +++
+      2266 | 0x0406 Exif.Pentax.0x406                | UNDEFINED |     4116 |     62844 | ___.___.___.___.___.___.___.___.___. +++
+      2278 | 0x0407 Exif.Pentax.0x407                |     UBYTE |     4320 |     66960 | 190 45 221 226 132 45 6 11 106 42 79 +++
+      2290 | 0x0408 Exif.Pentax.0x408                |     UBYTE |     1440 |     71280 | 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0  +++
   END: ../files/20200717_221452.dng
-     442 | 0xc65a Exif.DNG.CalibrationIllumi.. |     SHORT |        1 |           | 4352
-     454 | 0xc65b Exif.DNG.CalibrationIllumi.. |     SHORT |        1 |           | 5376
-     466 | 0xc71a Exif.Image.0xc71a            |      LONG |        1 |           | 33554432
+     442 | 0xc65a Exif.DNG.CalibrationIlluminant1  |     SHORT |        1 |           | 4352
+     454 | 0xc65b Exif.DNG.CalibrationIlluminant2  |     SHORT |        1 |           | 5376
+     466 | 0xc71a Exif.Image.0xc71a                |      LONG |        1 |           | 33554432
 END: ../files/20200717_221452.dng

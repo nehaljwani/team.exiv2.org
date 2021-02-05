@@ -20,16 +20,16 @@ STRUCTURE OF JP2 (mif1) FILE (MM): ../files/heic.heic
       STRUCTURE OF JP2 FILE (MM): ../files/heic.heic:40->909:323->586:8->542
              0 |      126 | hvcC |      | ..`___._____x._...._ 1 1 96 0 0 0 144 0 0 0 0 0 120 240 0 252 253 248 248 0
            126 |       20 | ispe |      | ______.___.V 0 0 0 0 0 0 5 0 0 0 3 86
-      ISOBMFF.ispe.Version         0
-      ISOBMFF.ispe.Flags           0 0 0
-      ISOBMFF.ispe.Width           1280
-      ISOBMFF.ispe.Height          854
+      ISOBMFF.ispe.Version             0
+      ISOBMFF.ispe.Flags               0 0 0
+      ISOBMFF.ispe.Width               1280
+      ISOBMFF.ispe.Height              854
            146 |      125 | hvcC |      | ..`___._____<._...._ 1 1 96 0 0 0 144 0 0 0 0 0 60 240 0 252 253 248 248 0
            271 |       20 | ispe |      | ______.@___. 0 0 0 0 0 0 1 64 0 0 0 212
-      ISOBMFF.ispe.Version         0
-      ISOBMFF.ispe.Flags           0 0 0
-      ISOBMFF.ispe.Width           320
-      ISOBMFF.ispe.Height          212
+      ISOBMFF.ispe.Version             0
+      ISOBMFF.ispe.Flags               0 0 0
+      ISOBMFF.ispe.Width               320
+      ISOBMFF.ispe.Height              212
            291 |      126 | hvcC |      | ..`___._____x._...._ 1 1 96 0 0 0 144 0 0 0 0 0 120 240 0 252 253 248 248 0
            417 |      125 | hvcC |      | ..`___._____<._...._ 1 1 96 0 0 0 144 0 0 0 0 0 60 240 0 252 253 248 248 0
       END: ../files/heic.heic:40->909:323->586:8->542

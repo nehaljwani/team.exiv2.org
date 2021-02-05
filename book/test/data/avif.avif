@@ -18,10 +18,10 @@ STRUCTURE OF JP2 (avif) FILE (MM): ../files/avif.avif
            0 |       88 | ipco |      | ___.ispe______..__.8 0 0 0 20 105 115 112 101 0 0 0 0 0 0 7 128 0 0 4 56
       STRUCTURE OF JP2 FILE (MM): ../files/avif.avif:44->292:155->111:8->80
              0 |       20 | ispe |      | ______..__.8 0 0 0 0 0 0 7 128 0 0 4 56
-      ISOBMFF.ispe.Version         0
-      ISOBMFF.ispe.Flags           0 0 0
-      ISOBMFF.ispe.Width           1920
-      ISOBMFF.ispe.Height          1080
+      ISOBMFF.ispe.Version             0
+      ISOBMFF.ispe.Flags               0 0 0
+      ISOBMFF.ispe.Width               1920
+      ISOBMFF.ispe.Height              1080
             20 |       19 | colr |      | nclx_._._.. 110 99 108 120 0 2 0 2 0 2 128
             39 |       25 | av1C |      | ..._..___B...w... 129 8 12 0 10 11 0 0 0 66 171 191 195 119 255 230 1
             64 |       16 | pixi |      | ____.... 0 0 0 0 3 8 8 8
@@ -31,12 +31,12 @@ STRUCTURE OF JP2 (avif) FILE (MM): ../files/avif.avif
        266 |       26 | iref |      | _______.cdsc_._._. 0 0 0 0 0 0 0 14 99 100 115 99 0 2 0 1 0 1
   END: ../files/avif.avif:44->292
   STRUCTURE OF TIFF FILE (II): ../files/avif.avif:219138->78
-   address |    tag                              |      type |    count |    offset | value
-        10 | 0x8769 Exif.Image.ExifTag           |      LONG |        1 |           | 26
+   address |    tag                                  |      type |    count |    offset | value
+        10 | 0x8769 Exif.Image.ExifTag               |      LONG |        1 |           | 26
     STRUCTURE OF TIFF FILE (II): ../files/avif.avif:219138->78
-     address |    tag                              |      type |    count |    offset | value
-          28 | 0x9003 Exif.Photo.DateTimeOriginal  |     ASCII |       20 |        56 | 2018:08:15 11:37:35
-          40 | 0x9291 Exif.Photo.0x9291            |     ASCII |        3 |           | 59
+     address |    tag                                  |      type |    count |    offset | value
+          28 | 0x9003 Exif.Photo.DateTimeOriginal      |     ASCII |       20 |        56 | 2018:08:15 11:37:35
+          40 | 0x9291 Exif.Photo.0x9291                |     ASCII |        3 |           | 59
     END: ../files/avif.avif:219138->78
   END: ../files/avif.avif:219138->78
      336 |       64 | free |      | ____________________ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0

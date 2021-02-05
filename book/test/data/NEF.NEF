@@ -1,194 +1,194 @@
 STRUCTURE OF TIFF FILE (II): ../files/NEF.NEF
- address |    tag                              |      type |    count |    offset | value
-      10 | 0x00fe Exif.Image.NewSubfileType    |      LONG |        1 |           | 1
-      22 | 0x0100 Exif.Image.ImageWidth        |      LONG |        1 |           | 160
-      34 | 0x0101 Exif.Image.ImageLength       |      LONG |        1 |           | 120
-      46 | 0x0102 Exif.Image.BitsPerSample     |     SHORT |        3 |       326 | 8 8 8
-      58 | 0x0103 Exif.Image.Compression       |     SHORT |        1 |           | 1
-      70 | 0x0106 Exif.Image.PhotometricInte.. |     SHORT |        1 |           | 2
-      82 | 0x010f Exif.Image.Make              |     ASCII |       18 |       332 | NIKON CORPORATION
-      94 | 0x0110 Exif.Image.Model             |     ASCII |       12 |       350 | NIKON D5300
-     106 | 0x0111 Exif.Image.StripOffsets      |      LONG |        1 |           | 177858
-     118 | 0x0112 Exif.Image.Orientation       |     SHORT |        1 |           | 1
-     130 | 0x0115 Exif.Image.SamplesPerPixel   |     SHORT |        1 |           | 3
-     142 | 0x0116 Exif.Image.RowsPerStrip      |      LONG |        1 |           | 120
-     154 | 0x0117 Exif.Image.StripByteCounts   |      LONG |        1 |           | 57600
-     166 | 0x011a Exif.Image.XResolution       |  RATIONAL |        1 |       362 | 300/1
-     178 | 0x011b Exif.Image.YResolution       |  RATIONAL |        1 |       370 | 300/1
-     190 | 0x011c Exif.Image.PlanarConfigura.. |     SHORT |        1 |           | 1
-     202 | 0x0128 Exif.Image.ResolutionUnit    |     SHORT |        1 |           | 2
-     214 | 0x0131 Exif.Image.Software          |     ASCII |       10 |       378 | Ver.1.00 
-     226 | 0x0132 Exif.Image.DateTime          |     ASCII |       20 |       388 | 2016:04:20 07:00:13
-     238 | 0x014a Exif.Image.SubIFD            |      LONG |        3 |       408 | 2860 2978 3204
+ address |    tag                                  |      type |    count |    offset | value
+      10 | 0x00fe Exif.Image.NewSubfileType        |      LONG |        1 |           | 1
+      22 | 0x0100 Exif.Image.ImageWidth            |      LONG |        1 |           | 160
+      34 | 0x0101 Exif.Image.ImageLength           |      LONG |        1 |           | 120
+      46 | 0x0102 Exif.Image.BitsPerSample         |     SHORT |        3 |       326 | 8 8 8
+      58 | 0x0103 Exif.Image.Compression           |     SHORT |        1 |           | 1
+      70 | 0x0106 Exif.Image.PhotometricInterpre.. |     SHORT |        1 |           | 2
+      82 | 0x010f Exif.Image.Make                  |     ASCII |       18 |       332 | NIKON CORPORATION
+      94 | 0x0110 Exif.Image.Model                 |     ASCII |       12 |       350 | NIKON D5300
+     106 | 0x0111 Exif.Image.StripOffsets          |      LONG |        1 |           | 177858
+     118 | 0x0112 Exif.Image.Orientation           |     SHORT |        1 |           | 1
+     130 | 0x0115 Exif.Image.SamplesPerPixel       |     SHORT |        1 |           | 3
+     142 | 0x0116 Exif.Image.RowsPerStrip          |      LONG |        1 |           | 120
+     154 | 0x0117 Exif.Image.StripByteCounts       |      LONG |        1 |           | 57600
+     166 | 0x011a Exif.Image.XResolution           |  RATIONAL |        1 |       362 | 300/1
+     178 | 0x011b Exif.Image.YResolution           |  RATIONAL |        1 |       370 | 300/1
+     190 | 0x011c Exif.Image.PlanarConfiguration   |     SHORT |        1 |           | 1
+     202 | 0x0128 Exif.Image.ResolutionUnit        |     SHORT |        1 |           | 2
+     214 | 0x0131 Exif.Image.Software              |     ASCII |       10 |       378 | Ver.1.00 
+     226 | 0x0132 Exif.Image.DateTime              |     ASCII |       20 |       388 | 2016:04:20 07:00:13
+     238 | 0x014a Exif.Image.SubIFD                |      LONG |        3 |       408 | 2860 2978 3204
   STRUCTURE OF TIFF FILE (II): ../files/NEF.NEF
-   address |    tag                              |      type |    count |    offset | value
-      2862 | 0x00fe Exif.Image.NewSubfileType    |      LONG |        1 |           | 1
-      2874 | 0x0103 Exif.Image.Compression       |     SHORT |        1 |           | 6
-      2886 | 0x011a Exif.Image.XResolution       |  RATIONAL |        1 |      2962 | 300/1
-      2898 | 0x011b Exif.Image.YResolution       |  RATIONAL |        1 |      2970 | 300/1
-      2910 | 0x0128 Exif.Image.ResolutionUnit    |     SHORT |        1 |           | 2
-      2922 | 0x0201 Exif.Image.0x201             |      LONG |        1 |           | 235458
-      2934 | 0x0202 Exif.Image.0x202             |      LONG |        1 |           | 2932184
-      2946 | 0x0213 Exif.Image.YCbCrPositioning  |     SHORT |        1 |           | 1
+   address |    tag                                  |      type |    count |    offset | value
+      2862 | 0x00fe Exif.Image.NewSubfileType        |      LONG |        1 |           | 1
+      2874 | 0x0103 Exif.Image.Compression           |     SHORT |        1 |           | 6
+      2886 | 0x011a Exif.Image.XResolution           |  RATIONAL |        1 |      2962 | 300/1
+      2898 | 0x011b Exif.Image.YResolution           |  RATIONAL |        1 |      2970 | 300/1
+      2910 | 0x0128 Exif.Image.ResolutionUnit        |     SHORT |        1 |           | 2
+      2922 | 0x0201 Exif.Image.JPEGInterchangeFormat |      LONG |        1 |           | 235458
+      2934 | 0x0202 Exif.Image.JPEGInterchangeLength |      LONG |        1 |           | 2932184
+      2946 | 0x0213 Exif.Image.YCbCrPositioning      |     SHORT |        1 |           | 1
   END: ../files/NEF.NEF
   STRUCTURE OF TIFF FILE (II): ../files/NEF.NEF
-   address |    tag                              |      type |    count |    offset | value
-      2980 | 0x00fe Exif.Image.NewSubfileType    |      LONG |        1 |           | 0
-      2992 | 0x0100 Exif.Image.ImageWidth        |      LONG |        1 |           | 6016
-      3004 | 0x0101 Exif.Image.ImageLength       |      LONG |        1 |           | 4016
-      3016 | 0x0102 Exif.Image.BitsPerSample     |     SHORT |        1 |           | 12
-      3028 | 0x0103 Exif.Image.Compression       |     SHORT |        1 |           | 34713
-      3040 | 0x0106 Exif.Image.PhotometricInte.. |     SHORT |        1 |           | 32803
-      3052 | 0x0111 Exif.Image.StripOffsets      |      LONG |        1 |           | 3167642
-      3064 | 0x0115 Exif.Image.SamplesPerPixel   |     SHORT |        1 |           | 1
-      3076 | 0x0116 Exif.Image.RowsPerStrip      |      LONG |        1 |           | 4018
-      3088 | 0x0117 Exif.Image.StripByteCounts   |      LONG |        1 |           | 18158652
-      3100 | 0x011a Exif.Image.XResolution       |  RATIONAL |        1 |      3188 | 300/1
-      3112 | 0x011b Exif.Image.YResolution       |  RATIONAL |        1 |      3196 | 300/1
-      3124 | 0x011c Exif.Image.PlanarConfigura.. |     SHORT |        1 |           | 1
-      3136 | 0x0128 Exif.Image.ResolutionUnit    |     SHORT |        1 |           | 2
-      3148 | 0x828d Exif.Image.0x828d            |     SHORT |        2 |           | 2 2
-      3160 | 0x828e Exif.Image.0x828e            |     UBYTE |        4 |           | 0 1 1 2
-      3172 | 0x9217 Exif.Image.0x9217            |     SHORT |        1 |           | 2
+   address |    tag                                  |      type |    count |    offset | value
+      2980 | 0x00fe Exif.Image.NewSubfileType        |      LONG |        1 |           | 0
+      2992 | 0x0100 Exif.Image.ImageWidth            |      LONG |        1 |           | 6016
+      3004 | 0x0101 Exif.Image.ImageLength           |      LONG |        1 |           | 4016
+      3016 | 0x0102 Exif.Image.BitsPerSample         |     SHORT |        1 |           | 12
+      3028 | 0x0103 Exif.Image.Compression           |     SHORT |        1 |           | 34713
+      3040 | 0x0106 Exif.Image.PhotometricInterpre.. |     SHORT |        1 |           | 32803
+      3052 | 0x0111 Exif.Image.StripOffsets          |      LONG |        1 |           | 3167642
+      3064 | 0x0115 Exif.Image.SamplesPerPixel       |     SHORT |        1 |           | 1
+      3076 | 0x0116 Exif.Image.RowsPerStrip          |      LONG |        1 |           | 4018
+      3088 | 0x0117 Exif.Image.StripByteCounts       |      LONG |        1 |           | 18158652
+      3100 | 0x011a Exif.Image.XResolution           |  RATIONAL |        1 |      3188 | 300/1
+      3112 | 0x011b Exif.Image.YResolution           |  RATIONAL |        1 |      3196 | 300/1
+      3124 | 0x011c Exif.Image.PlanarConfiguration   |     SHORT |        1 |           | 1
+      3136 | 0x0128 Exif.Image.ResolutionUnit        |     SHORT |        1 |           | 2
+      3148 | 0x828d Exif.Image.0x828d                |     SHORT |        2 |           | 2 2
+      3160 | 0x828e Exif.Image.0x828e                |     UBYTE |        4 |           | 0 1 1 2
+      3172 | 0x9217 Exif.Image.0x9217                |     SHORT |        1 |           | 2
   END: ../files/NEF.NEF
   STRUCTURE OF TIFF FILE (II): ../files/NEF.NEF
-   address |    tag                              |      type |    count |    offset | value
-      3206 | 0x00fe Exif.Image.NewSubfileType    |      LONG |        1 |           | 1
-      3218 | 0x0103 Exif.Image.Compression       |     SHORT |        1 |           | 6
-      3230 | 0x011a Exif.Image.XResolution       |  RATIONAL |        1 |      3306 | 300/1
-      3242 | 0x011b Exif.Image.YResolution       |  RATIONAL |        1 |      3314 | 300/1
-      3254 | 0x0128 Exif.Image.ResolutionUnit    |     SHORT |        1 |           | 2
-      3266 | 0x0201 Exif.Image.0x201             |      LONG |        1 |           | 21326294
-      3278 | 0x0202 Exif.Image.0x202             |      LONG |        1 |           | 1002500
-      3290 | 0x0213 Exif.Image.YCbCrPositioning  |     SHORT |        1 |           | 1
+   address |    tag                                  |      type |    count |    offset | value
+      3206 | 0x00fe Exif.Image.NewSubfileType        |      LONG |        1 |           | 1
+      3218 | 0x0103 Exif.Image.Compression           |     SHORT |        1 |           | 6
+      3230 | 0x011a Exif.Image.XResolution           |  RATIONAL |        1 |      3306 | 300/1
+      3242 | 0x011b Exif.Image.YResolution           |  RATIONAL |        1 |      3314 | 300/1
+      3254 | 0x0128 Exif.Image.ResolutionUnit        |     SHORT |        1 |           | 2
+      3266 | 0x0201 Exif.Image.JPEGInterchangeFormat |      LONG |        1 |           | 21326294
+      3278 | 0x0202 Exif.Image.JPEGInterchangeLength |      LONG |        1 |           | 1002500
+      3290 | 0x0213 Exif.Image.YCbCrPositioning      |     SHORT |        1 |           | 1
   END: ../files/NEF.NEF
-     250 | 0x0214 Exif.Image.0x214             |  RATIONAL |        6 |       420 | 0/1 255/1 0/1 255/1 0/1 255/1
-     262 | 0x02bc Exif.Image.XMLPacket         |     UBYTE |     2372 |       468 | 60 63 120 112 97 99 107 101 116 32 9 +++
-     274 | 0x8769 Exif.Image.ExifTag           |      LONG |        1 |           | 3322
+     250 | 0x0214 Exif.Image.0x214                 |  RATIONAL |        6 |       420 | 0/1 255/1 0/1 255/1 0/1 255/1
+     262 | 0x02bc Exif.Image.XMLPacket             |     UBYTE |     2372 |       468 | 60 63 120 112 97 99 107 101 116 32 9 +++
+     274 | 0x8769 Exif.Image.ExifTag               |      LONG |        1 |           | 3322
   STRUCTURE OF TIFF FILE (II): ../files/NEF.NEF
-   address |    tag                              |      type |    count |    offset | value
-      3324 | 0x829a Exif.Photo.ExposureTime      |  RATIONAL |        1 |      3724 | 10/1250
-      3336 | 0x829d Exif.Photo.FNumber           |  RATIONAL |        1 |      3732 | 90/10
-      3348 | 0x8822 Exif.Photo.ExposureProgram   |     SHORT |        1 |           | 0
-      3360 | 0x8827 Exif.Photo.ISOSpeedRatings   |     SHORT |        1 |           | 400
-      3372 | 0x8830 Exif.Photo.SensitivityType   |     SHORT |        1 |           | 2
-      3384 | 0x9003 Exif.Photo.DateTimeOriginal  |     ASCII |       20 |      3740 | 2016:04:20 07:00:13
-      3396 | 0x9004 Exif.Photo.DateTimeDigitized |     ASCII |       20 |      3760 | 2016:04:20 07:00:13
-      3408 | 0x9204 Exif.Photo.ExposureBiasValue | SRATIONAL |        1 |      3780 | 0/6
-      3420 | 0x9205 Exif.Photo.MaxApertureValue  |  RATIONAL |        1 |      3788 | 36/10
-      3432 | 0x9207 Exif.Photo.MeteringMode      |     SHORT |        1 |           | 5
-      3444 | 0x9208 Exif.Photo.LightSource       |     SHORT |        1 |           | 0
-      3456 | 0x9209 Exif.Photo.Flash             |     SHORT |        1 |           | 16
-      3468 | 0x920a Exif.Photo.FocalLength       |  RATIONAL |        1 |      3796 | 180/10
-      3480 | 0x927c Exif.Photo.MakerNote         | UNDEFINED |   173976 |      3804 | Nikon_..__II*_.___?_._._.___0211._._ +++
+   address |    tag                                  |      type |    count |    offset | value
+      3324 | 0x829a Exif.Photo.ExposureTime          |  RATIONAL |        1 |      3724 | 10/1250
+      3336 | 0x829d Exif.Photo.FNumber               |  RATIONAL |        1 |      3732 | 90/10
+      3348 | 0x8822 Exif.Photo.ExposureProgram       |     SHORT |        1 |           | 0
+      3360 | 0x8827 Exif.Photo.ISOSpeedRatings       |     SHORT |        1 |           | 400
+      3372 | 0x8830 Exif.Photo.SensitivityType       |     SHORT |        1 |           | 2
+      3384 | 0x9003 Exif.Photo.DateTimeOriginal      |     ASCII |       20 |      3740 | 2016:04:20 07:00:13
+      3396 | 0x9004 Exif.Photo.DateTimeDigitized     |     ASCII |       20 |      3760 | 2016:04:20 07:00:13
+      3408 | 0x9204 Exif.Photo.ExposureBiasValue     | SRATIONAL |        1 |      3780 | 0/6
+      3420 | 0x9205 Exif.Photo.MaxApertureValue      |  RATIONAL |        1 |      3788 | 36/10
+      3432 | 0x9207 Exif.Photo.MeteringMode          |     SHORT |        1 |           | 5
+      3444 | 0x9208 Exif.Photo.LightSource           |     SHORT |        1 |           | 0
+      3456 | 0x9209 Exif.Photo.Flash                 |     SHORT |        1 |           | 16
+      3468 | 0x920a Exif.Photo.FocalLength           |  RATIONAL |        1 |      3796 | 180/10
+      3480 | 0x927c Exif.Photo.MakerNote             | UNDEFINED |   173976 |      3804 | Nikon_..__II*_.___?_._._.___0211._._ +++
     STRUCTURE OF TIFF FILE (II): ../files/NEF.NEF:3814->173966
-     address |    tag                              |      type |    count |    offset | value
-          10 | 0x0001 Exif.Nikon.Version           | UNDEFINED |        4 |           | 0211
-          22 | 0x0002 Exif.Nikon.ISOSpeed          |     SHORT |        2 |           | 0 400
-          34 | 0x0004 Exif.Nikon.Quality           |     ASCII |        8 |       770 | RAW    
-          46 | 0x0005 Exif.Nikon.WhiteBalance      |     ASCII |       13 |       778 | AUTO        
-          58 | 0x0007 Exif.Nikon.Focus             |     ASCII |        7 |       792 | AF-S  
-          70 | 0x0008 Exif.Nikon.FlashSetting      |     ASCII |       13 |       800 |             
-          82 | 0x0009 Exif.Nikon.FlashDevice       |     ASCII |       20 |       814 |                    
-          94 | 0x000b Exif.Nikon.WhiteBalanceBias  |    SSHORT |        2 |           | 0 0
-         106 | 0x000c Exif.Nikon.WB_RBLevels       |  RATIONAL |        4 |       834 | 591/256 312/256 256/256 256/256
-         118 | 0x000d Exif.Nikon.ProgramShift      | UNDEFINED |        4 |           | _.._
-         130 | 0x000e Exif.Nikon.ExposureDiff      | UNDEFINED |        4 |           | _.._
-         142 | 0x0011 Exif.Nikon.0x11              |      LONG |        1 |           | 23740
-         154 | 0x0012 Exif.Nikon.FlashComp         | UNDEFINED |        4 |           | _.._
-         166 | 0x0013 Exif.Nikon.ISOSettings       |     SHORT |        2 |           | 0 400
-         178 | 0x0017 Exif.Nikon.FlashExposureComp | UNDEFINED |        4 |           | _.._
-         190 | 0x0018 Exif.Nikon.FlashBracketComp  | UNDEFINED |        4 |           | _.._
-         202 | 0x0019 Exif.Nikon.ExposureBracket.. | SRATIONAL |        1 |       866 | 0/6
-         214 | 0x001b Exif.Nikon.CropHiSpeed       |     SHORT |        7 |       874 | 0 6016 4016 6016 4016 0 0
-         226 | 0x001c Exif.Nikon.ExposureTuning    | UNDEFINED |        3 |           | _..
-         238 | 0x001d Exif.Nikon.SerialNumber      |     ASCII |        8 |       888 | 2567806
-         250 | 0x001e Exif.Nikon.ColorSpace        |     SHORT |        1 |           | 1
-         262 | 0x001f Exif.Nikon.0x1f              | UNDEFINED |        8 |       896 | 0100..__
-         274 | 0x0022 Exif.Nikon.0x22              |     SHORT |        1 |           | 65535
-         286 | 0x0023 Exif.Nikon.PictureControl    | UNDEFINED |       58 |       904 | 0100LANDSCAPE___________LANDSCAPE___ +++
-         904 | 0x0023 Exif.Nikon.PcVersion         |     ASCII |        4 |           | 0100
-         908 | 0x0023 Exif.Nikon.PcName            |     ASCII |       20 |           | LANDSCAPE
-         928 | 0x0023 Exif.Nikon.PcBase            |     ASCII |       20 |           | LANDSCAPE
-         952 | 0x0023 Exif.Nikon.PcAdjust          |     UBYTE |        1 |           | 0
-         953 | 0x0023 Exif.Nikon.PcQuickAdjust     |     UBYTE |        1 |           | 255
-         954 | 0x0023 Exif.Nikon.PcSharpness       |     UBYTE |        1 |           | 0
-         955 | 0x0023 Exif.Nikon.PcContrast        |     UBYTE |        1 |           | 0
-         956 | 0x0023 Exif.Nikon.PcBrightness      |     UBYTE |        1 |           | 128
-         957 | 0x0023 Exif.Nikon.PcSaturation      |     UBYTE |        1 |           | 0
-         958 | 0x0023 Exif.Nikon.PcHueAdjustment   |     UBYTE |        1 |           | 128
-         959 | 0x0023 Exif.Nikon.PcFilterEffect    |     UBYTE |        1 |           | 255
-         960 | 0x0023 Exif.Nikon.PcFilterEffect    |     UBYTE |        1 |           | 255
-         961 | 0x0023 Exif.Nikon.PcToningSaturat.. |     UBYTE |        1 |           | 255
-         298 | 0x0024 Exif.Nikon.0x24              | UNDEFINED |        4 |           | __._
-         310 | 0x0025 Exif.Nikon.0x25              | UNDEFINED |       14 |       962 | T..___T..___._
-         322 | 0x002b Exif.Nikon.0x2b              | UNDEFINED |       16 |       976 | 0100__._________
-         334 | 0x002c Exif.Nikon.0x2c              | UNDEFINED |      574 |       992 | 0101#_....__________________________ +++
-         346 | 0x002d Exif.Nikon.0x2d              |     SHORT |        3 |      1566 | 512 3 10
-         358 | 0x0032 Exif.Nikon.0x32              | UNDEFINED |        8 |      1572 | 0100.___
-         370 | 0x003b Exif.Nikon.0x3b              |  RATIONAL |        4 |      1580 | 256/256 256/256 256/256 256/256
-         382 | 0x003c Exif.Nikon.0x3c              |     SHORT |        1 |           | 1
-         394 | 0x003d Exif.Nikon.0x3d              |     SHORT |        4 |      1612 | 600 600 600 600
-         406 | 0x0083 Exif.Nikon.0x83              |     UBYTE |        1 |           | 14
-         418 | 0x0084 Exif.Nikon.0x84              |  RATIONAL |        4 |      1620 | 180/10 2500/10 35/10 63/10
-         430 | 0x0087 Exif.Nikon.0x87              |     UBYTE |        1 |           | 0
-         442 | 0x0089 Exif.Nikon.0x89              |     SHORT |        1 |           | 0
-         454 | 0x008a Exif.Nikon.0x8a              |     SHORT |        1 |           | 2
-         466 | 0x008b Exif.Nikon.0x8b              | UNDEFINED |        4 |           | @.._
-         478 | 0x008c Exif.Nikon.0x8c              | UNDEFINED |      578 |      1652 | I0__________________________________ +++
-         490 | 0x0091 Exif.Nikon.0x91              | UNDEFINED |    14819 |      2230 | 02296...A.D.k<v.U.8._..Uy.l[........ +++
-         502 | 0x0093 Exif.Nikon.0x93              |     SHORT |        1 |           | 4
-         514 | 0x0095 Exif.Nikon.0x95              |     ASCII |        5 |     17050 | OFF 
-         526 | 0x0096 Exif.Nikon.0x96              | UNDEFINED |      624 |     17056 | D H.H.H.H...__._ _0_@_P_`_p_._._._._ +++
-         538 | 0x0097 Exif.Nikon.0x97              | UNDEFINED |     1188 |     17680 | 0219....a>..s=9...9.O....F....^q.r`. +++
-         550 | 0x0098 Exif.Nikon.LensData          | UNDEFINED |       33 |     18868 | 0204..&..H-..|[q..s..h..i.l[....I
-         562 | 0x0099 Exif.Nikon.0x99              |     SHORT |        2 |           | 3008 2008
-         574 | 0x009d Exif.Nikon.0x9d              |     SHORT |        1 |           | 0
-         586 | 0x009e Exif.Nikon.0x9e              |     SHORT |       10 |     18902 | 0 0 0 0 0 0 0 0 0 0
-         598 | 0x00a3 Exif.Nikon.0xa3              |     UBYTE |        1 |           | 0
-         610 | 0x00a4 Exif.Nikon.0xa4              | UNDEFINED |        4 |           | 0300
-         622 | 0x00a7 Exif.Nikon.ShutterCount      |      LONG |        1 |           | 12593
-         550 | 0x0098 Exif.Nikon.LensData          | UNDEFINED |       33 |     18868 | 0204.....S...U8.[]V?j..H?u5.....s
-       18868 | 0x0098 Exif.Nikon.LdVersion         |     ASCII |        4 |           | 0204
-       18877 | 0x0098 Exif.Nikon.LdFocusDistance   |     UBYTE |        1 |           | 83
-       18881 | 0x0098 Exif.Nikon.LdLensIDNumber    |     UBYTE |        1 |           | 85
-         634 | 0x00a8 Exif.Nikon.0xa8              | UNDEFINED |       49 |     18922 | 0106________________________________ +++
-         646 | 0x00ab Exif.Nikon.0xab              |     ASCII |       16 |     18972 | SCENE AUTO     
-         658 | 0x00b0 Exif.Nikon.0xb0              | UNDEFINED |       16 |     18988 | 0100____________
-         670 | 0x00b1 Exif.Nikon.0xb1              |     SHORT |        1 |           | 4
-         682 | 0x00b6 Exif.Nikon.0xb6              | UNDEFINED |        8 |     19004 | ________
-         694 | 0x00b7 Exif.Nikon.0xb7              | UNDEFINED |       30 |     19012 | 0100..__________p.........0.._
-         706 | 0x00b8 Exif.Nikon.0xb8              | UNDEFINED |      172 |     19042 | 0100__d_.___________________________ +++
-         718 | 0x00bb Exif.Nikon.0xbb              | UNDEFINED |        8 |     19214 | 0200..._
-         730 | 0x00bc Exif.Nikon.0xbc              | UNDEFINED |     4510 |     19222 | 0220D_,_-_,_z_._....._.............. +++
-         742 | 0x00bf Exif.Nikon.0xbf              |     SHORT |        1 |           | 0
-         754 | 0x00c0 Exif.Nikon.0xc0              | UNDEFINED |        8 |     23732 | <.._..._
+     address |    tag                                  |      type |    count |    offset | value
+          10 | 0x0001 Exif.Nikon.Version               | UNDEFINED |        4 |           | 0211
+          22 | 0x0002 Exif.Nikon.ISOSpeed              |     SHORT |        2 |           | 0 400
+          34 | 0x0004 Exif.Nikon.Quality               |     ASCII |        8 |       770 | RAW    
+          46 | 0x0005 Exif.Nikon.WhiteBalance          |     ASCII |       13 |       778 | AUTO        
+          58 | 0x0007 Exif.Nikon.Focus                 |     ASCII |        7 |       792 | AF-S  
+          70 | 0x0008 Exif.Nikon.FlashSetting          |     ASCII |       13 |       800 |             
+          82 | 0x0009 Exif.Nikon.FlashDevice           |     ASCII |       20 |       814 |                    
+          94 | 0x000b Exif.Nikon.WhiteBalanceBias      |    SSHORT |        2 |           | 0 0
+         106 | 0x000c Exif.Nikon.WB_RBLevels           |  RATIONAL |        4 |       834 | 591/256 312/256 256/256 256/256
+         118 | 0x000d Exif.Nikon.ProgramShift          | UNDEFINED |        4 |           | _.._
+         130 | 0x000e Exif.Nikon.ExposureDiff          | UNDEFINED |        4 |           | _.._
+         142 | 0x0011 Exif.Nikon.0x11                  |      LONG |        1 |           | 23740
+         154 | 0x0012 Exif.Nikon.FlashComp             | UNDEFINED |        4 |           | _.._
+         166 | 0x0013 Exif.Nikon.ISOSettings           |     SHORT |        2 |           | 0 400
+         178 | 0x0017 Exif.Nikon.FlashExposureComp     | UNDEFINED |        4 |           | _.._
+         190 | 0x0018 Exif.Nikon.FlashBracketComp      | UNDEFINED |        4 |           | _.._
+         202 | 0x0019 Exif.Nikon.ExposureBracketComp   | SRATIONAL |        1 |       866 | 0/6
+         214 | 0x001b Exif.Nikon.CropHiSpeed           |     SHORT |        7 |       874 | 0 6016 4016 6016 4016 0 0
+         226 | 0x001c Exif.Nikon.ExposureTuning        | UNDEFINED |        3 |           | _..
+         238 | 0x001d Exif.Nikon.SerialNumber          |     ASCII |        8 |       888 | 2567806
+         250 | 0x001e Exif.Nikon.ColorSpace            |     SHORT |        1 |           | 1
+         262 | 0x001f Exif.Nikon.0x1f                  | UNDEFINED |        8 |       896 | 0100..__
+         274 | 0x0022 Exif.Nikon.0x22                  |     SHORT |        1 |           | 65535
+         286 | 0x0023 Exif.Nikon.PictureControl        | UNDEFINED |       58 |       904 | 0100LANDSCAPE___________LANDSCAPE___ +++
+         904 | 0x0023 Exif.Nikon.PcVersion             |     ASCII |        4 |           | 0100
+         908 | 0x0023 Exif.Nikon.PcName                |     ASCII |       20 |           | LANDSCAPE
+         928 | 0x0023 Exif.Nikon.PcBase                |     ASCII |       20 |           | LANDSCAPE
+         952 | 0x0023 Exif.Nikon.PcAdjust              |     UBYTE |        1 |           | 0
+         953 | 0x0023 Exif.Nikon.PcQuickAdjust         |     UBYTE |        1 |           | 255
+         954 | 0x0023 Exif.Nikon.PcSharpness           |     UBYTE |        1 |           | 0
+         955 | 0x0023 Exif.Nikon.PcContrast            |     UBYTE |        1 |           | 0
+         956 | 0x0023 Exif.Nikon.PcBrightness          |     UBYTE |        1 |           | 128
+         957 | 0x0023 Exif.Nikon.PcSaturation          |     UBYTE |        1 |           | 0
+         958 | 0x0023 Exif.Nikon.PcHueAdjustment       |     UBYTE |        1 |           | 128
+         959 | 0x0023 Exif.Nikon.PcFilterEffect        |     UBYTE |        1 |           | 255
+         960 | 0x0023 Exif.Nikon.PcFilterEffect        |     UBYTE |        1 |           | 255
+         961 | 0x0023 Exif.Nikon.PcToningSaturation    |     UBYTE |        1 |           | 255
+         298 | 0x0024 Exif.Nikon.0x24                  | UNDEFINED |        4 |           | __._
+         310 | 0x0025 Exif.Nikon.0x25                  | UNDEFINED |       14 |       962 | T..___T..___._
+         322 | 0x002b Exif.Nikon.0x2b                  | UNDEFINED |       16 |       976 | 0100__._________
+         334 | 0x002c Exif.Nikon.0x2c                  | UNDEFINED |      574 |       992 | 0101#_....__________________________ +++
+         346 | 0x002d Exif.Nikon.0x2d                  |     SHORT |        3 |      1566 | 512 3 10
+         358 | 0x0032 Exif.Nikon.0x32                  | UNDEFINED |        8 |      1572 | 0100.___
+         370 | 0x003b Exif.Nikon.0x3b                  |  RATIONAL |        4 |      1580 | 256/256 256/256 256/256 256/256
+         382 | 0x003c Exif.Nikon.0x3c                  |     SHORT |        1 |           | 1
+         394 | 0x003d Exif.Nikon.0x3d                  |     SHORT |        4 |      1612 | 600 600 600 600
+         406 | 0x0083 Exif.Nikon.0x83                  |     UBYTE |        1 |           | 14
+         418 | 0x0084 Exif.Nikon.0x84                  |  RATIONAL |        4 |      1620 | 180/10 2500/10 35/10 63/10
+         430 | 0x0087 Exif.Nikon.0x87                  |     UBYTE |        1 |           | 0
+         442 | 0x0089 Exif.Nikon.0x89                  |     SHORT |        1 |           | 0
+         454 | 0x008a Exif.Nikon.0x8a                  |     SHORT |        1 |           | 2
+         466 | 0x008b Exif.Nikon.0x8b                  | UNDEFINED |        4 |           | @.._
+         478 | 0x008c Exif.Nikon.0x8c                  | UNDEFINED |      578 |      1652 | I0__________________________________ +++
+         490 | 0x0091 Exif.Nikon.0x91                  | UNDEFINED |    14819 |      2230 | 02296...A.D.k<v.U.8._..Uy.l[........ +++
+         502 | 0x0093 Exif.Nikon.0x93                  |     SHORT |        1 |           | 4
+         514 | 0x0095 Exif.Nikon.0x95                  |     ASCII |        5 |     17050 | OFF 
+         526 | 0x0096 Exif.Nikon.0x96                  | UNDEFINED |      624 |     17056 | D H.H.H.H...__._ _0_@_P_`_p_._._._._ +++
+         538 | 0x0097 Exif.Nikon.0x97                  | UNDEFINED |     1188 |     17680 | 0219....a>..s=9...9.O....F....^q.r`. +++
+         550 | 0x0098 Exif.Nikon.LensData              | UNDEFINED |       33 |     18868 | 0204..&..H-..|[q..s..h..i.l[....I
+         562 | 0x0099 Exif.Nikon.0x99                  |     SHORT |        2 |           | 3008 2008
+         574 | 0x009d Exif.Nikon.0x9d                  |     SHORT |        1 |           | 0
+         586 | 0x009e Exif.Nikon.0x9e                  |     SHORT |       10 |     18902 | 0 0 0 0 0 0 0 0 0 0
+         598 | 0x00a3 Exif.Nikon.0xa3                  |     UBYTE |        1 |           | 0
+         610 | 0x00a4 Exif.Nikon.0xa4                  | UNDEFINED |        4 |           | 0300
+         622 | 0x00a7 Exif.Nikon.ShutterCount          |      LONG |        1 |           | 12593
+         550 | 0x0098 Exif.Nikon.LensData              | UNDEFINED |       33 |     18868 | 0204.....S...U8.[]V?j..H?u5.....s
+       18868 | 0x0098 Exif.Nikon.LdVersion             |     ASCII |        4 |           | 0204
+       18877 | 0x0098 Exif.Nikon.LdFocusDistance       |     UBYTE |        1 |           | 83
+       18881 | 0x0098 Exif.Nikon.LdLensIDNumber        |     UBYTE |        1 |           | 85
+         634 | 0x00a8 Exif.Nikon.0xa8                  | UNDEFINED |       49 |     18922 | 0106________________________________ +++
+         646 | 0x00ab Exif.Nikon.0xab                  |     ASCII |       16 |     18972 | SCENE AUTO     
+         658 | 0x00b0 Exif.Nikon.0xb0                  | UNDEFINED |       16 |     18988 | 0100____________
+         670 | 0x00b1 Exif.Nikon.0xb1                  |     SHORT |        1 |           | 4
+         682 | 0x00b6 Exif.Nikon.0xb6                  | UNDEFINED |        8 |     19004 | ________
+         694 | 0x00b7 Exif.Nikon.0xb7                  | UNDEFINED |       30 |     19012 | 0100..__________p.........0.._
+         706 | 0x00b8 Exif.Nikon.0xb8                  | UNDEFINED |      172 |     19042 | 0100__d_.___________________________ +++
+         718 | 0x00bb Exif.Nikon.0xbb                  | UNDEFINED |        8 |     19214 | 0200..._
+         730 | 0x00bc Exif.Nikon.0xbc                  | UNDEFINED |     4510 |     19222 | 0220D_,_-_,_z_._....._.............. +++
+         742 | 0x00bf Exif.Nikon.0xbf                  |     SHORT |        1 |           | 0
+         754 | 0x00c0 Exif.Nikon.0xc0                  | UNDEFINED |        8 |     23732 | <.._..._
     END: ../files/NEF.NEF:3814->173966
-      3492 | 0x9286 Exif.Photo.UserComment       | UNDEFINED |       44 |    177780 | ASCII___                             +++
-      3504 | 0x9290 Exif.Photo.0x9290            |     ASCII |        3 |           | 40
-      3516 | 0x9291 Exif.Photo.0x9291            |     ASCII |        3 |           | 40
-      3528 | 0x9292 Exif.Photo.0x9292            |     ASCII |        3 |           | 40
-      3540 | 0xa217 Exif.Photo.0xa217            |     SHORT |        1 |           | 2
-      3552 | 0xa300 Exif.Photo.FileSource        | UNDEFINED |        1 |           | .
-      3564 | 0xa301 Exif.Photo.SceneType         | UNDEFINED |        1 |           | .
-      3576 | 0xa302 Exif.Photo.0xa302            | UNDEFINED |        8 |    177824 | ._.__...
-      3588 | 0xa401 Exif.Photo.CustomRendered    |     SHORT |        1 |           | 0
-      3600 | 0xa402 Exif.Photo.ExposureMode      |     SHORT |        1 |           | 0
-      3612 | 0xa403 Exif.Photo.WhiteBalance      |     SHORT |        1 |           | 0
-      3624 | 0xa404 Exif.Photo.0xa404            |  RATIONAL |        1 |    177832 | 1/1
-      3636 | 0xa405 Exif.Photo.0xa405            |     SHORT |        1 |           | 27
-      3648 | 0xa406 Exif.Photo.SceneCaptureType  |     SHORT |        1 |           | 1
-      3660 | 0xa407 Exif.Photo.0xa407            |     SHORT |        1 |           | 1
-      3672 | 0xa408 Exif.Photo.Contrast          |     SHORT |        1 |           | 0
-      3684 | 0xa409 Exif.Photo.Saturation        |     SHORT |        1 |           | 0
-      3696 | 0xa40a Exif.Photo.Sharpness         |     SHORT |        1 |           | 0
-      3708 | 0xa40c Exif.Photo.0xa40c            |     SHORT |        1 |           | 0
+      3492 | 0x9286 Exif.Photo.UserComment           | UNDEFINED |       44 |    177780 | ASCII___                             +++
+      3504 | 0x9290 Exif.Photo.0x9290                |     ASCII |        3 |           | 40
+      3516 | 0x9291 Exif.Photo.0x9291                |     ASCII |        3 |           | 40
+      3528 | 0x9292 Exif.Photo.0x9292                |     ASCII |        3 |           | 40
+      3540 | 0xa217 Exif.Photo.0xa217                |     SHORT |        1 |           | 2
+      3552 | 0xa300 Exif.Photo.FileSource            | UNDEFINED |        1 |           | .
+      3564 | 0xa301 Exif.Photo.SceneType             | UNDEFINED |        1 |           | .
+      3576 | 0xa302 Exif.Photo.0xa302                | UNDEFINED |        8 |    177824 | ._.__...
+      3588 | 0xa401 Exif.Photo.CustomRendered        |     SHORT |        1 |           | 0
+      3600 | 0xa402 Exif.Photo.ExposureMode          |     SHORT |        1 |           | 0
+      3612 | 0xa403 Exif.Photo.WhiteBalance          |     SHORT |        1 |           | 0
+      3624 | 0xa404 Exif.Photo.0xa404                |  RATIONAL |        1 |    177832 | 1/1
+      3636 | 0xa405 Exif.Photo.0xa405                |     SHORT |        1 |           | 27
+      3648 | 0xa406 Exif.Photo.SceneCaptureType      |     SHORT |        1 |           | 1
+      3660 | 0xa407 Exif.Photo.0xa407                |     SHORT |        1 |           | 1
+      3672 | 0xa408 Exif.Photo.Contrast              |     SHORT |        1 |           | 0
+      3684 | 0xa409 Exif.Photo.Saturation            |     SHORT |        1 |           | 0
+      3696 | 0xa40a Exif.Photo.Sharpness             |     SHORT |        1 |           | 0
+      3708 | 0xa40c Exif.Photo.0xa40c                |     SHORT |        1 |           | 0
   END: ../files/NEF.NEF
-     286 | 0x8825 Exif.Image.GPSTag            |      LONG |        1 |           | 177840
+     286 | 0x8825 Exif.Image.GPSTag                |      LONG |        1 |           | 177840
   STRUCTURE OF TIFF FILE (II): ../files/NEF.NEF
-   address |    tag                              |      type |    count |    offset | value
-    177842 | 000000 Exif.GPSInfo.GPSVersionID    |     UBYTE |        4 |           | 2 3 0 0
+   address |    tag                                  |      type |    count |    offset | value
+    177842 | 000000 Exif.GPSInfo.GPSVersionID        |     UBYTE |        4 |           | 2 3 0 0
   END: ../files/NEF.NEF
-     298 | 0x9003 Exif.Image.0x9003            |     ASCII |       20 |      2840 | 2016:04:20 08:00:13
-     310 | 0x9216 Exif.Image.0x9216            |     UBYTE |        4 |           | 1 0 0 0
+     298 | 0x9003 Exif.Image.0x9003                |     ASCII |       20 |      2840 | 2016:04:20 08:00:13
+     310 | 0x9216 Exif.Image.0x9216                |     UBYTE |        4 |           | 1 0 0 0
 END: ../files/NEF.NEF

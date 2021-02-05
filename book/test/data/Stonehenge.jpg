@@ -3,160 +3,172 @@ STRUCTURE OF JPEG FILE (II): ../files/Stonehenge.jpg
        0 | 0xffd8 SOI  
        2 | 0xffe1 APP1  |   15272 | Exif__II*_.___._..._.___.___..._.___.___
   STRUCTURE OF TIFF FILE (II): ../files/Stonehenge.jpg:12->15264
-   address |    tag                              |      type |    count |    offset | value
-        10 | 0x010f Exif.Image.Make              |     ASCII |       18 |       146 | NIKON CORPORATION
-        22 | 0x0110 Exif.Image.Model             |     ASCII |       12 |       164 | NIKON D5300
-        34 | 0x0112 Exif.Image.Orientation       |     SHORT |        1 |           | 1
-        46 | 0x011a Exif.Image.XResolution       |  RATIONAL |        1 |       176 | 300/1
-        58 | 0x011b Exif.Image.YResolution       |  RATIONAL |        1 |       184 | 300/1
-        70 | 0x0128 Exif.Image.ResolutionUnit    |     SHORT |        1 |           | 2
-        82 | 0x0131 Exif.Image.Software          |     ASCII |       10 |       192 | Ver.1.00 
-        94 | 0x0132 Exif.Image.DateTime          |     ASCII |       20 |       202 | 2015:07:16 20:25:28
-       106 | 0x0213 Exif.Image.YCbCrPositioning  |     SHORT |        1 |           | 1
-       118 | 0x8769 Exif.Image.ExifTag           |      LONG |        1 |           | 222
+   address |    tag                                  |      type |    count |    offset | value
+        10 | 0x010f Exif.Image.Make                  |     ASCII |       18 |       146 | NIKON CORPORATION
+        22 | 0x0110 Exif.Image.Model                 |     ASCII |       12 |       164 | NIKON D5300
+        34 | 0x0112 Exif.Image.Orientation           |     SHORT |        1 |           | 1
+        46 | 0x011a Exif.Image.XResolution           |  RATIONAL |        1 |       176 | 300/1
+        58 | 0x011b Exif.Image.YResolution           |  RATIONAL |        1 |       184 | 300/1
+        70 | 0x0128 Exif.Image.ResolutionUnit        |     SHORT |        1 |           | 2
+        82 | 0x0131 Exif.Image.Software              |     ASCII |       10 |       192 | Ver.1.00 
+        94 | 0x0132 Exif.Image.DateTime              |     ASCII |       20 |       202 | 2015:07:16 20:25:28
+       106 | 0x0213 Exif.Image.YCbCrPositioning      |     SHORT |        1 |           | 1
+       118 | 0x8769 Exif.Image.ExifTag               |      LONG |        1 |           | 222
     STRUCTURE OF TIFF FILE (II): ../files/Stonehenge.jpg:12->15264
-     address |    tag                              |      type |    count |    offset | value
-         224 | 0x829a Exif.Photo.ExposureTime      |  RATIONAL |        1 |       732 | 10/4000
-         236 | 0x829d Exif.Photo.FNumber           |  RATIONAL |        1 |       740 | 100/10
-         248 | 0x8822 Exif.Photo.ExposureProgram   |     SHORT |        1 |           | 0
-         260 | 0x8827 Exif.Photo.ISOSpeedRatings   |     SHORT |        1 |           | 200
-         272 | 0x8830 Exif.Photo.SensitivityType   |     SHORT |        1 |           | 2
-         284 | 0x9000 Exif.Photo.ExifVersion       | UNDEFINED |        4 |           | 0230
-         296 | 0x9003 Exif.Photo.DateTimeOriginal  |     ASCII |       20 |       748 | 2015:07:16 15:38:54
-         308 | 0x9004 Exif.Photo.DateTimeDigitized |     ASCII |       20 |       768 | 2015:07:16 15:38:54
-         320 | 0x9101 Exif.Photo.ComponentsConfi.. | UNDEFINED |        4 |           | ..._
-         332 | 0x9102 Exif.Photo.CompressedBitsP.. |  RATIONAL |        1 |       788 | 2/1
-         344 | 0x9204 Exif.Photo.ExposureBiasValue | SRATIONAL |        1 |       796 | 0/6
-         356 | 0x9205 Exif.Photo.MaxApertureValue  |  RATIONAL |        1 |       804 | 43/10
-         368 | 0x9207 Exif.Photo.MeteringMode      |     SHORT |        1 |           | 5
-         380 | 0x9208 Exif.Photo.LightSource       |     SHORT |        1 |           | 0
-         392 | 0x9209 Exif.Photo.Flash             |     SHORT |        1 |           | 16
-         404 | 0x920a Exif.Photo.FocalLength       |  RATIONAL |        1 |       812 | 440/10
-         416 | 0x927c Exif.Photo.MakerNote         | UNDEFINED |     3152 |       820 | Nikon_..__II*_.___9_._._.___0211._._ +++
+     address |    tag                                  |      type |    count |    offset | value
+         224 | 0x829a Exif.Photo.ExposureTime          |  RATIONAL |        1 |       732 | 10/4000
+         236 | 0x829d Exif.Photo.FNumber               |  RATIONAL |        1 |       740 | 100/10
+         248 | 0x8822 Exif.Photo.ExposureProgram       |     SHORT |        1 |           | 0
+         260 | 0x8827 Exif.Photo.ISOSpeedRatings       |     SHORT |        1 |           | 200
+         272 | 0x8830 Exif.Photo.SensitivityType       |     SHORT |        1 |           | 2
+         284 | 0x9000 Exif.Photo.ExifVersion           | UNDEFINED |        4 |           | 0230
+         296 | 0x9003 Exif.Photo.DateTimeOriginal      |     ASCII |       20 |       748 | 2015:07:16 15:38:54
+         308 | 0x9004 Exif.Photo.DateTimeDigitized     |     ASCII |       20 |       768 | 2015:07:16 15:38:54
+         320 | 0x9101 Exif.Photo.ComponentsConfigura.. | UNDEFINED |        4 |           | ..._
+         332 | 0x9102 Exif.Photo.CompressedBitsPerPi.. |  RATIONAL |        1 |       788 | 2/1
+         344 | 0x9204 Exif.Photo.ExposureBiasValue     | SRATIONAL |        1 |       796 | 0/6
+         356 | 0x9205 Exif.Photo.MaxApertureValue      |  RATIONAL |        1 |       804 | 43/10
+         368 | 0x9207 Exif.Photo.MeteringMode          |     SHORT |        1 |           | 5
+         380 | 0x9208 Exif.Photo.LightSource           |     SHORT |        1 |           | 0
+         392 | 0x9209 Exif.Photo.Flash                 |     SHORT |        1 |           | 16
+         404 | 0x920a Exif.Photo.FocalLength           |  RATIONAL |        1 |       812 | 440/10
+         416 | 0x927c Exif.Photo.MakerNote             | UNDEFINED |     3152 |       820 | Nikon_..__II*_.___9_._._.___0211._._ +++
       STRUCTURE OF TIFF FILE (II): ../files/Stonehenge.jpg:12->15264:830->3142
-       address |    tag                              |      type |    count |    offset | value
-            10 | 0x0001 Exif.Nikon.Version           | UNDEFINED |        4 |           | 0211
-            22 | 0x0002 Exif.Nikon.ISOSpeed          |     SHORT |        2 |           | 0 200
-            34 | 0x0004 Exif.Nikon.Quality           |     ASCII |        8 |       698 | NORMAL 
-            46 | 0x0005 Exif.Nikon.WhiteBalance      |     ASCII |       13 |       706 | AUTO        
-            58 | 0x0007 Exif.Nikon.Focus             |     ASCII |        7 |       720 | AF-A  
-            70 | 0x0008 Exif.Nikon.FlashSetting      |     ASCII |       13 |       728 |             
-            82 | 0x0009 Exif.Nikon.FlashDevice       |     ASCII |       20 |       742 |                    
-            94 | 0x000b Exif.Nikon.WhiteBalanceBias  |    SSHORT |        2 |           | 0 0
-           106 | 0x000c Exif.Nikon.WB_RBLevels       |  RATIONAL |        4 |       762 | 538/256 354/256 256/256 256/256
-           118 | 0x000d Exif.Nikon.ProgramShift      | UNDEFINED |        4 |           | _.._
-           130 | 0x000e Exif.Nikon.ExposureDiff      | UNDEFINED |        4 |           | _.._
-           142 | 0x0012 Exif.Nikon.FlashComp         | UNDEFINED |        4 |           | _.._
-           154 | 0x0013 Exif.Nikon.ISOSettings       |     SHORT |        2 |           | 0 200
-           166 | 0x0016 Exif.Nikon.ImageBoundary     |     SHORT |        4 |       794 | 0 0 6000 4000
-           178 | 0x0017 Exif.Nikon.FlashExposureComp | UNDEFINED |        4 |           | _.._
-           190 | 0x0018 Exif.Nikon.FlashBracketComp  | UNDEFINED |        4 |           | _.._
-           202 | 0x0019 Exif.Nikon.ExposureBracket.. | SRATIONAL |        1 |       802 | 0/6
-           214 | 0x001b Exif.Nikon.CropHiSpeed       |     SHORT |        7 |       810 | 0 6016 4016 6016 4016 0 0
-           226 | 0x001c Exif.Nikon.ExposureTuning    | UNDEFINED |        3 |           | _..
-           238 | 0x001d Exif.Nikon.SerialNumber      |     ASCII |        8 |       824 | 2567806
-           250 | 0x001e Exif.Nikon.ColorSpace        |     SHORT |        1 |           | 1
-           262 | 0x001f Exif.Nikon.0x1f              | UNDEFINED |        8 |       832 | 0100..__
-           274 | 0x0022 Exif.Nikon.0x22              |     SHORT |        1 |           | 65535
-           286 | 0x0023 Exif.Nikon.PictureControl    | UNDEFINED |       58 |       840 | 0100STANDARD____________STANDARD____ +++
-           840 | 0x0023 Exif.Nikon.PcVersion         |     ASCII |        4 |           | 0100
-           844 | 0x0023 Exif.Nikon.PcName            |     ASCII |       20 |           | STANDARD
-           864 | 0x0023 Exif.Nikon.PcBase            |     ASCII |       20 |           | STANDARD
-           888 | 0x0023 Exif.Nikon.PcAdjust          |     UBYTE |        1 |           | 0
-           889 | 0x0023 Exif.Nikon.PcQuickAdjust     |     UBYTE |        1 |           | 255
-           890 | 0x0023 Exif.Nikon.PcSharpness       |     UBYTE |        1 |           | 0
-           891 | 0x0023 Exif.Nikon.PcContrast        |     UBYTE |        1 |           | 0
-           892 | 0x0023 Exif.Nikon.PcBrightness      |     UBYTE |        1 |           | 128
-           893 | 0x0023 Exif.Nikon.PcSaturation      |     UBYTE |        1 |           | 0
-           894 | 0x0023 Exif.Nikon.PcHueAdjustment   |     UBYTE |        1 |           | 128
-           895 | 0x0023 Exif.Nikon.PcFilterEffect    |     UBYTE |        1 |           | 255
-           896 | 0x0023 Exif.Nikon.PcFilterEffect    |     UBYTE |        1 |           | 255
-           897 | 0x0023 Exif.Nikon.PcToningSaturat.. |     UBYTE |        1 |           | 255
-           298 | 0x0024 Exif.Nikon.0x24              | UNDEFINED |        4 |           | __._
-           310 | 0x0025 Exif.Nikon.0x25              | UNDEFINED |       14 |       898 | H..___H..___._
-           322 | 0x002b Exif.Nikon.0x2b              | UNDEFINED |       16 |       912 | 0100__._________
-           334 | 0x002c Exif.Nikon.0x2c              | UNDEFINED |      574 |       928 | 0101#_....__________________________ +++
-           346 | 0x002d Exif.Nikon.0x2d              |     SHORT |        3 |      1502 | 512 0 0
-           358 | 0x0032 Exif.Nikon.0x32              | UNDEFINED |        8 |      1508 | 0100.___
-           370 | 0x0035 Exif.Nikon.0x35              | UNDEFINED |        6 |      1516 | 0200__
-           382 | 0x003b Exif.Nikon.0x3b              |  RATIONAL |        4 |      1522 | 256/256 256/256 256/256 256/256
-           394 | 0x003c Exif.Nikon.0x3c              |     SHORT |        1 |           | 1
-           406 | 0x0083 Exif.Nikon.0x83              |     UBYTE |        1 |           | 14
-           418 | 0x0084 Exif.Nikon.0x84              |  RATIONAL |        4 |      1554 | 180/10 2500/10 35/10 63/10
-           430 | 0x0087 Exif.Nikon.0x87              |     UBYTE |        1 |           | 0
-           442 | 0x0089 Exif.Nikon.0x89              |     SHORT |        1 |           | 0
-           454 | 0x008a Exif.Nikon.0x8a              |     SHORT |        1 |           | 1
-           466 | 0x008b Exif.Nikon.0x8b              | UNDEFINED |        4 |           | 7.._
-           478 | 0x0095 Exif.Nikon.0x95              |     ASCII |        5 |      1586 | OFF 
-           490 | 0x0097 Exif.Nikon.0x97              | UNDEFINED |     1188 |      1592 | 0219.dU....W..2......:.......F.#$.I +++
-           502 | 0x0098 Exif.Nikon.LensData          | UNDEFINED |       33 |      2780 | 0204.W....z.o..#[.....!o.x..E....
-           514 | 0x009d Exif.Nikon.0x9d              |     SHORT |        1 |           | 0
-           526 | 0x009e Exif.Nikon.0x9e              |     SHORT |       10 |      2814 | 0 0 0 0 0 0 0 0 0 0
-           538 | 0x00a2 Exif.Nikon.0xa2              |      LONG |        1 |           | 6173648
-           550 | 0x00a3 Exif.Nikon.0xa3              |     UBYTE |        1 |           | 0
-           562 | 0x00a7 Exif.Nikon.ShutterCount      |      LONG |        1 |           | 9608
-           502 | 0x0098 Exif.Nikon.LensData          | UNDEFINED |       33 |      2780 | 0204.O..N....}.Bv........V......N
-          2780 | 0x0098 Exif.Nikon.LdVersion         |     ASCII |        4 |           | 0204
-          2789 | 0x0098 Exif.Nikon.LdFocusDistance   |     UBYTE |        1 |           | 16
-          2793 | 0x0098 Exif.Nikon.LdLensIDNumber    |     UBYTE |        1 |           | 125
-           574 | 0x00a8 Exif.Nikon.0xa8              | UNDEFINED |       49 |      2834 | 0106________________________________ +++
-           586 | 0x00ab Exif.Nikon.0xab              |     ASCII |       16 |      2884 | AUTO(FLASH OFF)
-           598 | 0x00b0 Exif.Nikon.0xb0              | UNDEFINED |       16 |      2900 | 0100____________
-           610 | 0x00b1 Exif.Nikon.0xb1              |     SHORT |        1 |           | 4
-           622 | 0x00b6 Exif.Nikon.0xb6              | UNDEFINED |        8 |      2916 | ________
-           634 | 0x00b7 Exif.Nikon.0xb7              | UNDEFINED |       30 |      2924 | 0100_...i.._._________________
-           646 | 0x00b8 Exif.Nikon.0xb8              | UNDEFINED |      172 |      2954 | 0100__e_..__________________________ +++
-           658 | 0x00bb Exif.Nikon.0xbb              | UNDEFINED |        8 |      3126 | 0200..._
-           670 | 0x00bf Exif.Nikon.0xbf              |     SHORT |        1 |           | 0
-           682 | 0x00c0 Exif.Nikon.0xc0              | UNDEFINED |        8 |      3134 | <.._..._
+       address |    tag                                  |      type |    count |    offset | value
+            10 | 0x0001 Exif.Nikon.Version               | UNDEFINED |        4 |           | 0211
+            22 | 0x0002 Exif.Nikon.ISOSpeed              |     SHORT |        2 |           | 0 200
+            34 | 0x0004 Exif.Nikon.Quality               |     ASCII |        8 |       698 | NORMAL 
+            46 | 0x0005 Exif.Nikon.WhiteBalance          |     ASCII |       13 |       706 | AUTO        
+            58 | 0x0007 Exif.Nikon.Focus                 |     ASCII |        7 |       720 | AF-A  
+            70 | 0x0008 Exif.Nikon.FlashSetting          |     ASCII |       13 |       728 |             
+            82 | 0x0009 Exif.Nikon.FlashDevice           |     ASCII |       20 |       742 |                    
+            94 | 0x000b Exif.Nikon.WhiteBalanceBias      |    SSHORT |        2 |           | 0 0
+           106 | 0x000c Exif.Nikon.WB_RBLevels           |  RATIONAL |        4 |       762 | 538/256 354/256 256/256 256/256
+           118 | 0x000d Exif.Nikon.ProgramShift          | UNDEFINED |        4 |           | _.._
+           130 | 0x000e Exif.Nikon.ExposureDiff          | UNDEFINED |        4 |           | _.._
+           142 | 0x0012 Exif.Nikon.FlashComp             | UNDEFINED |        4 |           | _.._
+           154 | 0x0013 Exif.Nikon.ISOSettings           |     SHORT |        2 |           | 0 200
+           166 | 0x0016 Exif.Nikon.ImageBoundary         |     SHORT |        4 |       794 | 0 0 6000 4000
+           178 | 0x0017 Exif.Nikon.FlashExposureComp     | UNDEFINED |        4 |           | _.._
+           190 | 0x0018 Exif.Nikon.FlashBracketComp      | UNDEFINED |        4 |           | _.._
+           202 | 0x0019 Exif.Nikon.ExposureBracketComp   | SRATIONAL |        1 |       802 | 0/6
+           214 | 0x001b Exif.Nikon.CropHiSpeed           |     SHORT |        7 |       810 | 0 6016 4016 6016 4016 0 0
+           226 | 0x001c Exif.Nikon.ExposureTuning        | UNDEFINED |        3 |           | _..
+           238 | 0x001d Exif.Nikon.SerialNumber          |     ASCII |        8 |       824 | 2567806
+           250 | 0x001e Exif.Nikon.ColorSpace            |     SHORT |        1 |           | 1
+           262 | 0x001f Exif.Nikon.0x1f                  | UNDEFINED |        8 |       832 | 0100..__
+           274 | 0x0022 Exif.Nikon.0x22                  |     SHORT |        1 |           | 65535
+           286 | 0x0023 Exif.Nikon.PictureControl        | UNDEFINED |       58 |       840 | 0100STANDARD____________STANDARD____ +++
+           840 | 0x0023 Exif.Nikon.PcVersion             |     ASCII |        4 |           | 0100
+           844 | 0x0023 Exif.Nikon.PcName                |     ASCII |       20 |           | STANDARD
+           864 | 0x0023 Exif.Nikon.PcBase                |     ASCII |       20 |           | STANDARD
+           888 | 0x0023 Exif.Nikon.PcAdjust              |     UBYTE |        1 |           | 0
+           889 | 0x0023 Exif.Nikon.PcQuickAdjust         |     UBYTE |        1 |           | 255
+           890 | 0x0023 Exif.Nikon.PcSharpness           |     UBYTE |        1 |           | 0
+           891 | 0x0023 Exif.Nikon.PcContrast            |     UBYTE |        1 |           | 0
+           892 | 0x0023 Exif.Nikon.PcBrightness          |     UBYTE |        1 |           | 128
+           893 | 0x0023 Exif.Nikon.PcSaturation          |     UBYTE |        1 |           | 0
+           894 | 0x0023 Exif.Nikon.PcHueAdjustment       |     UBYTE |        1 |           | 128
+           895 | 0x0023 Exif.Nikon.PcFilterEffect        |     UBYTE |        1 |           | 255
+           896 | 0x0023 Exif.Nikon.PcFilterEffect        |     UBYTE |        1 |           | 255
+           897 | 0x0023 Exif.Nikon.PcToningSaturation    |     UBYTE |        1 |           | 255
+           298 | 0x0024 Exif.Nikon.0x24                  | UNDEFINED |        4 |           | __._
+           310 | 0x0025 Exif.Nikon.0x25                  | UNDEFINED |       14 |       898 | H..___H..___._
+           322 | 0x002b Exif.Nikon.0x2b                  | UNDEFINED |       16 |       912 | 0100__._________
+           334 | 0x002c Exif.Nikon.0x2c                  | UNDEFINED |      574 |       928 | 0101#_....__________________________ +++
+           346 | 0x002d Exif.Nikon.0x2d                  |     SHORT |        3 |      1502 | 512 0 0
+           358 | 0x0032 Exif.Nikon.0x32                  | UNDEFINED |        8 |      1508 | 0100.___
+           370 | 0x0035 Exif.Nikon.0x35                  | UNDEFINED |        6 |      1516 | 0200__
+           382 | 0x003b Exif.Nikon.0x3b                  |  RATIONAL |        4 |      1522 | 256/256 256/256 256/256 256/256
+           394 | 0x003c Exif.Nikon.0x3c                  |     SHORT |        1 |           | 1
+           406 | 0x0083 Exif.Nikon.0x83                  |     UBYTE |        1 |           | 14
+           418 | 0x0084 Exif.Nikon.0x84                  |  RATIONAL |        4 |      1554 | 180/10 2500/10 35/10 63/10
+           430 | 0x0087 Exif.Nikon.0x87                  |     UBYTE |        1 |           | 0
+           442 | 0x0089 Exif.Nikon.0x89                  |     SHORT |        1 |           | 0
+           454 | 0x008a Exif.Nikon.0x8a                  |     SHORT |        1 |           | 1
+           466 | 0x008b Exif.Nikon.0x8b                  | UNDEFINED |        4 |           | 7.._
+           478 | 0x0095 Exif.Nikon.0x95                  |     ASCII |        5 |      1586 | OFF 
+           490 | 0x0097 Exif.Nikon.0x97                  | UNDEFINED |     1188 |      1592 | 0219.dU....W..2......:.......F.#$.I +++
+           502 | 0x0098 Exif.Nikon.LensData              | UNDEFINED |       33 |      2780 | 0204.W....z.o..#[.....!o.x..E....
+           514 | 0x009d Exif.Nikon.0x9d                  |     SHORT |        1 |           | 0
+           526 | 0x009e Exif.Nikon.0x9e                  |     SHORT |       10 |      2814 | 0 0 0 0 0 0 0 0 0 0
+           538 | 0x00a2 Exif.Nikon.0xa2                  |      LONG |        1 |           | 6173648
+           550 | 0x00a3 Exif.Nikon.0xa3                  |     UBYTE |        1 |           | 0
+           562 | 0x00a7 Exif.Nikon.ShutterCount          |      LONG |        1 |           | 9608
+           502 | 0x0098 Exif.Nikon.LensData              | UNDEFINED |       33 |      2780 | 0204.O..N....}.Bv........V......N
+          2780 | 0x0098 Exif.Nikon.LdVersion             |     ASCII |        4 |           | 0204
+          2789 | 0x0098 Exif.Nikon.LdFocusDistance       |     UBYTE |        1 |           | 16
+          2793 | 0x0098 Exif.Nikon.LdLensIDNumber        |     UBYTE |        1 |           | 125
+           574 | 0x00a8 Exif.Nikon.0xa8                  | UNDEFINED |       49 |      2834 | 0106________________________________ +++
+           586 | 0x00ab Exif.Nikon.0xab                  |     ASCII |       16 |      2884 | AUTO(FLASH OFF)
+           598 | 0x00b0 Exif.Nikon.0xb0                  | UNDEFINED |       16 |      2900 | 0100____________
+           610 | 0x00b1 Exif.Nikon.0xb1                  |     SHORT |        1 |           | 4
+           622 | 0x00b6 Exif.Nikon.0xb6                  | UNDEFINED |        8 |      2916 | ________
+           634 | 0x00b7 Exif.Nikon.0xb7                  | UNDEFINED |       30 |      2924 | 0100_...i.._._________________
+           646 | 0x00b8 Exif.Nikon.0xb8                  | UNDEFINED |      172 |      2954 | 0100__e_..__________________________ +++
+           658 | 0x00bb Exif.Nikon.0xbb                  | UNDEFINED |        8 |      3126 | 0200..._
+           670 | 0x00bf Exif.Nikon.0xbf                  |     SHORT |        1 |           | 0
+           682 | 0x00c0 Exif.Nikon.0xc0                  | UNDEFINED |        8 |      3134 | <.._..._
       END: ../files/Stonehenge.jpg:12->15264:830->3142
-         428 | 0x9286 Exif.Photo.UserComment       | UNDEFINED |       20 |      3972 | ASCII___Classic View
-         440 | 0x9290 Exif.Photo.0x9290            |     ASCII |        3 |           | 00
-         452 | 0x9291 Exif.Photo.0x9291            |     ASCII |        3 |           | 00
-         464 | 0x9292 Exif.Photo.0x9292            |     ASCII |        3 |           | 00
-         476 | 0xa000 Exif.Photo.FlashpixVersion   | UNDEFINED |        4 |           | 0100
-         488 | 0xa001 Exif.Photo.ColorSpace        |     SHORT |        1 |           | 1
-         500 | 0xa002 Exif.Photo.PixelXDimension   |     SHORT |        1 |           | 6000
-         512 | 0xa003 Exif.Photo.PixelYDimension   |     SHORT |        1 |           | 4000
-         524 | 0xa005 Exif.Photo.InteropTag        |      LONG |        1 |           | 4042
-         536 | 0xa217 Exif.Photo.0xa217            |     SHORT |        1 |           | 2
-         548 | 0xa300 Exif.Photo.FileSource        | UNDEFINED |        1 |           | .
-         560 | 0xa301 Exif.Photo.SceneType         | UNDEFINED |        1 |           | .
-         572 | 0xa302 Exif.Photo.0xa302            | UNDEFINED |        8 |      3992 | ._.__...
-         584 | 0xa401 Exif.Photo.CustomRendered    |     SHORT |        1 |           | 0
-         596 | 0xa402 Exif.Photo.ExposureMode      |     SHORT |        1 |           | 0
-         608 | 0xa403 Exif.Photo.WhiteBalance      |     SHORT |        1 |           | 0
-         620 | 0xa404 Exif.Photo.0xa404            |  RATIONAL |        1 |      4000 | 1/1
-         632 | 0xa405 Exif.Photo.0xa405            |     SHORT |        1 |           | 66
-         644 | 0xa406 Exif.Photo.SceneCaptureType  |     SHORT |        1 |           | 0
-         656 | 0xa407 Exif.Photo.0xa407            |     SHORT |        1 |           | 0
-         668 | 0xa408 Exif.Photo.Contrast          |     SHORT |        1 |           | 0
-         680 | 0xa409 Exif.Photo.Saturation        |     SHORT |        1 |           | 0
-         692 | 0xa40a Exif.Photo.Sharpness         |     SHORT |        1 |           | 0
-         704 | 0xa40c Exif.Photo.0xa40c            |     SHORT |        1 |           | 0
-         716 | 0xa420 Exif.Photo.0xa420            |     ASCII |       33 |      4008 | 090caaf2c085f3e102513b24750041aa
+         428 | 0x9286 Exif.Photo.UserComment           | UNDEFINED |       20 |      3972 | ASCII___Classic View
+         440 | 0x9290 Exif.Photo.0x9290                |     ASCII |        3 |           | 00
+         452 | 0x9291 Exif.Photo.0x9291                |     ASCII |        3 |           | 00
+         464 | 0x9292 Exif.Photo.0x9292                |     ASCII |        3 |           | 00
+         476 | 0xa000 Exif.Photo.FlashpixVersion       | UNDEFINED |        4 |           | 0100
+         488 | 0xa001 Exif.Photo.ColorSpace            |     SHORT |        1 |           | 1
+         500 | 0xa002 Exif.Photo.PixelXDimension       |     SHORT |        1 |           | 6000
+         512 | 0xa003 Exif.Photo.PixelYDimension       |     SHORT |        1 |           | 4000
+         524 | 0xa005 Exif.Photo.InteropTag            |      LONG |        1 |           | 4042
+      STRUCTURE OF TIFF FILE (II): ../files/Stonehenge.jpg:12->15264
+       address |    tag                                  |      type |    count |    offset | value
+          4044 | 0x0001 Exif.Photo.InteropIndex          |     ASCII |        4 |           | R98
+          4056 | 0x0002 Exif.Photo.InteropVersion        | UNDEFINED |        4 |           | 0100
+      END: ../files/Stonehenge.jpg:12->15264
+         536 | 0xa217 Exif.Photo.0xa217                |     SHORT |        1 |           | 2
+         548 | 0xa300 Exif.Photo.FileSource            | UNDEFINED |        1 |           | .
+         560 | 0xa301 Exif.Photo.SceneType             | UNDEFINED |        1 |           | .
+         572 | 0xa302 Exif.Photo.0xa302                | UNDEFINED |        8 |      3992 | ._.__...
+         584 | 0xa401 Exif.Photo.CustomRendered        |     SHORT |        1 |           | 0
+         596 | 0xa402 Exif.Photo.ExposureMode          |     SHORT |        1 |           | 0
+         608 | 0xa403 Exif.Photo.WhiteBalance          |     SHORT |        1 |           | 0
+         620 | 0xa404 Exif.Photo.0xa404                |  RATIONAL |        1 |      4000 | 1/1
+         632 | 0xa405 Exif.Photo.0xa405                |     SHORT |        1 |           | 66
+         644 | 0xa406 Exif.Photo.SceneCaptureType      |     SHORT |        1 |           | 0
+         656 | 0xa407 Exif.Photo.0xa407                |     SHORT |        1 |           | 0
+         668 | 0xa408 Exif.Photo.Contrast              |     SHORT |        1 |           | 0
+         680 | 0xa409 Exif.Photo.Saturation            |     SHORT |        1 |           | 0
+         692 | 0xa40a Exif.Photo.Sharpness             |     SHORT |        1 |           | 0
+         704 | 0xa40c Exif.Photo.0xa40c                |     SHORT |        1 |           | 0
+         716 | 0xa420 Exif.Photo.0xa420                |     ASCII |       33 |      4008 | 090caaf2c085f3e102513b24750041aa
     END: ../files/Stonehenge.jpg:12->15264
-       130 | 0x8825 Exif.Image.GPSTag            |      LONG |        1 |           | 4072
+       130 | 0x8825 Exif.Image.GPSTag                |      LONG |        1 |           | 4072
     STRUCTURE OF TIFF FILE (II): ../files/Stonehenge.jpg:12->15264
-     address |    tag                              |      type |    count |    offset | value
-        4074 | 000000 Exif.GPSInfo.GPSVersionID    |     UBYTE |        4 |           | 2 3 0 0
-        4086 | 0x0001 Exif.GPSInfo.GPSLatitudeRef  |     ASCII |        2 |           | N
-        4098 | 0x0002 Exif.GPSInfo.GPSLatitude     |  RATIONAL |        3 |      4210 | 51/1 106969/10000 0/1
-        4110 | 0x0003 Exif.GPSInfo.GPSLongitudeRef |     ASCII |        2 |           | W
-        4122 | 0x0004 Exif.GPSInfo.GPSLongitude    |  RATIONAL |        3 |      4234 | 1/1 495984/10000 0/1
-        4134 | 0x0005 Exif.GPSInfo.GPSAltitudeRef  |     UBYTE |        1 |           | 0
-        4146 | 0x0006 Exif.GPSInfo.GPSAltitude     |  RATIONAL |        1 |      4258 | 97/1
-        4158 | 0x0007 Exif.GPSInfo.GPSTimeStamp    |  RATIONAL |        3 |      4266 | 14/1 38/1 5588/100
-        4170 | 0x0008 Exif.GPSInfo.GPSSatellites   |     ASCII |        3 |           | 09
-        4182 | 0x0012 Exif.GPSInfo.GPSMapDatum     |     ASCII |       17 |      4290 | WGS-84          
-        4194 | 0x001d Exif.GPSInfo.GPSDateStamp    |     ASCII |       11 |      4308 | 2015:07:16
+     address |    tag                                  |      type |    count |    offset | value
+        4074 | 000000 Exif.GPSInfo.GPSVersionID        |     UBYTE |        4 |           | 2 3 0 0
+        4086 | 0x0001 Exif.GPSInfo.GPSLatitudeRef      |     ASCII |        2 |           | N
+        4098 | 0x0002 Exif.GPSInfo.GPSLatitude         |  RATIONAL |        3 |      4210 | 51/1 106969/10000 0/1
+        4110 | 0x0003 Exif.GPSInfo.GPSLongitudeRef     |     ASCII |        2 |           | W
+        4122 | 0x0004 Exif.GPSInfo.GPSLongitude        |  RATIONAL |        3 |      4234 | 1/1 495984/10000 0/1
+        4134 | 0x0005 Exif.GPSInfo.GPSAltitudeRef      |     UBYTE |        1 |           | 0
+        4146 | 0x0006 Exif.GPSInfo.GPSAltitude         |  RATIONAL |        1 |      4258 | 97/1
+        4158 | 0x0007 Exif.GPSInfo.GPSTimeStamp        |  RATIONAL |        3 |      4266 | 14/1 38/1 5588/100
+        4170 | 0x0008 Exif.GPSInfo.GPSSatellites       |     ASCII |        3 |           | 09
+        4182 | 0x0012 Exif.GPSInfo.GPSMapDatum         |     ASCII |       17 |      4290 | WGS-84          
+        4194 | 0x001d Exif.GPSInfo.GPSDateStamp        |     ASCII |       11 |      4308 | 2015:07:16
     END: ../files/Stonehenge.jpg:12->15264
+      4322 | 0x0103 Exif.Image.Compression           |     SHORT |        1 |           | 6
+      4334 | 0x011a Exif.Image.XResolution           |  RATIONAL |        1 |      4410 | 300/1
+      4346 | 0x011b Exif.Image.YResolution           |  RATIONAL |        1 |      4418 | 300/1
+      4358 | 0x0128 Exif.Image.ResolutionUnit        |     SHORT |        1 |           | 2
+      4370 | 0x0201 Exif.Image.JPEGInterchangeFormat |      LONG |        1 |           | 4426
+      4382 | 0x0202 Exif.Image.JPEGInterchangeLength |      LONG |        1 |           | 10837
+      4394 | 0x0213 Exif.Image.YCbCrPositioning      |     SHORT |        1 |           | 1
   END: ../files/Stonehenge.jpg:12->15264
    15276 | 0xffe1 APP1  |    2786 | http://ns.adobe.com/xap/1.0/_<?xpacket b
    18064 | 0xffed APP13 |      96 | Photoshop 3.0_8BIM.._____'..__._...Z_..%
   STRUCTURE OF 8BIM FILE (MM): ../files/Stonehenge.jpg:18082->78
-       offset |   kind | tagName                      |  len | data | 
-            0 | 0x0404 | PSD.8BIM.IPTCNAA             |   30 | 12+1 | ..__._...Z_..%G..__._...x_.___
+       offset |   kind | tagName                              |  len | data | 
+            0 | 0x0404 | PSD.8BIM.IPTCNAA                 |   30 | 12+1 | ..__._...Z_..%G..__._...x_.___
     STRUCTURE OF IPTC FILE (MM): ../files/Stonehenge.jpg:18082->78:12->39
         Record | DataSet | Name                           | Length | Data
              1 |       0 | Iptc.Envelope.ModelVersion     |      2 | _.
@@ -164,7 +176,7 @@ STRUCTURE OF JPEG FILE (II): ../files/Stonehenge.jpg
              2 |       0 | Iptc.Application.RecordVersion |      2 | _.
              2 |     120 | Iptc.Application.Caption       |     12 | Classic View
     END: ../files/Stonehenge.jpg:18082->78:12->39
-           52 | 0x0425 | PSD.8BIM.0x425               |   16 | 12+0 | 3..M____________
+           52 | 0x0425 | PSD.8BIM.0x425                   |   16 | 12+0 | 3..M____________
   END: ../files/Stonehenge.jpg:18082->78
    18162 | 0xffe2 APP2  |    4094 | MPF_II*_.___.__.._.___0100..._.___.___..
    22258 | 0xffdb DQT   |     132 | _.......................................
@@ -175,12 +187,12 @@ STRUCTURE OF JPEG FILE (II): ../files/Stonehenge.jpg
  6196976 | 0xffd8 SOI  
  6196978 | 0xffe1 APP1  |    1022 | Exif__II*_.___._i.._.___._________._..._
   STRUCTURE OF TIFF FILE (II): ../files/Stonehenge.jpg:6196988->1014
-   address |    tag                              |      type |    count |    offset | value
-        10 | 0x8769 Exif.Image.ExifTag           |      LONG |        1 |           | 28
+   address |    tag                                  |      type |    count |    offset | value
+        10 | 0x8769 Exif.Image.ExifTag               |      LONG |        1 |           | 28
     STRUCTURE OF TIFF FILE (II): ../files/Stonehenge.jpg:6196988->1014
-     address |    tag                              |      type |    count |    offset | value
-          30 | 0xa002 Exif.Photo.PixelXDimension   |     SHORT |        1 |           | 640
-          42 | 0xa003 Exif.Photo.PixelYDimension   |     SHORT |        1 |           | 424
+     address |    tag                                  |      type |    count |    offset | value
+          30 | 0xa002 Exif.Photo.PixelXDimension       |     SHORT |        1 |           | 640
+          42 | 0xa003 Exif.Photo.PixelYDimension       |     SHORT |        1 |           | 424
     END: ../files/Stonehenge.jpg:6196988->1014
   END: ../files/Stonehenge.jpg:6196988->1014
  6198002 | 0xffdb DQT   |     132 | _..........................!.#"!. .%)4,%
@@ -191,12 +203,12 @@ STRUCTURE OF JPEG FILE (II): ../files/Stonehenge.jpg
  6234864 | 0xffd8 SOI  
  6234866 | 0xffe1 APP1  |    1022 | Exif__II*_.___._i.._.___._________._..._
   STRUCTURE OF TIFF FILE (II): ../files/Stonehenge.jpg:6234876->1014
-   address |    tag                              |      type |    count |    offset | value
-        10 | 0x8769 Exif.Image.ExifTag           |      LONG |        1 |           | 28
+   address |    tag                                  |      type |    count |    offset | value
+        10 | 0x8769 Exif.Image.ExifTag               |      LONG |        1 |           | 28
     STRUCTURE OF TIFF FILE (II): ../files/Stonehenge.jpg:6234876->1014
-     address |    tag                              |      type |    count |    offset | value
-          30 | 0xa002 Exif.Photo.PixelXDimension   |     SHORT |        1 |           | 1620
-          42 | 0xa003 Exif.Photo.PixelYDimension   |     SHORT |        1 |           | 1080
+     address |    tag                                  |      type |    count |    offset | value
+          30 | 0xa002 Exif.Photo.PixelXDimension       |     SHORT |        1 |           | 1620
+          42 | 0xa003 Exif.Photo.PixelYDimension       |     SHORT |        1 |           | 1080
     END: ../files/Stonehenge.jpg:6234876->1014
   END: ../files/Stonehenge.jpg:6234876->1014
  6235890 | 0xffdb DQT   |     132 | _.......................................

@@ -1478,7 +1478,7 @@ public:
             bigtiff_ = magic_ == 43;
             start_   = bigtiff_ ? getLong8(header,8,endian_) : getLong (header,4,endian_);
             format_  = bigtiff_ ? "BIGTIFF"                  : "TIFF"                    ;
-            header_  = " address |    tag                              |      type |    count |    offset | value" ;
+            header_  = " address |    tag                                  |      type |    count |    offset | value" ;
 
             uint16_t bytesize = bigtiff_ ? getShort(header,4,endian_) : 8;
             uint16_t version  = bigtiff_ ? getShort(header,6,endian_) : 0;
@@ -1737,7 +1737,7 @@ public:
             DataBuf bim(4);
             memcpy(bim.pData_,"8BIM",4);
             valid_  = io().getLong(endian_) == ::getLong(bim,0,endian_);
-            header_ = "     offset |   kind | tagName                      |  len | data | " ;
+            header_ = "     offset |   kind | tagName                              |  len | data | " ;
             format_ = "8BIM";
             start_  = 0;
         }
@@ -2630,7 +2630,7 @@ void CIFF::accept(Visitor& visitor)
         uint32_t    Offset= tag&kStg_InRecordEntry && kount <= 8 ? 12345678 : offset;
         std::string offst = kount > 8 ? stringFormat("%6d",offset) : stringFormat("%6s","");
         bool        bLF   = true ; // line ending needed
-        std::cout << ::indent(depth)<< stringFormat(" %#6x | %-4s | %4d | %-30s | %6d | %s | ",tag,mask.c_str(),code,tagName(tag,crwDict,28).c_str(),kount,offst.c_str()) ;
+        std::cout << ::indent(depth)<< stringFormat(" %#6x | %-4s | %4d | %-32s | %6d | %s | ",tag,mask.c_str(),code,tagName(tag,crwDict,32).c_str(),kount,offst.c_str()) ;
 
         if ( tag == 0x2008 )        {  // ThumbnailImage
             std::cout << std::endl;
@@ -3060,7 +3060,7 @@ void ReportVisitor::visitIPTC(Io& io,Image& image
 void ReportVisitor::visitSegment(Io& io,Image& image,uint64_t address
          ,uint8_t marker,uint16_t length,std::string& signature)
 {
-    if ( isBasicOrRecursive() ) {
+    if ( isBasicOrRecursive() && (marker >= 0xc0 && marker < 0xff) ) {
         DataBuf buf( length < 40 ? length : 40 );
         IoSave  save(io,address+4);
         io.read(buf);
@@ -3097,11 +3097,11 @@ void ReportVisitor::reportFields(std::string& name,uint64_t address,endian_e end
     if ( makerTags.find(name) == makerTags.end() ) return;
 
     for (Field field : makerTags[name]) {
-        std::string n    = join(groupName(makerDict),field.name(),28);
+        std::string n    = join(groupName(makerDict),field.name(),32);
         size_t      byte = field.start() + field.count() * typeSize(field.type());
         if ( byte <= buff.size_ ) {
             out() << indent()
-                  << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
+                  << stringFormat("%8u | %#06x %-32s |%10s |%9u |%10s | "
                                  ,address+field.start(),tag,n.c_str(),typeName(field.type()),field.count(),"")
                   << chop(buff.toString(field.type(),field.count(),endian,field.start()),40)
                   << std::endl
@@ -3114,7 +3114,7 @@ void ReportVisitor::reportTag(std::string& name,uint64_t address,endian_e endian
 {
     if ( printTag(name) ) {
         out() << indent()
-              << stringFormat("%8u | %#06x %-28s |%10s |%9u |%10s | "
+              << stringFormat("%8u | %#06x %-32s |%10s |%9u |%10s | "
                    ,address,tag,name.c_str(),::typeName(type),count,offsetS.c_str())
               << chop(buff.toString(type,count,endian),40)
               << std::endl;
@@ -3141,7 +3141,7 @@ void ReportVisitor::visitTag
         offsetS         = os.str();
     }
 
-    std::string    name = tagName(tag,tagDict,28);
+    std::string    name = tagName(tag,tagDict,32);
     std::string   value = buff.toString(type,count,image.endian_);
 
     if ( name == "Exif.Sony.FocalPosition" ) {
@@ -3345,7 +3345,7 @@ void ReportVisitor::visit8BIM(Io& io,Image& image,uint32_t offset
         uint64_t len = b.size_<chop_len?b.size_:chop_len; // number of bytes to format
 
         out() << indent()
-              << stringFormat("   %8d | %#06x | %-28s | %4d | %2d+%1d | "
+              << stringFormat("   %8d | %#06x | %-32s | %4d | %2d+%1d | "
                             ,offset,kind,tag.c_str(),len,data,pad)
               << (b.size_ < chop_len ? b.binaryToString(0,len)                  // format and print
                                      : chop(b.binaryToString(0,len),chop_len))  // format, chop and print
@@ -3512,9 +3512,9 @@ void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
     if ( boxDict.find(name) != boxDict.end() ) {
         if ( boxTags.find(name) != boxTags.end() ) {
             for (Field field : boxTags[name] ) {
-                std::string n      = chop( boxDict[name] + "." + field.name(),28);
+                std::string n      = chop( boxDict[name] + "." + field.name(),32);
                 endian_e    endian = field.endian() == keImage ? image.endian() : field.endian();
-                out() << indent() << stringFormat("%-28s ",n.c_str())
+                out() << indent() << stringFormat("%-32s ",n.c_str())
                       << chop(data.toString(field.type(),field.count(),endian,field.start()+punt),40)
                       << std::endl;
             }
@@ -3632,8 +3632,8 @@ void init()
     tiffDict  [ 0x0131 ] = "Software";
     tiffDict  [ 0x0132 ] = "DateTime";
     tiffDict  [ 0x013b ] = "Artist";
-    tiffDict  [ 0x0201 ] = "JPEGIchangeFormat";
-    tiffDict  [ 0x0202 ] = "JPEGIchangeLength";
+    tiffDict  [ 0x0201 ] = "JPEGInterchangeFormat";
+    tiffDict  [ 0x0202 ] = "JPEGInterchangeLength";
     tiffDict  [ 0x0213 ] = "YCbCrPositioning";
     // DNG Tags
     dngDict   [ktGroup ] = "DNG";

@@ -1,6 +1,6 @@
 STRUCTURE OF CRW FILE (II): ../files/Canon.crw:26->10052
     tag | mask | code | name                           |  kount | offset | value 
- 0x2008 | H    |    8 | Exif.CRW.ThumbnailImage        |   4418 |      0 | 
+ 0x2008 | H    |    8 | Exif.CRW.ThumbnailImage          |   4418 |      0 | 
   STRUCTURE OF JPEG FILE (II): ../files/Canon.crw:26->10052:0->4418
    address | marker       |  length | signature
        0 | 0xffd8 SOI  
@@ -9,9 +9,8 @@ STRUCTURE OF CRW FILE (II): ../files/Canon.crw:26->10052
      155 | 0xffc4 DHT   |     418 | __........________............_.........
      575 | 0xffda SOS  
     4415 | 0xffd9 EOI  
-    4471 | 0xff00      
   END: ../files/Canon.crw:26->10052:0->4418
- 0x300a | H2   |   10 | Exif.CRW.ImageProps            |   5608 |   4418 | 
+ 0x300a | H2   |   10 | Exif.CRW.ImageProps              |   5608 |   4418 | 
             width              2272
             height             1704
             pixelAspectRatio   0x3f800000
@@ -21,34 +20,34 @@ STRUCTURE OF CRW FILE (II): ../files/Canon.crw:26->10052
             colorBW            257
   STRUCTURE OF CRW FILE (II): ../files/Canon.crw:26->10052
       tag | mask | code | name                           |  kount | offset | value 
-   0x5803 | I    |    3 | Exif.CRW.0x5803                |      8 |        | 
-   0x1810 | H    |   16 | Exif.CRW.ImageInfo             |     28 |      0 | à
-   0x500a | IW   |   10 | Exif.CRW.0x500a                |      8 |        | ________
-   0x5804 | I    |    4 | Exif.CRW.0x5804                |      8 |        | 
-   0x5817 | I    |   23 | Exif.CRW.0x5817                |      8 |        | 
-   0x180e | H    |   14 | Exif.CRW.TimeStamp             |     12 |     28 | Ü‹jB
-    0x816 | HA   |   22 | Exif.CRW.OriginalFileName      |     32 |     40 | CRW_3050.CRW
-    0x817 | HA   |   23 | Exif.CRW.ThumbnailFileName     |     32 |     72 | CRW_3050.THM
-    0x805 | HA   |    5 | Exif.CRW.CanonFileDescript..   |    256 |    104 | 
-   0x3003 | H2   |    3 | Exif.CRW.MeasuredInfo          |     16 |    360 | ._.X____in..____
-   0x2804 | H1   |    4 | Exif.CRW.ImageDescription      |     90 |    376 | High definition CCD image
-   0x2807 | H1   |    7 | Exif.CRW.CameraObject          |    178 |    466 | Andreas Huggel
-   0x300b | H2   |   11 | Exif.CRW.ExifInformation       |   4828 |    644 | 
+   0x5803 | I    |    3 | Exif.CRW.0x5803                  |      8 |        | 
+   0x1810 | H    |   16 | Exif.CRW.ImageInfo               |     28 |      0 | à
+   0x500a | IW   |   10 | Exif.CRW.0x500a                  |      8 |        | ________
+   0x5804 | I    |    4 | Exif.CRW.0x5804                  |      8 |        | 
+   0x5817 | I    |   23 | Exif.CRW.0x5817                  |      8 |        | 
+   0x180e | H    |   14 | Exif.CRW.TimeStamp               |     12 |     28 | Ü‹jB
+    0x816 | HA   |   22 | Exif.CRW.OriginalFileName        |     32 |     40 | CRW_3050.CRW
+    0x817 | HA   |   23 | Exif.CRW.ThumbnailFileName       |     32 |     72 | CRW_3050.THM
+    0x805 | HA   |    5 | Exif.CRW.CanonFileDescription    |    256 |    104 | 
+   0x3003 | H2   |    3 | Exif.CRW.MeasuredInfo            |     16 |    360 | ._.X____in..____
+   0x2804 | H1   |    4 | Exif.CRW.ImageDescription        |     90 |    376 | High definition CCD image
+   0x2807 | H1   |    7 | Exif.CRW.CameraObject            |    178 |    466 | Andreas Huggel
+   0x300b | H2   |   11 | Exif.CRW.ExifInformation         |   4828 |    644 | 
     STRUCTURE OF CRW FILE (II): ../files/Canon.crw:26->10052
         tag | mask | code | name                           |  kount | offset | value 
-          0x1 | H    |    1 | Exif.CRW.0x1                   |     12 |      0 | ]i.EvD%..:.C
-       0x5028 | IW   |   40 | Exif.CRW.0x5028                |      8 |        | ________
-       0x5029 | IW   |   41 | Exif.CRW.0x5029                |      8 |        | ________
-       0x102a | HW   |   42 | Exif.CRW.CanonShotInfo         |     54 |     12 | 6___._?___}_________________.0______ +++
-       0x102d | HW   |   45 | Exif.CRW.CanonCameraSettings   |     80 |     66 | P_.___._______.___.___._________._._ +++
-       0x102c | HW   |   44 | Exif.CRW.CanonColorInfo2       |    256 |    146 | ..._._._._______._n.________________ +++
-         0x32 | H    |   50 | Exif.CRW.CanonColorInfo1       |   2048 |    402 | 
-         0x36 | H    |   54 | Exif.CRW.0x36                  |   2048 |   2450 | 
-       0x1030 | HW   |   48 | Exif.CRW.WhiteSample           |    102 |   4498 | f_._._..b.._........................ +++
-       0x5834 | I    |   52 | Exif.CRW.0x5834                |      8 |        | 
-       0x1031 | HW   |   49 | Exif.CRW.SensorInfo            |     34 |   4600 | "_H...._._ _._....$.._'...________
-       0x1835 | H    |   53 | Exif.CRW.DecoderTable          |     16 |   4634 | 
-       0x107f | HW   |  127 | Exif.CRW.0x107f                |     42 |   4650 | *_._..t...______W_.___.___..._._._@_ +++
+          0x1 | H    |    1 | Exif.CRW.0x1                     |     12 |      0 | ]i.EvD%..:.C
+       0x5028 | IW   |   40 | Exif.CRW.0x5028                  |      8 |        | ________
+       0x5029 | IW   |   41 | Exif.CRW.0x5029                  |      8 |        | ________
+       0x102a | HW   |   42 | Exif.CRW.CanonShotInfo           |     54 |     12 | 6___._?___}_________________.0______ +++
+       0x102d | HW   |   45 | Exif.CRW.CanonCameraSettings     |     80 |     66 | P_.___._______.___.___._________._._ +++
+       0x102c | HW   |   44 | Exif.CRW.CanonColorInfo2         |    256 |    146 | ..._._._._______._n.________________ +++
+         0x32 | H    |   50 | Exif.CRW.CanonColorInfo1         |   2048 |    402 | 
+         0x36 | H    |   54 | Exif.CRW.0x36                    |   2048 |   2450 | 
+       0x1030 | HW   |   48 | Exif.CRW.WhiteSample             |    102 |   4498 | f_._._..b.._........................ +++
+       0x5834 | I    |   52 | Exif.CRW.0x5834                  |      8 |        | 
+       0x1031 | HW   |   49 | Exif.CRW.SensorInfo              |     34 |   4600 | "_H...._._ _._....$.._'...________
+       0x1835 | H    |   53 | Exif.CRW.DecoderTable            |     16 |   4634 | 
+       0x107f | HW   |  127 | Exif.CRW.0x107f                  |     42 |   4650 | *_._..t...______W_.___.___..._._._@_ +++
     END: ../files/Canon.crw:26->10052
   END: ../files/Canon.crw:26->10052
 END: ../files/Canon.crw:26->10052
