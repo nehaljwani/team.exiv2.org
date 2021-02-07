@@ -2,10 +2,8 @@ cmake_minimum_required(VERSION 3.8)
 project(book VERSION 0.0.1 LANGUAGES CXX)
 include(CheckCXXCompilerFlag)
 
-set(CMAKE_CXX_STANDARD                11 )
-set(CMAKE_CXX_EXTENSIONS              ON )
-set(CMAKE_OSX_ARCHITECTURES     "x86_64" )
-set(CMAKE_XCODE_ARCHS           "x86_64" )
+set(CMAKE_CXX_STANDARD                  11 )
+set(CMAKE_CXX_EXTENSIONS                ON )
 
 # build for the current version of macOS
 if ( APPLE ) 
@@ -31,17 +29,8 @@ add_executable(parse       parse.cpp      )
 
 # options
 option(    EXIV2_TEAM_USE_SANITIZERS  "Enable ASAN when available"                  OFF )
-if ( MSVC ) 
-   option( EXIV2_ENABLE_PNG        "Build compressed/png support (requires libz)"   OFF )
-else()
-   option( EXIV2_ENABLE_PNG        "Build compressed/png support (requires libz)"   ON  )
-endif()
 
-if( EXIV2_ENABLE_PNG )
-    find_package( ZLIB REQUIRED )
-endif( )
-
-if ( EXIV2_ENABLE_PNG AND ZLIB_FOUND ) 
+if ( ZLIB_FOUND ) 
     target_link_libraries ( tvisitor ${ZLIB_LIBRARIES} )
     target_compile_options( tvisitor PUBLIC -DHAVE_LIBZ)
 endif()

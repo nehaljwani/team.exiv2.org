@@ -45,6 +45,7 @@
 #endif
 
 typedef std::set<uint64_t> Visits;
+typedef unsigned char Byte;
 
 // https://github.com/Exiv2/exiv2/pull/906#issuecomment-504338797
 static void sonyCipher(Byte* bytes, uint32_t size, bool bDecipher)
