@@ -28,7 +28,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2021-01-25 07:11:53 +0000</string>
+	<string>2021-02-08 10:56:54 +0000</string>
 	<key>Modifier</key>
 	<string>Robin Mills</string>
 	<key>NotesVisible</key>
@@ -30778,6 +30778,51 @@ STRUCTURE OF RAF FILE: /Users/rmills/Downloads/sample1.raf\
 			<key>GraphicsList</key>
 			<array>
 				<dict>
+					<key>Class</key>
+					<string>LineGraphic</string>
+					<key>FontInfo</key>
+					<dict>
+						<key>Font</key>
+						<string>Helvetica</string>
+						<key>Size</key>
+						<real>12</real>
+					</dict>
+					<key>Head</key>
+					<dict>
+						<key>ID</key>
+						<integer>572</integer>
+					</dict>
+					<key>ID</key>
+					<integer>575</integer>
+					<key>Points</key>
+					<array>
+						<string>{224.85039566830383, 164.52755336308559}</string>
+						<string>{122.87401521405843, 162.8228350170954}</string>
+					</array>
+					<key>Style</key>
+					<dict>
+						<key>shadow</key>
+						<dict>
+							<key>Draws</key>
+							<string>NO</string>
+						</dict>
+						<key>stroke</key>
+						<dict>
+							<key>HeadArrow</key>
+							<string>FilledArrow</string>
+							<key>Legacy</key>
+							<false/>
+							<key>TailArrow</key>
+							<string>0</string>
+						</dict>
+					</dict>
+					<key>Tail</key>
+					<dict>
+						<key>ID</key>
+						<integer>462</integer>
+					</dict>
+				</dict>
+				<dict>
 					<key>Bounds</key>
 					<string>{{419.30265017025778, 315.70805085203324}, {90.708662240336253, 51.023620398213552}}</string>
 					<key>Class</key>
@@ -30827,7 +30872,7 @@ etc\'85}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{77.519684093890305, 133.81102481798862}, {90.708662240336253, 51.023620398213552}}</string>
+					<string>{{77.519684093890305, 137.31102481798862}, {90.708662240336253, 51.023620398213552}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -30862,7 +30907,7 @@ etc\'85}</string>
 					<key>Text</key>
 					<dict>
 						<key>Text</key>
-						<string>{\rtf1\ansi\ansicpg1252\cocoartf2513
+						<string>{\rtf1\ansi\ansicpg1252\cocoartf2578
 \cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 HelveticaNeue;}
 {\colortbl;\red255\green255\blue255;}
 {\*\expandedcolortbl;;}
@@ -33168,7 +33213,7 @@ ICC (profile)}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{53.106298531331525, 194.9448756505559}, {71, 22}}</string>
+					<string>{{25.307087732957083, 194.02361655152691}, {98, 22}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -33205,14 +33250,14 @@ ICC (profile)}</string>
 						<key>Align</key>
 						<integer>0</integer>
 						<key>Text</key>
-						<string>{\rtf1\ansi\ansicpg1252\cocoartf2513
+						<string>{\rtf1\ansi\ansicpg1252\cocoartf2578
 \cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 HelveticaNeue;}
 {\colortbl;\red255\green255\blue255;}
 {\*\expandedcolortbl;;}
 \deftab720
 \pard\pardeftab720\partightenfactor0
 
-\f0\fs18 \cf0 readMetadata()}</string>
+\f0\fs18 \cf0 image.readMetadata()}</string>
 					</dict>
 					<key>Wrap</key>
 					<string>NO</string>
@@ -33306,7 +33351,7 @@ Handlers}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{262.78739422587904, 156.9488148475632}, {73, 22}}</string>
+					<string>{{262.77164613846725, 160.46848914333225}, {73, 22}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -33343,7 +33388,7 @@ Handlers}</string>
 						<key>Align</key>
 						<integer>0</integer>
 						<key>Text</key>
-						<string>{\rtf1\ansi\ansicpg1252\cocoartf2513
+						<string>{\rtf1\ansi\ansicpg1252\cocoartf2578
 \cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 HelveticaNeue;}
 {\colortbl;\red255\green255\blue255;}
 {\*\expandedcolortbl;;}
@@ -33420,8 +33465,8 @@ Handlers}</string>
 					<integer>470</integer>
 					<key>Points</key>
 					<array>
-						<string>{256.70078384270823, 161.42518667294263}</string>
-						<string>{293.7204680647626, 161.42518667294263}</string>
+						<string>{253.70078384270823, 164.92518667294263}</string>
+						<string>{293.7204680647626, 164.92518667294263}</string>
 						<string>{293.7204680647626, 53.92518667294263}</string>
 						<string>{247.3661369445945, 53.807077241215836}</string>
 					</array>
@@ -33445,7 +33490,7 @@ Handlers}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{223, 182.76841958583253}, {71, 22}}</string>
+					<string>{{169.01180624682135, 172.06298727729191}, {71, 22}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -33482,7 +33527,7 @@ Handlers}</string>
 						<key>Align</key>
 						<integer>0</integer>
 						<key>Text</key>
-						<string>{\rtf1\ansi\ansicpg1252\cocoartf2513
+						<string>{\rtf1\ansi\ansicpg1252\cocoartf2578
 \cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 HelveticaNeue;}
 {\colortbl;\red255\green255\blue255;}
 {\*\expandedcolortbl;;}
@@ -33493,41 +33538,6 @@ Handlers}</string>
 					</dict>
 					<key>Wrap</key>
 					<string>NO</string>
-				</dict>
-				<dict>
-					<key>Class</key>
-					<string>LineGraphic</string>
-					<key>FontInfo</key>
-					<dict>
-						<key>Font</key>
-						<string>Helvetica</string>
-						<key>Size</key>
-						<real>12</real>
-					</dict>
-					<key>ID</key>
-					<integer>468</integer>
-					<key>Points</key>
-					<array>
-						<string>{224, 155.90551322557792}</string>
-						<string>{224, 212.17640148052078}</string>
-					</array>
-					<key>Style</key>
-					<dict>
-						<key>shadow</key>
-						<dict>
-							<key>Draws</key>
-							<string>NO</string>
-						</dict>
-						<key>stroke</key>
-						<dict>
-							<key>HeadArrow</key>
-							<string>FilledArrow</string>
-							<key>Legacy</key>
-							<false/>
-							<key>TailArrow</key>
-							<string>0</string>
-						</dict>
-					</dict>
 				</dict>
 				<dict>
 					<key>Class</key>
@@ -34525,7 +34535,7 @@ Handlers}</string>
 			<integer>1</integer>
 			<key>VerticalGuides</key>
 			<array>
-				<real>25</real>
+				<real>24.94488118682321</real>
 				<real>50</real>
 				<real>75</real>
 				<real>100</real>
@@ -43636,11 +43646,11 @@ uuid Data}</string>
 	<key>WindowInfo</key>
 	<dict>
 		<key>CurrentSheet</key>
-		<integer>9</integer>
+		<integer>16</integer>
 		<key>Expanded_Canvases</key>
 		<array/>
 		<key>Frame</key>
-		<string>{{0, 91}, {1680, 936}}</string>
+		<string>{{0, 88}, {1680, 936}}</string>
 		<key>ShowInfo</key>
 		<true/>
 		<key>ShowRuler</key>
@@ -43652,7 +43662,7 @@ uuid Data}</string>
 		<key>TopSlabHeight</key>
 		<real>33</real>
 		<key>VisibleRegion</key>
-		<string>{{0, 1}, {585, 381}}</string>
+		<string>{{0, 0}, {585, 380}}</string>
 		<key>Zoom</key>
 		<real>2</real>
 		<key>ZoomValues</key>
