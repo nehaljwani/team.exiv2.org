@@ -3145,7 +3145,7 @@ void ReportVisitor::visitTag
     std::string    name = tagName(tag,tagDict,32);
     std::string   value = buff.toString(type,count,image.endian_);
 
-    if ( name == "Exif.Sony.FocalPosition" ) {
+    if ( name == "Exif.Sony.FocalPosition" || name == "Exif.Sony.Tagx2010" ) {
         reportTag(name,address,image.endian_,tag,type,count,buff,offsetS);
 		sonyCipher(buff.pData_,buff.size_,true);
 	}	
@@ -3767,12 +3767,15 @@ void init()
     sonyDict  [ 0xb04b ] = "AntiBlur";
     sonyDict  [ 0xb04e ] = "LongExposureNoiseReduction";
     sonyDict  [ 0x9402 ] = "FocalPosition";
+    sonyDict  [ 0x2010 ] = "Tagx2010";
 
     // Fields
     makerTags["Exif.Sony.FocalPosition"].push_back(Field("FpAmbientTemperature" ,kttByte  , 0x04, 1));
     makerTags["Exif.Sony.FocalPosition"].push_back(Field("FpFocusMode"          ,kttUByte , 0x16, 1));
     makerTags["Exif.Sony.FocalPosition"].push_back(Field("FpAreaMode"           ,kttUByte , 0x17, 1));
     makerTags["Exif.Sony.FocalPosition"].push_back(Field("FpFocusPosition"      ,kttUByte , 0x2d, 1));
+
+    makerTags["Exif.Sony.Tagx2010"     ].push_back(Field("WB_RGBLevels"         ,kttUShort, 4532, 3)); // https://exiftool.org/TagNames/Sony.html#Tag2010e
 
     agfaDict  [ktGroup ] = "Agfa";
     agfaDict  [ 0x0001 ] = "One";
