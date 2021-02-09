@@ -5,15 +5,6 @@ include(CheckCXXCompilerFlag)
 set(CMAKE_CXX_STANDARD                  11 )
 set(CMAKE_CXX_EXTENSIONS                ON )
 
-# build for the current version of macOS
-if ( APPLE ) 
-    execute_process(COMMAND sw_vers -productVersion
-                    OUTPUT_STRIP_TRAILING_WHITESPACE
-                    OUTPUT_VARIABLE SW_VERS
-                   )
-    set(CMAKE_OSX_DEPLOYMENT_TARGET "${SW_VERS}")
-endif()
-
 # don't build for 32bit (size_t/sprintf unhappiness)
 if("${CMAKE_SIZEOF_VOID_P}" STREQUAL "4")
     message(FATAL_ERROR "32 bit build is not supported")  
