@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-02-04</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-02-09</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -45,7 +45,7 @@ _And our cat Lizzie._
 |                                                       |    | [BMP Windows Bitmap](#BMP)               |    | [11.15 Servers](#11-15)                 |    |
 | [4. Lens Recognition](#4)                             |    | [GIF Graphical Interchange Format](#GIF) |    | [11.16 API](#11-16)                     |    |
 | [5. I/O in Exiv2](#5)                                 |    | [SIDECAR Xmp Sidecars](#SIDECAR)         |    | [11.17 Contributors](#11-17)            |    |
-| [6. Image Previews](#6)                               | 38 |                                          | 22 | [11.18 Scheduling](#11-18)              | 80 |
+| [6. Previews and Thumbnails](#6)                      | 38 |                                          | 22 | [11.18 Scheduling](#11-18)              | 80 |
 |                                                       | 39 |                                          | 23 | [11.19 Enhancements](#11-19)            | 81 | 
 | [7. Exiv2 Architecture](#7)                           | 41 | [9. API/ABI Compatibility](#9)           | 24 | [11.20 Tools](#11-20)                   | 81 |
 | [7.1 API Overview](#7-1)                              | 41 | [10. Security](#10)                      | 25 | [11.21 Licensing](#11-21)               | 81 |
@@ -88,7 +88,7 @@ I first became interested in metadata because of a trail conversation with Denni
 
 I said "Oh, it can't be too difficult to do that!".  And here we are more than a decade later still working on the project.  The program geotag.py was completed in about 6 weeks.  Most of the effort went into porting Exiv2 and pyexiv2 to Visual Studio and macOS.  Both Exiv2 and pyexiv2 were Linux only at that time.
 
-The program samples/geotag.cpp is a command line utility to geotag photos and I frequently use this on my own photographs.  Today, I have a Samsung Galaxy Watch which uploads runs to Strava.  I download the GPX from Strava.  The date/time information in the JPG is the key to search for the position data.  The GPS tags are created and saved in the image.
+The program samples/geotag.cpp is a command-line application to geotag photos and I frequently use this on my own photographs.  Today, I have a Samsung Galaxy Watch which uploads runs to Strava.  I download the GPX from Strava.  The date/time information in the JPG is the key to search for the position data.  The GPS tags are created and saved in the image.
 
 In 2008, I chose to implement this in python because I wanted to learn the language.  Having discovered exiv2 and the python wrapper pyexiv2, I set off with enthusiasm to build a cross-platform script to run on **Windows** _(XP, Visual Studio 2003)_, **Ubuntu Linux** _(Hardy Heron 2008.04 LTS)_ and **MacOS-X** _(32 bit Tiger 10.4 on a big-endian PPC)_.  After I finished, I emailed Andreas.  He responded in less than an hour and invited me to join Team Exiv2.  Initially, I provided support to build Exiv2 with Visual Studio.
 
@@ -145,7 +145,7 @@ The toolset used in Software Engineering evolves with time.  C++ has been around
 
 The most common issue raised by users concerns lens recognition.  For v0.26, I added the _**Configuration File**_ feature to enable users to modify lens recognition on their computer.  While this is helpful, many users would like Exiv2 to deal with this perfectly, both now and in the future.
 
-I intended to make a proposal at LGM in Rennes in May 2020 concerning this matter. Both Exiv2 and ExifTool can extract metadata from an image into a .EXV file. I would propose to implement a program to read the .EXV and return the Lens. That program will have an embedded programming language with the rules to identify the lens. The scripts will be ascii files which can be updated. It will be called M2Lscript (MetaData to Lens Script), pronounced _**"MillsScript"**_. The M2Lscript interpreter will be available as a command-line program, a perl module (for ExifTool), a C++ library (for linking into exiv2) and perhaps a python module.
+I intended to make a proposal at LGM in Rennes in May 2020 concerning this matter. Both Exiv2 and ExifTool can extract metadata from an image into a .EXV file. I would propose to implement a program to read the .EXV and return the Lens. That program will have an embedded programming language with the rules to identify the lens. The scripts will be ascii files which can be updated. It will be called M2Lscript (MetaData to Lens Script), pronounced _**"MillsScript"**_. The M2Lscript interpreter will be available as a command-line application, a perl module (for ExifTool), a C++ library (for linking into exiv2) and perhaps a python module.
 
 In this way, new lens definitions can be written in M2Lscript without touching anything in Exiv2 or ExifTool.
 
@@ -1039,7 +1039,7 @@ $ git clone --recursive https://github.com/DigiDNA/ISOBMFF --depth 1
 $ open ISOBMFF.xcodeproj/
 ```
 
-Very nice program with very nice code.  In addition to the GUI/Explorer, there is command-line utility ISOBMFF-Dump provided.  I also built it with Visual Studio 2019.  I believe the GUI is only provided on the Mac.  The command-line program is supported on Mac, Windows and Linux.
+Very nice program with very nice code.  In addition to the GUI/Explorer, a command-line application ISOBMFF-Dump is provided.  I also built it with Visual Studio 2019.  I believe the GUI is only provided on the Mac.  The command-line application is supported on Mac, Windows and Linux.
 
 It did not build _out of the box_ for me on Ubuntu18.04.  [https://github.com/DigiDNA/ISOBMFF/issues/12](https://github.com/DigiDNA/ISOBMFF/issues/12}
 
@@ -2391,7 +2391,7 @@ You create XMP metadata with the syntax:
 $ exiv2 -M'set Xmp.namespace.Key value' path
 ```
 
-Adobe XMPsdk isn't easy to understand. As I have never used it outside of Exiv2, my knowledge is limited.  Exiv2 however enables you to insert, modify and delete simple values, Seq and Struct objects and Bags.  You can create this XMP structure using the Exiv2 command-line program as follows:
+Adobe XMPsdk isn't easy to understand. As I have never used it outside of Exiv2, my knowledge is limited.  Exiv2 however enables you to insert, modify and delete simple values, Seq and Struct objects and Bags.  You can create this XMP structure using the Exiv2 command-line application as follows:
 
 **Step 1 Get an image and delete all XMP metadata:**
 
@@ -2563,11 +2563,11 @@ rmills@ubuntu:~/gnu/github/XMP-TOOLKIT-SDK$
 $ xcodebuild -project xcode/dynamic/intel_64_libcpp/XMPToolkitSDK64.xcodeproj -configuration Release -target ALL_BUILD
 ```
 
-I was unable to get to work with Xcode 12.1 because it complained about the SDK and absense of Command line tools.
+I was unable to get to work with Xcode 12.1 because it complained about the SDK and absence of Command line tools.
 
 You can also build using the Xcode IDE by opening on of the generated projects such as xcode/dynamic/intel_64_libcpp/XMPToolkitSDK64.xcodeproj.  The default build is "Debug" and you can change that to "Release" by editing the scheme which is presumably obvious to Xcode experts.
 
-I had to manually download and install the Xcode command line tools for Xcode 12.1 and download and install /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk
+I had to manually download and install the Xcode command-line tools for Xcode 12.1 and download and install /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk
 
 Although it build from the Xcode IDE, I never succeeded in getting to build with the xcodebuild command.
 
@@ -3831,7 +3831,7 @@ The constructor **Io(DataBuf&)** is used to create an in-memory I/O stream.  _**
 
 Other metadata standards use a similar design.  XMP is embedded XML, an Icc Profile is a major block of technology.  Exiv2 knows how to extract, insert, delete and replace an Icc Profile.  It knows nothing about the contents of the Icc Profile.  With Xmp, Exiv2 uses Adobe's XMPsdk to enable the Xmp data to be modified.
 
-Exiv2 has an abstract RemoteIo object which can read/write on the internet.  For http, there is a basic implementation of the http protocol in src/http.cpp.  For production use, Exiv2 should be linked with libcurl.  The reason for providing a "no thrills" implementation of http was two fold.  Firstly, it enabled the project to proceed rapidly without learning the curl API.  Secondly, I wanted all versions of the exiv2 command-line to have http support as I thought it would be useful for testing as we could store video and other large files remotely.
+Exiv2 has an abstract RemoteIo object which can read/write on the internet.  For http, there is a basic implementation of the http protocol in src/http.cpp.  For production use, Exiv2 should be linked with libcurl.  The reason for providing a "no thrills" implementation of http was two fold.  Firstly, it enabled the project to proceed rapidly without learning the curl API.  Secondly, I wanted all versions of the exiv2 command-line application to have http support as I thought it would be useful for testing as we could store video and other large files remotely.
 
 The MemIo class enables memory to be used as a stream.  This is fast and convenient for small temporary files.  When memory mapped files are available, FileIo uses that in preference to FILE*.  When the project started in 2004, memory-mapped files were not provided on some legacy platforms such as DOS.  Today, all operating systems provide memory mapped files.  I've never heard of Exiv2 being used in an embedded controller, however I'm confident that this is feasible.  I've worked on embedded controllers with no operating system and only a standard "C" io library.  Exiv2 can be built for such a device.
 
@@ -3871,40 +3871,57 @@ In Chapter 5, I discuss the use of a block map to track small areas of the file 
 
 [TOC](#TOC)
 <div id="6"/>
-# 6 Image Previews
+# 6 Previews and Thumbnails
 
-I don't know much about the image previews.  Previews are usually JPEG encoded and have no metadata.  Exiv2 has no code to edit previews in images.  About all that I know about previews is that the library finds them and creates a vector of thumbnails.  Like most of Andreas' code, the Preview code works well and has seldom required attention.
+The Exiv2 command-line application provides support for both thumbnails and previews.  _**Caution:** I don't believe the preview/thumbnail code is of the same quality as the code relating to Exif, IPTC and XMP metadata_.
 
-There are significant challenges in finding the previews as manufacturers use a variety of techniques.  In particular, they often store an offset to a preview in a makernote, or some other devious location.  In consequence, it's almost impossible to re-write the file without the risk of losing the preview.  This problem is compounded by the JPEG 64k limit in a single segment.  Digital Cameras and Smart Phones are now a huge business and JPEG is the most popular image format.  Regrettably, JPEG is a 30 year old standard which was conceived when dinosaurs roamed the earth.  A global agreement to support Adobe's _**ad-hoc**_ JPEG extension could easily address this issue.  The inertia of the industry is colossal.
+Thumbnails are defined in the Exif Specification.  They are stored in IFD1 of the Exif block with two tags JPEGInterchangeFormat and JPEGInterchangeLength.  The thumbnail is required to be a JPEG with no embedded metadata.  The tag JPEGInterchangeFormat is the offset in the IFD to the JPEG.  The tag JPEGInterchangeLength is the number of bytes in the JPEG.
 
-I find it incredible, yet unsurprising, that in an industry which talks about inovation and development can be so resistant to change.  Small changes that would serve their industry.  A friend of mine in Silicon Valley sat on a standards committee for video encoding.  He told me about a meeting in which something absurd was proposed and he decided, although he seldom spoke, to speak against it.  He couldn't let the issue pass.  He said to me with a war-comic German accent.  _"So, I took zee lugar and I aimed carefully and I squeezed zee trigger.  The bullet flew fast and straight and hit me between the eyes."_.  The opposition he encountered was breathtaking.  Craziness ends up in standards because of the politics of the Standards Committee.  So that's how we end up with several different designs to enable Exif, ICC and XMP data to be chunked in a JPEG.  And the mess with Lens Recognition.  And the mess with hundreds of similar yet different image formats.
+There are very significant issues with this design.  Firstly, in JPEG files the Exif block is restricted to 64k bytes.  Secondly, it's not clear if this design can support multiple resolutions.  When you convert JPEG to other formats with an application such as macOS Preview.app, the Exif Thumbnail is thrown away.  I dislike the idea that there is anything meaningful about IFD1.  An IFD is an array of tags and is either terminated or linked to a successor.  I don't see any good reason to restrict the content of the first successor. 
+
+There are ways to embed thumbnails in different file formats.  It's common in JPEG to have multiple resolution previews enclosed by SOI/EOI markers.  
 
 ```bash
-786 rmills@rmillsmm-local:~/temp/foo $ cp ~/Stonehenge.jpg .
-787 rmills@rmillsmm-local:~/temp/foo $ exiv2 -ep --verbose Stonehenge.jpg 
-File 1/1: Stonehenge.jpg
-Writing preview 1 (image/jpeg, 160x120 pixels, 10837 bytes) to file ./Stonehenge-preview1.jpg
-788 rmills@rmillsmm-local:~/temp/foo $ exiv2 -pS ./Stonehenge-preview1.jpg 
-STRUCTURE OF JPEG FILE: ./Stonehenge-preview1.jpg
- address | marker       |  length | data
+703 rmills@rmillsmm-local:~/gnu/exiv2/team/book $ tvisitor files/Stonehenge.jpg 
+STRUCTURE OF JPEG FILE (II): files/Stonehenge.jpg
+ address | marker       |  length | signature
        0 | 0xffd8 SOI  
-       2 | 0xffdb DQT   |     132 
-     136 | 0xffc0 SOF0  |      17 
-     155 | 0xffc4 DHT   |     418 
-     575 | 0xffda SOS  
-789 rmills@rmillsmm-local:~/temp/foo $ 
+       2 | 0xffe1 APP1  |   15272 | Exif__II*_.___._..._.___.___..._.___.___
+   15276 | 0xffe1 APP1  |    2786 | http://ns.adobe.com/xap/1.0/_<?xpacket b
+   18064 | 0xffed APP13 |      96 | Photoshop 3.0_8BIM.._____'..__._...Z_..%
+   18162 | 0xffe2 APP2  |    4094 | MPF_II*_.___.__.._.___0100..._.___.___..
+   22258 | 0xffdb DQT   |     132 | _.......................................
+   22392 | 0xffc0 SOF0  |      17 | ....p..!_........
+   22411 | 0xffc4 DHT   |     418 | __........________............_.........
+   22831 | 0xffda SOS  
+ 6196491 | 0xffd9 EOI  
+ 6196976 | 0xffd8 SOI  
+ 6196978 | 0xffe1 APP1  |    1022 | Exif__II*_.___._i.._.___._________._..._
+ 6198002 | 0xffdb DQT   |     132 | _..........................!.#"!. .%)4,%
+ 6198136 | 0xffc0 SOF0  |      17 | .......!_........
+ 6198155 | 0xffc4 DHT   |     418 | __........________............_.........
+ 6198575 | 0xffda SOS  
+ 6234770 | 0xffd9 EOI  
+ 6234864 | 0xffd8 SOI  
+ 6234866 | 0xffe1 APP1  |    1022 | Exif__II*_.___._i.._.___._________._..._
+ 6235890 | 0xffdb DQT   |     132 | _.......................................
+ 6236024 | 0xffc0 SOF0  |      17 | ..8.T..!_........
+ 6236043 | 0xffc4 DHT   |     418 | __........________............_.........
+ 6236463 | 0xffda SOS  
+ 6757985 | 0xffd9 EOI  
+END: files/Stonehenge.jpg
+704 rmills@rmillsmm-local:~/gnu/exiv2/team/book $ 
 ```
 
+CRW, PNG, CR3, PSD _and probably other formats_ may embed JPEG Thumbnails.  These are features of the file format and independent of the Thumbnail in the Exif Specification.  I think class Exiv2::PreviewManager was written to provide a C++ class to manage an array of preview images.  I'm not convinced that the code is complete.  PreviewManager is only used by a few image handlers.  Exiv2::PreviewManager creates a read-only data structure with no capability to insert, replace or delete individual thumbnails.  
 
-dmpf.cpp finds it.  So, we know it is 4448 bytes into the file and the Exif Tiff is 15288 bytes and begins at 12.  So it's in there, but where?  I don't know.  More research needed.
+The good news about the Exiv2 preview/thumbnail code is that it works sufficiently well for the Gnome Desktop to display thumbnails.  There have been very few issues raised by users.  So the existing code is safe.  I'm not convinced that it's comprehensive.
 
-```bash
-.../book/build $ ./dmpf ~/temp/foo/Stonehenge-preview1.jpg | head -1
-       0        0: ...._._.........................  ->  ff d8 ff db 00 84 00 ...
-.../book/build $ ./dmpf ~/temp/foo/Stonehenge.jpg | grep 'ff d8 ff db 00 84'
-  0x1160     4448: __.___...._._...................  ->  00 00 01 00 00 00 ff d8 ff db 00 ..
-.../book/build $ 
-```
+There are also issues relating to how preview and thumbnail support is incorporated in the Exiv2 command-line program.  To list all previews, the option is `-pp` which means print previews.  The option to delete previews is `-dt` which means delete thumbnails.  The option `-pt` means print translated values (human readable).  Confused?  I am.
+
+There are significant challenges in finding the previews as manufacturers use a variety of techniques.  In particular, they often store an offset to a preview in a makernote, or some other devious location.  In consequence, it's almost impossible to re-write the file without the risk of losing the preview.  This problem is compounded by the JPEG 64k limit in a single segment.  Digital Cameras and Smart Phones are now a huge business and JPEG is the most popular image format.  Regrettably, JPEG is a 30 year old standard which was conceived when dinosaurs roamed the earth.  A global agreement to support Adobe's _**ad-hoc**_ JPEG extension could address this issue.  The inertia of the industry is colossal.
+
+I find it depressing, yet unsurprising, that an industry which talks about innovation and development can resist fixing deficiencies.  Small changes would help everybody.  A Silicon Valley friend sat on an MPEG committee.  He told me about a meeting in which something absurd was proposed.  Although he seldom spoke at the meetings, he decided to speak against it.  He said to me with a war-comic German accent.  _"So, I took zee lugar, I aimed carefully and squeezed zee trigger.  The bullet flew fast and straight and hit me between the eyes."_.  The opposition he encountered was breathtaking.  Craziness ends up in standards because of the politics of the Standards Committee.  So that's how we end up with several different designs to enable Exif, ICC and XMP data to be chunked in a JPEG.  And the mess with Lens Recognition.  And the mess with having so many different image formats.
 
 [TOC](#TOC)
 <div id="7"/>
@@ -4313,9 +4330,9 @@ So, Minolta have 6 "sub-records".  Other manufacturers have more.  Let's say 10 
 [TOC](#TOC)
 ### TagInfo
 
-Tag definitions are not constant.  A tag is simply an uint16\_t.  The Tiff Standard specifies about 50 tags.  Anybody creating an IFD can use the same tag number for different purposes.  The Tiff Specification says _"TIFF readers must safely skip over these fields if they do not understand or do not wish to use the information."_.
+Tag definitions are not constant.  A tag is simply a uint16\_t.  The Tiff Standard specifies about 50 tags.  Anybody creating an IFD can use the same tag number for different purposes.  The Tiff Specification says _"TIFF readers must safely skip over these fields if they do not understand or do not wish to use the information."_.
 
-Exif has to recognise every tag, however it does not need to understand it.  In a tiff file, the pixels are located using the tag StripOffsets.  We report StripOffsets, however we don't read pixel data.  When you execute the exiv2 command-line utility with the argument --unknown, they will be listed.  For example:
+Exif has to recognise every tag, however it does not need to understand it.  In a tiff file, the pixels are located using the tag StripOffsets.  We report StripOffsets, however we don't read pixel data.  When you execute the exiv2 command-line application with the argument --unknown, they will be listed.  For example:
 
 ```bash
 $ exiv2 --unknown -pe ~/Stonehenge.jpg
@@ -4327,9 +4344,9 @@ $ tvisitor -pUR ~/Stonehenge.jpg
            346 | 0x002d Exif.Nikon.0x2d              |     SHORT |        3 |      1499 | 512 0 0
 ...
 $ 
+```
 
 Most MakerNotes contain tags which are unknown to Exiv2. 
-
 
 If the user wishes to recover data such as the pixels, it is possible to do this with the utility dd.  This is discussed here: [3.1 Read metadata with dd](#3-1). 
 
@@ -4588,12 +4605,12 @@ This function understands how to decode byte-by-byte from `const ArrayDef` into 
 
 Exiv2 has an abstract TiffVisitor class, and the following concrete visitors:
 
-| _Class_           | _Derived from_ | Purpose                              | Description            |
+| _Class_           | _Derived from_ | Purpose                              | Comment                |
 |:--                |:--             |:----                                 |:--                     |
 | class TiffReader  | TiffVisitor    | Reads metadata into memory           | image->readMetadata()  |
 | class TiffFinder  | TiffVisitor    | Search an IFD                        | Finds the "Make" tag 0x010f in IFD0 |
-| class TiffDecoder | TiffVisitor    | Decodes metadata                     | To be written          |
-| class TiffEncoder | TiffVisitor    | Encodes metadata                     | To be written          |
+| class TiffDecoder | TiffVisitor    | Decodes metadata                     |                        |
+| class TiffEncoder | TiffVisitor    | Encodes metadata                     |                        |
 | class TiffCopier  | TiffVisitor    | Visits file and copies to a new file | image->writeMetadata() |
 
 TiffVisitor is the "beating heart" of Exiv2.  It is both ingeneous and very difficult to understand.  Although I've worked on the Exiv2 code for more than 12 years, it is only in the process of writing this book that I have come to an (_incomplete)_ understanding of its design.  
@@ -4751,7 +4768,7 @@ for (Exiv2::ExifData::const_iterator i = exifData.begin(); i != exifData.end(); 
 
 This is implemented using _**Command**_ in [Design Patterns](https://www.oreilly.com/library/view/design-patterns-elements/0201633612/))
 
-The Task Factory is used by the command-line utility exiv2 which supports sub-commands such as print, adjust, rename and extract.   The TaskFactory returns an object with the Task Interface.  The TaskFactory has to be created than then called to find the task runner.  There is no equivalent in tvisitor.cpp.
+The Task Factory is used by the Exiv2 command-line application supports sub-commands such as print, adjust, rename and extract.   The TaskFactory returns an object with the Task Interface.  The TaskFactory has to be created than then called to find the task runner.  There is no equivalent in tvisitor.cpp.
 
 #### The Image Factory
 
@@ -5879,7 +5896,7 @@ The following programs are built and installed in /usr/local/bin.
 
 Most of the programs are about 100 lines of C++ and do simple tasks to demonstrate how to use the library API.  Three of the programs are substantial. They are: _**exiv2**_, _**geotag**_ and _**exiv2json**_
 
-The Exiv2 command-line program _**exiv2**_ enables users to manipulate metadata in images using most of the features of the library.  Being a general utility, it has about 4000 lines of code. The length of the program proves the point that it is full featured, however the quantity of code rather obscures the use of the library APIs.
+The Exiv2 command-line application enables users to manipulate metadata in images using most of the features of the library.  Being a general utility, it has about 4000 lines of code. The length of the program proves the point that it is full featured, however the quantity of code rather obscures the use of the library APIs.
 
 Exiv2 has always resisted the temptation to provide a GUI version of the program as that would involve considerable cross-platform development and user interface skills.  As Andreas Huggel summarised: _Exiv2 does depth, not breadth_.  Providing a GUI would lead the project away from metadata into the world of the _User Experience_.
 
@@ -5970,7 +5987,7 @@ There are several parts of Exiv2 which are platform specific.  Additionally the 
 
 #### src/getopt.cpp
 
-The command-line handler getopt() is used by the exiv2 command-line program and by samples/metacopy.cpp, samples/getopt-test.cpp and samples/toexv.cpp.  In the early days of Exiv2, getopt() was provided by the C-runtime library.  When support for msvc was added, the code in src/getopt.cpp was added.  Relying on the C-runtime library revealed differences between platforms and between platforms and src/getopt.cpp.  It was decided to ensure consistent behaviour to use src/getopt.cpp on all platforms.
+The command-line handler getopt() is used by the Exiv2 command-line application and by samples/metacopy.cpp, samples/getopt-test.cpp and samples/toexv.cpp.  In the early days of Exiv2, getopt() was provided by the C-runtime library.  When support for msvc was added, the code in src/getopt.cpp was added.  Relying on the C-runtime library revealed differences between platforms and between platforms and src/getopt.cpp.  It was decided to ensure consistent behaviour to use src/getopt.cpp on all platforms.
 
 #### src/version.cpp
 
