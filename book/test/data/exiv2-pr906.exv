@@ -147,7 +147,9 @@ STRUCTURE OF EXV FILE (II): ../files/exiv2-pr906.exv
           2284 | 0x940d Exif.Sony.0x940d                 | UNDEFINED |     1260 |     15530 | _0TTN8[.[n[-W3[A&A0.TMNv[[.[TN}N[.gN +++
           2296 | 0x940e Exif.Sony.0x940e                 | UNDEFINED |    12288 |     16790 | .___U..^[.n[.t-.......bD.N[[.0DM.... +++
           2308 | 0xa100 Exif.Sony.0xa100                 | UNDEFINED |       64 |     29078 | ____________________________________ +++
-          2320 | 0x2010 Exif.Sony.0x2010                 | UNDEFINED |     6352 |     29142 | ._________p.________________________ +++
+          2320 | 0x2010 Exif.Sony.Tagx2010               | UNDEFINED |     6352 |     29142 | ._________p.________________________ +++
+          2320 | 0x2010 Exif.Sony.Tagx2010               | UNDEFINED |     6352 |     29142 | ._________..________________________ +++
+         33674 | 0x2010 Exif.Sony.WB_RGBLevels           |     SHORT |        3 |           | 0 0 801
           2332 | 0x940f Exif.Sony.0x940f                 | UNDEFINED |     2048 |     35494 | V.m___._.___________.}..V.._X.K@____ +++
           2344 | 0x9050 Exif.Sony.0x9050                 | UNDEFINED |      944 |     37542 | ____________________________________ +++
           2356 | 0x9412 Exif.Sony.0x9412                 | UNDEFINED |      160 |     38486 | @[(_(_e_.+_W...D.NTF.r....[[T[W0n[_. +++
