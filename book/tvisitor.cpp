@@ -3147,7 +3147,7 @@ void ReportVisitor::visitTag
 
     if ( name == "Exif.Sony.FocalPosition" || name == "Exif.Sony.Tagx2010" ) {
         reportTag(name,address,image.endian_,tag,type,count,buff,offsetS);
-		sonyCipher(buff.pData_,buff.size_,true);
+		sonyCipher(buff.pData_,(uint32_t)buff.size_,true);
 	}	
 
     if ( printTag(name) ) {
