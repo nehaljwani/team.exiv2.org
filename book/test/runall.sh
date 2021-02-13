@@ -45,17 +45,18 @@ while [ "$#" != "0" ]; do
 done
 
 # inspect/modify options
-if [ ! -z $help      ]; then syntax ; exit 0      ; fi
-if [ ! -z $section   ]; then testfiles="$testfiles/$section" ; fi
-if [ ! -d $testfiles ]; then  >&2 echo "directory $testfiles does not exit" ; exit 1 ; fi
-if [   -z $program   ]; then program=tvisitor     ; fi
-if [ ! -z $dryrun    ]; then verbose=1            ; fi
+if [ ! -z "$help"      ]; then syntax ; exit 0      ; fi
+if [ ! -z "$section"   ]; then testfiles="$testfiles/$section" ; fi
+if [ ! -d "$testfiles" ]; then  >&2 echo "directory $testfiles does not exit" ; exit 1 ; fi
+if [   -z "$program"   ]; then program=tvisitor     ; fi
+if [ ! -z "$dryrun"    ]; then verbose=1            ; fi
 
 if [ ! -z $verbose   ]; then
     echo program = $program
     echo section = $section
     echo option  = $option
     echo name    = $name
+    echo "** command =  " find $testfiles -type f $name -print0 \| xargs -0 $program $option
 fi
 if [ ! -z $dryrun ]; then exit ; exit ; fi
 
@@ -69,32 +70,38 @@ if [ ! -z $list ]; then
     exit 0
 fi
 
-find "$testfiles" -type f $name | sort > "$input"
-while IFS= read -r file
-do
-    filename=$(basename -- "$file")
-    ext="${filename##*.}"
-    ext=$(echo "$ext" | tr '[:lower:]' '[:upper:]')
-    file "$file" | grep -q -e "image data" -e "ISO Media" 2>&1 > /dev/null 
-    if [ "$?" == "0" -o "$ext" == CRW -o "$ext" == CR2 -o "$ext" == RAF -o "$ext" == RW2 -o "$ext" == RAW -o "$ext" == EXV ]; then
-        count=$((count+1))
-        $program "$@" $option "$file"
-        if [ "$?" != "0" ]; then 
-            >&2 echo FAILED $file
-            errors=$((errors+1))
+if [ 1 == 1 ]; then
+    find "$testfiles" -type f $name -print0 | xargs -0 $program $option 2>/dev/null
+else
+    find "$testfiles" -type f $name | sort > "$input"
+    while IFS= read -r file
+    do
+        filename=$(basename -- "$file")
+        ext="${filename##*.}"
+        ext=$(echo "$ext" | tr '[:lower:]' '[:upper:]')
+        file "$file" | grep -q -e "image data" -e "ISO Media" 2>&1 > /dev/null 
+        if [ "$?" == "0" -o "$ext" == CRW -o "$ext" == CR2 -o "$ext" == RAF -o "$ext" == RW2 -o "$ext" == RAW -o "$ext" == EXV ]; then
+            count=$((count+1))
+            $program "$@" $option "$file"
+            if [ "$?" != "0" ]; then 
+                >&2 echo FAILED $file
+                errors=$((errors+1))
+            fi
+        else
+            ignored=$((ignored+1))
+            # don't report obvious duds.
+            if [ "$ext" != ZIP -a "$ext" != 7Z -a "$ext" != TXT -a "$ext" != RAR -a "$ext" != XZ ]; then
+                >&2 echo IGNORE $file
+            fi
         fi
-    else
-        ignored=$((ignored+1))
-        # don't report obvious duds.
-        if [ "$ext" != ZIP -a "$ext" != 7Z -a "$ext" != TXT -a "$ext" != RAR -a "$ext" != XZ ]; then
-            >&2 echo IGNORE $file
-        fi
-    fi
-done < "$input"
+    done < "$input"
+fi
 
->&2 echo -------------------------------
->&2 echo count $count failed $errors ignored $ignored
->&2 echo -------------------------------
+if [ "$count" != "0" ] ; then  
+  >&2 echo -------------------------------
+  >&2 echo count $count failed $errors ignored $ignored
+  >&2 echo -------------------------------
+fi
 
 # That's all Folks!
 ##
