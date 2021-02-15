@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-02-09</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-02-15</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -44,8 +44,8 @@ _And our cat Lizzie._
 | [3.6 Jpeg::Image accept()](#3-6)                      |    | [TGA Truevision Targa](#TGA)             |    | [11.14 Web Site](#11-14)                |    |
 |                                                       |    | [BMP Windows Bitmap](#BMP)               |    | [11.15 Servers](#11-15)                 |    |
 | [4. Lens Recognition](#4)                             |    | [GIF Graphical Interchange Format](#GIF) |    | [11.16 API](#11-16)                     |    |
-| [5. I/O in Exiv2](#5)                                 |    | [SIDECAR Xmp Sidecars](#SIDECAR)         |    | [11.17 Contributors](#11-17)            |    |
-| [6. Previews and Thumbnails](#6)                      | 38 |                                          | 22 | [11.18 Scheduling](#11-18)              | 80 |
+| [5. Previews and Thumbnails](#5)                      |    | [SIDECAR Xmp Sidecars](#SIDECAR)         |    | [11.17 Contributors](#11-17)            |    |
+| [6. I/O in Exiv2](#6)                                 | 38 |                                          | 22 | [11.18 Scheduling](#11-18)              | 80 |
 |                                                       | 39 |                                          | 23 | [11.19 Enhancements](#11-19)            | 81 | 
 | [7. Exiv2 Architecture](#7)                           | 41 | [9. API/ABI Compatibility](#9)           | 24 | [11.20 Tools](#11-20)                   | 81 |
 | [7.1 API Overview](#7-1)                              | 41 | [10. Security](#10)                      | 25 | [11.21 Licensing](#11-21)               | 81 |
@@ -375,7 +375,7 @@ When we update a Makernote, we should "edit in place" and avoid relocating the d
 
 In principle, a Tiff can be garbage collected with a block-map.  If we set up a block-map with one bit for every thousand bytes, we can run the IFDs and mark all the blocks in use.  When we rewrite the TIFF (well IFD0 actually), we can inspect the block-map to determine a "hole" in the file at which to write.  I would not do this.  It's unsafe to over-write anything in a Tiff with the exception of IFD0 and the header offset.  The situation with JPEG is more serious.  It's impossible to rewrite the JPEG in place.
 
-The concept of using a block-map to track known data is used in RemoteIo.  We use a block-map to avoid excessive remote I/O by reading data into a cache.  We never read data twice.  We do not need contiguous memory for the file. This is discussed in [5. I/O in Exiv2](#5)
+The concept of using a block-map to track known data is used in RemoteIo.  We use a block-map to avoid excessive remote I/O by reading data into a cache.  We never read data twice.  We do not need contiguous memory for the file. This is discussed in [6. I/O in Exiv2](#6)
 
 I would like to express my dismay with the design of most image containers.  There is a much simpler design used by macOS and that is a bundle.  A bundle is a directory of files which includes the file Info.plist.  It appears in the Finder to be a simple entity like a file.  The terminal command _**ditto**_  is provided to copy them.  All programming languages can manipulte files.  The metadata in an image should be a little Tiff or sidecar in a bundle.  In principle, a container such as Tiff is a collection of streams that are both relocatable and never reference external data.  Sadly, TIFF and JPEG make it very easy to break both rules.  The design of JPEG makes it almost impossible to edit anything without relocating all the data.  The situation with video is even more serious as the files are huge.  In the PDF format, the file maintains a directory of objects.  The objects can be safely relocated because objects reference each other by name and not the file offset.
 
@@ -3342,7 +3342,7 @@ void ReportVisitor::visitExif(Io& io)
 
 He creates a TiffImage with the stream and calls TiffImage::accept(visitor).  Software seldom gets simpler, as beautiful, or more elegant than this.
 
-Just to remind you, BasicIo supports http/ssh and other protocols.  This code will recursively descend into a remote file without copying it locally.  And he does it with great efficiency.  This is discussed in section [5 I/O in Exiv2](#5)
+Just to remind you, BasicIo supports http/ssh and other protocols.  This code will recursively descend into a remote file without copying it locally.  And he does it with great efficiency.  This is discussed in section [6 I/O in Exiv2](#6)
 
 <center><img src="Exiv2CloudVision.png" width="600" style="border:2px solid #23668F;"/></center>
 
@@ -3808,7 +3808,61 @@ For a discussion about Nikon see: [https://github.com/Exiv2/exiv2/issues/743#iss
 
 [TOC](#TOC)
 <div id="5"/>
-# 5 I/O in Exiv2
+# 5 Previews and Thumbnails
+
+The Exiv2 command-line application provides support for both thumbnails and previews.  _**Caution:** I don't believe the preview/thumbnail code is of the same quality as the code relating to Exif, IPTC and XMP metadata_.
+
+Thumbnails are defined in the Exif Specification.  They are stored in IFD1 of the Exif block with two tags JPEGInterchangeFormat and JPEGInterchangeLength.  The thumbnail is required to be a JPEG with no embedded metadata.  The tag JPEGInterchangeFormat is the offset in the IFD to the JPEG.  The tag JPEGInterchangeLength is the number of bytes in the JPEG.
+
+There are very significant issues with this design.  Firstly, in JPEG files the Exif block is restricted to 64k bytes.  Secondly, it's not clear if this design can support multiple resolutions.  When you convert JPEG to other formats with an application such as macOS Preview.app, the Exif Thumbnail is thrown away.  I dislike the idea that there is anything meaningful about IFD1.  An IFD is an array of tags and is either terminated or linked to a successor.  I don't see any good reason to restrict the content of the first successor. 
+
+There are ways to embed thumbnails in different file formats.  It's common in JPEG to have multiple resolution previews enclosed by SOI/EOI markers.  
+
+```bash
+703 rmills@rmillsmm-local:~/gnu/exiv2/team/book $ tvisitor files/Stonehenge.jpg 
+STRUCTURE OF JPEG FILE (II): files/Stonehenge.jpg
+ address | marker       |  length | signature
+       0 | 0xffd8 SOI  
+       2 | 0xffe1 APP1  |   15272 | Exif__II*_.___._..._.___.___..._.___.___
+   15276 | 0xffe1 APP1  |    2786 | http://ns.adobe.com/xap/1.0/_<?xpacket b
+   18064 | 0xffed APP13 |      96 | Photoshop 3.0_8BIM.._____'..__._...Z_..%
+   18162 | 0xffe2 APP2  |    4094 | MPF_II*_.___.__.._.___0100..._.___.___..
+   22258 | 0xffdb DQT   |     132 | _.......................................
+   22392 | 0xffc0 SOF0  |      17 | ....p..!_........
+   22411 | 0xffc4 DHT   |     418 | __........________............_.........
+   22831 | 0xffda SOS  
+ 6196491 | 0xffd9 EOI  
+ 6196976 | 0xffd8 SOI  
+ 6196978 | 0xffe1 APP1  |    1022 | Exif__II*_.___._i.._.___._________._..._
+ 6198002 | 0xffdb DQT   |     132 | _..........................!.#"!. .%)4,%
+ 6198136 | 0xffc0 SOF0  |      17 | .......!_........
+ 6198155 | 0xffc4 DHT   |     418 | __........________............_.........
+ 6198575 | 0xffda SOS  
+ 6234770 | 0xffd9 EOI  
+ 6234864 | 0xffd8 SOI  
+ 6234866 | 0xffe1 APP1  |    1022 | Exif__II*_.___._i.._.___._________._..._
+ 6235890 | 0xffdb DQT   |     132 | _.......................................
+ 6236024 | 0xffc0 SOF0  |      17 | ..8.T..!_........
+ 6236043 | 0xffc4 DHT   |     418 | __........________............_.........
+ 6236463 | 0xffda SOS  
+ 6757985 | 0xffd9 EOI  
+END: files/Stonehenge.jpg
+704 rmills@rmillsmm-local:~/gnu/exiv2/team/book $ 
+```
+
+CRW, PNG, CR3, PSD _and probably other formats_ may embed JPEG Thumbnails.  These are features of the file format and independent of the Thumbnail in the Exif Specification.  I think class Exiv2::PreviewManager was written to provide a C++ class to manage an array of preview images.  I'm not convinced that the code is complete.  PreviewManager is only used by a few image handlers.  Exiv2::PreviewManager creates a read-only data structure with no capability to insert, replace or delete individual thumbnails.  
+
+The good news about the Exiv2 preview/thumbnail code is that it works sufficiently well for the Gnome Desktop to display thumbnails.  There have been very few issues raised by users.  So the existing code is safe.  I'm not convinced that it's comprehensive.
+
+There are also issues relating to how preview and thumbnail support is incorporated in the Exiv2 command-line program.  To list all previews, the option is `-pp` which means print previews.  The option to delete previews is `-dt` which means delete thumbnails.  The option `-pt` means print translated values (human readable).  Confused?  I am.
+
+There are significant challenges in finding the previews as manufacturers use a variety of techniques.  In particular, they often store an offset to a preview in a makernote, or some other devious location.  In consequence, it's almost impossible to re-write the file without the risk of losing the preview.  This problem is compounded by the JPEG 64k limit in a single segment.  Digital Cameras and Smart Phones are now a huge business and JPEG is the most popular image format.  Regrettably, JPEG is a 30 year old standard which was conceived when dinosaurs roamed the earth.  A global agreement to support Adobe's _**ad-hoc**_ JPEG extension could address this issue.  The inertia of the industry is colossal.
+
+I find it depressing, yet unsurprising, that an industry which talks about innovation and development can resist fixing deficiencies.  Small changes would help everybody.  A Silicon Valley friend sat on an MPEG committee.  He told me about a meeting in which something absurd was proposed.  Although he seldom spoke at the meetings, he decided to speak against it.  He said to me with a war-comic German accent.  _"So, I took zee lugar, I aimed carefully and squeezed zee trigger.  The bullet flew fast and straight and hit me between the eyes."_.  The opposition he encountered was breathtaking.  Craziness ends up in standards because of the politics of the Standards Committee.  So that's how we end up with several different designs to enable Exif, ICC and XMP data to be chunked in a JPEG.  And the mess with Lens Recognition.  And the mess with having so many different image formats.
+
+[TOC](#TOC)
+<div id="6"/>
+# 6 I/O in Exiv2
 
 I/O in Exiv2 is achieved using the class BasicIo and derived classes which are:
 
@@ -3867,61 +3921,7 @@ Write Mode is really clever, however it's scope is limited to writing Tiff image
 
 ### Using a Block Map to track changes to the file.
 
-In Chapter 5, I discuss the use of a block map to track small areas of the file which are in use.  I'm confident that architecture could be developed to vastly reduce the I/O involved in updating the metadata in a file.  [5. I/O in Exiv2](#5)
-
-[TOC](#TOC)
-<div id="6"/>
-# 6 Previews and Thumbnails
-
-The Exiv2 command-line application provides support for both thumbnails and previews.  _**Caution:** I don't believe the preview/thumbnail code is of the same quality as the code relating to Exif, IPTC and XMP metadata_.
-
-Thumbnails are defined in the Exif Specification.  They are stored in IFD1 of the Exif block with two tags JPEGInterchangeFormat and JPEGInterchangeLength.  The thumbnail is required to be a JPEG with no embedded metadata.  The tag JPEGInterchangeFormat is the offset in the IFD to the JPEG.  The tag JPEGInterchangeLength is the number of bytes in the JPEG.
-
-There are very significant issues with this design.  Firstly, in JPEG files the Exif block is restricted to 64k bytes.  Secondly, it's not clear if this design can support multiple resolutions.  When you convert JPEG to other formats with an application such as macOS Preview.app, the Exif Thumbnail is thrown away.  I dislike the idea that there is anything meaningful about IFD1.  An IFD is an array of tags and is either terminated or linked to a successor.  I don't see any good reason to restrict the content of the first successor. 
-
-There are ways to embed thumbnails in different file formats.  It's common in JPEG to have multiple resolution previews enclosed by SOI/EOI markers.  
-
-```bash
-703 rmills@rmillsmm-local:~/gnu/exiv2/team/book $ tvisitor files/Stonehenge.jpg 
-STRUCTURE OF JPEG FILE (II): files/Stonehenge.jpg
- address | marker       |  length | signature
-       0 | 0xffd8 SOI  
-       2 | 0xffe1 APP1  |   15272 | Exif__II*_.___._..._.___.___..._.___.___
-   15276 | 0xffe1 APP1  |    2786 | http://ns.adobe.com/xap/1.0/_<?xpacket b
-   18064 | 0xffed APP13 |      96 | Photoshop 3.0_8BIM.._____'..__._...Z_..%
-   18162 | 0xffe2 APP2  |    4094 | MPF_II*_.___.__.._.___0100..._.___.___..
-   22258 | 0xffdb DQT   |     132 | _.......................................
-   22392 | 0xffc0 SOF0  |      17 | ....p..!_........
-   22411 | 0xffc4 DHT   |     418 | __........________............_.........
-   22831 | 0xffda SOS  
- 6196491 | 0xffd9 EOI  
- 6196976 | 0xffd8 SOI  
- 6196978 | 0xffe1 APP1  |    1022 | Exif__II*_.___._i.._.___._________._..._
- 6198002 | 0xffdb DQT   |     132 | _..........................!.#"!. .%)4,%
- 6198136 | 0xffc0 SOF0  |      17 | .......!_........
- 6198155 | 0xffc4 DHT   |     418 | __........________............_.........
- 6198575 | 0xffda SOS  
- 6234770 | 0xffd9 EOI  
- 6234864 | 0xffd8 SOI  
- 6234866 | 0xffe1 APP1  |    1022 | Exif__II*_.___._i.._.___._________._..._
- 6235890 | 0xffdb DQT   |     132 | _.......................................
- 6236024 | 0xffc0 SOF0  |      17 | ..8.T..!_........
- 6236043 | 0xffc4 DHT   |     418 | __........________............_.........
- 6236463 | 0xffda SOS  
- 6757985 | 0xffd9 EOI  
-END: files/Stonehenge.jpg
-704 rmills@rmillsmm-local:~/gnu/exiv2/team/book $ 
-```
-
-CRW, PNG, CR3, PSD _and probably other formats_ may embed JPEG Thumbnails.  These are features of the file format and independent of the Thumbnail in the Exif Specification.  I think class Exiv2::PreviewManager was written to provide a C++ class to manage an array of preview images.  I'm not convinced that the code is complete.  PreviewManager is only used by a few image handlers.  Exiv2::PreviewManager creates a read-only data structure with no capability to insert, replace or delete individual thumbnails.  
-
-The good news about the Exiv2 preview/thumbnail code is that it works sufficiently well for the Gnome Desktop to display thumbnails.  There have been very few issues raised by users.  So the existing code is safe.  I'm not convinced that it's comprehensive.
-
-There are also issues relating to how preview and thumbnail support is incorporated in the Exiv2 command-line program.  To list all previews, the option is `-pp` which means print previews.  The option to delete previews is `-dt` which means delete thumbnails.  The option `-pt` means print translated values (human readable).  Confused?  I am.
-
-There are significant challenges in finding the previews as manufacturers use a variety of techniques.  In particular, they often store an offset to a preview in a makernote, or some other devious location.  In consequence, it's almost impossible to re-write the file without the risk of losing the preview.  This problem is compounded by the JPEG 64k limit in a single segment.  Digital Cameras and Smart Phones are now a huge business and JPEG is the most popular image format.  Regrettably, JPEG is a 30 year old standard which was conceived when dinosaurs roamed the earth.  A global agreement to support Adobe's _**ad-hoc**_ JPEG extension could address this issue.  The inertia of the industry is colossal.
-
-I find it depressing, yet unsurprising, that an industry which talks about innovation and development can resist fixing deficiencies.  Small changes would help everybody.  A Silicon Valley friend sat on an MPEG committee.  He told me about a meeting in which something absurd was proposed.  Although he seldom spoke at the meetings, he decided to speak against it.  He said to me with a war-comic German accent.  _"So, I took zee lugar, I aimed carefully and squeezed zee trigger.  The bullet flew fast and straight and hit me between the eyes."_.  The opposition he encountered was breathtaking.  Craziness ends up in standards because of the politics of the Standards Committee.  So that's how we end up with several different designs to enable Exif, ICC and XMP data to be chunked in a JPEG.  And the mess with Lens Recognition.  And the mess with having so many different image formats.
+In Chapter 5, I discuss the use of a block map to track small areas of the file which are in use.  I'm confident that architecture could be developed to vastly reduce the I/O involved in updating the metadata in a file.  [6. I/O in Exiv2](#6)
 
 [TOC](#TOC)
 <div id="7"/>
@@ -3945,11 +3945,11 @@ This code understands the structure of the different metadata standards.  The st
 
 3) Manufacturer's MakerNote handlers
 
-All the manufacturers use variations of the TIFF/IFD format in their makernote.  The maker note is parsed by the TiffParser.  The presentation and interpretation of the makenote is handled here.  In particular the lens recognition and preview image handling is dealt with in this code.  [4. Lens Recognition](#4).  [6. Image Previews](#6)
+All the manufacturers use variations of the TIFF/IFD format in their makernote.  The maker note is parsed by the TiffParser.  The presentation and interpretation of the makenote is handled here.  In particular the lens recognition and preview image handling is dealt with in this code.  [4. Lens Recognition](#4).  [5. Previews and Thumbnails](#5)
 
 4) TagInfo
 
-This code has definitions for thousands of Exif tags and about 50 IPTC Tags.  Xmp metadata is handled by the XMPsdk.  As XMP is Extensible, it doesn't have a database of known tags.  Tags are discussed in detail in Chapter 6 of this book.
+This code has definitions for thousands of Exif tags and about 50 IPTC Tags.  Xmp metadata is handled by the XMPsdk.  As XMP is Extensible, it doesn't have a database of known tags.  Tags are discussed in more detail later in this chapter.
 
 5) BasicIo
 
