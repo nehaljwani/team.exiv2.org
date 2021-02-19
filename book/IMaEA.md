@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-02-15</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-02-19</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -3907,7 +3907,7 @@ Because the handler understands the structure of the image, he writes a temporar
 
 This method is very robust and reliable.  For very very files (for example, 100GB medical imaging file), this places huge demands on memory.  For remote file, it requires every byte from the remote location to be copied to the temporary file and subsequently transferred back to the remote location.  One day a project will be undertaken to stress test remote IO on HUGE files and more will be understood about the performance and optimisation that can be undertaken.
 
-### Intrusive and NonIntrusive Write Mode
+### WriteMode Intrusive and NonIntrusive
 
 When Exiv2 rewrites an image, it determines the writeMode to determines the writeMode which are:
 
@@ -3915,9 +3915,11 @@ When Exiv2 rewrites an image, it determines the writeMode to determines the writ
 The metadata is updated in-place.  For performance reasons, this the default as it means that metadata can be updated by modifying a bytes in the original file.  For example, a common metadata edit is to change the date in Exif.Image.DateTime.  Non-intrusive write mode is designed to ensure this is performed very quickly.
 
 2. Intrusive
-The metadata is totally re-written in memory.  This always occurs if there are any changes in the makernote.  It will always occur if any tag edited tag requires more storage than in the original file.
+The metadata is totally re-written in memory.  This usually occurs if there are changes in the makernote.  It will always occur if tag edited tag requires more storage than in the original file.
 
-Write Mode is really clever, however it's scope is limited to writing Tiff images (and therefore similar Raw formats such as DNG, CR2 and NEF), only a small part of the file is written as a Tiff (the Exif metadata) and the image handler must use the io()->transfer() mechanism discussed above.
+WriteMode is really clever, however its scope is mostly limited to writing Tiff images (and therefore similar Raw formats such as DNG, CR2 and NEF), only a small part of the file is written as a Tiff (the Exif metadata) and the image handler must use the io()->transfer() mechanism discussed above.
+
+There was a rather complex bug resolved concerning WriteMode and Sony Ciphered Tags.  This is discussed:  [https://github.com/Exiv2/exiv2/issues/1471](https://github.com/Exiv2/exiv2/issues/1471)
 
 ### Using a Block Map to track changes to the file.
 
@@ -5698,11 +5700,13 @@ How about this method?  You complain about a font being used.  We'll call this *
 
 As for myself, I am a **CAB** where *C* stands for *clever*.  However I am an **AB** and that's why I've found it difficult to recruit and retain contributors.
 
-There are so many ways to incur the outrage of stakeholders.  And so many ways in which people can and do complain.  All in all, working on an open-source project is a thank-less task.  When I released v0.25, a contributor in Peru said on Facebook  _**Robin should get a medal for his work.  Exiv2 would have died years ago without his commitment.**_  So I asked my family to write to the UK Government to propose that I be given an honour.  The family silently refused.  Alison comforted me by saying _**Nobody is ever going to thank you for working on Exiv2.**_
+There are so many ways to incur the outrage of stakeholders.  And so many ways in which people can and do complain.  Working with such people is very unpleasant.  However, working with solid contributors such as Alex, Christoph, Dan, Luis and Milos is a lot of fun and intellectually rewarding.  When I released v0.25, a contributor in Peru said on Facebook  _**Robin should get a medal for his work.  Exiv2 would have died years ago without his commitment.**_  So I asked my family to write to the UK Government to propose that I be given an honour.  The family silently refused.  Alison comforted me by saying _**Nobody is ever going to thank you for working on Exiv2.**_
 
 <center><img src="dependency.png" width="300px" style="border:2px solid #23668F;"/></center>
 
-#### Solutions to the issue of ABs
+#### Solutions to the issue of AB Users
+
+You've probably now realised that an **AB User** is an abuser.  I do not know why members of the community indulge in abusive behaviour.  Feelings of superiority?  I don't know.  I assure you that it is very unpleasant to the subject of abuse.
 
 There are ways to fix on-line abuse.  We could do what the Fuzzing Police do.  They do not negotiate with any project.  They arrive unexpectedly and deliver their message.  And they track your response and performance.
 
