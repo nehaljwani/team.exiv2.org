@@ -3909,21 +3909,21 @@ This method is very robust and reliable.  For very very files (for example, 100G
 
 ### WriteMode Intrusive and NonIntrusive
 
-When Exiv2 rewrites an image, it determines the writeMode to determines the writeMode which are:
+When Exiv2 rewrites an image, it determines the writeMode which is one of the following:
 
 1. Non-intrusive
 The metadata is updated in-place.  For performance reasons, this the default as it means that metadata can be updated by modifying a bytes in the original file.  For example, a common metadata edit is to change the date in Exif.Image.DateTime.  Non-intrusive write mode is designed to ensure this is performed very quickly.
 
 2. Intrusive
-The metadata is totally re-written in memory.  This usually occurs if there are changes in the makernote.  It will always occur if tag edited tag requires more storage than in the original file.
+The metadata is totally re-written in memory.  This usually occurs if there are changes in the makernote.  It will always occur if there are new tags, or an existing tag has been edited and requires additional space.
 
-WriteMode is really clever, however its scope is mostly limited to writing Tiff images (and therefore similar Raw formats such as DNG, CR2 and NEF), only a small part of the file is written as a Tiff (the Exif metadata) and the image handler must use the io()->transfer() mechanism discussed above.
+WriteMode is really clever, however its scope is mostly limited to writing Tiff images and therefore similar Raw formats such as DNG, CR2 and NEF, as only a small part of the file is written as a Tiff (the Exif metadata) and the image handler must use the io()->transfer() mechanism discussed above.
 
 There was a rather complex bug resolved concerning WriteMode and Sony Ciphered Tags.  This is discussed:  [https://github.com/Exiv2/exiv2/issues/1471](https://github.com/Exiv2/exiv2/issues/1471)
 
 ### Using a Block Map to track changes to the file.
 
-In Chapter 5, I discuss the use of a block map to track small areas of the file which are in use.  I'm confident that architecture could be developed to vastly reduce the I/O involved in updating the metadata in a file.  [6. I/O in Exiv2](#6)
+I discussed the use of a block map to track small areas of the file which are in use.  I'm confident that architecture could be developed to vastly reduce the I/O involved in updating the metadata in a file.
 
 [TOC](#TOC)
 <div id="7"/>
