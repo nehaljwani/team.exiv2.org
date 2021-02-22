@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-02-19</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-02-22</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -31,7 +31,7 @@ _And our cat Lizzie._
 | [2. Metadata Standards](#2)                           | 32 | [JPEG and EXV](#JPEG)                    | 12 | [11.1 C++ Code](#11-1)                  | 78 |
 | [2.1 Exif Metadata](#Exif)                            | 35 | [PNG Portable Network Graphics](#PNG)    | 17 | [11.2 Build](#11-2)                     | 79 |
 | [2.2 XMP Metadata](#XMP)                              | 36 | [JP2 Jpeg 2000](#JP2)                    | 18 | [11.3 Security](#11-3)                  | 80 |
-| [2.3 IPTC/IMM Metadata](#IPTC)                        | 37 | [ISOBMFF, CR3, HEIF, AVIF](#ISOBMFF)     | 19 | [11.4 Documentation](#11-4)             | 80 |
+| [2.3 IPTC/IMM Metadata](#IPTC)                        | 37 | [ISOBMFF, CR3, HEIC, AVIF](#ISOBMFF)     | 19 | [11.4 Documentation](#11-4)             | 80 |
 | [2.4 ICC Profile](#ICC)                               | 37 | [CRW Canon Raw](#CRW)                    | 20 | [11.5 Testing](#11-5)                   | 80 |
 | [2.5 MakerNotes](#MakerNotes)                         | 38 | [RIFF Resource I'change File Fmt](#RIFF) | 20 | [11.6 Samples](#11-6)                   | 80 |
 | [2.6 Metadata Convertors](#Convertors)                | 38 | [MRW Minolta Raw](#MRW)                  | 21 | [11.7 Users](#11-7)                     | 80 |
@@ -137,7 +137,7 @@ I'm delighted by the work done by Dan, Luis and Kevin to deal with the assault o
 <div id="future"/>
 ### Future Development Projects
 
-The code is in good shape, our release process is solid and we have comprehensive user documentation.  As photography develops, there will be many new cameras and more image formats such as CR3, HEIF and BigTiff.   Exiv2 Video support is weak and was deprecated in v0.27.  It will be removed in 0.28.  One day a contributor will re-engineer the video code.
+The code is in good shape, our release process is solid and we have comprehensive user documentation.  As photography develops, there will be many new cameras and more image formats such as CR3, HEIC and BigTiff.   Exiv2 Video support is weak and was deprecated in v0.27.  It will be removed in 0.28.  One day a contributor will re-engineer the video code.
 
 A long standing project for Exiv2 is a **unified metadata container**.  There is an implementation of this in the SVN repository.  Currently we have three containers for Exif, Iptc and Xmp.  This is clumsy.  We also have a restriction of one image per file.  Perhaps both restrictions have a common solution.
 
@@ -244,7 +244,7 @@ The good news however is that file formats come in families which are:
 | JIFF    | JPEG Image File Format<br>Linked list of 64k segments                                   | JPEG, EXV |
 | PNG     | Another popular format<br>Linked list of chunks                                               | PNG |
 | CIFF    | Camera Image File Format.  Dave Coffin parse.c decodes CRW                                    | CRW |
-| ISOBMFF | Based on the .mp4 format                                                | MP4, CR3, AVIF, HEIF, JP2 |
+| ISOBMFF | Based on the .mp4 format                                                | MP4, CR3, AVIF, HEIC, JP2 |
 | RIFF    | Resource Interchange File Format                                                        | WEBP, AVI |
 | GIF     | Graphics Image Format                                                                         | GIF | 
 | BMP     | Windows BMP never has XMP, IPTC or Exif metadata.<br>Version5 may include an ICC profile.     | BMP |
@@ -260,7 +260,7 @@ The Metadata is defined by standards which also define how to embed the data in 
 
 I suspect the proliferation of formats is caused by the hardware engineers.  When hardware people start a new project, they copy the CAD files from the last project and proceed from there.  They don't worry about back-porting changes or compatibility.  We have to live with this mess.
 
-There is also the issue of patents.  It's unclear if it's legal to read an ISOBMFF file which is used by Apple to store Heif files.  I believe it is legal to read ISOBMFF files.  It's illegal to reverse engineer the proprietary encoded data stored in the mdat box a HEIF.  Metadata is occasionally compressed (PNG), encrypted (Nikon) or ciphered (Sony).
+There is also the issue of patents.  It's unclear if it's legal to read an ISOBMFF file which is used by Apple to in HEIC files.  I believe it is legal to read ISOBMFF files.  It's illegal to reverse engineer the proprietary encoded data stored in the mdat box a HEIC.  Metadata is occasionally compressed (PNG), encrypted (Nikon) or ciphered (Sony).
 
 Here is a useful WikiPedia site that summarises file formats: [https://en.wikipedia.org/wiki/Comparison\_of\_graphics\_file\_formats](https://en.wikipedia.org/wiki/Comparison_of_graphics_file_formats)
 
@@ -1002,7 +1002,7 @@ As you can see, the 'colr' box is stored at 40+22 bytes into the file and has a 
 ```
 [TOC](#TOC)
 <div id="ISOBMFF"/>
-## ISOBMFF, CR3, HEIF, AVIF
+## ISOBMFF, CR3, HEIC, AVIF
 
 I obtained the standard here: [https://mpeg.chiariglione.org/standards/mpeg-4/iso-base-media-file-format/text-isoiec-14496-12-5th-edition](https://mpeg.chiariglione.org/standards/mpeg-4/iso-base-media-file-format/text-isoiec-14496-12-5th-edition)
 
@@ -1139,7 +1139,16 @@ for version 1:
 | 14/0xe       | short   | 1                   | height (120)                |
 | 16/0x10      | long    | 1                   | jpeg image size (jpeg_size) |
 
-### HEIC and AVIF
+
+<div id="heic"/>
+<div id="avif"/>
+### HEIC and AVIF Formats
+
+![heic](heic.png)
+
+I believe HEIC and AVIF are very similar.  However the codec used in AVIF/mdat is royalty free.  The HEIC/mdat codec is proprietary.  From a metadata standpoint, there's no apparent difference.  The term HEIC is the container for such images.  HEIF is the title of the codec technology.
+
+Apple were the first to introduce HEIC files on the iOS devices about 2015.  Canon have released cameras with the option to store HEIC.  I believe this is an honest effort by Canon to move on from JPEG. Will this be a market success?  We don't know yet.  Thanks to Gordon Laing, I have obtained several Canon genenerated HEIC files and I'm very pleased to say that tvisitor required no modification to read the metadata.  Thank You, Gordon:  [https://www.cameralabs.com/tag/heif/](https://www.cameralabs.com/tag/heif/)
 
 To understand how to parse HEIC and AVIF, we have to discuss the specification of more boxes.
 
@@ -6560,7 +6569,7 @@ Final words about this.  I didn't undertake a PhD.  Instead I have spent 10,000 
 <div id="11-19"/>
 ### 11.19 Enhancements
 
-I'm not sure there is anything very interesting to be said about this.  There are really different types of requests.  For example, adding recognition for one lens may only require one line of C++, a test file and a 10-line python test script.  This is straightforward and can be fixed within hours.  At the other extreme is the request to support ISOBMFF files including HEIF and CR3.  This project involves research, code, test, build and documentation changes.  And to make it even more difficult, the Community have challenged the legality of providing the feature.  This feature will take years to complete.
+I'm not sure there is anything very interesting to be said about this.  There are really different types of requests.  For example, adding recognition for one lens may only require one line of C++, a test file and a 10-line python test script.  This is straightforward and can be fixed within hours.  At the other extreme is the request to support ISOBMFF files including HEIC and CR3.  This project involves research, code, test, build and documentation changes.  And to make it even more difficult, the Community have challenged the legality of providing the feature.  This feature will take years to complete.
 
 In principle, anybody can develop a feature and submit a PR.  In reality, this seldom happens.  When this does happen, the effort required by me and the developer is often about the same.  So, being offered code in a PR often doubles my work-load.
 
