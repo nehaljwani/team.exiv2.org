@@ -2958,7 +2958,7 @@ void Jp2Image::accept(class Visitor& v)
                 uint16_t   ID =  getShort(data,skip,keBig) ; skip+=2;
                                  getShort(data,skip,keBig) ; skip+=2; // protection
                 std::string name((const char*)data.pData_+skip);
-                if ( name.find("Exif")== 0 ) { // "Exif" or "ExifExif"
+                if ( name.find("Exif")== 0 || name.find("Exif")== 0 ) { // "Exif" or "ExifExif"
                     exifID_ = ID ;
                 }
             }
