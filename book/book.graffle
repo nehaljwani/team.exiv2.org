@@ -28,7 +28,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2021-02-24 18:36:45 +0000</string>
+	<string>2021-02-25 03:56:46 +0000</string>
 	<key>Modifier</key>
 	<string>Robin Mills</string>
 	<key>NotesVisible</key>
@@ -44338,7 +44338,7 @@ uuid Data}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{352.34644676387785, 55.944880172352157}, {158.7244069485871, 207}}</string>
+					<string>{{343.34644676387791, 55.944880172352157}, {168.08614236178994, 207}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -44410,7 +44410,7 @@ uuid Data}</string>
 						BAtzdHJlYW10eXBlZIHoA4QBQISE
 						hBJOU0F0dHJpYnV0ZWRTdHJpbmcA
 						hIQITlNPYmplY3QAhZKEhIQITlNT
-						dHJpbmcBlIQBK4FyAUJveCAgUHVy
+						dHJpbmcBlIQBK4F5AUJveCAgUHVy
 						cG9zZQpjb2xyIENvbG9yCmRpbmYg
 						RGF0YSBJbmZvcm1hdGlvbgpkcmVm
 						IERhdGEgUmVmZXJlbmNlCmZ0eXAg
@@ -44418,30 +44418,30 @@ uuid Data}</string>
 						cgppZGF0IEl0ZW0gRGF0YQppaW5m
 						IEl0ZW0gSW5mb3JtYXRpb24KaWxv
 						YyBJdGVtIExvY2F0aW9uCmluZmUg
-						SXRlbSBJbmZvIEV4dGVuc2lvbgpp
-						cGNvIEl0ZW0gUHJvcGVydHkgQ29u
-						dGFpbmVyCmlwbWEgSXRlbSBQcm9w
-						ZXJ0eSBBc3NvY2lhdGlvbgppcHJv
-						IEl0ZW0gUHJvdGVjdGlvbgppcHJw
-						IEl0ZW0gUHJvcGVydHkKaXJlZiBJ
-						dGVtIFJlZmVyZW5jZQppc3BlIElt
-						YWdlIFNwYXRpYWwgRXh0ZW50cyAK
-						bWRhdCBNZWRpYSBEYXRhCm1ldGEg
-						TWV0YWRhdGEKcGl0bSBQcmltYXJ5
-						IEl0ZW2GhAJpSQGBcgGShISEDE5T
-						RGljdGlvbmFyeQCUhAFpA5KElpYH
-						TlNDb2xvcoaShISEB05TQ29sb3IA
-						lIQBYwGEBGZmZmaDHm18P4M8gwY8
-						g9R9AD8BhpKElpYQTlNQYXJhZ3Jh
-						cGhTdHlsZYaShISEF05TTXV0YWJs
-						ZVBhcmFncmFwaFN0eWxlAISEEE5T
-						UGFyYWdyYXBoU3R5bGUAlIQEQ0NA
-						UwAAhISEB05TQXJyYXkAlJkAhoEA
-						AoQEWzFmXSSGkoSWlgZOU0ZvbnSG
-						koSEhAZOU0ZvbnQelJkchAVbMjhj
-						XQYAAAASAAAA//5DAG8AbgBzAG8A
-						bABhAHMAAACEAWYJmwCbAZsAmwCG
-						hoY=
+						SXRlbSBJbmZvcm1hdGlvbiBFeHRl
+						bnNpb24KaXBjbyBJdGVtIFByb3Bl
+						cnR5IENvbnRhaW5lcgppcG1hIEl0
+						ZW0gUHJvcGVydHkgQXNzb2NpYXRp
+						b24KaXBybyBJdGVtIFByb3RlY3Rp
+						b24KaXBycCBJdGVtIFByb3BlcnR5
+						CmlyZWYgSXRlbSBSZWZlcmVuY2UK
+						aXNwZSBJbWFnZSBTcGF0aWFsIEV4
+						dGVudHMgCm1kYXQgTWVkaWEgRGF0
+						YQptZXRhIE1ldGFkYXRhCnBpdG0g
+						UHJpbWFyeSBJdGVthoQCaUkBgXkB
+						koSEhAxOU0RpY3Rpb25hcnkAlIQB
+						aQOShJaWB05TQ29sb3KGkoSEhAdO
+						U0NvbG9yAJSEAWMBhARmZmZmgx5t
+						fD+DPIMGPIPUfQA/AYaShJaWEE5T
+						UGFyYWdyYXBoU3R5bGWGkoSEhBdO
+						U011dGFibGVQYXJhZ3JhcGhTdHls
+						ZQCEhBBOU1BhcmFncmFwaFN0eWxl
+						AJSEBENDQFMAAISEhAdOU0FycmF5
+						AJSZAIaBAAKEBFsxZl0khpKElpYG
+						TlNGb250hpKEhIQGTlNGb250HpSZ
+						HIQFWzI4Y10GAAAAEgAAAP/+QwBv
+						AG4AcwBvAGwAYQBzAAAAhAFmCZsA
+						mwGbAJsAhoaG
 						</data>
 						<key>Text</key>
 						<string>{\rtf1\ansi\ansicpg1252\cocoartf2578
@@ -44460,7 +44460,7 @@ hdlr Handler\
 idat Item Data\
 iinf Item Information\
 iloc Item Location\
-infe Item Info Extension\
+infe Item Information Extension\
 ipco Item Property Container\
 ipma Item Property Association\
 ipro Item Protection\
@@ -44488,8 +44488,8 @@ pitm Primary Item}</string>
 					<integer>862</integer>
 					<key>Points</key>
 					<array>
-						<string>{256.10235495964378, 177.19684551305662}</string>
-						<string>{292.93379820535495, 177.19684551305662}</string>
+						<string>{253.41731569340851, 177.21653008868591}</string>
+						<string>{290.24875893911945, 177.21653008868591}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -44525,8 +44525,8 @@ pitm Primary Item}</string>
 					<integer>861</integer>
 					<key>Points</key>
 					<array>
-						<string>{253.98424481129086, 158.79133402150663}</string>
-						<string>{290.81568805700203, 158.79133402150663}</string>
+						<string>{253.23424481129086, 158.79133402150663}</string>
+						<string>{290.06568805700203, 158.79133402150663}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -44706,7 +44706,7 @@ pitm Primary Item}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{249.55941449875434, 134.49716169445307}, {45.917324167490051, 18.425196067179286}}</string>
+					<string>{{249.55941449875434, 133.99716169445307}, {50.181103912300841, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -44749,7 +44749,7 @@ pitm Primary Item}</string>
 {\*\expandedcolortbl;;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
 
-\f0\fs16 \cf0 XMP}</string>
+\f0\fs16 \cf0 ID|XMP}</string>
 						<key>VerticalPad</key>
 						<real>4</real>
 					</dict>
@@ -44758,7 +44758,7 @@ pitm Primary Item}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{249.55941449875434, 115.99716882801201}, {45.885815837524206, 18.425196067179286}}</string>
+					<string>{{249.55941449875434, 115.49716882801201}, {50.181103912300841, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -44801,7 +44801,7 @@ pitm Primary Item}</string>
 {\*\expandedcolortbl;;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
 
-\f0\fs16 \cf0 Exif}</string>
+\f0\fs16 \cf0 ID|Exif}</string>
 						<key>VerticalPad</key>
 						<real>4</real>
 					</dict>
@@ -44906,7 +44906,7 @@ pitm Primary Item}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{288.28345644317278, 158.79133402150663}, {59.527556004862163, 18.425196067179286}}</string>
+					<string>{{278.31889075901574, 158.79133402150663}, {59.527556004862163, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -45058,7 +45058,7 @@ pitm Primary Item}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{172.09448750638575, 158.79133402150663}, {27.04724020796516, 18.425196067179286}}</string>
+					<string>{{170.0787353647037, 158.79133402150663}, {29.314959719293711, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -45106,7 +45106,7 @@ pitm Primary Item}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{192.9409393462328, 134.49716169445307}, {56.692913055419922, 18.425196067179286}}</string>
+					<string>{{192.9409393462328, 133.99716169445307}, {56.692913055419922, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -45154,7 +45154,7 @@ pitm Primary Item}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{192.9409393462328, 115.99716882801201}, {56.692913055419922, 18.425196067179286}}</string>
+					<string>{{192.9409393462328, 115.49716882801201}, {56.692913055419922, 18.425196067179286}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -45822,7 +45822,7 @@ pitm Primary Item}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{441.07085371246495, 36.52755864483165}, {70, 23}}</string>
+					<string>{{398.07085371246495, 36.52755864483165}, {113, 23}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -45866,7 +45866,7 @@ pitm Primary Item}</string>
 \deftab720
 \pard\pardeftab720\qr\partightenfactor0
 
-\f0\fs20 \cf0 isobmff/HEIC}</string>
+\f0\fs20 \cf0 isobmff/HEIC and AVIF}</string>
 					</dict>
 					<key>Wrap</key>
 					<string>NO</string>
@@ -46231,9 +46231,9 @@ pitm Primary Item}</string>
 		<key>TopSlabHeight</key>
 		<real>33</real>
 		<key>VisibleRegion</key>
-		<string>{{0, 0}, {585, 380}}</string>
+		<string>{{-189, -119}, {1185, 775}}</string>
 		<key>Zoom</key>
-		<real>2</real>
+		<real>1</real>
 		<key>ZoomValues</key>
 		<array>
 			<array>
@@ -46343,8 +46343,8 @@ pitm Primary Item}</string>
 			</array>
 			<array>
 				<string>heic</string>
-				<real>2</real>
 				<real>1</real>
+				<real>2</real>
 			</array>
 		</array>
 	</dict>
