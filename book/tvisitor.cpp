@@ -1969,6 +1969,7 @@ public:
     }
     std::string  brand_   ;
     uint16_t     exifID_  ;
+    uint16_t     xmpID_   ;
     IlocExts     ilocExts ;
 
     void init()
@@ -1976,7 +1977,8 @@ public:
         endian_     = keBig  ;
         format_     = "JP2"  ;
         brand_      = "jp2"  ;
-        exifID_     = 0      ;
+        exifID_     = 0       ;
+        xmpID_      = 0       ;
 
         const char*  kJp2UuidExif  = "4a706754-6966-6645-7869-662d3e4a5032" ; // "JpgTiffExif->JP2";
         const char*  kJp2UuidIptc  = "33c7a4d2-b81d-4723-a0ba-f1a3e097ad38" ;
@@ -2934,7 +2936,7 @@ void Jp2Image::accept(class Visitor& v)
                 if ( version == 1 || version == 2 ) {
                     indexSize = u & 0xF ;
                 }
-                // uint16_t baseOffsetSize = u >> 4;
+                uint16_t baseOffsetSize = u >> 4;
 
                 uint32_t itemCount  = version < 2 ? getShort(data,skip,keBig) : getLong(data,skip,keBig);
                 skip               += version < 2 ?               2           :         4               ;
@@ -2942,13 +2944,20 @@ void Jp2Image::accept(class Visitor& v)
                     uint64_t step = (length-16)/itemCount                  ; // length of data per item.
                     uint64_t base = skip;
                     for ( uint64_t i = 0 ; i < itemCount ; i++ ) {
-                        skip=base+i*step ; // move in 16 or 14 byte steps
+                        skip=base+i*step ; // move in 14,16 or 18 byte steps
                         uint32_t ID     = version > 2 ? getLong(data,skip,keBig) : getShort(data,skip,keBig);
-                        uint32_t offset = getLong(data,skip+step-8,keBig);
-                        uint32_t ldata  = getLong(data,skip+step-4,keBig);
-                        v.out() << v.indent() << stringFormat("%8d | %8d |  ext | %4d | %6d,%6d",address+skip,step,ID,offset,ldata) << std::endl;
-                        // IlocExt startLength(ID,offset,ldata);
-                        ilocExts.push_back(IlocExt(ID,offset,ldata));// startLength);
+                        uint32_t offset = 0 ;
+                        uint32_t ldata = getLong(data,skip+step-4,keBig);
+;
+                        if ( step == 14 || step == 16 ) {
+                            offset = getLong(data,skip+step-8,keBig);
+                        } else if ( step == 18 ) {
+                            offset = getLong(data,skip    +4,keBig);
+                        }
+                        if ( v.isBasicOrRecursive() ) {
+                            v.out() << v.indent() << stringFormat("%8d | %8d |  ext | %4d | %6d,%6d",address+skip,step,ID,offset,ldata) << std::endl;
+                        }
+                        if ( offset ) ilocExts.push_back(IlocExt(ID,offset,ldata));
                     }
                 }
             }
@@ -2958,8 +2967,13 @@ void Jp2Image::accept(class Visitor& v)
                 uint16_t   ID =  getShort(data,skip,keBig) ; skip+=2;
                                  getShort(data,skip,keBig) ; skip+=2; // protection
                 std::string name((const char*)data.pData_+skip);
-                if ( name.find("Exif")== 0 || name.find("Exif")== 0 ) { // "Exif" or "ExifExif"
+                if ( name.find("Exif")== 0 ) { // "Exif" or "ExifExif"
                     exifID_ = ID ;
+                    // v.out() << " Exif ID = " << ID ;
+                }
+                if ( name.find("mime\0xmp")== 0 || name.find("mime\0application/rdf+xml")== 0 ) {
+                    xmpID_ = ID ;
+                    // v.out() << " XML ID = " << ID ;
                 }
             }
 
@@ -2993,6 +3007,7 @@ void Jp2Image::accept(class Visitor& v)
                         ilocExts.push_back(jp2.ilocExts[i]);
                     }
                     if ( jp2.exifID_ ) exifID_ = jp2.exifID_;
+                    if ( jp2.xmpID_  ) xmpID_  = jp2.xmpID_;
                 }
             }
 
@@ -3007,33 +3022,52 @@ void Jp2Image::accept(class Visitor& v)
                 }
             }
 
-            // before leaving the meta box, process any discovered Exif metadata
-            if ( boxName(box) == kJp2Box_meta && exifID_ && ilocExts.size() && v.isRecursive() ) {
-                uint32_t exifOffset = 0 ;
-                uint32_t exifLength = 0 ;
-                for ( size_t i = 0 ; i < ilocExts.size(); i++) {
-                    if ( ilocExts[i].ID_ == exifID_ ) {
-                        exifOffset = ilocExts[i].start_ ;
-                        exifLength = ilocExts[i].length_;
+            // before leaving the meta box, process any located Exif and XMP metadata
+            if ( boxName(box) == kJp2Box_meta ) {
+                if ( exifID_ && v.isRecursive() ) {
+                    uint32_t offset = 0 ;
+                    uint32_t length = 0 ;
+                    for ( size_t i = 0 ; i < ilocExts.size(); i++) {
+                        if ( ilocExts[i].ID_ == exifID_ ) {
+                            offset = ilocExts[i].start_ ;
+                            length = ilocExts[i].length_;
+                        }
                     }
-                }
-                if ( exifOffset && exifLength ) {
-                    io().seek(exifOffset);
-                    DataBuf   head(20);
-                    io().read(head);
+                    if ( offset && length ) {
+                        io().seek(offset);
+                        DataBuf   head(20);
+                        io().read(head);
 
-                    // hunt for "II" or "MM"
-                    size_t punt = 0 ;
-                    for ( size_t i = 0 ; i < head.size_ && !punt ; i+=2) {
-                        if ( head.pData_[i] == head.pData_[i+1] )
-                            if ( head.pData_[i] == 'I' || head.pData_[i] == 'M' )
-                                punt = i;
+                        // hunt for "II" or "MM"
+                        size_t punt = 0 ;
+                        for ( size_t i = 0 ; i < head.size_ && !punt ; i+=2) {
+                            if ( head.pData_[i] == head.pData_[i+1] )
+                                if ( head.pData_[i] == 'I' || head.pData_[i] == 'M' )
+                                    punt = i;
+                        }
+                        Io             t_io(io(),offset+punt,length-punt);
+                        TiffImage tiff(t_io);
+                        if ( tiff.valid() ) tiff.accept(v);
                     }
-                    Io             t_io(io(),exifOffset+punt,exifLength-punt);
-                    TiffImage tiff(t_io);
-                    if ( tiff.valid() ) tiff.accept(v);
+                    exifID_ = 0;
+
+                } else if ( xmpID_ ) {
+                    uint32_t offset = 0 ;
+                    uint32_t length = 0 ;
+                    for ( size_t i = 0 ; i < ilocExts.size(); i++) {
+                        if ( ilocExts[i].ID_ == xmpID_ ) {
+                            offset = ilocExts[i].start_ ;
+                            length = ilocExts[i].length_;
+                        }
+                    }
+                    if ( offset && length ) {
+                        io().seek(offset);
+                        DataBuf   xmp(length);
+                        io().read(xmp);
+                        v.visitXMP(xmp);
+                    }
+                    xmpID_ = 0 ;
                 }
-                exifID_ = 0 ;
                 ilocExts.clear();
             }
         } // if ( length > 8 && (address + length) <= io().size() )
@@ -3510,7 +3544,7 @@ void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
         }
     }
 
-    if ( boxDict.find(name) != boxDict.end() ) {
+    if ( isRecursive() && boxDict.find(name) != boxDict.end() ) {
         if ( boxTags.find(name) != boxTags.end() ) {
             for (Field field : boxTags[name] ) {
                 std::string n      = chop( boxDict[name] + "." + field.name(),32);

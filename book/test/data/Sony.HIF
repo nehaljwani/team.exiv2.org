@@ -1,0 +1,258 @@
+STRUCTURE OF JP2 (heix) FILE (MM): ../files/Sony.HIF
+ address |   length | box  | uuid | data
+       0 |       40 | ftyp |      | heix____mif1heixmiaf 104 101 105 120 0 0 0 0 109 105 102 49 104 101 105 120 109 105 97 102
+      40 |     2081 | meta |      | _______!hdlr________ 0 0 0 0 0 0 0 33 104 100 108 114 0 0 0 0 0 0 0 0
+  STRUCTURE OF JP2 FILE (MM): ../files/Sony.HIF:52->2069
+         0 |       33 | hdlr |      | ________pict________ 0 0 0 0 0 0 0 0 112 105 99 116 0 0 0 0 0 0 0 0
+        33 |       14 | pitm |      | _____. 0 0 0 0 0 10
+        47 |      350 | iinf |      | _____.___.infe.__._. 0 0 0 0 0 15 0 0 0 21 105 110 102 101 2 0 0 1 0 1
+    STRUCTURE OF JP2 FILE (MM): ../files/Sony.HIF:52->2069:61->336
+           0 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 1 0 0 104 118 99 49 0
+          21 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 2 0 0 104 118 99 49 0
+          42 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 3 0 0 104 118 99 49 0
+          63 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 4 0 0 104 118 99 49 0
+          84 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 5 0 0 104 118 99 49 0
+         105 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 6 0 0 104 118 99 49 0
+         126 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 7 0 0 104 118 99 49 0
+         147 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 8 0 0 104 118 99 49 0
+         168 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 9 0 0 104 118 99 49 0
+         189 |       21 | infe |      | .____.__grid_ 2 0 0 0 0 10 0 0 103 114 105 100 0
+         210 |       21 | infe |      | .____.__hvc1_ 2 0 0 0 0 11 0 0 104 118 99 49 0
+         231 |       21 | infe |      | .____.__hvc1_ 2 0 0 0 0 12 0 0 104 118 99 49 0
+         252 |       21 | infe |      | .__._.__jpeg_ 2 0 0 1 0 13 0 0 106 112 101 103 0
+         273 |       21 | infe |      | .__._.__Exif_ 2 0 0 1 0 14 0 0 69 120 105 102 0
+         294 |       42 | infe |      | .__._.__mime_applica 2 0 0 1 0 15 0 0 109 105 109 101 0 97 112 112 108 105 99 97
+    END: ../files/Sony.HIF:52->2069:61->336
+       397 |      112 | iref |      | _______.dimg_._._._. 0 0 0 0 0 0 0 30 100 105 109 103 0 10 0 9 0 1 0 2
+       509 |     1288 | iprp |      | __..ipco___.irot____ 0 0 4 160 105 112 99 111 0 0 0 9 105 114 111 116 0 0 0 0
+    STRUCTURE OF JP2 FILE (MM): ../files/Sony.HIF:52->2069:517->1280
+           0 |     1184 | ipco |      | ___.irot____.colrncl 0 0 0 9 105 114 111 116 0 0 0 0 19 99 111 108 114 110 99 108
+      STRUCTURE OF JP2 FILE (MM): ../files/Sony.HIF:52->2069:517->1280:8->1176
+             0 |        9 | irot |      | _ 0
+             9 |       19 | colr |      | nclx_._._.. 110 99 108 120 0 1 0 13 0 5 128
+            28 |       16 | pixi |      | ____.... 0 0 0 0 3 10 10 10
+            44 |      345 | hvcC |      | ...___..____.._...._ 1 2 4 0 0 0 13 8 0 0 0 0 150 240 0 252 253 250 250 0
+           389 |       20 | ispe |      | ______.@__.. 0 0 0 0 0 0 11 64 0 0 7 128
+      ISOBMFF.ispe.Version             0
+      ISOBMFF.ispe.Flags               0 0 0
+      ISOBMFF.ispe.Width               2880
+      ISOBMFF.ispe.Height              1920
+           409 |       20 | ispe |      | ______!.__.. 0 0 0 0 0 0 33 192 0 0 22 128
+      ISOBMFF.ispe.Version             0
+      ISOBMFF.ispe.Flags               0 0 0
+      ISOBMFF.ispe.Width               8640
+      ISOBMFF.ispe.Height              5760
+           429 |      344 | hvcC |      | ...___..____x._...._ 1 2 4 0 0 0 13 8 0 0 0 0 120 240 0 252 253 250 250 0
+           773 |       20 | ispe |      | ______.P__.8 0 0 0 0 0 0 6 80 0 0 4 56
+      ISOBMFF.ispe.Version             0
+      ISOBMFF.ispe.Flags               0 0 0
+      ISOBMFF.ispe.Width               1616
+      ISOBMFF.ispe.Height              1080
+           793 |      343 | hvcC |      | ...___..____<._...._ 1 2 4 0 0 0 13 8 0 0 0 0 60 240 0 252 253 250 250 0
+          1136 |       20 | ispe |      | ______.@___. 0 0 0 0 0 0 1 64 0 0 0 212
+      ISOBMFF.ispe.Version             0
+      ISOBMFF.ispe.Flags               0 0 0
+      ISOBMFF.ispe.Width               320
+      ISOBMFF.ispe.Height              212
+          1156 |       20 | ispe |      | _______.___x 0 0 0 0 0 0 0 160 0 0 0 120
+      ISOBMFF.ispe.Version             0
+      ISOBMFF.ispe.Flags               0 0 0
+      ISOBMFF.ispe.Width               160
+      ISOBMFF.ispe.Height              120
+      END: ../files/Sony.HIF:52->2069:517->1280:8->1176
+        1184 |       96 | ipma |      | _______._....._..... 0 0 0 0 0 0 0 13 0 1 3 130 132 133 0 2 3 130 132 133
+    END: ../files/Sony.HIF:52->2069:517->1280
+      1797 |       16 | idat |      | __..!... 0 0 2 2 33 192 22 128
+      1813 |      256 | iloc |      | .___D__._._____.__._ 1 0 0 0 68 0 0 15 0 15 0 0 0 0 0 1 0 0 16 0
+      1821 |       16 |  ext |   15 |   4096, 57344
+      1837 |       16 |  ext |   14 |  61440, 40960
+      1853 |       16 |  ext |   13 | 102400,  4096
+      1869 |       16 |  ext |   12 | 106496,  4096
+      1885 |       16 |  ext |    1 | 110592,  4562
+      1901 |       16 |  ext |    2 | 115154,  2802
+      1917 |       16 |  ext |    3 | 117956,  4344
+      1933 |       16 |  ext |    4 | 122300,  3772
+      1949 |       16 |  ext |    5 | 126072,  2227
+      1965 |       16 |  ext |    6 | 128299,  3668
+      1981 |       16 |  ext |    7 | 131967,  4518
+      1997 |       16 |  ext |    8 | 136485,  2840
+      2013 |       16 |  ext |    9 | 139325,  8131
+      2029 |       16 |  ext |   10 |      0,     8
+      2045 |       16 |  ext |   11 | 147456,  4096
+  END: ../files/Sony.HIF:52->2069
+  STRUCTURE OF TIFF FILE (II): ../files/Sony.HIF:61450->40950
+   address |    tag                                  |      type |    count |    offset | value
+        10 | 0x010f Exif.Image.Make                  |     ASCII |        5 |       122 | SONY
+        22 | 0x0110 Exif.Image.Model                 |     ASCII |        7 |       128 | ILCE-1
+        34 | 0x011a Exif.Image.XResolution           |  RATIONAL |        1 |       136 | 350/1
+        46 | 0x011b Exif.Image.YResolution           |  RATIONAL |        1 |       144 | 350/1
+        58 | 0x0128 Exif.Image.ResolutionUnit        |     SHORT |        1 |           | 2
+        70 | 0x0131 Exif.Image.Software              |     ASCII |       13 |       152 | ILCE-1 v1.00
+        82 | 0x0132 Exif.Image.DateTime              |     ASCII |       20 |       166 | 2021:02:18 19:55:41
+        94 | 0x0213 Exif.Image.YCbCrPositioning      |     SHORT |        1 |           | 1
+       106 | 0x8769 Exif.Image.ExifTag               |      LONG |        1 |           | 186
+    STRUCTURE OF TIFF FILE (II): ../files/Sony.HIF:61450->40950
+     address |    tag                                  |      type |    count |    offset | value
+         188 | 0x829a Exif.Photo.ExposureTime          |  RATIONAL |        1 |       720 | 1/1000
+         200 | 0x829d Exif.Photo.FNumber               |  RATIONAL |        1 |       728 | 40/10
+         212 | 0x8822 Exif.Photo.ExposureProgram       |     SHORT |        1 |           | 1
+         224 | 0x8827 Exif.Photo.ISOSpeedRatings       |     SHORT |        1 |           | 100
+         236 | 0x8830 Exif.Photo.SensitivityType       |     SHORT |        1 |           | 2
+         248 | 0x8832 Exif.Photo.0x8832                |      LONG |        1 |           | 100
+         260 | 0x9000 Exif.Photo.ExifVersion           | UNDEFINED |        4 |           | 0232
+         272 | 0x9003 Exif.Photo.DateTimeOriginal      |     ASCII |       20 |       736 | 2021:02:18 19:55:41
+         284 | 0x9004 Exif.Photo.DateTimeDigitized     |     ASCII |       20 |       756 | 2021:02:18 19:55:41
+         296 | 0x9010 Exif.Photo.0x9010                |     ASCII |        7 |       776 | +00:00
+         308 | 0x9011 Exif.Photo.0x9011                |     ASCII |        7 |       784 | +00:00
+         320 | 0x9012 Exif.Photo.0x9012                |     ASCII |        7 |       792 | +00:00
+         332 | 0x9101 Exif.Photo.ComponentsConfigura.. | UNDEFINED |        4 |           | ..._
+         344 | 0x9102 Exif.Photo.CompressedBitsPerPi.. |  RATIONAL |        1 |       800 | 0/1
+         356 | 0x9203 Exif.Photo.0x9203                | SRATIONAL |        1 |       808 | 3564/2560
+         368 | 0x9204 Exif.Photo.ExposureBiasValue     | SRATIONAL |        1 |       816 | 0/10
+         380 | 0x9205 Exif.Photo.MaxApertureValue      |  RATIONAL |        1 |       824 | 248/256
+         392 | 0x9207 Exif.Photo.MeteringMode          |     SHORT |        1 |           | 5
+         404 | 0x9208 Exif.Photo.LightSource           |     SHORT |        1 |           | 0
+         416 | 0x9209 Exif.Photo.Flash                 |     SHORT |        1 |           | 16
+         428 | 0x920a Exif.Photo.FocalLength           |  RATIONAL |        1 |       832 | 350/10
+         440 | 0x927c Exif.Photo.MakerNote             | UNDEFINED |    38192 |       840 | SONY DSC ___j_..._.___N.___ ._._____ +++
+      STRUCTURE OF TIFF FILE (II): ../files/Sony.HIF:61450->40950
+       address |    tag                                  |      type |    count |    offset | value
+           854 | 0x1003 Exif.Sony.0x1003                 |      LONG |       16 |      2126 | 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+           866 | 0x2000 Exif.Sony.0x2000                 | UNDEFINED |        1 |           | _
+           878 | 0x2002 Exif.Sony.0x2002                 |      LONG |        1 |           | 0
+           890 | 0x2003 Exif.Sony.0x2003                 |     ASCII |      256 |      2190 | 
+           902 | 0x2004 Exif.Sony.0x2004                 |     SLONG |        1 |           | 0
+           914 | 0x2005 Exif.Sony.0x2005                 |     SLONG |        1 |           | 0
+           926 | 0x2006 Exif.Sony.0x2006                 |     SLONG |        1 |           | 4
+           938 | 0x2007 Exif.Sony.0x2007                 |     SLONG |        1 |           | 0
+           950 | 0x2008 Exif.Sony.0x2008                 |      LONG |        1 |           | 0
+           962 | 0x2009 Exif.Sony.0x2009                 |     SHORT |        1 |           | 2
+           974 | 0x200a Exif.Sony.0x200a                 |      LONG |        1 |           | 0
+           986 | 0x200d Exif.Sony.0x200d                 |  RATIONAL |        1 |      2446 | 10/10
+           998 | 0x2014 Exif.Sony.0x2014                 |     SLONG |        2 |      2454 | 0 0
+          1010 | 0x2026 Exif.Sony.0x2026                 |     SLONG |        2 |      2462 | 0 0
+          1022 | 0xb020 Exif.Sony.ColorReproduction      |     ASCII |       16 |      2470 | Standard
+          1034 | 0xb021 Exif.Sony.0xb021                 |      LONG |        1 |           | 0
+          1046 | 0xb022 Exif.Sony.0xb022                 |      LONG |        1 |           | 0
+          1058 | 0xb023 Exif.Sony.0xb023                 |      LONG |        1 |           | 0
+          1070 | 0xb024 Exif.Sony.0xb024                 |      LONG |        1 |           | 0
+          1082 | 0xb025 Exif.Sony.0xb025                 |      LONG |        1 |           | 3
+          1094 | 0xb026 Exif.Sony.0xb026                 |      LONG |        1 |           | 1
+          1106 | 0xb029 Exif.Sony.0xb029                 |      LONG |        1 |           | 0
+          1118 | 0xb02b Exif.Sony.0xb02b                 |      LONG |        2 |      2486 | 5760 8640
+          1130 | 0xb02c Exif.Sony.0xb02c                 |      LONG |        2 |      2494 | 1080 1616
+          1142 | 0xb000 Exif.Sony.0xb000                 |     UBYTE |        4 |           | 4 0 0 0
+          1154 | 0x0102 Exif.Sony.0x102                  |      LONG |        1 |           | 6
+          1166 | 0x0104 Exif.Sony.0x104                  | SRATIONAL |        1 |      2502 | 0/10
+          1178 | 0x0112 Exif.Sony.0x112                  |      LONG |        1 |           | 0
+          1190 | 0x0115 Exif.Sony.0x115                  |      LONG |        1 |           | 0
+          1202 | 0xb001 Exif.Sony.0xb001                 |     SHORT |        1 |           | 384
+          1214 | 0x200b Exif.Sony.0x200b                 |      LONG |        1 |           | 0
+          1226 | 0x200e Exif.Sony.0x200e                 |     SHORT |        1 |           | 0
+          1238 | 0x200f Exif.Sony.0x200f                 |      LONG |        1 |           | 0
+          1250 | 0x2011 Exif.Sony.0x2011                 |      LONG |        1 |           | 2
+          1262 | 0x2012 Exif.Sony.0x2012                 |      LONG |        1 |           | 2
+          1274 | 0x2013 Exif.Sony.0x2013                 |      LONG |        1 |           | 0
+          1286 | 0x2015 Exif.Sony.0x2015                 |     SHORT |        1 |           | 65535
+          1298 | 0xb027 Exif.Sony.0xb027                 |      LONG |        1 |           | 65535
+          1310 | 0xb02a Exif.Sony.0xb02a                 |     UBYTE |        8 |      2510 | 2 0 53 0 0 20 0 0
+          1322 | 0x2016 Exif.Sony.0x2016                 |     SHORT |        1 |           | 0
+          1334 | 0x2017 Exif.Sony.0x2017                 |      LONG |        1 |           | 0
+          1346 | 0x2018 Exif.Sony.0x2018                 |      LONG |        1 |           | 0
+          1358 | 0x2019 Exif.Sony.0x2019                 |      LONG |        1 |           | 0
+          1370 | 0x201a Exif.Sony.0x201a                 |      LONG |        1 |           | 0
+          1382 | 0x201b Exif.Sony.0x201b                 |     UBYTE |        1 |           | 0
+          1394 | 0x201c Exif.Sony.0x201c                 |     UBYTE |        1 |           | 1
+          1406 | 0x201d Exif.Sony.0x201d                 |     SHORT |        2 |           | 0 0
+          1418 | 0x201e Exif.Sony.0x201e                 |     UBYTE |        1 |           | 0
+          1430 | 0x201f Exif.Sony.0x201f                 |     UBYTE |        4 |           | 0 0 0 0
+          1442 | 0x2020 Exif.Sony.0x2020                 |     UBYTE |       10 |      2518 | 0 0 0 0 0 0 0 0 0 0
+          1454 | 0x2021 Exif.Sony.0x2021                 |     UBYTE |        1 |           | 0
+          1466 | 0x202a Exif.Sony.0x202a                 | UNDEFINED |       66 |      2528 | ._.................................. +++
+          1478 | 0x2023 Exif.Sony.0x2023                 |      LONG |        1 |           | 0
+          1490 | 0x2025 Exif.Sony.0x2025                 |     UBYTE |        4 |           | 1 0 0 0
+          1502 | 0x5001 Exif.Sony.0x5001                 |  RATIONAL |        1 |      2602 | 0/1000
+          1514 | 0x5002 Exif.Sony.0x5002                 |     UBYTE |        1 |           | 128
+          1526 | 0x2027 Exif.Sony.0x2027                 |     SHORT |        4 |      2610 | 8640 5760 4320 2880
+          1538 | 0x2028 Exif.Sony.0x2028                 |     SHORT |        2 |           | 65535 65535
+          1550 | 0x202b Exif.Sony.0x202b                 |     UBYTE |        1 |           | 0
+          1562 | 0x202c Exif.Sony.0x202c                 |     SHORT |        1 |           | 256
+          1574 | 0x202d Exif.Sony.0x202d                 | SRATIONAL |        1 |      2618 | 0/6
+          1586 | 0x2029 Exif.Sony.0x2029                 |     SHORT |        1 |           | 0
+          1598 | 0x202e Exif.Sony.0x202e                 |     SHORT |        2 |           | 1 2
+          1610 | 0x202f Exif.Sony.0x202f                 | UNDEFINED |        6 |      2626 | ______
+          1622 | 0x2032 Exif.Sony.0x2032                 |     SLONG |        1 |           | 0
+          1634 | 0x2033 Exif.Sony.0x2033                 |     SLONG |        1 |           | 0
+          1646 | 0x2034 Exif.Sony.0x2034                 |     SLONG |        1 |           | 0
+          1658 | 0x2035 Exif.Sony.0x2035                 |     SLONG |        1 |           | 3
+          1670 | 0x2036 Exif.Sony.0x2036                 |     SLONG |        1 |           | 1
+          1682 | 0x2037 Exif.Sony.0x2037                 | UNDEFINED |        6 |      2594 | ______
+          1694 | 0x2039 Exif.Sony.0x2039                 |     SHORT |        1 |           | 1
+          1706 | 0x2001 Exif.Sony.0x2001                 | UNDEFINED |        0 |           | 
+          1718 | 0x2038 Exif.Sony.0x2038                 |     UBYTE |        1 |           | 0
+          1730 | 0xb041 Exif.Sony.ExposureMode           |     SHORT |        1 |           | 15
+          1742 | 0xb045 Exif.Sony.0xb045                 |     SHORT |        1 |           | 0
+          1754 | 0xb046 Exif.Sony.0xb046                 |     SHORT |        1 |           | 0
+          1766 | 0xb048 Exif.Sony.FlashLevel             |    SSHORT |        1 |           | 0
+          1778 | 0xb049 Exif.Sony.ReleaseMode            |     SHORT |        1 |           | 0
+          1790 | 0xb04a Exif.Sony.SequenceNumber         |     SHORT |        1 |           | 0
+          1802 | 0xb04b Exif.Sony.AntiBlur               |     SHORT |        1 |           | 2
+          1814 | 0xb04c Exif.Sony.0xb04c                 |  RATIONAL |        1 |      2640 | 10/10
+          1826 | 0xb04d Exif.Sony.0xb04d                 |     SHORT |        1 |           | 0
+          1838 | 0xb04f Exif.Sony.0xb04f                 |     SHORT |        1 |           | 1
+          1850 | 0xb050 Exif.Sony.0xb050                 |     SHORT |        1 |           | 65535
+          1862 | 0xb051 Exif.Sony.0xb051                 |     SHORT |        1 |           | 0
+          1874 | 0xb052 Exif.Sony.0xb052                 |     SHORT |        1 |           | 0
+          1886 | 0xb053 Exif.Sony.0xb053                 |     SHORT |        1 |           | 0
+          1898 | 0xb054 Exif.Sony.0xb054                 |     SHORT |        1 |           | 0
+          1910 | 0x9400 Exif.Sony.0x9400                 | UNDEFINED |      456 |      2648 | 1...______b9__._______._______.___.. +++
+          1922 | 0x9401 Exif.Sony.0x9401                 | UNDEFINED |     7840 |      3104 | ._[..__M__.____p..__.________._._G.G +++
+          1934 | 0x9414 Exif.Sony.0x9414                 | UNDEFINED |     1024 |     37848 | ._..________.___(._...______________ +++
+          1946 | 0x9402 Exif.Sony.FocalPosition          | UNDEFINED |      400 |     10944 | ].__ _8__.._____.._____.___________p +++
+          1946 | 0x9402 Exif.Sony.FocalPosition          | UNDEFINED |      400 |     10944 | $.__._P_nB._____.._____.___________. +++
+         10948 | 0x9402 Exif.Sony.FpAmbientTemperature   |      BYTE |        1 |           | .
+         10966 | 0x9402 Exif.Sony.FpFocusMode            |     UBYTE |        1 |           | 0
+         10967 | 0x9402 Exif.Sony.FpAreaMode             |     UBYTE |        1 |           | 1
+         10989 | 0x9402 Exif.Sony.FpFocusPosition        |     UBYTE |        1 |           | 241
+          1958 | 0x9403 Exif.Sony.0x9403                 | UNDEFINED |        4 |           | .#__
+          1970 | 0x9404 Exif.Sony.0x9404                 | UNDEFINED |      100 |     11348 | i_ ___._________.___.v.'..Ir9..I.... +++
+          1982 | 0x9416 Exif.Sony.0x9416                 | UNDEFINED |     4416 |     11448 | ._.._p_p___.._C.. 0.______._________ +++
+          1994 | 0x9406 Exif.Sony.0x9406                 | UNDEFINED |       64 |     15864 | .....8_X_O...}...___________........ +++
+          2006 | 0x9408 Exif.Sony.0x9408                 | UNDEFINED |     2780 |     15928 | A___.\_p_p_.__.___.___.___.__p_p_p._ +++
+          2018 | 0x940a Exif.Sony.0x940a                 | UNDEFINED |     2176 |     18708 | .J..____._______. ......___._______ +++
+          2030 | 0x940b Exif.Sony.0x940b                 | UNDEFINED |      400 |     20884 | __.................................. +++
+          2042 | 0x940c Exif.Sony.0x940c                 | UNDEFINED |       64 |     21284 | _ ....__@XJJ.'.._____.______________ +++
+          2054 | 0x940d Exif.Sony.0x940d                 | UNDEFINED |        4 |           | .J__
+          2066 | 0x940e Exif.Sony.0x940e                 | UNDEFINED |    10752 |     21352 | V_.[u.:..|.^____..:..|.^____<H:..|.^ +++
+          2078 | 0x9413 Exif.Sony.0x9413                 | UNDEFINED |     1024 |     32104 | __...I.^.___._._._._._._____________ +++
+          2090 | 0x940f Exif.Sony.0x940f                 | UNDEFINED |     4464 |     33128 | ._..__Xp(.._/q._.WSM....__..______.I +++
+          2102 | 0x9050 Exif.Sony.0x9050                 | UNDEFINED |      256 |     37592 | ____________________________________ +++
+          2114 | 0x9412 Exif.Sony.0x9412                 | UNDEFINED |      160 |     38872 | ..k.k.$_.8__..___E...z.~.._.....V..~ +++
+      END: ../files/Sony.HIF:61450->40950
+         452 | 0x9286 Exif.Photo.UserComment           | UNDEFINED |       64 |     39032 | ____________________________________ +++
+         464 | 0x9290 Exif.Photo.0x9290                |     ASCII |        4 |           | 948
+         476 | 0x9291 Exif.Photo.0x9291                |     ASCII |        4 |           | 948
+         488 | 0x9292 Exif.Photo.0x9292                |     ASCII |        4 |           | 948
+         500 | 0xa000 Exif.Photo.FlashpixVersion       | UNDEFINED |        4 |           | 0100
+         512 | 0xa001 Exif.Photo.ColorSpace            |     SHORT |        1 |           | 1
+         524 | 0xa002 Exif.Photo.PixelXDimension       |      LONG |        1 |           | 8640
+         536 | 0xa003 Exif.Photo.PixelYDimension       |      LONG |        1 |           | 5760
+         548 | 0xa300 Exif.Photo.FileSource            | UNDEFINED |        1 |           | .
+         560 | 0xa301 Exif.Photo.SceneType             | UNDEFINED |        1 |           | .
+         572 | 0xa401 Exif.Photo.CustomRendered        |     SHORT |        1 |           | 0
+         584 | 0xa402 Exif.Photo.ExposureMode          |     SHORT |        1 |           | 1
+         596 | 0xa403 Exif.Photo.WhiteBalance          |     SHORT |        1 |           | 0
+         608 | 0xa404 Exif.Photo.0xa404                |  RATIONAL |        1 |     39096 | 16/16
+         620 | 0xa405 Exif.Photo.0xa405                |     SHORT |        1 |           | 35
+         632 | 0xa406 Exif.Photo.SceneCaptureType      |     SHORT |        1 |           | 0
+         644 | 0xa408 Exif.Photo.Contrast              |     SHORT |        1 |           | 0
+         656 | 0xa409 Exif.Photo.Saturation            |     SHORT |        1 |           | 0
+         668 | 0xa40a Exif.Photo.Sharpness             |     SHORT |        1 |           | 0
+         680 | 0xa432 Exif.Photo.0xa432                |  RATIONAL |        4 |     39104 | 350/10 350/10 14/10 14/10
+         692 | 0xa434 Exif.Photo.0xa434                |     ASCII |       16 |     39136 | FE 35mm F1.4 GM
+         704 | 0xa460 Exif.Photo.0xa460                |     SHORT |        1 |           | 0
+    END: ../files/Sony.HIF:61450->40950
+  END: ../files/Sony.HIF:61450->40950
+    2121 |     1967 | free |      | ____________________ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    4088 |   147464 | mdat |      | <?xpacket begin='... 60 63 120 112 97 99 107 101 116 32 98 101 103 105 110 61 39 239 187 191
+END: ../files/Sony.HIF
