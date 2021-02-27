@@ -1,0 +1,235 @@
+STRUCTURE OF JP2 (heic) FILE (MM): ../files/2021-02-13-1929.heic
+ address |   length | box  | uuid | data
+       0 |       36 | ftyp |      | heic____mif1MiPrmiaf 104 101 105 99 0 0 0 0 109 105 102 49 77 105 80 114 109 105 97 102
+      36 |     3380 | meta |      | _______"hdlr________ 0 0 0 0 0 0 0 34 104 100 108 114 0 0 0 0 0 0 0 0
+  STRUCTURE OF JP2 FILE (MM): ../files/2021-02-13-1929.heic:48->3368
+         0 |       34 | hdlr |      | ________pict________ 0 0 0 0 0 0 0 0 112 105 99 116 0 0 0 0 0 0 0 0
+        34 |       36 | dinf |      | ___.dref_______.___. 0 0 0 28 100 114 101 102 0 0 0 0 0 0 0 1 0 0 0 12
+    STRUCTURE OF JP2 FILE (MM): ../files/2021-02-13-1929.heic:48->3368:42->28
+           0 |       28 | dref |      | _______.___.url ___. 0 0 0 0 0 0 0 1 0 0 0 12 117 114 108 32 0 0 0 1
+    END: ../files/2021-02-13-1929.heic:48->3368:42->28
+        70 |       14 | pitm |      | _____1 0 0 0 0 0 49
+        84 |     1085 | iinf |      | _____3___.infe.__._. 0 0 0 0 0 51 0 0 0 21 105 110 102 101 2 0 0 1 0 1
+    STRUCTURE OF JP2 FILE (MM): ../files/2021-02-13-1929.heic:48->3368:98->1071
+           0 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 1 0 0 104 118 99 49 0
+          21 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 2 0 0 104 118 99 49 0
+          42 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 3 0 0 104 118 99 49 0
+          63 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 4 0 0 104 118 99 49 0
+          84 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 5 0 0 104 118 99 49 0
+         105 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 6 0 0 104 118 99 49 0
+         126 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 7 0 0 104 118 99 49 0
+         147 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 8 0 0 104 118 99 49 0
+         168 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 9 0 0 104 118 99 49 0
+         189 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 10 0 0 104 118 99 49 0
+         210 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 11 0 0 104 118 99 49 0
+         231 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 12 0 0 104 118 99 49 0
+         252 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 13 0 0 104 118 99 49 0
+         273 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 14 0 0 104 118 99 49 0
+         294 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 15 0 0 104 118 99 49 0
+         315 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 16 0 0 104 118 99 49 0
+         336 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 17 0 0 104 118 99 49 0
+         357 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 18 0 0 104 118 99 49 0
+         378 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 19 0 0 104 118 99 49 0
+         399 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 20 0 0 104 118 99 49 0
+         420 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 21 0 0 104 118 99 49 0
+         441 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 22 0 0 104 118 99 49 0
+         462 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 23 0 0 104 118 99 49 0
+         483 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 24 0 0 104 118 99 49 0
+         504 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 25 0 0 104 118 99 49 0
+         525 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 26 0 0 104 118 99 49 0
+         546 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 27 0 0 104 118 99 49 0
+         567 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 28 0 0 104 118 99 49 0
+         588 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 29 0 0 104 118 99 49 0
+         609 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 30 0 0 104 118 99 49 0
+         630 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 31 0 0 104 118 99 49 0
+         651 |       21 | infe |      | .__._ __hvc1_ 2 0 0 1 0 32 0 0 104 118 99 49 0
+         672 |       21 | infe |      | .__._!__hvc1_ 2 0 0 1 0 33 0 0 104 118 99 49 0
+         693 |       21 | infe |      | .__._"__hvc1_ 2 0 0 1 0 34 0 0 104 118 99 49 0
+         714 |       21 | infe |      | .__._#__hvc1_ 2 0 0 1 0 35 0 0 104 118 99 49 0
+         735 |       21 | infe |      | .__._$__hvc1_ 2 0 0 1 0 36 0 0 104 118 99 49 0
+         756 |       21 | infe |      | .__._%__hvc1_ 2 0 0 1 0 37 0 0 104 118 99 49 0
+         777 |       21 | infe |      | .__._&__hvc1_ 2 0 0 1 0 38 0 0 104 118 99 49 0
+         798 |       21 | infe |      | .__._'__hvc1_ 2 0 0 1 0 39 0 0 104 118 99 49 0
+         819 |       21 | infe |      | .__._(__hvc1_ 2 0 0 1 0 40 0 0 104 118 99 49 0
+         840 |       21 | infe |      | .__._)__hvc1_ 2 0 0 1 0 41 0 0 104 118 99 49 0
+         861 |       21 | infe |      | .__._*__hvc1_ 2 0 0 1 0 42 0 0 104 118 99 49 0
+         882 |       21 | infe |      | .__._+__hvc1_ 2 0 0 1 0 43 0 0 104 118 99 49 0
+         903 |       21 | infe |      | .__._,__hvc1_ 2 0 0 1 0 44 0 0 104 118 99 49 0
+         924 |       21 | infe |      | .__._-__hvc1_ 2 0 0 1 0 45 0 0 104 118 99 49 0
+         945 |       21 | infe |      | .__._.__hvc1_ 2 0 0 1 0 46 0 0 104 118 99 49 0
+         966 |       21 | infe |      | .__._/__hvc1_ 2 0 0 1 0 47 0 0 104 118 99 49 0
+         987 |       21 | infe |      | .__._0__hvc1_ 2 0 0 1 0 48 0 0 104 118 99 49 0
+        1008 |       21 | infe |      | .____1__grid_ 2 0 0 0 0 49 0 0 103 114 105 100 0
+        1029 |       21 | infe |      | .____2__hvc1_ 2 0 0 0 0 50 0 0 104 118 99 49 0
+        1050 |       21 | infe |      | .__._3__Exif_ 2 0 0 1 0 51 0 0 69 120 105 102 0
+    END: ../files/2021-02-13-1929.heic:48->3368:98->1071
+      1169 |      148 | iref |      | _______ldimg_1_0_._. 0 0 0 0 0 0 0 108 100 105 109 103 0 49 0 48 0 1 0 2
+      1317 |     1203 | iprp |      | __.lipco__.0colrprof 0 0 3 108 105 112 99 111 0 0 2 48 99 111 108 114 112 114 111 102
+    STRUCTURE OF JP2 FILE (MM): ../files/2021-02-13-1929.heic:48->3368:1325->1195
+           0 |      876 | ipco |      | __.0colrprof__.$appl 0 0 2 48 99 111 108 114 112 114 111 102 0 0 2 36 97 112 112 108
+      STRUCTURE OF JP2 FILE (MM): ../files/2021-02-13-1929.heic:48->3368:1325->1195:8->868
+             0 |      560 | colr |      | prof__.$appl.___mntr 112 114 111 102 0 0 2 36 97 112 112 108 4 0 0 0 109 110 116 114
+           560 |      112 | hvcC |      | ..p___._____Z._...._ 1 3 112 0 0 0 176 0 0 0 0 0 90 240 0 252 253 248 248 0
+           672 |       20 | ispe |      | ______.___._ 0 0 0 0 0 0 2 0 0 0 2 0
+      ISOBMFF.ispe.Version             0
+      ISOBMFF.ispe.Flags               0 0 0
+      ISOBMFF.ispe.Width               512
+      ISOBMFF.ispe.Height              512
+           692 |       20 | ispe |      | ______..__.. 0 0 0 0 0 0 15 192 0 0 11 208
+      ISOBMFF.ispe.Version             0
+      ISOBMFF.ispe.Flags               0 0 0
+      ISOBMFF.ispe.Width               4032
+      ISOBMFF.ispe.Height              3024
+           712 |        9 | irot |      | . 3
+           721 |       16 | pixi |      | ____.... 0 0 0 0 3 8 8 8
+           737 |      111 | hvcC |      | ..p___._____<._...._ 1 3 112 0 0 0 176 0 0 0 0 0 60 240 0 252 253 248 248 0
+           848 |       20 | ispe |      | ______.@___. 0 0 0 0 0 0 1 64 0 0 0 240
+      ISOBMFF.ispe.Version             0
+      ISOBMFF.ispe.Flags               0 0 0
+      ISOBMFF.ispe.Width               320
+      ISOBMFF.ispe.Height              240
+      END: ../files/2021-02-13-1929.heic:48->3368:1325->1195:8->868
+         876 |      319 | ipma |      | _______2_....._..... 0 0 0 0 0 0 0 50 0 1 3 131 129 130 0 2 3 131 129 130
+    END: ../files/2021-02-13-1929.heic:48->3368:1325->1195
+      2520 |       16 | idat |      | __...... 0 0 5 7 15 192 11 208
+      2536 |      832 | iloc |      | .___D__3_._____.__Z. 1 0 0 0 68 0 0 51 0 1 0 0 0 0 0 1 0 0 90 225
+      2544 |       16 |  ext |    1 |  23265, 15453
+      2560 |       16 |  ext |    2 |  38718, 21882
+      2576 |       16 |  ext |    3 |  60600, 20196
+      2592 |       16 |  ext |    4 |  80796, 22234
+      2608 |       16 |  ext |    5 | 103030, 41489
+      2624 |       16 |  ext |    6 | 144519, 40845
+      2640 |       16 |  ext |    7 | 185364, 34948
+      2656 |       16 |  ext |    8 | 220312, 17650
+      2672 |       16 |  ext |    9 | 237962, 15024
+      2688 |       16 |  ext |   10 | 252986, 44647
+      2704 |       16 |  ext |   11 | 297633, 38092
+      2720 |       16 |  ext |   12 | 335725, 43666
+      2736 |       16 |  ext |   13 | 379391, 48523
+      2752 |       16 |  ext |   14 | 427914, 46992
+      2768 |       16 |  ext |   15 | 474906, 36063
+      2784 |       16 |  ext |   16 | 510969, 20737
+      2800 |       16 |  ext |   17 | 531706, 25756
+      2816 |       16 |  ext |   18 | 557462, 58455
+      2832 |       16 |  ext |   19 | 615917, 44896
+      2848 |       16 |  ext |   20 | 660813, 39730
+      2864 |       16 |  ext |   21 | 700543, 38596
+      2880 |       16 |  ext |   22 | 739139, 31795
+      2896 |       16 |  ext |   23 | 770934, 33214
+      2912 |       16 |  ext |   24 | 804148, 18858
+      2928 |       16 |  ext |   25 | 823006, 35122
+      2944 |       16 |  ext |   26 | 858128, 41015
+      2960 |       16 |  ext |   27 | 899143, 40362
+      2976 |       16 |  ext |   28 | 939505, 38288
+      2992 |       16 |  ext |   29 | 977793, 34497
+      3008 |       16 |  ext |   30 | 1012290, 31806
+      3024 |       16 |  ext |   31 | 1044096, 25360
+      3040 |       16 |  ext |   32 | 1069456, 19672
+      3056 |       16 |  ext |   33 | 1089128, 25400
+      3072 |       16 |  ext |   34 | 1114528, 34515
+      3088 |       16 |  ext |   35 | 1149043, 20863
+      3104 |       16 |  ext |   36 | 1169906, 25975
+      3120 |       16 |  ext |   37 | 1195881, 33532
+      3136 |       16 |  ext |   38 | 1229413, 31296
+      3152 |       16 |  ext |   39 | 1260709, 29869
+      3168 |       16 |  ext |   40 | 1290578, 16479
+      3184 |       16 |  ext |   41 | 1307057, 17323
+      3200 |       16 |  ext |   42 | 1324380, 17331
+      3216 |       16 |  ext |   43 | 1341711, 13357
+      3232 |       16 |  ext |   44 | 1355068, 22206
+      3248 |       16 |  ext |   45 | 1377274, 31859
+      3264 |       16 |  ext |   46 | 1409133, 26694
+      3280 |       16 |  ext |   47 | 1435827, 23620
+      3296 |       16 |  ext |   48 | 1459447, 15007
+      3312 |       16 |  ext |   49 |      0,     8
+      3328 |       16 |  ext |   50 |   3432, 17469
+      3344 |       16 |  ext |   51 |  20901,  2364
+  END: ../files/2021-02-13-1929.heic:48->3368
+  STRUCTURE OF TIFF FILE (MM): ../files/2021-02-13-1929.heic:20911->2354
+   address |    tag                                  |      type |    count |    offset | value
+        10 | 0x010f Exif.Image.Make                  |     ASCII |        6 |       158 | Apple
+        22 | 0x0110 Exif.Image.Model                 |     ASCII |       10 |       164 | iPhone XR
+        34 | 0x0112 Exif.Image.Orientation           |     SHORT |        1 |           | 6
+        46 | 0x011a Exif.Image.XResolution           |  RATIONAL |        1 |       174 | 72/1
+        58 | 0x011b Exif.Image.YResolution           |  RATIONAL |        1 |       182 | 72/1
+        70 | 0x0128 Exif.Image.ResolutionUnit        |     SHORT |        1 |           | 2
+        82 | 0x0131 Exif.Image.Software              |     ASCII |        5 |       190 | 14.4
+        94 | 0x0132 Exif.Image.DateTime              |     ASCII |       20 |       196 | 2021:02:13 11:03:31
+       106 | 0x013c Exif.Image.0x13c                 |     ASCII |       10 |       216 | iPhone XR
+       118 | 0x0213 Exif.Image.YCbCrPositioning      |     SHORT |        1 |           | 1
+       130 | 0x8769 Exif.Image.ExifTag               |      LONG |        1 |           | 226
+    STRUCTURE OF TIFF FILE (MM): ../files/2021-02-13-1929.heic:20911->2354
+     address |    tag                                  |      type |    count |    offset | value
+         228 | 0x829a Exif.Photo.ExposureTime          |  RATIONAL |        1 |       664 | 1/30
+         240 | 0x829d Exif.Photo.FNumber               |  RATIONAL |        1 |       672 | 9/5
+         252 | 0x8822 Exif.Photo.ExposureProgram       |     SHORT |        1 |           | 2
+         264 | 0x8827 Exif.Photo.ISOSpeedRatings       |     SHORT |        1 |           | 500
+         276 | 0x9000 Exif.Photo.ExifVersion           | UNDEFINED |        4 |           | 0232
+         288 | 0x9003 Exif.Photo.DateTimeOriginal      |     ASCII |       20 |       680 | 2021:02:13 11:03:31
+         300 | 0x9004 Exif.Photo.DateTimeDigitized     |     ASCII |       20 |       700 | 2021:02:13 11:03:31
+         312 | 0x9010 Exif.Photo.0x9010                |     ASCII |        7 |       720 | -06:00
+         324 | 0x9011 Exif.Photo.0x9011                |     ASCII |        7 |       728 | -06:00
+         336 | 0x9012 Exif.Photo.0x9012                |     ASCII |        7 |       736 | -06:00
+         348 | 0x9101 Exif.Photo.ComponentsConfigura.. | UNDEFINED |        4 |           | ..._
+         360 | 0x9201 Exif.Photo.0x9201                | SRATIONAL |        1 |       744 | 14628/2981
+         372 | 0x9202 Exif.Photo.0x9202                |  RATIONAL |        1 |       752 | 54823/32325
+         384 | 0x9203 Exif.Photo.0x9203                | SRATIONAL |        1 |       760 | 4294905711/686999
+         396 | 0x9204 Exif.Photo.ExposureBiasValue     | SRATIONAL |        1 |       768 | 0/1
+         408 | 0x9207 Exif.Photo.MeteringMode          |     SHORT |        1 |           | 3
+         420 | 0x9209 Exif.Photo.Flash                 |     SHORT |        1 |           | 16
+         432 | 0x920a Exif.Photo.FocalLength           |  RATIONAL |        1 |       776 | 17/4
+         444 | 0x9214 Exif.Photo.0x9214                |     SHORT |        4 |       784 | 841 1124 751 753
+         456 | 0x927c Exif.Photo.MakerNote             | UNDEFINED |     1212 |       792 | Apple iOS__.MM_ _._.___.___._._.__.. +++
+      STRUCTURE OF TIFF FILE (MM): ../files/2021-02-13-1929.heic:20911->2354
+       address |    tag                                  |      type |    count |    offset | value
+           820 | 0x0002 Exif.Apple.Two                   | UNDEFINED |      558 |       404 | __._.._.___._.__.._.___._.__.._.___. +++
+           832 | 0x0003 Exif.Apple.Three                 | UNDEFINED |      104 |       962 | _._._.___... __._.___._____._.___.__ +++
+           844 | 0x0004 Exif.Apple.Four                  |     SLONG |        1 |           | 1
+           856 | 0x0005 Exif.Apple.Five                  |     SLONG |        1 |           | 180
+           868 | 0x0006 Exif.Apple.Six                   |     SLONG |        1 |           | 181
+           880 | 0x0007 Exif.Apple.Seven                 |     SLONG |        1 |           | 1
+           892 | 0x0008 Exif.Apple.Eight                 | SRATIONAL |        3 |      1066 | 65536/196647 655360/65536 76415016/5 +++
+           904 | 0x000c Exif.Apple.Twelve                | SRATIONAL |        2 |      1090 | 65536/65579 131072/2424832
+           916 | 0x000d Exif.Apple.Thirteen              |     SLONG |        1 |           | 29
+           928 | 0x000e Exif.Apple.0xe                   |     SLONG |        1 |           | 0
+           940 | 0x0010 Exif.Apple.0x10                  |     SLONG |        1 |           | 1
+           952 | 0x0014 Exif.Apple.0x14                  |     SLONG |        1 |           | 10
+      END: ../files/2021-02-13-1929.heic:20911->2354
+         468 | 0x9291 Exif.Photo.0x9291                |     ASCII |        4 |           | 864
+         480 | 0x9292 Exif.Photo.0x9292                |     ASCII |        4 |           | 864
+         492 | 0xa000 Exif.Photo.FlashpixVersion       | UNDEFINED |        4 |           | 0100
+         504 | 0xa001 Exif.Photo.ColorSpace            |     SHORT |        1 |           | 65535
+         516 | 0xa002 Exif.Photo.PixelXDimension       |      LONG |        1 |           | 4032
+         528 | 0xa003 Exif.Photo.PixelYDimension       |      LONG |        1 |           | 3024
+         540 | 0xa217 Exif.Photo.0xa217                |     SHORT |        1 |           | 2
+         552 | 0xa301 Exif.Photo.SceneType             | UNDEFINED |        1 |           | .
+         564 | 0xa402 Exif.Photo.ExposureMode          |     SHORT |        1 |           | 0
+         576 | 0xa403 Exif.Photo.WhiteBalance          |     SHORT |        1 |           | 0
+         588 | 0xa405 Exif.Photo.0xa405                |     SHORT |        1 |           | 26
+         600 | 0xa406 Exif.Photo.SceneCaptureType      |     SHORT |        1 |           | 0
+         612 | 0xa432 Exif.Photo.0xa432                |  RATIONAL |        4 |      2004 | 17/4 17/4 9/5 9/5
+         624 | 0xa433 Exif.Photo.0xa433                |     ASCII |        6 |      2036 | Apple
+         636 | 0xa434 Exif.Photo.0xa434                |     ASCII |       35 |      2042 | iPhone XR back camera 4.25mm f/1.8
+         648 | 0xa460 Exif.Photo.0xa460                |     SHORT |        1 |           | 2
+    END: ../files/2021-02-13-1929.heic:20911->2354
+       142 | 0x8825 Exif.Image.GPSTag                |      LONG |        1 |           | 2078
+    STRUCTURE OF TIFF FILE (MM): ../files/2021-02-13-1929.heic:20911->2354
+     address |    tag                                  |      type |    count |    offset | value
+        2080 | 0x0001 Exif.GPSInfo.GPSLatitudeRef      |     ASCII |        2 |           | N
+        2092 | 0x0002 Exif.GPSInfo.GPSLatitude         |  RATIONAL |        3 |      2252 | 30/1 34/1 4932/100
+        2104 | 0x0003 Exif.GPSInfo.GPSLongitudeRef     |     ASCII |        2 |           | W
+        2116 | 0x0004 Exif.GPSInfo.GPSLongitude        |  RATIONAL |        3 |      2276 | 88/1 4/1 2606/100
+        2128 | 0x0005 Exif.GPSInfo.GPSAltitudeRef      |     UBYTE |        1 |           | 0
+        2140 | 0x0006 Exif.GPSInfo.GPSAltitude         |  RATIONAL |        1 |      2300 | 115727/39871
+        2152 | 0x000c Exif.GPSInfo.0xc                 |     ASCII |        2 |           | K
+        2164 | 0x000d Exif.GPSInfo.0xd                 |  RATIONAL |        1 |      2308 | 0/1
+        2176 | 0x0010 Exif.GPSInfo.0x10                |     ASCII |        2 |           | T
+        2188 | 0x0011 Exif.GPSInfo.0x11                |  RATIONAL |        1 |      2316 | 825189/3865
+        2200 | 0x0017 Exif.GPSInfo.0x17                |     ASCII |        2 |           | T
+        2212 | 0x0018 Exif.GPSInfo.0x18                |  RATIONAL |        1 |      2324 | 825189/3865
+        2224 | 0x001d Exif.GPSInfo.GPSDateStamp        |     ASCII |       11 |      2332 | 2021:02:13
+        2236 | 0x001f Exif.GPSInfo.0x1f                |  RATIONAL |        1 |      2344 | 65/1
+    END: ../files/2021-02-13-1929.heic:20911->2354
+  END: ../files/2021-02-13-1929.heic:20911->2354
+    3416 |  1471038 | mdat |      | _____.r>__D9(....+.. 0 0 0 0 0 22 114 62 0 0 68 57 40 1 175 136 25 43 211 165
+END: ../files/2021-02-13-1929.heic
