@@ -2955,7 +2955,7 @@ void Jp2Image::accept(class Visitor& v)
                             offset = getLong(data,skip    +4,keBig);
                         }
                         if ( v.isBasicOrRecursive() ) {
-                            v.out() << v.indent() << stringFormat("%8d | %8d |  ext | %4d | %6d,%6d",address+skip,step,ID,offset,ldata) << std::endl;
+                            v.out() << v.indent() << stringFormat("%8d | %8d |   ID | %4d | %6d,%6d",address+skip,step,ID,offset,ldata) << std::endl;
                         }
                         if ( offset ) ilocExts.push_back(IlocExt(ID,offset,ldata));
                     }
@@ -3519,13 +3519,18 @@ void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
     io.read (data);
 
     std::string name     = image.boxName (box);
+    // we shouldn't "calculate" the show, it should be passed to the visitor
     std::string uuidName = name == "uuid" ? image.uuidName(data,punt) : "";
+    std::string show     = uuidName ;
     if ( name == "uuid" && !uuidName.size() ) {
         std::cout << "unrecognised uuid = " << uuidName << std::endl;
     }
+    if ( name == "infe" ) {
+        show = data.toString(kttShort,1,image.endian(),punt+4);
+    }
 
     if ( isBasicOrRecursive() ) {
-        out() << indent() << stringFormat("%8d | %8d | %4s | %4s | ",address,length,name.c_str(),uuidName.c_str() );
+        out() << indent() << stringFormat("%8d | %8d | %4s | %4s | ",address,length,name.c_str(),show.c_str() );
         uint64_t start    = punt + (uuidName.size() ? 16 : 0);
         uint64_t dump     = length > start ? length - start : 0 ;
         if ( dump > 20 ) dump  = 20;
