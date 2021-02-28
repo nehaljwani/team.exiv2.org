@@ -3020,6 +3020,13 @@ void Jp2Image::accept(class Visitor& v)
                     jp2.valid_=true;
                     jp2.accept(v);
                 }
+                if ( uuidName(uuid) == "xmp" && v.option() & kpsXMP ) {
+                    DataBuf xmp(length+1);
+                    xmp.pData_[length]= 0; // null terminate the xmp
+                    IoSave restore(io(),io().tell());
+                    io().read(xmp.pData_,length);
+                    v.out() << (const char*) xmp.pData_ ;
+                }
             }
 
             // before leaving the meta box, process any located Exif and XMP metadata
