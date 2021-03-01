@@ -1334,7 +1334,7 @@ protected:
     const char*  kJp2Box_hdlr  = "hdlr";
     const char*  kJp2Box_iinf  = "iinf";
     const char*  kJp2Box_iloc  = "iloc";
-    
+
     const uint16_t kAppExt     = 0xff21;
     const uint16_t kComExt     = 0xfe21;
     const uint16_t kGCnExt     = 0xf921;
@@ -2213,7 +2213,6 @@ public:
     : Image(io)
     {}
 
-
     void accept(class Visitor& visitor);
 
     bool valid()
@@ -2275,7 +2274,6 @@ public:
     RafImage(Io& io,maker_e maker=kFuji)
     : Image(io)
     {}
-
 
     void accept(class Visitor& visitor);
 
@@ -2350,7 +2348,6 @@ void RafImage::accept(class Visitor& visitor)
         visitor.visitEnd((*this)); // tell the visitor
     }
 }
-
 
 void JpegImage::accept(Visitor& visitor)
 {
@@ -3256,7 +3253,7 @@ void ReportVisitor::visitTag
         reportFields(name, offset,image.endian(),tag,type,count,lens,image.makerDict_);
         image.serial_ = 0; // don't do this again.
     }
-    
+
 } // visitTag
 
 void ReportVisitor::visitXMP(DataBuf& xmp)
@@ -3382,7 +3379,6 @@ void ReportVisitor::visitChunk(Io& io,Image& image,uint64_t address
         out() << std::endl;
     }
 
-
     if ( isRecursive() && std::strcmp(chunk,"eXIf") == 0 ) {
         DataBuf   data(length);  // read the whole chunk
         io.read(data);
@@ -3462,7 +3458,7 @@ void ReportVisitor::visitGifHeader(Io& io,Image& image,uint8_t gct,uint8_t res,u
         DataBuf next(2);
         DataBuf last(1);
         uint64_t address;
-        
+
         address = io.tell() ; io.read(head); out() << indent() << stringFormat("%8d | %4d | %-16s | magic"             ,address,head.size_,head.toString(kttAscii).c_str()) << std::endl;
         address = io.tell() ; io.read(vers); out() << indent() << stringFormat("%8d | %4d | %-16s | version"           ,address,vers.size_,vers.toString(kttAscii).c_str()) << std::endl;
         address = io.tell() ; io.read(widt); out() << indent() << stringFormat("%8d | %4d | %-16s | width"             ,address,widt.size_,widt.toString(kttShort).c_str()) << std::endl;
