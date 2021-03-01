@@ -2025,7 +2025,7 @@ public:
             DataBuf buff(4);
             io().read(buff);
             uint32_t length = (uint32_t) io().size();
-            valid_  = buff.getLong(0,keBig) == length || buff.getLong(0,keLittle); // ICC files are bigEndian, check both
+            valid_  = buff.getLong(0,keBig) == length || buff.getLong(0,keLittle) == length; // ICC files are bigEndian, check both
         }
         header_ = "   sig |   offset |   length" ;
         return valid_;
