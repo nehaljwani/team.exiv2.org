@@ -1153,7 +1153,7 @@ public:
 
     // optional methods
     virtual void visitXMP     (DataBuf& /* xmp */ )                                  { return ; }
-    virtual void visitICC     (DataBuf& /* icc */ )                                  { return ; }
+    virtual void visitICC     (DataBuf& /* icc */ ,bool bAlreadyValid=false )        { return ; }
     virtual void visitICCTag  (const byte* sig,uint32_t offset,uint32_t length)      { return ; }
     virtual void visitIPTC    (Io& io,Image& image
                               ,uint16_t record,uint16_t dataset,uint32_t len
@@ -1170,7 +1170,7 @@ public:
                               ,uint32_t length,DataBuf& data)                        { return ; }
     virtual void visitGifHeader(Io& io,Image& image
                               ,uint8_t gct,uint8_t res,uint8_t sort,uint8_t size)    { return ; }
-    virtual void showError   (std::string message ) { return ; }
+    virtual void showError    (std::string message )                                 { return ; }
 
     PSOption      option() { return option_ ; }
     std::ostream& out()    { return out_    ; }
@@ -2548,7 +2548,7 @@ public:
         IoSave  restore(io,address);
     }
     void visitXMP (DataBuf& xmp);
-    void visitICC (DataBuf& xmp);
+    void visitICC (DataBuf& xmp,bool bAlreadyValid = false);
     void visitExif(Io&      io );
 
     bool printTag(std::string& name)
@@ -2993,8 +2993,7 @@ void Jp2Image::accept(class Visitor& v)
                 if ( boxName(colour_type) == "rICC" || boxName(colour_type) == "prof" ) {
                     DataBuf    profile(length-skip);
                     ::memcpy(profile.pData_,data.pData_+skip,profile.size_);
-                    visits_.insert(address); // don't visit twice
-                    v.visitICC(profile);
+                    v.visitICC(profile,true); // Apple ICC profiles have the wrong length!
                 } else if ( meth == 2 && prec == 0 && approx == 0 ) {
                     // often it's a 3 byte head // 2 0 0 icc......
                     skip -= 1 ;
@@ -3265,13 +3264,17 @@ void ReportVisitor::visitXMP(DataBuf& xmp)
     if ( option() & kpsXMP ) out() << xmp.pData_;
 }
 
-void ReportVisitor::visitICC(DataBuf& icc)
+void ReportVisitor::visitICC(DataBuf& icc,bool bAlreadyValid /* = false */ )
 {
     Io  profile(icc);
     switch ( option() ) {
-        case kpsIcc        : out().write((const char*)icc.pData_,icc.size_); break;
-        case kpsRecursive  : ICC(profile).accept(*this)                    ; break;
         default            : /* do nothing */                              ; break;
+        case kpsIcc        : out().write((const char*)icc.pData_,icc.size_); break;
+        case kpsRecursive  : {
+            ICC icc(profile);
+            icc.valid_ = bAlreadyValid ;
+            icc.accept(*this);
+        } ; break;
     }
 }
 
