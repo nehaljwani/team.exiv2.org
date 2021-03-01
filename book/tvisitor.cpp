@@ -1174,9 +1174,10 @@ public:
 
     PSOption      option() { return option_ ; }
     std::ostream& out()    { return out_    ; }
-    std::string   indent() { return ::indent(indent_);}
-    bool          isRecursive()        { return (option_ & kpsRecursive             ) ? true : false;}
-    bool          isBasicOrRecursive() { return (option_ & (kpsBasic | kpsRecursive)) ? true : false;}
+    std::string   indent(uint32_t i=0) { return ::indent(indent_+i);}
+    bool          isBasic()            { return (option_ & kpsBasic      ) ? true : false;}
+    bool          isRecursive()        { return (option_ & kpsRecursive  ) ? true : false;}
+    bool          isBasicOrRecursive() { return isBasic() || isRecursive() ? true : false;}
 protected:
     uint32_t      indent_ ;
     PSOption      option_;
@@ -2021,9 +2022,12 @@ public:
     {
         if ( !valid_ ) {
             IoSave  restore(io(),0);
-            valid_  = io().getLong(endian_) == io().size();
-            header_ = "   sig |   offset |   length" ;
+            DataBuf buff(4);
+            io().read(buff);
+            uint32_t length = (uint32_t) io().size();
+            valid_  = buff.getLong(0,keBig) == length || buff.getLong(0,keLittle); // ICC files are bigEndian, check both
         }
+        header_ = "   sig |   offset |   length" ;
         return valid_;
     }
 };
@@ -2036,12 +2040,14 @@ void ICC::accept(class Visitor& visitor)
 
         IoSave restore(io(),start_);
         uint32_t nEntries = io().getLong(endian_);
-        while  ( nEntries-- ) {
-            DataBuf sig(5);
-            io().read(sig.pData_,4);
-            uint32_t offset = io().getLong(endian_);
-            uint32_t length = io().getLong(endian_);
-            visitor.visitICCTag(sig.pData_,offset,length);
+        if ( nEntries < io().size() / 16 ) {
+            while  ( nEntries-- ) {
+                DataBuf sig(5);
+                io().read(sig.pData_,4);
+                uint32_t offset = io().getLong(endian_);
+                uint32_t length = io().getLong(endian_);
+                visitor.visitICCTag(sig.pData_,offset,length);
+            }
         }
         visitor.visitEnd((*this)); // tell the visitor
     }
@@ -2948,7 +2954,7 @@ void Jp2Image::accept(class Visitor& v)
                         uint32_t ID     = version > 2 ? getLong(data,skip,keBig) : getShort(data,skip,keBig);
                         uint32_t offset = 0 ;
                         uint32_t ldata = getLong(data,skip+step-4,keBig);
-;
+
                         if ( step == 14 || step == 16 ) {
                             offset = getLong(data,skip+step-8,keBig);
                         } else if ( step == 18 ) {
@@ -2974,6 +2980,27 @@ void Jp2Image::accept(class Visitor& v)
                 if ( name.find("mime\0xmp")== 0 || name.find("mime\0application/rdf+xml")== 0 ) {
                     xmpID_ = ID ;
                     // v.out() << " XML ID = " << ID ;
+                }
+            }
+
+            // 12.1.5.2
+            if ( boxName(box) == "colr" && data.size_ >= skip+4 ) { // .____.HLino..__mntrR 2 0 0 0 0 12 72 76 105 110 111 2 16 ...
+                // https://www.ics.uci.edu/~dan/class/267/papers/jpeg2000.pdf
+                uint8_t      meth        = getByte(data,skip+0);
+                uint8_t      prec        = getByte(data,skip+1);
+                uint8_t      approx      = getByte(data,skip+2);
+                uint32_t     colour_type = getLong(data,skip,keLittle) ; skip+=4;
+                if ( boxName(colour_type) == "rICC" || boxName(colour_type) == "prof" ) {
+                    DataBuf    profile(length-skip);
+                    ::memcpy(profile.pData_,data.pData_+skip,profile.size_);
+                    visits_.insert(address); // don't visit twice
+                    v.visitICC(profile);
+                } else if ( meth == 2 && prec == 0 && approx == 0 ) {
+                    // often it's a 3 byte head // 2 0 0 icc......
+                    skip -= 1 ;
+                    DataBuf    profile(length-skip);
+                    ::memcpy(profile.pData_,data.pData_+skip,profile.size_);
+                    v.visitICC(profile);
                 }
             }
 
@@ -3115,7 +3142,7 @@ void ReportVisitor::visitSegment(Io& io,Image& image,uint64_t address
 
 void ReportVisitor::visitICCTag(const byte* tag,uint32_t offset,uint32_t length)
 {
-    if ( isBasicOrRecursive() ) {
+    if ( isBasicOrRecursive() && length ) {
         out() << indent() << stringFormat("%6s | %8d | %8d ",tag,offset,length) << std::endl;
     }
 }
@@ -3519,15 +3546,12 @@ void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
     io.read (data);
 
     std::string name     = image.boxName (box);
-    // we shouldn't "calculate" the show, it should be passed to the visitor
-    std::string uuidName = name == "uuid" ? image.uuidName(data,punt) : "";
-    std::string show     = uuidName ;
-    if ( name == "uuid" && !uuidName.size() ) {
-        std::cout << "unrecognised uuid = " << uuidName << std::endl;
-    }
-    if ( name == "infe" ) {
-        show = data.toString(kttShort,1,image.endian(),punt+4);
-    }
+    std::string uuidName = image.uuidName(data,punt);
+    // we ought to pass the show to the visitor
+    std::string show     = name == "uuid" ? image.uuidName(data,punt)
+                         : name == "infe" ? data.toString(kttShort,1,image.endian(),punt+4)
+                         : name == "colr" ? data.toString(kttAscii,4,image.endian(),punt)
+                         : "    ";
 
     if ( isBasicOrRecursive() ) {
         out() << indent() << stringFormat("%8d | %8d | %4s | %4s | ",address,length,name.c_str(),show.c_str() );
@@ -3556,12 +3580,13 @@ void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
         }
     }
 
-    if ( isRecursive() && boxDict.find(name) != boxDict.end() ) {
+    bool bSkip = name == "colr" && show != "nclx"; // Keep out.  !t's an ICC profile!
+    if ( isBasicOrRecursive() && boxDict.find(name) != boxDict.end() && !bSkip  ) {
         if ( boxTags.find(name) != boxTags.end() ) {
             for (Field field : boxTags[name] ) {
                 std::string n      = chop( boxDict[name] + "." + field.name(),32);
                 endian_e    endian = field.endian() == keImage ? image.endian() : field.endian();
-                out() << indent() << stringFormat("%-32s ",n.c_str())
+                out() << indent(1) << stringFormat("%-32s ",n.c_str())
                       << chop(data.toString(field.type(),field.count(),endian,field.start()+punt),40)
                       << std::endl;
             }
@@ -4062,11 +4087,18 @@ void init()
     psdDict        [ 0x0424] = "XMP"           ;
 
     // ISOBMFF boxes
-    boxDict["ispe"] = "ISOBMFF.ispe";
+    boxDict["ispe"] = "BMFF.ispe";
     boxTags["ispe"].push_back(Field("Version"         ,kttUByte  , 0, 1));
     boxTags["ispe"].push_back(Field("Flags"           ,kttUByte  , 1, 3));
     boxTags["ispe"].push_back(Field("Width"           ,kttLong   , 4, 1));
     boxTags["ispe"].push_back(Field("Height"          ,kttLong   , 8, 1));
+
+    boxDict["colr"] = "BMFF.colr";
+    boxTags["colr"].push_back(Field("ColourPrimaries" ,kttUShort , 0, 1,keLittle));
+    boxTags["colr"].push_back(Field("TransferChars"   ,kttUShort , 2, 1,keLittle));
+    boxTags["colr"].push_back(Field("MatrixCoeffs"    ,kttUShort , 4, 1,keLittle));
+    boxTags["colr"].push_back(Field("Flag"            ,kttUByte  , 6, 1,keLittle));
+
 }
 
 // That's all Folks!

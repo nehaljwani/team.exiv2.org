@@ -5,7 +5,7 @@ STRUCTURE OF JP2 FILE (MM): ../files/Reagan2.jp2
       32 |     3185 | jp2h |      | ___.ihdr___.___._... 0 0 0 22 105 104 100 114 0 0 0 130 0 0 0 200 0 3 7 7
   STRUCTURE OF JP2 FILE (MM): ../files/Reagan2.jp2:40->3177
          0 |       22 | ihdr |      | ___.___._...._ 0 0 0 130 0 0 0 200 0 3 7 7 1 0
-        22 |     3155 | colr |      | .____.HLino..__mntrR 2 0 0 0 0 12 72 76 105 110 111 2 16 0 0 109 110 116 114 82
+        22 |     3155 | colr |     | .____.HLino..__mntrR 2 0 0 0 0 12 72 76 105 110 111 2 16 0 0 109 110 116 114 82
   END: ../files/Reagan2.jp2:40->3177
     3217 |        0 | jp2c |      |  
 END: ../files/Reagan2.jp2

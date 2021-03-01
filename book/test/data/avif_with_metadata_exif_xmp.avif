@@ -6,14 +6,14 @@ STRUCTURE OF JP2 (avif) FILE (MM): ../files/avif_with_metadata_exif_xmp.avif
          0 |       40 | hdlr |      | ________pict________ 0 0 0 0 0 0 0 0 112 105 99 116 0 0 0 0 0 0 0 0
         40 |       14 | pitm |      | _____. 0 0 0 0 0 1
         54 |       58 | iloc |      | ____D__._.___.__.*__ 0 0 0 0 68 0 0 3 0 1 0 0 0 1 0 0 21 42 0 0
-        62 |       14 |  ext |    1 |   5418,  5445
-        76 |       14 |  ext |    2 |    419,   316
-        90 |       14 |  ext |    3 |    735,  4683
+        62 |       14 |   ID |    1 |   5418,  5445
+        76 |       14 |   ID |    2 |    419,   316
+        90 |       14 |   ID |    3 |    735,  4683
        112 |      109 | iinf |      | _____.___.infe.____. 0 0 0 0 0 3 0 0 0 26 105 110 102 101 2 0 0 0 0 1
     STRUCTURE OF JP2 FILE (MM): ../files/avif_with_metadata_exif_xmp.avif:44->367:126->95
-           0 |       26 | infe |      | .____.__av01Color_ 2 0 0 0 0 1 0 0 97 118 48 49 67 111 108 111 114 0
-          26 |       25 | infe |      | .____.__ExifExif_ 2 0 0 0 0 2 0 0 69 120 105 102 69 120 105 102 0
-          51 |       44 | infe |      | .____.__mimeXMP_appl 2 0 0 0 0 3 0 0 109 105 109 101 88 77 80 0 97 112 112 108
+           0 |       26 | infe |    1 | .____.__av01Color_ 2 0 0 0 0 1 0 0 97 118 48 49 67 111 108 111 114 0
+          26 |       25 | infe |    2 | .____.__ExifExif_ 2 0 0 0 0 2 0 0 69 120 105 102 69 120 105 102 0
+          51 |       44 | infe |    3 | .____.__mimeXMP_appl 2 0 0 0 0 3 0 0 109 105 109 101 88 77 80 0 97 112 112 108
     END: ../files/avif_with_metadata_exif_xmp.avif:44->367:126->95
        221 |       40 | iref |      | _______.cdsc_._._.__ 0 0 0 0 0 0 0 14 99 100 115 99 0 2 0 1 0 1 0 0
        261 |      106 | iprp |      | ___Kipco___.ispe____ 0 0 0 75 105 112 99 111 0 0 0 20 105 115 112 101 0 0 0 0
@@ -21,13 +21,17 @@ STRUCTURE OF JP2 (avif) FILE (MM): ../files/avif_with_metadata_exif_xmp.avif
            0 |       75 | ipco |      | ___.ispe_______x___x 0 0 0 20 105 115 112 101 0 0 0 0 0 0 0 120 0 0 0 120
       STRUCTURE OF JP2 FILE (MM): ../files/avif_with_metadata_exif_xmp.avif:44->367:269->98:8->67
              0 |       20 | ispe |      | _______x___x 0 0 0 0 0 0 0 120 0 0 0 120
-      ISOBMFF.ispe.Version             0
-      ISOBMFF.ispe.Flags               0 0 0
-      ISOBMFF.ispe.Width               120
-      ISOBMFF.ispe.Height              120
+        BMFF.ispe.Version                0
+        BMFF.ispe.Flags                  0 0 0
+        BMFF.ispe.Width                  120
+        BMFF.ispe.Height                 120
             20 |       16 | pixi |      | ____.... 0 0 0 0 3 8 8 8
             36 |       12 | av1C |      | ._._ 129 0 12 0
-            48 |       19 | colr |      | nclx_._._.. 110 99 108 120 0 1 0 13 0 1 128
+            48 |       19 | colr | nclx | nclx_._._.. 110 99 108 120 0 1 0 13 0 1 128
+        BMFF.colr.ColourPrimaries        25454
+        BMFF.colr.TransferChars          30828
+        BMFF.colr.MatrixCoeffs           256
+        BMFF.colr.Flag                   0
       END: ../files/avif_with_metadata_exif_xmp.avif:44->367:269->98:8->67
           75 |       23 | ipma |      | _______._...... 0 0 0 0 0 0 0 1 0 1 4 1 2 131 4
     END: ../files/avif_with_metadata_exif_xmp.avif:44->367:269->98

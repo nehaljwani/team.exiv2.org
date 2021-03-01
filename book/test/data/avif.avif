@@ -7,22 +7,26 @@ STRUCTURE OF JP2 (avif) FILE (MM): ../files/avif.avif
         33 |       14 | pitm |      | _____. 0 0 0 0 0 1
         47 |       56 | iinf |      | _____.___.infe.____. 0 0 0 0 0 2 0 0 0 21 105 110 102 101 2 0 0 0 0 1
     STRUCTURE OF JP2 FILE (MM): ../files/avif.avif:44->292:61->42
-           0 |       21 | infe |      | .____.__av01_ 2 0 0 0 0 1 0 0 97 118 48 49 0
-          21 |       21 | infe |      | .__._.__Exif_ 2 0 0 1 0 2 0 0 69 120 105 102 0
+           0 |       21 | infe |    1 | .____.__av01_ 2 0 0 0 0 1 0 0 97 118 48 49 0
+          21 |       21 | infe |    2 | .__._.__Exif_ 2 0 0 1 0 2 0 0 69 120 105 102 0
     END: ../files/avif.avif:44->292:61->42
        103 |       44 | iloc |      | ____D__._.___.__.._. 0 0 0 0 68 0 0 2 0 1 0 0 0 1 0 0 1 152 0 3
-       111 |       14 |  ext |    1 |    408,218726
-       125 |       14 |  ext |    2 | 219134,    82
+       111 |       14 |   ID |    1 |    408,218726
+       125 |       14 |   ID |    2 | 219134,    82
        147 |      119 | iprp |      | ___Xipco___.ispe____ 0 0 0 88 105 112 99 111 0 0 0 20 105 115 112 101 0 0 0 0
     STRUCTURE OF JP2 FILE (MM): ../files/avif.avif:44->292:155->111
            0 |       88 | ipco |      | ___.ispe______..__.8 0 0 0 20 105 115 112 101 0 0 0 0 0 0 7 128 0 0 4 56
       STRUCTURE OF JP2 FILE (MM): ../files/avif.avif:44->292:155->111:8->80
              0 |       20 | ispe |      | ______..__.8 0 0 0 0 0 0 7 128 0 0 4 56
-      ISOBMFF.ispe.Version             0
-      ISOBMFF.ispe.Flags               0 0 0
-      ISOBMFF.ispe.Width               1920
-      ISOBMFF.ispe.Height              1080
-            20 |       19 | colr |      | nclx_._._.. 110 99 108 120 0 2 0 2 0 2 128
+        BMFF.ispe.Version                0
+        BMFF.ispe.Flags                  0 0 0
+        BMFF.ispe.Width                  1920
+        BMFF.ispe.Height                 1080
+            20 |       19 | colr | nclx | nclx_._._.. 110 99 108 120 0 2 0 2 0 2 128
+        BMFF.colr.ColourPrimaries        25454
+        BMFF.colr.TransferChars          30828
+        BMFF.colr.MatrixCoeffs           512
+        BMFF.colr.Flag                   0
             39 |       25 | av1C |      | ..._..___B...w... 129 8 12 0 10 11 0 0 0 66 171 191 195 119 255 230 1
             64 |       16 | pixi |      | ____.... 0 0 0 0 3 8 8 8
       END: ../files/avif.avif:44->292:155->111:8->80
