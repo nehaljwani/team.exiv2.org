@@ -55,7 +55,7 @@ export FACTORY=$(hostname)
 
 # export EBSREVISION=Dev
 export CBL_STONEHENGE=1
-export PATH=".:${BIN}:$BIN/$PLATFORM:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin:/usr/X11R6/bin:/System/Library/Frameworks/Python.framework/Versions/2.7/bin/"
+export PATH=".:${BIN}:$BIN/$PLATFORM:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin:/usr/X11R6/bin:~/Library/Python/3.8/bi"
 export MANPATH="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/share/man/:/usr/local/share/man:/usr/share/man:/usr/share/man/man1:/usr/share/man/man2:/usr/share/man/man3:/usr/local/man:/usr/local/share/man/:/usr/X11R6/man:/opt/local/share/man:/opt/subversion/man"
 export DISPLAY=:0.0
 export CLASSPATH=".:${HOME}/classpath:${HOME}/classpath/Multivalent20060102.jar:${HOME}/classpath/DVI20060102.jar"
@@ -523,6 +523,10 @@ alias web='cd ${EXIV2WEB}'
 alias home='cd ${EXIV2HOME}'
 alias builds='cd ${EXIV2BUILDS}'
 alias builder='cd ${EXIV2BUILDER}'
+alias testfiles='cd /Users/Shared/Jenkins/Home/userContent/testfiles'
+alias book='cd ~/gnu/exiv2/team/book'
+alias bmff='cd ~/gnu/github/exiv2/bmff'
+
 
 ##
 # platform adjustments
@@ -623,7 +627,6 @@ alias go='git checkout '
 alias gk='gitk --all&'
 alias gx='gitx --all'
 alias z='xattr -d com.apple.quarantine'
-alias book='cd ~/gnu/exiv2/team/book'
 
 alias got='git '
 alias get='git '
@@ -649,7 +652,8 @@ export PATH=$PATH:/opt/local/bin:/opt/local/sbin:/opt/pkgconfig/bin
 
 export PATH="/usr/local/opt/gettext/bin:$PATH"
 
-# Setting PATH for Python 3.8
+
+# Setting PATH for Python 3.7
 # The original version is saved in .profile.pysave
-PATH="/Library/Frameworks/Python.framework/Versions/3.8/bin:${PATH}"
+PATH="/Library/Frameworks/Python.framework/Versions/3.7/bin:${PATH}"
 export PATH
