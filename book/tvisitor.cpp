@@ -3765,6 +3765,19 @@ void init()
     exifDict  [ 0xa40a ] = "Sharpness";
     exifDict  [ 0xc4a5 ] = "PrintImageMatching";
 
+    gpsDict   [ktGroup ] = "GPSInfo";
+    gpsDict   [ 0x0000 ] = "GPSVersionID";
+    gpsDict   [ 0x0001 ] = "GPSLatitudeRef";
+    gpsDict   [ 0x0002 ] = "GPSLatitude";
+    gpsDict   [ 0x0003 ] = "GPSLongitudeRef";
+    gpsDict   [ 0x0004 ] = "GPSLongitude";
+    gpsDict   [ 0x0005 ] = "GPSAltitudeRef";
+    gpsDict   [ 0x0006 ] = "GPSAltitude";
+    gpsDict   [ 0x0007 ] = "GPSTimeStamp";
+    gpsDict   [ 0x0008 ] = "GPSSatellites";
+    gpsDict   [ 0x0012 ] = "GPSMapDatum";
+    gpsDict   [ 0x001d ] = "GPSDateStamp";
+
     nikonDict [ktGroup ] = "Nikon";
     nikonDict [ 0x0001 ] = "Version";
     nikonDict [ 0x0002 ] = "ISOSpeed";
@@ -3791,6 +3804,27 @@ void init()
     nikonDict [ 0x0098 ] = "LensData";
     nikonDict [ 0x00a7 ] = "ShutterCount";
 
+    // Fields
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcVersion"         ,kttAscii , 0, 4));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcName"            ,kttAscii , 4,20));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcBase"            ,kttAscii ,24,20));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcAdjust"          ,kttUByte, 48, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcQuickAdjust"     ,kttUByte, 49, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcSharpness"       ,kttUByte, 50, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcContrast"        ,kttUByte, 51, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcBrightness"      ,kttUByte, 52, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcSaturation"      ,kttUByte, 53, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcHueAdjustment"   ,kttUByte, 54, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcFilterEffect"    ,kttUByte, 55, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcFilterEffect"    ,kttUByte, 56, 1));
+    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcToningSaturation",kttUByte, 57, 1));
+
+    // https://exiftool.org/TagNames/Nikon.html#LensData00 "Nikon LensData0800 Tags"
+    makerTags["Exif.Nikon.LensData"      ].push_back(Field("LdVersion"         ,kttAscii , 0, 4));
+    makerTags["Exif.Nikon.LensData"      ].push_back(Field("LdFocusDistance"   ,kttUByte , 9, 1));
+    makerTags["Exif.Nikon.LensData"      ].push_back(Field("LdLensIDNumber"    ,kttUByte ,13, 1));
+    makerTags["Exif.Nikon.LensData"      ].push_back(Field("LdLensID"          ,kttUShort,48, 1));
+
     canonDict [ktGroup ] = "Canon";
     canonDict [ 0x0001 ] = "CameraSettings";
     canonDict [ 0x0002 ] = "Selftimer";
@@ -3808,18 +3842,12 @@ void init()
     canonDict [ 0x0011 ] = "MeteringMode";
     canonDict [ 0x0012 ] = "FocusType";
 
-    gpsDict   [ktGroup ] = "GPSInfo";
-    gpsDict   [ 0x0000 ] = "GPSVersionID";
-    gpsDict   [ 0x0001 ] = "GPSLatitudeRef";
-    gpsDict   [ 0x0002 ] = "GPSLatitude";
-    gpsDict   [ 0x0003 ] = "GPSLongitudeRef";
-    gpsDict   [ 0x0004 ] = "GPSLongitude";
-    gpsDict   [ 0x0005 ] = "GPSAltitudeRef";
-    gpsDict   [ 0x0006 ] = "GPSAltitude";
-    gpsDict   [ 0x0007 ] = "GPSTimeStamp";
-    gpsDict   [ 0x0008 ] = "GPSSatellites";
-    gpsDict   [ 0x0012 ] = "GPSMapDatum";
-    gpsDict   [ 0x001d ] = "GPSDateStamp";
+    // https://exiftool.org/TagNames/Canon.html
+    makerTags["Exif.Canon.CameraSettings"].push_back(Field("CsMacro"           ,kttUShort, 2 *1, 1));
+    makerTags["Exif.Canon.CameraSettings"].push_back(Field("CsTimer"           ,kttUShort, 2 *2, 1));
+    makerTags["Exif.Canon.CameraSettings"].push_back(Field("CsQuality"         ,kttUShort, 2 *3, 1));
+    makerTags["Exif.Canon.CameraSettings"].push_back(Field("CsEasyMode"        ,kttUShort, 2*11, 1));
+    makerTags["Exif.Canon.CameraSettings"].push_back(Field("CsSpotMeteringMode",kttUShort, 2*39, 1));
 
     sonyDict  [ktGroup ] = "Sony";
     sonyDict  [ 0x0001 ] = "Offset";
@@ -4041,34 +4069,6 @@ void init()
     crwDict   [ 0x300a ] = "ImageProps";
     crwDict   [ 0x300b ] = "ExifInformation";
 
-    // Fields
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcVersion"         ,kttAscii , 0, 4));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcName"            ,kttAscii , 4,20));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcBase"            ,kttAscii ,24,20));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcAdjust"          ,kttUByte, 48, 1));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcQuickAdjust"     ,kttUByte, 49, 1));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcSharpness"       ,kttUByte, 50, 1));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcContrast"        ,kttUByte, 51, 1));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcBrightness"      ,kttUByte, 52, 1));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcSaturation"      ,kttUByte, 53, 1));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcHueAdjustment"   ,kttUByte, 54, 1));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcFilterEffect"    ,kttUByte, 55, 1));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcFilterEffect"    ,kttUByte, 56, 1));
-    makerTags["Exif.Nikon.PictureControl"].push_back(Field("PcToningSaturation",kttUByte, 57, 1));
-
-    // https://exiftool.org/TagNames/Nikon.html#LensData00 "Nikon LensData0800 Tags"
-    makerTags["Exif.Nikon.LensData"      ].push_back(Field("LdVersion"         ,kttAscii , 0, 4));
-    makerTags["Exif.Nikon.LensData"      ].push_back(Field("LdFocusDistance"   ,kttUByte , 9, 1));
-    makerTags["Exif.Nikon.LensData"      ].push_back(Field("LdLensIDNumber"    ,kttUByte ,13, 1));
-    makerTags["Exif.Nikon.LensData"      ].push_back(Field("LdLensID"          ,kttUShort,48, 1));
-
-    // https://exiftool.org/TagNames/Canon.html
-    makerTags["Exif.Canon.CameraSettings"].push_back(Field("CsMacro"           ,kttUShort, 2 *1, 1));
-    makerTags["Exif.Canon.CameraSettings"].push_back(Field("CsTimer"           ,kttUShort, 2 *2, 1));
-    makerTags["Exif.Canon.CameraSettings"].push_back(Field("CsQuality"         ,kttUShort, 2 *3, 1));
-    makerTags["Exif.Canon.CameraSettings"].push_back(Field("CsEasyMode"        ,kttUShort, 2*11, 1));
-    makerTags["Exif.Canon.CameraSettings"].push_back(Field("CsSpotMeteringMode",kttUShort, 2*39, 1));
-
     // Iptc dicts
     iptcEnvelope   [ktGroup] = "Envelope"      ;
     iptcEnvelope   [      0] = "ModelVersion"  ;
@@ -4092,7 +4092,7 @@ void init()
     psdDict        [ 0x0423] = "Exif"          ;
     psdDict        [ 0x0424] = "XMP"           ;
 
-    // ISOBMFF boxes
+    // BMFF boxes
     boxDict["ispe"] = "BMFF.ispe";
     boxTags["ispe"].push_back(Field("Version"         ,kttUByte  , 0, 1));
     boxTags["ispe"].push_back(Field("Flags"           ,kttUByte  , 1, 3));
