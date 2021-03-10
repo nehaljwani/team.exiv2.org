@@ -72,7 +72,12 @@ STRUCTURE OF JP2 (crx ) FILE (MM): ../files/cr3.cr3
         1688 |     5176 | CMT3 |      | II*_.___/_._._1___B. 73 73 42 0 8 0 0 0 47 0 1 0 3 0 49 0 0 0 66 2
       STRUCTURE OF TIFF FILE (II): ../files/cr3.cr3:32->22784:24->20552:1696->5176
        address |    tag                                  |      type |    count |    offset | value
-            10 | 0x0001 Exif.Canon.Macro                 |     SHORT |       49 |       578 | 98 2 0 7 0 0 0 256 0 13 0 1 0 0 0 32 +++
+            10 | 0x0001 Exif.Canon.CameraSettings        |     SHORT |       49 |       578 | 98 2 0 7 0 0 0 256 0 13 0 1 0 0 0 32 +++
+           580 | 0x0001 Exif.Canon.CsMacro               |     SHORT |        1 |           | 2
+           582 | 0x0001 Exif.Canon.CsTimer               |     SHORT |        1 |           | 0
+           584 | 0x0001 Exif.Canon.CsQuality             |     SHORT |        1 |           | 7
+           600 | 0x0001 Exif.Canon.CsEasyMode            |     SHORT |        1 |           | 1
+           656 | 0x0001 Exif.Canon.CsSpotMeteringMode    |     SHORT |        1 |           | 65535
             22 | 0x0002 Exif.Canon.Selftimer             |     SHORT |        4 |       676 | 0 15 25518 18461
             34 | 0x0003 Exif.Canon.Quality               |     SHORT |        4 |       684 | 100 0 0 0
             46 | 0x0004 Exif.Canon.FlashMode             |     SHORT |       34 |       692 | 68 0 160 328 192 300 0 0 3 0 8 8 156 +++

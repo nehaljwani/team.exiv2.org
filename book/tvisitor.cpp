@@ -3792,7 +3792,7 @@ void init()
     nikonDict [ 0x00a7 ] = "ShutterCount";
 
     canonDict [ktGroup ] = "Canon";
-    canonDict [ 0x0001 ] = "Macro";
+    canonDict [ 0x0001 ] = "CameraSettings";
     canonDict [ 0x0002 ] = "Selftimer";
     canonDict [ 0x0003 ] = "Quality";
     canonDict [ 0x0004 ] = "FlashMode";
@@ -4061,6 +4061,13 @@ void init()
     makerTags["Exif.Nikon.LensData"      ].push_back(Field("LdFocusDistance"   ,kttUByte , 9, 1));
     makerTags["Exif.Nikon.LensData"      ].push_back(Field("LdLensIDNumber"    ,kttUByte ,13, 1));
     makerTags["Exif.Nikon.LensData"      ].push_back(Field("LdLensID"          ,kttUShort,48, 1));
+
+    // https://exiftool.org/TagNames/Canon.html
+    makerTags["Exif.Canon.CameraSettings"].push_back(Field("CsMacro"           ,kttUShort, 2 *1, 1));
+    makerTags["Exif.Canon.CameraSettings"].push_back(Field("CsTimer"           ,kttUShort, 2 *2, 1));
+    makerTags["Exif.Canon.CameraSettings"].push_back(Field("CsQuality"         ,kttUShort, 2 *3, 1));
+    makerTags["Exif.Canon.CameraSettings"].push_back(Field("CsEasyMode"        ,kttUShort, 2*11, 1));
+    makerTags["Exif.Canon.CameraSettings"].push_back(Field("CsSpotMeteringMode",kttUShort, 2*39, 1));
 
     // Iptc dicts
     iptcEnvelope   [ktGroup] = "Envelope"      ;

@@ -38,7 +38,12 @@ STRUCTURE OF TIFF FILE (II): ../files/Canon.cr2
        628 | 0x927c Exif.Photo.MakerNote             | UNDEFINED |    45204 |       984 | )_._._1___..__._._.___,.__._._.___4. +++
     STRUCTURE OF TIFF FILE (II): ../files/Canon.cr2
      address |    tag                                  |      type |    count |    offset | value
-         986 | 0x0001 Exif.Canon.Macro                 |     SHORT |       49 |      1482 | 98 2 0 4 0 4 0 0 0 7 0 1 0 1 0 32767 +++
+         986 | 0x0001 Exif.Canon.CameraSettings        |     SHORT |       49 |      1482 | 98 2 0 4 0 4 0 0 0 7 0 1 0 1 0 32767 +++
+        1484 | 0x0001 Exif.Canon.CsMacro               |     SHORT |        1 |           | 2
+        1486 | 0x0001 Exif.Canon.CsTimer               |     SHORT |        1 |           | 0
+        1488 | 0x0001 Exif.Canon.CsQuality             |     SHORT |        1 |           | 4
+        1504 | 0x0001 Exif.Canon.CsEasyMode            |     SHORT |        1 |           | 1
+        1560 | 0x0001 Exif.Canon.CsSpotMeteringMode    |     SHORT |        1 |           | 65535
          998 | 0x0002 Exif.Canon.Selftimer             |     SHORT |        4 |      1580 | 0 135 8902 19690
         1010 | 0x0003 Exif.Canon.Quality               |     SHORT |        4 |      1588 | 0 0 0 0
         1022 | 0x0004 Exif.Canon.FlashMode             |     SHORT |       34 |      1596 | 68 0 192 224 160 276 65516 0 3 0 8 8 +++
