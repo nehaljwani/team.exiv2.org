@@ -1334,6 +1334,12 @@ protected:
     const char*  kJp2Box_hdlr  = "hdlr";
     const char*  kJp2Box_iinf  = "iinf";
     const char*  kJp2Box_iloc  = "iloc";
+    const char*  kJp2Box_infe  = "infe";
+    const char*  kJp2Box_colr  = "colr";
+    const char*  kJp2Box_JXL   = "JXL ";
+    const char*  kJp2Box_Exif  = "Exif";
+    const char*  kJp2Box_uuid  = "uuid";
+    const char*  kJp2Box_xml   = "xml ";
 
     const uint16_t kAppExt     = 0xff21;
     const uint16_t kComExt     = 0xfe21;
@@ -1951,6 +1957,12 @@ public:
             io().read   (&box,4) ; // box
 
             valid_ = boxName(box) == kJp2Box_jP ;
+            if ( boxName(box) == kJp2Box_JXL ) {
+                start_ = 12;
+                io().seek(start_);
+                io().getLong(endian_); // length
+                io().read   (&box,4) ; // box
+            }
             if ( boxName(box) == kJp2Box_ftyp ) {
                 valid_  = true ;
                 io().read(&box,4);
@@ -2921,7 +2933,7 @@ void Jp2Image::accept(class Visitor& v)
             }
 
             // 8.11.3.1
-            if ( boxName(box) == "iloc" ) { // 0 1 0 0 0 0 0 1 0 0 42 179 0 0 46 167 a,b= 10931,11943
+            if ( boxName(box) == kJp2Box_iloc ) { // 0 1 0 0 0 0 0 1 0 0 42 179 0 0 46 167 a,b= 10931,11943
                 uint8_t  version = 0 ;
                 uint32_t flags   = 0 ;
                 if ( fullBox(box) ) {
@@ -2965,7 +2977,7 @@ void Jp2Image::accept(class Visitor& v)
                 }
             }
             // 8.11.6.2
-            if ( boxName(box) == "infe" ) { // .__._.__hvc1_ 2 0 0 1 0 1 0 0 104 118 99 49 0
+            if ( boxName(box) == kJp2Box_infe ) { // .__._.__hvc1_ 2 0 0 1 0 1 0 0 104 118 99 49 0
                                  getLong (data,skip,keBig) ; skip+=4;
                 uint16_t   ID =  getShort(data,skip,keBig) ; skip+=2;
                                  getShort(data,skip,keBig) ; skip+=2; // protection
@@ -2981,7 +2993,7 @@ void Jp2Image::accept(class Visitor& v)
             }
 
             // 12.1.5.2
-            if ( boxName(box) == "colr" && data.size_ >= skip+4 ) { // .____.HLino..__mntrR 2 0 0 0 0 12 72 76 105 110 111 2 16 ...
+            if ( boxName(box) == kJp2Box_colr && data.size_ >= skip+4 ) { // .____.HLino..__mntrR 2 0 0 0 0 12 72 76 105 110 111 2 16 ...
                 // https://www.ics.uci.edu/~dan/class/267/papers/jpeg2000.pdf
                 uint8_t      meth        = getByte(data,skip+0);
                 uint8_t      prec        = getByte(data,skip+1);
@@ -3015,7 +3027,7 @@ void Jp2Image::accept(class Visitor& v)
                 }
 
                 // 8.11.6.1.
-                if ( boxName(box) == "iinf" ) {
+                if ( boxName(box) == kJp2Box_iinf ) {
                     nEntries = version ? io().getLong(keBig) : io().getShort(keBig);
                     skip    += version ?         4           :         2           ;
                 } else if ( boxName(box) == "iloc" ) {
@@ -3035,7 +3047,7 @@ void Jp2Image::accept(class Visitor& v)
             }
 
             // recursion?
-            if ( boxName(box) == "uuid" ) {
+            if ( boxName(box) == kJp2Box_uuid ) {
                 DataBuf uuid(16);
                 io().read(uuid);
                 if ( uuidName(uuid) == "cano" ) {
@@ -3050,6 +3062,26 @@ void Jp2Image::accept(class Visitor& v)
                     io().read(xmp.pData_,length);
                     v.out() << (const char*) xmp.pData_ ;
                 }
+            }
+
+            if ( boxName(box) == kJp2Box_Exif ) {
+                // hunt for "II" or "MM"
+                size_t punt   = 0xffff ;
+                size_t search = data.size_  > 20 ? 20 : data.size_ ;
+                for ( size_t i = 0 ; i < search && punt==0xffff ; i+=2) {
+                    if ( data.pData_[i] == data.pData_[i+1]
+                    && ( data.pData_[i] == 'I' || data.pData_[i] == 'M' )
+                    ) {
+                        punt = i;
+                        Io             t_io(io(),address+8+punt,data.size_-punt);
+                        TiffImage tiff(t_io);
+                        if ( tiff.valid() ) tiff.accept(v);
+                    }
+                }
+            }
+
+            if ( boxName(box) == kJp2Box_xml ) {
+                v.visitXMP(data);
             }
 
             // before leaving the meta box, process any located Exif and XMP metadata
