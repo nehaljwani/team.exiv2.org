@@ -1523,16 +1523,16 @@ END: files/Reagan.jxl
 ...book $
 ```
 
-The file Reagan.jxl uses 6 box types of which `xml ` and `ftyp` are specified in w15177.  The boxes are:
+The file Reagan.jxl uses 6 box types which are:
 
 | Name | ISO/IEC Specification   | Purpose                                |
 |:--   |:--                      |:--                                     |
-| JXL  | W18181                  | File identifier                        |
+| JXL  | W18181 9.1              | File identifier                        |
 | ftyp | W15177 4.3.2            | File type                              |
-| Exif | W18181                  | Embedded Tiff containing Exif metadata |
+| Exif | W18181 9.4              | Embedded Tiff containing Exif metadata |
 | xml  | W15177 8.11.1.2         | XML _(which is XMP)_                   |
 | jbrd | W18181                  | JPEG Bitstream Reconstruction Data     |
-| jxlc | W18181                  | JXL Code Stream                        |
+| jxlc | W18181 9.8              | JXL Code Stream                        |
 
 The JXL Code Stream starts with 0xff0a and is identical to the **naked codestream JXL**.
 
