@@ -1958,12 +1958,9 @@ public:
 
             valid_ = boxName(box) == kJp2Box_jP ;
             if ( boxName(box) == kJp2Box_JXL ) {
-                start_ = 12;
-                io().seek(start_);
-                io().getLong(endian_); // length
-                io().read   (&box,4) ; // box
-            }
-            if ( boxName(box) == kJp2Box_ftyp ) {
+                valid_  = true ;
+                format_ = "JXL";
+            } else if ( boxName(box) == kJp2Box_ftyp ) {
                 valid_  = true ;
                 io().read(&box,4);
                 brand_ = boxName(box);
@@ -3064,7 +3061,7 @@ void Jp2Image::accept(class Visitor& v)
                 }
             }
 
-            if ( boxName(box) == kJp2Box_Exif ) {
+            if ( boxName(box) == kJp2Box_Exif && v.isRecursive() ) {
                 // hunt for "II" or "MM"
                 size_t punt   = 0xffff ;
                 size_t search = data.size_  > 20 ? 20 : data.size_ ;

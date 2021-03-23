@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-02-22</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-03-23</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -31,7 +31,7 @@ _And our cat Lizzie._
 | [2. Metadata Standards](#2)                           | 32 | [JPEG and EXV](#JPEG)                    | 12 | [11.1 C++ Code](#11-1)                  | 78 |
 | [2.1 Exif Metadata](#Exif)                            | 35 | [PNG Portable Network Graphics](#PNG)    | 17 | [11.2 Build](#11-2)                     | 79 |
 | [2.2 XMP Metadata](#XMP)                              | 36 | [JP2 Jpeg 2000](#JP2)                    | 18 | [11.3 Security](#11-3)                  | 80 |
-| [2.3 IPTC/IMM Metadata](#IPTC)                        | 37 | [ISOBMFF, CR3, HEIC, AVIF](#ISOBMFF)     | 19 | [11.4 Documentation](#11-4)             | 80 |
+| [2.3 IPTC/IMM Metadata](#IPTC)                        | 37 | [BMFF .CR3, .HEIC, .AVIF, .JXL](#BMFF)   | 19 | [11.4 Documentation](#11-4)             | 80 |
 | [2.4 ICC Profile](#ICC)                               | 37 | [CRW Canon Raw](#CRW)                    | 20 | [11.5 Testing](#11-5)                   | 80 |
 | [2.5 MakerNotes](#MakerNotes)                         | 38 | [RIFF Resource I'change File Fmt](#RIFF) | 20 | [11.6 Samples](#11-6)                   | 80 |
 | [2.6 Metadata Convertors](#Convertors)                | 38 | [MRW Minolta Raw](#MRW)                  | 21 | [11.7 Users](#11-7)                     | 80 |
@@ -244,7 +244,7 @@ The good news however is that file formats come in families which are:
 | JIFF    | JPEG Image File Format<br>Linked list of 64k segments                                   | JPEG, EXV |
 | PNG     | Another popular format<br>Linked list of chunks                                               | PNG |
 | CIFF    | Camera Image File Format.  Dave Coffin parse.c decodes CRW                                    | CRW |
-| ISOBMFF | Based on the .mp4 format                                                | MP4, CR3, AVIF, HEIC, JP2 |
+| BMFF    | Base Media File Format.  Based on the .mp4 format                  | MP4, CR3, AVIF, HEIC, JP2, JXL |
 | RIFF    | Resource Interchange File Format                                                        | WEBP, AVI |
 | GIF     | Graphics Image Format                                                                         | GIF | 
 | BMP     | Windows BMP never has XMP, IPTC or Exif metadata.<br>Version5 may include an ICC profile.     | BMP |
@@ -260,7 +260,7 @@ The Metadata is defined by standards which also define how to embed the data in 
 
 I suspect the proliferation of formats is caused by the hardware engineers.  When hardware people start a new project, they copy the CAD files from the last project and proceed from there.  They don't worry about back-porting changes or compatibility.  We have to live with this mess.
 
-There is also the issue of patents.  It's unclear if it's legal to read an ISOBMFF file which is used by Apple to in HEIC files.  I believe it is legal to read ISOBMFF files.  It's illegal to reverse engineer the proprietary encoded data stored in the mdat box a HEIC.  Metadata is occasionally compressed (PNG), encrypted (Nikon) or ciphered (Sony).
+There is also the issue of patents.  It's unclear if it's legal to read a BMFF file which is used by Apple to in HEIC files.  I believe it is legal to read BMFF files.  It's illegal to reverse engineer the proprietary encoded data stored in the mdat box a HEIC.  Metadata is occasionally compressed (PNG), encrypted (Nikon) or ciphered (Sony).
 
 Here is a useful WikiPedia site that summarises file formats: [https://en.wikipedia.org/wiki/Comparison\_of\_graphics\_file\_formats](https://en.wikipedia.org/wiki/Comparison_of_graphics_file_formats)
 
@@ -847,9 +847,9 @@ Encoding of iTXt comments in PNG is perverse and implemented in the Exiv2 functi
 
 JP2 is always big-endian encoded.  The documentation is available here:  https://www.iso.org/standard/78321.html
 
-The JPEG 2000 file is an ISOBMFF Container.  It consists of a linked lists of "boxes" which have a uint32\_t length, char[4] box-type and (length-8) bytes of data.  A box may be a "super-box" which is a container for other boxes.  A "super-box" can have binary data before the box-chain.  Reading the file is very easy, however you need the specification to decode the contents of a box.
+The JPEG 2000 file is an BMFF Container.  It consists of a linked lists of "boxes" which have a uint32\_t length, char[4] box-type and (length-8) bytes of data.  A box may be a "super-box" which is a container for other boxes.  A "super-box" can have binary data before the box-chain.  Reading the file is very easy, however you need the specification to decode the contents of a box.
 
-I believe the "box" idea in ISOBMFF is intended to address the issue I discussed about TIFF files.  In order to rewrite an image, it is necessary for the data to be self contained and relocatable.  Every "box" should be self contained with no offsets outside the box.  My study of JP2 is restricted to finding the Exiv2, ICC, IPTC and XMP data.  For sure these are self-contained blocks of binary data.  The metadata boxes are of type uuid and begin with a 128bit/16 byte UUID to identify the data.
+I believe the "box" idea in BMFF is intended to address the issue I discussed about TIFF files.  In order to rewrite an image, it is necessary for the data to be self contained and relocatable.  Every "box" should be self contained with no offsets outside the box.  My study of JP2 is restricted to finding the Exiv2, ICC, IPTC and XMP data.  For sure these are self-contained blocks of binary data.  The metadata boxes are of type uuid and begin with a 128bit/16 byte UUID to identify the data.
 
 In a JP2 the first box, must be box-type of "jP\_\_" and have a length of 12.  The chain is terminated with a box-type of "jpcl".  Usually the terminal block with bring you to the end-of-file, however this should not be assumed as there can be garbage following the box chain.  The box chain of a super-box is normally terminated by reaching the end of its data.
 
@@ -1001,14 +1001,14 @@ As you can see, the 'colr' box is stored at 40+22 bytes into the file and has a 
 .../book/build $
 ```
 [TOC](#TOC)
-<div id="ISOBMFF"/>
-## ISOBMFF, CR3, HEIC, AVIF
+<div id="BMFF"/>
+## BMFF .CR3, .HEIC, .AVIF, .JXL
 
 I obtained the standard here: [https://mpeg.chiariglione.org/standards/mpeg-4/iso-base-media-file-format/text-isoiec-14496-12-5th-edition](https://mpeg.chiariglione.org/standards/mpeg-4/iso-base-media-file-format/text-isoiec-14496-12-5th-edition)
 
-There has been a lot of discussion in Team Exiv2 concerning the legality of reading this file.  I don't believe it's illegal to read metadata from a container.  I believe it's illegal to decode proprietary encoded data stored in the image.  However the metadata is not protected in anyway.  So, I'll implement this in tvisitor.cpp.  Team Exiv2 may agree to include this in Exiv2 v0.28.  If I ever work on Exiv2 v0.27.4, I will implement ISOBMFF by extending the existing JP2 code.
+There has been a lot of discussion in Team Exiv2 concerning the legality of reading this file.  I don't believe it's illegal to read metadata from a container.  I believe it's illegal to decode proprietary encoded data stored in the image.  However the metadata is not protected in anyway.  So, I have implemented this in tvisitor.cpp.  The code in Exiv2 src/bmffimage.cpp is derived from the class J2Image code in this book.
 
-The most obvious difference between JP2000 and ISOBMFF is the first box.  For JP2, this is of type <b>jP  </b> _(jPspacespace)_ followed by **ftyp**.  ISOBMFF files begin with an **ftyp** box.  The syntax of the **ftyp** box is:
+The most obvious difference between JP2000 and BMFF is the first box.  For JP2, this is of type <b>jP  </b> _(jPspacespace)_ followed by **ftyp**.  ISOBMFF files begin with an **ftyp** box.  The syntax of the **ftyp** box is:
 
 ```
 class FileTypeBox  extends Box(‘ftyp’) {
@@ -1448,7 +1448,7 @@ This is coded into tvisitor.cpp as follows:
 
 ```cpp
     // ISOBMFF boxes
-    boxDict["ispe"] = "ISOBMFF.ispe";
+    boxDict["ispe"] = "BMFF.ispe";
     boxTags["ispe"].push_back(Field("Version"         ,kttUShort , 0, 1));
     boxTags["ispe"].push_back(Field("Flags"           ,kttUByte  , 1, 3));
     boxTags["ispe"].push_back(Field("Width"           ,kttLong   , 4, 1));
@@ -1475,13 +1475,81 @@ These tags are reported as metadata as follows:
 
 ```
              0 |       20 | ispe |      | ______..__.. 0 0 0 0 0 0 15 160 0 0 23 128
-      ISOBMFF.ispe.Version         0
-      ISOBMFF.ispe.Flags           0 0 0
-      ISOBMFF.ispe.Width           4000
-      ISOBMFF.ispe.Height          6016
+      BMFF.ispe.Version         0
+      BMFF.ispe.Flags           0 0 0
+      BMFF.ispe.Width           4000
+      BMFF.ispe.Height          6016
 ```
 
 More information about binary decoding in tvisitor.cpp is discussed in [3.5 ReportVisitor::visitTag()](#3-5)
+
+[TOC](#TOC)
+<div id="JXL"/>
+### JPEG-XL Format
+
+The JXL format is the current contendor to replace JPEG/GIF as the most popular image format.  At the time of writing (2021), it is too early to say if it will reach the goal that eluded PNG, JP2 and WebP.  There is a discussion of this format here:  [https://github.com/Exiv2/exiv2/issues/1503](https://github.com/Exiv2/exiv2/issues/1503).
+
+JPEG-XL is the only format discussed in this book which has two file layouts.  The first format is _**naked codestream JXL**_.  The first two bytes are 0xff0a.  I have no further information about this stream.  It does not contain Exif, IPTC or XML data.  In correspondance with the authors of the JPEG-XL standard, they explained: _Additionally, we are planning to add an option to do Brotli-compressed versions of exif and xmp metadata, though maybe it's a bit early to add support for that since JPEG XL Part 2 (which defines these things) is not finalized yet._
+
+```bash
+...book $ dmpf count=20 files/jxl.jxl 
+       0        0: .......'.#J....EQ._.              ->  ff 0a fa bb e8 f3 e1 27 85 23 4a 01 03 0a 10 45 51 14 00 08
+...book $ 
+```
+
+The other JPEG-XL format is **JXL/BMFF** and is bmff based:
+
+```bash
+book $ dmpf count=20 files/Reagan.jxl 
+       0        0: ___.JXL ....___.ftyp              ->  00 00 00 0c 4a 58 4c 20 0d 0a 87 0a 00 00 00 14 66 74 79 70
+book $ 
+```
+
+As you can see, there is an opening 12 byte box of type JXL which precedes the ftyp box.  The meaning of the 4 payload bytes is unknown.
+
+The structure of files/Reagan.jxl is revealed by tvisitor as follows:
+
+```bash
+...book $ tvisitor -pS files/Reagan.jxl
+STRUCTURE OF JXL FILE (MM): files/Reagan.jxl
+ address |   length | box  | uuid | data
+       0 |       12 | JXL  |      | .... 13 10 135 10
+      12 |       20 | ftyp |      | jxl ____jxl  106 120 108 32 0 0 0 0 106 120 108 32
+      32 |     5722 | Exif |      | ____MM_*___._..__.__ 0 0 0 0 77 77 0 42 0 0 0 8 0 19 1 0 0 3 0 0
+    5754 |     5306 | xml  |      | <?xpacket begin="... 60 63 120 112 97 99 107 101 116 32 98 101 103 105 110 61 34 239 187 191
+   11060 |     1707 | jbrd |      | .6.....-........H_.. 194 54 20 221 13 232 8 45 147 149 5 222 11 142 166 8 72 0 7 128
+   12767 |    20125 | jxlc |      | .......N..L_@_@.01.$ 255 10 8 4 142 129 16 78 25 6 76 0 64 0 64 128 48 49 15 36
+END: files/Reagan.jxl
+...book $
+```
+
+The file Reagan.jxl uses 6 box types of which only `xml ` and `ftyp` are specified in w15177.  The boxes are:
+
+| Name | Specification | Purpose         |
+|:--   |:--            |:--              |
+| JXL  | None          | File identifier |
+| ftyp | 4.3.2         | File type       |
+| Exif | None          | Embedded Tiff File for Exif metadata |
+| xml  | 8.11.1.2      | XML _which is XMP_           |
+| jbrd | None          | JXL Brotli Compressed Data?  |
+| jxlc | None          | JXL Code Stream?  See below. |
+
+The JXL Code Stream starts with 0xff0a and is presumably identical to the **naked codestream JXL**.
+
+```bash
+...book $ dmpf count=16 skip=12767 files/Reagan.jxl 
+  0x31df    12767: __N.jxlc.......N..L_              ->  00 00 4e 9d 6a 78 6c 63 ff 0a 08 04 8e 81 10 4e
+                                                         <-- Len --> <j  x  l c> <--- code stream ------
+...book $ 
+```
+
+The image files/Reagan.jxl was created with the utility cjxl as follows:
+
+```bash
+...tools $ cjxl exiv2/test/data/Reagan.jpg Reagan.jxl
+```
+
+Thanks to Milo&scaron;, the instructions for building cjxl on MinGW are here: [https://github.com/Exiv2/exiv2/issues/1503#issuecomment-803943178](https://github.com/Exiv2/exiv2/issues/1503#issuecomment-803943178).
 
 [TOC](#TOC)
 <div id="CRW"/>
