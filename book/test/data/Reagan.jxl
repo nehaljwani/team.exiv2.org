@@ -1,5 +1,6 @@
-STRUCTURE OF JP2 (jxl ) FILE (MM): ../files/Reagan.jxl
+STRUCTURE OF JXL FILE (MM): ../files/Reagan.jxl
  address |   length | box  | uuid | data
+       0 |       12 | JXL  |      | .... 13 10 135 10
       12 |       20 | ftyp |      | jxl ____jxl  106 120 108 32 0 0 0 0 106 120 108 32
       32 |     5722 | Exif |      | ____MM_*___._..__.__ 0 0 0 0 77 77 0 42 0 0 0 8 0 19 1 0 0 3 0 0
   STRUCTURE OF TIFF FILE (MM): ../files/Reagan.jxl:44->5710
