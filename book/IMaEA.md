@@ -1489,7 +1489,7 @@ More information about binary decoding in tvisitor.cpp is discussed in [3.5 Repo
 
 The JXL format is the current contendor to replace JPEG/GIF as the most popular image format.  At the time of writing (2021), it is too early to say if it will reach the goal that eluded PNG, JP2 and WebP.  There is a discussion of this format here:  [https://github.com/Exiv2/exiv2/issues/1503](https://github.com/Exiv2/exiv2/issues/1503).
 
-JPEG-XL is the only format discussed in this book which has two file layouts.  The first format is _**naked codestream JXL**_.  The first two bytes are 0xff0a.  I have no further information about this stream.  It does not contain Exif, IPTC or XML data.  In correspondance with the authors of the JPEG-XL standard, they explained: _Additionally, we are planning to add an option to do Brotli-compressed versions of exif and xmp metadata, though maybe it's a bit early to add support for that since JPEG XL Part 2 (which defines these things) is not finalized yet._
+JPEG-XL is the only format discussed in this book which has two file layouts.  The first format is _**naked codestream JXL**_.  The first two bytes are 0xff0a.  I have no further information about this stream.  It does not contain Exif, IPTC or XML data.  However it does contain the image and related data such as size, orientation and color profile/handler.
 
 ```bash
 ...book $ dmpf count=20 files/jxl.jxl 
@@ -1497,15 +1497,15 @@ JPEG-XL is the only format discussed in this book which has two file layouts.  T
 ...book $ 
 ```
 
-The other JPEG-XL format is **JXL/BMFF** and is bmff based:
+The second format is **JXL/BMFF** and is bmff based.  In correspondance with the authors of the JPEG-XL standard, they explained: _We are planning to add an option to do Brotli-compressed versions of exif and xmp metadata, though maybe it's a bit early to add support for that since JPEG XL Part 2 (which defines these things) is not finalized yet._
 
 ```bash
-book $ dmpf count=20 files/Reagan.jxl 
+...book $ dmpf count=20 files/Reagan.jxl 
        0        0: ___.JXL ....___.ftyp              ->  00 00 00 0c 4a 58 4c 20 0d 0a 87 0a 00 00 00 14 66 74 79 70
-book $ 
+...book $ 
 ```
 
-As you can see, there is an opening 12 byte box of type JXL which precedes the ftyp box.  The meaning of the 4 payload bytes is unknown.
+As you can see, there is an opening 12 byte box of type JXL which precedes the ftyp box.  The 4 payload bytes are binary to ensure appropriate file handling by text editors.
 
 The structure of files/Reagan.jxl is revealed by tvisitor as follows:
 
@@ -1523,18 +1523,18 @@ END: files/Reagan.jxl
 ...book $
 ```
 
-The file Reagan.jxl uses 6 box types of which only `xml ` and `ftyp` are specified in w15177.  The boxes are:
+The file Reagan.jxl uses 6 box types of which `xml ` and `ftyp` are specified in w15177.  The boxes are:
 
-| Name | Specification | Purpose         |
-|:--   |:--            |:--              |
-| JXL  | None          | File identifier |
-| ftyp | 4.3.2         | File type       |
-| Exif | None          | Embedded Tiff File for Exif metadata |
-| xml  | 8.11.1.2      | XML _which is XMP_           |
-| jbrd | None          | JXL Brotli Compressed Data?  |
-| jxlc | None          | JXL Code Stream?  See below. |
+| Name | ISO/IEC Specification   | Purpose                                |
+|:--   |:--                      |:--                                     |
+| JXL  | W18181                  | File identifier                        |
+| ftyp | W15177 4.3.2            | File type                              |
+| Exif | W18181                  | Embedded Tiff containing Exif metadata |
+| xml  | W15177 8.11.1.2         | XML _(which is XMP)_                   |
+| jbrd | W18181                  | JPEG Bitstream Reconstruction Data     |
+| jxlc | W18181                  | JXL Code Stream                        |
 
-The JXL Code Stream starts with 0xff0a and is presumably identical to the **naked codestream JXL**.
+The JXL Code Stream starts with 0xff0a and is identical to the **naked codestream JXL**.
 
 ```bash
 ...book $ dmpf count=16 skip=12767 files/Reagan.jxl 
