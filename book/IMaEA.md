@@ -845,13 +845,13 @@ Encoding of iTXt comments in PNG is perverse and implemented in the Exiv2 functi
 ## JP2 JPEG 2000
 ![jp2](jp2.png)
 
-JP2 is always big-endian encoded.  The documentation is available here:  https://www.iso.org/standard/78321.html
+JPEG 2000 is defined in the standard: ISO/IEC 15444-1:2019 which is available here:  [https://www.iso.org/standard/78321.html](https://www.iso.org/standard/78321.html)
 
-The JPEG 2000 file is an BMFF Container.  It consists of a linked lists of "boxes" which have a uint32\_t length, char[4] box-type and (length-8) bytes of data.  A box may be a "super-box" which is a container for other boxes.  A "super-box" can have binary data before the box-chain.  Reading the file is very easy, however you need the specification to decode the contents of a box.
+The JPEG 2000 file is a big-endian encoded BMFF Container.  It consists of a linked lists of "boxes" which have a uint32\_t length, char[4] box-type and (length-8) bytes of data.  A box may be a "super-box" which is a container for other boxes.  A "super-box" can have binary data before the box-chain.  Reading the file is very easy, however you need the specification to decode the contents of a box.
 
-I believe the "box" idea in BMFF is intended to address the issue I discussed about TIFF files.  In order to rewrite an image, it is necessary for the data to be self contained and relocatable.  Every "box" should be self contained with no offsets outside the box.  My study of JP2 is restricted to finding the Exiv2, ICC, IPTC and XMP data.  For sure these are self-contained blocks of binary data.  The metadata boxes are of type uuid and begin with a 128bit/16 byte UUID to identify the data.
+I believe the "box" idea in BMFF is intended to address the issue I discussed about TIFF files.  In order to rewrite an image, it is necessary for the data to be self contained and relocatable.  Every "box" should be self contained with no offsets outside the box.  My study of JP2 is restricted to finding the Exiv2, ICC, IPTC and XMP data.  For sure these are self-contained blocks of binary data.  The metadata boxes are of type `uuid` and begin with a 128bit/16 byte UUID to identify the data.
 
-In a JP2 the first box, must be box-type of "jP\_\_" and have a length of 12.  The chain is terminated with a box-type of "jpcl".  Usually the terminal block with bring you to the end-of-file, however this should not be assumed as there can be garbage following the box chain.  The box chain of a super-box is normally terminated by reaching the end of its data.
+In a JP2 the first box, must be box-type of "jP\_\_" and have a length of 12.  The chain is terminated with a box-type of "jpcl".  Usually the terminal block will bring you to the end-of-file, however this should not be assumed as there can be garbage following the box chain.  The box chain of a super-box is normally terminated by reaching the end of its data.
 
 Validating a JP2 file is straight forward:
 
@@ -971,7 +971,7 @@ END: ../test/data/Reagan.jp2
 
 ###ICC Profiles in JP2
 
-These are stored in the 'colr' box which is a sub-box of 'jp2h'.  I have found the specification very unsatisfactory.  w15177_15444 discusses ColourInformationBox extends Box(‘colr’).  I haven't found the definition of 'colr'.  I enquired on the ExifTool Forum and Phil offered advice which has been implemented in jp2image.cpp.  There are two ways to encode the profile.  You can use a `uuid` box with the uuid of "\x01\x00\x00\x00\x00\x00\x10\x00\x00\x05\x1c".  The box payload is the ICC profile.  Or you can use the 'colr' box which has 3 padding bytes "\02\0\0\" followed by the ICC profile.  So the length of the box will be 8 (the box) +3 (padding) +iccProfile.size()
+These are stored in the 'colr' box which is a sub-box of 'jp2h'.  I have found the specification very unsatisfactory.  ISO/IEC 15444-2 discusses ColourInformationBox extends Box(‘colr’).  I haven't found the definition of 'colr'.  I enquired on the ExifTool Forum and Phil offered advice which has been implemented in jp2image.cpp.  There are two ways to encode the profile.  You can use a `uuid` box with the uuid of "\x01\x00\x00\x00\x00\x00\x10\x00\x00\x05\x1c".  The box payload is the ICC profile.  Or you can use the 'colr' box which has 3 padding bytes "\02\0\0\" followed by the ICC profile.  So the length of the box will be 8 (the box) +3 (padding) +iccProfile.size()
 
 I found an older version of the spec in which 'colr' is documented on p161.  [http://hosting.astro.cornell.edu/~carcich/LRO/jp2/ISO\_JPEG200\_Standard/INCITS+ISO+IEC+15444-1-2000.pdf](http://hosting.astro.cornell.edu/~carcich/LRO/jp2/ISO_JPEG200_Standard/INCITS+ISO+IEC+15444-1-2000.pdf)
 
@@ -1525,14 +1525,14 @@ END: files/Reagan.jxl
 
 The file Reagan.jxl uses 6 box types which are:
 
-| Name | ISO/IEC Specification   | Purpose                                |
-|:--   |:--                      |:--                                     |
-| JXL  | W18181 9.1              | File identifier                        |
-| ftyp | W15177 4.3.2            | File type                              |
-| Exif | W18181 9.4              | Embedded Tiff containing Exif metadata |
-| xml  | W15177 8.11.1.2         | XML _(which is XMP)_                   |
-| jbrd | W18181                  | JPEG Bitstream Reconstruction Data     |
-| jxlc | W18181 9.8              | JXL Code Stream                        |
+| Name | ISO/IEC Specification    | Purpose                                |
+|:--   |:--                       |:--                                     |
+| JXL  | 18181-2 9.1              | File identifier                        |
+| ftyp | 15444-2 4.3.2            | File type                              |
+| Exif | 18181-2 9.4              | Embedded Tiff containing Exif metadata |
+| xml  | 15444-2 8.11.1.2         | XML _(which is XMP)_                   |
+| jbrd | 18181-2                  | JPEG Bitstream Reconstruction Data     |
+| jxlc | 18181-2 9.8              | JXL Code Stream                        |
 
 The JXL Code Stream starts with 0xff0a and is identical to the **naked codestream JXL**.
 
