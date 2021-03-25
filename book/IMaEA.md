@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-03-23</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-03-25</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -18,7 +18,7 @@ _Exiv2 contributors (in alphabetical order): Abhinav, Alan, Alex, Andreas (both 
 
 _File Detectives:  Phil Harvey, Dave Coffin, Laurent Cl&eacute;vy._
 
-_And our cat Lizzie._
+_And our cat Lizzie.  Sadly, Lizzie was put to sleep on 2021-02-13._
 
 <center><img src="MusicRoom.jpg" width="500" style="border:2px solid #21668F;"/></center>
 
@@ -75,7 +75,9 @@ This book is about **Image Metadata _and_ Exiv2 Architecture**.
 
 **Exiv2 Architecture** is about the Exiv2 library and command-line application which implements cross-platform code in C++ to read, modify, insert and delete items of metadata.  I've been working on this code since 2008 and, as I approach my 70th birthday, would like to document my knowledge in the hope that the code will be maintained and developed by others in future.
 
-At the moment, the book is _**work in progress**_ and expected to be finished by the end of 2020.  Exiv2 v0.27.3 shipped on schedule on 2020-06-30 and I feel the text and the code discussed in this book are good enough to be released in its current state.
+At the moment, the book is _**work in progress**_ and expected to be finished in 2021.  Exiv2 v0.27.3 shipped on schedule on 2020-06-30 and the first edition of the book was published on exiv2.org.  By the time Exiv2 v0.27.4 ships on 2021-05-22, I expect the book to be complete.
+
+There is no plan to have the book printed or commercially published.
 
 [TOC](#TOC)
 
@@ -137,9 +139,9 @@ I'm delighted by the work done by Dan, Luis and Kevin to deal with the assault o
 <div id="future"/>
 ### Future Development Projects
 
-The code is in good shape, our release process is solid and we have comprehensive user documentation.  As photography develops, there will be many new cameras and more image formats such as CR3, HEIC and BigTiff.   Exiv2 Video support is weak and was deprecated in v0.27.  It will be removed in 0.28.  One day a contributor will re-engineer the video code.
+The code is in good shape, our release process is solid and we have comprehensive user documentation.  As photography develops, there will be many new cameras and more image formats.   Exiv2 Video support is weak and was deprecated in v0.27.  It will be removed in 0.28.  One day a contributor will re-engineer the video code.
 
-A long standing project for Exiv2 is a **unified metadata container**.  There is an implementation of this in the SVN repository.  Currently we have three containers for Exif, Iptc and Xmp.  This is clumsy.  We also have a restriction of one image per file.  Perhaps both restrictions have a common solution.
+A long standing project for Exiv2 is a **unified metadata container**.  There is an implementation of this in the unstable branch of the SVN repository.  Currently we have three containers for Exif, Iptc and Xmp.  This is clumsy.  We also have a restriction of one image per file.  Perhaps both restrictions have a common solution.
 
 The toolset used in Software Engineering evolves with time.  C++ has been around for about 35 years and, while many complain about it, I expect it will out-live most of us.  None-the-less, languages which are less vulnerable to security issues may lead the project to a re-write in a new language such as Rust.  I hope this book provides the necessary understanding of metadata to support such an undertaking.
 
@@ -851,7 +853,7 @@ The JPEG 2000 file is a big-endian encoded BMFF Container.  It consists of a lin
 
 I believe the "box" idea in BMFF is intended to address the issue I discussed about TIFF files.  In order to rewrite an image, it is necessary for the data to be self contained and relocatable.  Every "box" should be self contained with no offsets outside the box.  My study of JP2 is restricted to finding the Exiv2, ICC, IPTC and XMP data.  For sure these are self-contained blocks of binary data.  The metadata boxes are of type `uuid` and begin with a 128bit/16 byte UUID to identify the data.
 
-In a JP2 the first box, must be box-type of "jP\_\_" and have a length of 12.  The chain is terminated with a box-type of "jpcl".  Usually the terminal block will bring you to the end-of-file, however this should not be assumed as there can be garbage following the box chain.  The box chain of a super-box is normally terminated by reaching the end of its data.
+In a JP2 the first box, must be box-type of "jP\_\_" and have a length of 12.  The chain is terminated with a box-type of "jpcl".  Usually the terminal block will bring you to the end-of-file, however this should not be assumed as there can be garbage following the box-chain.  The box-chain of a super-box is normally terminated by reaching the end of its data.
 
 Validating a JP2 file is straight forward:
 
@@ -1008,7 +1010,7 @@ I obtained the standard here: [https://mpeg.chiariglione.org/standards/mpeg-4/is
 
 There has been a lot of discussion in Team Exiv2 concerning the legality of reading this file.  I don't believe it's illegal to read metadata from a container.  I believe it's illegal to decode proprietary encoded data stored in the image.  However the metadata is not protected in anyway.  So, I have implemented this in tvisitor.cpp.  The code in Exiv2 src/bmffimage.cpp is derived from the class J2Image code in this book.
 
-The most obvious difference between JP2000 and BMFF is the first box.  For JP2, this is of type <b>jP  </b> _(jPspacespace)_ followed by **ftyp**.  ISOBMFF files begin with an **ftyp** box.  The syntax of the **ftyp** box is:
+The most obvious difference between JP2000 and BMFF is the first box.  For JP2, this is of type <b>jP  </b> _(jPspacespace)_ followed by **ftyp**.  BMFF files begin with an **ftyp** box.  The syntax of the **ftyp** box is:
 
 ```
 class FileTypeBox  extends Box(‘ftyp’) {
@@ -1026,7 +1028,7 @@ A box name is a 4 byte big-endian byte stream and stored in a uint32\_t.  It is 
 
 #### UUID Box uuid
 
-This is mechanism to store binary data in any format.  The ISOBMFF Specification states: _Type Fields not defined here are reserved. Private extensions shall be achieved through the ‘uuid’ type._  The uuid box has a 128 bit (16 byte) UUID to identify the data, followed by the data.  This is similar to the "signature" in JPEG segment or PNG chunk.
+This is mechanism to store binary data in any format.  The BMFF Specification states: _Type Fields not defined here are reserved. Private extensions shall be achieved through the ‘uuid’ type._  The uuid box has a 128 bit (16 byte) UUID to identify the data, followed by the data.  This is similar to the "signature" in JPEG segment or PNG chunk.
 
 #### ISOBMFF Explorer
 
@@ -1447,7 +1449,7 @@ class ImageSpatialExtentsProperty
 This is coded into tvisitor.cpp as follows:
 
 ```cpp
-    // ISOBMFF boxes
+    // BMFF boxes
     boxDict["ispe"] = "BMFF.ispe";
     boxTags["ispe"].push_back(Field("Version"         ,kttUShort , 0, 1));
     boxTags["ispe"].push_back(Field("Flags"           ,kttUByte  , 1, 3));
@@ -5771,7 +5773,7 @@ Or there's the review mechanism which I'll dub **RAB**  You insist:
 2. No contributor can approve their own change.
 3. Nobody reviews or approves any code change.
 
-There are many other forms of **AB**.  For example, there is legal **LAB**.  This involves a legal challenge.  You say "We might be infringing somebody's patent!".  This is particularly effective as you don't need to provide evidence.  Even if there is a written legal opinion you can refute that with the words: "The legal opinion has not been tested in court.".  The case has not been tested in court for the obvious reason that it is not illegal.  This show-stopper was used by two contributors to block ISOBMFF support in Exiv2 v0.27.3.  I received more than 100 emails from users asking "What is the legal problem?", so I called a meeting on Zoom and users on 5 continents attended.  The two contributors who raised the show-stopper did not bother to turn up, although one emailed later to say "Apologies.  I fell asleep on the couch and missed the meeting.".
+There are many other forms of **AB**.  For example, there is legal **LAB**.  This involves a legal challenge.  You say "We might be infringing somebody's patent!".  This is particularly effective as you don't need to provide evidence.  Even if there is a written legal opinion you can refute that with the words: "The legal opinion has not been tested in court.".  The case has not been tested in court for the obvious reason that it is not illegal.  This show-stopper was used by two contributors to block BMFF support in Exiv2 v0.27.3.  I received more than 100 emails from users asking "What is the legal problem?", so I called a meeting on Zoom and users on 5 continents attended.  The two contributors who raised the show-stopper did not bother to turn up, although one emailed later to say "Apologies.  I fell asleep on the couch and missed the meeting.".
 
 How about this method?  You complain about a font being used.  We'll call this **FAB**.  This is very effective because you're only asking for a 100% reformat of the book and all the graphics.  That's not much to ask.  When I designed the Exiv2 Logo, a contributor asked for the font to be changed.  I proposed alternatives and received no response.
 
@@ -6631,25 +6633,25 @@ What is the roughness of these tasks?  Unknown.  Graduate is simple.  Or is it? 
 
 One thing is certain, getting a better approach to project estimation is of enormous importance.  We have to do better.  I have tried to set out here an area of investigation that is worthy of attention.
 
-Final words about this.  I didn't undertake a PhD.  Instead I have spent 10,000 hours working on Exiv2.  This book is my  thesis.  The presentation at LGM in Rennes is my defence.  My reward is to know that I've done my best.
+Final words about this.  I didn't undertake a PhD.  Instead I have spent 10,000 hours working on Exiv2.  This book is my  thesis.  The presentation at LGM in Rennes would have been my defence.  My reward is to know that I've done my best.
 
 [TOC](#TOC)
 <div id="11-19"/>
 ### 11.19 Enhancements
 
-I'm not sure there is anything very interesting to be said about this.  There are really different types of requests.  For example, adding recognition for one lens may only require one line of C++, a test file and a 10-line python test script.  This is straightforward and can be fixed within hours.  At the other extreme is the request to support ISOBMFF files including HEIC and CR3.  This project involves research, code, test, build and documentation changes.  And to make it even more difficult, the Community have challenged the legality of providing the feature.  This feature will take years to complete.
+I'm not sure there is anything very interesting to be said about this.  There are really different types of requests.  For example, adding recognition for one lens may only require one line of C++, a test image and a 10-line python test script.  This is straightforward and can be fixed within hours.  At the other extreme is the request to support BMFF files.  This project involves research, code, test, build and documentation changes.  And to make it even more difficult, the Community challenged the legality of providing the feature.  This feature took one year to complete.  Probably 500 hours were spend on legal discussion.
 
-In principle, anybody can develop a feature and submit a PR.  In reality, this seldom happens.  When this does happen, the effort required by me and the developer is often about the same.  So, being offered code in a PR often doubles my work-load.
+In principle, anybody can develop a feature and submit a PR.  In reality, this seldom happens.  When this does happen, the effort required by me and the developer is often about the same.  So, code offered in a PR often doubles my work-load.
 
 [TOC](#TOC)
 <div id="11-20"/>
 ### 11.20 Tools
 
-Every year brings new/different tools.  For example: cmake, git, MarkDown, Conan and C++11.  One of the remarkable properties of tools you have never used is that they are perfect and solve all known issues, _until you use them_.   Tools you have never used are bug free and perfect.  Or so I am told.
+Every year brings new tools.  For example: cmake, git, MarkDown, Conan and C++20.  One of the remarkable properties of tools you have never used is that they are perfect and solve all known issues, _until you use them_.   Tools you have never used are bug free and perfect.  Or so I am told.
 
 I had an issue with the release bundles for Exiv2 v0.26.  My primary development platform is macOS.  Remarkably, the version of tar shipped by Apple puts hidden files in bundles to store file extended attributes.  I didn't know this until the bundles shipped and a bug report appeared.  You cannot see those files on macOS, because tar on macOS recreates the extended attributes.  However there were thousands of hidden files in the source bundle on Linux.  I recreated the bundles as Exiv2 v0.27a and shipped them.  There is an environment variable to suppress this.  I believe it is:  TAR\_WRITER\_OPTIONS=--no-mac-metadata.
 
-Case closed.  Except for very critical emails about changing bundles checksums.
+Case closed.  Except for very critical emails about changing bundle checksums.
 
 For v0.27 we adopted CMake to do the packaging.  Very nice.  Works well.  Guess what?  CMake produces .tar.gz files which have these hidden files.  Several people emailed to say "You wouldn't have this problem if you used CPack.".  100% wrong.  It is a known documented issue in CPack. So, the issue resurfaced because we used CPack.  Additionally, we had three release candidates for v0.27 which were published on 27 October, 15 November and 7 December 2018.  v0.27 shipped on 20 December and the bug report arrived on the day after Christmas Day.
 
@@ -6669,9 +6671,9 @@ Licensing is a legal minefield.  Exiv2 is licensed under GPLv2.  Until Exiv2 v0.
 
 In the days of the Commercial license, I made no distinction between open-source and commercial license users when it came to dealing with support and other requests.  I felt that the commercial license freed the user from the obligations of GPL.  However, it did not provide priority support, enhancement requests or any other benefit.
 
-The general subject of the legality of Exiv2 hasn't been explored.  There has been an enormous discussion about the legality of reading ISOBMFF files.  See [https://github.com/Exiv2/exiv2/issues/1229](https://github.com/Exiv2/exiv2/issues/1229#issuecomment-705350266).
+The general subject of the legality of Exiv2 hasn't been explored.  There has been an enormous discussion about the legality of reading BMFF files.  See [https://github.com/Exiv2/exiv2/issues/1229](https://github.com/Exiv2/exiv2/issues/1229#issuecomment-705350266).
 
-The ISOBMFF issue has caused me to wonder if Exiv2 is legal at all.  I also wonder if any open source is legal!  What makes something legal or illegal?  Is everything legal until there is a law which declares it as illegal, or everything illegal until permitted by legislation?  I suspect everything is legal until there is a legal precedent such as _legislation_ or _a court ruling_ to the contrary.
+The BMFF legal issue has caused me to wonder if Exiv2 is legal.  I also wonder if any open source is legal!  What makes something legal or illegal?  Is everything legal until there is a law which declares it as illegal, or everything illegal until permitted by legislation?  I suspect everything is legal until there is a legal precedent such as _legislation_ or _a court ruling_ to the contrary.
 
 Dealing with legal matters is not like reporting a bug.  Exiv2 is an open-source project and we get a regular stream of issues reported on https://github.com/exiv2/exiv2.  I acknowledge, investigate, reply and close the issue.  By design, the process is focused on resolution.  Legal processes are very different.  When you ask for legal advice, you are instigating an open-ended process which will expand endlessly. 
 
@@ -6827,7 +6829,7 @@ END: /Users/rmills/Stonehenge.jpg
 $
 ```
 
-There is no plan to have a man page for tvisitor because it has a 200 page book!  tvisitor isn't intended for any production use and has been written to explain how Exiv2 works.  In less than 4000 lines of code it decodes the metadata in all formats supported by Exiv2 plus ISOBMFF formats .CR3, .HEIC and .AVIF.  Additionally, it supports BigTiff, extended JPEG, dumping ICC profiles and many other features which are not supported in Exiv2.
+There is no plan to have a man page for tvisitor because it has a 200 page book!  tvisitor isn't intended for any production use and has been written to explain how Exiv2 works.  In less than 4000 lines of code it decodes the metadata in all formats supported by Exiv2 plus BMFF formats .CR3, .HEIC and .AVIF.  Additionally, it supports BigTiff, extended JPEG, dumping ICC profiles and many other features which are not supported in Exiv2.
 
 tvisitor is currently being tested using more than 10,000 images harvested from ExifTool, raw.Pixls.us, RawSamples.ch and images collected from issues reported to Exiv2.  My aim is to successfully read 9990 which is 99.9% reliability.  I fully expect the Community to attack me concerning the 0.1% that are not successfully decoded.  On-line abuse from the Community is the reason that I am retiring.
 
