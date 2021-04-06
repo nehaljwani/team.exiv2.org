@@ -4044,6 +4044,7 @@ void init()
     pentaxDict[ 0x0009 ] = "Size";
     pentaxDict[ 0x000e ] = "Flash";
     pentaxDict[ 0x000d ] = "Focus";
+    pentaxDict[ 0x003f ] = "LensRec";
 
     crwDict   [ktGroup ] = "CRW";
     crwDict   [ 0x0032 ] = "CanonColorInfo1";
