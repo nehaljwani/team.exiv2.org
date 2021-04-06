@@ -3699,8 +3699,10 @@ void init()
     makers["Minolta"    ]  = kMino   ; makerDicts[kMino  ] = &minoDict;
     makers["OLYMPUS"    ]  = kOlym   ; makerDicts[kOlym  ] = &olymDict;
     makers["FUJIFILM"   ]  = kFuji   ; makerDicts[kFuji  ] = &fujiDict;
-    makers["RICOH"      ]  = kPentax ; makerDicts[kPentax] = &pentaxDict;
     makers["PENTAX"     ]  = kPentax ; makerDicts[kPentax] = &pentaxDict;
+    // alias makers
+    makers["RICOH"              ] = kPentax; 
+    makers["SAMSUNG DIGITAL IMA"] = kPentax; 
 
     tiffDict  [ktGroup ] = "Image";
     tiffDict  [ ktExif ] = "ExifTag";
