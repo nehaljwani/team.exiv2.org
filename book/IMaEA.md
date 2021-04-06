@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-03-25</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-04-05</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -119,7 +119,7 @@ I personally found working with the students to be enjoyable and interesting.  I
 
 After v0.26 was released in 2017, Luis and Dan started making contributions.  They have made many important contributions in the areas of security, test and build.  In 2019, Kevin joined us.  He discovered and fixed some security issues.
 
-The current release of Exiv2 is v0.27.3 and shipped on 2020-06-30.  I hope v0.28 will be released in 2021.  Further "dot" releases of v0.27 may be published for security fixes in future.
+The current release of Exiv2 is v0.27.4 and shipped on 2021-04-30.  I hope v1.00 will be released in 2021-12-15.  Further "dot" releases of v0.27 and v1.00 may be published for security fixes in future.
 
 The Libre Graphics Meeting was scheduled to take place in May 2020 in Rennes, France.  I intended to conduct a workshop on **Image Metadata _and_ Exiv2 Architecture**.  This book was being written to be used in that presentation.  Regretfully, the Covid-19 crisis caused the postponement of LGM.  
 
@@ -131,9 +131,9 @@ I started working on Exiv2 to implement GeoTagging.  As the years have passed, I
 
 In July 2017 we received our first security CVE.  Not a pleasant experience.  The security folks started hitting us with fuzzed files. These are files which violate format specifications and can cause the code to crash. We responded with v0.27 which will have regular "dot" releases to provide security fixes.  Managing frequent releases and user correspondence consumes lots of my time.
 
-In parallel with "the dots", major work is being carried to prepare Exiv2 for the future. Luis, Dan and Rosen are working on v0.28 which will be released in 2021. This is a considerable reworking of the code into C++11.
+In parallel with "the dots", major work is being carried to prepare Exiv2 for the future. Luis, Dan and Rosen are working on v0.28 which we hope to release in 2021. This is a considerable reworking of the code into C++11.  Due to the covid crisis, this project terminated and the C++11 code was ported to branch 'main' and included in Exiv2 v1.00.
 
-I'm delighted by the work done by Dan, Luis and Kevin to deal with the assault of the security people. I believe we are responding effectively to security issues. None-the-less, they have dominated the development of Exiv2 for at least two years and many ideas could not be pursued because security consumed our engineering resources.
+I'm delighted by the work done by Dan, Luis and Kevin to deal with the assault of the security people. I believe we are responding effectively to security issues. None-the-less, they dominated the development of Exiv2 for at least two years.  Many ideas could not be pursued because security consumed our engineering resources.
 
 [TOC](#TOC)
 <div id="future"/>
@@ -141,7 +141,7 @@ I'm delighted by the work done by Dan, Luis and Kevin to deal with the assault o
 
 The code is in good shape, our release process is solid and we have comprehensive user documentation.  As photography develops, there will be many new cameras and more image formats.   Exiv2 Video support is weak and was deprecated in v0.27.  It will be removed in 0.28.  One day a contributor will re-engineer the video code.
 
-A long standing project for Exiv2 is a **unified metadata container**.  There is an implementation of this in the unstable branch of the SVN repository.  Currently we have three containers for Exif, Iptc and Xmp.  This is clumsy.  We also have a restriction of one image per file.  Perhaps both restrictions have a common solution.
+A long standing project for Exiv2 is a **unified metadata container**.  There is an implementation of this in the unstable branch of the SVN repository.  Currently we have three containers for Exif, Iptc and Xmp.  This is clumsy.  We also have a restriction of one image per file.  Perhaps both restrictions have a common solution.  The **unified metadata container** will be included in Exiv2 v1.00.
 
 The toolset used in Software Engineering evolves with time.  C++ has been around for about 35 years and, while many complain about it, I expect it will out-live most of us.  None-the-less, languages which are less vulnerable to security issues may lead the project to a re-write in a new language such as Rust.  I hope this book provides the necessary understanding of metadata to support such an undertaking.
 
@@ -6420,6 +6420,8 @@ drwxr-xr-x+ 15 rmills  staff   480  8 Jul 11:31 website            source for we
 
 The website source and release procedures are store in subversion.  svn://dev.exiv2.org/svn/team.  The release process is discussed in detail here: [11.9 Releases](#11-9)
 
+Exiv2 v0.27.4 will be the last release to be published on exiv2.org.  The plan is to migrate the web-site to the GitHub Wiki.  With v1.00, we will no longer provide binary builds of the code.  If folks wish to use exiv2 without building from source, their platform package manager is available on all supported platforms.
+
 [TOC](#TOC)
 <div id="11-15"/>
 ### 11.15 Servers
@@ -6893,9 +6895,9 @@ $
 
 | Purpose                    | Command                                                   | Output |
 |:--                         |:--                                                        |:--     | 
-| Dump the first 16 bytes    | $ dmpf count=16 files/Stonehenge.jpg                      | `   0        0: ....;.Exif__II*_              ->  ff d8 ff e1 3b a8 45 78 69 66 00 00 49 49 2a 00` |
-| Dump 12 bytes of Exif data | $ dmpf count=12 skip=2 skip=4 skip=6 files/Stonehenge.jpg | ` 0xc       12: II*_.___._..                      ->  49 49 2a 00 08 00 00 00 0b 00 0f 01` |
-| Dump 12 bytes of Exif data | $ dmpf 'files/Stonehenge.jpg:12&#8209;>24'                | ` 0xc       12: II*_.___._..                      ->  49 49 2a 00 08 00 00 00 0b 00 0f 01` |
+| Dump first 16 bytes    | $ dmpf count=16 files/Stonehenge.jpg                      | `   0        0: ....;.Exif__II*_              ->  ff d8`</br>`     ff e1 3b a8 45 78 69 66 00 00 49 49 2a 00` |
+| Dump 12 bytes of Exif data | $ dmpf count=12 skip=2 skip=4 skip=6 files/Stonehenge.jpg | ` 0xc       12: II*_.___._..                      ->  49 49 2a 00`</br>`08 00 00 00 0b 00 0f 01` |
+| Dump 12 bytes of Exif data | $ dmpf 'files/Stonehenge.jpg:12&#8209;>24'                | ` 0xc       12: II*_.___._..                      ->  49 49 2a 00`</br>`08 00 00 00 0b 00 0f 01` |
 
 [TOC](#TOC)
 <div id="csv"/>
