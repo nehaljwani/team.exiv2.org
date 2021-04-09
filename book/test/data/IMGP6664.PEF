@@ -79,7 +79,7 @@ STRUCTURE OF TIFF FILE (MM): ../files/IMGP6664.PEF
         1228 | 0x003b Exif.Pentax.0x3b                 |     SHORT |        1 |           | 0
         1240 | 0x003d Exif.Pentax.0x3d                 |     SHORT |        1 |           | 8192
         1252 | 0x003e Exif.Pentax.0x3e                 |     UBYTE |        4 |           | 26 26 0 0
-        1264 | 0x003f Exif.Pentax.0x3f                 |     UBYTE |        2 |           | 3 20
+        1264 | 0x003f Exif.Pentax.LensRec              |     UBYTE |        2 |           | 3 20
         1276 | 0x0047 Exif.Pentax.0x47                 |      BYTE |        1 |           | .
         1288 | 0x0048 Exif.Pentax.0x48                 |     SHORT |        1 |           | 0
         1300 | 0x0049 Exif.Pentax.0x49                 |     SHORT |        1 |           | 0

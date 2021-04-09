@@ -150,7 +150,7 @@ STRUCTURE OF TIFF FILE (II): ../files/20200717_221452.dng
       1270 | 0x0037 Exif.Pentax.0x37                 |     SHORT |        1 |           | 0
       1282 | 0x003d Exif.Pentax.0x3d                 |     SHORT |        1 |           | 8192
       1294 | 0x003e Exif.Pentax.0x3e                 |     UBYTE |        4 |           | 0 0 0 0
-      1306 | 0x003f Exif.Pentax.0x3f                 |     UBYTE |        4 |           | 8 215 0 0
+      1306 | 0x003f Exif.Pentax.LensRec              |     UBYTE |        4 |           | 8 215 0 0
       1318 | 0x0047 Exif.Pentax.0x47                 |      BYTE |        1 |           | .
       1330 | 0x0048 Exif.Pentax.0x48                 |     SHORT |        1 |           | 0
       1342 | 0x0049 Exif.Pentax.0x49                 |     SHORT |        1 |           | 0

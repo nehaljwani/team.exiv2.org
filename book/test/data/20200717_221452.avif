@@ -111,7 +111,7 @@ STRUCTURE OF JP2 (avif) FILE (MM): ../files/20200717_221452.avif
          828 | 0x0037 Exif.Pentax.0x37                 |     SHORT |        1 |           | 0
          840 | 0x003d Exif.Pentax.0x3d                 |     SHORT |        1 |           | 8192
          852 | 0x003e Exif.Pentax.0x3e                 |     UBYTE |        4 |           | 0 0 0 0
-         864 | 0x003f Exif.Pentax.0x3f                 |     UBYTE |        4 |           | 8 215 0 0
+         864 | 0x003f Exif.Pentax.LensRec              |     UBYTE |        4 |           | 8 215 0 0
          876 | 0x0047 Exif.Pentax.0x47                 |      BYTE |        1 |           | .
          888 | 0x0048 Exif.Pentax.0x48                 |     SHORT |        1 |           | 0
          900 | 0x0049 Exif.Pentax.0x49                 |     SHORT |        1 |           | 0
