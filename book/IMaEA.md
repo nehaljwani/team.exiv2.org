@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-04-05</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-04-13</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -75,7 +75,7 @@ This book is about **Image Metadata _and_ Exiv2 Architecture**.
 
 **Exiv2 Architecture** is about the Exiv2 library and command-line application which implements cross-platform code in C++ to read, modify, insert and delete items of metadata.  I've been working on this code since 2008 and, as I approach my 70th birthday, would like to document my knowledge in the hope that the code will be maintained and developed by others in future.
 
-At the moment, the book is _**work in progress**_ and expected to be finished in 2021.  Exiv2 v0.27.3 shipped on schedule on 2020-06-30 and the first edition of the book was published on exiv2.org.  By the time Exiv2 v0.27.4 ships on 2021-05-22, I expect the book to be complete.
+At the moment, the book is _**work in progress**_ and expected to be finished in 2021.  Exiv2 v0.27.4 shipped on schedule on 2021-04-30 and the working copy of this book in available on exiv2.org.
 
 There is no plan to have the book printed or commercially published.
 
@@ -131,7 +131,7 @@ I started working on Exiv2 to implement GeoTagging.  As the years have passed, I
 
 In July 2017 we received our first security CVE.  Not a pleasant experience.  The security folks started hitting us with fuzzed files. These are files which violate format specifications and can cause the code to crash. We responded with v0.27 which will have regular "dot" releases to provide security fixes.  Managing frequent releases and user correspondence consumes lots of my time.
 
-In parallel with "the dots", major work is being carried to prepare Exiv2 for the future. Luis, Dan and Rosen are working on v0.28 which we hope to release in 2021. This is a considerable reworking of the code into C++11.  Due to the covid crisis, this project terminated and the C++11 code was ported to branch 'main' and included in Exiv2 v1.00.
+In parallel with "the dots", major work is being carried to prepare Exiv2 for the future. Luis, Dan and Rosen are worked on v0.28 which we hoped to release in 2021. This involved refactoring a lot of code into C++11.  Due to the covid crisis, this project was terminated and the C++11 code was ported to branch 'main' and included in Exiv2 v1.00.
 
 I'm delighted by the work done by Dan, Luis and Kevin to deal with the assault of the security people. I believe we are responding effectively to security issues. None-the-less, they dominated the development of Exiv2 for at least two years.  Many ideas could not be pursued because security consumed our engineering resources.
 
@@ -139,7 +139,7 @@ I'm delighted by the work done by Dan, Luis and Kevin to deal with the assault o
 <div id="future"/>
 ### Future Development Projects
 
-The code is in good shape, our release process is solid and we have comprehensive user documentation.  As photography develops, there will be many new cameras and more image formats.   Exiv2 Video support is weak and was deprecated in v0.27.  It will be removed in 0.28.  One day a contributor will re-engineer the video code.
+The code is in good shape, our release process is solid and we have comprehensive user documentation.  As photography develops, there will be many new cameras and more image formats.   Exiv2 Video support is weak and was deprecated in v0.27.  It will be removed in v1.00.  One day a contributor will re-engineer the video code.
 
 A long standing project for Exiv2 is a **unified metadata container**.  There is an implementation of this in the unstable branch of the SVN repository.  Currently we have three containers for Exif, Iptc and Xmp.  This is clumsy.  We also have a restriction of one image per file.  Perhaps both restrictions have a common solution.  The **unified metadata container** will be included in Exiv2 v1.00.
 
@@ -4591,7 +4591,7 @@ Three of the tags created (AFPointsInFocus,AFPointsSelected, AFPrimaryPoint) are
 
 This decoding function decodeCanonAFInfo() added to TiffMappingInfo manufactures the new tags. Normally, tags are processed by the binary tag decoder and that approach was taken in branch fix981_canonAf. However, the binary tag decoder cannot deal with AFInfo because the size of some metadata arrays cannot be determined at compile time.
 
-We should support decoding AFInfo in 0.28, however we should NOT auto-port this PR. We can avoid having to explicitly delete tags from the metadata before writing by adding a "read-only" flag to TagInfo. This would break the Exiv2 v0.27 API and has been avoided. There is an array in decodeCanonAFInfo() which lists the "manufactured" tags such as Exif.Canon.AFNumPoints. In the Exiv2 v0.28 architecture, a way might be designed to generate that data at run-time.
+We should support decoding AFInfo in v1.00, however we should NOT auto-port this PR. We can avoid having to explicitly delete tags from the metadata before writing by adding a "read-only" flag to TagInfo. This would break the Exiv2 v0.27 API and has been avoided. There is an array in decodeCanonAFInfo() which lists the "manufactured" tags such as Exif.Canon.AFNumPoints. In the Exiv2 v1.00 architecture, a way might be designed to generate that data at run-time.
 
 #### Binary Tag Decoder
 
@@ -5151,7 +5151,7 @@ test/tmp is used to store script output (for comparison to reference output)<br>
 2. tests/ are written in python
 the tests are run with the command `python3 runner.py`<br>
 tests/bugfixes/ has python scripts containing code and reference output<br>
-tests/bash\_tests has python scripts which will replace test/*.sh in Exiv2 v0.27.4 and v0.28
+tests/bash\_tests has python scripts which will replace test/*.sh in Exiv2 v0.27.4 and v1.00
 
 ```bash
 541 rmills@rmillsmbp:~/gnu/github/exiv2/0.27-maintenance/tests $ python3 runner.py --help
@@ -5806,7 +5806,7 @@ _**Will the Community do something about on-line abuse?**_
 
 Historically, open source was a collection of one-man projects.  And they were of limited scope.  I believe many of the early projects were rewrites of Unix utilities that ran on a few operating systems.  Users were expected to download the code and make the most of it.  Before the web, contact with the author was limited.
 
-Things have changed.  A library such as Exiv2 is installed on a billion machines and most users are unaware of the existence of the library on their platform.  However the view from the Exiv2 Captain's Bridge is of many more developers demanding help with an ever increasing number of platforms.  And they want shorter release cycles.  One thing remains the same.  The code is being maintained by one person.  This model is broken.  The pressure on the maintainer is growing exponentially.  When combined with on-line abuse and criticism, the maintainer's plate is toxic.  _**Something must be done about on-line abuse.**_.
+Things have changed.  A library such as Exiv2 is installed on a billion machines and most users are unaware of the existence of the library on their platform.  However the view from the Exiv2 Captain's Bridge is of many more developers demanding help with an ever increasing number of platforms.  And they want shorter release cycles.  One thing remains the same.  The code is being maintained by one person.  This model is broken.  The pressure on the maintainer is growing exponentially.  When combined with on-line abuse and criticism, the maintainer's plate is toxic.  _**Something must be done about on-line abuse**_.
 
 Some projects have been able to build a business based on an open-source project. Examples are Consulting and Premium Support.  I've never thought of any way to generate revenue for Exiv2.  Occasionally, I have responded to feature requests from a business with a proposal to undertake as paid consultancy.  Such proposals were silently rejected without discussion.  So, businesses are happy to request a 500 hour project, however they are unwilling to pay for the effort.
 
@@ -5828,13 +5828,13 @@ What's going to happen?  I don't know.
 
 Exiv2 is written in C++.  The code has taken a great deal of inspiration from the book [Design Patterns: Elements of Reusable Object=Oriented Software](https://www.oreilly.com/library/view/design-patterns-elements/0201633612/).  The code makes considerable use of STL containers such as vector, map, set, string and many others.  The code started life as a 32-bit library on Unix and today builds on 32 and 64 bit systems running Linux, Unix, macOS and Windows (Cygwin, MinGW, and 7 editions of Visual Studio).  It can be built by GCC, Clang and many editions of Visual Studio.  Although the Exiv2 project has never supported Mobile Platforms or Embedded Systems, it should be possible to build for other platforms with modest effort.
 
-Prior to v0.28, the code was written to the C++ 1998 Standard.  Starting with Exiv2 v0.28, the code requires a C++11 Compiler.  Exiv2 v0.28 is a major refactoring of the code and provides a new API.  The project maintains a series of v0.27 "dot" releases for security updates.  These releases are intended to ease the transition of existing applications in adapting to the new v0.28 API.  As of v0.27.3, the "dots" can be compiled for C++11 and C++14 using the following cmake options:
+Prior to v1.00, the code was written to the C++ 1998 Standard.  Starting with Exiv2 v1.00, the code requires a C++11 Compiler.  Exiv2 v1.00 is a major refactoring of the code and provides a new API.  The project maintains a series of v0.27 "dot" releases for security updates.  These releases are intended to ease the transition of existing applications in adapting to the new v1.00 API.  As of v0.27.3, the "dots" can be compiled for C++11 and C++14 using the following cmake options:
 
 ```bash
 $ cmake .. -DCMAKE_CXX_STANDARD=11 -DCMAKE_CXX_FLAGS=-Wno-deprecated
 ```
 
-However, compiling "the dots" in C++11 or C++14 uses compiler legacy compatibility to compile std::auto_ptr.  v0.28 replaces std::auto_ptr with std::unique_ptr and therefore cannot be compiled with C++98.  v0.28 can be compiled with C++11 and later including C++14 and C++17.
+However, compiling "the dots" in C++11 or C++14 uses compiler legacy compatibility to compile std::auto\_ptr.  v1.00 replaces std::auto\_ptr with std::unique\_ptr and therefore cannot be compiled with C++98.  v1.00 can be compiled with C++11 and later including C++14, C++17 and C++20.
 
 [TOC](#TOC)
 <div id="11-2"/>
@@ -5929,7 +5929,7 @@ The API documents are generated from comments in the C++ code.  Doxygen generate
 
 #### Release Documentation
 
-Creating release notes takes quite a lot of time and effort.  When Exiv2 v0.28 is released, the GitHub tools will probably do an adequate job.  However while 0.27-maintenance and master are both developed, I feel manually creating the release notes is a better approach.  The Release procedure is discussed here:  [11.9 Releases](#11-9)
+Creating release notes takes quite a lot of time and effort.  When Exiv2 v1.00 is released, the GitHub tools will probably do an adequate job.  I feel manually creating the release notes is a better approach.  The Release procedure is discussed here:  [11.9 Releases](#11-9)
 
 #### Exiv2 man page
 
@@ -6035,7 +6035,7 @@ Moreover, I like to publish release candidates.  I never make code changes betwe
 | v0.27.3.81 | Exiv2 v0.27.3    | Security Fix | Security Release                          | 
 | v0.27.3.29 | Exiv2 v0.27.3.29 | Development  | Should never be installed for production. |
 | v0.27.4.9  | Exiv2 v0.27.4.9  | Development  | Should never be installed for production. |
-| v0.27.99   | Exiv2 v0.28      | Development  | Should never be installed for production. |
+| v0.27.99   | Exiv2 v1.00.0.9  | Development  | Should never be installed for production. |
 
 The release procedure is documented here:  svn://dev.exiv2.org/svn/team/website/Checklist.txt
 
@@ -6045,9 +6045,9 @@ In month 1, the release and release notes are developed.  Depending on the compl
 
 If an issue arrives between RC2 and GM and it is decided to change code, I always accept a schedule delay and publish RC3.
 
-It's only fair to say that others will say "Oh, it shouldn't be so complicated.".  And I agree.  It shouldn't.  I've been the Release Engineer for at least 6 releases and have not discovered any tricks to eliminate the work involved.  You could just tag the current development branch, bump the version number and hope for the best.  While we currently have two major branches _0.27-maintenance_ and _master_, this isn't possible.  At least half the PRs and changes in the release are changes which have to be ported from the other branch. 
+It's only fair to say that others will say "Oh, it shouldn't be so complicated.".  And I agree.  It shouldn't.  I've been the Release Engineer for at least 6 releases and have not discovered any tricks to eliminate the work involved.  You could just tag the current development branch, bump the version number and hope for the best.  **Don't**.
 
-If we reach Exiv2 v0.28, I hope that a further dot release from Exiv2 v0.27-maintenance will never be required.  I suspect we will see Exiv2 v0.27.4 in 2021 and v0.27.5 in 2022 with security fixes which will need to be ported from _master_.  To reach Exiv2 v0.28, there are numerous fixes in 0.27-maintenance which should be ported from 0.27-maintenance.
+Once we release Exiv2 v1.00, I hope that a further dot release from Exiv2 v0.27-maintenance will never be required.  I suspect we will see Exiv2 v0.27.5 in 2022 with security fixes which will need to be ported from _main_.  
 
 #### The Macro EXIV2\_TEST\_VERSION
 
