@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-04-13</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-04-20</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -123,7 +123,7 @@ The current release of Exiv2 is v0.27.4 and shipped on 2021-04-30.  I hope v1.00
 
 The Libre Graphics Meeting was scheduled to take place in May 2020 in Rennes, France.  I intended to conduct a workshop on **Image Metadata _and_ Exiv2 Architecture**.  This book was being written to be used in that presentation.  Regretfully, the Covid-19 crisis caused the postponement of LGM.  
 
-I started working on Exiv2 to implement GeoTagging.  As the years have passed, I've explored most of the code.  I've added new capability such as support for ICC profiles, metadata-piping and file-debugging.  I've done lots of work on the build, test suite and documentation.  I've talked to users all over the world and closed several hundred issues and feature requests.  Over the years, I've met users in India, Singapore, Armenia, the USA and the UK.  I've attended 2 Open-Source Conferences. It's been an adventure and mostly rewarding.  It's remarkable how seldom users express appreciation.
+I started working on Exiv2 to implement GeoTagging.  As the years have passed, I've explored most of the code.  I've added new capability such as support for ICC profiles, metadata-piping and file-debugging.  I've done lots of work on the build, test suite and documentation.  I've talked to users all over the world and closed several hundred issues and feature requests.  Over the years, I've met users in India, Singapore, Armenia, the USA and the UK.  I've attended 2 Open-Source Conferences. It's been an adventure and mostly rewarding. When I answer questions, it's rare for users to acknowledge my response.  Almost nobody says "Thank You, Robin".
 
 [TOC](#TOC)
 <div id="current"/>
@@ -131,15 +131,15 @@ I started working on Exiv2 to implement GeoTagging.  As the years have passed, I
 
 In July 2017 we received our first security CVE.  Not a pleasant experience.  The security folks started hitting us with fuzzed files. These are files which violate format specifications and can cause the code to crash. We responded with v0.27 which will have regular "dot" releases to provide security fixes.  Managing frequent releases and user correspondence consumes lots of my time.
 
-In parallel with "the dots", major work is being carried to prepare Exiv2 for the future. Luis, Dan and Rosen are worked on v0.28 which we hoped to release in 2021. This involved refactoring a lot of code into C++11.  Due to the covid crisis, this project was terminated and the C++11 code was ported to branch 'main' and included in Exiv2 v1.00.
+In parallel with "the dots", major work was done by Luis, Dan and Rosie to prepare Exiv2 for the future on the 'master' branch.  Due to the covid crisis, this project was terminated and the C++11 code has been ported to branch 'main'.
 
-I'm delighted by the work done by Dan, Luis and Kevin to deal with the assault of the security people. I believe we are responding effectively to security issues. None-the-less, they dominated the development of Exiv2 for at least two years.  Many ideas could not be pursued because security consumed our engineering resources.
+I'm delighted by the work done by Dan, Luis and Kev to deal with the assault of the security people. I believe we are responding effectively. None-the-less, they have dominated development of Exiv2 for several years.  Many ideas could not be pursued because security consumed our engineering resources.
 
 [TOC](#TOC)
 <div id="future"/>
 ### Future Development Projects
 
-The code is in good shape, our release process is solid and we have comprehensive user documentation.  As photography develops, there will be many new cameras and more image formats.   Exiv2 Video support is weak and was deprecated in v0.27.  It will be removed in v1.00.  One day a contributor will re-engineer the video code.
+The code is in good shape, our release process is solid and we have comprehensive user documentation.  As photography develops, there will be many new cameras and image formats.   Exiv2 Video support is weak and was deprecated in v0.27.  It will be removed in v1.00.  One day a contributor will re-engineer the video code.
 
 A long standing project for Exiv2 is a **unified metadata container**.  There is an implementation of this in the unstable branch of the SVN repository.  Currently we have three containers for Exif, Iptc and Xmp.  This is clumsy.  We also have a restriction of one image per file.  Perhaps both restrictions have a common solution.  The **unified metadata container** will be included in Exiv2 v1.00.
 
@@ -226,7 +226,7 @@ So, I decided that the Safari/PDF was the best PDF and I tweaked the PDF in thre
 
 <center><img src="RobinEuphonium.jpg" width="600" style="border:2px solid #23668F;"/></center>
 
-Thank You for reading my book.  If you find errors, please let me know.  If you'd like to discuss any of the technology involved in Image Metadata, please contact me by opening an issue on GitHub. [https://github.com/exiv2/exiv2](https://github.com/exiv2/exiv2)
+Thank You for reading my book.
 
 [TOC](#TOC)
 <div id="1"/>
@@ -365,7 +365,7 @@ I was a little surprised that Adobe appeared to have removed the MakerNote.  How
 
 #### CR2 and NEF may require more investigation.
 
-It's possible that there are tags which are unique to CR2 and NEF and tvisitor.cpp is hiding them when the *U* option is not being used.  In the first instance, you are welcome to search the Exiv2 source code to see if there is anything special or unusual being defined or used by the CR2 and NEF handlers.
+It's possible that there are tags which are unique to CR2 and NEF and tvisitor.cpp is hiding them when the **U** option is not being used.  In the first instance, you are welcome to search the Exiv2 source code to see if there is anything special or unusual being defined or used by the CR2 and NEF handlers.
 
 ### Garbage Collecting Tiff Files
 
@@ -7106,7 +7106,7 @@ I hope you found this book interesting.  More to the point, I hope you found the
 
 <center><img src="back-page.jpg" style="border:2px solid #23668F"/></center>
 
-I'm going off to cut the grass and to run in the beautiful countryside around my home in Camberley, England.  And I'm going to play the Euphonium and the Piano.  If you have interesting and positive thoughts you are welcome to open an issue on GitHub and I will respond.  [https://github.com/exiv2/exiv2](https://github.com/exiv2/exiv2)
+I'm going off to cut the grass and to run in the beautiful countryside around my home in Camberley, England.  And I'm going to play the Euphonium and the Piano.
 
 <center>![Exiv2](exiv2.png)</center>
 
