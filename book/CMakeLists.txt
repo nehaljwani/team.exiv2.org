@@ -14,6 +14,7 @@ endif()
 # the programs
 add_executable(visitor     visitor.cpp    )
 add_executable(tvisitor    tvisitor.cpp   )
+add_executable(tcp++       tcp++.cpp      )
 add_executable(dmpf        dmpf.cpp       )
 add_executable(csv         csv.cpp        )
 add_executable(parse       parse.cpp      )
