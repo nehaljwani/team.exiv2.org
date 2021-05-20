@@ -1377,13 +1377,7 @@ public:
     {
         // if ( start ) out() << std::endl;
     }
-    void visitCiff
-    ( Io&                   io
-    , Image&                image
-    , uint64_t              address
-    ) {
-        IoSave  restore(io,address);
-    }
+
     void visitExif(Io&      io );
 
     bool printTag(std::string& name)
