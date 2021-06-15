@@ -2,9 +2,9 @@
 <news>
 
  <newsitem>
-  <date>2021-04-07</date>
-  <title>Exiv2 v0.27.4 RC2</title>
-  <abstract>Exiv2 v0.27.4 RC2</abstract>
+  <date>2021-06-15</date>
+  <title>Exiv2 v0.27.4</title>
+  <abstract>Exiv2 v0.27.4</abstract>
   <desc>
    <p>Thank you to Alex, Christoph, David, Freddie, Kevin, Leo, Leonardo, Milos, Peter K and Peter S and pydera for working with me on the release.<br></br>
       This release is dedicated to our cat Lizzie who was put to sleep on 2021-02-13.
@@ -30,11 +30,21 @@
    </ol>
    <p>More details: <a href="https://github.com/Exiv2/exiv2/issues/1018#issuecomment-757979745" _target="_blank">Change List</a></p>
    <h3>Future of Exiv2</h3>
-   <p>Robin was 70 in January and wants to retire from Exiv2.<br/>
-   Robin has agreed to be the release engineer for Exiv2 v1.0 in December 2021.<br/>
-   Exiv2 needs somebody to manage and maintain this important project.<br/></p>
+   <p>Robin was 70 in January and has now retired.<br/>
    <p>More details: <a href="https://github.com/Exiv2/exiv2/issues/1466#issuecomment-787129589" _target="_blank">Future of Exiv2</a></p>
   </desc>
+ </newsitem>
+
+ <newsitem>
+  <date>2021-05-22</date>
+  <title>Exiv2 v0.27.4 RC3</title>
+  <abstract>Exiv2 v0.27.4 RC3</abstract>
+ </newsitem>
+
+ <newsitem>
+  <date>2021-04-07</date>
+  <title>Exiv2 v0.27.4 RC2</title>
+  <abstract>Exiv2 v0.27.4 RC2</abstract>
  </newsitem>
 
  <newsitem>
