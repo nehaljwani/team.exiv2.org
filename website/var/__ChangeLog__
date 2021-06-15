@@ -1,10 +1,21 @@
 <a name="toc">&nbsp;</a>
 TABLE of CONTENTS
-<a href="#v0.27.3">v0.27.3</a>     <a href="#v0.26">v0.26</a>    <a href="#v0.22">v0.22</a>     <a href="#v0.18">v0.18</a>
-<a href="#v0.27.2">v0.27.2</a>     <a href="#v0.25">v0.25</a>    <a href="#v0.21">v0.21</a>     <a href="#v0.17">v0.17</a>
-<a href="#v0.27.1">v0.27.1</a>     <a href="#v0.24">v0.24</a>    <a href="#v0.20">v0.20</a>     <a href="#v0.16">v0.16</a>
-<a href="#v0.27">v0.27</a>       <a href="#v0.23">v0.23</a>    <a href="#v0.19">v0.19</a>     <a href="#v0.15">v0.17</a>
+</br>
+<a href="#v0.27.4">v0.27.4</a>     <a href="#v0.26">v0.26</a>    <a href="#v0.21">v0.21</a>     <a href="#v0.18">v0.18</a>
+<a href="#v0.27.3">v0.27.3</a>     <a href="#v0.25">v0.25</a>    <a href="#v0.20">v0.20</a>     <a href="#v0.18">v0.18</a>
+<a href="#v0.27.2">v0.27.2</a>     <a href="#v0.24">v0.24</a>    <a href="#v0.19">v0.19</a>     <a href="#v0.17">v0.17</a>
+<a href="#v0.27.1">v0.27.1</a>     <a href="#v0.23">v0.23</a>    <a href="#v0.18">v0.18</a>     <a href="#v0.16">v0.16</a>
+<a href="#v0.27">v0.27</a>       <a href="#v0.22">v0.22</a>    <a href="#v0.17">v0.17</a>     <a href="#v0.15">v0.17</a>
 
+<a name="v0.27.4">&nbsp;</a>
+Changes from version 0.27.3 to 0.27.4
+-------------------------------------
+
+Closed (214/214):<a href="https://github.com/Exiv2/exiv2/milestone/6?closed=1">https://github.com/Exiv2/exiv2/milestone/6?closed=1</a>
+Open (0/214):  <a href="https://github.com/Exiv2/exiv2/milestone/6?closed=0">https://github.com/Exiv2/exiv2/milestone/6?closed=0</a>
+Release Notes: <a href="https://github.com/Exiv2/exiv2/issues/1018#issuecomment-757979745">https://github.com/Exiv2/exiv2/issues/1018#issuecomment-757979745</a>
+
+<a href="#toc">TOC</a>
 <a name="v0.27.3">&nbsp;</a>
 Changes from version 0.27.2 to 0.27.3
 -------------------------------------
@@ -12,7 +23,6 @@ Changes from version 0.27.2 to 0.27.3
 Closed:<a href="https://github.com/Exiv2/exiv2/milestone/5?closed=1">https://github.com/Exiv2/exiv2/milestone/5?closed=1</a>
 Open:  <a href="https://github.com/Exiv2/exiv2/milestone/5?closed=0">https://github.com/Exiv2/exiv2/milestone/5?closed=0</a>
 Notes: <a href="https://github.com/Exiv2/exiv2/issues/1018#issuecomment-604539346">https://github.com/Exiv2/exiv2/issues/1018#issuecomment-604539346</a>
-
 
 <a href="#toc">TOC</a>
 <a name="v0.27.2">&nbsp;</a>

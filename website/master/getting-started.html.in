@@ -18,28 +18,32 @@ __navbar__
   <div class="col-sm-pair">
     <div class="row">
       <div class="col-sm-6">
-
 	    <h2 id="lib">Exiv2 C++ library</h2>
 	    <ul>
 	      <li>Fast read and write access to the
 	        <a href="http://en.wikipedia.org/wiki/Exif">Exif</a>,
 	        <a href="http://en.wikipedia.org/wiki/IPTC">IPTC</a> and
 	        <a href="http://en.wikipedia.org/wiki/Extensible_Metadata_Platform">XMP</a>
-	        <a href="http://en.wikipedia.org/wiki/Metadata">metadata</a> of an image
+	        <a href="http://en.wikipedia.org/wiki/Metadata">metadata</a> of an image.
 	      </li>
-	      <li>Easy to use and <a href="doc/index.html" title="Exiv2 API documentation">extensively documented</a> C++ API</li>
-	      <li><a href="conversion.html" title="Exiv2 Conversions">Conversions</a> of Exif and IPTC metadata to XMP and vice versa</li>
+	      <li>Easy to use and <a href="doc/index.html" title="Exiv2 API documentation">extensively documented</a> C++ API.</li>
+	      <li><a href="conversion.html" title="Exiv2 Conversions">Conversions</a> of Exif and IPTC metadata to XMP and vice versa.</li>
 	      <li>Smart IPTC implementation that does not affect data that programs like Photoshop store
-	        in the same image segment
+	        in the same image segment.
 	      </li>
 	      <li>Exif <a href="makernote.html" title="Exif Makernote Formats and Specifications">Makernote</a> support:
 	       <ul>
-	        <li>Makernote tags can be read and written just like any other metadata</li>
-	        <li>Sophisticated write algorithm avoids corrupting the Makernote</li>
+	        <li>Makernote tags can be read and written just like any other metadata.</li>
+	        <li>Sophisticated write algorithm avoids corrupting the Makernote.</li>
 	       </ul>
 	      </li>
-	      <li>Simple interface to extract previews embedded in RAW images and Exif thumbnails</li>
-	      <li>Set and delete methods for Exif thumbnails</li>
+	      <li>Other Features:<ul>
+	        <li>Easy to use command-line utility to manipulate metadata.</li>
+	        <li>Command-line utility provides a rich scripting interface.</li>
+	        <li>Library and utility provide tools to debug, pipe metadata and much more.</li>
+	        <li>Simple interface to extract Exif thumbnails.</li>
+	        <li>Support to extract, change and remove ICC profiles.</li>
+	       </ul></li>
 	    </ul>
 
         <h4 class="margin-top-m">Future plans</h4>
@@ -49,9 +53,10 @@ __navbar__
 	    </p>
         <ul>
 	     <li>A stable API</li>
-	     <li>A unified metadata container</li>
-	     <li>Additional image formats (BigTiff and CR3)</li>
-	     <li>More makernote support</li>
+	     <li>A unified metadata container.</li>
+	     <li>Additional image formats such as BigTiff.</li>
+	     <li>Better lens recognition.</li>
+	     <li>More makernote support.</li>
         </ul>
 
 	    <div class="panel panel-primary margin-top-s">

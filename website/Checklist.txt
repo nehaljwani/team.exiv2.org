@@ -41,24 +41,28 @@ Rebuilding the website
     mkdir build etc ....                              # the website scripts use Exiv2 sample programs
     cd doc/templates ; make                           # create Exif.xml, Iptc.xml etc
 
+3   Update the book
+    # Ensure IMaEA.html is up to date with MacDown in ~/gnu/exiv2/team/book
+    $ ditto ~/gnu/exiv2/team/book  html/book          # latest version of the book 
+    $ find html/book -type d -depth -mindepth 1 | xargs rm -rf # clean it up
+    $ mv html/book/IMaEA.html html/book/index.html
+
 3   Update the website
     cd ${EXIV2WEB}
-    $ pushd bin ; make rssdate ; popd                 # make sure rssdate is built
     $ echo -n '0.27.0.2' > var/__version__            # build stamp for web pages
-    $ make get-latest                                 # get "Latest" builds from Jenkins !!
+
+    # Every time you build (with svn://dev.exiv2.org/svn/team/contrib/buildserver//ball.sh)   
+    $ make get-latest                                 # get "Latest" builds from ball.sh 
     $ make update                                     # makes Exiv2.pdf and other stuff
     $ make                                            # runs Doxygen to make the web site
-    $ open html/index.html                            # website should look fine from file://$EXIV2WEB/html/index.html
     $ find html -name "*.html" | xargs sed -E -e  "s/^          Exiv2 v0.27.3.10$/          Exiv2 v0.27.3 RC1 Preview/" -i .bak ; find html -name "*.bak"  | xargs rm -rf
-    $ make publish                                    # copies the web to ~/Jenkins/website/html/
     $ open http://rmillsmm-ubuntu                     # TO Setup on rmillsmm-ubuntu
                                                       # 1) sudo apt install --yes apache2
                                                       # 2) sudo ln -s  /media/psf/Home/gnu/exiv2/team/website/html/ /var/www/html
                                                       # 3) sudo /usr/sbin/apachectl start
 
 4   Tweaking the web-site background
-    $ cd ~/Jenkins/website/html/
-    EDIT ~/Jenkins/website/html/include/exiv2.css to remove "PreRelease"
+    EDIT html/include/exiv2.css to remove "PreRelease"
 
     Validate uploaded webpages with W3C HTML checker  # https://validator.w3.org
 
@@ -82,6 +86,34 @@ Rebuilding the website
     Exiv2    forum announcement
     Facebook fan page update
     https://discuss.pixls.us
+    
+    
+------------------------------------
+--
+Exiv2 v0.27.4 is available: https://exiv2.org/
+
+Thank you to Alex, Christoph, David, Freddie, Kevin, Leo, Leonardo, Luis,
+Milos, Nehal, Peter K, Peter S and pydera for working with me on the release.
+
+This release is dedicated to our cat Lizzie who was put to sleep on 2021-02-13.
+As always, thanks to my wife (and Exiv2 widow) Alison.
+
+Highlights of Exiv2 v0.27.4
+
+- Support for bmff files (HEIC, HEIF, AVIF, CR3, JXL/bmff)
+- Bash test scripts rewritten in python
+- DNG 1.6 and Exif 2.32 support
+- Bug and Security fixes
+- Updated build and test environments
+- Localisation support on Crowdin
+- Revised documentation
+- Other improvements
+
+Release Notes:  https://github.com/Exiv2/exiv2/issues/1018#issuecomment-757979745
+
+--
+------------------------------------
+
 
 Patching doxygen/Doxyfile
 -------------------------

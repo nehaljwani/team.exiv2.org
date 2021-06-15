@@ -2,7 +2,7 @@
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
 </HEAD><BODY>
 <H1>EXIV2</H1>
-Section: User Commands  (1)<BR>Updated: May 12, 2020<BR><A HREF="#index">Index</A>
+Section: User Commands  (1)<BR>Updated: Mar 10, 2021<BR><A HREF="#index">Index</A>
 <A HREF="/">Return to Main Contents</A><HR>
 
 
@@ -50,30 +50,34 @@ The following image formats are supported:
 <TABLE>
 <TR VALIGN=top><TD><B>Type</B></TD><TD><B>Exif</B></TD><TD><B>IPTC</B></TD><TD><B>XMP</B></TD><TD><B>Image Comments</B></TD><TD><B>ICC Profile</B><BR></TD></TR>
 <TR VALIGN=top><TD><HR></TD><TD><HR></TD><TD><HR></TD><TD><HR></TD><TD><HR></TD><TD><HR></TD></TR>
-<TR VALIGN=top><TD>EXV</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>Read/Write Read/Write</TD><TD><BR></TD></TR>
+<TR VALIGN=top><TD>AVIF</TD><TD>Read</TD><TD>Read</TD><TD>Read</TD><TD>-</TD><TD>-<BR></TD></TR>
+<TR VALIGN=top><TD>BMP</TD><TD>-</TD><TD>-</TD><TD>-</TD><TD>-</TD><TD>-<BR></TD></TR>
 <TR VALIGN=top><TD>CR2</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>-</TD><TD>Read/Write<BR></TD></TR>
+<TR VALIGN=top><TD>CR3</TD><TD>Read</TD><TD>Read</TD><TD>Read</TD><TD>-</TD><TD>Read<BR></TD></TR>
 <TR VALIGN=top><TD>CRW</TD><TD>Read/Write</TD><TD>-</TD><TD>-</TD><TD>Read/Write</TD><TD>-<BR></TD></TR>
-<TR VALIGN=top><TD>MRW</TD><TD>Read</TD><TD>Read</TD><TD>Read</TD><TD>-</TD><TD>-<BR></TD></TR>
-<TR VALIGN=top><TD>TIFF</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>-</TD><TD>Read/Write<BR></TD></TR>
-<TR VALIGN=top><TD>WEBP</TD><TD>Read/Write</TD><TD>-</TD><TD>Read/Write</TD><TD>-</TD><TD>Read/Write<BR></TD></TR>
 <TR VALIGN=top><TD>DNG</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>-</TD><TD>Read/Write<BR></TD></TR>
+<TR VALIGN=top><TD>EPS</TD><TD>-</TD><TD>-</TD><TD>Read/Write</TD><TD>-</TD><TD>-<BR></TD></TR>
+<TR VALIGN=top><TD>EXV</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>Read/Write Read/Write</TD><TD><BR></TD></TR>
+<TR VALIGN=top><TD>GIF</TD><TD>-</TD><TD>-</TD><TD>-</TD><TD>-</TD><TD>-<BR></TD></TR>
+<TR VALIGN=top><TD>HEIC</TD><TD>Read</TD><TD>Read</TD><TD>Read</TD><TD>-</TD><TD>-<BR></TD></TR>
+<TR VALIGN=top><TD>HEIF</TD><TD>Read</TD><TD>Read</TD><TD>Read</TD><TD>-</TD><TD>-<BR></TD></TR>
+<TR VALIGN=top><TD>JP2</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>-</TD><TD>Read/Write<BR></TD></TR>
+<TR VALIGN=top><TD>JPEG</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>Read/Write<BR></TD></TR>
+<TR VALIGN=top><TD>MRW</TD><TD>Read</TD><TD>Read</TD><TD>Read</TD><TD>-</TD><TD>-<BR></TD></TR>
 <TR VALIGN=top><TD>NEF</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>-</TD><TD>Read/Write<BR></TD></TR>
+<TR VALIGN=top><TD>ORF</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>-</TD><TD>-<BR></TD></TR>
 <TR VALIGN=top><TD>PEF</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>-</TD><TD>Read/Write<BR></TD></TR>
-<TR VALIGN=top><TD>ARW</TD><TD>Read</TD><TD>Read</TD><TD>Read</TD><TD>-</TD><TD>-<BR></TD></TR>
+<TR VALIGN=top><TD>PGF</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>Read/Write<BR></TD></TR>
+<TR VALIGN=top><TD>PNG</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>Read/Write<BR></TD></TR>
+<TR VALIGN=top><TD>PSD</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>-</TD><TD>-<BR></TD></TR>
+<TR VALIGN=top><TD>RAF</TD><TD>Read</TD><TD>Read</TD><TD>Read</TD><TD>-</TD><TD>-<BR></TD></TR>
 <TR VALIGN=top><TD>RW2</TD><TD>Read</TD><TD>Read</TD><TD>Read</TD><TD>-</TD><TD>-<BR></TD></TR>
 <TR VALIGN=top><TD>SR2</TD><TD>Read</TD><TD>Read</TD><TD>Read</TD><TD>-</TD><TD>-<BR></TD></TR>
 <TR VALIGN=top><TD>SRW</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>-</TD><TD>-<BR></TD></TR>
-<TR VALIGN=top><TD>ORF</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>-</TD><TD>-<BR></TD></TR>
-<TR VALIGN=top><TD>PNG</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>Read/Write<BR></TD></TR>
-<TR VALIGN=top><TD>PGF</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>Read/Write<BR></TD></TR>
-<TR VALIGN=top><TD>RAF</TD><TD>Read</TD><TD>Read</TD><TD>Read</TD><TD>-</TD><TD>-<BR></TD></TR>
-<TR VALIGN=top><TD>EPS</TD><TD>-</TD><TD>-</TD><TD>Read/Write</TD><TD>-</TD><TD>-<BR></TD></TR>
-<TR VALIGN=top><TD>XMP</TD><TD>-</TD><TD>-</TD><TD>Read/Write</TD><TD>-</TD><TD>-<BR></TD></TR>
-<TR VALIGN=top><TD>GIF</TD><TD>-</TD><TD>-</TD><TD>-</TD><TD>-</TD><TD>-<BR></TD></TR>
-<TR VALIGN=top><TD>PSD</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>-</TD><TD>-<BR></TD></TR>
 <TR VALIGN=top><TD>TGA</TD><TD>-</TD><TD>-</TD><TD>-</TD><TD>-</TD><TD>-<BR></TD></TR>
-<TR VALIGN=top><TD>BMP</TD><TD>-</TD><TD>-</TD><TD>-</TD><TD>-</TD><TD>-<BR></TD></TR>
-<TR VALIGN=top><TD>JP2</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>-</TD><TD>Read/Write<BR></TD></TR>
+<TR VALIGN=top><TD>TIFF</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>Read/Write</TD><TD>-</TD><TD>Read/Write<BR></TD></TR>
+<TR VALIGN=top><TD>WEBP</TD><TD>Read/Write</TD><TD>-</TD><TD>Read/Write</TD><TD>-</TD><TD>Read/Write<BR></TD></TR>
+<TR VALIGN=top><TD>XMP</TD><TD>-</TD><TD>-</TD><TD>Read/Write</TD><TD>-</TD><TD>-<BR></TD></TR>
 </TABLE>
 
 <DL COMPACT>
@@ -161,7 +165,7 @@ exiv2 [ opt [arg] ]+ [ act ] file ...
 
 option [arg]    long option     description
 -a      tim     --adjust        Modify time stamps.  [+|-]HH[:MM[:SS[.mmm]]]
--b              --binary        Show large binary values (default is to restrict them).
+-b              --binary        This option is obsolete and should not be used.  Reserved for test suite (with option -pC)
 -c      txt     --comment       JPEG comment string to set in the image ('modify' action).  ...
 -d      tgt     --delete        Delete target(s) for the 'delete' action. ...
 -D      +-n     --days  Time  adjustment by a positive or negative number of days ...
@@ -248,10 +252,6 @@ used at the same time.
 Set the log-level to 'd'(ebug), 'i'(nfo), 'w'(arning), 'e'(rror)
 or 'm'(ute). The default log-level is 'w'. <B>-Qm</B> is equivalent
 to <B>-q</B>. All log messages are written to standard error.
-<DT><B>-b</B>
-
-<DD>
-The output from large binary values is to restricted by default.  When outputting the value of a large value such as MakerNote, the default behaviour is to restrict the data and end with &quot;...&quot;.  The option --binary enables you to see all the data.
 <DT><B>-u</B>
 
 <DD>
@@ -693,12 +693,16 @@ The format of XMP <B>LangAlt</B> values includes an optional language qualifier:
 </PRE>
 
 <P>
-lang=&quot;x-default&quot; is used if the value doesn't start with a language qualifier.
+The double quotes around the <I>language-code</I> are optional. If no languge qualifier
+is supplied, then the value of &quot;x-default&quot; is used. More information 
+on the language format can be found at: <A HREF="https://www.ietf.org/rfc/rfc3066.txt">https://www.ietf.org/rfc/rfc3066.txt</A>
 <P>
 <PRE>
 $ exiv2 -M'set Xmp.dc.title lang=&quot;de-DE&quot; Euros' X.jpg
 $ exiv2 -M'set Xmp.dc.title lang=&quot;en-GB&quot; Pounds' X.jpg
 $ exiv2 -M'set Xmp.dc.title lang=&quot;en-US&quot; In God We Trust' X.jpg
+$ exiv2 -M'set Xmp.dc.title lang=fr-FR Euros' X.jpg
+$ exiv2 -M'set Xmp.dc.title lang=jp Yen' X.jpg
 $ exiv2 -M'set Xmp.dc.title All others pay cash' X.jpg
 </PRE>
 
@@ -738,7 +742,7 @@ The tag is a triplet of Family.Group.Tagname.  The following groups are defined 
 GPSInfo           Canon           Fujifilm      NikonLd1      OlympusFe1     Pentax
 Image             CanonCf                       NikonLd2      OlympusFe2     PentaxDng
 Image2            CanonCs         Nikon1        NikonLd3      OlympusFe3
-Image3            CanonF1         Nikon2        NikonMe       OlympusFe4     Samsung2
+Image3            CanonFi         Nikon2        NikonMe       OlympusFe4     Samsung2
 Iop               CanonPa         Nikon3        NikonPc       OlympusFe5     SamsungPictureWizard
 MakerNote         CanonPi         NikonAFT      NikonPreview  OlympusFe6     SamsungPreview
 MpfInfo           CanonPr         NikonAf       NikonSi01xx   OlympusFe7
@@ -919,7 +923,7 @@ and GPSLatitudeRef contains either 'N' or 'S' for north or south
 latitude respectively.
 <P>
 <PRE>
-$ exiv2 insert -l/tmp -S.CRW /data/*.JPG
+$ exiv2 -l/tmp -S.CRW insert /data/*.JPG
 </PRE>
 
 Copy all metadata from CRW files in the /tmp directory to JPG files
@@ -980,6 +984,6 @@ The code is hosted on GitHub at <A HREF="https://github.com/exiv2/exiv2">https:/
 This document was created by
 <A HREF="http://github.com/hamano/man2html/">man2html</A>,
 using the manual pages.<BR>
-Time: 14:43:20 GMT, June 30, 2020
+Time: 14:42:31 GMT, June 15, 2021
 </BODY>
 </HTML>

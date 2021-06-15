@@ -2,6 +2,48 @@
 <news>
 
  <newsitem>
+  <date>2021-04-07</date>
+  <title>Exiv2 v0.27.4 RC2</title>
+  <abstract>Exiv2 v0.27.4 RC2</abstract>
+  <desc>
+   <p>Thank you to Alex, Christoph, David, Freddie, Kevin, Leo, Leonardo, Milos, Peter K and Peter S and pydera for working with me on the release.<br></br>
+      This release is dedicated to our cat Lizzie who was put to sleep on 2021-02-13.
+      As always, thanks to my wife (and Exiv2 widow) Alison.
+   </p>
+   <p>I have finished my book <b>Image Metadata</b><i> and </i><b>Exiv2 Architecture</b>.<br/>
+   <b>Available:</b><br/>
+   <a href="https://clanmills.com/exiv2/book/">https://clanmills.com/exiv2/book/</a><br/>
+   and/or<br/>
+   <a href= "https://clanmills.com/exiv2/book/IMaEA.pdf">https://clanmills.com/exiv2/book/IMaEA.pdf</a><br/>
+   There is no plan to have it printed or commercially published.
+   </p>
+   <p>Highlights of Exiv2 v0.27.4</p>
+   <ol>
+    <li>Support for bmff files (HEIC, HEIF, AVIF, CR3, JXL/bmff)</li>
+    <li>Bash test scripts rewritten in python</li>
+    <li>DNG 1.6 and Exif 2.32 support</li>
+    <li>Bug and security fixes</li>
+    <li>Localisation project on Crowdin</li>
+    <li>Updated build and test environments</li>
+    <li>Revised documentation</li>
+    <li>Other improvements</li>
+   </ol>
+   <p>More details: <a href="https://github.com/Exiv2/exiv2/issues/1018#issuecomment-757979745" _target="_blank">Change List</a></p>
+   <h3>Future of Exiv2</h3>
+   <p>Robin was 70 in January and wants to retire from Exiv2.<br/>
+   Robin has agreed to be the release engineer for Exiv2 v1.0 in December 2021.<br/>
+   Exiv2 needs somebody to manage and maintain this important project.<br/></p>
+   <p>More details: <a href="https://github.com/Exiv2/exiv2/issues/1466#issuecomment-787129589" _target="_blank">Future of Exiv2</a></p>
+  </desc>
+ </newsitem>
+
+ <newsitem>
+  <date>2021-03-18</date>
+  <title>Exiv2 v0.27.4 RC1</title>
+  <abstract>Exiv2 v0.27.4 RC1</abstract>
+ </newsitem>
+
+ <newsitem>
   <date>2020-06-30</date>
   <title>Exiv2 v0.27.3</title>
   <abstract>Exiv2 v0.27.3</abstract>
