@@ -2,6 +2,22 @@
 <news>
 
  <newsitem>
+  <date>2021-08-10</date>
+  <title>Exiv2 v0.27.5 RC1</title>
+  <abstract>Exiv2 v0.27.5 RC1</abstract>
+  <desc>
+   <p>Thank you to Alex, Christoph, Kev, Milos, Peter K, Peter S and Robin for working on the release.<br></br>   </p>
+   <ol>
+    <li>Security fixes</li>
+    <li>BMFF bug fixes</li>
+    <li>libFuzzer target for improved security testing</li>
+    <li>Minor bugs and fixes</li>
+   </ol>
+   <p>More details: <a href="https://github.com/Exiv2/exiv2/issues/1018#issuecomment-895425552" _target="_blank">Change List</a></p>
+  </desc>
+ </newsitem>
+ 
+ <newsitem>
   <date>2021-06-15</date>
   <title>Exiv2 v0.27.4</title>
   <abstract>Exiv2 v0.27.4</abstract>
@@ -30,7 +46,7 @@
    </ol>
    <p>More details: <a href="https://github.com/Exiv2/exiv2/issues/1018#issuecomment-757979745" _target="_blank">Change List</a></p>
    <h3>Future of Exiv2</h3>
-   <p>Robin was 70 in January and has now retired.<br/>
+   <p>Robin was 70 in January and has now retired.<br/></p>
    <p>More details: <a href="https://github.com/Exiv2/exiv2/issues/1466#issuecomment-787129589" _target="_blank">Future of Exiv2</a></p>
   </desc>
  </newsitem>

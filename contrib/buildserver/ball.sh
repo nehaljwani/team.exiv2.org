@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 max=0
-for p in linux macos msvc cygwin mingw solaris freebsd netbsd
+for p in linux macos msvc cygwin mingw # linux # solaris freebsd netbsd
 do
-    (./build.sh "$p" $@ 2>&1 > /dev/null &)
+    (./build.sh "$p" --bmff $@ 2>&1 > /dev/null &)
     max=$((max+1))
     if [ $p == linux ]; then max=$((max+1)) ; fi
 done

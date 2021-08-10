@@ -21,8 +21,10 @@ Updating ChangeLogs and ReleaseNotes
 
 https://github.com/Exiv2/exiv2/milestone/1
 
-Edit $EXIV2HOME/releasenotes/releasenotes.txt
-Inspect/modify $EXIV2HOME/doc/ChangeLog
+Edit           $EXIV2HOME/releasenotes/releasenotes.txt
+               $EXIV2HOME/doc/ChangeLog
+Edit           $EXIV2WEB/master/news.xml
+               $EXIV2WEB/var/__ChangeLog__
 
 Localization
 ------------
@@ -49,17 +51,22 @@ Rebuilding the website
 
 3   Update the website
     cd ${EXIV2WEB}
-    $ echo -n '0.27.0.2' > var/__version__            # build stamp for web pages
+    $ echo -n '0.27.5.1' > var/__version__            # build stamp for web pages
 
     # Every time you build (with svn://dev.exiv2.org/svn/team/contrib/buildserver//ball.sh)   
     $ make get-latest                                 # get "Latest" builds from ball.sh 
     $ make update                                     # makes Exiv2.pdf and other stuff
     $ make                                            # runs Doxygen to make the web site
-    $ find html -name "*.html" | xargs sed -E -e  "s/^          Exiv2 v0.27.3.10$/          Exiv2 v0.27.3 RC1 Preview/" -i .bak ; find html -name "*.bak"  | xargs rm -rf
+    $ find html -name "*.html" | xargs sed -E -e  "s/^          Exiv2 v0.27.5.1$/          Exiv2 v0.27.5 RC1/" -i .bak ; find html -name "*.bak"  | xargs rm -rf
     $ open http://rmillsmm-ubuntu                     # TO Setup on rmillsmm-ubuntu
-                                                      # 1) sudo apt install --yes apache2
-                                                      # 2) sudo ln -s  /media/psf/Home/gnu/exiv2/team/website/html/ /var/www/html
-                                                      # 3) sudo /usr/sbin/apachectl start
+                                                      # 1) sudo visudo
+                                                           rmills ALL = (ALL) NOPASSWD:ALL
+                                                      # 2) sudo apt install --yes apache2
+                                                      # 3) sudo systemctl start apache2
+                                                           open http://rmillsmm-ubuntu to be sure the server is working
+                                                      # 4) sudo mv /var/www/html /var/www/html.orig
+                                                      # 5) sudo ln -s /media/psf/Home/gnu/exiv2/team/website/html/ /var/www/html
+                                                      #    open http://rmillsmm-ubuntu/include/exiv2.css to refresh style sheet
 
 4   Tweaking the web-site background
     EDIT html/include/exiv2.css to remove "PreRelease"
@@ -73,14 +80,14 @@ Rebuilding the website
 
 6   Tag the Release
     $ cd $EXIV2HOME
-    $ git tag -a 'v0.27.2-RC3'
+    $ git tag -a 'v0.27.5-RC1'
 
 7   Publish the release on github
     Discussion: https://github.com/Exiv2/exiv2/issues/1
                 https://github.com/Exiv2/exiv2/issues/915
     Goto https://github.com/exiv2/exiv2
     Select  'releases' from the ribbon (commits, branches, releases, contributores, license)
-    Title should be something like: "Third Release Candidate for Exiv2 v0.27.2"
+    Title should be something like: "First Release Candidate for Exiv2 v0.27.5"
  
 8   When you're sure it's good, tell the world:
     Exiv2    forum announcement
@@ -90,27 +97,20 @@ Rebuilding the website
     
 ------------------------------------
 --
-Exiv2 v0.27.4 is available: https://exiv2.org/
+Exiv2 v0.27.5 RC1 is available: https://pre-release.exiv2.org/
 
-Thank you to Alex, Christoph, David, Freddie, Kevin, Leo, Leonardo, Luis,
-Milos, Nehal, Peter K, Peter S and pydera for working with me on the release.
+A huge thank you to Kev for his hard work on Exiv2 Security.  Great Job, Kev.
 
-This release is dedicated to our cat Lizzie who was put to sleep on 2021-02-13.
-As always, thanks to my wife (and Exiv2 widow) Alison.
+Thank you to Alex, Christoph, Kev, Luis, Milos, Peter K, Peter S and Robin for working on this release.
 
-Highlights of Exiv2 v0.27.4
+Highlights of Exiv2 v0.27.5
 
-- Support for bmff files (HEIC, HEIF, AVIF, CR3, JXL/bmff)
-- Bash test scripts rewritten in python
-- DNG 1.6 and Exif 2.32 support
-- Bug and Security fixes
-- Updated build and test environments
-- Localisation support on Crowdin
-- Revised documentation
-- Other improvements
+- Security fixes
+- BMFF bug fixes
+- libFuzzer target for improved security testing
+- Minor bugs and fixes
 
-Release Notes:  https://github.com/Exiv2/exiv2/issues/1018#issuecomment-757979745
-
+Release Notes:  https://github.com/Exiv2/exiv2/issues/1018#issuecomment-895425552
 --
 ------------------------------------
 

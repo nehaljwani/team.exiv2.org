@@ -5,8 +5,18 @@ TABLE of CONTENTS
 <a href="#v0.27.3">v0.27.3</a>     <a href="#v0.25">v0.25</a>    <a href="#v0.20">v0.20</a>     <a href="#v0.18">v0.18</a>
 <a href="#v0.27.2">v0.27.2</a>     <a href="#v0.24">v0.24</a>    <a href="#v0.19">v0.19</a>     <a href="#v0.17">v0.17</a>
 <a href="#v0.27.1">v0.27.1</a>     <a href="#v0.23">v0.23</a>    <a href="#v0.18">v0.18</a>     <a href="#v0.16">v0.16</a>
-<a href="#v0.27">v0.27</a>       <a href="#v0.22">v0.22</a>    <a href="#v0.17">v0.17</a>     <a href="#v0.15">v0.17</a>
+<a href="#v0.27">v0.27</a>       <a href="#v0.22">v0.22</a>    <a href="#v0.17">v0.17</a>     <a href="#v0.15">v0.15</a>
 
+
+<a name="v0.27.5">&nbsp;</a>
+Changes from version 0.27.4 to 0.27.5
+-------------------------------------
+
+Closed (57/50):<a href="https://github.com/Exiv2/exiv2/milestone/9?closed=1">https://github.com/Exiv2/exiv2/milestone/6?closed=1</a>
+Open    (0/57):<a href="https://github.com/Exiv2/exiv2/milestone/9?closed=0">https://github.com/Exiv2/exiv2/milestone/6?closed=0</a>
+Release Notes: <a href="https://github.com/Exiv2/exiv2/issues/1018#issuecomment-895425552">https://github.com/Exiv2/exiv2/issues/1018#issuecomment-757979745</a>
+
+<a href="#toc">TOC</a>
 <a name="v0.27.4">&nbsp;</a>
 Changes from version 0.27.3 to 0.27.4
 -------------------------------------
