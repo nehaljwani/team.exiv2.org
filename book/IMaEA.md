@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-04-20</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-08-27</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -171,7 +171,7 @@ Attention is drawn to the possibility that some elements of this document may be
 <div id="making"/>
 ### Making this book
 
-I've had a lot of fun making this book.  Most of the time was spent on the code, however getting the book into good shape for the web and print has been fun.  The graphics were drawn using OmniGraffle 6.6.2 on my MacBook Pro.
+I've had a lot of fun making this book.  Most of the time was spent on the code, however getting the book into good shape for the web and print has been fun.  The graphics were drawn using OmniGraffle 6.6.2 on my MacBook Pro.  Exporting the drawings to PNG is very awkward in Omni-graffle.  I use the export a region WITH transparency.  Left 0 Top 0 Width 19.5 Height 19.5/15.5.  To make the background white: `$ convert foo.png -background white -flatten foo.png`.
 
 All the documentation for Exiv2 is written in markdown with the exception of the Unix man page exiv2.1  I find markdown easy to use and quickly produces satisfying results.  
 
@@ -6872,7 +6872,7 @@ There are numerous examples of this utility in the book.  The options are:
 path can be - or path or "path:offset->length"
 
 The term _**Accumulative**_ means you may use the option more that once and they will be added.  
-**Non Accumulative**_ settings are set when encountered.  So, the last setting will prevail.
+_**Non Accumulative**_ settings are set when encountered.  So, the last setting will prevail.
 
 Here are some examples, using files/Stonehenge.jpg for which the structure is:
 
