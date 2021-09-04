@@ -19,6 +19,7 @@ declare -A drives=( \
    # ["BackupXX"]="/Volumes/Backup/Photos/" \
    # ["Backup"]="rmills@exiv2.dyndns.org:/Volumes/Backup/Photos/"
    ["Backup"]="rmills@rmillsmm.local:/Volumes/Backup/Photos/"
+   ["Photos"]="rmills@rmillsmm.local:~/Pictures/"
 )
 
 reportDrives() {
@@ -34,6 +35,7 @@ reportDrives() {
 # write the drives we can find
 for drive in "${!drives[@]}"; do
 	to=${drives["$drive"]}
+	echo "drive " $drive is $to
 	#if [ -d "$to" ]; then
 		echo '---' rsync -varz "$directory" "$to" '---'
 			       rsync -varz "$directory" "$to"

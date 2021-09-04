@@ -206,7 +206,7 @@ for m in $(seq $m1 $m2); do
 
 	z=$(echo $z + $s | bc)
 	for d in $(seq $f $t) ; do
-		echo |  python >$tmp <(cat <<PYTHON
+		echo |  python3 >$tmp <(cat <<PYTHON
 import sys
 import ephem
 sun       = ephem.Sun()

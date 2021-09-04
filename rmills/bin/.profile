@@ -386,7 +386,7 @@ path() {
 alias rename=mv
 alias move=mv
 alias del='sudo rm -rf'
-alias dirod='ls -altr'
+alias dirod='ls -ltr'
 alias xcopy='ditto'
 alias finder='find . -depth -iname'
 alias shellx=open
@@ -650,10 +650,5 @@ export PATH=$PATH:/opt/local/bin:/opt/local/sbin:/opt/pkgconfig/bin
 # export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
 # Finished adapting your PATH environment variable for use with MacPorts.
 
-export PATH="/usr/local/opt/gettext/bin:$PATH"
-
-
-# Setting PATH for Python 3.7
-# The original version is saved in .profile.pysave
-PATH="/Library/Frameworks/Python.framework/Versions/3.7/bin:${PATH}"
-export PATH
+export PATH="~/Library/Python/3.8/bin:/usr/local/opt/gettext/bin:$PATH"
+. "$HOME/.cargo/env"
