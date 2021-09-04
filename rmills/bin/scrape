@@ -1,0 +1,62 @@
+#!/usr/bin/env python3
+import sys
+from   bs4 import BeautifulSoup as Soup
+import ssl
+import urllib.request
+import argparse
+
+def scrape(argv):
+	options=['cols2','photos','textarea']
+	# parse command-line
+	if len(argv) != 3:
+		print('Number of arguments:', len(sys.argv), 'arguments.')
+		print('Argument List:', str(sys.argv))
+		print('usage: ' + sys.argv[0] + ' url','option')
+		print('options:',options)
+		sys.exit(1)
+	url    = argv[1]
+	option = argv[2]
+	
+	# print('url=',url,'option=',option)
+
+	# Read the page from the url
+	ctxt = ssl._create_unverified_context()
+	# page = urllib.request.urlopen(url, context=ctxt)
+	
+	req = urllib.request.Request(url)
+	req.add_header('Accept', '*/*')
+	req.add_header('User-Agent','scrape')
+	page = urllib.request.urlopen(req, context=ctxt)
+	soup = Soup(page,features='lxml')
+	
+	try:
+		i=options.index(option)
+
+		if i == options.index('cols2'):
+			# find and report every image
+			for div in soup.findAll('div', attrs={'id':'cols2'}):
+				for i in div.contents:
+					if i != '\n':
+						print(i,)
+		elif i == options.index('photos'):
+			images = soup.findAll('img')
+			for image in images:
+				url=image['src']
+				if len(url) > 120:  # ignore short urls, they are icons
+					url = url.split('=')[0]+'=w1920-h1080';
+					print('<object data="'+url+'"></object>')
+
+		elif i == options.index('textarea'):
+			textareas = soup.findAll('textarea')
+			print(textareas)
+			for textarea in textareas:
+					print(textarea)
+	except:
+		print('unknown option',option)
+		print('valid options',options)
+
+##
+#
+if __name__ == '__main__':
+    scrape(sys.argv)
+			

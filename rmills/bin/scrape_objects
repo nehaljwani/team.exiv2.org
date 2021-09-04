@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+if [ $# != 1 ]; then 
+  echo 'usage: $0 directory'
+  exit 1
+fi
+if [ ! -d $1 ]; then 
+  echo '*** $1 is not a directory'
+  exit 2
+fi
+
+d=default.shtml           # files
+find $1 -depth -name $d -execdir scrape_object.sh ';'
+
+# That's all folks
+##
+
