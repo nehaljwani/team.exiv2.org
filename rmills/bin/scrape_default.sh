@@ -1,15 +1,14 @@
 #!/usr/bin/env bash
 
-u=$(now)                  # updated
-T=~/clanmills/2021/Test   # Template
-d=default.shtml           # files
+u=$(now)                     # updated
+T=~/clanmills/2021/Template  # Template
+d=default.shtml              # files
 o=objects.txt
 s=story.txt
 
 empty_dir.sh
 cp $T/$d  .
 cp $T/$s  .
-echo PWD = $PWD
 leaf=$(basename $PWD)
 clanmills="$HOME/clanmills" 
 clanmills=${#clanmills}
