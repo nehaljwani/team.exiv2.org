@@ -10,7 +10,7 @@ if [ ! -d $1 ]; then
 fi
 
 d=default.shtml           # files
-find $1 -depth -name $d -execdir scrape_photos.sh ';'
+find $1 -depth -name $d -execdir scrape_photo.sh ';'
 
 # That's all folks
 ##
