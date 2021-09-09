@@ -57,7 +57,7 @@ Rebuilding the website
     $ make get-latest                                 # get "Latest" builds from ball.sh 
     $ make update                                     # makes Exiv2.pdf and other stuff
     $ make                                            # runs Doxygen to make the web site
-    $ find html -name "*.html" | xargs sed -E -e  "s/^          Exiv2 v0.27.5.1$/          Exiv2 v0.27.5 RC1/" -i .bak ; find html -name "*.bak"  | xargs rm -rf
+    $ find html -name "*.html" | xargs sed -E -e  "s/^          Exiv2 v0.27.5.2$/          Exiv2 v0.27.5 RC2/" -i .bak ; find html -name "*.bak"  | xargs rm -rf
     $ open http://rmillsmm-ubuntu                     # TO Setup on rmillsmm-ubuntu
                                                       # 1) sudo visudo
                                                            rmills ALL = (ALL) NOPASSWD:ALL
@@ -235,8 +235,8 @@ drwxr-xr-x 9 ubuntu www-data  4096 Mar 29 17:13 pre-release
 
 $ cd $EXIV2WEB
 $ cd html
-$ rsync -varz . ubuntu@exiv2.org:/var/www/websites/pre-release   <--- RC Release
-$ rsync -varz . ubuntu@exiv2.org:/var/www/websites/exiv2         <--- GM Release
+$ rsync -varz . ubuntu@exiv2.org:/var/www/websites/pre-release  # <--- RC Release
+$ rsync -varz . ubuntu@exiv2.org:/var/www/websites/exiv2        # <--- GM Release
 // Takes about 10 minutes from the MacMini
 
 Manually
