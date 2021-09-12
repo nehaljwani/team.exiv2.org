@@ -1,7 +1,7 @@
 #!/bin/bash
 
 c="import time; import string; print(   time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()).lower()    )"
-python3 -c "$c" | tr -d '\n' | pbcopy ; pbpaste ; echo
+python3 -c "$c"
 
 # That's all Folks! 
 ##

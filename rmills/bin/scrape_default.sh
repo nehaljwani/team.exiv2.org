@@ -5,6 +5,7 @@ T=~/clanmills/2021/Template  # Template
 d=default.shtml              # files
 o=objects.txt
 s=story.txt
+p=photos.txt
 
 empty_dir.sh
 cp $T/$d  .
@@ -21,6 +22,8 @@ sed -E -i .bak -e "s/__updated__/$u/g"  $d
 rm  -rf *.bak
 scrape $share photos > $o
 scrape $url   cols2  > $s
+cat    $T/$p       > $p
+
 cat $d
 ls -l
 
