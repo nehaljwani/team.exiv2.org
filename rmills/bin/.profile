@@ -651,4 +651,3 @@ export PATH=$PATH:/opt/local/bin:/opt/local/sbin:/opt/pkgconfig/bin
 # Finished adapting your PATH environment variable for use with MacPorts.
 
 export PATH="~/Library/Python/3.8/bin:/usr/local/opt/gettext/bin:$PATH"
-. "$HOME/.cargo/env"
