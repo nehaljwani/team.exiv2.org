@@ -3,18 +3,18 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-08-27</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-10-04</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
 
 _I want to say <b>Thank You</b> to a few folks who have made this book possbile._
 
-_First, my wife Alison, who has been my loyal support since the day we met in High School in 1967._
+_First, my wife Alison, who has been my loyal supporter since the day we met in High School in 1967._
 
 _Secondly, Andreas Huggel the founder of the project and Luis and Dan who have worked tirelessly with me since 2017._
 
-_Exiv2 contributors (in alphabetical order): Abhinav, Alan, Alex, Andreas (both of them), Arnold, Ben, Christoph, Gilles, Kevin, Leo, Leonardo, Mahesh, Micha&lstrok;, Mikayel, Milo&scaron;, Nehal, Neils, Peter, Phil, Rosen, Sridhar, Thomas, Tuan .... and others who have contributed to Exiv2._
+_Exiv2 contributors (in alphabetical order): Abhinav, Alan, Alex, Andreas (both of them), Arnold, Ben, Christoph, Gilles, Kev, Leo, Leonardo, Mahesh, Micha&lstrok;, Mikayel, Milo&scaron;, Nehal, Neils, Peter, Phil, Rosen, Sridhar, Thomas, Tuan .... and others who have contributed to Exiv2._
 
 _File Detectives:  Phil Harvey, Dave Coffin, Laurent Cl&eacute;vy._
 
@@ -119,9 +119,9 @@ I personally found working with the students to be enjoyable and interesting.  I
 
 After v0.26 was released in 2017, Luis and Dan started making contributions.  They have made many important contributions in the areas of security, test and build.  In 2019, Kevin joined us.  He discovered and fixed some security issues.
 
-The current release of Exiv2 is v0.27.4 and shipped on 2021-04-30.  I hope v1.00 will be released in 2021-12-15.  Further "dot" releases of v0.27 and v1.00 may be published for security fixes in future.
+The current release of Exiv2 is v0.27.5 and shipped on 2021-10-22.  Further "dot" releases of v0.27 may be published for security fixes in future.  There is no scheduled date for 'main' to be released.
 
-The Libre Graphics Meeting was scheduled to take place in May 2020 in Rennes, France.  I intended to conduct a workshop on **Image Metadata _and_ Exiv2 Architecture**.  This book was being written to be used in that presentation.  Regretfully, the Covid-19 crisis caused the postponement of LGM.  
+The Libre Graphics Meeting was scheduled to take place in May 2020 in Rennes, France.  I intended to conduct a workshop on **Image Metadata _and_ Exiv2 Architecture**.  This book was being written to be used in that presentation.  Regretfully, the Covid-19 crisis caused the postponement of LGM in 2020 and 2021.  
 
 I started working on Exiv2 to implement GeoTagging.  As the years have passed, I've explored most of the code.  I've added new capability such as support for ICC profiles, metadata-piping and file-debugging.  I've done lots of work on the build, test suite and documentation.  I've talked to users all over the world and closed several hundred issues and feature requests.  Over the years, I've met users in India, Singapore, Armenia, the USA and the UK.  I've attended 2 Open-Source Conferences. It's been an adventure and mostly rewarding. When I answer questions, it's rare for users to acknowledge my response.  Almost nobody says "Thank You, Robin".
 
@@ -131,7 +131,7 @@ I started working on Exiv2 to implement GeoTagging.  As the years have passed, I
 
 In July 2017 we received our first security CVE.  Not a pleasant experience.  The security folks started hitting us with fuzzed files. These are files which violate format specifications and can cause the code to crash. We responded with v0.27 which will have regular "dot" releases to provide security fixes.  Managing frequent releases and user correspondence consumes lots of my time.
 
-In parallel with "the dots", major work was done by Luis, Dan and Rosie to prepare Exiv2 for the future on the 'master' branch.  Due to the covid crisis, this project was terminated and the C++11 code has been ported to branch 'main'.
+In parallel with "the dots", major work was done by Luis, Dan and Rosie to prepare Exiv2 for the future on the 'master' branch.  Due to the covid crisis, this project was terminated and the C++11 code has been ported to branch 'main' and 'master' was renamed 'old-master'.
 
 I'm delighted by the work done by Dan, Luis and Kev to deal with the assault of the security people. I believe we are responding effectively. None-the-less, they have dominated development of Exiv2 for several years.  Many ideas could not be pursued because security consumed our engineering resources.
 
@@ -139,9 +139,9 @@ I'm delighted by the work done by Dan, Luis and Kev to deal with the assault of 
 <div id="future"/>
 ### Future Development Projects
 
-The code is in good shape, our release process is solid and we have comprehensive user documentation.  As photography develops, there will be many new cameras and image formats.   Exiv2 Video support is weak and was deprecated in v0.27.  It will be removed in v1.00.  One day a contributor will re-engineer the video code.
+The code is in good shape, our release process is solid and we have comprehensive user documentation.  As photography develops, there will be many new cameras and image formats.   Exiv2 Video support is weak and was deprecated in v0.27.  It has been removed from 'main'.  Perhaps a contributor will re-engineer the video code in future.
 
-A long standing project for Exiv2 is a **unified metadata container**.  There is an implementation of this in the unstable branch of the SVN repository.  Currently we have three containers for Exif, Iptc and Xmp.  This is clumsy.  We also have a restriction of one image per file.  Perhaps both restrictions have a common solution.  The **unified metadata container** will be included in Exiv2 v1.00.
+A long standing project for Exiv2 is a **unified metadata container**.  There is an implementation of this in the unstable branch of the SVN repository.  Currently we have three containers for Exif, Iptc and Xmp.  This is clumsy.  We also have a restriction of one image per file.  Perhaps both restrictions have a common solution.  I hope the **unified metadata container** will be included in Exiv2 v1.00.
 
 The toolset used in Software Engineering evolves with time.  C++ has been around for about 35 years and, while many complain about it, I expect it will out-live most of us.  None-the-less, languages which are less vulnerable to security issues may lead the project to a re-write in a new language such as Rust.  I hope this book provides the necessary understanding of metadata to support such an undertaking.
 
@@ -151,7 +151,7 @@ I intended to make a proposal at LGM in Rennes in May 2020 concerning this matte
 
 In this way, new lens definitions can be written in M2Lscript without touching anything in Exiv2 or ExifTool.
 
-I will not be able to work on both Exiv2 and M2Lscript simulateously.  When a new maintainer takes responsibility for Exiv2, I will retire.  M2Lscript would be my swansong technology project.  However, the C-19 crisis postponed LGM in 2020.  I don't have the energy to continue with open-source. This book is my final contribution.
+I will not be able to work on both Exiv2 and M2Lscript simulateously.  When a new maintainer takes responsibility for Exiv2, I will retire.  M2Lscript would be my swansong technology project.  However, the C-19 crisis postponed LGM in 2020 and 2021.  I don't have the energy to continue with open-source. This book is my final contribution.
 
 [TOC](#TOC)
 <div id="scope"/>
@@ -453,18 +453,33 @@ bool JpegImage::valid()
 And here it is in action:
 
 ```bash
-.../book/build $ ./tvisitor -pS ~/Stonehenge.jpg 
+.../book/build $ tvisitor -pS ~/Stonehenge.jpg 
 STRUCTURE OF JPEG FILE (II): /Users/rmills/Stonehenge.jpg
- address |    tag type      count | value
+ address | marker       |  length | signature
        0 | 0xffd8 SOI  
-       2 | 0xffe1 APP1  |   15288 | Exif__II*_.___._..._.___.___..._.___ +++
-   15292 | 0xffe1 APP1  |    2610 | http://ns.adobe.com/xap/1.0/_<?xpack +++
-   17904 | 0xffed APP13 |      96 | Photoshop 3.0_8BIM.._____'..__._...Z +++
-   18002 | 0xffe2 APP2  |    4094 | MPF_II*_.___.__.._.___0100..._.___._ +++
-   22098 | 0xffdb DQT   |     132 
-   22232 | 0xffc0 SOF0  |      17 
-   22251 | 0xffc4 DHT   |     418 
-   22671 | 0xffda SOS  
+       2 | 0xffe1 APP1  |   15272 | Exif__II*_.___._..._.___.___..._.___.___
+   15276 | 0xffe1 APP1  |    2786 | http://ns.adobe.com/xap/1.0/_<?xpacket b
+   18064 | 0xffed APP13 |      96 | Photoshop 3.0_8BIM.._____'..__._...Z_..%
+   18162 | 0xffe2 APP2  |    4094 | MPF_II*_.___.__.._.___0100..._.___.___..
+   22258 | 0xffdb DQT   |     132 | _.......................................
+   22392 | 0xffc0 SOF0  |      17 | ....p..!_........ = h,w = 4000,6000
+   22411 | 0xffc4 DHT   |     418 | __........________............_.........
+   22831 | 0xffda SOS  
+ 6196491 | 0xffd9 EOI  
+ 6196976 | 0xffd8 SOI  
+ 6196978 | 0xffe1 APP1  |    1022 | Exif__II*_.___._i.._.___._________._..._
+ 6198002 | 0xffdb DQT   |     132 | _..........................!.#"!. .%)4,%
+ 6198136 | 0xffc0 SOF0  |      17 | .......!_........ = h,w = 424,640
+ 6198155 | 0xffc4 DHT   |     418 | __........________............_.........
+ 6198575 | 0xffda SOS  
+ 6234770 | 0xffd9 EOI  
+ 6234864 | 0xffd8 SOI  
+ 6234866 | 0xffe1 APP1  |    1022 | Exif__II*_.___._i.._.___._________._..._
+ 6235890 | 0xffdb DQT   |     132 | _.......................................
+ 6236024 | 0xffc0 SOF0  |      17 | ..8.T..!_........ = h,w = 1080,1620
+ 6236043 | 0xffc4 DHT   |     418 | __........________............_.........
+ 6236463 | 0xffda SOS  
+ 6757985 | 0xffd9 EOI  
 END: /Users/rmills/Stonehenge.jpg
 .../book/build $ exiv2 -ea --verbose --force ~/Stonehenge.jpg 
 File 1/1: /Users/rmills/Stonehenge.jpg
@@ -1045,6 +1060,7 @@ Very nice program with very nice code.  In addition to the GUI/Explorer, a comma
 
 It did not build _out of the box_ for me on Ubuntu18.04.  [https://github.com/DigiDNA/ISOBMFF/issues/12](https://github.com/DigiDNA/ISOBMFF/issues/12}
 
+<div id="CR3"/>
 ### Canon CR3 Format
 
 ![cr3](cr3.png)
@@ -1140,6 +1156,67 @@ for version 1:
 | 12/0xc       | short   | 1                   | width (160)                 |
 | 14/0xe       | short   | 1                   | height (120)                |
 | 16/0x10      | long    | 1                   | jpeg image size (jpeg_size) |
+
+The tvisitor.cpp code will reveal the structure of the CMT1/2/3/4, THMD and PRVW as follows.  I appears that Canon do not use the tiffDict/IFD1 feature of the Exiv2 specification to store a thumbnail.
+
+```bash
+.../book/build $ ./tvisitor -pR ../files/cr3.cr3
+STRUCTURE OF JP2 (crx ) FILE (MM): ../files/cr3.cr3
+ address |   length | box  | uuid | data
+       0 |       24 | ftyp |      | crx ___.crx isom 99 114 120 32 0 0 0 1 99 114 120 32 105 115 111 109
+      24 |    22792 | moov |      | __PXuuid............ 0 0 80 88 117 117 105 100 133 192 182 135 130 15 17 224 129 17 244 206
+  STRUCTURE OF JP2 FILE (MM): ../files/cr3.cr3:32->22784
+         0 |    20568 | uuid | cano | ___&CNCVCanonCR3_001 0 0 0 38 67 78 67 86 67 97 110 111 110 67 82 51 95 48 48 49
+    STRUCTURE OF JP2 FILE (MM): ../files/cr3.cr3:32->22784:24->20552
+           0 |       38 | CNCV |      | CanonCR3_001/00.09.0 67 97 110 111 110 67 82 51 95 48 48 49 47 48 48 46 48 57 46 48
+          38 |       92 | CCTP |      | _______.___.___.CCDT 0 0 0 0 0 0 0 1 0 0 0 3 0 0 0 24 67 67 68 84
+         130 |       92 | CTBO |      | ___.___.______Y ____ 0 0 0 4 0 0 0 1 0 0 0 0 0 0 89 32 0 0 0 0
+         222 |       10 | free |      | __ 0 0
+         232 |      392 | CMT1 |      | II*_.___.__.._.___p. 73 73 42 0 8 0 0 0 13 0 0 1 3 0 1 0 0 0 112 23
+      STRUCTURE OF TIFF FILE (II): ../files/cr3.cr3:32->22784:24->20552:240->392
+...
+            58 | 0x010f Exif.Image.Make                  |     ASCII |        6 |       176 | Canon
+            70 | 0x0110 Exif.Image.Model                 |     ASCII |       14 |       182 | Canon EOS M50
+...
+      END: ../files/cr3.cr3:32->22784:24->20552:240->392
+         624 |     1064 | CMT2 |      | II*_.___'_..._.___.. 73 73 42 0 8 0 0 0 39 0 154 130 5 0 1 0 0 0 226 1
+      STRUCTURE OF TIFF FILE (II): ../files/cr3.cr3:32->22784:24->20552:632->1064
+...
+      END: ../files/cr3.cr3:32->22784:24->20552:632->1064
+        1688 |     5176 | CMT3 |      | II*_.___/_._._1___B. 73 73 42 0 8 0 0 0 47 0 1 0 3 0 49 0 0 0 66 2
+      STRUCTURE OF TIFF FILE (II): ../files/cr3.cr3:32->22784:24->20552:1696->5176
+...
+      END: ../files/cr3.cr3:32->22784:24->20552:1696->5176
+        6864 |     1816 | CMT4 |      | II*_.___.___._.___.. 73 73 42 0 8 0 0 0 1 0 0 0 1 0 4 0 0 0 2 3
+      STRUCTURE OF TIFF FILE (II): ../files/cr3.cr3:32->22784:24->20552:6872->1816
+      END: ../files/cr3.cr3:32->22784:24->20552:6872->1816
+        8680 |    11864 | THMB |      | _____._x__.=_.__.... 0 0 0 0 0 160 0 120 0 0 46 61 0 1 0 0 255 216 255 219
+      STRUCTURE OF JPEG FILE (II): ../files/cr3.cr3:32->22784:24->20552:8704->11840
+       address | marker       |  length | signature
+             0 | 0xffd8 SOI  
+             2 | 0xffdb DQT   |     132 | _.......................................
+           136 | 0xffc0 SOF0  |      17 | ._x_...!_........ = h,w = 120,160
+           155 | 0xffc4 DHT   |     418 | __........________............_.........
+           575 | 0xffda SOS  
+         11835 | 0xffd9 EOI  
+      END: ../files/cr3.cr3:32->22784:24->20552:8704->11840
+    END: ../files/cr3.cr3:32->22784:24->20552
+...
+  END: ../files/cr3.cr3:32->22784
+   22816 |    65560 | uuid |  xmp | <?xpacket begin='... 60 63 120 112 97 99 107 101 116 32 98 101 103 105 110 61 39 239 187 191
+   88376 |   264929 | uuid | canp | _______._...PRVW____ 0 0 0 0 0 0 0 1 0 4 10 193 80 82 86 87 0 0 0 0
+  STRUCTURE OF JPEG FILE (II): ../files/cr3.cr3:88432->264865
+   address | marker       |  length | signature
+         0 | 0xffd8 SOI  
+         2 | 0xffdb DQT   |     132 | _.......................................
+       136 | 0xffc0 SOF0  |      17 | ..8.T..!_........ = h,w = 1080,1620
+       155 | 0xffc4 DHT   |     418 | __........________............_.........
+       575 | 0xffda SOS  
+    264871 | 0xffd9 EOI  
+  END: ../files/cr3.cr3:88432->264865
+  353305 | 13789912 | mdat |      | _____.j....._._..... 0 0 0 0 0 210 106 216 255 216 255 219 0 132 0 6 4 4 6 4
+END: ../files/cr3.cr3
+```
 
 
 <div id="heic"/>
@@ -3893,13 +3970,75 @@ The Exiv2 command-line application provides support for both thumbnails and prev
 
 Thumbnails are defined in the Exif Specification.  They are stored in IFD1 of the Exif block with two tags JPEGInterchangeFormat and JPEGInterchangeLength.  The thumbnail is required to be a JPEG with no embedded metadata.  The tag JPEGInterchangeFormat is the offset in the IFD to the JPEG.  The tag JPEGInterchangeLength is the number of bytes in the JPEG.
 
-There are very significant issues with this design.  Firstly, in JPEG files the Exif block is restricted to 64k bytes.  Secondly, it's not clear if this design can support multiple resolutions.  When you convert JPEG to other formats with an application such as macOS Preview.app, the Exif Thumbnail is thrown away.  I dislike the idea that there is anything meaningful about IFD1.  An IFD is an array of tags and is either terminated or linked to a successor.  I don't see any good reason to restrict the content of the first successor. 
+There are very significant issues with this design.  Firstly, in JPEG files the Exif block is restricted to 64k bytes.  Secondly, it's not clear if this design can support multiple resolutions.  When you convert JPEG to other formats with an application such as macOS Preview.app, the Exif Thumbnail is thrown away.  I dislike the idea that there is anything meaningful about IFD1.  An IFD is an array of tags and is either terminated or linked to a successor.  I don't see any good reason to restrict the content of the first successor.  Exiv2 and tvisitor both use the group name Thumb for tags in IFD1.   Here it is in action.
+
+```bash
+STRUCTURE OF JPEG FILE (II): /Users/rmills/Stonehenge.jpg
+ address | marker       |  length | signature
+       0 | 0xffd8 SOI  
+       2 | 0xffe1 APP1  |   15272 | Exif__II*_.___._..._.___.___..._.___.___
+  STRUCTURE OF TIFF FILE (II): /Users/rmills/Stonehenge.jpg:12->15264
+   address |    tag                                  |      type |    count |    offset | value
+        10 | 0x010f Exif.Image.Make                  |     ASCII |       18 |       146 | NIKON CORPORATION
+        22 | 0x0110 Exif.Image.Model                 |     ASCII |       12 |       164 | NIKON D5300
+...
+       118 | 0x8769 Exif.Image.ExifTag               |      LONG |        1 |           | 222
+    STRUCTURE OF TIFF FILE (II): /Users/rmills/Stonehenge.jpg:12->15264
+     address |    tag                                  |      type |    count |    offset | value
+         224 | 0x829a Exif.Photo.ExposureTime          |  RATIONAL |        1 |       732 | 10/4000
+         236 | 0x829d Exif.Photo.FNumber               |  RATIONAL |        1 |       740 | 100/10
+...
+         416 | 0x927c Exif.Photo.MakerNote             | UNDEFINED |     3152 |       820 | Nikon_..__II*_.___9_._._.___0211._._ +++
+      STRUCTURE OF TIFF FILE (II): /Users/rmills/Stonehenge.jpg:12->15264:830->3142
+       address |    tag                                  |      type |    count |    offset | value
+            10 | 0x0001 Exif.Nikon.Version               | UNDEFINED |        4 |           | 0211
+...
+          2793 | 0x0098 Exif.Nikon.LdLensIDNumber        |     UBYTE |        1 |           | 125
+      END: /Users/rmills/Stonehenge.jpg:12->15264:830->3142
+         428 | 0x9286 Exif.Photo.UserComment           | UNDEFINED |       20 |      3972 | ASCII___Classic View
+...
+      STRUCTURE OF TIFF FILE (II): /Users/rmills/Stonehenge.jpg:12->15264
+       address |    tag                                  |      type |    count |    offset | value
+          4044 | 0x0001 Exif.Photo.InteropIndex          |     ASCII |        4 |           | R98
+          4056 | 0x0002 Exif.Photo.InteropVersion        | UNDEFINED |        4 |           | 0100
+      END: /Users/rmills/Stonehenge.jpg:12->15264
+         548 | 0xa300 Exif.Photo.FileSource            | UNDEFINED |        1 |           | .
+...
+    END: /Users/rmills/Stonehenge.jpg:12->15264
+       130 | 0x8825 Exif.Image.GPSTag                |      LONG |        1 |           | 4072
+    STRUCTURE OF TIFF FILE (II): /Users/rmills/Stonehenge.jpg:12->15264
+     address |    tag                                  |      type |    count |    offset | value
+        4074 | 000000 Exif.GPSInfo.GPSVersionID        |     UBYTE |        4 |           | 2 3 0 0
+...
+    END: /Users/rmills/Stonehenge.jpg:12->15264
+      4322 | 0x0103 Exif.Thumb.Compression           |     SHORT |        1 |           | 6
+      4334 | 0x011a Exif.Thumb.XResolution           |  RATIONAL |        1 |      4410 | 300/1
+      4346 | 0x011b Exif.Thumb.YResolution           |  RATIONAL |        1 |      4418 | 300/1
+      4358 | 0x0128 Exif.Thumb.ResolutionUnit        |     SHORT |        1 |           | 2
+      4370 | 0x0201 Exif.Thumb.JPEGInterchangeFormat |      LONG |        1 |           | 4426
+      4382 | 0x0202 Exif.Thumb.JPEGInterchangeLength |      LONG |        1 |           | 10837
+    STRUCTURE OF JPEG FILE (II): /Users/rmills/Stonehenge.jpg:12->15264:4426->10837
+     address | marker       |  length | signature
+           0 | 0xffd8 SOI  
+           2 | 0xffdb DQT   |     132 | _.......................................
+         136 | 0xffc0 SOF0  |      17 | ._x_...!_........ = h,w = 120,160
+         155 | 0xffc4 DHT   |     418 | __........________............_.........
+         575 | 0xffda SOS  
+       10835 | 0xffd9 EOI  
+    END: /Users/rmills/Stonehenge.jpg:12->15264:4426->10837
+      4394 | 0x0213 Exif.Thumb.YCbCrPositioning      |     SHORT |        1 |           | 1
+  END: /Users/rmills/Stonehenge.jpg:12->15264
+   15276 | 0xffe1 APP1  |    2786 | http://ns.adobe.com/xap/1.0/_<?xpacket b
+...
+ 6757985 | 0xffd9 EOI  
+END: /Users/rmills/Stonehenge.jpg
+```
 
 There are ways to embed thumbnails in different file formats.  It's common in JPEG to have multiple resolution previews enclosed by SOI/EOI markers.  
 
 ```bash
-703 rmills@rmillsmm-local:~/gnu/exiv2/team/book $ tvisitor files/Stonehenge.jpg 
-STRUCTURE OF JPEG FILE (II): files/Stonehenge.jpg
+.../book/build $ tvisitor -pS ~/Stonehenge.jpg 
+STRUCTURE OF JPEG FILE (II): /Users/rmills/Stonehenge.jpg
  address | marker       |  length | signature
        0 | 0xffd8 SOI  
        2 | 0xffe1 APP1  |   15272 | Exif__II*_.___._..._.___.___..._.___.___
@@ -3907,29 +4046,31 @@ STRUCTURE OF JPEG FILE (II): files/Stonehenge.jpg
    18064 | 0xffed APP13 |      96 | Photoshop 3.0_8BIM.._____'..__._...Z_..%
    18162 | 0xffe2 APP2  |    4094 | MPF_II*_.___.__.._.___0100..._.___.___..
    22258 | 0xffdb DQT   |     132 | _.......................................
-   22392 | 0xffc0 SOF0  |      17 | ....p..!_........
+   22392 | 0xffc0 SOF0  |      17 | ....p..!_........ = h,w = 4000,6000
    22411 | 0xffc4 DHT   |     418 | __........________............_.........
    22831 | 0xffda SOS  
  6196491 | 0xffd9 EOI  
  6196976 | 0xffd8 SOI  
  6196978 | 0xffe1 APP1  |    1022 | Exif__II*_.___._i.._.___._________._..._
  6198002 | 0xffdb DQT   |     132 | _..........................!.#"!. .%)4,%
- 6198136 | 0xffc0 SOF0  |      17 | .......!_........
+ 6198136 | 0xffc0 SOF0  |      17 | .......!_........ = h,w = 424,640
  6198155 | 0xffc4 DHT   |     418 | __........________............_.........
  6198575 | 0xffda SOS  
  6234770 | 0xffd9 EOI  
  6234864 | 0xffd8 SOI  
  6234866 | 0xffe1 APP1  |    1022 | Exif__II*_.___._i.._.___._________._..._
  6235890 | 0xffdb DQT   |     132 | _.......................................
- 6236024 | 0xffc0 SOF0  |      17 | ..8.T..!_........
+ 6236024 | 0xffc0 SOF0  |      17 | ..8.T..!_........ = h,w = 1080,1620
  6236043 | 0xffc4 DHT   |     418 | __........________............_.........
  6236463 | 0xffda SOS  
  6757985 | 0xffd9 EOI  
-END: files/Stonehenge.jpg
-704 rmills@rmillsmm-local:~/gnu/exiv2/team/book $ 
+END: /Users/rmills/Stonehenge.jpg
+.../book/build $
 ```
 
-CRW, PNG, CR3, PSD _and probably other formats_ may embed JPEG Thumbnails.  These are features of the file format and independent of the Thumbnail in the Exif Specification.  I think class Exiv2::PreviewManager was written to provide a C++ class to manage an array of preview images.  I'm not convinced that the code is complete.  PreviewManager is only used by a few image handlers.  Exiv2::PreviewManager creates a read-only data structure with no capability to insert, replace or delete individual thumbnails.  
+There is a discussion of how Canon embed previews in the THMB box and the canp/uuid box with a PRVW header.  [Canon CR3](#CR3)
+
+CRW, PNG, PSD _and probably other formats_ may embed JPEG Thumbnails.  These are features of the file format and independent of the IFD1/Thumbnail in the Exif Specification.  I think class Exiv2::PreviewManager was written to provide a C++ class to manage an array of preview images.  I'm not convinced that the code is complete.  PreviewManager is only used by a few image handlers.  Exiv2::PreviewManager creates a read-only data structure with no capability to insert, replace or delete individual thumbnails.  
 
 The good news about the Exiv2 preview/thumbnail code is that it works sufficiently well for the Gnome Desktop to display thumbnails.  There have been very few issues raised by users.  So the existing code is safe.  I'm not convinced that it's comprehensive.
 
@@ -4591,7 +4732,7 @@ Three of the tags created (AFPointsInFocus,AFPointsSelected, AFPrimaryPoint) are
 
 This decoding function decodeCanonAFInfo() added to TiffMappingInfo manufactures the new tags. Normally, tags are processed by the binary tag decoder and that approach was taken in branch fix981_canonAf. However, the binary tag decoder cannot deal with AFInfo because the size of some metadata arrays cannot be determined at compile time.
 
-We should support decoding AFInfo in v1.00, however we should NOT auto-port this PR. We can avoid having to explicitly delete tags from the metadata before writing by adding a "read-only" flag to TagInfo. This would break the Exiv2 v0.27 API and has been avoided. There is an array in decodeCanonAFInfo() which lists the "manufactured" tags such as Exif.Canon.AFNumPoints. In the Exiv2 v1.00 architecture, a way might be designed to generate that data at run-time.
+We should support decoding AFInfo in 'main', however we should NOT auto-port this PR. We can avoid having to explicitly delete tags from the metadata before writing by adding a "read-only" flag to TagInfo. This would break the Exiv2 v0.27 API and has been avoided. There is an array in decodeCanonAFInfo() which lists the "manufactured" tags such as Exif.Canon.AFNumPoints. In the Exiv2 'main' architecture, a way might be designed to generate that data at run-time.
 
 #### Binary Tag Decoder
 
@@ -5151,7 +5292,7 @@ test/tmp is used to store script output (for comparison to reference output)<br>
 2. tests/ are written in python
 the tests are run with the command `python3 runner.py`<br>
 tests/bugfixes/ has python scripts containing code and reference output<br>
-tests/bash\_tests has python scripts which will replace test/*.sh in Exiv2 v0.27.4 and v1.00
+tests/bash\_tests has python scripts which will replace test/*.sh in Exiv2 0.27-maintenance and main.
 
 ```bash
 541 rmills@rmillsmbp:~/gnu/github/exiv2/0.27-maintenance/tests $ python3 runner.py --help
@@ -5689,7 +5830,7 @@ Exiv2 does not back-port security (or any other fix) to earlier releases of the 
 
 The Exiv2 "dot" releases such as v0.27.2 include security fixes, bug fixes and minor feature and documentation updates.  Exiv2 has never issued a "security release" which would be an existing release PLUS one _or more_ security PRs.  The version numbering scheme is explained here: [11.9 Releases](#11-9).  The design includes provision for a security release.
 
-I was very impressed by the libssh security process which has provision to issue security notices to third parties.  Exiv2 is not sufficiently resourced to support this capability.  If the community decide that Exiv2 must strengthen its security process, the community will have to provide the necessary resources.
+I was very impressed by the libssh security process which has provision to issue security notices to third parties.  Exiv2 is not sufficiently resourced to support this capability.  If the Community decide that Exiv2 must strengthen its security process, the Community will have to provide the necessary resources.
 
 [TOC](#TOC)
 
@@ -5741,7 +5882,7 @@ I am astonished at the verbal abuse I have received.  About every three years I 
 
 When somebody provides a patch, they seldom provide test code, update the documentation or modify the build scripts.  The feature is often incomplete.  For example, in adding a new platform, nobody has ever provided platform specific code in src/version.cpp and src/futils.cpp.  Sometimes they break all the sample applications.  When I ask them to finish the job, they say: "oh you can do that.".  Nobody ever maintains or supports their patch.  Contributors frequently refuse to modify a patch when asked to do so in a review.
 
-I have found recruiting contributors to be very challenging and difficult.  I appreciate the work done by everybody who has contributed.  The future of Exiv2 is a matter for the community.  Perhaps this book will inspire somebody to maintain Exiv2 or write a replacement.
+I have found recruiting contributors to be very challenging and difficult.  I appreciate the work done by everybody who has contributed.  The future of Exiv2 is a matter for the Community.  Perhaps this book will inspire somebody to maintain Exiv2 or write a replacement.
 
 #### How to be an AB
 
@@ -5753,11 +5894,11 @@ The first is a **DAB** who deliberately blocks progress.  Before we used GitHub,
 
 I think the need for a web-site for the project has been mostly replaced by GitHub.  We can publish new releases (and pre-releases).  However the effort to transfer all project resources to GitHub is considerable.  We have had complaints about the repository being too big, so we have an SVN repository for team resources such as old releases, this book, the project logo, minutes of team meetings and so on.  And while I understand the team's hostility to SVN, no sensible alternative has been proposed.
 
-The first couple of releases I published on GitHub were not instantly tagged.   Guess what?  Within hours, somebody complained.  People have complained about the version numbering scheme.  GitHub automatically generates bundles when you create a release.  Somebody complained about them.  Somebody complained that the pre-release web-site was too similar to the release web-site (although every page is labelled) so I put "Pre-Release" on the background of every page.  You might expect that complaints would include words of appreciation for the effort to make the release.  You'd be wrong.  Complaints are normally abrupt.  Words such as _**Please**_ and _**Thank You**_ are seldom used by members of the community.
+The first couple of releases I published on GitHub were not instantly tagged.   Guess what?  Within hours, somebody complained.  People have complained about the version numbering scheme.  GitHub automatically generates bundles when you create a release.  Somebody complained about them having different checksums from the bundles on exiv2.org  Somebody complained that the pre-release web-site was too similar to the release web-site (although every page is labelled) so I put "Pre-Release" on the background of every page.  You might expect that complaints would include words of appreciation for the effort to make the release.  You'd be wrong.  Complaints are normally abrupt.  Words such as _**Please**_ and _**Thank You**_ are seldom used by members of the Community.
 
-On the subject of web-sites, I must mention DOS attacks.  DOS is Denial of Service.  Occasionally, exiv2.org will deliver a message about being severely busy.  This is because the web-site is being subjected to about 100 HTTP get requests per second.  Every request is from a different IP address.  These attacks can continue for several days.  Why does somebody attack exiv2.org in this way?  How can you defend exiv2.org from such an attack?  So, we'll call that **MAB** for Malicious.
+On the subject of web-sites, I must mention DOS attacks.  DOS is Denial of Service.  Occasionally, exiv2.org will deliver a message about being severely busy.  This is because the web-site is being subjected to about 100 HTTP get requests per second.  Every request is from a different IP address.  These attacks can continue for several days.  Why does somebody attack exiv2.org in this way?  How can you defend exiv2.org from such an attack?  We'll call this **MAB** for Malicious.
 
-How about **TAB** which is to change the project tools.  Git came close to killing me.  I know many people love Git and think it's the greatest thing ever invented.  I don't.  I worked on Acrobat at Adobe.  A big project.  When I retired in 2014, there were about 200 developers who had been working for 20 years on 25 million lines of code.  To build it, you need 100GBytes of free space.   How can git handle such a monster when every repos has 100% of the code and 100% of the project history?  Nobody has given me an answer.
+How about **TAB** which is to change the project tools.  Git came close to killing me.  I know many people love Git and think it's the greatest thing ever invented.  I don't.  I worked on Acrobat at Adobe.  A big project.  When I retired in 2014, there were about 200 developers who had been working for 20 years on 25 million lines of code.  To build it, you need 100GBytes of free space for the generated binaries.  How can git handle such a monster when every repos has 100% of the code and 100% of the project history?  Nobody has given me an answer.
 
 When we adopted Git, it took me 2 years to figure out how to submit a PR.  I purchased the book **Pro Git**.  It doesn't cover PRs.  So, the only way to submit code is undocumented.  I am very grateful to Luis and Andreas S for helping me with Git.  I eventually wrote this on a card:
 
@@ -5779,13 +5920,13 @@ How about this method?  You complain about a font being used.  We'll call this *
 
 As for myself, I am a **CAB** where *C* stands for *clever*.  However I am an **AB** and that's why I've found it difficult to recruit and retain contributors.
 
-There are so many ways to incur the outrage of stakeholders.  And so many ways in which people can and do complain.  Working with such people is very unpleasant.  However, working with solid contributors such as Alex, Christoph, Dan, Luis and Milos is a lot of fun and intellectually rewarding.  When I released v0.25, a contributor in Peru said on Facebook  _**Robin should get a medal for his work.  Exiv2 would have died years ago without his commitment.**_  So I asked my family to write to the UK Government to propose that I be given an honour.  The family silently refused.  Alison comforted me by saying _**Nobody is ever going to thank you for working on Exiv2.**_
+There are so many ways to incur the outrage of stakeholders.  And so many ways in which people can and do complain.  Working with such people is very unpleasant.  However, working with solid contributors such as Alex, Christoph, Dan, Kev, Luis and Milos is a lot of fun and intellectually rewarding.  When I released v0.25, a contributor in Peru said on Facebook  _**Robin should get a medal for his work.  Exiv2 would have died years ago without his commitment.**_  So I asked my family to write to the UK Government to propose that I be given an honour.  The family silently refused.  Alison comforted me by saying _**Nobody is ever going to thank you for working on Exiv2.**_
 
 <center><img src="dependency.png" width="300px" style="border:2px solid #23668F;"/></center>
 
 #### Solutions to the issue of AB Users
 
-You've probably now realised that an **AB User** is an abuser.  I do not know why members of the community indulge in abusive behaviour.  Feelings of superiority?  I don't know.  I assure you that it is very unpleasant to the subject of abuse.
+You've probably now realised that an **AB User** is an abuser.  I do not know why members of the Community indulge in abusive behaviour.  Feelings of superiority?  I don't know.  I assure you that it is very unpleasant to be the subject of abuse.
 
 There are ways to fix on-line abuse.  We could do what the Fuzzing Police do.  They do not negotiate with any project.  They arrive unexpectedly and deliver their message.  And they track your response and performance.
 
@@ -5793,7 +5934,7 @@ The Community would be well served by a similar task force to investigate compla
 
 For sure, I would not welcome my performance being reviewed.  However a fair, honest and independant review of an issue would be helpful.  The stakeholder and I would shake hands and learn from the situation.  If the stakeholder or maintainer do not attend the review, their github account should be suspended.
 
-Another possible solution would be to register a complaint about an individual.  In the same way as a bug report can be opened on a project, it would be helpful to open a complaint about an individual.  And that complaint can only be closed by the person who opened it.  I'm fairly sure, we'd soon discover two things:
+Another possible solution would be to register a complaint about an individual.  In the same way as a bug report can be opened on a project, it would be helpful to open a complaint about an individual.  And that complaint can only be closed by the person who opened it.  I suspect, we'd quickly discover two things:
 
 1.  A few people raise many complaints about other people.
 2.  There are many open complaints about a few people.
@@ -5804,11 +5945,11 @@ _**Will the Community do something about on-line abuse?**_
 
 #### The Future of Open Source
 
-Historically, open source was a collection of one-man projects.  And they were of limited scope.  I believe many of the early projects were rewrites of Unix utilities that ran on a few operating systems.  Users were expected to download the code and make the most of it.  Before the web, contact with the author was limited.
+Historically, open source was a collection of one-man projects of limited scope.  I believe many of the early projects were rewrites of Unix utilities that ran on a few operating systems.  Users were expected to download the code and make the most of it.  Before the web, contact with the author was limited.
 
 Things have changed.  A library such as Exiv2 is installed on a billion machines and most users are unaware of the existence of the library on their platform.  However the view from the Exiv2 Captain's Bridge is of many more developers demanding help with an ever increasing number of platforms.  And they want shorter release cycles.  One thing remains the same.  The code is being maintained by one person.  This model is broken.  The pressure on the maintainer is growing exponentially.  When combined with on-line abuse and criticism, the maintainer's plate is toxic.  _**Something must be done about on-line abuse**_.
 
-Some projects have been able to build a business based on an open-source project. Examples are Consulting and Premium Support.  I've never thought of any way to generate revenue for Exiv2.  Occasionally, I have responded to feature requests from a business with a proposal to undertake as paid consultancy.  Such proposals were silently rejected without discussion.  So, businesses are happy to request a 500 hour project, however they are unwilling to pay for the effort.
+Some projects have been able to build a business based on an open-source project. Examples are Consulting and Premium Support.  I've never thought of any way to generate revenue for Exiv2.  Occasionally, I have responded to feature requests from a business with a proposal to undertake paid consultancy.  Such proposals were silently rejected without discussion.  So, businesses are happy to request a 500 hour project, however they are unwilling to pay for the effort.
 
 Being retired, I can spend time almost every day dealing with Exiv2.  However, contributors in employment have higher priorities in their life.  When contributors are between jobs, they are even less likely to work on Exiv2.  If the project could apply for a funding grant, contributors between jobs could be paid to develop features.
 
@@ -5826,15 +5967,15 @@ What's going to happen?  I don't know.
 <div id="11-1"/>
 ### 11.1 C++ Code
 
-Exiv2 is written in C++.  The code has taken a great deal of inspiration from the book [Design Patterns: Elements of Reusable Object=Oriented Software](https://www.oreilly.com/library/view/design-patterns-elements/0201633612/).  The code makes considerable use of STL containers such as vector, map, set, string and many others.  The code started life as a 32-bit library on Unix and today builds on 32 and 64 bit systems running Linux, Unix, macOS and Windows (Cygwin, MinGW, and 7 editions of Visual Studio).  It can be built by GCC, Clang and many editions of Visual Studio.  Although the Exiv2 project has never supported Mobile Platforms or Embedded Systems, it should be possible to build for other platforms with modest effort.
+Exiv2 is written in C++.  The code has taken a great deal of inspiration from the book [Design Patterns: Elements of Reusable Object-Oriented Software](https://www.oreilly.com/library/view/design-patterns-elements/0201633612/).  The code makes considerable use of STL containers such as vector, map, set, string and many others.  The Exiv2 code started life as a 32-bit library on Unix and today builds on 32 and 64 bit systems running Linux, Unix, macOS and Windows (Cygwin, MinGW, and 7 editions of Visual Studio).  It can be built by GCC, Clang and Visual Studio.  Although the Exiv2 project has never supported Mobile Platforms or Embedded Systems, it should be possible to build for other platforms with modest effort.
 
-Prior to v1.00, the code was written to the C++ 1998 Standard.  Starting with Exiv2 v1.00, the code requires a C++11 Compiler.  Exiv2 v1.00 is a major refactoring of the code and provides a new API.  The project maintains a series of v0.27 "dot" releases for security updates.  These releases are intended to ease the transition of existing applications in adapting to the new v1.00 API.  As of v0.27.3, the "dots" can be compiled for C++11 and C++14 using the following cmake options:
+The code on the 0.27-maintenance branch and earlier, was written to the C++ 1998 Standard.  The Exiv2 main branch requires a C++11 Compiler.  The Exiv2 main branch is a major refactoring of the code and provides a new API.  The project maintains a series of v0.27 "dot" releases on branch 0.27-maintenance for security updates.  These releases are intended to ease the transition of existing applications in adapting to the new 'main' API.  As of v0.27.3, the "dots" can be compiled for C++11 and C++14 using the following cmake options:
 
 ```bash
 $ cmake .. -DCMAKE_CXX_STANDARD=11 -DCMAKE_CXX_FLAGS=-Wno-deprecated
 ```
 
-However, compiling "the dots" in C++11 or C++14 uses compiler legacy compatibility to compile std::auto\_ptr.  v1.00 replaces std::auto\_ptr with std::unique\_ptr and therefore cannot be compiled with C++98.  v1.00 can be compiled with C++11 and later including C++14, C++17 and C++20.
+However, compiling "the dots" in C++11 or C++14 uses compiler legacy compatibility to compile std::auto\_ptr.  The main branch code replaces std::auto\_ptr with std::unique\_ptr and therefore cannot be compiled with C++98.  'main' can be compiled with C++11 and later including C++14, C++17 and C++20.
 
 [TOC](#TOC)
 <div id="11-2"/>
@@ -5860,7 +6001,7 @@ Starting with Exiv2 v0.27, we can use Conan to build dependencies.  I very much 
 
 Prior to using Conan, the build environment for Visual Studio was hand built for Visual Studio 2005 and relied on Visual Studio to convert to the edition in use.  Additionally, source trees for dependencies were required in specific locations on storage.  We did support CMake on Visual Studio, however it required a 500 line cmd file _cmakeBuild.cmd_ to download and build the dependencies.  The effort to create and maintain that apparatus was considerable.
 
-Conan brings a fresh approach to building dependencies.  Every dependancy has a "recipe" which tells Conan how to build a dependency.  The recipes are held on servers and are fetched from remote servers on demand.  Exiv2 has a file conanfile.py (written in python) which tells Conan which dependencies are required.  Conan fetches the recipe, build the dependency and caches it for future use.  When dealing with very large libraries such as openssl, the recipe might pull prebuilt binaries for your requested configuration.  For more modest libraries (such as expat and zlib), the recipe will fetch the source and build.  Conan caches binary dependencies in your ~/.conan directory.  This arrangement means that you seldom build dependencies as they are usually in the cache.
+Conan brings a fresh approach to building dependencies.  Every dependancy has a "recipe" which tells Conan how to build a dependency.  The recipes are held on servers and are fetched from remote servers on demand.  Exiv2 has a file conanfile.py (written in python) which tells Conan which dependencies are required.  Conan fetches the recipe, builds the dependency and caches it for future use.  When dealing with very large libraries such as openssl, the recipe might pull prebuilt binaries for your requested configuration.  For more modest libraries (such as expat and zlib), the recipe will fetch the source and build.  Conan caches binary dependencies in your ~/.conan directory.  This arrangement means that you seldom build dependencies as they are usually in the cache.
 
 I have always supported the plan to use CMake as our common build platform and invested a lot of effort in cmakeBuild.cmd.  Using Conan with Visual Studio is much superior to our prior methods of working with CMake and Visual Studio.
 
@@ -5997,11 +6138,11 @@ The reason to give them priority is the importance of users to the project.  Wit
 
 I have been very disappointed by the appreciation shown by users to my attention to their questions.  Very few people have the courtesy to use words like "Please" and "Thank You".  Why is this?  I don't know.  Moreover, I am astonished by the abuse I have encountered.  The on-line behaviour of some users is unacceptable.  I have encountered this behaviour from our OEM Engineers when I worked on Adobe PostScript.  However, I could refer that to management at Adobe and at the OEM and the matter would be settled.  With open-source, I have to accept and ignore this awful behaviour.
 
-I have wondered if the users who behave this way believe that I am a business and have let them down in some way.  Open source is a community.  In reporting a bug, they are participating in the development process.  I always thank users for reporting issues.  It's sad that they seldom have the courtesy to thank me for fixing the issue.
+I have wondered if the users who behave this way believe that I am a business and have let them down in some way.  Open source is a Community.  In reporting a bug, they are participating in the development process.  I always thank users for reporting issues.  It's sad that they seldom have the courtesy to thank me for fixing the issue.
 
 A member of my family is the Principal of a College.  We were discussing the behaviour of parents of students.  She said _the one word you must never use with a parent is **No**_.  It's the same with open source users.  It's pointless to say _**No**_ because they will not accept this.  A good example is Lens Recognition.  The configuration file was added in 0.26 to enable users to fix lens recognition issues by updating an ascii file.  Users frequently demand that I fix their lens in C++ to save them a minute to update ~/.exiv2.  Saying _**No**_ is pointless.
 
-On a more positive note about dealing with users, I have enjoyed many on-line discussions with frequent visitors to exiv2.org.  For sure, I include Arnold, Mikayel, Alan and Steve in this group and there are many more.  If you are courteous, I am always pleased to hear from you.  We are a community with a shared vision of working together.  Thank You for participating. 
+On a more positive note about dealing with users, I have enjoyed many on-line discussions with frequent visitors to exiv2.org.  For sure, I include Arnold, Mikayel, Alan and Steve in this group and there are many more.  If you are courteous, I am always pleased to hear from you.  We are a Community with a shared vision of working together.  Thank You for participating. 
 
 [TOC](#TOC)
 <div id="11-8"/>
@@ -6420,7 +6561,7 @@ drwxr-xr-x+ 15 rmills  staff   480  8 Jul 11:31 website            source for we
 
 The website source and release procedures are store in subversion.  svn://dev.exiv2.org/svn/team.  The release process is discussed in detail here: [11.9 Releases](#11-9)
 
-Exiv2 v0.27.4 will be the last release to be published on exiv2.org.  The plan is to migrate the web-site to the GitHub Wiki.  With v1.00, we will no longer provide binary builds of the code.  If folks wish to use exiv2 without building from source, their platform package manager is available on all supported platforms.
+Exiv2 v0.27.5 will be the last release to be published on exiv2.org.  The plan is to migrate the web-site to the GitHub Wiki.  We will no longer provide binary builds of the code.  If folks wish to use exiv2 without building from source, their platform package manager is available on all supported platforms.
 
 [TOC](#TOC)
 <div id="11-15"/>
@@ -6451,7 +6592,7 @@ I believe the large open source projects such as Apache, Clang and Mozilla emplo
 
 A modest project such as Exiv2 has no money.  In fact, I pay for the modest expenses such as hosting the web-site and running a build server on a Mac Mini.
 
-The only major success I have had with recruitment is when Dan and Luis arrived in summer 2017.  We adopted GitHub in April 2017 when Exiv2 v0.26 was released.  I wondered if the move to GitHub had increased the project visibility and Dan and Luis would be the first of many contributors.  More than 3 years later, we have enjoyed contributions from Kevin, Leo and Rosen. 
+The major success I have had with recruitment is when Dan and Luis arrived in summer 2017.  We adopted GitHub in April 2017 when Exiv2 v0.26 was released.  I wondered if the move to GitHub had increased the project visibility and Dan and Luis would be the first of many contributors.  4 years later, we have enjoyed contributions from Alex, Kev, Leo, Milo&scaron;, Rosen and two Peters.
 
 I find the data on OpenHub very interesting: [https://www.openhub.net/p/exiv2](https://www.openhub.net/p/exiv2).
 
@@ -6467,7 +6608,7 @@ You can spot trends and events in the history:
 | 2009&#8209;2012        | Andreas and Robin      | 2017            | Moved to GitHub          | 2020            | I returned for Exiv2 v0.27.3      |
 | 2012&#8209;2015        | Robin and Neils        | 2017            | Dan and Luis Joined      | 2020            | I wrote this book                 | 
 
-The report provides interesting insight.  Andreas remains the top contributor although I am catching him fast.  We don't monitor the book or release script maintenance on OpenHub.  My contributes to that put me well ahead of Andreas.
+The report provides interesting insight.  Andreas was the top contributor until I overtook him in 2020.  We don't monitor the book or release scripts on OpenHub.  My contributes to those parts of the project put me well ahead of Andreas.
 
 A boss once asked me "Do you know the **80/20** rule?  **80%** of the project is done by **20%** of the people!".  For sure, this is true in Open Source.
 
