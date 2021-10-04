@@ -808,6 +808,7 @@ typedef std::map<uint16_t,std::string> TagDict;
 TagDict emptyDict ;
 TagDict tiffDict  ;
 TagDict dngDict   ;
+TagDict thumbDict ;
 TagDict exifDict  ;
 TagDict canonDict ;
 TagDict nikonDict ;
@@ -844,6 +845,8 @@ enum ktSpecial
 ,   ktIPTCPS    = 0x0404
 ,   ktICC       = 0x8773
 ,   ktMNP       = 0xc634 // Pentax MakerNote and DNGPrivateData
+,   ktJIF       = 0x0201 // JpegInterchangeFormat
+,   ktJIFL      = 0x0202 // JpegInterchangeFormatLength
 ,   ktGroup     = 0xffff
 };
 
@@ -884,15 +887,17 @@ std::string groupName(const TagDict& tagDict,std::string family="Exif" )
     return family+ "." + group ;
 }
 
-std::string tagName(uint16_t tag,const TagDict& tagDict,const size_t max=0,std::string family="Exif")
+std::string tagName(uint16_t tag,const TagDict& tagDict,const size_t max=0,size_t ifd=0,std::string family="Exif")
 {
-    // prioritize dngDict above tiffDict
-    bool bTagDict    = ! (tagKnown(tag,dngDict) && tagDict == tiffDict);
-    std::string name = tagKnown(tag,bTagDict?tagDict:dngDict)
-                     ? (bTagDict?tagDict.find(tag)->second:dngDict.find(tag)->second)
+    bool    bDngDict = tagDict == tiffDict && tagKnown(tag,dngDict); // prioritize dngDict
+    std::string name = tagKnown(tag,bDngDict?dngDict:tagDict)
+                     ? (bDngDict?dngDict.find(tag)->second:tagDict.find(tag)->second)
                      : stringFormat("%#x",tag)
                      ;
-    name =  groupName(bTagDict?tagDict:dngDict,family) + "." + name;
+    name =  groupName(tagDict == tiffDict && ifd==1 ? thumbDict // use "Thumb"
+                     :bDngDict                      ? dngDict   // use "DngDict"
+                     :tagDict,family                            // use default (Image, Photo, Nikon etc...)
+                     ) + "." + name;
     if ( max && name.size() > max ){
         name = name.substr(0,max-2)+"..";
     }
@@ -1143,7 +1148,7 @@ public:
     virtual void visitTag     (Io& io,Image& image
                         ,uint64_t address, uint16_t tag, type_e type
                         ,uint32_t count,   uint64_t offset
-                        ,DataBuf& buf,     const TagDict& tagDict  ) = 0 ;
+                        ,DataBuf& buf,     const TagDict& tagDict,size_t ifd) = 0 ;
     virtual void visitCiff    (Io& io,Image& image,uint64_t address) = 0 ;
     virtual void visitSegment (Io& io,Image& image,uint64_t address
              ,uint8_t marker,uint16_t length,std::string& signature) = 0 ;
@@ -1340,6 +1345,7 @@ protected:
     const char*  kJp2Box_Exif  = "Exif";
     const char*  kJp2Box_uuid  = "uuid";
     const char*  kJp2Box_xml   = "xml ";
+    const char*  kJp2Box_THMB  = "THMB";
 
     const uint16_t kAppExt     = 0xff21;
     const uint16_t kComExt     = 0xfe21;
@@ -1577,9 +1583,9 @@ public:
     JpegImage(std::string path)
     : Image  (path)
     { init(); }
-    JpegImage(Io& io,size_t start,size_t count)
+    JpegImage(Io& io,size_t start,size_t count,size_t depth=0)
     : Image(Io(io,start,count))
-    { init(); }
+    { init(depth);}
 
     bool valid() {
         if ( !valid_ ) {
@@ -1630,8 +1636,9 @@ private:
     // which markers have a length field?
     bool bHasLength_[256];
 
-    void init()
+    void init(size_t depth=0)
     {
+        depth_  = depth;
         endian_ = keLittle;
         start_  = 0       ;
         for (int i = 0; i < 256; i++) {
@@ -2017,12 +2024,12 @@ public:
     : Image(io)
     { init(); }
 
-    void init()
-    {   depth_=0;
-        valid_=false;
-        endian_=keBig;
+    void init(size_t depth=0)
+    {   depth_  = depth;
+        valid_  = false;
+        endian_ = keBig;
         format_ = "ICC";
-        start_ =128;
+        start_  =   128;
     }
 
     void accept(class Visitor& visitor);
@@ -2142,8 +2149,8 @@ public:
     : Image(io)
     { init() ; }
 
-    void init()
-    {   depth_  = 0       ;
+    void init(size_t depth=0)
+    {   depth_  = depth   ;
         valid_  = false   ;
         endian_ = keLittle;
         format_ = "RIFF"  ;
@@ -2567,7 +2574,7 @@ public:
     void visitTag     ( Io&  io,Image& image, uint64_t  address
                       , uint16_t         tag, type_e       type
                       , uint32_t       count, uint64_t offset
-                      , DataBuf&         buf, const TagDict& tagDict);
+                      , DataBuf&         buf, const TagDict& tagDict,size_t ifd);
     void visitICCTag  (const byte* tag,uint32_t offset,uint32_t length);
     void visitIPTC    (Io& io,Image& image
                       ,uint16_t record,uint16_t dataset,uint32_t len
@@ -2761,6 +2768,9 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
     IoSave   save(io_,start_);
     bool     bigtiff = image_.bigtiff();
     endian_e endian  = image_.endian();
+    size_t   ifd     = 0;
+    uint32_t jpegInterchangeFormat       = 0;
+    uint32_t jpegInterchangeFormatLength = 0;
 
     if ( !image_.depth_ ) image_.visits().clear();
     visitor.visitBegin(image_);
@@ -2814,7 +2824,7 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
                 io_.read(buff);
             }
             if ( tagDict == tiffDict && tag == ktMake ) image_.setMaker(buff);
-            visitor.visitTag(io_,image_,address,tag,type,count,offset,buff,tagDict);  // Tell the visitor
+            visitor.visitTag(io_,image_,address,tag,type,count,offset,buff,tagDict,ifd);  // Tell the visitor
 
             if ( type == kttIfd  ) {
                 for ( uint64_t i = 0 ; i < count ; i++ ) {
@@ -2848,6 +2858,15 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
                     case ktICC  : ICC (io).accept(visitor) ; break;
                     case ktIPTC : IPTC(io).accept(visitor) ; break;
                 }
+                if ( ifd == 1 ) { // thumbnail
+                    if ( tag == ktJIF ) jpegInterchangeFormat       = offset ;
+                    if ( tag == ktJIFL) jpegInterchangeFormatLength = offset ;
+                    if ( jpegInterchangeFormat && jpegInterchangeFormatLength ) {
+                        JpegImage(io_,jpegInterchangeFormat,jpegInterchangeFormatLength,image_.depth()).accept(visitor);
+                        jpegInterchangeFormat       = 0 ;
+                        jpegInterchangeFormatLength = 0 ;
+                    }
+                }
             }
         } // for i < nEntries
 
@@ -2856,6 +2875,7 @@ void IFD::accept(Visitor& visitor,const TagDict& tagDict/*=tiffDict*/)
             io_.seek(a0);
             io_.read(entry.pData_, bigtiff?8:4);
             start = bigtiff?getLong8(entry,0,endian):getLong(entry,0,endian);
+            ifd++ ;
         }
         visitor.visitDirEnd(image_,start);
     } // while start != 0
@@ -3051,8 +3071,9 @@ void Jp2Image::accept(class Visitor& v)
                     Jp2Image jp2(io(),io().tell(),length-16);
                     jp2.valid_=true;
                     jp2.accept(v);
-                }
-                if ( uuidName(uuid) == "xmp" && v.option() & kpsXMP ) {
+                } else if ( uuidName(uuid) == "canp" ) { // PRVW
+                    JpegImage(io(),io().tell()+32,length-64,depth()).accept(v);
+                } else if ( uuidName(uuid) == "xmp" && v.option() & kpsXMP ) {
                     DataBuf xmp(length+1);
                     xmp.pData_[length]= 0; // null terminate the xmp
                     IoSave restore(io(),io().tell());
@@ -3143,7 +3164,7 @@ void ReportVisitor::visitIPTC(Io& io,Image& image
 {
     if ( isBasicOrRecursive() ) {
         TagDict& iptcDict = iptcDicts.find(record) != iptcDicts.end() ? iptcDicts[record] : iptc0;
-        std::string tag  = tagName(dataset,iptcDict,30,"Iptc");
+        std::string tag  = tagName(dataset,iptcDict,30,0,"Iptc");
         if ( printTag(tag) ) {
             out() << indent() << stringFormat("    %6d | %7d | %-30s | %6d | ", record, dataset,tag.c_str(),len)
                   << chop(::binaryToString(buff.pData_,offset+5,len),60) << std::endl;
@@ -3159,8 +3180,15 @@ void ReportVisitor::visitSegment(Io& io,Image& image,uint64_t address
         IoSave  save(io,address+4);
         io.read(buf);
         std::string value = buf.toString(kttUndefined,buf.size_,image.endian());
-        out() <<           stringFormat("%8ld | 0xff%02x %-5s", address,marker,nm_[marker].c_str())
-              << (length ? stringFormat(" | %7d | %s", length,value.c_str()) : "")
+        std::string tagDesc;
+        if ( marker == sof0_ && length >= 5 ) {
+            uint16_t h = ::getShort(buf.pData_+1,0,keBig);
+            uint16_t w = ::getShort(buf.pData_+3,0,keBig);
+            tagDesc    = stringFormat(" = h,w = %d,%d",h,w);
+        }
+        out() << indent() << stringFormat("%8ld | 0xff%02x %-5s", address,marker,nm_[marker].c_str())
+              << (length  ?  stringFormat(" | %7d | %s", length,value.c_str()) : "")
+              << tagDesc
               << std::endl;
     }
 }
@@ -3225,6 +3253,7 @@ void ReportVisitor::visitTag
 , uint64_t       offset
 , DataBuf&       buff
 , const TagDict& tagDict
+, size_t         ifd
 ) {
     if ( !isBasicOrRecursive() ) return ;
 
@@ -3235,7 +3264,7 @@ void ReportVisitor::visitTag
         offsetS         = os.str();
     }
 
-    std::string    name = tagName(tag,tagDict,32);
+    std::string    name = tagName(tag,tagDict,32,ifd);
     std::string   value = buff.toString(type,count,image.endian_);
 
     if ( name == "Exif.Sony.FocalPosition" || name == "Exif.Sony.Tagx2010" ) {
@@ -3436,7 +3465,7 @@ void ReportVisitor::visitResource(Io& io,Image& image,uint64_t address)
 void ReportVisitor::visit8BIM(Io& io,Image& image,uint32_t offset
                 ,uint16_t kind,uint32_t len,uint32_t data,uint32_t pad,DataBuf& b)
 {
-    std::string tag = ::tagName(kind,psdDict,40,"PSD");
+    std::string tag = ::tagName(kind,psdDict,40,0,"PSD");
     if ( printTag(tag) ) {
         uint64_t chop_len = 30 ; // set chop_len to avoid excessive output
         uint64_t len = b.size_<chop_len?b.size_:chop_len; // number of bytes to format
@@ -3593,8 +3622,14 @@ void ReportVisitor::visitBox(Io& io,Image& image,uint64_t address
 
     if ( isRecursive() ){
         if ( uuidName == "exif" ) {
-            Io        tiff(io,address+punt+16,data.size_-16-punt); // uuid is 16 bytes (128 bits)
+            punt += 16 ; // uuid is 16 bytes (128 bits)
+            Io        tiff(io,address+punt,data.size_-punt); // uuid is 16 bytes (128 bits)
             TiffImage(tiff).accept(*this);
+        } else if ( name == "THMB" ) {
+            punt += 16 ; // + 16 byte header
+            if (   punt < length ) {
+                JpegImage(io,address+punt,length-punt,image.depth()).accept(*this);
+            }
         } else {
             std::map<std::string,TagDict> dicts ;
             dicts["CMT1"] = tiffDict;
@@ -3734,8 +3769,8 @@ void init()
     tiffDict  [ 0x0131 ] = "Software";
     tiffDict  [ 0x0132 ] = "DateTime";
     tiffDict  [ 0x013b ] = "Artist";
-    tiffDict  [ 0x0201 ] = "JPEGInterchangeFormat";
-    tiffDict  [ 0x0202 ] = "JPEGInterchangeLength";
+    tiffDict  [ ktJIF  ] = "JPEGInterchangeFormat";
+    tiffDict  [ ktJIFL ] = "JPEGInterchangeLength";
     tiffDict  [ 0x0213 ] = "YCbCrPositioning";
     // DNG Tags
     dngDict   [ktGroup ] = "DNG";
@@ -3757,7 +3792,9 @@ void init()
     dngDict   [ 0xc7a4 ] = "ProfileLookTableEncoding";
     dngDict   [ 0xc7a5 ] = "BaselineExposureOffset";
     dngDict   [ 0xc7a6 ] = "DefaultBlackRender";
-
+    // Exif.Thumb
+    thumbDict [ ktGroup] = "Thumb";
+    // Exif Tags
     exifDict  [ktGroup ] = "Photo";
     exifDict  [ ktMN   ] = "MakerNote";
     exifDict  [ ktMNP  ] = "MakerNotePentax";

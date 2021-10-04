@@ -65,17 +65,26 @@ STRUCTURE OF JPEG FILE (II): ../files/Agfa.jpg
          950 | 0xa40c Exif.Photo.0xa40c                |     SHORT |        1 |           | 3
     END: ../files/Agfa.jpg+12->46451+46467->65533
        130 | 0xc4a5 Exif.Image.0xc4a5                | UNDEFINED |      348 |       216 | PrintIM_0300__!_._._._._.___._.___._ +++
-     43590 | 0x0103 Exif.Image.Compression           |     SHORT |        1 |           | 6
-     43602 | 0x011a Exif.Image.XResolution           |  RATIONAL |        1 |     43666 | 720/10
-     43614 | 0x011b Exif.Image.YResolution           |  RATIONAL |        1 |     43674 | 720/10
-     43626 | 0x0128 Exif.Image.ResolutionUnit        |     SHORT |        1 |           | 2
-     43638 | 0x0201 Exif.Image.JPEGInterchangeFormat |      LONG |        1 |           | 43682
-     43650 | 0x0202 Exif.Image.JPEGInterchangeLength |      LONG |        1 |           | 2769
+     43590 | 0x0103 Exif.Thumb.Compression           |     SHORT |        1 |           | 6
+     43602 | 0x011a Exif.Thumb.XResolution           |  RATIONAL |        1 |     43666 | 720/10
+     43614 | 0x011b Exif.Thumb.YResolution           |  RATIONAL |        1 |     43674 | 720/10
+     43626 | 0x0128 Exif.Thumb.ResolutionUnit        |     SHORT |        1 |           | 2
+     43638 | 0x0201 Exif.Thumb.JPEGInterchangeFormat |      LONG |        1 |           | 43682
+     43650 | 0x0202 Exif.Thumb.JPEGInterchangeLength |      LONG |        1 |           | 2769
+    STRUCTURE OF JPEG FILE (II): ../files/Agfa.jpg+12->46451+46467->65533:43682->2769
+     address | marker       |  length | signature
+           0 | 0xffd8 SOI  
+           2 | 0xffdb DQT   |     132 | _.............. 5" .. A/1&5MDQPLDKIU`{hU
+         136 | 0xffc4 DHT   |     418 | __........________............_.........
+         556 | 0xffc0 SOF0  |      17 | ._x_...!_........ = h,w = 120,160
+         575 | 0xffda SOS  
+        2767 | 0xffd9 EOI  
+    END: ../files/Agfa.jpg+12->46451+46467->65533:43682->2769
   END: ../files/Agfa.jpg+12->46451+46467->65533
   112000 | 0xffe4 APP4  |   65535 | ..Hc..w .8<...z..M.77.h...{......C.y1...
   177537 | 0xffe5 APP5  |    7243 | .U......K..u=).pl.W.F...B.$.3....mg}q...
   184782 | 0xffdb DQT   |     132 | _......'..'2&.&2.&&&&.>55555>DAAAAAADDDD
-  184916 | 0xffc0 SOF0  |      17 | ._._..."_........
+  184916 | 0xffc0 SOF0  |      17 | ._._..."_........ = h,w = 8,8
   184935 | 0xffc4 DHT   |      75 | _.._______________...________________.._
   185012 | 0xffda SOS  
   185029 | 0xffd9 EOI  

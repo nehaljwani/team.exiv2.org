@@ -112,8 +112,18 @@ STRUCTURE OF TIFF FILE (II): ../files/Canon.cr2
        868 | 0xa434 Exif.Photo.0xa434                |     ASCII |       70 |     46572 | EF-S18-135mm f/3.5-5.6 IS
        880 | 0xa435 Exif.Photo.0xa435                |     ASCII |       12 |     46642 | 0000111ae2
   END: ../files/Canon.cr2
-   46656 | 0x0201 Exif.Image.JPEGInterchangeFormat |      LONG |        1 |           | 55156
-   46668 | 0x0202 Exif.Image.JPEGInterchangeLength |      LONG |        1 |           | 13664
+   46656 | 0x0201 Exif.Thumb.JPEGInterchangeFormat |      LONG |        1 |           | 55156
+   46668 | 0x0202 Exif.Thumb.JPEGInterchangeLength |      LONG |        1 |           | 13664
+  STRUCTURE OF JPEG FILE (II): ../files/Canon.cr2:55156->13664
+   address | marker       |  length | signature
+         0 | 0xffd8 SOI  
+         2 | 0xffdb DQT   |     132 | _.......................................
+       136 | 0xffc0 SOF0  |      17 | ._x_...!_........ = h,w = 120,160
+       155 | 0xffc4 DHT   |     418 | __........________............_.........
+       575 | 0xffda SOS  
+     13652 | 0xffd9 EOI  
+     13664 | 0xffd8 SOI  
+  END: ../files/Canon.cr2:55156->13664
    46686 | 0x0100 Exif.Image.ImageWidth            |     SHORT |        1 |           | 432
    46698 | 0x0101 Exif.Image.ImageLength           |     SHORT |        1 |           | 288
    46710 | 0x0102 Exif.Image.BitsPerSample         |     SHORT |        3 |     46846 | 16 16 16

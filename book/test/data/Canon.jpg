@@ -115,17 +115,26 @@ STRUCTURE OF JPEG FILE (II): ../files/Canon.jpg
         7104 | 0x001b Exif.GPSInfo.0x1b                | UNDEFINED |       18 |      7220 | ASCII___HYBRID-FIX
         7116 | 0x001d Exif.GPSInfo.GPSDateStamp        |     ASCII |       20 |      7238 | 2020:02:02 10:34:18
     END: ../files/Canon.jpg:12->14352
-      7260 | 0x0103 Exif.Image.Compression           |     SHORT |        1 |           | 6
-      7272 | 0x011a Exif.Image.XResolution           |  RATIONAL |        1 |      7336 | 180/1
-      7284 | 0x011b Exif.Image.YResolution           |  RATIONAL |        1 |      7344 | 180/1
-      7296 | 0x0128 Exif.Image.ResolutionUnit        |     SHORT |        1 |           | 2
-      7308 | 0x0201 Exif.Image.JPEGInterchangeFormat |      LONG |        1 |           | 7352
-      7320 | 0x0202 Exif.Image.JPEGInterchangeLength |      LONG |        1 |           | 7000
+      7260 | 0x0103 Exif.Thumb.Compression           |     SHORT |        1 |           | 6
+      7272 | 0x011a Exif.Thumb.XResolution           |  RATIONAL |        1 |      7336 | 180/1
+      7284 | 0x011b Exif.Thumb.YResolution           |  RATIONAL |        1 |      7344 | 180/1
+      7296 | 0x0128 Exif.Thumb.ResolutionUnit        |     SHORT |        1 |           | 2
+      7308 | 0x0201 Exif.Thumb.JPEGInterchangeFormat |      LONG |        1 |           | 7352
+      7320 | 0x0202 Exif.Thumb.JPEGInterchangeLength |      LONG |        1 |           | 7000
+    STRUCTURE OF JPEG FILE (II): ../files/Canon.jpg:12->14352:7352->7000
+     address | marker       |  length | signature
+           0 | 0xffd8 SOI  
+           2 | 0xffdb DQT   |     132 | _..........................!.#"!. .$)4,$
+         136 | 0xffc0 SOF0  |      17 | ._x_...!_........ = h,w = 120,160
+         155 | 0xffc4 DHT   |     418 | __........________............_.........
+         575 | 0xffda SOS  
+        6998 | 0xffd9 EOI  
+    END: ../files/Canon.jpg:12->14352:7352->7000
   END: ../files/Canon.jpg:12->14352
    14364 | 0xffe1 APP1  |    2398 | http://ns.adobe.com/xap/1.0/_<?xpacket b
    16764 | 0xffe2 APP2  |      96 | MPF_II*_.___.__.._.___0100..._.___.___..
    16862 | 0xffdb DQT   |     132 | _.......................................
-   16996 | 0xffc0 SOF0  |      17 | .... ..!_........
+   16996 | 0xffc0 SOF0  |      17 | .... ..!_........ = h,w = 3864,5152
    17015 | 0xffc4 DHT   |     418 | __........________............_.........
    17435 | 0xffda SOS  
  5356103 | 0xffd9 EOI  

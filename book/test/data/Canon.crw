@@ -3,12 +3,12 @@ STRUCTURE OF CRW FILE (II): ../files/Canon.crw:26->10052
  0x2008 | H    |    8 | Exif.CRW.ThumbnailImage          |   4418 |      0 | 
   STRUCTURE OF JPEG FILE (II): ../files/Canon.crw:26->10052:0->4418
    address | marker       |  length | signature
-       0 | 0xffd8 SOI  
-       2 | 0xffdb DQT   |     132 | _..........................!.#"!. .$)4,$
-     136 | 0xffc0 SOF0  |      17 | ._x_...!_........
-     155 | 0xffc4 DHT   |     418 | __........________............_.........
-     575 | 0xffda SOS  
-    4415 | 0xffd9 EOI  
+         0 | 0xffd8 SOI  
+         2 | 0xffdb DQT   |     132 | _..........................!.#"!. .$)4,$
+       136 | 0xffc0 SOF0  |      17 | ._x_...!_........ = h,w = 120,160
+       155 | 0xffc4 DHT   |     418 | __........________............_.........
+       575 | 0xffda SOS  
+      4415 | 0xffd9 EOI  
   END: ../files/Canon.crw:26->10052:0->4418
  0x300a | H2   |   10 | Exif.CRW.ImageProps              |   5608 |   4418 | 
             width              2272

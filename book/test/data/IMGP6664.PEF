@@ -141,12 +141,21 @@ STRUCTURE OF TIFF FILE (MM): ../files/IMGP6664.PEF
        608 | 0xa40a Exif.Photo.Sharpness             |     SHORT |        1 |           | 0
        620 | 0xa40c Exif.Photo.0xa40c                |     SHORT |        1 |           | 1
   END: ../files/IMGP6664.PEF
-   65538 | 0x0103 Exif.Image.Compression           |     SHORT |        1 |           | 6
-   65550 | 0x011a Exif.Image.XResolution           |  RATIONAL |        1 |     65614 | 72/1
-   65562 | 0x011b Exif.Image.YResolution           |  RATIONAL |        1 |     65622 | 72/1
-   65574 | 0x0128 Exif.Image.ResolutionUnit        |     SHORT |        1 |           | 2
-   65586 | 0x0201 Exif.Image.JPEGInterchangeFormat |      LONG |        1 |           | 65630
-   65598 | 0x0202 Exif.Image.JPEGInterchangeLength |      LONG |        1 |           | 4093
+   65538 | 0x0103 Exif.Thumb.Compression           |     SHORT |        1 |           | 6
+   65550 | 0x011a Exif.Thumb.XResolution           |  RATIONAL |        1 |     65614 | 72/1
+   65562 | 0x011b Exif.Thumb.YResolution           |  RATIONAL |        1 |     65622 | 72/1
+   65574 | 0x0128 Exif.Thumb.ResolutionUnit        |     SHORT |        1 |           | 2
+   65586 | 0x0201 Exif.Thumb.JPEGInterchangeFormat |      LONG |        1 |           | 65630
+   65598 | 0x0202 Exif.Thumb.JPEGInterchangeLength |      LONG |        1 |           | 4093
+  STRUCTURE OF JPEG FILE (II): ../files/IMGP6664.PEF:65630->4093
+   address | marker       |  length | signature
+         0 | 0xffd8 SOI  
+         2 | 0xffdb DQT   |     132 | _.................................. $.' 
+       136 | 0xffc0 SOF0  |      17 | ._x_...!_........ = h,w = 120,160
+       155 | 0xffc4 DHT   |     418 | __........________............_.........
+       575 | 0xffda SOS  
+      4091 | 0xffd9 EOI  
+  END: ../files/IMGP6664.PEF:65630->4093
  9303170 | 0x0103 Exif.Image.Compression           |     SHORT |        1 |           | 6
  9303182 | 0x011a Exif.Image.XResolution           |  RATIONAL |        1 |   9303246 | 72/1
  9303194 | 0x011b Exif.Image.YResolution           |  RATIONAL |        1 |   9303254 | 72/1

@@ -21,12 +21,25 @@ STRUCTURE OF JPEG FILE (II): ../files/cs4_extended_exif.jpg
       182730 | 0xa002 Exif.Photo.PixelXDimension       |      LONG |        1 |           | 454
       182742 | 0xa003 Exif.Photo.PixelYDimension       |      LONG |        1 |           | 340
     END: ../files/cs4_extended_exif.jpg+30->65490+65530->65490+131030->52812
-    182762 | 0x0103 Exif.Image.Compression           |     SHORT |        1 |           | 6
-    182774 | 0x011a Exif.Image.XResolution           |  RATIONAL |        1 |    182838 | 72/1
-    182786 | 0x011b Exif.Image.YResolution           |  RATIONAL |        1 |    182846 | 72/1
-    182798 | 0x0128 Exif.Image.ResolutionUnit        |     SHORT |        1 |           | 2
-    182810 | 0x0201 Exif.Image.JPEGInterchangeFormat |      LONG |        1 |           | 182854
-    182822 | 0x0202 Exif.Image.JPEGInterchangeLength |      LONG |        1 |           | 938
+    182762 | 0x0103 Exif.Thumb.Compression           |     SHORT |        1 |           | 6
+    182774 | 0x011a Exif.Thumb.XResolution           |  RATIONAL |        1 |    182838 | 72/1
+    182786 | 0x011b Exif.Thumb.YResolution           |  RATIONAL |        1 |    182846 | 72/1
+    182798 | 0x0128 Exif.Thumb.ResolutionUnit        |     SHORT |        1 |           | 2
+    182810 | 0x0201 Exif.Thumb.JPEGInterchangeFormat |      LONG |        1 |           | 182854
+    182822 | 0x0202 Exif.Thumb.JPEGInterchangeLength |      LONG |        1 |           | 938
+    STRUCTURE OF JPEG FILE (II): ../files/cs4_extended_exif.jpg+30->65490+65530->65490+131030->52812:182854->938
+     address | marker       |  length | signature
+           0 | 0xffd8 SOI  
+           2 | 0xffe0 APP0  |      16 | JFIF_..__H_H__..
+          20 | 0xffed APP13 |      12 | Adobe_CM_...
+          34 | 0xffee APP14 |      14 | Adobe_d.___...
+          50 | 0xffdb DQT   |     132 | _.......................................
+         184 | 0xffc0 SOF0  |      17 | ._x_..."_........ = h,w = 120,160
+         203 | 0xffdd DRI   |       4 | _...
+         209 | 0xffc4 DHT   |     319 | __........_______._..........._........_
+         530 | 0xffda SOS  
+         936 | 0xffd9 EOI  
+    END: ../files/cs4_extended_exif.jpg+30->65490+65530->65490+131030->52812:182854->938
   END: ../files/cs4_extended_exif.jpg+30->65490+65530->65490+131030->52812
   183842 | 0xffed APP13 |    4440 | Photoshop 3.0_8BIM..____....__.__..x..#-
   STRUCTURE OF 8BIM FILE (MM): ../files/cs4_extended_exif.jpg:183860->4422
@@ -55,7 +68,7 @@ STRUCTURE OF JPEG FILE (II): ../files/cs4_extended_exif.jpg
   380035 | 0xffe2 APP2  |    3160 | ICC_PROFILE_..__.HLino..__mntrRGB XYZ ..
   383197 | 0xffee APP14 |      14 | Adobe_d.___...
   383213 | 0xffdb DQT   |     132 | _.......................................
-  383347 | 0xffc0 SOF0  |      17 | ..T...."_........
+  383347 | 0xffc0 SOF0  |      17 | ..T...."_........ = h,w = 340,454
   383366 | 0xffdd DRI   |       4 | _...
   383372 | 0xffc4 DHT   |     319 | __........_______._..........._........_
   383693 | 0xffda SOS  

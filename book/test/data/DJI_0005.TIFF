@@ -54,26 +54,26 @@ STRUCTURE OF TIFF FILE (II): ../files/DJI_0005.TIFF
   END: ../files/DJI_0005.TIFF
   698742 | 0xc62f Exif.Image.0xc62f                |     ASCII |        7 |    700142 | 297589
   698754 | 0xc764 Exif.Image.0xc764                | SRATIONAL |        1 |    700150 | 30/1
- 1357474 | 0x0100 Exif.Image.ImageWidth            |     SHORT |        1 |           | 640
- 1357486 | 0x0101 Exif.Image.ImageLength           |     SHORT |        1 |           | 512
- 1357498 | 0x0102 Exif.Image.BitsPerSample         |     SHORT |        1 |           | 16
- 1357510 | 0x0103 Exif.Image.Compression           |     SHORT |        1 |           | 1
- 1357522 | 0x0106 Exif.Image.PhotometricInterpre.. |     SHORT |        1 |           | 1
- 1357534 | 0x010f Exif.Image.Make                  |     ASCII |        4 |           | DJI
- 1357546 | 0x0110 Exif.Image.Model                 |     ASCII |        4 |           | XT2
- 1357558 | 0x0111 Exif.Image.StripOffsets          |      LONG |        1 |           | 700158
- 1357570 | 0x0115 Exif.Image.SamplesPerPixel       |     SHORT |        1 |           | 1
- 1357582 | 0x0116 Exif.Image.RowsPerStrip          |     SHORT |        1 |           | 512
- 1357594 | 0x0117 Exif.Image.StripByteCounts       |      LONG |        1 |           | 655360
- 1357606 | 0x011a Exif.Image.XResolution           |  RATIONAL |        1 |   1357754 | 1/1
- 1357618 | 0x011b Exif.Image.YResolution           |  RATIONAL |        1 |   1357762 | 1/1
- 1357630 | 0x011c Exif.Image.PlanarConfiguration   |     SHORT |        1 |           | 1
- 1357642 | 0x0128 Exif.Image.ResolutionUnit        |     SHORT |        1 |           | 1
- 1357654 | 0x0129 Exif.Image.PageNumber            |     SHORT |        2 |           | 1 0
- 1357666 | 0x0131 Exif.Image.Software              |     ASCII |       10 |   1357770 | V06.02.20
- 1357678 | 0x0153 Exif.Image.0x153                 |     SHORT |        1 |           | 1
- 1357690 | 0x02bc Exif.Image.XMLPacket             |     UBYTE |     1346 |   1357780 | 60 63 120 112 97 99 107 101 116 32 9 +++
- 1357702 | 0x8769 Exif.Image.ExifTag               |       IFD |        1 |           | 1357152
+ 1357474 | 0x0100 Exif.Thumb.ImageWidth            |     SHORT |        1 |           | 640
+ 1357486 | 0x0101 Exif.Thumb.ImageLength           |     SHORT |        1 |           | 512
+ 1357498 | 0x0102 Exif.Thumb.BitsPerSample         |     SHORT |        1 |           | 16
+ 1357510 | 0x0103 Exif.Thumb.Compression           |     SHORT |        1 |           | 1
+ 1357522 | 0x0106 Exif.Thumb.PhotometricInterpre.. |     SHORT |        1 |           | 1
+ 1357534 | 0x010f Exif.Thumb.Make                  |     ASCII |        4 |           | DJI
+ 1357546 | 0x0110 Exif.Thumb.Model                 |     ASCII |        4 |           | XT2
+ 1357558 | 0x0111 Exif.Thumb.StripOffsets          |      LONG |        1 |           | 700158
+ 1357570 | 0x0115 Exif.Thumb.SamplesPerPixel       |     SHORT |        1 |           | 1
+ 1357582 | 0x0116 Exif.Thumb.RowsPerStrip          |     SHORT |        1 |           | 512
+ 1357594 | 0x0117 Exif.Thumb.StripByteCounts       |      LONG |        1 |           | 655360
+ 1357606 | 0x011a Exif.Thumb.XResolution           |  RATIONAL |        1 |   1357754 | 1/1
+ 1357618 | 0x011b Exif.Thumb.YResolution           |  RATIONAL |        1 |   1357762 | 1/1
+ 1357630 | 0x011c Exif.Thumb.PlanarConfiguration   |     SHORT |        1 |           | 1
+ 1357642 | 0x0128 Exif.Thumb.ResolutionUnit        |     SHORT |        1 |           | 1
+ 1357654 | 0x0129 Exif.Thumb.PageNumber            |     SHORT |        2 |           | 1 0
+ 1357666 | 0x0131 Exif.Thumb.Software              |     ASCII |       10 |   1357770 | V06.02.20
+ 1357678 | 0x0153 Exif.Thumb.0x153                 |     SHORT |        1 |           | 1
+ 1357690 | 0x02bc Exif.Thumb.XMLPacket             |     UBYTE |     1346 |   1357780 | 60 63 120 112 97 99 107 101 116 32 9 +++
+ 1357702 | 0x8769 Exif.Thumb.ExifTag               |       IFD |        1 |           | 1357152
   STRUCTURE OF TIFF FILE (II): ../files/DJI_0005.TIFF
    address |    tag                                  |      type |    count |    offset | value
    1357154 | 0x829d Exif.Photo.FNumber               |  RATIONAL |        1 |   1357266 | 1250/1000
@@ -86,7 +86,7 @@ STRUCTURE OF TIFF FILE (II): ../files/DJI_0005.TIFF
    1357238 | 0xa210 Exif.Photo.0xa210                |     SHORT |        1 |           | 4
    1357250 | 0xa217 Exif.Photo.0xa217                |     SHORT |        1 |           | 15
   END: ../files/DJI_0005.TIFF
- 1357714 | 0x8825 Exif.Image.GPSTag                |       IFD |        1 |           | 1357318
+ 1357714 | 0x8825 Exif.Thumb.GPSTag                |       IFD |        1 |           | 1357318
   STRUCTURE OF TIFF FILE (II): ../files/DJI_0005.TIFF
    address |    tag                                  |      type |    count |    offset | value
    1357320 | 0x0001 Exif.GPSInfo.GPSLatitudeRef      |     ASCII |        2 |           | N
@@ -97,8 +97,8 @@ STRUCTURE OF TIFF FILE (II): ../files/DJI_0005.TIFF
    1357380 | 0x0006 Exif.GPSInfo.GPSAltitude         |  RATIONAL |        1 |   1357456 | 566210/1000
    1357392 | 0x0012 Exif.GPSInfo.GPSMapDatum         |     ASCII |        7 |   1357464 | WGS-84
   END: ../files/DJI_0005.TIFF
- 1357726 | 0xc62f Exif.Image.0xc62f                |     ASCII |        7 |   1359126 | 297589
- 1357738 | 0xc764 Exif.Image.0xc764                | SRATIONAL |        1 |   1359134 | 30/1
+ 1357726 | 0xc62f Exif.Thumb.0xc62f                |     ASCII |        7 |   1359126 | 297589
+ 1357738 | 0xc764 Exif.Thumb.0xc764                | SRATIONAL |        1 |   1359134 | 30/1
  2016458 | 0x0100 Exif.Image.ImageWidth            |     SHORT |        1 |           | 640
  2016470 | 0x0101 Exif.Image.ImageLength           |     SHORT |        1 |           | 512
  2016482 | 0x0102 Exif.Image.BitsPerSample         |     SHORT |        1 |           | 16

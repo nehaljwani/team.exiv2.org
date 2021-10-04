@@ -156,13 +156,22 @@ STRUCTURE OF JPEG FILE (II): ../files/Stonehenge.jpg
         4182 | 0x0012 Exif.GPSInfo.GPSMapDatum         |     ASCII |       17 |      4290 | WGS-84          
         4194 | 0x001d Exif.GPSInfo.GPSDateStamp        |     ASCII |       11 |      4308 | 2015:07:16
     END: ../files/Stonehenge.jpg:12->15264
-      4322 | 0x0103 Exif.Image.Compression           |     SHORT |        1 |           | 6
-      4334 | 0x011a Exif.Image.XResolution           |  RATIONAL |        1 |      4410 | 300/1
-      4346 | 0x011b Exif.Image.YResolution           |  RATIONAL |        1 |      4418 | 300/1
-      4358 | 0x0128 Exif.Image.ResolutionUnit        |     SHORT |        1 |           | 2
-      4370 | 0x0201 Exif.Image.JPEGInterchangeFormat |      LONG |        1 |           | 4426
-      4382 | 0x0202 Exif.Image.JPEGInterchangeLength |      LONG |        1 |           | 10837
-      4394 | 0x0213 Exif.Image.YCbCrPositioning      |     SHORT |        1 |           | 1
+      4322 | 0x0103 Exif.Thumb.Compression           |     SHORT |        1 |           | 6
+      4334 | 0x011a Exif.Thumb.XResolution           |  RATIONAL |        1 |      4410 | 300/1
+      4346 | 0x011b Exif.Thumb.YResolution           |  RATIONAL |        1 |      4418 | 300/1
+      4358 | 0x0128 Exif.Thumb.ResolutionUnit        |     SHORT |        1 |           | 2
+      4370 | 0x0201 Exif.Thumb.JPEGInterchangeFormat |      LONG |        1 |           | 4426
+      4382 | 0x0202 Exif.Thumb.JPEGInterchangeLength |      LONG |        1 |           | 10837
+    STRUCTURE OF JPEG FILE (II): ../files/Stonehenge.jpg:12->15264:4426->10837
+     address | marker       |  length | signature
+           0 | 0xffd8 SOI  
+           2 | 0xffdb DQT   |     132 | _.......................................
+         136 | 0xffc0 SOF0  |      17 | ._x_...!_........ = h,w = 120,160
+         155 | 0xffc4 DHT   |     418 | __........________............_.........
+         575 | 0xffda SOS  
+       10835 | 0xffd9 EOI  
+    END: ../files/Stonehenge.jpg:12->15264:4426->10837
+      4394 | 0x0213 Exif.Thumb.YCbCrPositioning      |     SHORT |        1 |           | 1
   END: ../files/Stonehenge.jpg:12->15264
    15276 | 0xffe1 APP1  |    2786 | http://ns.adobe.com/xap/1.0/_<?xpacket b
    18064 | 0xffed APP13 |      96 | Photoshop 3.0_8BIM.._____'..__._...Z_..%
@@ -180,7 +189,7 @@ STRUCTURE OF JPEG FILE (II): ../files/Stonehenge.jpg
   END: ../files/Stonehenge.jpg:18082->78
    18162 | 0xffe2 APP2  |    4094 | MPF_II*_.___.__.._.___0100..._.___.___..
    22258 | 0xffdb DQT   |     132 | _.......................................
-   22392 | 0xffc0 SOF0  |      17 | ....p..!_........
+   22392 | 0xffc0 SOF0  |      17 | ....p..!_........ = h,w = 4000,6000
    22411 | 0xffc4 DHT   |     418 | __........________............_.........
    22831 | 0xffda SOS  
  6196491 | 0xffd9 EOI  
@@ -196,7 +205,7 @@ STRUCTURE OF JPEG FILE (II): ../files/Stonehenge.jpg
     END: ../files/Stonehenge.jpg:6196988->1014
   END: ../files/Stonehenge.jpg:6196988->1014
  6198002 | 0xffdb DQT   |     132 | _..........................!.#"!. .%)4,%
- 6198136 | 0xffc0 SOF0  |      17 | .......!_........
+ 6198136 | 0xffc0 SOF0  |      17 | .......!_........ = h,w = 424,640
  6198155 | 0xffc4 DHT   |     418 | __........________............_.........
  6198575 | 0xffda SOS  
  6234770 | 0xffd9 EOI  
@@ -212,7 +221,7 @@ STRUCTURE OF JPEG FILE (II): ../files/Stonehenge.jpg
     END: ../files/Stonehenge.jpg:6234876->1014
   END: ../files/Stonehenge.jpg:6234876->1014
  6235890 | 0xffdb DQT   |     132 | _.......................................
- 6236024 | 0xffc0 SOF0  |      17 | ..8.T..!_........
+ 6236024 | 0xffc0 SOF0  |      17 | ..8.T..!_........ = h,w = 1080,1620
  6236043 | 0xffc4 DHT   |     418 | __........________............_.........
  6236463 | 0xffda SOS  
  6757985 | 0xffd9 EOI  

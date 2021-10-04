@@ -18,12 +18,25 @@ STRUCTURE OF JPEG FILE (II): ../files/Largs.jpg
          178 | 0xa002 Exif.Photo.PixelXDimension       |      LONG |        1 |           | 2160
          190 | 0xa003 Exif.Photo.PixelYDimension       |      LONG |        1 |           | 345
     END: ../files/Largs.jpg:30->1990
-       210 | 0x0103 Exif.Image.Compression           |     SHORT |        1 |           | 6
-       222 | 0x011a Exif.Image.XResolution           |  RATIONAL |        1 |       286 | 72/1
-       234 | 0x011b Exif.Image.YResolution           |  RATIONAL |        1 |       294 | 72/1
-       246 | 0x0128 Exif.Image.ResolutionUnit        |     SHORT |        1 |           | 2
-       258 | 0x0201 Exif.Image.JPEGInterchangeFormat |      LONG |        1 |           | 302
-       270 | 0x0202 Exif.Image.JPEGInterchangeLength |      LONG |        1 |           | 1688
+       210 | 0x0103 Exif.Thumb.Compression           |     SHORT |        1 |           | 6
+       222 | 0x011a Exif.Thumb.XResolution           |  RATIONAL |        1 |       286 | 72/1
+       234 | 0x011b Exif.Thumb.YResolution           |  RATIONAL |        1 |       294 | 72/1
+       246 | 0x0128 Exif.Thumb.ResolutionUnit        |     SHORT |        1 |           | 2
+       258 | 0x0201 Exif.Thumb.JPEGInterchangeFormat |      LONG |        1 |           | 302
+       270 | 0x0202 Exif.Thumb.JPEGInterchangeLength |      LONG |        1 |           | 1688
+    STRUCTURE OF JPEG FILE (II): ../files/Largs.jpg:30->1990:302->1688
+     address | marker       |  length | signature
+           0 | 0xffd8 SOI  
+           2 | 0xffe0 APP0  |      16 | JFIF_..._H_H__..
+          20 | 0xffed APP13 |      12 | Adobe_CM_...
+          34 | 0xffee APP14 |      14 | Adobe_d.___...
+          50 | 0xffdb DQT   |     132 | _.......................................
+         184 | 0xffc0 SOF0  |      17 | ._._..."_........ = h,w = 26,160
+         203 | 0xffdd DRI   |       4 | _...
+         209 | 0xffc4 DHT   |     319 | __........_______._..........._........_
+         530 | 0xffda SOS  
+        1686 | 0xffd9 EOI  
+    END: ../files/Largs.jpg:30->1990:302->1688
   END: ../files/Largs.jpg:30->1990
     2020 | 0xffed APP13 |   10924 | Photoshop 3.0_8BIM.%_____.______________
   STRUCTURE OF 8BIM FILE (MM): ../files/Largs.jpg:2038->10906
@@ -44,7 +57,7 @@ STRUCTURE OF JPEG FILE (II): ../files/Largs.jpg
    12946 | 0xffe1 APP1  |    6135 | http://ns.adobe.com/xap/1.0/_<?xpacket b
    19083 | 0xffee APP14 |      14 | Adobe_d@___...
    19099 | 0xffdb DQT   |     132 | _.......................................
-   19233 | 0xffc0 SOF0  |      17 | ..Y.p..._........
+   19233 | 0xffc0 SOF0  |      17 | ..Y.p..._........ = h,w = 345,2160
    19252 | 0xffdd DRI   |       4 | ....
    19258 | 0xffc4 DHT   |     243 | __......_________....._......_.......___
    19503 | 0xffda SOS  

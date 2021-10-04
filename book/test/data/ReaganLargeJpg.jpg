@@ -61,12 +61,26 @@ USS Ronald Reagan +++
      address |    tag                                  |      type |    count |    offset | value
         1242 | 000000 Exif.GPSInfo.GPSVersionID        |     UBYTE |        4 |           | 2 2 0 0
     END: ../files/ReaganLargeJpg.jpg:30->4065
-      1260 | 0x0103 Exif.Image.Compression           |     SHORT |        1 |           | 6
-      1272 | 0x011a Exif.Image.XResolution           |  RATIONAL |        1 |      1336 | 72/1
-      1284 | 0x011b Exif.Image.YResolution           |  RATIONAL |        1 |      1344 | 72/1
-      1296 | 0x0128 Exif.Image.ResolutionUnit        |     SHORT |        1 |           | 2
-      1308 | 0x0201 Exif.Image.JPEGInterchangeFormat |      LONG |        1 |           | 1352
-      1320 | 0x0202 Exif.Image.JPEGInterchangeLength |      LONG |        1 |           | 2713
+      1260 | 0x0103 Exif.Thumb.Compression           |     SHORT |        1 |           | 6
+      1272 | 0x011a Exif.Thumb.XResolution           |  RATIONAL |        1 |      1336 | 72/1
+      1284 | 0x011b Exif.Thumb.YResolution           |  RATIONAL |        1 |      1344 | 72/1
+      1296 | 0x0128 Exif.Thumb.ResolutionUnit        |     SHORT |        1 |           | 2
+      1308 | 0x0201 Exif.Thumb.JPEGInterchangeFormat |      LONG |        1 |           | 1352
+      1320 | 0x0202 Exif.Thumb.JPEGInterchangeLength |      LONG |        1 |           | 2713
+    STRUCTURE OF JPEG FILE (II): ../files/ReaganLargeJpg.jpg:30->4065:1352->2713
+     address | marker       |  length | signature
+           0 | 0xffd8 SOI  
+           2 | 0xffe0 APP0  |      16 | JFIF_..__._.__..
+          20 | 0xffdb DQT   |      67 | _.................................. $.' 
+          89 | 0xffdb DQT   |      67 | ...........2!.!2222222222222222222222222
+         158 | 0xffc0 SOF0  |      17 | ._T_..."_........ = h,w = 84,130
+         177 | 0xffc4 DHT   |      31 | __........________.............
+         210 | 0xffc4 DHT   |     181 | ._...........__.}..._....!1A..Qa."q.2...
+         393 | 0xffc4 DHT   |      31 | ._..........______.............
+         426 | 0xffc4 DHT   |     181 | ._..........._..w_......!1..AQ.aq."2...B
+         609 | 0xffda SOS  
+        2711 | 0xffd9 EOI  
+    END: ../files/ReaganLargeJpg.jpg:30->4065:1352->2713
   END: ../files/ReaganLargeJpg.jpg:30->4065
     4095 | 0xffe1 APP1  |    6191 | http://ns.adobe.com/xap/1.0/_<?xpacket b
    10288 | 0xffe2 APP2  |   65535 | ICC_PROFILE_.._.. APPL..__prtrRGB Lab ..

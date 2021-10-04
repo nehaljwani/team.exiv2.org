@@ -185,20 +185,29 @@ STRUCTURE OF EXV FILE (II): ../files/exiv2-pr906.exv
     STRUCTURE OF TIFF FILE (II): ../files/exiv2-pr906.exv:17->47054
      address |    tag                                  |      type |    count |    offset | value
     END: ../files/exiv2-pr906.exv:17->47054
-     38806 | 0x00fe Exif.Image.NewSubfileType        |      LONG |        1 |           | 1
-     38818 | 0x0103 Exif.Image.Compression           |     SHORT |        1 |           | 6
-     38830 | 0x010e Exif.Image.ImageDescription      |     ASCII |       32 |     38978 |                                
-     38842 | 0x010f Exif.Image.Make                  |     ASCII |        5 |     39010 | SONY
-     38854 | 0x0110 Exif.Image.Model                 |     ASCII |        9 |     39016 | ILCE-7M3
-     38866 | 0x0112 Exif.Image.Orientation           |     SHORT |        1 |           | 1
-     38878 | 0x011a Exif.Image.XResolution           |  RATIONAL |        1 |     39026 | 72/1
-     38890 | 0x011b Exif.Image.YResolution           |  RATIONAL |        1 |     39034 | 72/1
-     38902 | 0x0128 Exif.Image.ResolutionUnit        |     SHORT |        1 |           | 2
-     38914 | 0x0131 Exif.Image.Software              |     ASCII |       15 |     39042 | ILCE-7M3 v2.00
-     38926 | 0x0132 Exif.Image.DateTime              |     ASCII |       20 |     39058 | 2018:10:17 08:55:12
-     38938 | 0x0201 Exif.Image.JPEGInterchangeFormat |      LONG |        1 |           | 39078
-     38950 | 0x0202 Exif.Image.JPEGInterchangeLength |      LONG |        1 |           | 7975
-     38962 | 0x0213 Exif.Image.YCbCrPositioning      |     SHORT |        1 |           | 2
+     38806 | 0x00fe Exif.Thumb.NewSubfileType        |      LONG |        1 |           | 1
+     38818 | 0x0103 Exif.Thumb.Compression           |     SHORT |        1 |           | 6
+     38830 | 0x010e Exif.Thumb.ImageDescription      |     ASCII |       32 |     38978 |                                
+     38842 | 0x010f Exif.Thumb.Make                  |     ASCII |        5 |     39010 | SONY
+     38854 | 0x0110 Exif.Thumb.Model                 |     ASCII |        9 |     39016 | ILCE-7M3
+     38866 | 0x0112 Exif.Thumb.Orientation           |     SHORT |        1 |           | 1
+     38878 | 0x011a Exif.Thumb.XResolution           |  RATIONAL |        1 |     39026 | 72/1
+     38890 | 0x011b Exif.Thumb.YResolution           |  RATIONAL |        1 |     39034 | 72/1
+     38902 | 0x0128 Exif.Thumb.ResolutionUnit        |     SHORT |        1 |           | 2
+     38914 | 0x0131 Exif.Thumb.Software              |     ASCII |       15 |     39042 | ILCE-7M3 v2.00
+     38926 | 0x0132 Exif.Thumb.DateTime              |     ASCII |       20 |     39058 | 2018:10:17 08:55:12
+     38938 | 0x0201 Exif.Thumb.JPEGInterchangeFormat |      LONG |        1 |           | 39078
+     38950 | 0x0202 Exif.Thumb.JPEGInterchangeLength |      LONG |        1 |           | 7975
+    STRUCTURE OF JPEG FILE (II): ../files/exiv2-pr906.exv:17->47054:39078->7975
+     address | marker       |  length | signature
+           0 | 0xffd8 SOI  
+           2 | 0xffdb DQT   |     132 | _.......................................
+         136 | 0xffc4 DHT   |     418 | __........________............_.........
+         556 | 0xffc0 SOF0  |      17 | ._x_...!_........ = h,w = 120,160
+         575 | 0xffda SOS  
+        7973 | 0xffd9 EOI  
+    END: ../files/exiv2-pr906.exv:17->47054:39078->7975
+     38962 | 0x0213 Exif.Thumb.YCbCrPositioning      |     SHORT |        1 |           | 2
   END: ../files/exiv2-pr906.exv:17->47054
    47071 | 0xffe1 APP1  |    2398 | http://ns.adobe.com/xap/1.0/_<?xpacket b
    49471 | 0xffd9 EOI  

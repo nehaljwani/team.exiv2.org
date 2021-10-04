@@ -191,18 +191,27 @@ STRUCTURE OF TIFF FILE (II): ../files/_DSC8827.ARW
      45754 | 0x7250 Exif.Sony.0x7250                 |     SHORT |    18432 |     75034 | 50780 50676 51337 17287 44596 36399  +++
      45766 | 0x7251 Exif.Sony.0x7251                 |     SHORT |        1 |           | 65535
   END: ../files/_DSC8827.ARW
-   36968 | 0x00fe Exif.Image.NewSubfileType        |      LONG |        1 |           | 1
-   36980 | 0x0103 Exif.Image.Compression           |     SHORT |        1 |           | 6
-   36992 | 0x010e Exif.Image.ImageDescription      |     ASCII |       32 |     37140 |                                
-   37004 | 0x010f Exif.Image.Make                  |     ASCII |        5 |     37172 | SONY
-   37016 | 0x0110 Exif.Image.Model                 |     ASCII |        8 |     37178 | SLT-A57
-   37028 | 0x0112 Exif.Image.Orientation           |     SHORT |        1 |           | 1
-   37040 | 0x011a Exif.Image.XResolution           |  RATIONAL |        1 |     37186 | 72/1
-   37052 | 0x011b Exif.Image.YResolution           |  RATIONAL |        1 |     37194 | 72/1
-   37064 | 0x0128 Exif.Image.ResolutionUnit        |     SHORT |        1 |           | 2
-   37076 | 0x0131 Exif.Image.Software              |     ASCII |       14 |     37202 | SLT-A57 v1.01
-   37088 | 0x0132 Exif.Image.DateTime              |     ASCII |       20 |     37216 | 2020:04:27 16:07:08
-   37100 | 0x0201 Exif.Image.JPEGInterchangeFormat |      LONG |        1 |           | 37236
-   37112 | 0x0202 Exif.Image.JPEGInterchangeLength |      LONG |        1 |           | 6983
-   37124 | 0x0213 Exif.Image.YCbCrPositioning      |     SHORT |        1 |           | 2
+   36968 | 0x00fe Exif.Thumb.NewSubfileType        |      LONG |        1 |           | 1
+   36980 | 0x0103 Exif.Thumb.Compression           |     SHORT |        1 |           | 6
+   36992 | 0x010e Exif.Thumb.ImageDescription      |     ASCII |       32 |     37140 |                                
+   37004 | 0x010f Exif.Thumb.Make                  |     ASCII |        5 |     37172 | SONY
+   37016 | 0x0110 Exif.Thumb.Model                 |     ASCII |        8 |     37178 | SLT-A57
+   37028 | 0x0112 Exif.Thumb.Orientation           |     SHORT |        1 |           | 1
+   37040 | 0x011a Exif.Thumb.XResolution           |  RATIONAL |        1 |     37186 | 72/1
+   37052 | 0x011b Exif.Thumb.YResolution           |  RATIONAL |        1 |     37194 | 72/1
+   37064 | 0x0128 Exif.Thumb.ResolutionUnit        |     SHORT |        1 |           | 2
+   37076 | 0x0131 Exif.Thumb.Software              |     ASCII |       14 |     37202 | SLT-A57 v1.01
+   37088 | 0x0132 Exif.Thumb.DateTime              |     ASCII |       20 |     37216 | 2020:04:27 16:07:08
+   37100 | 0x0201 Exif.Thumb.JPEGInterchangeFormat |      LONG |        1 |           | 37236
+   37112 | 0x0202 Exif.Thumb.JPEGInterchangeLength |      LONG |        1 |           | 6983
+  STRUCTURE OF JPEG FILE (II): ../files/_DSC8827.ARW:37236->6983
+   address | marker       |  length | signature
+         0 | 0xffd8 SOI  
+         2 | 0xffdb DQT   |     132 | _.......................................
+       136 | 0xffc4 DHT   |     418 | __........________............_.........
+       556 | 0xffc0 SOF0  |      17 | ._x_...!_........ = h,w = 120,160
+       575 | 0xffda SOS  
+      6981 | 0xffd9 EOI  
+  END: ../files/_DSC8827.ARW:37236->6983
+   37124 | 0x0213 Exif.Thumb.YCbCrPositioning      |     SHORT |        1 |           | 2
 END: ../files/_DSC8827.ARW

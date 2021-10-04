@@ -15,8 +15,8 @@ STRUCTURE OF RAF FILE (MM): ../files/sample1.raf
       148 |  2993767 | ......Exif__II*_.___
   STRUCTURE OF JPEG FILE (II): ../files/sample1.raf:148->2993767
    address | marker       |  length | signature
-       0 | 0xffd8 SOI  
-       2 | 0xffe1 APP1  |   65450 | Exif__II*_.___._..._.___.___..._.___.___
+         0 | 0xffd8 SOI  
+         2 | 0xffe1 APP1  |   65450 | Exif__II*_.___._..._.___.___..._.___.___
     STRUCTURE OF TIFF FILE (II): ../files/sample1.raf:148->2993767:12->65442
      address |    tag                                  |      type |    count |    offset | value
           10 | 0x010f Exif.Image.Make                  |     ASCII |        9 |       170 | FUJIFILM
@@ -152,22 +152,31 @@ STRUCTURE OF RAF FILE (MM): ../files/sample1.raf
           1642 | 0xa435 Exif.Photo.0xa435                |     ASCII |       11 |      2164 | 8BA23023
       END: ../files/sample1.raf:148->2993767:12->65442
          154 | 0xc4a5 Exif.Image.0xc4a5                | UNDEFINED |      106 |      1018 | PrintIM_0250__._._.___._"___..____.. +++
-        3376 | 0x0103 Exif.Image.Compression           |     SHORT |        1 |           | 6
-        3388 | 0x0112 Exif.Image.Orientation           |     SHORT |        1 |           | 1
-        3400 | 0x011a Exif.Image.XResolution           |  RATIONAL |        1 |      3488 | 72/1
-        3412 | 0x011b Exif.Image.YResolution           |  RATIONAL |        1 |      3496 | 72/1
-        3424 | 0x0128 Exif.Image.ResolutionUnit        |     SHORT |        1 |           | 2
-        3436 | 0x013b Exif.Image.Artist                |     ASCII |      256 |      3504 |                                      +++
-        3448 | 0x0201 Exif.Image.JPEGInterchangeFormat |      LONG |        1 |           | 3760
-        3460 | 0x0202 Exif.Image.JPEGInterchangeLength |      LONG |        1 |           | 8865
-        3472 | 0x0213 Exif.Image.YCbCrPositioning      |     SHORT |        1 |           | 2
+        3376 | 0x0103 Exif.Thumb.Compression           |     SHORT |        1 |           | 6
+        3388 | 0x0112 Exif.Thumb.Orientation           |     SHORT |        1 |           | 1
+        3400 | 0x011a Exif.Thumb.XResolution           |  RATIONAL |        1 |      3488 | 72/1
+        3412 | 0x011b Exif.Thumb.YResolution           |  RATIONAL |        1 |      3496 | 72/1
+        3424 | 0x0128 Exif.Thumb.ResolutionUnit        |     SHORT |        1 |           | 2
+        3436 | 0x013b Exif.Thumb.Artist                |     ASCII |      256 |      3504 |                                      +++
+        3448 | 0x0201 Exif.Thumb.JPEGInterchangeFormat |      LONG |        1 |           | 3760
+        3460 | 0x0202 Exif.Thumb.JPEGInterchangeLength |      LONG |        1 |           | 8865
+      STRUCTURE OF JPEG FILE (II): ../files/sample1.raf:148->2993767:12->65442:3760->8865
+       address | marker       |  length | signature
+             0 | 0xffd8 SOI  
+             2 | 0xffc4 DHT   |     418 | __........________............_.........
+           422 | 0xffdb DQT   |     132 | _.......................................
+           556 | 0xffc0 SOF0  |      17 | ._x_...!_........ = h,w = 120,160
+           575 | 0xffda SOS  
+          8863 | 0xffd9 EOI  
+      END: ../files/sample1.raf:148->2993767:12->65442:3760->8865
+        3472 | 0x0213 Exif.Thumb.YCbCrPositioning      |     SHORT |        1 |           | 2
     END: ../files/sample1.raf:148->2993767:12->65442
-   65454 | 0xffc4 DHT   |     418 | __........________............_.........
-   65874 | 0xffdb DQT   |     132 | _.......................................
-   66008 | 0xffdd DRI   |       4 | _...
-   66014 | 0xffc0 SOF0  |      17 | ....@..!_........
-   66033 | 0xffda SOS  
- 2993765 | 0xffd9 EOI  
+     65454 | 0xffc4 DHT   |     418 | __........________............_.........
+     65874 | 0xffdb DQT   |     132 | _.......................................
+     66008 | 0xffdd DRI   |       4 | _...
+     66014 | 0xffc0 SOF0  |      17 | ....@..!_........ = h,w = 2944,4416
+     66033 | 0xffda SOS  
+   2993765 | 0xffd9 EOI  
   END: ../files/sample1.raf:148->2993767
   2994088 |    22104 | ___..__..V...._._._.
   3016192 | 53397824 | II*_.___.__.._.___._

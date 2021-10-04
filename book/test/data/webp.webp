@@ -156,14 +156,28 @@ STRUCTURE OF WEBP FILE (II): ../files/webp.webp
         4932 | 0x0012 Exif.GPSInfo.GPSMapDatum         |     ASCII |       17 |      5040 | WGS-84          
         4944 | 0x001d Exif.GPSInfo.GPSDateStamp        |     ASCII |       11 |      5058 | 2015:07:16
     END: ../files/webp.webp:172622->12040
-      5072 | 0x0100 Exif.Image.ImageWidth            |      LONG |        1 |           | 256
-      5084 | 0x0101 Exif.Image.ImageLength           |      LONG |        1 |           | 170
-      5096 | 0x0102 Exif.Image.BitsPerSample         |     SHORT |        3 |      5172 | 8 8 8
-      5108 | 0x0103 Exif.Image.Compression           |     SHORT |        1 |           | 6
-      5120 | 0x0106 Exif.Image.PhotometricInterpre.. |     SHORT |        1 |           | 6
-      5132 | 0x0115 Exif.Image.SamplesPerPixel       |     SHORT |        1 |           | 3
-      5144 | 0x0201 Exif.Image.JPEGInterchangeFormat |      LONG |        1 |           | 5178
-      5156 | 0x0202 Exif.Image.JPEGInterchangeLength |      LONG |        1 |           | 6861
+      5072 | 0x0100 Exif.Thumb.ImageWidth            |      LONG |        1 |           | 256
+      5084 | 0x0101 Exif.Thumb.ImageLength           |      LONG |        1 |           | 170
+      5096 | 0x0102 Exif.Thumb.BitsPerSample         |     SHORT |        3 |      5172 | 8 8 8
+      5108 | 0x0103 Exif.Thumb.Compression           |     SHORT |        1 |           | 6
+      5120 | 0x0106 Exif.Thumb.PhotometricInterpre.. |     SHORT |        1 |           | 6
+      5132 | 0x0115 Exif.Thumb.SamplesPerPixel       |     SHORT |        1 |           | 3
+      5144 | 0x0201 Exif.Thumb.JPEGInterchangeFormat |      LONG |        1 |           | 5178
+      5156 | 0x0202 Exif.Thumb.JPEGInterchangeLength |      LONG |        1 |           | 6861
+    STRUCTURE OF JPEG FILE (II): ../files/webp.webp:172622->12040:5178->6861
+     address | marker       |  length | signature
+           0 | 0xffd8 SOI  
+           2 | 0xffe0 APP0  |      16 | JFIF_..__._.__..
+          20 | 0xffdb DQT   |      67 | _.................................. $.' 
+          89 | 0xffdb DQT   |      67 | ...........2!.!2222222222222222222222222
+         158 | 0xffc0 SOF0  |      17 | ._.._.."_........ = h,w = 170,256
+         177 | 0xffc4 DHT   |      31 | __........________.............
+         210 | 0xffc4 DHT   |     181 | ._...........__.}..._....!1A..Qa."q.2...
+         393 | 0xffc4 DHT   |      31 | ._..........______.............
+         426 | 0xffc4 DHT   |     181 | ._..........._..w_......!1..AQ.aq."2...B
+         609 | 0xffda SOS  
+        6859 | 0xffd9 EOI  
+    END: ../files/webp.webp:172622->12040:5178->6861
   END: ../files/webp.webp:172622->12040
   184662 | XMP   |     2864 | <?xpacket begin="..." id="W5M0MpCehiHzre
 END: ../files/webp.webp
