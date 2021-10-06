@@ -1157,9 +1157,7 @@ for version 1:
 | 14/0xe       | short   | 1                   | height (120)                |
 | 16/0x10      | long    | 1                   | jpeg image size (jpeg_size) |
 
-The tvisitor.cpp code will reveal the structure of the CMT1\/2\/3\/4, THMD and PRVW as follows.  It appears that Canon do not use the tiffDict/IFD1 feature of the Exiv2 specification to store a thumbnail.
-
-I believe the fields in **uuid** = eaf42b5e-1c98-4b88-b9fb-b7dc406e4d16 are as follows (all big endian):
+I believe the fields in box **uuid** = eaf42b5e-1c98-4b88-b9fb-b7dc406e4d16 are as follows (all big endian):
 
 | Offset       | type      | size                | content                     |
 | ------------ | ------    | ------------------- | --------------------------- |
@@ -1168,6 +1166,9 @@ I believe the fields in **uuid** = eaf42b5e-1c98-4b88-b9fb-b7dc406e4d16 are as f
 | 22           | short     | 1                   | width (1620)                |
 | 24           | short     | 1                   | height (1080)               |
 | 32           | undefined | jpeg_size           | JPEG                        | 
+
+The tvisitor.cpp code will reveal the structure of the CMT1, CMT2, CMT3, CMT4, THMD and PRVW as follows.
+It appears that Canon do not use the tiffDict/IFD1 feature of the Exiv2 specification to store a thumbnail.
 
 ```bash
 .../book/build $ ./tvisitor -pR ../files/cr3.cr3
