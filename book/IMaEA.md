@@ -1168,7 +1168,7 @@ I believe the fields in box **uuid** = eaf42b5e-1c98-4b88-b9fb-b7dc406e4d16 are 
 | 32           | undefined | jpeg_size           | JPEG                        | 
 
 The tvisitor.cpp code will reveal the structure of the CMT1, CMT2, CMT3, CMT4, THMD and PRVW as follows.
-It appears that Canon do not use the tiffDict/IFD1 feature of the Exiv2 specification to store a thumbnail.
+It appears that Canon do not use the tiff/IFD1 feature of the Exiv2 specification to store a thumbnail.5 Pr
 
 ```bash
 .../book/build $ ./tvisitor -pR ../files/cr3.cr3
@@ -3979,9 +3979,9 @@ For a discussion about Nikon see: [https://github.com/Exiv2/exiv2/issues/743#iss
 
 The Exiv2 command-line application provides support for both thumbnails and previews.  _**Caution:** I don't believe the preview/thumbnail code is of the same quality as the code relating to Exif, IPTC and XMP metadata_.
 
-Thumbnails are defined in the Exif Specification.  They are stored in IFD1 of the Exif block with two tags JPEGInterchangeFormat and JPEGInterchangeFormatLength.  The thumbnail is required to be a JPEG with no embedded metadata.  The tag JPEGInterchangeFormat is the offset in the IFD to the JPEG.  The tag JPEGInterchangeFormatLength is the number of bytes in the JPEG.
+Thumbnails are defined in the Exif Specification.  They are stored in tiff/IFD1 of the Exif block with two tags JPEGInterchangeFormat and JPEGInterchangeFormatLength.  The thumbnail is required to be a JPEG with no embedded metadata.  The tag JPEGInterchangeFormat is the offset in the IFD to the JPEG.  The tag JPEGInterchangeFormatLength is the number of bytes in the JPEG.
 
-There are very significant issues with this design.  Firstly, in JPEG files the Exif block is restricted to 64k bytes.  Secondly, it's not clear if this design can support multiple resolutions.  When you convert JPEG to other formats with an application such as macOS Preview.app, the Exif Thumbnail is thrown away.  I dislike the idea that there is anything meaningful about IFD1.  An IFD is an array of tags and is either terminated or linked to a successor.  I don't see any good reason to restrict the content of the first successor.  Exiv2 use the group name Thumbname for tags in IFD1 and tvisitor uses Thumb.   Here it is in action.
+There are very significant issues with this design.  Firstly, in JPEG files the Exif block is restricted to 64k bytes.  Secondly, it's not clear if this design can support multiple resolutions.  When you convert JPEG to other formats with an application such as macOS Preview.app, the Exif Thumbnail is thrown away.  I dislike the idea that there is anything meaningful about IFD1.  An IFD is an array of tags and is either terminated or linked to a successor.  I don't see any good reason to restrict the content of the first successor.  Exiv2 use the group name Thumbnail for tags in tiff/IFD1 and tvisitor uses Thumb.   Here it is in action.
 
 ```bash
 STRUCTURE OF JPEG FILE (II): /Users/rmills/Stonehenge.jpg
@@ -4081,7 +4081,7 @@ END: /Users/rmills/Stonehenge.jpg
 
 There is a discussion of how Canon embed previews in the THMB box and the canp/uuid box with a PRVW header.  [Canon CR3](#CR3)
 
-CRW, PNG, PSD _and probably other formats_ may embed JPEG Thumbnails.  These are features of the file format and independent of the IFD1/Thumbnail in the Exif Specification.  I think class Exiv2::PreviewManager was written to provide a C++ class to manage an array of preview images.  I'm not convinced that the code is complete.  PreviewManager is only used by a few image handlers.  Exiv2::PreviewManager creates a read-only data structure with no capability to insert, replace or delete individual thumbnails.  
+CRW, PNG, PSD _and probably other formats_ may embed JPEG Thumbnails.  These are features of the file format and independent of the tiff/IFD1 thumbnails in the Exif Specification.  I think class Exiv2::PreviewManager was written to provide a C++ class to manage an array of preview images.  I'm not convinced that the code is complete.  PreviewManager is only used by a few image handlers.  Exiv2::PreviewManager creates a read-only data structure with no capability to insert, replace or delete individual thumbnails.  
 
 The good news about the Exiv2 preview/thumbnail code is that it works sufficiently well for the Gnome Desktop to display thumbnails.  There have been very few issues raised by users.  So the existing code is safe.  I'm not convinced that it's comprehensive.
 
@@ -4090,6 +4090,73 @@ There are also issues relating to how preview and thumbnail support is incorpora
 There are significant challenges in finding the previews as manufacturers use a variety of techniques.  In particular, they often store an offset to a preview in a makernote, or some other devious location.  In consequence, it's almost impossible to re-write the file without the risk of losing the preview.  This problem is compounded by the JPEG 64k limit in a single segment.  Digital Cameras and Smart Phones are now a huge business and JPEG is the most popular image format.  Regrettably, JPEG is a 30 year old standard which was conceived when dinosaurs roamed the earth.  A global agreement to support Adobe's _**ad-hoc**_ JPEG extension could address this issue.  The inertia of the industry is colossal.
 
 I find it depressing, yet unsurprising, that an industry which talks about innovation and development can resist fixing deficiencies.  Small changes would help everybody.  A Silicon Valley friend sat on an MPEG committee.  He told me about a meeting in which something absurd was proposed.  Although he seldom spoke at the meetings, he decided to speak against it.  He said to me with a war-comic German accent.  _"So, I took zee lugar, I aimed carefully and squeezed zee trigger.  The bullet flew fast and straight and hit me between the eyes."_.  The opposition he encountered was breathtaking.  Craziness ends up in standards because of the politics of the Standards Committee.  So that's how we end up with several different designs to enable Exif, ICC and XMP data to be chunked in a JPEG.  And the mess with Lens Recognition.  And the mess with having so many different image formats.
+
+[TOC](#TOC)
+<div id="5-1"/>
+## 5.1 Exiv2 Preview Architecture
+
+There are two different architectures in Exiv2 to handle previews.  The first is the Preview Manager and recovers preview from Exif metadata.  The second is Native Preview.
+
+### 5.2 Preview Manager
+
+The Preview Manager recovers thumbnails which are embedded in the Exif metadata.  In addition to the tiff/IFD1 feature of the Tiff Specification, previews are frequently embedded in the MakerNotes.   The code in src/previews.cpp has static tables of metadata Keys to be inspected for preview recovery.  I've never had to deal with this code and therefore do not know how it works.
+
+On inspection of that code, I see entries such as:
+
+```cpp
+"SubImage4", "Exif.SubImage4.NewSubfileType", "1"
+```
+
+I'm not convinced of the architecture of a SubImage.  Tiff files can have an unlimited number of pages.  The architecture of "SubImage" is suspect.  When Exiv2 only deals in simple image files (one image/file), this architecture has worked well.  Complex image files (with more than one image/file) and the _**Unified Metadata Container**_ could really address these design weaknesses.
+
+### 5.3 Native Previews
+
+Native Previews are a direct mechanism in the Image class to store previews.  The data in a NativePreview is the offset/size to the Image.BasicIo objects, the width/height and mime-type.  Additionally a filter string of unknown purpose.  There is a discussion about using this class to store a CR3/THMB preview here: [https://github.com/Exiv2/exiv2/issues/1893#issuecomment-934381773](https://github.com/Exiv2/exiv2/issues/1893#issuecomment-934381773)
+
+```cpp
+case TAG_THMB: {
+	NativePreview nativePreview;
+	int32_t       header    = 16 ;
+	nativePreview.position_ = io_->tell()+header;
+	byte buf[header];
+	io_->read(buf,header);
+	nativePreview.width_    = getShort(buf+4,bigEndian);
+	nativePreview.height_   = getShort(buf+6,bigEndian);
+	nativePreview.size_     = getLong (buf+8,bigEndian);
+	nativePreview.filter_   = "";
+	nativePreview.mimeType_ = "image/jpeg";
+	nativePreviews_.push_back(nativePreview);
+
+	if ( bTrace ) {
+		out << Internal::stringFormat("width,height,size = %d,%d,%d"
+											,nativePreview.width_,nativePreview.height_,nativePreview.size_);
+	}
+} break;
+```
+
+In general all the metadata in an image is recovered by `Image::readMetadata()`.  The most common image format is JPEG and Exiv2 is able to achieve very impressive performance by considering the Segment SOS (Start of Scan) to be end-of-file.  However, this means that trailing images (thumbnails) are never seen by readMetadata().  We should preserve this feature of JpegImage::readMetadata().  A new API Image::readPreviews() should be added.  For image handles such as BmffImage, readMetadata() recovers the metadata and the NativePreviews in a single sweep.  PreviewManager::getPreviewProperties() should call image->readPreviews().
+
+The code `Print::printPreviewList()` in src/actions.cpp is use to report images.  By hiding the call to `image->readPreviews()` in `getPreviewProperties()` we can leave that code undisturbed without imposing a burden on image->readMetadata() to recover every preview.
+
+
+```cpp
+Exiv2::PreviewManager pm(*image);
+Exiv2::PreviewPropertiesList list = pm.getPreviewProperties();
+for (Exiv2::PreviewPropertiesList::const_iterator pos = list.begin(); pos != list.end(); ++pos) {
+	if (manyFiles) {
+		std::cout << std::setfill(' ') << std::left << std::setw(20)
+				  << path_ << "  ";
+	}
+	std::cout << _("Preview") << " " << ++cnt << ": "
+			  << pos->mimeType_ << ", ";
+	if (pos->width_ != 0 && pos->height_ != 0) {
+		std::cout << pos->width_ << "x" << pos->height_ << " "
+				  << _("pixels") << ", ";
+	}
+	std::cout << pos->size_ << " " << _("bytes") << "\n";
+}
+```
+
 
 [TOC](#TOC)
 <div id="6"/>
