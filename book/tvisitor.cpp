@@ -3069,10 +3069,16 @@ void Jp2Image::accept(class Visitor& v)
                 io().read(uuid);
                 if ( uuidName(uuid) == "cano" ) {
                     Jp2Image jp2(io(),io().tell(),length-16);
-                    jp2.valid_=true;
+                    jp2.valid_ =true;
+                    jp2.depth_ =depth();
                     jp2.accept(v);
                 } else if ( uuidName(uuid) == "canp" ) { // PRVW
-                    JpegImage(io(),io().tell()+32,length-64,depth()).accept(v);
+                    uint64_t  start = io().tell()+32;
+                    DataBuf   header(32);
+                    io().read(header);
+                    uint32_t  size  = getLong (header, 8,keBig);
+                    // std::cout << stringFormat("size,width,height = %d,%d,%d\n",size,getShort(header,22,keBig),getShort(header,24,keBig));
+                    JpegImage(io(),start,size,depth()).accept(v);
                 } else if ( uuidName(uuid) == "xmp" && v.option() & kpsXMP ) {
                     DataBuf xmp(length+1);
                     xmp.pData_[length]= 0; // null terminate the xmp

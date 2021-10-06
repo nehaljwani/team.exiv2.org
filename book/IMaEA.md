@@ -3,7 +3,7 @@
 
 <h3 align=center style="font-size: 36px;color:#FF4646;font-faily: Palatino, Times, serif;"><br>Image Metadata<br><i>and</i><br>Exiv2 Architecture</h3>
 
-<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-10-04</h3>
+<h3 align=center style="font-size:24px;color:#23668F;font-family: Palatino, Times, serif;">Robin Mills<br>2021-10-06</h3>
 
 <div id="dedication"/>
 ## _Dedication and Acknowledgment_
@@ -1127,7 +1127,7 @@ $ ls -l foo.jpg
 -rw-r--r--@ 1 rmills  staff  11832  4 Aug 20:58 foo.jpg
 ```
 
-Laurent has documented this as: **THMB** _(Thumbnail)_  from **uuid** = 85c0b687-820f-11e0-8111-f4ce462b6a48
+Laurent has documented this as: **THMB** _(Thumbnail)_  from **uuid** = 85c0b687-820f-11e0-8111-f4ce462b6a48 (all big endian):
 
 | Offset       | type    | size                | content                      |
 | ------------ | ------  | ------------------- | ---------------------------  |
@@ -1157,7 +1157,17 @@ for version 1:
 | 14/0xe       | short   | 1                   | height (120)                |
 | 16/0x10      | long    | 1                   | jpeg image size (jpeg_size) |
 
-The tvisitor.cpp code will reveal the structure of the CMT1/2/3/4, THMD and PRVW as follows.  I appears that Canon do not use the tiffDict/IFD1 feature of the Exiv2 specification to store a thumbnail.
+The tvisitor.cpp code will reveal the structure of the CMT1\/2\/3\/4, THMD and PRVW as follows.  It appears that Canon do not use the tiffDict/IFD1 feature of the Exiv2 specification to store a thumbnail.
+
+I believe the fields in **uuid** = eaf42b5e-1c98-4b88-b9fb-b7dc406e4d16 are as follows (all big endian):
+
+| Offset       | type      | size                | content                     |
+| ------------ | ------    | ------------------- | --------------------------- |
+|  8           | long      | 1                   | jpeg_size (264897)          |
+| 12           | long      | 1                   | signature ('PRVW')          |
+| 22           | short     | 1                   | width (1620)                |
+| 24           | short     | 1                   | height (1080)               |
+| 32           | undefined | jpeg_size           | JPEG                        | 
 
 ```bash
 .../book/build $ ./tvisitor -pR ../files/cr3.cr3
@@ -1179,7 +1189,7 @@ STRUCTURE OF JP2 (crx ) FILE (MM): ../files/cr3.cr3
             70 | 0x0110 Exif.Image.Model                 |     ASCII |       14 |       182 | Canon EOS M50
 ...
       END: ../files/cr3.cr3:32->22784:24->20552:240->392
-         624 |     1064 | CMT2 |      | II*_.___'_..._.___.. 73 73 42 0 8 0 0 0 39 0 154 130 5 0 1 0 0 0 226 1
+         624 |     1064 | CMT2 |      | II*_._____..._.___.. 73 73 42 0 8 0 0 0 39 0 154 130 5 0 1 0 0 0 226 1
       STRUCTURE OF TIFF FILE (II): ../files/cr3.cr3:32->22784:24->20552:632->1064
 ...
       END: ../files/cr3.cr3:32->22784:24->20552:632->1064
@@ -1205,7 +1215,7 @@ STRUCTURE OF JP2 (crx ) FILE (MM): ../files/cr3.cr3
   END: ../files/cr3.cr3:32->22784
    22816 |    65560 | uuid |  xmp | <?xpacket begin='... 60 63 120 112 97 99 107 101 116 32 98 101 103 105 110 61 39 239 187 191
    88376 |   264929 | uuid | canp | _______._...PRVW____ 0 0 0 0 0 0 0 1 0 4 10 193 80 82 86 87 0 0 0 0
-  STRUCTURE OF JPEG FILE (II): ../files/cr3.cr3:88432->264865
+  STRUCTURE OF JPEG FILE (II): ../files/cr3.cr3:88432->264897
    address | marker       |  length | signature
          0 | 0xffd8 SOI  
          2 | 0xffdb DQT   |     132 | _.......................................
@@ -3968,9 +3978,9 @@ For a discussion about Nikon see: [https://github.com/Exiv2/exiv2/issues/743#iss
 
 The Exiv2 command-line application provides support for both thumbnails and previews.  _**Caution:** I don't believe the preview/thumbnail code is of the same quality as the code relating to Exif, IPTC and XMP metadata_.
 
-Thumbnails are defined in the Exif Specification.  They are stored in IFD1 of the Exif block with two tags JPEGInterchangeFormat and JPEGInterchangeLength.  The thumbnail is required to be a JPEG with no embedded metadata.  The tag JPEGInterchangeFormat is the offset in the IFD to the JPEG.  The tag JPEGInterchangeLength is the number of bytes in the JPEG.
+Thumbnails are defined in the Exif Specification.  They are stored in IFD1 of the Exif block with two tags JPEGInterchangeFormat and JPEGInterchangeFormatLength.  The thumbnail is required to be a JPEG with no embedded metadata.  The tag JPEGInterchangeFormat is the offset in the IFD to the JPEG.  The tag JPEGInterchangeFormatLength is the number of bytes in the JPEG.
 
-There are very significant issues with this design.  Firstly, in JPEG files the Exif block is restricted to 64k bytes.  Secondly, it's not clear if this design can support multiple resolutions.  When you convert JPEG to other formats with an application such as macOS Preview.app, the Exif Thumbnail is thrown away.  I dislike the idea that there is anything meaningful about IFD1.  An IFD is an array of tags and is either terminated or linked to a successor.  I don't see any good reason to restrict the content of the first successor.  Exiv2 and tvisitor both use the group name Thumb for tags in IFD1.   Here it is in action.
+There are very significant issues with this design.  Firstly, in JPEG files the Exif block is restricted to 64k bytes.  Secondly, it's not clear if this design can support multiple resolutions.  When you convert JPEG to other formats with an application such as macOS Preview.app, the Exif Thumbnail is thrown away.  I dislike the idea that there is anything meaningful about IFD1.  An IFD is an array of tags and is either terminated or linked to a successor.  I don't see any good reason to restrict the content of the first successor.  Exiv2 use the group name Thumbname for tags in IFD1 and tvisitor uses Thumb.   Here it is in action.
 
 ```bash
 STRUCTURE OF JPEG FILE (II): /Users/rmills/Stonehenge.jpg
