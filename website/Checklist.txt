@@ -58,15 +58,36 @@ Rebuilding the website
     $ make update                                     # makes Exiv2.pdf and other stuff
     $ make                                            # runs Doxygen to make the web site
     $ find html -name "*.html" | xargs sed -E -e  "s/^          Exiv2 v0.27.5.3$/          Exiv2 v0.27.5 RC3/" -i .bak ; find html -name "*.bak"  | xargs rm -rf
-    $ open http://rmillsmm-ubuntu                     # TO Setup on rmillsmm-ubuntu
-                                                      # 1) sudo visudo
-                                                           rmills ALL = (ALL) NOPASSWD:ALL
-                                                      # 2) sudo apt install --yes apache2
-                                                      # 3) sudo systemctl start apache2
-                                                           open http://rmillsmm-ubuntu to be sure the server is working
-                                                      # 4) sudo mv /var/www/html /var/www/html.orig
-                                                      # 5) sudo ln -s /media/psf/Home/gnu/exiv2/team/website/html/ /var/www/html
-                                                      #    open http://rmillsmm-ubuntu/include/exiv2.css to refresh style sheet
+    Either:
+         $ open http://rmillsmm-exiv2 
+                                          # I installed apache with brew (can't understand Apple's apache)
+                                          # You'll need to configure /opt/local/etc/httpd/httpd.conf
+                                          # <VirtualHost *>
+                                          #     ServerName     rmillsmm-exiv2
+                                          #      DocumentRoot   /Users/rmills/gnu/exiv2/team/website/html
+                                          # ....
+                                          # </VirtualHost>
+                                          # And stop/start the web-server:
+                                          #   $ sudo apachectl stop ; sudo apachectl start
+
+    Or: copy the web-site to a convenient web-server:
+         Use rmillsm1
+         $ cd ~/clanmills
+         $ unlink html
+         $ scp -r rmillsmm:~/gnu/github/exiv2/team/exiv2/html .
+         $ open http://klanmills/html
+
+    Or: Use Apache on a Linux VM via Parallels on a Mac
+        **Caution** You need to open '~/Desktop/Parallels Share Folders' to mount Home
+         $ open http://rmillsmm-ubuntu    # TO Setup on rmillsmm-ubuntu
+                                          # 1) sudo visudo
+                                          #         rmills ALL = (ALL) NOPASSWD:ALL
+                                          # 2) sudo apt install --yes apache2
+                                          # 3) sudo systemctl start apache2
+                                          #           open http://rmillsmm-ubuntu to be sure the server is working
+                                          # 4) sudo mv /var/www/html /var/www/html.orig
+                                          # 5) sudo ln -s /media/psf/Home/gnu/exiv2/team/website/html/ /var/www/html
+                                          #    open http://rmillsmm-ubuntu/include/exiv2.css to refresh style sheet
 
 4   Tweaking the web-site background
     EDIT html/include/exiv2.css to remove "PreRelease"
@@ -96,22 +117,23 @@ Rebuilding the website
     
     
 ------------------------------------
---
-Exiv2 v0.27.5 RC1 is available: https://pre-release.exiv2.org/
 
-A huge thank you to Kev for his hard work on Exiv2 Security.  Great Job, Kev.
+Exiv2 v0.27.5 is available: https://exiv2.org/
 
-Thank you to Alex, Christoph, Kev, Luis, Milos, Peter K, Peter S and Robin for working on this release.
+A huge thank you to Kev for his hard work on Exiv2 Security.  Great Job, Kev. 
+Thank You, David for the CR3/Preview code.
+
+Thank you to Alex, Christoph, Luis, Milos, Peter K, Peter S and Robin for working on this release.
 
 Highlights of Exiv2 v0.27.5
 
+- BMFF bug fixes and CR3 previews
 - Security fixes
-- BMFF bug fixes
 - libFuzzer target for improved security testing
 - Minor bugs and fixes
 
 Release Notes:  https://github.com/Exiv2/exiv2/issues/1018#issuecomment-895425552
---
+
 ------------------------------------
 
 

@@ -4,7 +4,7 @@ syntax() {
     echo "usage: ./build.sh  { --help | -? | -h | platform  | switch | option     | location value }+ "
     echo ""
     echo "platform:    all[32] | msvc[32] | linux[32]  | macos      | cygwin | mingw | unix | freebsd | netbsd | solaris"
-    echo "switch:     --source | --debug  | --static   | --clang    | --background"
+    echo "switch:     --source | --debug  | --static   | --shared   | --clang        | --background"
     echo "options:   --[no]nls | --video  | --asan     | --status   | --[no]unit     | --[no]publish | --[no]webready"
     echo "msvc:         --2019 | --2017   | --2015     | --2013     | --2012         | --2010  | --2008"
     echo "location: --server B | --user C | --builds D | --cpp  {98 | 11 | 14 | 17}  | --stamp stamp " 
@@ -125,11 +125,7 @@ msvcBuild()
       2010) generator='Visual Studio 10 2010' ;;
       2008) generator='Visual Studio 9 2008'  ;;
     esac
-    if [ "$shared" == "0" ]; then
-        profile=msvc${edition}Static${config}${bits}
-    else
-        profile=msvc${edition}${config}${bits}
-    fi
+    profile=msvc${edition}${config}${bits}
 
     if [ "$bits" == "64" ]; then
          generator="${generator} Win64"
@@ -253,6 +249,7 @@ while [ "$#" != "0" ]; do
       --nonls)      nls=0         ;;
       --publish)    publish=1     ;;
       --nopublish)  publish=0     ;;
+      --shared)     shared=1      ;;
       --source)     source=1      ;;
       --static)     shared=0      ;;
       --status)     status=1      ;;

@@ -2,18 +2,26 @@
 <news>
 
  <newsitem>
-  <date>2021-09-30</date>
-  <title>Exiv2 v0.27.5 RC3</title>
-  <abstract>Exiv2 v0.27.5 RC3</abstract>
+  <date>2021-10-22</date>
+  <title>Exiv2 v0.27.5</title>
+  <abstract>Exiv2 v0.27.5</abstract>
   <desc>
-   <p>Thank you to Alex, Christoph, Kev, Milos, Peter K, Peter S and Robin for working on the release.<br></br>   </p>
+   <p>Thank you to Alex, Christoph, David, Kev, Milos, Peter K, Peter S and Robin for working on the release.<br></br>   </p>
    <ol>
+    <li>BMFF bug fixes including CR3 previews</li>
     <li>Security fixes</li>
-    <li>BMFF bug fixes</li>
     <li>libFuzzer target for improved security testing</li>
     <li>Minor bugs and fixes</li>
    </ol>
    <p>More details: <a href="https://github.com/Exiv2/exiv2/issues/1018#issuecomment-895425552" _target="_blank">Change List</a></p>
+  </desc>
+ </newsitem>
+
+ <newsitem>
+  <date>2021-09-30</date>
+  <title>Exiv2 v0.27.5 RC3</title>
+  <abstract>Exiv2 v0.27.5 RC3</abstract>
+  <desc>
   </desc>
  </newsitem>
 
