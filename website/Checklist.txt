@@ -102,19 +102,22 @@ Rebuilding the website
 6   Tag the Release
     $ cd $EXIV2HOME
     $ git tag -a 'v0.27.5-RC1'
-
+    $ git push
+    
 7   Publish the release on github
     Discussion: https://github.com/Exiv2/exiv2/issues/1
                 https://github.com/Exiv2/exiv2/issues/915
     Goto https://github.com/exiv2/exiv2
     Select  'releases' from the ribbon (commits, branches, releases, contributores, license)
     Title should be something like: "First Release Candidate for Exiv2 v0.27.5"
+    
+    Run the release action:
+        https://github.com/Exiv2/exiv2/pull/1983#issuecomment-949842632
  
 8   When you're sure it's good, tell the world:
     Exiv2    forum announcement
     Facebook fan page update
     https://discuss.pixls.us
-    
     
 ------------------------------------
 
