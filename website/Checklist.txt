@@ -81,6 +81,52 @@ Rebuilding the website
                                           # And stop/start the web-server:
                                           #   $ sudo apachectl stop ; sudo apachectl start
 
+                                          # macOS apache (my configuration to serve clanmills)
+                                          # 507 rmills@rmillsm1:/etc/apache2 $ diff httpd.conf original/httpd.conf 
+                                          #113c113
+                                          #< LoadModule include_module libexec/apache2/mod_include.so
+                                          #---
+                                          #> #LoadModule include_module libexec/apache2/mod_include.so
+                                          #178c178
+                                          #< LoadModule vhost_alias_module libexec/apache2/mod_vhost_alias.so
+                                          #---
+                                          #> #LoadModule vhost_alias_module libexec/apache2/mod_vhost_alias.so
+                                          #200,203c200,201
+                                          #< # User _www
+                                          #< # Group _www
+                                          #< User  rmills
+                                          #< Group staff
+                                          #---
+                                          #> User _www
+                                          #> Group _www
+                                          #257,260c255,256
+                                          #< # DocumentRoot "/Library/WebServer/Documents"
+                                          #< # <Directory "/Library/WebServer/Documents">
+                                          #< DocumentRoot "/Users/rmills/clanmills"
+                                          #< <Directory "/Users/rmills/clanmills">
+                                          #---
+                                          #> DocumentRoot "/Library/WebServer/Documents"
+                                          #> <Directory "/Library/WebServer/Documents">
+                                          #273c269
+                                          #<     Options FollowSymLinks Multiviews Includes
+                                          #---
+                                          #>     Options FollowSymLinks Multiviews
+                                          #281c277
+                                          #<     AllowOverride All
+                                          #---
+                                          #>     AllowOverride None
+                                          #294c290
+                                          #<     DirectoryIndex index.html default.shtml default.html
+                                          #---
+                                          #>     DirectoryIndex index.html
+                                          #531c527
+                                          #< Include /private/etc/apache2/extra/httpd-vhosts.conf
+                                          #---
+                                          #> #Include /private/etc/apache2/extra/httpd-vhosts.conf
+                                          #508 rmills@rmillsm1:/etc/apache2 $ 
+                                          # And stop/start the web-server:
+                                          #   $ sudo apachectl stop ; sudo apachectl start
+
     Or: copy the web-site to a convenient web-server:
          Use rmillsm1
          $ cd ~/clanmills
