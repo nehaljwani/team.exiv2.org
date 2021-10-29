@@ -64,7 +64,18 @@ Rebuilding the website
                                           # You'll need to configure /opt/local/etc/httpd/httpd.conf
                                           # <VirtualHost *>
                                           #     ServerName     rmillsmm-exiv2
-                                          #      DocumentRoot   /Users/rmills/gnu/exiv2/team/website/html
+                                          #     DocumentRoot   /Users/rmills/gnu/exiv2/team/website/html
+                                          # ....
+                                          # </VirtualHost>
+                                          # And stop/start the web-server:
+                                          #   $ sudo apachectl stop ; sudo apachectl start
+                                          
+                                          # macOS apache (I've never got this to work)
+                                          # /etc/apache2/httpd.conf Uncomment .../extra/fttpd-vhosts.conf
+                                          # /etc/apache2/extra/httpd-vhosts.conf
+                                          # <VirtualHost *:80>
+                                          #     ServerName     rmillsmm-exiv2
+                                          #     DocumentRoot   /Users/rmills/gnu/exiv2/team/website/html
                                           # ....
                                           # </VirtualHost>
                                           # And stop/start the web-server:
