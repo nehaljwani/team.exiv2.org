@@ -1058,7 +1058,7 @@ $ open ISOBMFF.xcodeproj/
 
 Very nice program with very nice code.  In addition to the GUI/Explorer, a command-line application ISOBMFF-Dump is provided.  I also built it with Visual Studio 2019.  I believe the GUI is only provided on the Mac.  The command-line application is supported on Mac, Windows and Linux.
 
-It did not build _out of the box_ for me on Ubuntu18.04.  [https://github.com/DigiDNA/ISOBMFF/issues/12](https://github.com/DigiDNA/ISOBMFF/issues/12}
+It did not build _out of the box_ for me on Ubuntu18.04.  [https://github.com/DigiDNA/ISOBMFF/issues/12](https://github.com/DigiDNA/ISOBMFF/issues/12)
 
 <div id="CR3"/>
 ### Canon CR3 Format
@@ -1168,7 +1168,7 @@ I believe the fields in box **uuid** = eaf42b5e-1c98-4b88-b9fb-b7dc406e4d16 are 
 | 32           | undefined | jpeg_size           | JPEG                        | 
 
 The tvisitor.cpp code will reveal the structure of the CMT1, CMT2, CMT3, CMT4, THMD and PRVW as follows.
-It appears that Canon do not use the tiff/IFD1 feature of the Exiv2 specification to store a thumbnail.5 Pr
+It appears that Canon do not use the tiff/IFD1 feature of the Exiv2 specification to store a thumbnail.
 
 ```bash
 .../book/build $ ./tvisitor -pR ../files/cr3.cr3
