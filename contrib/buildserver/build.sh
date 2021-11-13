@@ -5,7 +5,7 @@ syntax() {
     echo ""
     echo "platform:    all[32] | msvc[32] | linux[32]  | macos      | cygwin | mingw | unix | freebsd | netbsd | solaris"
     echo "switch:     --source | --debug  | --static   | --shared   | --clang        | --background"
-    echo "options:   --[no]nls | --video  | --asan     | --status   | --[no]unit     | --[no]publish | --[no]webready"
+    echo "options:   --[no]nls | --video  | --asan     | --status   | --[no]unit     | --[no]publish | --[no]webready | --unicode"
     echo "msvc:         --2019 | --2017   | --2015     | --2013     | --2012         | --2010  | --2008"
     echo "location: --server B | --user C | --builds D | --cpp  {98 | 11 | 14 | 17}  | --stamp stamp " 
     echo "           --github {rmillsmm,github,E}      | {--tag tag | --branch branch}"
@@ -158,8 +158,10 @@ echo  log for $stamp                                                            
 python -c "import platform;print(platform.uname())"                                    2>&1 | c:\msys64\usr\bin\tee -a logs\build.txt
 set                                                                                    2>&1 | c:\msys64\usr\bin\tee -a logs\build.txt
 conan install .. --profile ${profile} --options webready=${webready} --build missing   2>&1 | c:\msys64\usr\bin\tee -a logs\build.txt
-echo cmake         .. -G ${generator} -DCMAKE_BUILD_TYPE=${config} -DEXIV2_ENABLE_BMFF=${bmff} -DEXIV2_ENABLE_DYNAMIC_RUNTIME=${shared} -DBUILD_SHARED_LIBS=${shared} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=0 -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_TEAM_PACKAGING=On -DCMAKE_INSTALL_PREFIX=..\dist\${profile}  -DCMAKE_CXX_STANDARD=${cpp} 2>&1 | c:\msys64\usr\bin\tee -a  logs\build.txt
-     cmake         .. -G ${generator} -DCMAKE_BUILD_TYPE=${config} -DEXIV2_ENABLE_BMFF=${bmff} -DEXIV2_ENABLE_DYNAMIC_RUNTIME=${shared} -DBUILD_SHARED_LIBS=${shared} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=0 -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_TEAM_PACKAGING=On -DCMAKE_INSTALL_PREFIX=..\dist\${profile}  -DCMAKE_CXX_STANDARD=${cpp} 2>&1 | c:\msys64\usr\bin\tee -a  logs\build.txt
+rem Always use -DEXIV2_ENABLE_DYNAMIC_RUNTIME=1 for MSVC builds (to evade expat __imp__mbspbrk linking issue)
+rem Always use -DEXIV2_ENABLE_WIN_UNICODE=1 for MSVC builds (#1996)
+echo cmake         .. -G ${generator} -DCMAKE_BUILD_TYPE=${config} -DEXIV2_ENABLE_BMFF=${bmff} -DEXIV2_ENABLE_DYNAMIC_RUNTIME=1 -DBUILD_SHARED_LIBS=${shared} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=0 -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_TEAM_PACKAGING=On -DCMAKE_INSTALL_PREFIX=..\dist\${profile} -DEXIV2_ENABLE_WIN_UNICODE=1 -DCMAKE_CXX_STANDARD=${cpp} 2>&1 | c:\msys64\usr\bin\tee -a  logs\build.txt
+     cmake         .. -G ${generator} -DCMAKE_BUILD_TYPE=${config} -DEXIV2_ENABLE_BMFF=${bmff} -DEXIV2_ENABLE_DYNAMIC_RUNTIME=1 -DBUILD_SHARED_LIBS=${shared} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=0 -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_TEAM_PACKAGING=On -DCMAKE_INSTALL_PREFIX=..\dist\${profile} -DEXIV2_ENABLE_WIN_UNICODE=1 -DCMAKE_CXX_STANDARD=${cpp} 2>&1 | c:\msys64\usr\bin\tee -a  logs\build.txt
 if %ERRORLEVEL% NEQ 0 exit 1
 cmake --build .  --config ${config}                                                    2>&1 | c:\msys64\usr\bin\sed -e "s/^  //" | c:\msys64\usr\bin\tee -a logs\build.txt
 if %ERRORLEVEL% NEQ 0 exit 2
@@ -210,6 +212,7 @@ shared=1
 solaris=0
 source=0
 status=0
+unicode=0
 unit=True
 unix=0
 user=$(whoami)
@@ -253,6 +256,7 @@ while [ "$#" != "0" ]; do
       --source)     source=1      ;;
       --static)     shared=0      ;;
       --status)     status=1      ;;
+      --unicode)    unicode=1     ;;
       --unit)       unit=True     ;;
       --nounit)     unit=False    ;;
       --video)      video=1       ;;
