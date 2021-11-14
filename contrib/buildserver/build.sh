@@ -93,8 +93,8 @@ echo Build Directory $PWD                                                  2>&1 
 git status                                                                 2>&1 | tee -a logs/build.txt
 uname -a                                                                   2>&1 | tee -a logs/build.txt
 export                                                                     2>&1 | tee -a logs/build.txt
-echo cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_TEAM_USE_SANITIZERS=${asan} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_ENABLE_BMFF=${bmff} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=0 -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} -DCMAKE_CXX_STANDARD=${cpp} -DCMAKE_CXX_FLAGS=-Wno-deprecated 2>&1 | tee -a logs/build.txt
-     cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_TEAM_USE_SANITIZERS=${asan} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_ENABLE_BMFF=${bmff} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=0 -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} -DCMAKE_CXX_STANDARD=${cpp} -DCMAKE_CXX_FLAGS=-Wno-deprecated 2>&1 | tee -a logs/build.txt
+echo cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_TEAM_USE_SANITIZERS=${asan} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_ENABLE_BMFF=${bmff} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=0 -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} -DCMAKE_CXX_STANDARD=${cpp} -DCMAKE_CXX_FLAGS=-Wno-deprecated -DEXIV2_ENABLE_WIN_UNICODE=${unicode} 2>&1 | tee -a logs/build.txt
+     cmake .. -G "Unix Makefiles" -DEXIV2_TEAM_PACKAGING=On -DBUILD_SHARED_LIBS=${shared} -DEXIV2_BUILD_UNIT_TESTS=${unit} -DEXIV2_TEAM_USE_SANITIZERS=${asan} -DEXIV2_ENABLE_VIDEO=${video} -DEXIV2_ENABLE_BMFF=${bmff} -DEXIV2_ENABLE_WEBREADY=${webready} -DEXIV2_ENABLE_SSH=0 -DEXIV2_ENABLE_CURL=${webready} -DEXIV2_ENABLE_NLS=$nls -DCMAKE_BUILD_TYPE=${config} -DCMAKE_CXX_STANDARD=${cpp} -DCMAKE_CXX_FLAGS=-Wno-deprecated -DEXIV2_ENABLE_WIN_UNICODE=${unicode} 2>&1 | tee -a logs/build.txt
 echo ---- git status ; git status
 if [ "$source" == "0" ]; then
     make                                                                   2>&1 | tee -a logs/build.txt
@@ -413,6 +413,9 @@ if [ $macos == 1 ]; then
     unixBuild         ${server} macOS
     publishBundle     ${server}                bash        /Users/$user/gnu/github/exiv2/buildserver/build            '.tar.gz'
 fi
+
+# Windows builds.  Always enable unicode.
+unicode=1
 
 if [ "$msvc" == 1  -o "$msvc32" == 1 ]; then
     command='cmd64'
