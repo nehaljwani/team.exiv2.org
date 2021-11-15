@@ -414,9 +414,6 @@ if [ $macos == 1 ]; then
     publishBundle     ${server}                bash        /Users/$user/gnu/github/exiv2/buildserver/build            '.tar.gz'
 fi
 
-# Windows builds.  Always enable unicode.
-unicode=1
-
 if [ "$msvc" == 1  -o "$msvc32" == 1 ]; then
     command='cmd64'
     bits=64
@@ -424,30 +421,33 @@ if [ "$msvc" == 1  -o "$msvc32" == 1 ]; then
     if [ -z "$editions" ]; then editions="2019" ; fi
     for edition in $(for edition in $editions ; do printf %"s\n" $edition ; done | sort | uniq) ; do
         save_webready=$webready;save_unit=$unit;
+        save_unicode=$unicode:unicode=1
         webready=False                                 # MSVC/curl is toxic
         if [ $edition -lt 2012 ]; then unit=False; fi
         msvcBuild     ${server}-w10
         publishBundle ${server}-w10            msys64      /c/Users/$user/gnu/github/exiv2/buildserver/build          '.zip'
-        unit=$save_unit;webready=$save_webready
+        unit=$save_unit;webready=$save_webready;unicode=save_unicode;
     done
 fi
 
 if [ $cygwin == 1 ]; then
     cd=/home/rmills/gnu/github/exiv2/
     command='cygwin64'
-    save_unit=$unit;unit=0
+    save_unit=$unit;unit=0;
+    save_unicode=$unicode;unicode=0;
     unixBuild ${server}-w10 Cygwin/64
     publishBundle ${server}-w10                msys64      /c/cygwin64/home/$user/gnu/github/exiv2/buildserver/build  '.tar.gz'
-    unit=$save_unit
+    unit=$save_unit;unicode=save_unicode;
 fi
 
 if [ $mingw == 1 ]; then
     cd=/home/rmills/gnu/github/exiv2/
     command='msys64'
-    save_unit=$unit;unit=0
+    save_unit=$unit;unit=0;
+    save_unicode=$unicode;unicode=1;
     unixBuild         ${server}-w10 MinGW/64
     publishBundle     ${server}-w10            msys64      /c/msys64/home/$user/gnu/github/exiv2/buildserver/build     '.tar.gz'
-    unit=$save_unit
+    unit=$save_unit;unicode=save_unicode;
 fi
 
 # That's all Folks
