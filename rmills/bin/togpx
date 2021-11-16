@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+
+# write prolog
+echo '<?xml version="1.0" encoding="UTF-8"?>'
+echo '<gpx xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'
+echo '     xmlns="http://www.topografix.com/GPX/1/0" version="1.0" creator="togpx - https://clanmills.com"'
+echo '     xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd">'
+echo '  <trk>'
+
+# calc script (on path)
+#   #!/usr/bin/env perl
+#   print(eval(shift) . "\n")
+
+for i in $(find . -name "*.jpg" | sort)
+do
+  exiv2 -g GPSLatitude "$i" 2>&1 >/dev/null
+  if [ $? == 0 ];  then
+      # Parse latitude and longitude
+      # exiv2 -Pv -K Exif.GPSInfo.GPSLatitude 20210921_163647.jpg = 53/1 22/1 431696/10000
+      # calc "53/1 +22/1/60 +431696/10000/3600" = 53.3786582222222
+      lat=$(exiv2 -Pv -K Exif.GPSInfo.GPSLatitude     "$i")
+      lar=$(exiv2 -Pv -K Exif.GPSInfo.GPSLatitudeRef  "$i");if [ "$lar" == 'N' ]; then lar=''; else lar='-' ; fi
+      lon=$(exiv2 -Pv -K Exif.GPSInfo.GPSLongitude    "$i")
+      lor=$(exiv2 -Pv -K Exif.GPSInfo.GPSLongitudeRef "$i");if [ "$lor" == 'W' ]; then lor='-'; else lor='' ; fi
+      IFS=' ' read -r -a array <<< $lat ; lat=$(calc "${array[0]} + ${array[1]}/60 + ${array[2]}/3600")
+      IFS=' ' read -r -a array <<< $lon ; lon=$(calc "${array[0]} + ${array[1]}/60 + ${array[2]}/3600")
+
+      # Parse altitude (elevation)
+      ele=$(exiv2 -Pv -K Exif.GPSInfo.GPSAltitude     "$i")
+      ele=$(calc $ele)
+
+      # Parse time and date
+      tim=$(exiv2 -Pt -K Exif.GPSInfo.GPSTimeStamp    "$i")
+      dat=$(exiv2 -Pt -K Exif.GPSInfo.GPSDateStamp    "$i")
+      if [ -z $tim ]; then
+         tim=$(exiv2 -Pt -K Exif.Image.DateTime    "$i" | cut '-d ' -f 2)
+         dat=$(exiv2 -Pt -K Exif.Image.DateTime    "$i" | cut '-d ' -f 1)
+      	 dat=$(sed "s/:/-/g" <<<"$dat")                    # should really adjust to UTC YYYY-MM-DD
+      fi
+      dat=$(sed "s/:/-/g" <<<"$dat")                       # adjust YYYY:MM:DD to YYYY-MM-DD
+
+      # write track segment
+	  echo '    <trkseg>'
+	  echo '      <trkpt lat="'$lar$lat'" lon="'$lor$lon'">'
+	  echo '        <time>'"$dat"T"$tim"Z'</time>'
+      if [ ! -z $ele ]; then
+	  echo '        <ele>'$ele'</ele>'
+      fi
+	  echo '      </trkpt>'
+	  echo '    </trkseg>'
+  else
+      echo '   <!-- skip '"$i"' -->'
+  fi
+done
+
+# write epilog
+echo '  </trk>'
+echo '</gpx>'
+
+# That's all Folks
+##
