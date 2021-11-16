@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+index=index.txt
+pages=pages.inc
+
+cm=$(pathname ~/clanmills)
+here=$(pathname $PWD)
+root=${here:${#cm}}/
+group=$(basename "$root")
+year=$(dirname "$root") #/2010'
+year=${year:1}
+echo root = "$root" group = "$group" year = "$year"
+
+function pause(){
+   read -s -n 1 -p "Press any key to continue . . ."
+   echo ""
+}
+
+cat << EOF >$pages
+<script type="text/javascript">
+   var pages = [ __root__
+, __d__
+];
+    group  = __group__
+    titles = {};
+    for ( p = 0 ; p < pages.length ; p++ ) titles[pages[p]]=capitalize(pages[p]);
+</script>
+EOF
+
+IFS=$'\n' read -d '' -r -a lines < $index
+
+sed -E -i -e "s@__root__@'$root'@"   $pages
+sed -E -i -e "s@__group__@'$group'@" $pages
+parse()
+{
+    args=( "$@" )
+    d=${args[0]}   # directory
+    t=${args[1]}   # date
+    p=${args[2]}   # photos
+    echo '*** d ='   $d   --tdate $t --photos $p '***'
+    scrape_new "$d" --rm --tdate $t --photos $p  --pages /$year/$group/pages.inc
+    sed -E -i .bak -e s"@, __d__@, '$d'\n, __d__@" $pages
+    bbedit ../../$year.old/$group/$d/default.shtml
+    pause
+    pbpaste > $d/story.txt
+    rm -rf $d/*.bak
+}
+len=${#lines[@]}
+for (( i=0;i<$((len));i++)); do
+   parse ${lines[$i]}
+done
+sed -E -i .bak -e "/__d__/d" $pages
+
+rm -rf *.bak
+# cat $pages
+
+
+

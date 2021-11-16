@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+index=index.txt
+if [ -e $index ]; then rm -rf $index; fi
+
+for d in $(find . -maxdepth 1 -type d); do
+    if [ "$d" != '.' ]; then
+        d=$(basename "$d")
+        echo "$d" >> $index;
+    fi
+done
+bbedit $index
+

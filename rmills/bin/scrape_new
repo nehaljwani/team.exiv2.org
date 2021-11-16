@@ -1,0 +1,120 @@
+#!/usr/bin/env bash
+
+syntax() {
+    echo "syntax: $0 { option | --select value }+"
+    echo "option: --help | --rm | --verbose | --edit"
+    echo "select: include | label | maps | next | objects | pages | photos | prev | strava | tdate | title | up "
+}
+bomb() {
+    echo "*** $1 requires an argument ***" >&2
+    exit 1
+}
+
+##
+# parse command line
+this="$0"
+if [ "$#" == "0" ]; then help=1; fi
+updated=$(now)               # updated
+objects='photos.txt'
+T=~/clanmills/2021/Template  # Template
+d=default.shtml              # default file
+photos=''
+home='/albumtail.inc'
+
+while [ "$#" != "0" ]; do
+    arg="$1"
+    shift
+    case "$arg" in
+      --edit)        edit=1               ;;
+      -h|--help|-\?) help=1               ;;
+      --home)        home='/homepage.inc' ;;
+      --rm)          rm=1                 ;;
+      --verbose)     verbose=1 ;;
+      --include)     if [ $# -gt 0 ]; then include="$1"  ; shift; else bomb $arg ; fi ;;
+      --label)       if [ $# -gt 0 ]; then label="$1"    ; shift; else bomb $arg ; fi ;;  
+      --maps)        if [ $# -gt 0 ]; then maps="$1"     ; shift; else bomb $arg ; fi ;;
+      --next)        if [ $# -gt 0 ]; then next="$1"     ; shift; else bomb $arg ; fi ;;  
+      --objects)     if [ $# -gt 0 ]; then objects="$1"  ; shift; else bomb $arg ; fi ;;
+      --pages)       if [ $# -gt 0 ]; then pages="$1"    ; shift; else bomb $arg ; fi ;;
+      --photos)      if [ $# -gt 0 ]; then photos="$1"   ; shift; else bomb $arg ; fi ;;
+      --prev)        if [ $# -gt 0 ]; then prev="$1"     ; shift; else bomb $arg ; fi ;;  
+      --strava)      if [ $# -gt 0 ]; then strava="$1"   ; shift; else bomb $arg ; fi ;;
+      --tdate)       if [ $# -gt 0 ]; then tdate="$1"    ; shift; else bomb $arg ; fi ;;
+      --title)       if [ $# -gt 0 ]; then title="$1"    ; shift; else bomb $arg ; fi ;;
+      --up)          if [ $# -gt 0 ]; then up="$1"       ; shift; else bomb $arg ; fi ;;
+      *)             if [ -z "$dir" ]; then
+                         dir="$arg" 
+                     else
+                        echo "*** invalid option: $arg ***" 1>&2
+                        help=1
+                     fi ;;
+    esac
+done
+if [ ! -z "$verbose" ]; then set -x ;fi
+if [   -z "$dir" ]; then help=1 ; fi
+if [ ! -z "$help" ]; then syntax  ; exit 0 ; fi
+
+## manage the directory
+if [   -z "$dir" ]; then echo "usage $0 directory share" ; exit 1 ; fi
+if [ ! -z "$rm" ]; then rm -rf "$dir"      ; fi
+if [ -e "$dir"  ]; then echo "$dir exists" ; exit 1 ; fi
+mkdir -p "$dir" 
+if [ "$?" != "0" ]; then echo "cannot create $dir" ; exit 1 ; fi
+
+cp -v $T/*  "$dir"
+
+leaf=$(basename "$dir")
+clanmills="$HOME/clanmills" 
+clanmills=${#clanmills}
+path=${PWD:$clanmills:100}   # remove /Users/rmills/clanmills
+url="https://clanmills.com$path/"       
+echo ----- leaf = "$leaf" path = "$path" url = "$url" -----
+
+# simple replacements
+sed -E -i .bak -e "s@__home__@$home@g"                                 "$dir/$d"
+sed -E -i .bak -e "s@__updated__@$updated@g"                           "$dir/$d"
+sed -E -i .bak -e "s@__objects__@$objects@g"                           "$dir/$d"
+sed -E -i .bak -e "s@__photos__@$photos@g"                             "$dir/$d"
+
+# complex changes
+if [ ! -z "$pages"  ]; then
+    sed -E -i .bak -e "s@__leaf__@$leaf@"                              "$dir/$d"
+    sed -E -i .bak -e "s@__title__@titles[pages[index]]@"              "$dir/$d"
+    sed -E -i .bak -e "s@__pages__@$pages@"                            "$dir/$d" 
+    sed -E -i .bak -e "s@__prev__@prev(index,pages)@"                  "$dir/$d"
+    sed -E -i .bak -e "s@__next__@next(index,pages)@"                  "$dir/$d"
+    sed -E -i .bak -e "s@__up__@pages[0]@"                             "$dir/$d"
+    sed -E -i .bak -e "s@__label__@label(group,index,pages)@"          "$dir/$d"
+else
+    sed -E -i .bak -e "/__pages__/d"                                   "$dir/$d"
+    sed -E -i .bak -e "/indexOf/d"                                     "$dir/$d"  
+    if [ -z "$title" ]; then 
+        sed -E -i .bak -e "s/__title__/capitalize('$leaf')/"           "$dir/$d"
+    else 
+        sed -E -i .bak -e "s/__title__/'$title'/"                      "$dir/$d"
+    fi
+fi
+
+# remove or replace
+if [ -z "$label"   ]; then sed -E -i .bak -e "/__label__/d"             "$dir/$d" ; else 
+                           sed -E -i .bak -e "s/__label__/'$label'/"    "$dir/$d" ; fi
+if [ -z "$maps"   ];  then sed -E -i .bak -e "/__maps__/d"              "$dir/$d" ; else 
+                           sed -E -i .bak -e "s/__maps__/$maps/"        "$dir/$d" ; fi
+if [ -z "$next"   ];  then sed -E -i .bak -e "/__next__/d"              "$dir/$d" ; else 
+                           sed -E -i .bak -e "s@__next__@'$next'@"      "$dir/$d" ; fi
+if [ -z "$prev"   ];  then sed -E -i .bak -e "/__prev__/d"              "$dir/$d" ; else 
+                           sed -E -i .bak -e "s@__prev__@'$prev'@"      "$dir/$d" ; fi
+if [ -z "$strava" ];  then sed -E -i .bak -e "/__strava__/d"            "$dir/$d" ; else
+                           sed -E -i .bak -e "s/__strava__/$strava/"    "$dir/$d" ; fi
+if [ -z "$tdate"  ];  then sed -E -i .bak -e "/__tdate__/d"             "$dir/$d" ; else 
+                           sed -E -i .bak -e "s/__tdate__/$tdate/"      "$dir/$d" ; fi
+if [ -z "$up"     ];  then sed -E -i .bak -e "/__up__/d"                "$dir/$d" ; else 
+                           sed -E -i .bak -e "s@__up__@'$up'@"          "$dir/$d" ; fi
+
+
+rm -rf "$dir/$d.bak"
+ls -l  $dir
+if [ ! -z "$edit" ]; then bbedit "$dir" ; fi
+
+# That's all folks
+##

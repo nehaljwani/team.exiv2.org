@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+cd ~/clanmills
+A=0   # albums
+T=0   # todo
+F='%-11s %4d    %4d  %4d %4d\n'
+echo 'Directory Albums Stories total TODO'
+for y in {2004..2021} ; do
+	i=$(find $y -name Images    -type d | wc -l)  # Images
+	s=$(find $y -name story.txt -type f | wc -l)  # Stories
+	A=$((A+i+s))
+	T=$((T+i))
+    printf "$F" $y $i $s $A $T
+done
+    o=90
+    s=0
+    i=$((i+o))
+    T=$((T+o))
+    A=$((A+o))
+    printf "$F" Others $i $s $A $T
+	i=$(find Homepages -name "*.inc"     | grep -v pages.inc | wc -l)  # Images
+	s=$(find Homepages -name "story.txt" |                     wc -l)  # Images
+    T=$((T+i+s))
+    A=$((A+i+s))
+    printf "$F" Homepages $i $s $A $T
+
+
+

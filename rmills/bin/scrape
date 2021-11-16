@@ -6,7 +6,7 @@ import urllib.request
 import argparse
 
 def scrape(argv):
-	options=['cols2','photos','textarea']
+	options=['cols2','photos','img']
 	# parse command-line
 	if len(argv) != 3:
 		print('Number of arguments:', len(sys.argv), 'arguments.')
@@ -31,7 +31,6 @@ def scrape(argv):
 	
 	try:
 		i=options.index(option)
-
 		if i == options.index('cols2'):
 			# find and report every image
 			for div in soup.findAll('div', attrs={'id':'cols2'}):
@@ -45,12 +44,10 @@ def scrape(argv):
 				if len(url) > 120:  # ignore short urls, they are icons
 					url = url.split('=')[0]+'=w1920-h1080';
 					print('<object data="'+url+'"></object>')
-
-		elif i == options.index('textarea'):
-			textareas = soup.findAll('textarea')
-			print(textareas)
-			for textarea in textareas:
-					print(textarea)
+		elif i == options.index('img'):
+			images = soup.findAll('img')
+			for image in images:
+				print(image['src'])
 	except:
 		print('unknown option',option)
 		print('valid options',options)
