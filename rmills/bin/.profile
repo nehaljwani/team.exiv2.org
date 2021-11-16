@@ -441,35 +441,6 @@ alias rmillsmm='ssh rmillsmm'
 # export PATH=$M2:$PATH
 # export MAVEN_OPTS="-Xms256m -Xmx512m"
 
-
-## Warren's remind/remember magic
-# Function "remind"
-remind() {
-  # remindme - Searches a data file for matching lines, or shows the entire contents
-  # of the data file if no argument is specified.
-  rememberFile="${HOME}/bin/.remember"
-  if [ $# -eq 0 ] ; then
-    if [ -e "$rememberFile" ]; then
-      more "$rememberFile"
-    else
-      echo "$rememberFile" does not exist
-    fi
-  else
-    grep -i "$@" "$rememberFile" | ${PAGER:-more}
-  fi
-}
-# Function "remember"
-remember() {
-  # remember - An easy command-line-based memory pad.
-  rememberFile="${HOME}/bin/.remember"
-  if [ $# -eq 0 ] ; then
-          echo "Enter note, end with ^D: "
-          cat - >> "$rememberFile"
-  else
-          echo "$@" >> "$rememberFile"
-  fi
-}
-
 ##
 # run the local kdiff3 type tool
 differ () {
@@ -499,7 +470,6 @@ alias builder='cd ${EXIV2BUILDER}'
 alias testfiles='cd /Users/Shared/Jenkins/Home/userContent/testfiles'
 alias book='cd ~/gnu/exiv2/team/book'
 alias bmff='cd ~/gnu/github/exiv2/bmff'
-
 
 ##
 # platform adjustments
