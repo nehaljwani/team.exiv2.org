@@ -7,7 +7,7 @@ if [ ${BASH_VERSINFO[0]} -lt 4 ]; then
 fi
 
 year=$(date +"%Y")
-directory=~/Pictures/$year
+directory=~/Pictures/Photos/$year
 
 if [ ! -d "$directory" ]; then
 	echo "$directory is not a directory"
@@ -19,7 +19,7 @@ declare -A drives=( \
    # ["BackupXX"]="/Volumes/Backup/Photos/" \
    # ["Backup"]="rmills@exiv2.dyndns.org:/Volumes/Backup/Photos/"
    ["Backup"]="rmills@rmillsmm.local:/Volumes/Backup/Photos/"
-   ["Photos"]="rmills@rmillsmm.local:~/Pictures/"
+   ["Photos"]="rmills@rmillsmm.local:~/Pictures/Photos/"
 )
 
 reportDrives() {

@@ -347,34 +347,6 @@ path() {
 }
 
 
-##
-# set CE = editor of choice (obsolete)
-#if [ -z "$SSH_CLIENT" ]; then
-#   if   [ "$PLATFORM" == 'macosx' ]; then
-#       export CE=`which bbedit &>/dev/null`
-#       if [ -z "$CE" ]; then
-#           export CE=`which edit &>/dev/null`
-#       fi
-#   elif [ "$PLATFORM" == 'cygwin' ]; then
-#       CE='/cygdrive/c/Users/rmills/com/ce.exe'
-#   elif [ "$PLATFORM" == 'linux' ]; then
-#       export CE=`which kate`
-#       if [ ! -z "$CE" ]; then
-#           export CE="kate --use"
-#           export CE2="&>/dev/null &"
-#       fi
-#   fi
-#fi
-#
-#if [ "$PLATFORM" == "macosx" ]; then
-#   export CE=bbedit
-#fi
-#
-#ce()
-#{
-#   $CE "$@" 2>/dev/null >/dev/null &
-#}
-
 # catch all - use good old vi!
 #if [ -z "$CE" ]; then
 #   export CE=vi
@@ -457,6 +429,7 @@ alias PP='cd ~/Desktop/Stuff/PP'
 
 #
 # Favorite servers
+ssh-add ~/.ssh/id_rsa
 alias clanmills.com='ssh clanmil1@clanmills.com'
 alias rmillsmm='ssh rmillsmm'
 
