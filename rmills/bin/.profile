@@ -429,7 +429,7 @@ alias PP='cd ~/Desktop/Stuff/PP'
 
 #
 # Favorite servers
-ssh-add ~/.ssh/id_rsa
+ssh-add
 alias clanmills.com='ssh clanmil1@clanmills.com'
 alias rmillsmm='ssh rmillsmm'
 
