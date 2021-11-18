@@ -1,11 +1,6 @@
 #!/usr/bin/env bash
 # set -v
 
-if [ ${BASH_VERSINFO[0]} -lt 4 ]; then
-	echo "$0 requires bash 4 (or higher)"
-	exit 2
-fi
-
 year=$(date +"%Y")
 directory=~/Pictures/Photos/$year
 
@@ -28,42 +23,23 @@ fi
 echo "host = $host dest = $dest"
 
 if [ "$host" == "rmillsm1" ]; then
-	declare -A drives=( \
-	   ["Backup"]="rmills@$dest:/Volumes/Backup/Photos/"
-	   ["Photos"]="rmills@$dest:~/Pictures/Photos/"
+	drives=( \
+	   "rmills@$dest:/Volumes/Backup/Photos/" \
+	   "rmills@$dest:~/Pictures/Photos/"      \
 	)
 elif [ "$host" == "rmillsmm" ]; then
-	declare -A drives=( \
-	   ["Backup"]="/Volumes/Backup/Photos/"
-	   ["Photos"]="rmills@$dest:~/Pictures/Photos/"
+	drives=( \
+	   "/Volumes/Backup/Photos/"           \
+	   "rmills@$dest:~/Pictures/Photos/"   \
 	)
 fi
 
-
-reportDrives() {
-	for drive in "${!drives[@]}"; do
-		to=${drives["$drive"]}
-		if [ ! -d "$to" ]; then
-			echo "Drive: '$drive' not available because $to is not a directory"
-		fi
-	done
-}
-
 ##
-# write the drives we can find
-for drive in "${!drives[@]}"; do
-	to=${drives["$drive"]}
-	echo "drive " $drive is $to
-	#if [ -d "$to" ]; then
-		echo '---' rsync -varz "$directory" "$to" '---'
-			       rsync -varz "$directory" "$to"
-		echo
-	#else
-	#	echo '***'"$to does not exist"'***'
-	#fi
+# write to the drives we can find
+for drive in ${drives[@]}; do
+	echo '---' rsync -varz "$directory" "$drive" '---'
+			   rsync -varz "$directory" "$drive"
 done
-
-# reportDrives
 
 # That's all Folks!
 ##
