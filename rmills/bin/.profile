@@ -417,7 +417,7 @@ alias ridLeadingSpace="pbpaste | perl -e 'while(<>){\$_=~s/^\s*//g;print(\$_);}'
 # favorite directories
 year=$(date "+%Y")
 alias homepages="cd ~/clanmills/Homepages/$year"
-alias photos="cd ~/Pictures/Photos/2008"
+alias photos="cd ~/Pictures/Photos/$year"
 alias heather='cd ~/heather/httpdocs'
 alias clanmills='cd ~/clanmills'
 alias collages='cd ~/Pictures/Picasa/Collages'

@@ -14,13 +14,31 @@ if [ ! -d "$directory" ]; then
 	exit 1
 fi
 
-declare -A drives=( \
-   # ["Photos"]="/Volumes/Photos/" \
-   # ["BackupXX"]="/Volumes/Backup/Photos/" \
-   # ["Backup"]="rmills@exiv2.dyndns.org:/Volumes/Backup/Photos/"
-   ["Backup"]="rmills@rmillsmm.local:/Volumes/Backup/Photos/"
-   ["Photos"]="rmills@rmillsmm.local:~/Pictures/Photos/"
-)
+# determine destination and check it's on-line 
+host=$(hostname|cut -d. -f 1)
+if [ "$host" == 'rmillsm1' ]; then dest=rmillsmm ; fi
+if [ "$host" == 'rmillsmm' ]; then dest=rmillsm1 ; fi
+if [ ! -z "$dest" ]; then
+	ping -c 1 $dest 2>&1 >/dev/null
+	if [ "$?" != "0" ]; then 
+  		echo "dest $dest is down!"
+  		dest=''
+  	fi
+fi 
+echo "host = $host dest = $dest"
+
+if [ "$host" == "rmillsm1" ]; then
+	declare -A drives=( \
+	   ["Backup"]="rmills@$dest:/Volumes/Backup/Photos/"
+	   ["Photos"]="rmills@$dest:~/Pictures/Photos/"
+	)
+elif [ "$host" == "rmillsmm" ]; then
+	declare -A drives=( \
+	   ["Backup"]="/Volumes/Backup/Photos/"
+	   ["Photos"]="rmills@$dest:~/Pictures/Photos/"
+	)
+fi
+
 
 reportDrives() {
 	for drive in "${!drives[@]}"; do
