@@ -2393,116 +2393,116 @@ void JpegImage::accept(Visitor& visitor)
     while ( !done ) {
         // step to next marker
         int  marker = advanceToMarker();
-        if ( marker < 0 ) {
-            Error(kerInvalidFileFormat,io().path());
-        }
+        done = marker == -1;
+        if ( !done ) {
 
-        size_t      address       = io_.tell()-2;
-        DataBuf     buf(48);
+            size_t      address       = io_.tell()-2;
+            DataBuf     buf(48);
 
-        // Read size and signature
-        uint64_t    bufRead       = io_.read(buf);
-        uint16_t    length        = bHasLength_[marker] ? getShort(buf,0,keBig):0;
-        bool        bAppn         = marker >= app0_ && marker <= (app0_ +15) ;
-        bool        bApp2         = marker == app0_ +2 ;
-        bool        bHasSignature = marker == com_ || bAppn ;
-        std::string signature     = bHasSignature ? buf.binaryToString(2, buf.size_ - 2): "";
+            // Read size and signature
+            uint64_t    bufRead       = io_.read(buf);
+            uint16_t    length        = bHasLength_[marker] ? getShort(buf,0,keBig):0;
+            bool        bAppn         = marker >= app0_ && marker <= (app0_ +15) ;
+            bool        bApp2         = marker == app0_ +2 ;
+            bool        bHasSignature = marker == com_ || bAppn ;
+            std::string signature     = bHasSignature ? buf.binaryToString(2, buf.size_ - 2): "";
 
-        bool        bExif         = bAppn && signature.size() >  6 && signature.find("Exif"       ) == 0;
-        bool        bICC          = bAppn && signature.size() > 10 && signature.find("ICC_PROFILE") == 0;
-        exifState                 = bExif       ? kesAdobe
-                                  : (exifState == kesAdobe && length == 65535) ? kesAgfa
-                                  : kesNone ;
+            bool        bExif         = bAppn && signature.size() >  6 && signature.find("Exif"       ) == 0;
+            bool        bICC          = bAppn && signature.size() > 10 && signature.find("ICC_PROFILE") == 0;
+            exifState                 = bExif       ? kesAdobe
+                                      : (exifState == kesAdobe && length == 65535) ? kesAgfa
+                                      : kesNone ;
 
-        if ( exifState ) { // suck up the Exif data
-            size_t chop = bExif ? 6 : 0 ;
-            exif.read(io_,(address+2)+2+chop,length-2-chop); // read into memory
-            if ( !nExif ++ ) aExif = (address+2)+2+chop ;
-            if ( exifState == kesAgfa && length != 65535 && !bExif ) exifState = kesNone;
-        }
+            if ( exifState ) { // suck up the Exif data
+                size_t chop = bExif ? 6 : 0 ;
+                exif.read(io_,(address+2)+2+chop,length-2-chop); // read into memory
+                if ( !nExif ++ ) aExif = (address+2)+2+chop ;
+                if ( exifState == kesAgfa && length != 65535 && !bExif ) exifState = kesNone;
+            }
 
-        // deal with deferred Exif metadata
-        if ( !exif.empty() && !exifState )
-        {
-            IoSave save(io_,aExif);
-            Io     file(io_,aExif,exif.size_); // stream on the file
-            Io     memory(exif);               // stream on memory buffer
-            visitor.visitExif(nExif == 1 ? file :memory ); // tell the visitor
-            exif.empty(true)  ; // empty the exif buffer
-            nExif     = 0     ; // reset the block counter
-        }
-        // deal with deferred XMP and ICC
-        if ( !XMP.empty() && !bAppn ) {
-            visitor.visitXMP(XMP); // tell the visitor
-            bExtXMP = false ;
-            XMP.empty(true) ; // empty the exif buffer
-        }
-        if ( !ICC.empty() && !bApp2 ) {
-            visitor.visitICC(ICC); // tell the visitor
-            ICC.empty(true) ; // empty the exif buffer
-        }
-        visitor.visitSegment(io_,*this,address,marker,length,signature); // tell the visitor
+            // deal with deferred Exif metadata
+            if ( !exif.empty() && !exifState )
+            {
+                IoSave save(io_,aExif);
+                Io     file(io_,aExif,exif.size_); // stream on the file
+                Io     memory(exif);               // stream on memory buffer
+                visitor.visitExif(nExif == 1 ? file :memory ); // tell the visitor
+                exif.empty(true)  ; // empty the exif buffer
+                nExif     = 0     ; // reset the block counter
+            }
+            // deal with deferred XMP and ICC
+            if ( !XMP.empty() && !bAppn ) {
+                visitor.visitXMP(XMP); // tell the visitor
+                bExtXMP = false ;
+                XMP.empty(true) ; // empty the exif buffer
+            }
+            if ( !ICC.empty() && !bApp2 ) {
+                visitor.visitICC(ICC); // tell the visitor
+                ICC.empty(true) ; // empty the exif buffer
+            }
+            visitor.visitSegment(io_,*this,address,marker,length,signature); // tell the visitor
 
-        if ( bAppn ) {
-            // http://www.adobe.com/content/dam/Adobe/en/devnet/xmp/pdfs/XMPSpecificationPart3.pdf p75
-            // $ exiv2 -pS test/data/exiv2-bug922.jpg
-            // STRUCTURE OF JPEG FILE: test/data/exiv2-bug922.jpg
-            // address | marker     | length  | data
-            //       0 | 0xd8 SOI   |       0
-            //       2 | 0xe1 APP1  |     911 | Exif..MM.*.......%.........#....
-            //     915 | 0xe1 APP1  |     870 | http://ns.adobe.com/xap/1.0/.<x:
-            //    1787 | 0xe1 APP1  |   65460 | http://ns.adobe.com/xmp/extensio
-            if ( signature.find("http://ns.adobe.com/x") == 0 ) {
-                // extract XMP
-                if (length > 0) {
-                    io_.seek(io_.tell() - bufRead);
-                    std::vector<byte> xmp(length + 1);
-                    io_.read(&xmp[0], length);
-                    int start = 0;
+            if ( bAppn ) {
+                // http://www.adobe.com/content/dam/Adobe/en/devnet/xmp/pdfs/XMPSpecificationPart3.pdf p75
+                // $ exiv2 -pS test/data/exiv2-bug922.jpg
+                // STRUCTURE OF JPEG FILE: test/data/exiv2-bug922.jpg
+                // address | marker     | length  | data
+                //       0 | 0xd8 SOI   |       0
+                //       2 | 0xe1 APP1  |     911 | Exif..MM.*.......%.........#....
+                //     915 | 0xe1 APP1  |     870 | http://ns.adobe.com/xap/1.0/.<x:
+                //    1787 | 0xe1 APP1  |   65460 | http://ns.adobe.com/xmp/extensio
+                if ( signature.find("http://ns.adobe.com/x") == 0 ) {
+                    // extract XMP
+                    if (length > 0) {
+                        io_.seek(io_.tell() - bufRead);
+                        std::vector<byte> xmp(length + 1);
+                        io_.read(&xmp[0], length);
+                        int start = 0;
 
-                    // http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/xmp/pdfs/XMPSpecificationPart3.pdf
-                    // if we find HasExtendedXMP, set the flag and ignore this block
-                    // the first extended block is a copy of the Standard block.
-                    // a robust implementation allows extended blocks to be out of sequence
-                    // we could implement out of sequence with a dictionary of sequence/offset
-                    // and dumping the XMP in a post read operation similar to kpsIptcErase
-                    // for the moment, dumping 'on the fly' is working fine
-                    if (!bExtXMP) {
-                        while (xmp.at(start)) {
+                        // http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/xmp/pdfs/XMPSpecificationPart3.pdf
+                        // if we find HasExtendedXMP, set the flag and ignore this block
+                        // the first extended block is a copy of the Standard block.
+                        // a robust implementation allows extended blocks to be out of sequence
+                        // we could implement out of sequence with a dictionary of sequence/offset
+                        // and dumping the XMP in a post read operation similar to kpsIptcErase
+                        // for the moment, dumping 'on the fly' is working fine
+                        if (!bExtXMP) {
+                            while (xmp.at(start)) {
+                                start++;
+                            }
                             start++;
+                            const std::string xmp_from_start = binaryToString(
+                                reinterpret_cast<byte*>(&xmp.at(0)),start, length - start);
+                            if (xmp_from_start.find("HasExtendedXMP", start) != xmp_from_start.npos) {
+                                start = length;  // ignore this segment, we'll get extended packet in following segments
+                                bExtXMP = true;
+                            }
+                        } else {
+                            start = 2 + 35 + 32 + 4 + 4;  // Adobe Spec, p19
                         }
-                        start++;
-                        const std::string xmp_from_start = binaryToString(
-                            reinterpret_cast<byte*>(&xmp.at(0)),start, length - start);
-                        if (xmp_from_start.find("HasExtendedXMP", start) != xmp_from_start.npos) {
-                            start = length;  // ignore this segment, we'll get extended packet in following segments
-                            bExtXMP = true;
-                        }
-                    } else {
-                        start = 2 + 35 + 32 + 4 + 4;  // Adobe Spec, p19
+                        XMP.read(io_,address+2+start,length - start); // read the XMP from the stream
                     }
-                    XMP.read(io_,address+2+start,length - start); // read the XMP from the stream
+                }
+                if ( bICC ) {
+                    uint16_t start = 2+14 ; // "\mark\length\ICC_PROFILE\0\C\Z" = \C: 1 byte chunk. \Z: 1 byte chunks.
+                    ICC.read(io_,address+2+start,length - start); // read the XMP from the stream
+                }
+                if ( (signature.find("Photoshop 3.0") == 0) && visitor.isRecursive() ) {
+                    uint16_t start = 2+2+14 ; // "\mark\length\Photoshop 3.0\08BIM..."
+                    Io    bim(io_,address+start,length-start);
+                    C8BIM c8bim(bim);
+                    c8bim.accept(visitor);
                 }
             }
-            if ( bICC ) {
-                uint16_t start = 2+14 ; // "\mark\length\ICC_PROFILE\0\C\Z" = \C: 1 byte chunk. \Z: 1 byte chunks.
-                ICC.read(io_,address+2+start,length - start); // read the XMP from the stream
-            }
-            if ( (signature.find("Photoshop 3.0") == 0) && visitor.isRecursive() ) {
-                uint16_t start = 2+2+14 ; // "\mark\length\Photoshop 3.0\08BIM..."
-                Io    bim(io_,address+start,length-start);
-                C8BIM c8bim(bim);
-                c8bim.accept(visitor);
-            }
-        }
 
-        // Jump past the segment
-        io_.seek(address+2+length); // address is previous marker
-        if ( marker == sos_ ) {
-            while ( (marker = advanceToMarker()) != eoi_ /* && !io().eof() */ ) {};
-            io().seek(io().tell()-2);
+            // Jump past the segment
+            io_.seek(address+2+length); // address is previous marker
+            if ( marker == sos_ ) {
+                while ( (marker = advanceToMarker()) != eoi_ /* && !io().eof() */ ) {};
+                io().seek(io().tell()-2);
+            }
+            done = (address+2+length >= io().size());//  || (marker >= 0xc0 && marker <= 0xfe) ;
         }
-        done = (address+2+length >= io().size());//  || (marker >= 0xc0 && marker <= 0xfe) ;
     } // while !done
 
     visitor.visitEnd((*this)); // tell the visitor
