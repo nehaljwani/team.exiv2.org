@@ -3,7 +3,7 @@
 syntax() {
     echo "syntax: $0 { option | --select value }+"
     echo "option: --help | --rm | --verbose | --edit"
-    echo "select: include | label | maps | next | objects | pages | photos | prev | strava | tdate | title | up "
+    echo "select: include | label | maps | next | objects | pages | photos | prev | strava | tdate | title | up | updated "
 }
 bomb() {
     echo "*** $1 requires an argument ***" >&2
@@ -15,7 +15,7 @@ bomb() {
 this="$0"
 if [ "$#" == "0" ]; then help=1; fi
 updated=$(now)               # updated
-objects='photos.txt'
+objects=photos.txt
 T=~/clanmills/2021/Template  # Template
 d=default.shtml              # default file
 photos=''
@@ -41,6 +41,7 @@ while [ "$#" != "0" ]; do
       --strava)      if [ $# -gt 0 ]; then strava="$1"   ; shift; else bomb $arg ; fi ;;
       --tdate)       if [ $# -gt 0 ]; then tdate="$1"    ; shift; else bomb $arg ; fi ;;
       --title)       if [ $# -gt 0 ]; then title="$1"    ; shift; else bomb $arg ; fi ;;
+      --updated)     if [ $# -gt 0 ]; then updated="$1"  ; shift; else bomb $arg ; fi ;;
       --up)          if [ $# -gt 0 ]; then up="$1"       ; shift; else bomb $arg ; fi ;;
       *)             if [ -z "$dir" ]; then
                          dir="$arg" 
@@ -50,6 +51,7 @@ while [ "$#" != "0" ]; do
                      fi ;;
     esac
 done
+
 if [ ! -z "$verbose" ]; then set -x ;fi
 if [   -z "$dir" ]; then help=1 ; fi
 if [ ! -z "$help" ]; then syntax  ; exit 0 ; fi
@@ -68,7 +70,7 @@ clanmills="$HOME/clanmills"
 clanmills=${#clanmills}
 path=${PWD:$clanmills:100}   # remove /Users/rmills/clanmills
 url="https://clanmills.com$path/"       
-echo ----- leaf = "$leaf" path = "$path" url = "$url" -----
+echo ----- leaf = "$leaf" path= "$path" --url "$url" --title "$title" --photos "$photos" -----
 
 # simple replacements
 sed -E -i .bak -e "s@__home__@$home@g"                                 "$dir/$d"
@@ -89,9 +91,11 @@ else
     sed -E -i .bak -e "/__pages__/d"                                   "$dir/$d"
     sed -E -i .bak -e "/indexOf/d"                                     "$dir/$d"  
     if [ -z "$title" ]; then 
-        sed -E -i .bak -e "s/__title__/capitalize('$leaf')/"           "$dir/$d"
-    else 
-        sed -E -i .bak -e "s/__title__/'$title'/"                      "$dir/$d"
+        sed -E -i .bak -e "s@__title__@capitalize('$leaf')@"           "$dir/$d"
+    else
+        # first=${first//Suzy/$second} 
+        title=${title//"'"/"\\\\'"}
+        sed -E -i .bak -e "s@__title__@'$title'@"                      "$dir/$d"
     fi
 fi
 

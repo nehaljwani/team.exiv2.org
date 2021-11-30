@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+echoerr() { echo "$@" 1>&2; exit 1; }
+
+if [ "$#" != "1" ]; then echoerr "usage: $0 directory"   ; fi
+if [ ! -d "$1"   ]; then echoerr "$1 is not a directory" ; fi
+
+cd $1
+
+dryrun=0
+objects=objects.txt
+if [ -e photos.txt ]; then objects=photos.txt; fi
+pages=$(grep --quiet 'pages.inc' default.shtml)
+if [ ! -z "$pages"]; then pages="--pages \"$pages\"" ; fi
+
+grep --quiet 'buildPage()' default.shtml
+if [ "$?" == "0" ]; then
+    leaf=$(basename $PWD)
+    title=$(grep title default.shtml  | cut -d"'" -f 2)
+    if [ ${title: -1} == '"' ]; then
+        title=$(grep title default.shtml  | cut -d'"' -f 2)
+    fi
+    photos=$(grep https default.shtml  | cut -d"'" -f 2)
+    updated=$(grep updated default.shtml  | cut -d"'" -f 2)
+    echo "*** scrape_new" "$leaf" --rm --photos "$photos" --title "$title" --updated "$updated" $pages "***"
+    # save the good data
+    if [ "$dryrun" != "1" ]; then
+        for i in story.txt $objects ; do mv $i /tmp; done
+        pushd .. 2>/dev/null
+            scrape_new "$leaf" --photos "$photos" --title "$title" --updated "$updated" $pages --rm
+            mv /tmp/story.txt   $leaf
+            mv /tmp/$objects $leaf/photos.txt
+        popd 2>/dev/null
+    fi
+    echo "$photos" | pbcopy
+    bbedit photos.txt
+fi
+
+# That's all Folks!
+##

@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+if [ $# != 2 ]; then
+    echo "usage $0 path address"
+fi
+path=$1
+address=$2
+echo "<script>window.location.replace(\"$address\");</script>" > $path
+
+# That's all Folks
+##
