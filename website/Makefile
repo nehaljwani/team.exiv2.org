@@ -128,6 +128,7 @@ html: news
 	@bin/gen.py master/*.in
 	@echo "Moving files to html/ ..."
 	-@mv -f master/*.html html/
+	-@mv -f master/*.jpg  html/
 
 news: var/__whatsnew-latest__ var/__whatsnew-table__ html/rss.xml
 
