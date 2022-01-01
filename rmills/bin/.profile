@@ -543,7 +543,6 @@ if [ "$PLATFORM" == "linux" ]; then
 fi
 
 export CS_HOME=$HOME/copperspice/
-export GOOGLE_MAPS_KEY=AIzaSyC2BukuQbBJbFaZA6e9tAxiHdGq1jIDKsE
 
 themes=/cygdrive/c/Users/rmills/AppData/Local/Microsoft/BingDesktop/themes/
 if [ -e $themes ]; then
