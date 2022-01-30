@@ -37,6 +37,13 @@ jobs:
       - name: Install dependencies
         run: sudo apt-get install -y cmake make g++ man2html python doxygen xsltproc ghostscript man2html graphviz
 
+      - name: Copy Robin's book
+        run: |
+          mkdir $EXIV2WEB/html/book
+          find $EXIV2WEB/../book -maxdepth 1 -type f | xargs -I{} cp -v {} $EXIV2WEB/html/book
+          sed s'#<title>IMaEA</title>#<title>Image Metadata and Exiv2 Architecture</title>#' $EXIV2WEB/html/book/IMaEA.html > $EXIV2WEB/html/book/index.html
+          sed -i 's,../book/,book/,' $EXIV2WEB/var/__navbar*
+
       - name: Build exiv2
         run: |
           cmake -S$EXIV2HOME -B$EXIV2HOME/build -DEXIV2_ENABLE_BMFF=1 -DCMAKE_INSTALL_PREFIX=$EXIV2HOME/install
