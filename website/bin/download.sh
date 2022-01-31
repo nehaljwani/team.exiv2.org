@@ -24,10 +24,10 @@ mkdir -p  $basedir/html/builds
 for P in $(ls -1 $basedir/builds/* | sort --ignore-case)
 do
     # P = ./builds/exiv2-0.27.0.2-CYGWIN-2018:10:31_11:57:09.tar.gz
-    platform=$(echo $P | cut -d- -f 3   ) # CYGWIN
-    S=$(       echo $P | cut -d- -f 1-3 ) # ./builds/exiv2-0.27.0.2-CYGWIN
-    stub=$(    echo $S | cut -d/ -f 3-  ) # exiv2-0.27.0.2-CYGWIN
     if echo "$P" | grep .zip ; then ext=zip ; else ext=tar.gz ; fi
+    platform=$(echo $P | cut -d- -f 3   | sed "s,.$ext,,") # CYGWIN
+    S=$(       echo $P | cut -d- -f 1-3 | sed "s,.$ext,,") # ./builds/exiv2-0.27.0.2-CYGWIN
+    stub=$(    echo $S | cut -d/ -f 3-  | sed "s,.$ext,,") # exiv2-0.27.0.2-CYGWIN
     p=$stub.$ext                          # exiv2-0.27.0.2-CYGWIN.tar.gz
 	echo P = $P
 	echo platform = $platform
