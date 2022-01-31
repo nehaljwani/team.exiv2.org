@@ -7,6 +7,11 @@ version=$(cat $basedir/var/__version__)
 table=__download_table__
 buttons=__download_buttons__
 
+statbin=~/gnu/coreutils/coreutils-8.25/src/stat
+if [ -x $(command -v stat) ]; then
+    statbin=$(command -v stat)
+fi
+
 rm -rf $basedir/var/$table
 rm -rf $basedir/var/$buttons
 rm -rf $basedir/var/$buttons.tmp
@@ -35,7 +40,7 @@ do
 	size=$(ls -la        html/builds/$p | sed -e 's#  # #g' | cut -d' ' -f 5)
 	echo size = $size
 	# Why is stat platform depenendent?
-	date=$(~/gnu/coreutils/coreutils-8.25/src/stat -c "%y"  html/builds/$p | cut -d' ' -f 1-2 | cut -d: -f 1-2)
+	date=$($statbin -c "%y"  html/builds/$p | cut -d' ' -f 1-2 | cut -d: -f 1-2)
 	checkSum=$(sha256sum html/builds/$p | cut -d' ' -f 1)
 
 	echo "<tr>  \
