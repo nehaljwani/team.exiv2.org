@@ -35,7 +35,7 @@ jobs:
           echo "EXIV2HOME=$GITHUB_WORKSPACE/exiv2"       >> $GITHUB_ENV
 
       - name: Install dependencies
-        run: sudo apt-get install -y cmake make g++ man2html python doxygen xsltproc ghostscript man2html graphviz
+        run: sudo apt-get install -y cmake make g++ man2html python3 doxygen xsltproc ghostscript man2html graphviz
 
       - name: Copy Robin's book
         run: |
@@ -52,11 +52,39 @@ jobs:
 
       - name: Build exiv2.org static content
         run: |
+          # Populate builds and releases
+          python3 -m pip install PyGithub
+          python3 <<EOF | grep -v sha256 | grep -v nightly | grep -v untagged > /tmp/artifacts.txt
+          from github import Github
+
+          g = Github("${{ secrets.GITHUB_TOKEN }}")
+          repo = g.get_repo("Exiv2/exiv2")
+
+          for release in repo.get_releases():
+              for asset in release.get_assets():
+                  print(asset.browser_download_url)
+          EOF
+          cat /tmp/artifacts.txt
+          mkdir -p $EXIV2WEB/../releases/
+          (cd $EXIV2WEB/../releases/; while read url; do curl -sLO $url; done < /tmp/artifacts.txt)
+          mkdir -p $EXIV2WEB/builds
+          mv -v $EXIV2WEB/../releases/*-$(cat $EXIV2WEB/var/__version__)-* $EXIV2WEB/builds
+
+          # Generate the final static content
           g++ $EXIV2WEB/bin/rssdate.cpp -o $EXIV2WEB/bin/rssdate
-          mkdir -p $EXIV2WEB/../releases/          # TODO: Remove this line
-          touch $EXIV2WEB/../releases/placeholder  # TODO: Remove this line
           make -C $EXIV2WEB update
           make -C $EXIV2WEB
+
+          # Patch the generated content to point builds and releases to Github
+          while read url
+            do pkg=$(echo $url | grep -o 'exiv2-[^/]*$'); sed -i "s,/releases/$pkg,$url," $EXIV2WEB/html/archive.html
+          done < /tmp/artifacts.txt
+          for url in $(grep exiv2-$(cat $EXIV2WEB/var/__version__)- /tmp/artifacts.txt)
+            do pkg=$(echo $url | grep -o 'exiv2-[^/]*$'); sed -i "s,builds/$pkg,$url," $EXIV2WEB/html/download.html
+          done
+
+          # Cleanup
+          rm -fr /tmp/artifacts.txt $EXIV2WEB/html/releases $EXIV2WEB/html/builds
 
       - name: Deploy static content for exiv2.org
         uses: peaceiris/actions-gh-pages@v3
